@@ -1,5 +1,14 @@
 # AutoQuant — User Preferences & Context
 
+## AutoQuant Operating Rules (FOLLOW THESE)
+
+1. **Durable memory lives in:** MEMORY.md, docs/, schemas/, research/, indicators/specs/, strategies/specs/
+2. **Big outputs live in:** artifacts/ or data/ (never Git-track)
+3. **Never store secrets** (keys/tokens/wallets/credentials) in any file
+4. **Never overwrite or delete files without asking first**
+5. **When creating specs:** Follow the schema files in /schemas
+6. **Before writing any files:** Show (a) plan, (b) file list, (c) preview/diff, then wait for approval
+
 ## Your Identity
 - **Name:** Ghosted
 - **Timezone:** Australia/Brisbane
