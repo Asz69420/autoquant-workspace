@@ -49,10 +49,10 @@
 
 ## Telegram Logging Policy
 
-- **Only Logger sends to Telegram:** All agents emit ActionEvents to `data/logs/spool/`; only Logger posts formatted Telegram messages.
+- **Only Telegram Reporter sends to Telegram:** All agents emit ActionEvents to `data/logs/outbox/`; only Telegram Reporter (scripts/tg_reporter.py) posts formatted Telegram messages.
 - **No secrets in files:** Telegram credentials come from env vars only (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_LOG_CHAT_ID`, `TELEGRAM_CMD_CHAT_ID`).
 - **Append-only logs:** Actions logged to `data/logs/actions.ndjson`; errors to `data/logs/errors.ndjson`.
-- **Log group routing:** Set `TELEGRAM_LOG_CHAT_ID` to your log group ID. Logger always sends alerts + logs here.
+- **Log group routing:** Set `TELEGRAM_LOG_CHAT_ID` to your log group ID. Telegram Reporter always sends alerts + logs here.
 - **Command channel:** Set `TELEGRAM_CMD_CHAT_ID` to your DM chat ID. Commands accepted only here. Log group commands are ignored.
 
 ## Delegation Defaults

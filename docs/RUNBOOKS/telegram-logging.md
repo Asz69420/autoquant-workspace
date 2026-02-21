@@ -2,12 +2,12 @@
 
 ## Architecture (Single-Sender Model)
 
-Only **one component (Logger)** is allowed to send messages to Telegram.
+Only **one component (🧾 Logger)** is allowed to send messages to Telegram.
 
 ```
 Agent 1 ─┐
-Agent 2 ─┼─ emit ActionEvents → spool files → Logger ─── Telegram (Log Group)
-Agent N ─┘                     (data/logs/spool/)        (formatted messages)
+Agent 2 ─┼─ emit ActionEvents → outbox files → Telegram Reporter ─── Telegram (Log Group)
+Agent N ─┘                      (data/logs/outbox/)      (formatted messages)
                                                             + NDJSON logs
                                                             (data/logs/actions.ndjson)
 ```
@@ -22,9 +22,9 @@ Agent N ─┘                     (data/logs/spool/)        (formatted messages
 - **Command chat (`TELEGRAM_CMD_CHAT_ID`):** Your DM; for commands + replies only
 - **Enforcement:** Logger always sends to log group. (Future) Commander only accepts from DM.
 
-## ActionEvent Spool (Event Transport)
+## ActionEvent Outbox (Event Transport)
 
-**Path:** `data/logs/spool/{ts_file}___{run_id}___{agent}___{status_word}.json`
+**Path:** `data/logs/outbox/{ts_file}___{run_id}___{agent}___{status_word}.json`
 
 **Timestamp format in filename:** `YYYYMMDDTHHMMSSZ` (no colons; Windows-safe)
 
@@ -35,13 +35,13 @@ Agent N ─┘                     (data/logs/spool/)        (formatted messages
 **Write process (all agents):**
 1. Create ActionEvent JSON with `ts_iso` (ISO 8601) and `ts_local` (Brisbane AEST)
 2. Extract filename-safe timestamp: `20260222T150100Z`
-3. Write to spool atomically: `data/logs/spool/{ts_file}___{run_id}___{agent}___{status_word}.json`
-4. Spool file = temporary; Logger will delete after processing
+3. Write to outbox atomically: `data/logs/outbox/{ts_file}___{run_id}___{agent}___{status_word}.json`
+4. Outbox file = temporary; Telegram Reporter will delete after processing
 
-**Logger drain process:**
-1. Scan spool/ in timestamp order (by filename)
-2. For each file: parse → format Telegram message → send → append to NDJSON → delete spool file
-3. If Telegram send fails: write FAIL ActionEvent to errors.ndjson, keep spool file, retry next cycle
+**Telegram Reporter drain process:**
+1. Scan outbox/ in timestamp order (by filename); also check legacy spool/ for backward compatibility
+2. For each file: parse → format Telegram message → send → append to NDJSON → delete outbox/spool file
+3. If Telegram send fails: write FAIL ActionEvent to errors.ndjson, keep file in queue, retry next cycle
 4. Run continuously (daemon) or via cron
 
 ## Telegram Message Format (MANDATORY)
@@ -206,24 +206,24 @@ if not bot_token or not chat_id:
 
 **Note:** Australia/Brisbane uses AEST year-round (no daylight saving time).
 
-## Spool Troubleshooting
+## Outbox Troubleshooting
 
-**Q: Spool file stuck for hours?**
-- Logger may have crashed or lost connection to Telegram
+**Q: Outbox file stuck for hours?**
+- Telegram Reporter may have crashed or lost connection to Telegram
 - Check `errors.ndjson` for failed send attempts
-- Manually drain: `python scripts/logger_drain.py --manual --spool-dir data/logs/spool/`
+- Manually drain: `python scripts/tg_reporter.py --manual`
 
-**Q: How do I clear stale spool files?**
+**Q: How do I clear stale outbox files?**
 ```bash
-# List spool files older than 24h
-find data/logs/spool/ -mtime +1 -type f
+# List outbox files older than 24h
+find data/logs/outbox/ -mtime +1 -type f
 
 # Archive or delete (carefully!)
 # It's safe to delete if you don't care about the action
 ```
 
-**Q: Telegram message didn't arrive but spool file was deleted?**
-- Logger sent successfully to Telegram API, but message didn't render on client
+**Q: Telegram message didn't arrive but outbox file was deleted?**
+- Telegram Reporter sent successfully to Telegram API, but message didn't render on client
 - Check Telegram directly; the message may be there
 - Full event is in `actions.ndjson`
 
@@ -245,4 +245,4 @@ find data/logs/spool/ -mtime +1 -type f
 
 ---
 
-**See also:** `schemas/ActionEvent.md`, `scripts/log_event.py`, `scripts/tg_notify.py`, `scripts/logger_drain.py`
+**See also:** `schemas/ActionEvent.md`, `scripts/log_event.py`, `scripts/tg_notify.py`, `scripts/tg_reporter.py`
