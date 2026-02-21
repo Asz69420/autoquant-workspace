@@ -1,0 +1,74 @@
+# AutoQuant — Project Memory
+
+**Mission:** Build a durable, scalable "project brain" and automation-friendly memory system for a multi-agent trading R&D pipeline targeting Hyperliquid perps (execution later).
+
+## North Star
+- Avoid context explosion and file corruption
+- Separate: Repo Memory (small, Git-tracked) + Artifact Store (large, immutable, NOT Git-tracked) + Retrieval Index (SQLite)
+- **Specs vs Artifacts:** Git-track research/, strategies/specs/, indicators/specs/; Keep artifacts/ for bulky outputs only
+- Files are source of truth; memory is the search layer
+- Never store raw bulky artifacts in memory; use summaries + pointers + hashes
+
+## Architecture (High-Level)
+```
+┌─ Repo Memory (MEMORY.md, docs/, schemas/, specs/) ──┐
+│  • Compact, human-readable                            │
+│  • Git-tracked, safe to commit                        │
+│  • Index + North Star + Conventions + Decisions       │
+└────────────────────────────────────────────────────┘
+         ↓ references via hash/path
+┌─ Artifact Store (artifacts/) ──────────────────────────┐
+│  • Large immutable outputs only: videos, backtests     │
+│  • Content-hashed, hash-first IDs                      │
+│  • NOT Git-tracked; use .gitignore enforcement         │
+└────────────────────────────────────────────────────┘
+         ↓ indexed by
+┌─ Retrieval Index (SQLite artifacts.db) ──────────────┐
+│  • Fast metadata queries                              │
+│  • Deduplication by hash                              │
+│  • Links: artifact_id → path, summary, lineage        │
+└────────────────────────────────────────────────────┘
+```
+
+## Key Invariants
+1. **No secrets in memory** — API keys, tokens, private URLs live in .env / encrypted store only
+2. **Immutable artifacts** — Never overwrite; new version = new hash, new ID, new row in index
+3. **Summaries first** — Always retrieve compact summary; expand to raw chunks on demand
+4. **Content hash = identity** — Dedup by hash automatically; IDs are `type--sha256_12`
+5. **Specs vs Artifacts** — Git-track research/, strategies/specs/, indicators/specs/; artifacts/ = output only
+6. **Windows-relative paths** — All paths use "/" convention; relative to repo root
+
+## Conventions
+- **Artifact ID format:** `{type}--{sha256_12}` (e.g., `backtest--a1b2c3d4e5f6`)
+- **Optional date suffix:** `{type}--{sha256_12}_{date}` for readability if needed
+- **Paths:** Use "/" everywhere; e.g., `artifacts/backtests/backtest--a1b2c3d4e5f6/metrics.json`
+- **Schema instances:** Git-tracked specs in `research/`, `strategies/specs/`, `indicators/specs/`
+- **Tags:** Flat list (e.g., `["hyperliquid", "perp", "live-test"]`); indexed in SQLite
+- **Lineage:** Always store; tracks: `{ depends_on: [...], generated_by: "...", notes: "..." }`
+- **Rights:** One of `open`, `restricted`, `unknown`; `attribution_required: bool`
+- **Source URL:** Where did this come from? (repo link, paper URL, external dataset, etc.)
+
+## Current Status
+- [ ] Schemas finalized (ResearchCard, IndicatorRecord, StrategySpec, BacktestReport)
+- [ ] SQLite retrieval index created
+- [ ] First research cards added
+- [ ] First backtest executed and indexed
+- [ ] Backtest framework decision (Binance perps proxy → Hyperliquid cross-check)
+
+## Quick Links
+- Constitution: `docs/CONSTITUTION.md`
+- Memory system ADR: `docs/DECISIONS/0001-memory-system.md`
+- How to run: `docs/RUNBOOKS/00-how-to-run.md`
+- Specs: `schemas/`, `research/`, `strategies/specs/`, `indicators/specs/`
+- Artifacts: `artifacts/` (NOT Git-tracked)
+- SQLite schema: `docs/SCHEMA-sqlite.md`
+
+## Glossary
+- **Repo Memory:** Small, Git-tracked files (MEMORY.md, schemas, docs, runbooks, specs)
+- **Specs:** Source-of-truth definitions (research cards, indicator specs, strategy specs); Git-tracked
+- **Artifact Store:** Large, immutable files (videos, backtests, datasets); NOT Git-tracked
+- **Retrieval Index:** SQLite metadata layer for fast queries and deduplication
+- **Content Hash:** SHA256 of artifact binary (12 chars in IDs); used for immutability + dedup
+- **Lineage:** JSON object tracking dependencies: `{ depends_on: [...], generated_by: "...", notes: "..." }`
+- **Rights:** `open` (shareable), `restricted` (internal only), `unknown` (clarify)
+- **Signal Timing:** When does the indicator fire relative to candle close? (close, open next, EOD, etc.)

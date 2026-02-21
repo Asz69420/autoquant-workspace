@@ -1,0 +1,76 @@
+# ======== OpenClaw internal state (Never Git-Track) ========
+.openclaw/
+.pi/
+
+# ======== CRITICAL: Artifact Store (Never Git-Track) ========
+# These folders contain large, immutable outputs; always ignore
+artifacts/
+data/
+
+# ======== Runtime & Caches ========
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ======== Secrets & Environment ========
+# CRITICAL: Never commit API keys, tokens, or credentials
+.env
+.env.local
+.env.*.local
+secrets.json
+credentials.json
+*.key
+*.pem
+
+# ======== IDE & Editor ========
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ======== SQLite & Database ========
+# Retrieval index (can be regenerated, but include if stable)
+artifacts.db
+artifacts.db-wal
+artifacts.db-shm
+*.db-journal
+
+# ======== OS-Specific ========
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+
+# ======== Project-Specific ========
+# Temporary backtest outputs (before indexing)
+data/cache/
+data/logs/
+logs/
+*.log
+
+# ======== Notebooks & IDE Caches ========
+.ipynb_checkpoints/
+.jupyter/
+
+# ======== Keep These (DO NOT IGNORE) ========
+# Source of truth: specs are Git-tracked
+# !research/
+# !indicators/specs/
+# !strategies/specs/
+# !MEMORY.md
+# !USER.md
+# !docs/
+# !schemas/
+# !.gitignore
