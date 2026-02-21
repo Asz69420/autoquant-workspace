@@ -1,0 +1,234 @@
+# AutoQuant Agent Framework
+
+**Objective:** Durable, bloat-free multi-agent pipeline for trading R&D.
+
+## Fixed Agent Roster
+
+| # | Emoji | Name | Mission |
+|---|-------|------|---------|
+| 1 | 🤖 | òQ | Main orchestrator; enforce USER.md rules; delegate work |
+| 2 | ⏱️ | Scheduler | Schedule tasks, manage timing, cron integration |
+| 3 | 🛡️ | Firewall | Validate specs, enforce security, block unsafe actions |
+| 4 | 🧾 | Logger | **ONLY** Telegram & NDJSON sender; drain spool, format, retry |
+| 5 | 🔗 | Reader | Fetch links/videos, extract content, emit ResearchCards |
+| 6 | 🧲 | Grabber | Harvest TradingView indicators, emit IndicatorRecords |
+| 7 | 🧠 | Strategist | Design strategies, write StrategySpecs, iterate |
+| 8 | 📈 | Backtester | Run backtests, generate BacktestReports, measure |
+| 9 | 🗃️ | Keeper | Index artifacts, deduplicate, curate memory, promote strategies |
+
+## Single-Sender Logging Rule (MANDATORY)
+
+**🧾 Logger is the ONLY agent allowed to:**
+- Write `data/logs/actions.ndjson` (all ActionEvents: OK, WARN, FAIL, BLOCKED, etc.)
+- Write `data/logs/errors.ndjson` (FAIL events + error details only; BLOCKED excluded)
+- Send messages to Telegram
+
+**All other agents (including 🛡️ Firewall, 🤖 òQ, etc.):**
+- Emit ActionEvents to `data/logs/spool/` ONLY
+- Never write directly to NDJSON files
+- Never send to Telegram
+- Let Logger handle delivery
+
+Logger drains spool in timestamp order: parse → format → send Telegram → append to actions.ndjson (+ errors.ndjson if FAIL) → delete spool file
+- Retry logic: if send fails, keep spool file, log FAIL to errors.ndjson, continue
+
+**Event routing:**
+- **actions.ndjson:** ALL events (START, OK, WARN, FAIL, BLOCKED, SKIP, etc.) — complete audit trail
+- **errors.ndjson:** FAIL events + error details only — runtime problems (excludes BLOCKED, which is policy gating)
+
+## Pipeline: Happy Path
+
+```
+┌─ Reader (Link/Video Ingestion) ─────┐
+│ URL (paper, article, video)          │
+│ ↓                                    │
+│ Fetch + Extract + Optional Transcode │
+│ ↓                                    │
+│ ResearchCard (Git: research/)        │
+│ Video artifact (artifacts/videos/)   │
+│ ↓                                    │
+└─────────────────────────────────────┘
+                ↓
+┌─ Grabber (TradingView Harvesting) ──┐
+│ TradingView indicator link           │
+│ ↓                                    │
+│ Fetch Pine code + metadata           │
+│ ↓                                    │
+│ IndicatorRecord (Git: indicators/specs/) │
+│ Pine artifact (artifacts/indicators/) │
+│ ↓                                    │
+└─────────────────────────────────────┘
+                ↓
+┌─ Strategist (Design) ───────────────┐
+│ ResearchCard(s) + IndicatorRecord(s) │
+│ ↓                                    │
+│ Design strategy                      │
+│ ↓                                    │
+│ StrategySpec (Git: strategies/specs/) │
+│ ↓                                    │
+└─────────────────────────────────────┘
+                ↓
+┌─ Firewall (Validate) ───────────────┐
+│ StrategySpec                         │
+│ ↓                                    │
+│ Check: entry/exit rules, leverage,   │
+│ risk, falsification, secrets, paths  │
+│ ↓                                    │
+│ OK (pass) or BLOCKED (fail + reason) │
+│ ↓                                    │
+└─────────────────────────────────────┘
+                ↓
+┌─ Backtester (Execute) ──────────────┐
+│ StrategySpec                         │
+│ ↓                                    │
+│ Run backtest(s)                      │
+│ ↓                                    │
+│ BacktestReport (artifacts/backtests/) │
+│ Metrics: Sharpe, return, drawdown    │
+│ ↓                                    │
+└─────────────────────────────────────┘
+                ↓
+┌─ Keeper (Index + Curate) ───────────┐
+│ BacktestReport                       │
+│ ↓                                    │
+│ Index into SQLite (artifacts.db)     │
+│ Deduplicate by hash                  │
+│ Update MEMORY.md summaries           │
+│ (Keeper-only; òQ proposes, asks)    │
+│ ↓                                    │
+└─────────────────────────────────────┘
+                ↓
+       Review & Promote/Reject
+       (Ghosted or Keeper)
+```
+
+## Permissions Matrix (Clarified)
+
+| Agent | Read | Write (Allowed) | Forbidden |
+|-------|------|-----------------|-----------|
+| 🤖 òQ | All | **None** (propose only) | Modify MEMORY.md, docs/DECISIONS, delete files |
+| ⏱️ Scheduler | All | cron.log, spool/ | Modify agent logic |
+| 🛡️ Firewall | specs/, docs/, artifacts | spool/ ONLY | Write to other paths, skip security checks |
+| 🧾 Logger | spool/, all | **actions.ndjson, errors.ndjson, Telegram** | Modify source files |
+| 🔗 Reader | external URLs | research/ (ResearchCards), artifacts/videos/, spool/ | IndicatorRecords, StrategySpecs, MEMORY, docs |
+| 🧲 Grabber | external APIs | indicators/specs/, artifacts/indicators/, spool/ | other specs, MEMORY, docs |
+| 🧠 Strategist | research/, indicators/specs/, artifacts/ | indicators/specs/ (custom), strategies/specs/, research/, spool/ | Delete specs, modify MEMORY |
+| 📈 Backtester | strategies/specs/, data/ | data/cache/, artifacts/backtests/, spool/ | Commit to Git, store credentials |
+| 🗃️ Keeper | all artifacts | **artifacts.db, MEMORY.md, ADRs (sole authority)**, spool/ | Delete without backup, store secrets |
+
+## Anti-Bloat Budgets (Per Run, Strict Caps)
+
+| Agent | Max Files | Max MB | Max Specs/Cards | Stop-Ask Threshold |
+|-------|-----------|--------|-----------------|-------------------|
+| 🤖 òQ | 0 | 0 | 0 (propose only) | Any write request |
+| ⏱️ Scheduler | 1 | 0.01 | 0 | Scheduling conflicts |
+| 🛡️ Firewall | 0 | 0 | 0 | Any policy violation |
+| 🧾 Logger | 0 | 10 | 0 (spool processing only) | 20 TG msg/cycle OR send fails 5x |
+| 🔗 Reader | 3 | 100 | 1–3 ResearchCards per link | Any fetch timeout or rights unclear |
+| 🧲 Grabber | 10 | 200 | 10 indicators | Fetch fails 3x OR rights unknown |
+| 🧠 Strategist | 5 | 5 | 3 StrategySpecs | Generic idea or untestable |
+| 📈 Backtester | 3 | 500 | 0 | Suspected overfitting or timeout |
+| 🗃️ Keeper | 20 | 50 | 0 | 3 promotions per run max |
+
+## Memory Authority (Keeper-Only)
+
+**🤖 òQ:**
+- May propose diffs/patches to MEMORY.md and ADRs
+- Must NOT apply changes without asking
+- Must emit ActionEvent (ℹ️ INFO) proposing change, wait for Keeper approval
+
+**🗃️ Keeper:**
+- **SOLE authority** to edit MEMORY.md and `docs/DECISIONS/` ADRs
+- Applies memory updates after reviewing artifact indexing + milestones
+- Enforces size limits (<10 KB MEMORY.md)
+- Logs all updates to ActionEvent
+
+---
+
+## Security Hardening (MANDATORY for All Agents)
+
+### Core Security Rules
+
+Every agent MUST enforce:
+
+1. **Secrets Rule:** Never paste, log, or store tokens/keys/wallet seeds in any file or Telegram message.
+   - If detected: emit ⛔ BLOCKED (SECRET_DETECTED) and STOP immediately.
+   - Credentials must come from env vars or credential store only.
+
+2. **Write Allowlist Rule:** Only write to paths in "Write (Allowed)" column above.
+   - Any write outside allowed paths: emit ⛔ BLOCKED (PATH_VIOLATION) and STOP.
+   - 🛡️ Firewall enforces this for all agents upstream.
+
+3. **No Destructive Actions Rule:** Never overwrite, delete, or reset files without explicit Ghosted approval.
+   - Proposed change: emit ℹ️ INFO (NEEDS_APPROVAL) and wait.
+   - On destructive request: emit ⛔ BLOCKED (OVERWRITE_DENIED) and escalate to 🤖 òQ.
+
+4. **Execution Isolation Rule:** No live trading, market access, or real credentials until explicitly enabled.
+   - Backtester: test mode only (paper trading, simulated data).
+   - Credentials must be env vars or credential store, never in repo/files.
+   - If execution credentials detected in spec: emit ⛔ BLOCKED (SECRET_DETECTED).
+
+### 🛡️ Firewall Enforcement (Special Responsibility)
+
+Firewall is the security layer. It MUST:
+
+- Scan all specs for embedded secrets (API keys, wallet seeds, passwords)
+- Scan all write requests for PATH_VIOLATION (outside allowed dirs)
+- Scan all action requests for OVERWRITE_DENIED (delete/reset/overwrite)
+- Scan all backtests for live credentials (must be simulated/paper only)
+- Emit ⛔ BLOCKED with precise reason_code + remediation advice
+
+---
+
+## Event Emission Rules (All → Spool; Only Logger → NDJSON + Telegram)
+
+**Every agent (except Logger) emits ActionEvents to `data/logs/spool/`:**
+
+Example lifecycle:
+```
+1. ⏳ QUEUED (task accepted)
+2. ▶️ START (execution begins)
+3. 🔁 RETRY (if needed; include attempt count)
+4. ✅ OK or ⚠️ WARN or ❌ FAIL or ⛔ BLOCKED (end state)
+```
+
+**Only 🧾 Logger reads spool, writes NDJSON, sends Telegram:**
+- Drains spool in timestamp order
+- Parses ActionEvent JSON
+- Formats → Telegram code-block
+- Sends via env vars (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
+- Appends original event to data/logs/actions.ndjson (all events)
+- If FAIL: also appends to data/logs/errors.ndjson (runtime errors only; BLOCKED excluded)
+- Deletes spool file on success; keeps on send failure
+
+**Logger rate-limiting:**
+- Max 20 Telegram messages per drain cycle
+- If >20 queued: send first 20 + final INFO rollup ("N more events in logs")
+- Anti-spam: no duplicate messages within 60s
+
+---
+
+## Agent Contract Structure
+
+Each agent card includes:
+1. **Emoji + Name + Mission** (one-liner)
+2. **Purpose** (2–4 bullets)
+3. **Allowed write paths** (explicit; spool-only for most)
+4. **Forbidden actions** (explicit)
+5. **Required outputs** (schemas to produce)
+6. **Event emission** (which statuses, always to spool)
+7. **Budgets** (files, MB, specs, stop threshold) — **STRICT CAPS**
+8. **Stop conditions** (when to ask Ghosted)
+9. **Inputs accepted** (links, spec paths, artifact IDs)
+10. **What good looks like** (3 bullets)
+11. **Security** (secrets, write-allowlist, destructive actions, execution isolation)
+12. **Model recommendations** (Primary + Backup, or "none")
+
+---
+
+## See Also
+
+- `agents/oq.md` through `agents/keeper.md` (individual contracts)
+- `USER.md` (Operating Rules, Personality, Telegram Policy)
+- `docs/RUNBOOKS/telegram-logging.md` (Logger implementation guide)
+- `schemas/` (ResearchCard, IndicatorRecord, StrategySpec, BacktestReport, ActionEvent)
