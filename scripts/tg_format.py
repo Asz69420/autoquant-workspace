@@ -1,117 +1,70 @@
 #!/usr/bin/env python3
-"""
-Convert an ActionEvent to a Telegram code-block message.
-
-This script takes an ActionEvent (as dict or JSON) and formats it as a
-Telegram message in a code block with strict template:
-
-    ```
-    [<timestamp 12h AM/PM AEST>] <AgentName> | <model-id> | <status_emoji> <STATUS_WORD> (<reason_code_if_any>)
-    <Line 2: summary (max 50 chars)>
-    <Line 3: optional detail (max 50 chars)>
-    Run: <run_id>
-    ```
-
-Usage:
-    python scripts/tg_format.py --event '{"ts_local": "22 Feb 10:01 AM AEST", ...}'
-    
-    # Or read from file
-    python scripts/tg_format.py --event-file data/logs/spool/20260222T150100Z___backtest--a1b2c3d4e5f6___BacktestRunner___OK.json
-
-Output:
-    Formatted Telegram message string (ready to send via tg_notify.py)
-
-Status Emoji Mapping:
-    START → ▶️, OK → ✅, WARN → ⚠️, FAIL → ❌
-    BLOCKED → ⛔, SKIP → ⏭️, PAUSE → ⏸️, QUEUED → ⏳
-    RETRY → 🔁, THROTTLED → 🐢, CANCELLED → 🛑, ARCHIVED → 🧊
-    TESTING → 🧪, PROMOTED → 🏆, REJECTED → 🗑️, INFO → ℹ️
-"""
-
-import argparse
+"""Convert ActionEvent JSON to Telegram message (triple backticks)."""
 import json
 import sys
 
-
-STATUS_EMOJI_MAP = {
-    "START": "▶️",
-    "OK": "✅",
-    "WARN": "⚠️",
-    "FAIL": "❌",
-    "BLOCKED": "⛔",
-    "SKIP": "⏭️",
-    "PAUSE": "⏸️",
-    "QUEUED": "⏳",
-    "RETRY": "🔁",
-    "THROTTLED": "🐢",
-    "CANCELLED": "🛑",
-    "ARCHIVED": "🧊",
-    "TESTING": "🧪",
-    "PROMOTED": "🏆",
-    "REJECTED": "🗑️",
-    "INFO": "ℹ️",
-}
-
-
-def format_action_event(event: dict) -> str:
-    """
-    Convert ActionEvent dict to Telegram code-block message.
-    
-    TODO: Implement:
-    1. Extract required fields: ts_local, agent, model_id, status_word, reason_code, summary, run_id
-    2. Look up emoji from STATUS_EMOJI_MAP
-    3. Build header: [ts_local] agent | model_id | emoji STATUS_WORD (reason_code if present)
-    4. Add summary (line 2, max 50 chars)
-    5. Add optional detail from inputs/outputs (line 3, max 50 chars)
-    6. Add "Run: {run_id}"
-    7. Wrap in triple backticks
-    8. Return formatted string
-    
-    Args:
-        event: ActionEvent dict with ts_local, agent, model_id, status_word, etc.
-    
-    Returns:
-        Formatted Telegram message string
-    """
-    print("tg_format.py: stub implementation (not yet functional)")
-    print(f"Input event type: {type(event)}")
-    if isinstance(event, dict):
-        print(f"Fields: {list(event.keys())}")
-    print()
-    print("TODO: Implement ActionEvent → Telegram message formatting")
-    return "```\n[ERROR] Formatting not yet implemented\n```"
-
+# Force UTF-8 output on Windows
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Convert ActionEvent to Telegram code-block message.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
-    )
+    import argparse
     
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--event", help="ActionEvent as JSON string")
-    group.add_argument("--event-file", help="Path to ActionEvent JSON file")
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("event_path", nargs="?", default=None, help="Path to event.json file")
     args = parser.parse_args()
     
-    if args.event:
-        try:
-            event = json.loads(args.event)
-        except json.JSONDecodeError as e:
-            print(f"Error: Invalid JSON in --event: {e}", file=sys.stderr)
-            sys.exit(1)
-    else:
-        try:
-            with open(args.event_file, "r") as f:
+    # Read event from file or stdin
+    try:
+        if args.event_path:
+            with open(args.event_path) as f:
                 event = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"Error: Could not read/parse {args.event_file}: {e}", file=sys.stderr)
-            sys.exit(1)
+        else:
+            # Read from stdin
+            raw = sys.stdin.read()
+            event = json.loads(raw)
+        
+        # Extract fields
+        ts_local = event["ts_local"]
+        agent = event["agent"]
+        model_id = event["model_id"]
+        status_emoji = event["status_emoji"]
+        status_word = event["status_word"]
+        reason_code = event.get("reason_code")
+        summary = event["summary"]
+        run_id = event["run_id"]
+        
+        # Header: [DD MMM HH:MM AM|PM AEST] Agent | model_id | status_emoji STATUS_WORD
+        # Omit parentheses if reason_code is null/missing
+        if reason_code:
+            header = f"[{ts_local}] {agent} | {model_id} | {status_emoji} {status_word} ({reason_code})"
+        else:
+            header = f"[{ts_local}] {agent} | {model_id} | {status_emoji} {status_word}"
+        
+        # Body: summary (max 50 chars, truncate if needed) + run_id
+        summary_truncated = (summary[:47] + "...") if len(summary) > 50 else summary
+        
+        lines = [header, summary_truncated, f"Run: {run_id}"]
+        
+        # Wrap in backticks
+        body = "\n".join(lines)
+        telegram_msg = f"```\n{body}\n```"
+        
+        print(telegram_msg)
+        sys.exit(0)
     
-    message = format_action_event(event)
-    print(message)
-
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON: {e}", file=sys.stderr)
+        sys.exit(1)
+    except KeyError as e:
+        print(f"Error: Missing required field: {e}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
