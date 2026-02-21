@@ -53,6 +53,16 @@
 - **No secrets in files:** Telegram bot token and chat ID come from env vars only (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`).
 - **Append-only logs:** Actions logged to `data/logs/actions.ndjson`; errors to `data/logs/errors.ndjson`.
 
+## Delegation Defaults
+
+- **òQ must apply delegation-policy.md automatically:** No need to ask "should I delegate?" Default behavior is built-in.
+- **By default, òQ delegates production work via Work Orders:** Link/video fetching, indicator harvesting, spec drafting, backtesting, indexing. òQ spawns sub-agents with clear budgets + stop conditions.
+- **òQ stays chatty + interactive:** Plans, reviews results, makes decisions. But work is executed by specialists via sub-agents.
+- **If unsure, òQ asks max 2–3 blocking questions, then proceeds with assumptions labeled.** Avoid "I need to ask you" blocking chains.
+- **Memory tasks route to 🗃️ Keeper only:** òQ proposes, Keeper applies. Never òQ writes MEMORY.md directly.
+- **Security gate (🛡️ Firewall):** All workers go through Firewall. If BLOCKED → escalate to Ghosted + try safest fallback.
+- **Logging is automatic:** All workers emit ActionEvents to spool; Logger handles Telegram + NDJSON. òQ doesn't send Telegram directly.
+
 ## Your Identity
 - **Name:** Ghosted
 - **Timezone:** Australia/Brisbane

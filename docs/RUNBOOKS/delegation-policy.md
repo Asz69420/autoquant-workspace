@@ -1,0 +1,293 @@
+# Runbook: Delegation Policy & Work Packet Automation
+
+**Goal:** òQ automatically decides when to delegate work vs. do decisions itself, without blocking on me.
+
+---
+
+## Default Rule
+
+**òQ applies this policy automatically for every request.** No need to ask "should I delegate?"
+
+---
+
+## Decision Tasks (òQ Does Directly)
+
+òQ handles these **synchronously** (does not spawn sub-agents):
+
+### Planning & Scoping
+- Break down requests into work packets
+- Ask clarifying questions (max 2–3 if blocking)
+- Propose research/testing plan
+
+### Architecture & Design Review
+- Review backtests for overfitting signs
+- Evaluate strategy quality (edge, Sharpe, robustness)
+- Propose ADRs for big changes
+- Compare alternatives (A/B decisions)
+
+### Approvals & Escalations
+- Greenlight sub-agent work (review work order)
+- Approve memory/ADR changes (review Keeper proposals)
+- Handle escalations from Firewall (SECRET_DETECTED, PATH_VIOLATION, etc.)
+
+### Result Review
+- Read backtest reports and summarize findings
+- Interpret strategy performance
+- Recommend next steps (iterate, test, promote, reject)
+
+### Questions & Clarifications
+- Ask Ghosted for tie-breakers
+- Request approval for risky changes
+- Ask for context when uncertain
+
+---
+
+## Work-Packet Tasks (òQ Delegates)
+
+òQ **spawns sub-agents** for these (using Work Orders):
+
+### Content Ingestion (🔗 Reader)
+- Fetch research links (papers, articles, videos)
+- Extract content + transcribe
+- Emit ResearchCard specs
+
+### Indicator Harvesting (🧲 Grabber)
+- Harvest TradingView indicators
+- Parse Pine code + metadata
+- Emit IndicatorRecord specs
+
+### Spec Drafting (🧠 Strategist)
+- Design StrategySpecs from research
+- Write IndicatorRecords for custom signals
+- Iterate specs based on feedback
+
+### Backtesting (📈 Backtester)
+- Run backtests on strategies
+- Generate BacktestReports
+- Measure performance
+
+### Indexing & Memory (🗃️ Keeper)
+- Index artifacts into SQLite
+- Deduplicate by hash
+- Update MEMORY.md + ADRs (on Keeper's sole authority)
+
+### Data & File Ops
+- Fetch files, parse JSON/Markdown
+- Format + scaffold code (no LLM logic)
+- Move/organize artifacts (within budgets)
+
+---
+
+## Memory Tasks (Route to 🗃️ Keeper)
+
+**Never òQ directly; always route through Keeper:**
+
+- Editing MEMORY.md (Keeper = sole authority)
+- Applying ADRs or docs/DECISIONS/ changes
+- Archiving old memory entries
+- Curating summaries
+
+**òQ workflow for memory changes:**
+1. Identify needed change
+2. Draft proposal (ℹ️ INFO ActionEvent)
+3. Emit to spool (let Logger handle Telegram)
+4. **Wait for Keeper approval**
+5. Let Keeper apply the change
+
+---
+
+## Safety Gate (🛡️ Firewall Blocks)
+
+**Firewall is the final gatekeeper.** If any worker tries to:
+- Store secrets (API keys, wallet seeds, tokens) → ⛔ BLOCKED (SECRET_DETECTED)
+- Write outside allowed paths → ⛔ BLOCKED (PATH_VIOLATION)
+- Delete/overwrite files → ⛔ BLOCKED (OVERWRITE_DENIED)
+- Use live credentials → ⛔ BLOCKED (SECRET_DETECTED)
+
+**òQ sees the BLOCKED event:**
+- Log it to memory (Keeper updates MEMORY.md if needed)
+- Alert Ghosted (via Logger)
+- Ask for guidance (max 2 questions)
+- Proceed with safest alternative
+
+---
+
+## Logging: All Workers → Spool; Logger → Telegram
+
+**Event flow:**
+1. All agents emit ActionEvents to `data/logs/spool/`
+2. 🧾 Logger drains spool (only sender to Telegram + NDJSON)
+3. All events logged to `data/logs/actions.ndjson`
+4. FAIL events + errors logged to `data/logs/errors.ndjson`
+5. Ghosted sees Telegram alerts (max 20 per drain cycle)
+
+**òQ doesn't send Telegram directly.** All notifications go through Logger.
+
+---
+
+## Work Packet Budget Enforcement
+
+When òQ spawns a sub-agent, it passes a **Work Order** with:
+- Budget caps (max files, max MB, max specs)
+- Stop conditions (when to ask Ghosted)
+- Success criteria (what "done" looks like)
+
+Sub-agent respects budgets. If exceeded:
+- Emit ⚠️ WARN or ⛔ BLOCKED
+- Stop and ask Ghosted
+
+Example:
+```
+Work Order: Harvest TradingView Indicators
+Budget: max 10 indicators, max 200 MB, max 3 fetch failures
+Stop condition: rights ambiguous OR fetch fails 3x
+Success: 10 IndicatorRecords (indicators/specs/*.json) + Pine artifacts indexed
+```
+
+---
+
+## Default Behavior: Assume & Proceed
+
+**When Ghosted's intent is clear:**
+- Don't ask permission
+- Delegate work (spawn sub-agent with Work Order)
+- Label assumptions if any
+- Report results
+
+**When Ghosted's intent is unclear (max 2–3 blocking questions):**
+1. Ask specific clarifying question
+2. Suggest default assumption
+3. If no reply: proceed with assumption, label it
+
+**Example:**
+```
+Request: "Fetch research on volatility clustering"
+Unclear: Which sources? How many? Only academic or blogs too?
+Default assumption: Top 3 academic papers + 1 high-quality blog post
+Proceed: Spawn Reader with Work Order
+```
+
+---
+
+## Decision Tree (Quick Reference)
+
+```
+Request from Ghosted
+    ↓
+Is it planning/approval/architecture/review?
+    ├─ YES → òQ does it directly (synchronously)
+    └─ NO ↓
+Is it a work packet (ingestion/harvesting/testing/indexing)?
+    ├─ YES → Spawn sub-agent with Work Order
+    └─ NO ↓
+Is it memory/ADR related?
+    ├─ YES → Propose to Keeper, wait for approval
+    └─ NO ↓
+Unknown → Ask max 2 clarifying questions, then proceed with assumptions
+```
+
+---
+
+## Success Criteria for Delegation
+
+**Sub-agent work is "done" when:**
+1. ✅ ActionEvent emitted (✅ OK or appropriate status)
+2. ✅ Output in correct schema/path (e.g., `research/research-*.json`)
+3. ✅ Artifacts indexed (if applicable)
+4. ✅ Summary logged (MEMORY.md updated by Keeper if milestone)
+5. ✅ All budgets respected (files, MB, specs within caps)
+
+---
+
+## Examples
+
+### Example 1: Decision Task (òQ Does Directly)
+
+**Ghosted:** "Should we backtest strategy-mean-revert-btc-v1 or iterate the spec first?"
+
+**òQ:** (Reads strategy spec, reviews last Firewall feedback, considers research)
+- Summary: Last iteration has overleveraging risk (5x leverage, 0.3% edge). Firewall warned.
+- Recommendation: Iterate spec first (reduce leverage to 2x, increase stop loss).
+- Next step: Spawn Strategist to draft v2, then backtest.
+
+*Decision made directly; no sub-agent needed.*
+
+---
+
+### Example 2: Work Packet (Delegation)
+
+**Ghosted:** "Fetch research on momentum indicators from TradingView."
+
+**òQ:** (Identifies as work packet: indicator harvesting)
+
+**Work Order issued:**
+```
+Agent: 🧲 Grabber
+Goal: Harvest TradingView momentum indicators
+Budget: max 5 indicators, max 100 MB
+Inputs: "momentum indicator open-source"
+Outputs: IndicatorRecords (indicators/specs/*.json) + Pine artifacts
+Stop condition: rights ambiguous OR fetch fails 2x
+Success: 5 IndicatorRecords indexed + logged
+```
+
+*Work delegated; sub-agent reports results.*
+
+---
+
+### Example 3: Memory + Decision
+
+**Ghosted:** "Update MEMORY.md to reflect latest strategy performance."
+
+**òQ:** (Identifies as memory task; routes to Keeper)
+
+1. Propose memory change: "Add summary of backtest--a1b2c3d4e5f6 to MEMORY.md"
+2. Include: metrics (Sharpe 1.2, return 15%), next step (test on live data)
+3. Emit ℹ️ INFO proposal to spool (let Logger handle Telegram)
+4. Wait for Keeper approval
+5. Keeper applies the change
+
+*òQ doesn't write MEMORY.md directly.*
+
+---
+
+## Escalation Paths
+
+**If sub-agent emits ⛔ BLOCKED:**
+
+1. Log the issue (Logger posts to Telegram)
+2. Review reason_code (SECRET_DETECTED, PATH_VIOLATION, etc.)
+3. Ask Ghosted: "Firewall blocked this. How should we proceed?"
+4. Proceed with Ghosted's guidance (or safest fallback)
+
+**If sub-agent budget exceeded:**
+
+1. Sub-agent stops, emits ⚠️ WARN + BLOCKED
+2. òQ reviews what was done so far
+3. Ask Ghosted: "Hit budget cap at N files. Continue iteration or wrap up?"
+4. Proceed based on guidance
+
+---
+
+## Summary: Default Automation
+
+| Task Type | Owner | Mode | Approval |
+|-----------|-------|------|----------|
+| Planning | òQ | Sync | Auto (inform Ghosted) |
+| Architecture | òQ | Sync | Auto (propose + inform) |
+| Reviews & Decisions | òQ | Sync | Auto (recommend) |
+| Approvals | òQ | Sync | Ask Ghosted if unclear |
+| Content Ingestion | 🔗 Reader | Delegated (work packet) | Auto (use budgets) |
+| Indicator Harvesting | 🧲 Grabber | Delegated (work packet) | Auto (use budgets) |
+| Spec Drafting | 🧠 Strategist | Delegated (work packet) | Auto (Firewall gates) |
+| Backtesting | 📈 Backtester | Delegated (work packet) | Auto (Firewall gates) |
+| Memory/ADRs | 🗃️ Keeper | Delegated (work packet) | Keeper approves |
+| Safety Gate | 🛡️ Firewall | Sync (block) | Block if violation |
+| Logging | 🧾 Logger | Delegated (work packet) | Auto (spool → NDJSON) |
+
+---
+
+## See Also
+- `docs/RUNBOOKS/work-orders.md` (Work Order template)
+- `agents/index.md` (agent roster + budgets + permissions)
+- `USER.md` (Operating Rules + Delegation Defaults)
