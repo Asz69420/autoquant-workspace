@@ -28,7 +28,6 @@ def main():
             event = json.loads(raw)
         
         # Extract fields
-        ts_local = event["ts_local"]
         agent = event["agent"]
         model_id = event["model_id"]
         status_emoji = event["status_emoji"]
@@ -37,12 +36,12 @@ def main():
         summary = event["summary"]
         run_id = event["run_id"]
         
-        # Header: [DD MMM HH:MM AM|PM AEST] Agent | model_id | status_emoji STATUS_WORD
+        # Header: status_emoji STATUS_WORD | Agent | model_id (reason_code if present)
         # Omit parentheses if reason_code is null/missing
         if reason_code:
-            header = f"[{ts_local}] {agent} | {model_id} | {status_emoji} {status_word} ({reason_code})"
+            header = f"{status_emoji} {status_word} | {agent} | {model_id} ({reason_code})"
         else:
-            header = f"[{ts_local}] {agent} | {model_id} | {status_emoji} {status_word}"
+            header = f"{status_emoji} {status_word} | {agent} | {model_id}"
         
         # Body: summary (max 50 chars, truncate if needed) + run_id
         summary_truncated = (summary[:47] + "...") if len(summary) > 50 else summary
