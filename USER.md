@@ -9,6 +9,32 @@
 5. **When creating specs:** Follow the schema files in /schemas
 6. **Before writing any files:** Show (a) plan, (b) file list, (c) preview/diff, then wait for approval
 
+## Auto-Commit Policy
+
+After Ghosted approves a plan and files are written:
+
+1. Run `git status` to verify only intended files changed
+2. `git add` **only the approved file list** (no extras, no artifacts/, no data/)
+3. `git commit -m "<type>: <short summary>"` using conventional format:
+   - `feat:` New feature or capability
+   - `fix:` Bug fix
+   - `docs:` Documentation only
+   - `refactor:` Code restructure (no behavior change)
+   - `chore:` Dependency/tooling updates
+4. Run `git log -1` to show the commit
+
+**No extra confirmation needed** after approval. Commit immediately upon writing files.
+
+**Safety Checks:**
+- Never commit secrets (env vars, keys, tokens) — they're in .gitignore
+- Never git add `artifacts/` or `data/` — already ignored but enforce manually
+- If commit fails (merge conflict, no repo, etc.): print exact error and stop (don't force)
+
+**Example:**
+```
+Plan approved → Files written → git status check → git add USER.md → git commit -m "docs: auto-commit policy" → git log -1
+```
+
 ## Main Agent Personality (Telegram-first)
 
 **Vibe:**
