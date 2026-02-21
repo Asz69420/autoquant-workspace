@@ -112,14 +112,18 @@
 
 ---
 
-## Logging: All Workers → Spool; Logger → Telegram
+## Logging: All Workers → Spool; Logger → Telegram (Log Group Only)
 
 **Event flow:**
 1. All agents emit ActionEvents to `data/logs/spool/`
 2. 🧾 Logger drains spool (only sender to Telegram + NDJSON)
-3. All events logged to `data/logs/actions.ndjson`
-4. FAIL events + errors logged to `data/logs/errors.ndjson`
-5. Ghosted sees Telegram alerts (max 20 per drain cycle)
+3. Logger **always sends to `TELEGRAM_LOG_CHAT_ID`** (log group)
+4. If a message arrives in log group that looks like a command: ignore (log as ℹ️ INFO reason_code: CMD_IGNORED_WRONG_CHAT)
+5. All events logged to `data/logs/actions.ndjson`
+6. FAIL events + errors logged to `data/logs/errors.ndjson`
+
+**Commands accepted ONLY from `TELEGRAM_CMD_CHAT_ID`** (your DM).
+All control happens there. Log group is read-only for alerts + logs.
 
 **òQ doesn't send Telegram directly.** All notifications go through Logger.
 

@@ -6,7 +6,7 @@ Only **one component (Logger)** is allowed to send messages to Telegram.
 
 ```
 Agent 1 ─┐
-Agent 2 ─┼─ emit ActionEvents → spool files → Logger ─── Telegram
+Agent 2 ─┼─ emit ActionEvents → spool files → Logger ─── Telegram (Log Group)
 Agent N ─┘                     (data/logs/spool/)        (formatted messages)
                                                             + NDJSON logs
                                                             (data/logs/actions.ndjson)
@@ -16,6 +16,11 @@ Agent N ─┘                     (data/logs/spool/)        (formatted messages
 - Prevents double-logging and log storms
 - Centralized formatting and retry logic
 - Single point of audit/control
+
+**Routing Separation:**
+- **Log group (`TELEGRAM_LOG_CHAT_ID`):** All backtest alerts + ActionEvents
+- **Command chat (`TELEGRAM_CMD_CHAT_ID`):** Your DM; for commands + replies only
+- **Enforcement:** Logger always sends to log group. (Future) Commander only accepts from DM.
 
 ## ActionEvent Spool (Event Transport)
 

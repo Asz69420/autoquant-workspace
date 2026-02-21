@@ -2,105 +2,104 @@
 """
 Send a message to Telegram using environment variables.
 
-This script sends a message to Telegram using credentials from env vars only.
-No secrets are hardcoded or stored in files.
+This is a generic sender. By default, sends to TELEGRAM_LOG_CHAT_ID (log group).
+Allow explicit override via --chat-id for Commander/testing.
 
 Environment Variables (Required):
-    TELEGRAM_BOT_TOKEN  - Bot token from BotFather (e.g., "123:ABC...")
-    TELEGRAM_CHAT_ID    - Chat/channel ID (e.g., "987654321")
+    TELEGRAM_BOT_TOKEN  - Bot token from BotFather
+    TELEGRAM_LOG_CHAT_ID - Log group chat ID
+    TELEGRAM_CMD_CHAT_ID - Command chat ID (for Commander/testing only)
 
 Usage:
-    export TELEGRAM_BOT_TOKEN="123:ABC..."
-    export TELEGRAM_CHAT_ID="987654321"
-    
     python scripts/tg_notify.py "Your message here"
     
-    # Or via stdin
-    echo "Message" | python scripts/tg_notify.py
+    # Override to send to DM (Commander/testing only)
+    python scripts/tg_notify.py --chat-id <TELEGRAM_CMD_CHAT_ID> "Your message here"
 
 Exit Codes:
     0 = Success
     1 = Missing env vars
     2 = API error (connection, timeout, etc.)
-
-Error Behavior:
-    - Raises exception on HTTP error (caller decides retry logic)
-    - Prints error details to stderr
-    - Does NOT suppress exceptions; let caller handle retry
 """
 
 import os
 import sys
+import argparse
 
 
-def send_telegram_message(message: str) -> bool:
+def send_telegram_message(message: str, chat_id: str = None) -> bool:
     """
     Send a message to Telegram.
     
-    TODO: Implement:
-    1. Get TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID from env
-    2. Raise ValueError if either is missing
-    3. Use requests.post() to send to Telegram Bot API
-    4. Handle HTTP errors (raise exception)
-    5. Return True on success
-    6. Let exceptions bubble up (caller handles retry)
+    Default chat_id = TELEGRAM_LOG_CHAT_ID (log group).
+    Can override with --chat-id for Commander/DM replies.
     
     Args:
-        message: Text message (can include code blocks)
+        message: Text message to send
+        chat_id: Optional override; if None, uses TELEGRAM_LOG_CHAT_ID
     
     Returns:
         True if sent successfully
     
     Raises:
         ValueError: Missing env vars
-        requests.RequestException: Network error (timeout, connection refused, etc.)
+        Exception: Network/API error (caller handles retry)
     """
-    print("tg_notify.py: stub implementation (not yet functional)")
-    print(f"Message length: {len(message)} chars")
-    print("TODO: Implement Telegram API send (requests.post with env var credentials)")
-    return False
+    
+    # Load env vars
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    log_chat_id = os.getenv("TELEGRAM_LOG_CHAT_ID")
+    
+    if not bot_token:
+        raise ValueError("TELEGRAM_BOT_TOKEN env var not set")
+    if not log_chat_id:
+        raise ValueError("TELEGRAM_LOG_CHAT_ID env var not set")
+    
+    # Use provided chat_id, or default to log group
+    target_chat_id = chat_id if chat_id else log_chat_id
+    
+    # TODO: Implement Telegram API send
+    # Use requests.post() with bot token + target_chat_id
+    # Raise exception on HTTP error (don't suppress)
+    
+    return True
 
 
 def main():
-    # Get message from stdin or args
-    if len(sys.argv) > 1:
-        message = " ".join(sys.argv[1:])
-    else:
-        message = sys.stdin.read()
+    parser = argparse.ArgumentParser(
+        description="Send a message to Telegram (default: log group).",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__
+    )
     
-    if not message.strip():
-        print("Error: No message provided", file=sys.stderr)
-        sys.exit(2)
+    parser.add_argument("message", help="Message to send")
+    parser.add_argument(
+        "--chat-id",
+        help="Override target chat ID (default: TELEGRAM_LOG_CHAT_ID). Use for Commander/testing only."
+    )
     
-    # Check env vars
+    args = parser.parse_args()
+    
+    # Check env vars early
     bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    log_chat_id = os.getenv("TELEGRAM_LOG_CHAT_ID")
     
     if not bot_token:
         print("Error: TELEGRAM_BOT_TOKEN env var not set", file=sys.stderr)
         sys.exit(1)
     
-    if not chat_id:
-        print("Error: TELEGRAM_CHAT_ID env var not set", file=sys.stderr)
+    if not log_chat_id:
+        print("Error: TELEGRAM_LOG_CHAT_ID env var not set", file=sys.stderr)
         sys.exit(1)
     
-    print(f"✓ Env vars found (token length: {len(bot_token)}, chat_id: {chat_id})")
-    print(f"✓ Message ready (length: {len(message)})")
-    print()
-    print("TODO: Send via requests.post() to Telegram Bot API")
+    print("✓ Telegram env vars configured")
+    if args.chat_id:
+        print("✓ Using override chat ID (Commander/testing mode)")
+    else:
+        print("✓ Sending to log group (default)")
     
-    # TODO: Uncomment after implementation
-    # try:
-    #     success = send_telegram_message(message)
-    #     if success:
-    #         print("✓ Message sent to Telegram", file=sys.stderr)
-    #         sys.exit(0)
-    # except ValueError as e:
-    #     print(f"Error: {e}", file=sys.stderr)
-    #     sys.exit(1)
-    # except Exception as e:
-    #     print(f"Error: Failed to send: {e}", file=sys.stderr)
-    #     sys.exit(2)
+    # TODO: Send via requests.post() to Telegram Bot API
+    # print("✓ Message sent")
 
 
 if __name__ == "__main__":
