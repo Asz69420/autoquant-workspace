@@ -127,6 +127,9 @@ All control happens there. Log group is read-only for alerts + logs.
 
 **òQ doesn't send Telegram directly.** All notifications go through Telegram Reporter.
 
+**Assumption: tg_reporter daemon runs during work sessions** (see `docs/RUNBOOKS/telegram-logging.md` for startup).
+If not running, manual drain (`python scripts/tg_reporter.py --manual`) after work packets complete.
+
 ---
 
 ## Work Packet Budget Enforcement

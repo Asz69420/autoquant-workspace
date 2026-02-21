@@ -54,6 +54,7 @@
 - **Append-only logs:** Actions logged to `data/logs/actions.ndjson`; errors to `data/logs/errors.ndjson`.
 - **Log group routing:** Set `TELEGRAM_LOG_CHAT_ID` to your log group ID. Telegram Reporter always sends alerts + logs here.
 - **Command channel:** Set `TELEGRAM_CMD_CHAT_ID` to your DM chat ID. Commands accepted only here. Log group commands are ignored.
+- **Default during work sessions:** Run Telegram Reporter as daemon (`python scripts\tg_reporter.py --daemon --interval 15`) for real-time logs. See `docs/RUNBOOKS/telegram-logging.md` for details.
 
 ## Delegation Defaults
 

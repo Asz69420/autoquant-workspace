@@ -243,6 +243,81 @@ find data/logs/outbox/ -mtime +1 -type f
 - Temporary; deleted after Logger processes
 - If files pile up, Logger may be stuck
 
+## Running tg_reporter (Daemon vs Manual)
+
+### When to Use Daemon
+
+**Use daemon during active work sessions:**
+- Spawn sub-agents that emit events
+- Backtesting running in parallel
+- Real-time Telegram alerts are helpful
+- You want live logs of progress
+
+**Command:**
+```powershell
+# Terminal 1: Start daemon (checks queue every 15s)
+python scripts\tg_reporter.py --daemon --interval 15
+```
+
+Stop anytime: `Ctrl+C`
+
+### When to Use Manual Drain
+
+**Use manual drain when:**
+- Work session is over; want a final summary
+- You prefer quiet/batch logging
+- Debugging a specific event
+- Running in CI/cron (not 24/7)
+
+**Command:**
+```powershell
+# One-time drain and exit
+python scripts\tg_reporter.py --manual
+```
+
+### Important: tg_reporter is Always-On
+
+Telegram Reporter is the **only** daemon component that should run continuously.
+All other agents (Backtester, Reader, Strategist, etc.) are spawned on-demand per work packet.
+
+### Health Check Commands
+
+```powershell
+# See current queue depth
+ls data\logs\outbox
+
+# View last 5 events sent
+Get-Content data\logs\actions.ndjson -Tail 5
+
+# Check for errors (failed sends)
+Get-Content data\logs\errors.ndjson -Tail 10
+
+# Watch daemon in real-time (optional)
+Get-Content data\logs\actions.ndjson -Tail 1 -Wait
+```
+
+### Anti-Spam Limits
+
+Telegram Reporter enforces:
+- **Max 20 Telegram messages per drain cycle** → sends rollup INFO if queue exceeds
+- **60-second dedup window** → same (run_id, status_word) pair sent once per 60s
+- **Max 5 consecutive failures** → daemon exits; manual check required
+
+**Example:** If 30 events in queue and max is 20, first 20 are sent, then:
+```
+ℹ️ INFO: "10 more events queued"
+Run: logger-rollup
+```
+
+This prevents log floods while ensuring nothing is permanently lost.
+
+### Windows Startup Option (Future)
+
+Currently: Run in a spare terminal window.
+
+Later: Consider Windows Scheduled Task or `.bat` wrapper for auto-start on login.
+For now, simplest approach = dedicated terminal or background script.
+
 ---
 
 **See also:** `schemas/ActionEvent.md`, `scripts/log_event.py`, `scripts/tg_notify.py`, `scripts/tg_reporter.py`
