@@ -9,6 +9,12 @@
 5. **When creating specs:** Follow the schema files in /schemas
 6. **Before writing any files:** Show (a) plan, (b) file list, (c) preview/diff, then wait for approval
 
+## Telegram Logging Policy
+
+- **Only Logger sends to Telegram:** All agents emit ActionEvents to `data/logs/spool/`; only Logger posts formatted Telegram messages.
+- **No secrets in files:** Telegram bot token and chat ID come from env vars only (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`).
+- **Append-only logs:** Actions logged to `data/logs/actions.ndjson`; errors to `data/logs/errors.ndjson`.
+
 ## Your Identity
 - **Name:** Ghosted
 - **Timezone:** Australia/Brisbane
