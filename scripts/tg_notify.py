@@ -3,7 +3,32 @@
 import os
 import sys
 import argparse
+from pathlib import Path
 import requests
+
+
+def load_env_fallback() -> None:
+    """Load TELEGRAM_* vars from .env when process env is missing (e.g., SYSTEM task)."""
+    if os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("TELEGRAM_LOG_CHAT_ID"):
+        return
+
+    env_path = Path.cwd() / ".env"
+    if not env_path.exists():
+        return
+
+    try:
+        for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            s = line.strip()
+            if not s or s.startswith("#") or "=" not in s:
+                continue
+            k, v = s.split("=", 1)
+            k = k.strip()
+            v = v.strip().strip('"').strip("'")
+            if k in {"TELEGRAM_BOT_TOKEN", "TELEGRAM_LOG_CHAT_ID", "TELEGRAM_CMD_CHAT_ID"} and not os.getenv(k):
+                os.environ[k] = v
+    except Exception:
+        # Silent fallback: caller handles missing vars explicitly.
+        return
 
 
 def send_telegram_message(message: str, chat_id: str = None) -> bool:
@@ -35,6 +60,8 @@ def send_telegram_message(message: str, chat_id: str = None) -> bool:
 
 
 def main():
+    load_env_fallback()
+
     parser = argparse.ArgumentParser(
         description="Send a message to Telegram (default: log group)."
     )
