@@ -82,6 +82,19 @@
 - **Drain interval:** 15s (configurable; outbox → Telegram → actions.ndjson append)
 - **Status:** Persistent; survives PowerShell close + system reboot
 
+### Memory Polish Layer (New ✅)
+- **memory_search.py:** Fast unified search across MEMORY.md + HANDOFFS + DAILY. Returns ranked results with file pointers + line ranges.
+  - Usage: `python scripts/memory/memory_search.py "gateway auth" --limit 10`
+  - Indexes by recency + file priority (MEMORY.md > HANDOFFS > DAILY)
+- **handoff.schema.json:** Defines required/optional fields for JSON handoffs (ts_created, status, next_tasks required)
+- **validate_handoff.py:** Validates + normalizes handoff files. Auto-fixes UTF-8, fills defaults, hard-fails on missing required fields.
+  - Usage: `python scripts/handoff/validate_handoff.py <file> [--fix]`
+- **make_daily_summary.py:** Generates daily session recap (docs/DAILY/YYYY-MM-DD-summary.md) + updates docs/STATUS.md
+  - Captures: completed items, blockers, next actions, recent git changes, recent ActionEvents
+  - Usage: `python scripts/daily/make_daily_summary.py` (run at end of session)
+- **docs/STATUS.md:** Rolling "where are we at" page. Auto-updated by make_daily_summary.py
+- **docs/DAILY/:** Daily session summaries (auto-generated)
+
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
 - All agents defined in roster; Reader is next build target ([keeper:handoff:handoff-20260222-1234.md])

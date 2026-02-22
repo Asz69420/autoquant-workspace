@@ -1,0 +1,241 @@
+#!/usr/bin/env python3
+"""
+Generate daily session summary + update STATUS.md.
+Run at end of session to create continuity checkpoint.
+"""
+
+import sys
+import json
+from pathlib import Path
+from datetime import datetime
+
+REPO_ROOT = Path(__file__).parent.parent.parent
+DAILY_DIR = REPO_ROOT / "docs" / "DAILY"
+STATUS_FILE = REPO_ROOT / "docs" / "STATUS.md"
+HANDOFFS_DIR = REPO_ROOT / "docs" / "HANDOFFS"
+LOGS_DIR = REPO_ROOT / "data" / "logs"
+
+def get_git_summary():
+    """Get brief git diff summary."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--name-only", "HEAD~1..HEAD"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        if result.returncode == 0:
+            files = result.stdout.strip().split('\n')
+            return [f for f in files if f]
+        return []
+    except:
+        return []
+
+def get_recent_actions(limit=5):
+    """Read recent ActionEvents from actions.ndjson."""
+    actions_file = LOGS_DIR / "actions.ndjson"
+    if not actions_file.exists():
+        return []
+    
+    try:
+        with open(actions_file, 'r', encoding='utf-8-sig') as f:
+            lines = f.readlines()
+            recent = []
+            for line in lines[-limit:]:
+                try:
+                    event = json.loads(line)
+                    recent.append({
+                        'agent': event.get('agent', 'unknown'),
+                        'action': event.get('action', 'unknown'),
+                        'status': event.get('status_word', '?'),
+                        'summary': event.get('summary', '')
+                    })
+                except:
+                    pass
+            return recent
+    except:
+        return []
+
+def get_latest_handoff():
+    """Get the most recent handoff file."""
+    if not HANDOFFS_DIR.exists():
+        return None
+    
+    handoffs = sorted(HANDOFFS_DIR.glob("handoff-*.md"), reverse=True)
+    return handoffs[0] if handoffs else None
+
+def build_daily_summary(blockers=None, completed=None, next_actions=None):
+    """Build markdown summary for today."""
+    now = datetime.utcnow()
+    date_str = now.strftime("%Y-%m-%d")
+    
+    blockers = blockers or []
+    completed = completed or []
+    next_actions = next_actions or []
+    
+    # Get context
+    git_files = get_git_summary()
+    recent_actions = get_recent_actions(limit=5)
+    latest_handoff = get_latest_handoff()
+    
+    md = f"""# Daily Summary — {date_str}
+
+## Status
+Session ended: {now.isoformat()}Z
+
+## Completed
+"""
+    
+    for item in completed:
+        md += f"- ✅ {item}\n"
+    
+    if not completed:
+        md += "- (none yet)\n"
+    
+    md += f"""
+## Blockers
+"""
+    
+    for item in blockers:
+        md += f"- ⚠️ {item}\n"
+    
+    if not blockers:
+        md += "- (none)\n"
+    
+    md += f"""
+## Next Actions
+"""
+    
+    for item in next_actions:
+        md += f"- → {item}\n"
+    
+    if not next_actions:
+        md += "- (TBD)\n"
+    
+    if git_files:
+        md += f"""
+## Files Changed (Git)
+"""
+        for f in git_files[:10]:
+            md += f"- {f}\n"
+    
+    if recent_actions:
+        md += f"""
+## Recent Actions
+"""
+        for action in recent_actions:
+            status_icon = {
+                'OK': '✅',
+                'WARN': '⚠️',
+                'FAIL': '❌',
+                'BLOCKED': '⛔',
+                'INFO': 'ℹ️'
+            }.get(action['status'], '?')
+            md += f"- {status_icon} {action['agent']}: {action['action']} ({action['status']})\n"
+    
+    if latest_handoff:
+        md += f"""
+## Latest Handoff
+See: `{latest_handoff.name}`
+"""
+    
+    md += f"""
+## Pointers
+- MEMORY.md — Long-term project memory
+- docs/HANDOFFS/ — Session checkpoints
+- docs/STATUS.md — Current state overview
+"""
+    
+    return md
+
+def update_status(blockers=None, completed=None, next_actions=None):
+    """Update or create docs/STATUS.md."""
+    now = datetime.utcnow()
+    
+    status_md = f"""# AutoQuant — Status Overview
+
+**Last Updated:** {now.isoformat()}Z
+
+## Current Status
+- Telegram logging: ✅ Live (automated)
+- Memory system: 🔄 Building polish layer
+- Automation: ✅ Restart-safe
+
+## Blockers
+"""
+    
+    blockers = blockers or []
+    for blocker in blockers:
+        status_md += f"- ⚠️ {blocker}\n"
+    
+    if not blockers:
+        status_md += "- None currently\n"
+    
+    status_md += f"""
+## Next Actions (Top 3)
+"""
+    
+    next_actions = next_actions or ["TBD"]
+    for i, action in enumerate(next_actions[:3], start=1):
+        status_md += f"{i}. {action}\n"
+    
+    status_md += f"""
+## Recent Completions
+"""
+    
+    completed = completed or []
+    for item in completed:
+        status_md += f"- ✅ {item}\n"
+    
+    if not completed:
+        status_md += "- (none yet)\n"
+    
+    status_md += f"""
+## Quick Links
+- [MEMORY.md](../MEMORY.md) — Project memory
+- [HANDOFFS/](HANDOFFS/) — Session checkpoints
+- [DAILY/](DAILY/) — Daily summaries
+
+---
+*Generated by make_daily_summary.py*
+"""
+    
+    with open(STATUS_FILE, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(status_md)
+
+def main():
+    # Create DAILY dir if needed
+    DAILY_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Parse args (optional: pass blockers/completed/next_actions)
+    # For now, just generate empty summary
+    blockers = []
+    completed = []
+    next_actions = []
+    
+    date_str = datetime.utcnow().strftime("%Y-%m-%d")
+    summary_file = DAILY_DIR / f"{date_str}-summary.md"
+    
+    # Build summary
+    summary_md = build_daily_summary(
+        blockers=blockers,
+        completed=completed,
+        next_actions=next_actions
+    )
+    
+    # Write summary
+    with open(summary_file, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(summary_md)
+    
+    print(f"OK: Daily summary written to {summary_file.relative_to(REPO_ROOT)}", file=sys.stdout)
+    
+    # Update STATUS.md
+    update_status(blockers=blockers, completed=completed, next_actions=next_actions)
+    print(f"OK: STATUS.md updated", file=sys.stdout)
+    
+    sys.exit(0)
+
+if __name__ == '__main__':
+    main()
