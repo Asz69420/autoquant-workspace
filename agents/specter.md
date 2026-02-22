@@ -25,8 +25,9 @@ Provide a schema-first bridge for browser-based AI interaction workflows used by
   - `FAIL` on validation/runtime error
 
 ## Model Policy
-- Inherits runtime model from caller/orchestrator.
-- No model hard-binding in Build 1.
+- **Primary:** `openai-codex/gpt-5.3-codex`
+- **Fallback:** none (intentionally disabled for now)
+- MiniMax M2.5 may be used for optional planning/review tasks, not Specter runtime operation.
 
 ## Constraints
 - Never store or print secrets.
