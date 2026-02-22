@@ -123,7 +123,7 @@ Acceptance test:
 - **Long-task autonomy loop:** For tasks expected to span multiple iterations, òQ may create a temporary focus cron loop (`focus-*`) with a chosen interval (e.g., 10m/15m/30m/1h), continuing work until DONE or BLOCKED, then disable/remove the loop.
 - **Council mode for tough calls:** Run `scripts/automation/council.ps1` to get a two-model challenge/revise synthesis before deciding.
 - **Build QC gate (significant builds):** After implementation, run a quick independent second-pass GPT-5.3 review; if FAIL, revise once before handoff. Skip for trivial edits.
-- **QC delivery stamp (required on significant builds):** End handoff with the boxed QC stamp from `docs/RUNBOOKS/build-qc-gate.md` (`✅ VERIFIED` / `⚠️ PARTIAL` / `❌ NOT VERIFIED`) so verification state is explicit and visually obvious.
+- **QC delivery stamp (required on significant builds):** End handoff with the boxed QC stamp from `docs/RUNBOOKS/build-qc-gate.md` (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`) so verification state is explicit and visually obvious.
 
 ## Your Identity
 - **Name:** Ghosted

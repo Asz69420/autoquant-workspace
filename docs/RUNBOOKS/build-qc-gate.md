@@ -17,6 +17,11 @@ Skip gate for tiny edits (typos/format-only/single-line non-functional docs).
 3. Reviewer checks:
    - requirement coverage
    - policy compliance (AutoQuant rules in USER.md)
+   - explicit AutoQuant Operating Rules compliance:
+     - no overwrite/delete without approval
+     - plan → file list → diff/preview before write
+     - no secrets in files
+     - artifacts/data outputs are not Git-tracked
    - edge cases/regressions
    - docs/memory sync completeness
    - efficiency

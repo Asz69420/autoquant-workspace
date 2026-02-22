@@ -114,7 +114,7 @@
 - **Policy:** Significant builds get an independent second-pass GPT-5.3 review before handoff.
 - **Flow:** PASS → ship; FAIL → single revise pass, then one re-check.
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
-- **Handoff stamp:** Significant-build replies must include boxed QC footer stamp (`✅ VERIFIED` / `⚠️ PARTIAL` / `❌ NOT VERIFIED`).
+- **Handoff stamp:** Significant-build replies must include boxed QC footer stamp (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`).
 - **QC criteria:** Reviewer explicitly checks efficiency, effectiveness, future-proofing, and project compatibility/alignment.
 
 ## Keeper Promotions
