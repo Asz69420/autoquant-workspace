@@ -199,7 +199,7 @@ Run: oq--config-update-m2.5
 - **Codex 5.3** — `openai-codex/gpt-5.3-codex` (default for active agent sessions)
 
 **Backup Model (Fallback):**
-- _None configured yet_ (intentional; add after validation)
+- **Haiku** (`anthropic/claude-haiku-4-5-20251001`)
 
 **Agent Assignments (locked):**
 - 🧾 Logger → System (Python)
