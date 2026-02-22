@@ -146,6 +146,14 @@ def drain_once(max_messages=20):
             
             run_id = event["run_id"]
             status_word = event["status_word"]
+            agent = event.get("agent")
+
+            # Keeper noise filter: suppress START notifications (result-only for Keeper)
+            if agent == "Keeper" and status_word == "START":
+                event_file.unlink()
+                skipped += 1
+                print(f"Skipped (keeper-start): {event_file.name}", file=sys.stderr)
+                continue
             
             # Check dedup (in-memory only)
             if is_duplicate(run_id, status_word):
