@@ -65,6 +65,7 @@ Not verified:
 - Treat missing QC stamp on significant-build handoff as a process failure.
 - Auto-recovery: send an immediate correction message containing the correct boxed QC stamp.
 - Do not continue to new topics until the correction stamp is sent.
+- For requested builds, do not send the user-facing bill/proposal until independent QC has completed (and one revise pass is applied if QC fails).
 
 ## Note
 This is a **quick** gate, not full audit. Aim for 5-10 minutes.

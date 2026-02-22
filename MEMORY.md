@@ -117,6 +117,7 @@
 - **Handoff stamp:** Significant-build replies must include boxed QC footer stamp (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`).
 - **QC criteria:** Reviewer explicitly checks efficiency, effectiveness, future-proofing, and project compatibility/alignment.
 - **Enforcement:** Missing QC stamp on significant-build handoff is a process failure; immediate correction stamp is mandatory before continuing.
+- **Order lock:** Requested builds follow implement → QC → (revise once if needed) → user-facing bill/handoff with boxed QC stamp.
 
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
