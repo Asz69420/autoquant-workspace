@@ -1,6 +1,6 @@
 param(
   [Parameter(Mandatory=$true, Position=0)]
-  [ValidateSet('start','stop','list')]
+  [ValidateSet('start','stop','list','sweep')]
   [string]$Action,
 
   [string]$Name,
@@ -27,6 +27,28 @@ function Find-FocusJobByName([string]$BaseName) {
   $jobName = "focus-$BaseName"
   $jobs = Get-CronJobs
   return $jobs | Where-Object { $_.name -eq $jobName }
+}
+
+function Get-LatestRunSummary([string]$JobId) {
+  try {
+    $json = openclaw cron runs --id $JobId --limit 1 --json
+    $runs = ($json | ConvertFrom-Json)
+    if (-not $runs.entries -or $runs.entries.Count -eq 0) {
+      return $null
+    }
+
+    return $runs.entries[0].summary
+  } catch {
+    return $null
+  }
+}
+
+function Has-TerminalMarker([string]$Summary) {
+  if ([string]::IsNullOrWhiteSpace($Summary)) {
+    return $false
+  }
+
+  return ($Summary -match 'FOCUS_DONE:' -or $Summary -match 'FOCUS_BLOCKED:')
 }
 
 switch ($Action) {
@@ -87,6 +109,31 @@ Instructions:
       $schedule = if ($j.schedule.kind -eq 'interval') { "every $($j.schedule.everyMs)ms" } else { "$($j.schedule.kind) $($j.schedule.expr)" }
       $status = if ($j.enabled) { 'enabled' } else { 'disabled' }
       Write-Output ("{0} | {1} | {2} | {3}" -f $j.id, $j.name, $status, $schedule)
+    }
+  }
+
+  'sweep' {
+    $jobs = Get-CronJobs | Where-Object { $_.name -like 'focus-*' }
+    if (-not $jobs -or $jobs.Count -eq 0) {
+      Write-Output 'No focus loops found.'
+      break
+    }
+
+    $removed = 0
+    foreach ($j in $jobs) {
+      $summary = Get-LatestRunSummary $j.id
+      if (Has-TerminalMarker $summary) {
+        openclaw cron disable --id $j.id | Out-Null
+        openclaw cron rm --id $j.id | Out-Null
+        Write-Output ("Auto-stopped: {0} (id: {1})" -f $j.name, $j.id)
+        $removed++
+      }
+    }
+
+    if ($removed -eq 0) {
+      Write-Output 'Sweep complete: no terminal focus loops found.'
+    } else {
+      Write-Output ("Sweep complete: removed {0} focus loop(s)." -f $removed)
     }
   }
 }

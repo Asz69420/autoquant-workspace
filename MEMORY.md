@@ -99,7 +99,8 @@
 - **Launcher:** `scripts/automation/focus_loop.ps1`
 - **Runbook:** `docs/RUNBOOKS/focus-loop.md`
 - **Pattern:** create temporary `focus-*` cron loops with flexible cadence (`10m`, `15m`, `30m`, `1h`, etc.) for long tasks.
-- **Stop conditions:** sub-agent continues until `FOCUS_DONE` or `FOCUS_BLOCKED`, then loop should be disabled/removed.
+- **Auto-stop sweep:** new `sweep` action checks latest run summary (`openclaw cron runs --id <jobId> --limit 1`) and auto-disables/removes loops that emit terminal markers.
+- **Terminal markers:** `FOCUS_DONE:` or `FOCUS_BLOCKED:`.
 
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
