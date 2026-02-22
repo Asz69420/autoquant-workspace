@@ -36,7 +36,7 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 - Policy decisions
 - Work packet rollups
 - Milestone completions
-- Sub-agent spawns (START/INFO) and completions (OK/WARN/FAIL)
+- Sub-agent spawns (START/INFO) and completions (OK/WARN/FAIL) — mandatory lifecycle pair
 
 **Example ActionEvent (partial; see schemas/ActionEvent.md for full spec):**
 ```json
@@ -73,3 +73,5 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 - Route memory lifecycle + compatibility upkeep tasks to 🗃️ Keeper by default
 - Auto-commit policy applies (git status → add → commit → log)
 - All notable decisions logged as ActionEvents to log group
+- For every `sessions_spawn`, emit lifecycle logs with the same `run_id`: START before spawn and OK/WARN/FAIL on completion
+- Use `scripts/log_event.py` for all ActionEvent emission (no manual JSON writes)

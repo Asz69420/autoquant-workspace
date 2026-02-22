@@ -44,7 +44,14 @@
 
 ## Work-Packet Tasks (òQ Delegates)
 
-òQ **spawns sub-agents** for these (using Work Orders):
+òQ **spawns sub-agents** for these (using Work Orders).
+
+**Mandatory logging for every spawn:**
+- Emit `START` ActionEvent before `sessions_spawn`
+- Emit terminal `OK`/`WARN`/`FAIL` ActionEvent when result returns
+- Reuse the same run_id for lifecycle pairing
+- Emit via `python scripts/log_event.py ...` (never hand-write JSON)
+
 
 ### Content Ingestion (🔗 Reader)
 - Fetch research links (papers, articles, videos)
