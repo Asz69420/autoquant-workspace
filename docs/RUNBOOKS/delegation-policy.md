@@ -130,6 +130,9 @@ All control happens there. Log group is read-only for alerts + logs.
 **Assumption: tg_reporter daemon runs during work sessions** (see `docs/RUNBOOKS/telegram-logging.md` for startup).
 If not running, manual drain (`python scripts/tg_reporter.py --manual`) after work packets complete.
 
+**Note: òQ emits ActionEvents for notable decisions** (commits, config changes, approvals, policy updates).
+See `USER.md` > "Notable Action Logging (òQ)" for details and examples.
+
 ---
 
 ## Work Packet Budget Enforcement

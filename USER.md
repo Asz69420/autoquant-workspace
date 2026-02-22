@@ -97,6 +97,42 @@ Plan approved → Files written → git status check → git add USER.md → git
 - **Timezone:** Australia/Brisbane
 - **Role:** Project lead, R&D strategy, execution oversight
 
+## Notable Action Logging (òQ)
+
+**Why:** All notable òQ actions must be logged as ActionEvents so the log group sees decisions in real-time (via Telegram Reporter).
+
+**MUST LOG these actions:**
+1. Any git commit (auto-commit policy applies)
+2. Any change to OpenClaw config (openclaw.json), model defaults/fallbacks, or provider setup
+3. Any file write that changes repo-tracked docs/contracts/runbooks/schemas
+4. Any security block/override decision (Firewall BLOCKED outcomes)
+5. Any "promotion" decision (e.g., strategy status upgraded, agent promoted to live)
+
+**Implementation:**
+- Do NOT send Telegram directly. Only emit ActionEvents to `data/logs/outbox/`.
+- No secrets/tokens/IDs in logs.
+- Keep messages short and mobile-friendly.
+- Use status_word + emoji correctly:
+  - ▶️ START (beginning action, optional)
+  - ✅ OK (completed successfully)
+  - ⚠️ WARN (completed but imperfect)
+  - ❌ FAIL (failure, include reason_code)
+  - ℹ️ INFO (notable but non-critical)
+- Use reason_code when useful: COMMIT, CONFIG_CHANGE, POLICY_UPDATE, APPROVAL, BLOCKED, PROMOTION
+
+**Examples:**
+```
+✅ OK | òQ | system
+chore: simplify agent models
+Run: oq--commit-032e758
+```
+
+```
+⚠️ WARN | òQ | system (CONFIG_CHANGE)
+Model fallback changed Opus → Codex
+Run: oq--config-update-m2.5
+```
+
 ## Agent Models
 
 **Primary Model (All Agents):**
