@@ -8,10 +8,12 @@ Provide a schema-first bridge for browser-based AI interaction workflows used by
 - Validate inputs and return contract-valid responses.
 - Enforce Build 1 safety: **mock-only** with no external side effects.
 
-## Build 1 Scope (Current)
-- Request validation + mock response generation only.
-- Any real execution intent is blocked with `NEEDS_APPROVAL`.
+## Build 1.1 Scope (Current)
+- Request validation + hard gating + mock response generation only.
+- Only explicit mock-safe request shapes pass.
+- Any non-mock-safe request is blocked with `NEEDS_APPROVAL`.
 - No browser automation in this build.
+- Test mode `SPECTER_TEST_MODE=1` suppresses ActionEvent emission during local tests.
 
 ## Required Inputs
 - `specter.request` payload (JSON) matching `schemas/specter.request.schema.json`.

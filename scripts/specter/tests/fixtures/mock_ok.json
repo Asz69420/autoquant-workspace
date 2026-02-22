@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "trace_id": "trace-mock-ok",
+  "request_id": "req-mock-ok",
+  "provider_target": "claude_web",
+  "prompt": "hello mock",
+  "intent": "mock",
+  "mode": "default",
+  "timeout_ms": 30000
+}

@@ -1,0 +1,7 @@
+{
+  "version": "v1",
+  "trace_id": "trace-invalid",
+  "provider_target": "claude_web",
+  "prompt": "",
+  "intent": "mock"
+}

@@ -1,21 +1,26 @@
 {
-  "version": "build1",
+  "version": "build1.1",
   "defaults": {
     "timeout_ms": 30000,
-    "cache_ttl_seconds": 3600
+    "cache_ttl_seconds": 3600,
+    "operator_preset": "default"
+  },
+  "operator_presets": {
+    "safe": {
+      "typing_delay_ms": { "base": 140, "jitter": 60 },
+      "pause_ms": { "micro_min": 300, "micro_max": 900, "pre_send_min": 500, "pre_send_max": 1800 }
+    },
+    "default": {
+      "typing_delay_ms": { "base": 120, "jitter": 80 },
+      "pause_ms": { "micro_min": 200, "micro_max": 800, "pre_send_min": 300, "pre_send_max": 1500 }
+    },
+    "aggressive": {
+      "typing_delay_ms": { "base": 95, "jitter": 70 },
+      "pause_ms": { "micro_min": 120, "micro_max": 500, "pre_send_min": 200, "pre_send_max": 900 }
+    }
   },
   "humanize": {
-    "enabled": true,
-    "typing_delay_ms": {
-      "base": 120,
-      "jitter": 80
-    },
-    "pause_ms": {
-      "micro_min": 200,
-      "micro_max": 800,
-      "pre_send_min": 300,
-      "pre_send_max": 1500
-    }
+    "enabled": true
   },
   "retries": {
     "max_attempts": 2,

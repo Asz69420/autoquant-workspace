@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "trace_id": "trace-needs-approval",
+  "request_id": "req-needs-approval",
+  "provider_target": "claude_web",
+  "prompt": "perform external action",
+  "intent": "execute",
+  "mode": "safe",
+  "timeout_ms": 30000
+}
