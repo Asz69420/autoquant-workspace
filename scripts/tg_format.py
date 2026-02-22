@@ -94,6 +94,41 @@ def _is_spawned_subagent_event(event: dict) -> bool:
     return run_id.startswith("subagent-")
 
 
+def _fit_summary_mobile(summary: str, max_lines: int = 3, max_line_len: int = 72) -> str:
+    """Keep summary readable on mobile: up to max_lines, wrap long lines, no ellipsis."""
+    if not summary:
+        return ""
+
+    words = summary.replace("\r", "").replace("\t", " ").split()
+    if not words:
+        return ""
+
+    lines = []
+    current = ""
+    for w in words:
+        candidate = (current + " " + w).strip()
+        if len(candidate) <= max_line_len:
+            current = candidate
+        else:
+            if current:
+                lines.append(current)
+            current = w
+            if len(lines) >= max_lines:
+                break
+    if current and len(lines) < max_lines:
+        lines.append(current)
+
+    return "\n".join(lines[:max_lines])
+
+
+def _normalize_timestamp(ts_local: str, ts_iso: str) -> str:
+    """Prefer ts_local but remove timezone suffix text like ' AEST'."""
+    t = (ts_local or "").strip()
+    if t:
+        return t.replace(" AEST", "")
+    return (ts_iso or "").strip() or "(timestamp unavailable)"
+
+
 def main():
     import argparse
 
@@ -121,14 +156,15 @@ def main():
 
         header_emoji = "⚙️" if _is_spawned_subagent_event(event) else status_emoji
 
-        if reason_code:
+        show_reason = bool(reason_code) and reason_code.upper() != "EXPERIMENT"
+        if show_reason:
             header = f"{header_emoji} {status_word} | {agent} | {model_label} ({reason_code})"
         else:
             header = f"{header_emoji} {status_word} | {agent} | {model_label}"
 
-        summary_truncated = (summary[:47] + "...") if len(summary) > 50 else summary
-        timestamp_line = ts_local or ts_iso or "(timestamp unavailable)"
-        lines = [header, summary_truncated, timestamp_line]
+        summary_mobile = _fit_summary_mobile(summary, max_lines=3, max_line_len=72)
+        timestamp_line = _normalize_timestamp(ts_local, ts_iso)
+        lines = [header, summary_mobile, timestamp_line]
         body = "\n".join(lines)
         telegram_msg = f"```\n{body}\n```"
 
