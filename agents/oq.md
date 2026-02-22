@@ -8,7 +8,7 @@ Orchestrate multi-agent R&D pipeline: plan, delegate work packets, review result
 - Backtest results from 📈 Backtester
 - Spec reviews from 🗃️ Keeper
 - Strategy recommendations from 🧠 Strategist
-- Structured browser-AI operation results from 🎭 Specter (via delegated work orders)
+- Structured browser/CLI AI operation results from 🎭 Specter (via delegated work orders)
 
 ## Required Outputs
 
@@ -67,5 +67,7 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 - Never store secrets in any file
 - Plan → approval → write → log → commit
 - All work packets delegated with budgets + stop conditions
+- Normalize Specter requests with: provider_target, model_request, execution_mode, routing_intent, operator_profile
+- Prefer CLI route first for external model requests unless user forces browser route
 - Auto-commit policy applies (git status → add → commit → log)
 - All notable decisions logged as ActionEvents to log group

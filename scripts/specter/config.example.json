@@ -1,26 +1,40 @@
 {
-  "version": "build1.1",
+  "version": "vnext-gated",
   "defaults": {
     "timeout_ms": 30000,
     "cache_ttl_seconds": 3600,
-    "operator_preset": "default"
+    "operator_profile": "default",
+    "routing_intent": "auto",
+    "execution_mode": "mock"
   },
   "operator_presets": {
     "safe": {
       "typing_delay_ms": { "base": 140, "jitter": 60 },
-      "pause_ms": { "micro_min": 300, "micro_max": 900, "pre_send_min": 500, "pre_send_max": 1800 }
+      "micro_pause_ms": { "min": 300, "max": 900 },
+      "pre_send_pause_ms": { "min": 500, "max": 1800 },
+      "post_send_poll_ms": { "min": 1500, "max": 4000 },
+      "max_actions_per_min": 12,
+      "cooldown_ms": 2500,
+      "retry_backoff_ms": { "min": 1200, "max": 2500 }
     },
     "default": {
       "typing_delay_ms": { "base": 120, "jitter": 80 },
-      "pause_ms": { "micro_min": 200, "micro_max": 800, "pre_send_min": 300, "pre_send_max": 1500 }
+      "micro_pause_ms": { "min": 200, "max": 800 },
+      "pre_send_pause_ms": { "min": 300, "max": 1500 },
+      "post_send_poll_ms": { "min": 1000, "max": 3000 },
+      "max_actions_per_min": 18,
+      "cooldown_ms": 1800,
+      "retry_backoff_ms": { "min": 900, "max": 1800 }
     },
     "aggressive": {
       "typing_delay_ms": { "base": 95, "jitter": 70 },
-      "pause_ms": { "micro_min": 120, "micro_max": 500, "pre_send_min": 200, "pre_send_max": 900 }
+      "micro_pause_ms": { "min": 120, "max": 500 },
+      "pre_send_pause_ms": { "min": 200, "max": 900 },
+      "post_send_poll_ms": { "min": 700, "max": 1800 },
+      "max_actions_per_min": 26,
+      "cooldown_ms": 1100,
+      "retry_backoff_ms": { "min": 600, "max": 1400 }
     }
-  },
-  "humanize": {
-    "enabled": true
   },
   "retries": {
     "max_attempts": 2,

@@ -8,15 +8,23 @@ Provide a schema-first bridge for browser-based AI interaction workflows used by
 - Validate inputs and return contract-valid responses.
 - Enforce Build 1 safety: **mock-only** with no external side effects.
 
-## Build 1.1 Scope (Current)
+## vNext Scope (Current, still gated)
+- Generic provider/model routing contract handling.
 - Request validation + hard gating + mock response generation only.
-- Only explicit mock-safe request shapes pass.
-- Any non-mock-safe request is blocked with `NEEDS_APPROVAL`.
-- No browser automation in this build.
+- `execution_mode=mock` is allowed.
+- `execution_mode in {cli_live, browser_live}` is recognized but blocked unless `SPECTER_ENABLE_LIVE=1`.
+- Any blocked live request returns `NEEDS_APPROVAL` with routing metadata.
+- No real browser/CLI execution in this stage.
 - Test mode `SPECTER_TEST_MODE=1` suppresses ActionEvent emission during local tests.
 
 ## Required Inputs
 - `specter.request` payload (JSON) matching `schemas/specter.request.schema.json`.
+- Routing fields (normalized by òQ):
+  - `provider_target`
+  - `model_request` (stable model id or alias)
+  - `execution_mode` (`mock`, `cli_live`, `browser_live`)
+  - `routing_intent` (`auto`, `forced`)
+  - `operator_profile` (`safe`, `default`, `aggressive`)
 
 ## Required Outputs
 - `specter.response` payload (JSON) matching `schemas/specter.response.schema.json`.
@@ -47,11 +55,12 @@ Provide a schema-first bridge for browser-based AI interaction workflows used by
 
 ## Lifecycle
 1. Receive request file path.
-2. Parse JSON.
-3. Validate required fields (Build 1 minimal validator).
-4. If `intent=execute` -> return `BLOCKED (NEEDS_APPROVAL)`.
-5. Else return deterministic mock `OK` response.
-6. Emit ActionEvent for run outcome.
+2. Parse + normalize JSON request.
+3. Validate required routing/profile fields.
+4. Resolve route (`execution_mode`) + provider/model metadata.
+5. If live route and `SPECTER_ENABLE_LIVE != 1` -> return `BLOCKED (NEEDS_APPROVAL)`.
+6. Else return deterministic mock `OK` response.
+7. Emit ActionEvent for run outcome.
 
 ## Failure Codes
 - `VALIDATION_ERROR`
