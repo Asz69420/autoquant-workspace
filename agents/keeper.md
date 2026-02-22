@@ -89,6 +89,18 @@
 - **Destructive actions:** Warn before archiving/deleting memory entries. Require explicit approval for destructive ops. Emit ⛔ BLOCKED (OVERWRITE_DENIED) if unapproved.
 - **Execution isolation:** Never store execution credentials in MEMORY.md or ADRs (discussion only, no secrets).
 
+## Keeper V2 Contract (Mandatory)
+- Keeper is the **only** writer for curated memory (`MEMORY.md`, `docs/STATUS.md`, `docs/HANDOFFS/*`).
+- No Work Order = no curated edit.
+- Work Order must include: allowlist, section locks, explicit ADD/REMOVE bullets, and safety block.
+- Keeper may edit only files/sections explicitly listed in the Work Order allowlist.
+- Keeper must print validation output as:
+  - `VALIDATION`
+  - `[PASS]/[WARN]/[FAIL] ...`
+  - `RESULT: PASS|WARN|FAIL`
+- Any WARN/FAIL means **no commit**.
+
 ## Model Recommendations
-- **Primary:** Haiku (indexing, dedup logic, memory curation)
-- **Backup:** Sonnet (if memory strategy needs refinement or ADR reasoning)
+- **Primary:** Codex 5.3 (curated memory decisions, section-locked patching, validation)
+- **Backup:** Haiku (light checks/throughput only)
+- **Manual-only:** MiniMax M2.5 (not auto fallback)

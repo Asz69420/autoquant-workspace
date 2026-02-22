@@ -105,3 +105,10 @@
 - ✅ All new scripts tested locally + committed ([keeper:handoff:handoff-20260222-2030.md])
 - ⚠️ Gateway auth: Still shows "pairing required" (if reappears, use one-shot reset) ([keeper:handoff:handoff-20260222-2030.md])
 - **Commit:** `8ba4742` — All new scripts + tests ([keeper:handoff:handoff-20260222-2030.md])
+
+## Model Policy (Locked)
+- Primary model: Codex 5.3
+- Fallback model: Haiku
+- Manual-only: MiniMax (excluded from automatic fallback)
+- Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ
+- Haiku-primary agents: Reader, Grabber

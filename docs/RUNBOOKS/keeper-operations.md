@@ -43,6 +43,18 @@ Use only:
 
 `WARN`, `BLOCKED`, `FAIL` must include `reason_code`.
 
+## Keeper V2 Workflow (Section-Locked)
+1. Append raw trace only in `memory/YYYY-MM-DD.md` (by òQ).
+2. Create Work Order in `docs/WORK_ORDERS/wo-*.md` with:
+   - evidence pointers
+   - allowlist
+   - section locks
+   - explicit ADD/REMOVE bullets
+3. Run `scripts/keeper/runner_v2.py`.
+4. Keeper applies only allowlisted section-locked edits.
+5. Keeper prints `VALIDATION` block with PASS/WARN/FAIL.
+6. If any WARN/FAIL: stop (no commit).
+
 ## Logging Contract
 - Emit ActionEvents to `data/logs/outbox/` only.
 - Do not send Telegram directly.
