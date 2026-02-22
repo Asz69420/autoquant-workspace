@@ -100,3 +100,8 @@
 - All agents defined in roster; Reader is next build target ([keeper:handoff:handoff-20260222-1234.md])
 - tg_reporter daemon now fully automated (Scheduled Task) ✅ ([keeper:handoff:handoff-20260222-2015.md])
 - Simplified models: Haiku primary, Codex fallback (all agents) ([keeper:handoff:handoff-20260222-1234.md])
+- ✅ Telegram automation: Live + persistent (Scheduled Task) ([keeper:handoff:handoff-20260222-2030.md])
+- ✅ Memory polish layer: Complete (search, validation, daily summaries) ([keeper:handoff:handoff-20260222-2030.md])
+- ✅ All new scripts tested locally + committed ([keeper:handoff:handoff-20260222-2030.md])
+- ⚠️ Gateway auth: Still shows "pairing required" (if reappears, use one-shot reset) ([keeper:handoff:handoff-20260222-2030.md])
+- **Commit:** `8ba4742` — All new scripts + tests ([keeper:handoff:handoff-20260222-2030.md])
