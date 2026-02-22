@@ -116,7 +116,8 @@ def main():
         status_emoji = _normalize_status_emoji(event.get("status_emoji"), status_word)
         reason_code = _as_str(event.get("reason_code"), "")
         summary = _as_str(event["summary"])
-        run_id = _as_str(event["run_id"])
+        ts_local = _as_str(event.get("ts_local"), "")
+        ts_iso = _as_str(event.get("ts_iso"), "")
 
         header_emoji = "⚙️" if _is_spawned_subagent_event(event) else status_emoji
 
@@ -126,7 +127,8 @@ def main():
             header = f"{header_emoji} {status_word} | {agent} | {model_label}"
 
         summary_truncated = (summary[:47] + "...") if len(summary) > 50 else summary
-        lines = [header, summary_truncated, f"Run: {run_id}"]
+        timestamp_line = ts_local or ts_iso or "(timestamp unavailable)"
+        lines = [header, summary_truncated, timestamp_line]
         body = "\n".join(lines)
         telegram_msg = f"```\n{body}\n```"
 
