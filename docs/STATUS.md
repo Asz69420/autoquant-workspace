@@ -6,6 +6,8 @@
 - Telegram logging: ✅ Live (automated)
 - Memory system: 🔄 Building polish layer
 - Automation: ✅ Restart-safe
+- Keeper sync cadence: ✅ Every 30 minutes via Windows Scheduled Task `\AutoQuant-keeper-30m` (SYSTEM, reboot-safe)
+- Scheduler source of truth: ✅ Windows Task Scheduler for frequent Keeper sync; OpenClaw daily Keeper cron is legacy/redundant if still enabled
 
 ## Blockers
 - None currently
@@ -31,7 +33,4 @@
 - Primary: Codex 5.3
 - Fallback: Haiku
 - Manual-only: MiniMax
-- Agents:
-  - Codex-primary: Specter, Keeper, Strategist, Firewall, òQ
-  - Haiku-primary: Reader, Grabber
-  - System: Logger, Scheduler, Backtester compute (+ Haiku summary path)
+- Agents: (same mapping as above)

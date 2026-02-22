@@ -104,6 +104,8 @@
 - ✅ Memory polish layer: Complete (search, validation, daily summaries) ([keeper:handoff:handoff-20260222-2030.md])
 - ✅ All new scripts tested locally + committed ([keeper:handoff:handoff-20260222-2030.md])
 - ⚠️ Gateway auth: Still shows "pairing required" (if reappears, use one-shot reset) ([keeper:handoff:handoff-20260222-2030.md])
+- ✅ Keeper V2 sync cadence moved to Windows Scheduled Task `\AutoQuant-keeper-30m` (every 30 minutes, reboot-safe) ([ops:2026-02-23])
+- ℹ️ Source of truth for frequent Keeper sync is Windows Task Scheduler; OpenClaw `keeper-daily-light` is redundant/legacy if still present ([ops:2026-02-23])
 - **Commit:** `8ba4742` — All new scripts + tests ([keeper:handoff:handoff-20260222-2030.md])
 
 ## Model Policy (Locked)
