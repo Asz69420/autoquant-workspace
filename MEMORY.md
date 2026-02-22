@@ -99,7 +99,7 @@
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
 - All agents defined in roster; Reader is next build target ([keeper:handoff:handoff-20260222-1234.md])
 - tg_reporter daemon now fully automated (Scheduled Task) ✅ ([keeper:handoff:handoff-20260222-2015.md])
-- Simplified models: Haiku primary, Codex fallback (all agents) ([keeper:handoff:handoff-20260222-1234.md])
+- Model policy locked and synced to Codex primary, Haiku fallback, MiniMax manual-only ([keeper:handoff:handoff-20260222-2121.md])
 - ✅ Telegram automation: Live + persistent (Scheduled Task) ([keeper:handoff:handoff-20260222-2030.md])
 - ✅ Memory polish layer: Complete (search, validation, daily summaries) ([keeper:handoff:handoff-20260222-2030.md])
 - ✅ All new scripts tested locally + committed ([keeper:handoff:handoff-20260222-2030.md])
@@ -112,5 +112,4 @@
 - Manual-only: MiniMax (excluded from automatic fallback)
 - Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ
 - Haiku-primary agents: Reader, Grabber
-
 - Startup canonical rule: see USER.md → "Session Resume Contract (Canonical)"; do not duplicate startup procedures across docs.

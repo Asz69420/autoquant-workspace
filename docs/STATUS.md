@@ -11,9 +11,9 @@
 - None currently
 
 ## Next Actions (Top 3)
-1. Align agent cards with canonical model posture
-2. Enforce outbox-only ActionEvent contract across agent docs
-3. Run startup acceptance check on next /new
+1. Run final /new startup acceptance check (single-question correctness)
+2. Keep canonical startup contract as single source (USER.md only)
+3. Monitor sub-agent spawn/result logging for consistency (START + OK/WARN/FAIL)
 
 ## Recent Completions
 - Canonical session resume contract locked in USER.md
