@@ -63,6 +63,9 @@ if ($help) { Show-Usage; exit 0 }
 
 if ([string]::IsNullOrWhiteSpace($question)) { throw 'Missing required --question' }
 if ($rounds -lt 3 -or $rounds -gt 5) { throw '--rounds must be between 3 and 5' }
+if ($reasoning -notin @('adaptive','low','medium','high')) { throw '--reasoning must be one of: adaptive, low, medium, high' }
+if ($verbosity -notin @('short','medium')) { throw '--verbosity must be one of: short, medium' }
+if ($timeoutSec -le 0) { throw '--timeoutSec must be > 0' }
 
 $apiKey = $env:OPENROUTER_API_KEY
 if ([string]::IsNullOrWhiteSpace($apiKey)) { throw 'OPENROUTER_API_KEY is required' }
@@ -138,12 +141,45 @@ Reply exactly YES or NO.
 "@
   $judge = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Prompt $judgePrompt -Round $Round -Temperature 0.0
   if (-not $judge.ok) { return $true }
-  return $judge.text.Trim().ToUpperInvariant() -eq 'YES'
+  $jt = $judge.text.Trim().ToUpperInvariant()
+  if ($jt -match '^YES\b') { return $true }
+  if ($jt -match '^NO\b') { return $false }
+  return $true
 }
 
 function SafeText([hashtable]$resp,[string]$label) {
   if ($resp.ok) { return $resp.text }
   return "[${label} unavailable: $($resp.error)]"
+}
+
+function Build-LocalSynthesis {
+  param(
+    [string]$QuestionText,
+    [string]$GptText,
+    [string]$MiniText,
+    [string]$StopReason,
+    [bool]$Degraded
+  )
+
+  $warn = if ($Degraded) { 'Degraded mode: one or more model calls failed/timed out; synthesis based on available outputs.' } else { 'Normal mode.' }
+  return @"
+- Recommended action
+Use the overlapping recommendation from both model outputs; if they diverge, choose the lower-risk option and run the immediate test below.
+
+- Confidence
+Medium ($warn)
+
+- Key risks
+- Hidden assumption mismatch between models
+- Missing market/regime evidence for final commitment
+
+- What would change decision
+- New evidence that invalidates current assumptions
+- Backtest/parity result that contradicts the recommendation
+
+- Immediate next test
+Run one constrained test that directly resolves the biggest disagreement from this council pass.
+"@
 }
 
 $decisionName = if ([string]::IsNullOrWhiteSpace($name)) { 'Council Decision' } else { $name }
@@ -261,7 +297,8 @@ Create final synthesis sections:
 If one model failed, include a brief degraded-mode warning.
 "@
 $finalResp = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Prompt $finalPrompt -Round ($lastRound + 1)
-$finalText = SafeText $finalResp 'Final synthesis'
+$degraded = (-not $finalResp.ok) -or ($curG -like '[*unavailable:*') -or ($curM -like '[*unavailable:*')
+$finalText = if ($finalResp.ok) { $finalResp.text } else { Build-LocalSynthesis -QuestionText $question -GptText $curG -MiniText $curM -StopReason $stopReason -Degraded $degraded }
 
 Write-Output '=== Council Final Synthesis ==='
 Write-Output "Stop reason: $stopReason"
