@@ -97,6 +97,30 @@ Plan approved → Files written → git status check → git add USER.md → git
 - **Timezone:** Australia/Brisbane
 - **Role:** Project lead, R&D strategy, execution oversight
 
+## Agent Models
+
+**Primary Model (All Agents):**
+- **Haiku** — `anthropic/claude-haiku-4-5-20251001` (fast, cheap, default for all agents)
+
+**Backup Model (Fallback):**
+- **Codex** — `gpt-5-codex` (fallback for complex reasoning)
+
+**Agent Assignments:**
+- 🧾 Logger → System (Python)
+- 🔗 Reader → Haiku
+- 🧲 Grabber → Haiku
+- 🧠 Strategist → Haiku
+- 📈 Backtester → System (compute) + optional Haiku summary
+- 🗃️ Keeper → Haiku
+- 🛡️ Firewall → Haiku
+- ⏱️ Scheduler → System
+- 🤖 òQ → Haiku (default) + Codex (fallback)
+
+**Available for Later:**
+- **MiniMax M2.5** — `opencode/minimax-m2.5` (unassigned, testing pending)
+- **Sonnet** — `anthropic/claude-sonnet-4-6` (reserved for high-reasoning tasks)
+- **Opus** — `opencode/claude-opus-4-6` (reserved for heavy reasoning)
+
 ## Working Style
 1. **Propose risky changes first** — Draft ADR or design doc before implementing breaking changes
 2. **Concise + actionable** — Get to the point; include next steps
