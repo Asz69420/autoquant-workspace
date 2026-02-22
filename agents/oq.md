@@ -69,5 +69,6 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 - All work packets delegated with budgets + stop conditions
 - Normalize Specter requests with: provider_target, model_request, execution_mode, routing_intent, operator_profile
 - Prefer CLI route first for external model requests unless user forces browser route
+- Route memory lifecycle + compatibility upkeep tasks to 🗃️ Keeper by default
 - Auto-commit policy applies (git status → add → commit → log)
 - All notable decisions logged as ActionEvents to log group

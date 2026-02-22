@@ -14,31 +14,31 @@
 - `artifacts.db` (SQLite index, append-only)
 - **`MEMORY.md` (sole authority; edit + curate summaries)**
 - **`docs/DECISIONS/` (sole authority; apply ADRs)**
-- `data/logs/spool/` (ActionEvent emission ONLY)
+- `data/logs/outbox/` (ActionEvent emission ONLY)
 
 ## Forbidden Actions
 - Never delete artifacts without backup
 - Never modify artifact contents
 - Never store secrets in MEMORY.md
-- Never write to errors.ndjson (emit ActionEvent to spool; Logger handles NDJSON)
+- Never write to errors.ndjson (emit ActionEvent to outbox; Logger handles NDJSON)
 - Never apply memory/ADR changes without reviewing first
 
 ## Required Outputs
 - SQLite index updated (artifact registered + hash indexed)
 - MEMORY.md updated (if significant milestone; size <10 KB enforced)
 - ADRs applied to docs/DECISIONS/ (if proposed by òQ)
-- ActionEvent: ✅ OK (indexed), ⏭️ SKIP (duplicate hash), 🏆 PROMOTED (status upgrade)
+- ActionEvent: START/OK/WARN/BLOCKED/FAIL only (reason_code required for WARN/BLOCKED/FAIL)
 
 ## Event Emission
-- ▶️ START when indexing artifact or processing memory proposal
-- ✅ OK if artifact indexed + SQLite updated + memory applied
-- ⏭️ SKIP if artifact already exists (dedup by hash, prevent rerun)
-- 🏆 PROMOTED if strategy promoted to higher status
-- ⚠️ WARN if MEMORY.md update skipped (size limit near)
-- Emit to: `data/logs/spool/` ONLY (Logger handles NDJSON)
+- ▶️ START when maintenance begins
+- ✅ OK on successful run
+- ⚠️ WARN for non-fatal issues (must include reason_code)
+- ⛔ BLOCKED for approval-gated conditions (must include reason_code)
+- ❌ FAIL for runtime/check failures (must include reason_code)
+- Emit to: `data/logs/outbox/` ONLY (Logger handles NDJSON)
 
 ## Budgets (Per Task)
-- Max artifacts indexed: Unlimited (but emit to spool)
+- Max artifacts indexed: Unlimited (but emit to outbox)
 - Max files: 20 (MEMORY.md + up to 20 artifact entries)
 - Max MB: 50 (all writes combined)
 - Max promotions per run: 3 (strict limit)
@@ -58,6 +58,7 @@
 - MEMORY.md current size + last-update timestamp
 - Memory/ADR proposals from òQ (ℹ️ INFO ActionEvents)
 - Promotion criteria (from Ghosted or Strategist)
+- `docs/HANDOFFS/handoff-*.md` as primary recent-notes source for promotion candidates
 
 ## What Good Looks Like
 - ✅ No duplicate artifacts (hash-based dedup prevents reruns)
@@ -66,10 +67,25 @@
 - ✅ Promotions are auditable (logged in SQLite + MEMORY.md)
 - ✅ Memory authority respected (applies diffs thoughtfully)
 
+## Safe Auto-Apply Scope
+
+**Auto-apply allowed:**
+- formatting/typo cleanup
+- link/path fixes
+- duplicate cleanup
+- MEMORY.md size trimming (non-meaning-changing)
+- adding concise bullet summaries with pointers
+
+**Escalate (do not auto-apply):**
+- meaning-changing rewrites
+- deletions with semantic impact
+- security rule changes
+- contract restructures
+
 ## Security
 
 - **Secrets:** Never allow secrets in MEMORY.md or ADRs. Scan proposals; if detected → emit ⛔ BLOCKED (SECRET_DETECTED).
-- **Write-allowlist:** Only write to allowed paths (artifacts.db, MEMORY.md, docs/DECISIONS/, spool/). Reject out-of-scope → emit ⛔ BLOCKED (PATH_VIOLATION).
+- **Write-allowlist:** Only write to allowed paths (artifacts.db, MEMORY.md, docs/DECISIONS/, outbox/). Reject out-of-scope → emit ⛔ BLOCKED (PATH_VIOLATION).
 - **Destructive actions:** Warn before archiving/deleting memory entries. Require explicit approval for destructive ops. Emit ⛔ BLOCKED (OVERWRITE_DENIED) if unapproved.
 - **Execution isolation:** Never store execution credentials in MEMORY.md or ADRs (discussion only, no secrets).
 
