@@ -28,6 +28,21 @@ STATUS_EMOJI_FALLBACK = {
     "INFO": "ℹ️",
 }
 
+AGENT_EMOJI = {
+    "òQ": "🤖",
+    "oQ": "🤖",
+    "oq": "🤖",
+    "Logger": "🧾",
+    "Reader": "🔗",
+    "Grabber": "🧲",
+    "Strategist": "🧠",
+    "Backtester": "📈",
+    "Keeper": "🗃️",
+    "Firewall": "🛡️",
+    "Scheduler": "⏱️",
+    "Specter": "🎭",
+}
+
 
 def _maybe_fix_mojibake(text: str) -> str:
     """Best-effort fix for UTF-8 text accidentally decoded as cp1252/latin1."""
@@ -156,11 +171,13 @@ def main():
 
         header_emoji = "⚙️" if _is_spawned_subagent_event(event) else status_emoji
 
+        agent_display = f"{AGENT_EMOJI.get(agent, '')} {agent}".strip()
+
         show_reason = bool(reason_code) and reason_code.upper() != "EXPERIMENT"
         if show_reason:
-            header = f"{header_emoji} {status_word} | {agent} | {model_label} ({reason_code})"
+            header = f"{header_emoji} {status_word} | {agent_display} | {model_label} ({reason_code})"
         else:
-            header = f"{header_emoji} {status_word} | {agent} | {model_label}"
+            header = f"{header_emoji} {status_word} | {agent_display} | {model_label}"
 
         summary_mobile = _fit_summary_mobile(summary, max_lines=3, max_line_len=72)
         timestamp_line = _normalize_timestamp(ts_local, ts_iso)
