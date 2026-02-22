@@ -40,8 +40,7 @@ On significant-build handoff, add this at the very bottom (mandatory):
 
 Verified:
 ━━━━━━━━━━━━━━━━━━━━
-**✅ QC VERIFIED**
-**Independent GPT-5.3 review passed**
+**✅ QC VERIFIED — Independent GPT-5.3 review passed**
 ━━━━━━━━━━━━━━━━━━━━
 
 Partial:
