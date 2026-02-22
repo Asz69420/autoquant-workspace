@@ -43,7 +43,7 @@ On every new/reset session, startup must follow this source order:
 1) USER.md (this contract)
 2) Latest docs/HANDOFFS/handoff-*.md
 3) docs/STATUS.md
-4) MEMORY.md (curated durable memory)
+4) MEMORY.md (curated durable memory, main session only)
 5) memory/YYYY-MM-DD.md (today + yesterday, only if needed)
 
 Required startup output (Resume Card, short):
