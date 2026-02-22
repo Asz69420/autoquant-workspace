@@ -5,6 +5,7 @@ import os
 import sys
 import subprocess
 import time
+import atexit
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -12,6 +13,7 @@ OUTBOX_DIR = Path("data/logs/outbox")
 SPOOL_DIR = Path("data/logs/spool")  # Legacy; read-only for backward compat
 ACTIONS_LOG = Path("data/logs/actions.ndjson")
 ERRORS_LOG = Path("data/logs/errors.ndjson")
+LOCK_FILE = Path("data/logs/tg_reporter.lock")
 
 # Anti-spam dedup: (run_id, status_word) → last send time (in-memory only per cycle)
 last_sent = {}
@@ -64,6 +66,69 @@ def already_logged(run_id, status_word):
     except Exception:
         return False
     return False
+
+def acquire_lock_or_exit():
+    """Best-effort single-instance lock (prevents duplicate sends from parallel daemons)."""
+    LOCK_FILE.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        fd = os.open(str(LOCK_FILE), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(str(os.getpid()))
+
+        def _cleanup_lock():
+            try:
+                if LOCK_FILE.exists():
+                    LOCK_FILE.unlink()
+            except Exception:
+                pass
+
+        atexit.register(_cleanup_lock)
+        return True
+    except FileExistsError:
+        try:
+            existing_pid_txt = LOCK_FILE.read_text(encoding="utf-8", errors="ignore").strip()
+            existing_pid = int(existing_pid_txt)
+            alive = True
+            try:
+                os.kill(existing_pid, 0)
+            except Exception:
+                alive = False
+
+            if not alive:
+                try:
+                    LOCK_FILE.unlink()
+                except Exception:
+                    pass
+                return acquire_lock_or_exit()
+        except Exception:
+            existing_pid_txt = "unknown"
+
+        print(f"Another tg_reporter instance is active (pid={existing_pid_txt}). Exiting.", file=sys.stderr)
+        return False
+
+
+def _event_sort_key(path_obj):
+    """Deterministic ordering: ts_iso, run_id, status rank (START before terminal)."""
+    status_rank = {
+        "START": 0,
+        "QUEUED": 1,
+        "RETRY": 2,
+        "INFO": 3,
+        "OK": 4,
+        "WARN": 5,
+        "BLOCKED": 6,
+        "FAIL": 7,
+    }
+    try:
+        with open(path_obj, "r", encoding="utf-8", errors="replace") as f:
+            e = json.load(f)
+        ts = e.get("ts_iso") or ""
+        run_id = e.get("run_id") or ""
+        sw = e.get("status_word") or ""
+        return (ts, run_id, status_rank.get(sw, 99), path_obj.name)
+    except Exception:
+        return ("", "", 99, path_obj.name)
+
 
 def send_event_to_telegram(event):
     """Format and send an ActionEvent to Telegram. Returns True on success."""
@@ -118,7 +183,7 @@ def drain_once(max_messages=20):
     if SPOOL_DIR.exists():
         event_files.extend(SPOOL_DIR.glob("*.json"))
     
-    event_files = sorted(event_files)
+    event_files = sorted(event_files, key=_event_sort_key)
     
     if not event_files:
         return 0, 0, 0
@@ -231,6 +296,9 @@ def main():
     parser.add_argument("--interval", type=int, default=10, help="Loop interval (seconds)")
     args = parser.parse_args()
     
+    if not acquire_lock_or_exit():
+        sys.exit(1)
+
     if args.manual:
         sent, skipped, failures = drain_once()
         print(f"Drained: {sent} sent, {skipped} skipped, {failures} failures", file=sys.stderr)
