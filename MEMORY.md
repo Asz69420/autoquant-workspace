@@ -95,6 +95,12 @@
 - **docs/STATUS.md:** Rolling "where are we at" page. Auto-updated by make_daily_summary.py
 - **docs/DAILY/:** Daily session summaries (auto-generated)
 
+### Focus Loop Automation (New ✅)
+- **Launcher:** `scripts/automation/focus_loop.ps1`
+- **Runbook:** `docs/RUNBOOKS/focus-loop.md`
+- **Pattern:** create temporary `focus-*` cron loops with flexible cadence (`10m`, `15m`, `30m`, `1h`, etc.) for long tasks.
+- **Stop conditions:** sub-agent continues until `FOCUS_DONE` or `FOCUS_BLOCKED`, then loop should be disabled/removed.
+
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
 - All agents defined in roster; Reader is next build target ([keeper:handoff:handoff-20260222-1234.md])

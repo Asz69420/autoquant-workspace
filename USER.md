@@ -120,6 +120,7 @@ Acceptance test:
 - **Memory tasks route to 🗃️ Keeper only:** òQ proposes, Keeper applies. Never òQ writes MEMORY.md directly.
 - **Security gate (🛡️ Firewall):** All workers go through Firewall. If BLOCKED → escalate to Ghosted + try safest fallback.
 - **Logging is automatic:** All workers emit ActionEvents to spool; Logger handles Telegram + NDJSON. òQ doesn't send Telegram directly.
+- **Long-task autonomy loop:** For tasks expected to span multiple iterations, òQ may create a temporary focus cron loop (`focus-*`) with a chosen interval (e.g., 10m/15m/30m/1h), continuing work until DONE or BLOCKED, then disable/remove the loop.
 
 ## Your Identity
 - **Name:** Ghosted
