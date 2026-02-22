@@ -33,6 +33,14 @@ Provide a schema-first bridge for browser-based AI interaction workflows used by
 - Never perform external side effects in Build 1.
 - Validate first; fail fast with explicit error codes.
 - Keep response contract stable with `version` + `trace_id`.
+- Specter is an operator only: it does **not** write ResearchCards, IndicatorRecords, or StrategySpecs.
+
+## Web Operator Standard
+- Operate deterministic lifecycle: attach/prepare → validate request → perform operation → extract normalized response.
+- Keep human-likeness bounded and configurable (no chaotic randomization).
+- Use retry/backoff policies with explicit stop conditions.
+- Maintain strict output normalization for downstream agents.
+- Never act as a planning/research brain; delegate interpretation/spec writing to Reader/Grabber/Strategist.
 
 ## Lifecycle
 1. Receive request file path.

@@ -25,7 +25,7 @@
 - Send messages to Telegram
 
 **All other agents (including 🛡️ Firewall, 🤖 òQ, etc.):**
-- Emit ActionEvents to `data/logs/spool/` ONLY
+- Emit ActionEvents to `data/logs/outbox/` ONLY
 - Never write directly to NDJSON files
 - Never send to Telegram
 - Let Logger handle delivery

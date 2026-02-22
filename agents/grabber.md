@@ -7,6 +7,7 @@
 - Extract Pine script + metadata (parameters, signals)
 - Emit IndicatorRecord spec (Git-tracked: indicators/specs/)
 - Store Pine artifact (artifacts/indicators/)
+- May call 🎭 Specter for browser fetch/interaction as an operator capability
 - Pass to Strategist for strategy design
 
 ## Allowed Write Paths

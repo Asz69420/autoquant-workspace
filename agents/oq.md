@@ -8,6 +8,7 @@ Orchestrate multi-agent R&D pipeline: plan, delegate work packets, review result
 - Backtest results from 📈 Backtester
 - Spec reviews from 🗃️ Keeper
 - Strategy recommendations from 🧠 Strategist
+- Structured browser-AI operation results from 🎭 Specter (via delegated work orders)
 
 ## Required Outputs
 

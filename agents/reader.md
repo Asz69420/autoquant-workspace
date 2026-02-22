@@ -7,6 +7,7 @@
 - Extract text/transcript content cleanly
 - Emit ResearchCard spec (Git-tracked: research/)
 - Optional: store video/transcript artifacts (artifacts/videos/)
+- May call 🎭 Specter for browser fetch/transcription/AI-web interaction as an operator capability
 - Pass to Strategist for strategy design
 
 ## Allowed Write Paths
