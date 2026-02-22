@@ -172,19 +172,20 @@ Run: oq--config-update-m2.5
 **Backup Model (Fallback):**
 - _None configured yet_ (intentional; add after validation)
 
-**Agent Assignments (current intent):**
+**Agent Assignments (locked):**
 - 🧾 Logger → System (Python)
-- 🔗 Reader → Codex 5.3
-- 🧲 Grabber → Codex 5.3
-- 🧠 Strategist → Codex 5.3
-- 📈 Backtester → System (compute) + optional Codex summary
-- 🗃️ Keeper → Codex 5.3
-- 🛡️ Firewall → Codex 5.3
+- 🔗 Reader → Haiku (primary) + Codex 5.3 (backup)
+- 🧲 Grabber → Haiku (primary) + Codex 5.3 (backup)
+- 🧠 Strategist → Codex 5.3 (primary) + Haiku (backup)
+- 📈 Backtester → System (compute) + Haiku summary (Codex escalation)
+- 🗃️ Keeper → Codex 5.3 (primary) + Haiku (backup)
+- 🛡️ Firewall → Codex 5.3 (primary) + Haiku (backup)
 - ⏱️ Scheduler → System
-- 🤖 òQ → Codex 5.3
+- 🤖 òQ → Codex 5.3 (primary) + Haiku (backup)
+- 🎭 Specter → Codex 5.3 (primary) + Haiku (backup)
 
-**Available for Later:**
-- **MiniMax M2.5** — `opencode/minimax-m2.5` (unassigned, testing pending)
+**Available for Later / Manual Use:**
+- **MiniMax M2.5** — `opencode/minimax-m2.5` (manual call-only; not assigned as primary/backup)
 
 ## Working Style
 1. **Propose risky changes first** — Draft ADR or design doc before implementing breaking changes
