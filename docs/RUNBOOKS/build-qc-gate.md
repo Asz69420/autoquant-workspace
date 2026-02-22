@@ -19,23 +19,42 @@ Skip gate for tiny edits (typos/format-only/single-line non-functional docs).
    - policy compliance (AutoQuant rules in USER.md)
    - edge cases/regressions
    - docs/memory sync completeness
+   - efficiency
+   - effectiveness
+   - future-proofing
+   - project compatibility/alignment
 4. If issues found: revise once.
 5. Re-run QC once after revision.
-6. Return final summary + commit hash with QC badge.
+6. Return final summary + commit hash with QC stamp.
 
 ## Reviewer prompt template
-"You are Build QC. Review this change independently for requirement fit, policy compliance, regressions, and missing docs/memory updates. Use AutoQuant constraints from USER.md (no destructive/unauthorized changes, spec vs artifact rules, logging policy). Return PASS/FAIL, top issues, and exact fixes. Keep it concise."
+"You are Build QC. Review this change independently for requirement fit, policy compliance, regressions, and missing docs/memory updates. Use AutoQuant constraints from USER.md (no destructive/unauthorized changes, spec vs artifact rules, logging policy). Also assess efficiency, effectiveness, future-proofing, and project compatibility/alignment. Return PASS/FAIL, top issues, and exact fixes. Keep it concise."
 
-## Required output footer (handoff to user)
-Add one line at the end of significant-build handoff:
-- `QC: ✅ VERIFIED (independent GPT-5.3)`
-- `QC: ⚠️ PARTIAL (issues found, revised once)`
-- `QC: ❌ NOT VERIFIED (gate failed/blocked)`
+## Required output footer stamp (handoff to user)
+On significant-build handoff, add this at the very bottom:
+
+Verified:
+━━━━━━━━━━━━━━━━━━━━
+**✅ QC VERIFIED**
+**Independent GPT-5.3 review passed**
+━━━━━━━━━━━━━━━━━━━━
+
+Partial:
+━━━━━━━━━━━━━━━━━━━━
+**⚠️ QC PARTIAL**
+**Issues found; revised once**
+━━━━━━━━━━━━━━━━━━━━
+
+Not verified:
+━━━━━━━━━━━━━━━━━━━━
+**❌ QC NOT VERIFIED**
+**Gate failed or blocked**
+━━━━━━━━━━━━━━━━━━━━
 
 ## Quick command pattern (operator)
 - Spawn QC reviewer in separate session using `sessions_spawn`.
 - Pass: change summary, file list, acceptance criteria, and policy checks.
-- If FAIL: revise once, re-run QC, then handoff with footer.
+- If FAIL: revise once, re-run QC, then handoff with footer stamp.
 
 ## Note
 This is a **quick** gate, not full audit. Aim for 5-10 minutes.
