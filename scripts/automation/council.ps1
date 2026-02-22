@@ -33,8 +33,8 @@ Models:
   - openai-codex/gpt-5.3-codex
   - opencode/minimax-m2.5
 
-Env required:
-  OPENROUTER_API_KEY
+Env required (either):
+  OPENROUTER_API_KEY or OPENCODE_API_KEY
 Optional env:
   OPENROUTER_BASE_URL (default: https://openrouter.ai/api/v1)
 "@
@@ -67,8 +67,28 @@ if ($reasoning -notin @('adaptive','low','medium','high')) { throw '--reasoning 
 if ($verbosity -notin @('short','medium')) { throw '--verbosity must be one of: short, medium' }
 if ($timeoutSec -le 0) { throw '--timeoutSec must be > 0' }
 
-$apiKey = $env:OPENROUTER_API_KEY
-if ([string]::IsNullOrWhiteSpace($apiKey)) { throw 'OPENROUTER_API_KEY is required' }
+function Load-DotEnvIfPresent {
+  param([string[]]$Paths)
+  foreach ($p in $Paths) {
+    if (-not (Test-Path $p)) { continue }
+    Get-Content $p | ForEach-Object {
+      $line = $_.Trim()
+      if ([string]::IsNullOrWhiteSpace($line) -or $line.StartsWith('#')) { return }
+      $idx = $line.IndexOf('=')
+      if ($idx -lt 1) { return }
+      $k = $line.Substring(0, $idx).Trim()
+      $v = $line.Substring($idx + 1).Trim().Trim('"')
+      if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($k))) {
+        [Environment]::SetEnvironmentVariable($k, $v)
+      }
+    }
+  }
+}
+
+Load-DotEnvIfPresent -Paths @('.env', 'C:\Users\Clamps\.openclaw\.env')
+
+$apiKey = if (-not [string]::IsNullOrWhiteSpace($env:OPENROUTER_API_KEY)) { $env:OPENROUTER_API_KEY } elseif (-not [string]::IsNullOrWhiteSpace($env:OPENCODE_API_KEY)) { $env:OPENCODE_API_KEY } else { '' }
+if ([string]::IsNullOrWhiteSpace($apiKey)) { throw 'Missing model API key. Set OPENROUTER_API_KEY or OPENCODE_API_KEY (or place it in .env).' }
 $baseUrl = if ([string]::IsNullOrWhiteSpace($env:OPENROUTER_BASE_URL)) { 'https://openrouter.ai/api/v1' } else { $env:OPENROUTER_BASE_URL.TrimEnd('/') }
 $endpoint = "$baseUrl/chat/completions"
 

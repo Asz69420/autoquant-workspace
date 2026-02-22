@@ -60,11 +60,15 @@ Final output always includes:
 
 ## Requirements
 
-Set API key in environment:
+Set model API key in environment (either one):
 
 ```powershell
 $env:OPENROUTER_API_KEY="<your_key>"
+# or
+$env:OPENCODE_API_KEY="<your_key>"
 ```
+
+The runner also auto-loads from `.env` (workspace root) and `C:\Users\Clamps\.openclaw\.env` when present.
 
 Optional:
 
