@@ -167,26 +167,24 @@ Run: oq--config-update-m2.5
 ## Agent Models
 
 **Primary Model (All Agents):**
-- **Haiku** — `anthropic/claude-haiku-4-5-20251001` (fast, cheap, default for all agents)
+- **Codex 5.3** — `openai-codex/gpt-5.3-codex` (default for active agent sessions)
 
 **Backup Model (Fallback):**
-- **Codex** — `gpt-5-codex` (fallback for complex reasoning)
+- _None configured yet_ (intentional; add after validation)
 
-**Agent Assignments:**
+**Agent Assignments (current intent):**
 - 🧾 Logger → System (Python)
-- 🔗 Reader → Haiku
-- 🧲 Grabber → Haiku
-- 🧠 Strategist → Haiku
-- 📈 Backtester → System (compute) + optional Haiku summary
-- 🗃️ Keeper → Haiku
-- 🛡️ Firewall → Haiku
+- 🔗 Reader → Codex 5.3
+- 🧲 Grabber → Codex 5.3
+- 🧠 Strategist → Codex 5.3
+- 📈 Backtester → System (compute) + optional Codex summary
+- 🗃️ Keeper → Codex 5.3
+- 🛡️ Firewall → Codex 5.3
 - ⏱️ Scheduler → System
-- 🤖 òQ → Haiku (default) + Codex (fallback)
+- 🤖 òQ → Codex 5.3
 
 **Available for Later:**
 - **MiniMax M2.5** — `opencode/minimax-m2.5` (unassigned, testing pending)
-- **Sonnet** — `anthropic/claude-sonnet-4-6` (reserved for high-reasoning tasks)
-- **Opus** — `opencode/claude-opus-4-6` (reserved for heavy reasoning)
 
 ## Working Style
 1. **Propose risky changes first** — Draft ADR or design doc before implementing breaking changes
