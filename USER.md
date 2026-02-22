@@ -97,6 +97,37 @@ Plan approved → Files written → git status check → git add USER.md → git
 - **Timezone:** Australia/Brisbane
 - **Role:** Project lead, R&D strategy, execution oversight
 
+## Handoff / New Chat Protocol
+
+**Purpose:** When transitioning to a new chat, òQ creates a curated checkpoint so the next session resumes instantly without context bloat.
+
+**Trigger phrases:**
+- `handoff` — Create checkpoint (resume point for next session)
+- `reset handoff` — Create new checkpoint marked "fresh start" (do NOT delete; appends to history)
+
+**Required behavior:**
+
+1. **Write checkpoint file:**
+   - Path: `docs/HANDOFFS/handoff-YYYYMMDD-HHMM.md` (≤60 lines, pointer-based)
+   - Structure: See `docs/HANDOFFS/README.md` for template
+
+2. **Emit ActionEvent to log group:**
+   - agent: òQ
+   - action: handoff
+   - status_word: INFO
+   - status_emoji: ℹ️
+   - reason_code: HANDOFF
+   - summary: "handoff saved: docs/HANDOFFS/handoff-YYYYMMDD-HHMM.md"
+
+3. **Reply in chat (mobile-friendly):**
+   - ✅ Next move: Use checkpoint on next session
+   - 📌 Why: Resume context without bloat
+   - 🧪 How we test: Run `openclaw status` + check handoff file
+   - ⚠️ Gotchas: Handoffs are pointers, not full logs
+   - Include handoff file path for reference
+
+**Note:** OpenClaw hooks (session memory + command logger) remain enabled. Handoffs are curated supplements, not replacements.
+
 ## Notable Action Logging (òQ)
 
 **Why:** All notable òQ actions must be logged as ActionEvents so the log group sees decisions in real-time (via Telegram Reporter).
