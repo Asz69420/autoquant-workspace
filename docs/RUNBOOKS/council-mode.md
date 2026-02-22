@@ -22,6 +22,9 @@ The workflow is intent-based: if the request clearly asks for a two-model counci
   - `--question` (required)
   - `--rounds` (optional, default `5`, allowed `3..5`)
   - `--name` (optional)
+  - `--reasoning` (`adaptive|low|medium|high`, default `adaptive`)
+  - `--verbosity` (`short|medium`, default `short`)
+  - `--timeoutSec` (optional HTTP timeout, default `60`)
 
 ## Protocol
 
@@ -30,6 +33,7 @@ The workflow is intent-based: if the request clearly asks for a two-model counci
 3. **Round 3:** revised answers
 4. **Rounds 4-5:** only if materially disagree
 5. **Early stop:** when convergence/consensus is reached
+6. **Degraded mode:** if one model fails/timeouts, continue with warning + best synthesis (no hard crash)
 
 Final output always includes:
 - Recommended action
@@ -49,6 +53,9 @@ Final output always includes:
 
 # Named decision, force max 4 rounds
 ./scripts/automation/council.ps1 --question "Cut over to Binance-only data for this sprint?" --rounds 4 --name "Data Feed Cutover"
+
+# Use high reasoning for hard calls
+./scripts/automation/council.ps1 --question "Should we productionize strategy X now?" --reasoning high
 ```
 
 ## Requirements

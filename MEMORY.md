@@ -107,6 +107,8 @@
 - **Runbook:** `docs/RUNBOOKS/council-mode.md`
 - **Models:** Codex 5.3 + MiniMax M2.5 (`opencode/minimax-m2.5`) in a structured council pass.
 - **Protocol:** independent answers → cross-critique → revision → rounds 4-5 only on material disagreement with early-stop on convergence.
+- **Runtime controls:** `--reasoning` (`adaptive|low|medium|high`), `--verbosity`, and timeout controls added for better quality/efficiency balance.
+- **Resilience:** degraded mode returns best synthesis with warning if one model fails/timeouts.
 - **Output contract:** Recommended action, Confidence, Key risks, What would change decision, Immediate next test.
 
 ### Build QC Gate (New ✅)
