@@ -72,3 +72,18 @@
 - **Lineage:** JSON object tracking dependencies: `{ depends_on: [...], generated_by: "...", notes: "..." }`
 - **Rights:** `open` (shareable), `restricted` (internal only), `unknown` (clarify)
 - **Signal Timing:** When does the indicator fire relative to candle close? (close, open next, EOD, etc.)
+## System Infrastructure
+### Telegram Logging (Live ✅)
+- **tg_reporter daemon:** Automated via Windows Scheduled Task `AutoQuant-tg_reporter` (startup trigger)
+- **Python PATH:** C:\Users\Clamps\AppData\Local\Programs\Python\Python314 (added to system PATH, permanent)
+- **Credentials:** `.env` file (TELEGRAM_BOT_TOKEN, TELEGRAM_LOG_CHAT_ID, TELEGRAM_CMD_CHAT_ID) — no secrets in repo
+- **Log group:** òQ LOG (chat ID: -5038734156) — receives all ActionEvents
+- **Command chat:** Asz DM (chat ID: 1801759510) — for future command interface
+- **Drain interval:** 15s (configurable; outbox → Telegram → actions.ndjson append)
+- **Status:** Persistent; survives PowerShell close + system reboot
+
+## Keeper Promotions
+- Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
+- All agents defined in roster; Reader is next build target ([keeper:handoff:handoff-20260222-1234.md])
+- tg_reporter daemon now fully automated (Scheduled Task) ✅ ([keeper:handoff:handoff-20260222-2015.md])
+- Simplified models: Haiku primary, Codex fallback (all agents) ([keeper:handoff:handoff-20260222-1234.md])
