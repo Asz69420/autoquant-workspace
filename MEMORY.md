@@ -109,6 +109,12 @@
 - **Protocol:** independent answers → cross-critique → revision → rounds 4-5 only on material disagreement with early-stop on convergence.
 - **Output contract:** Recommended action, Confidence, Key risks, What would change decision, Immediate next test.
 
+### Build QC Gate (New ✅)
+- **Runbook:** `docs/RUNBOOKS/build-qc-gate.md`
+- **Policy:** Significant builds get an independent second-pass GPT-5.3 review before handoff.
+- **Flow:** PASS → ship; FAIL → single revise pass then handoff.
+- **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
+
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
 - All agents defined in roster; Reader is next build target ([keeper:handoff:handoff-20260222-1234.md])
