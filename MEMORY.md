@@ -112,3 +112,5 @@
 - Manual-only: MiniMax (excluded from automatic fallback)
 - Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ
 - Haiku-primary agents: Reader, Grabber
+
+- Startup canonical rule: see USER.md → "Session Resume Contract (Canonical)"; do not duplicate startup procedures across docs.

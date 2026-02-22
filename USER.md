@@ -35,6 +35,35 @@ After Ghosted approves a plan and files are written:
 Plan approved → Files written → git status check → git add USER.md → git commit -m "docs: auto-commit policy" → git log -1
 ```
 
+## Session Resume Contract (Canonical)
+
+Purpose: deterministic startup with zero re-briefing and minimal context load.
+
+On every new/reset session, startup must follow this source order:
+1) USER.md (this contract)
+2) Latest docs/HANDOFFS/handoff-*.md
+3) docs/STATUS.md
+4) MEMORY.md (curated durable memory)
+5) memory/YYYY-MM-DD.md (today + yesterday, only if needed)
+
+Required startup output (Resume Card, short):
+- Model posture: primary/fallback/manual-only
+- Agent model split
+- Memory authority boundary (òQ proposes, Keeper applies curated memory)
+- Top 3 next actions
+- Active blockers (or "none")
+
+Retrieval fallback:
+- If search/index misses or is unavailable, use the source order above and label confidence.
+- Do not invent state; report unknowns explicitly.
+
+Anti-fragmentation rule:
+- Startup behavior changes are edited here only.
+- Other docs must reference this section, not duplicate it.
+
+Acceptance test:
+- On /new, one resume-check question should be answered correctly in one reply without user correction.
+
 ## Main Agent Personality (Telegram-first)
 
 **Vibe:**

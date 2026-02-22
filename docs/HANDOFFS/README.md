@@ -6,6 +6,8 @@ When transitioning between chat sessions, handoffs provide a **curated, pointer-
 
 OpenClaw's native hooks (session memory, command logs) remain enabled and are authoritative. Handoffs are supplements—not replacements—that highlight key decisions, status, and next steps.
 
+Note: Startup behavior is canonical in `USER.md` ("Session Resume Contract (Canonical)"); handoffs are checkpoint supplements only.
+
 ## When to Use
 
 - End of active work session (before switching contexts)
