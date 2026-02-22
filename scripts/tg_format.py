@@ -169,12 +169,14 @@ def main():
         ts_local = _as_str(event.get("ts_local"), "")
         ts_iso = _as_str(event.get("ts_iso"), "")
 
-        header_emoji = "⚙️" if _is_spawned_subagent_event(event) else status_emoji
+        is_subagent = _is_spawned_subagent_event(event)
 
         agent_display = f"{AGENT_EMOJI.get(agent, '')} {agent}".strip()
+        if is_subagent:
+            agent_display = f"⚙️ {agent_display}".strip()
 
         show_reason = bool(reason_code) and reason_code.upper() != "EXPERIMENT"
-        status_text = f"{header_emoji} {status_word}"
+        status_text = f"{status_emoji} {status_word}"
         if show_reason:
             status_text = f"{status_text} ({reason_code})"
 
