@@ -44,6 +44,27 @@ def mark_sent(run_id, status_word):
     key = f"{run_id}_{status_word}"
     last_sent[key] = time.time()
 
+
+def already_logged(run_id, status_word):
+    """Persistent dedup: skip if already appended in actions.ndjson."""
+    if not ACTIONS_LOG.exists():
+        return False
+    try:
+        with open(ACTIONS_LOG, "r", encoding="utf-8", errors="replace") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    e = json.loads(line)
+                except Exception:
+                    continue
+                if e.get("run_id") == run_id and e.get("status_word") == status_word:
+                    return True
+    except Exception:
+        return False
+    return False
+
 def send_event_to_telegram(event):
     """Format and send an ActionEvent to Telegram. Returns True on success."""
     try:
@@ -159,6 +180,13 @@ def drain_once(max_messages=20):
             if is_duplicate(run_id, status_word):
                 skipped += 1
                 print(f"Skipped (dedup): {event_file.name}", file=sys.stderr)
+                continue
+
+            # Persistent dedup across process restarts
+            if already_logged(run_id, status_word):
+                event_file.unlink()
+                skipped += 1
+                print(f"Skipped (already-logged): {event_file.name}", file=sys.stderr)
                 continue
             
             # Send to Telegram

@@ -19,6 +19,15 @@ NAMED_AGENTS = {
     "Backtester", "Firewall", "Scheduler", "Logger",
 }
 
+STATUS_EMOJI_FALLBACK = {
+    "START": "▶️",
+    "OK": "✅",
+    "WARN": "⚠️",
+    "FAIL": "❌",
+    "BLOCKED": "⛔",
+    "INFO": "ℹ️",
+}
+
 
 def _maybe_fix_mojibake(text: str) -> str:
     """Best-effort fix for UTF-8 text accidentally decoded as cp1252/latin1."""
@@ -58,6 +67,18 @@ def to_model_label(model_id: str) -> str:
     return short if short else model_id
 
 
+def _normalize_status_emoji(status_emoji: str, status_word: str) -> str:
+    """Return a sane emoji; repair malformed values like status_emoji='START'."""
+    se = _as_str(status_emoji, "")
+    sw = _as_str(status_word, "").upper()
+
+    # Missing, mojibake-ish, or textual status tokens should fallback.
+    bad = (not se) or (se.upper() == sw) or (se.upper() in STATUS_EMOJI_FALLBACK)
+    if bad:
+        return STATUS_EMOJI_FALLBACK.get(sw, se or "ℹ️")
+    return se
+
+
 def _is_spawned_subagent_event(event: dict) -> bool:
     """Cogwheel is ONLY for spawned task sub-agents, never named system agents."""
     agent = _as_str(event.get("agent", ""))
@@ -91,8 +112,8 @@ def main():
         agent = _as_str(event["agent"])
         model_id = _as_str(event["model_id"])
         model_label = to_model_label(model_id)
-        status_emoji = _as_str(event["status_emoji"])
         status_word = _as_str(event["status_word"])
+        status_emoji = _normalize_status_emoji(event.get("status_emoji"), status_word)
         reason_code = _as_str(event.get("reason_code"), "")
         summary = _as_str(event["summary"])
         run_id = _as_str(event["run_id"])
