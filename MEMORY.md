@@ -102,6 +102,13 @@
 - **Auto-stop sweep:** new `sweep` action checks latest run summary (`openclaw cron runs --id <jobId> --limit 1`) and auto-disables/removes loops that emit terminal markers.
 - **Terminal markers:** `FOCUS_DONE:` or `FOCUS_BLOCKED:`.
 
+### Council Mode v1 (New ✅)
+- **Launcher:** `scripts/automation/council.ps1`
+- **Runbook:** `docs/RUNBOOKS/council-mode.md`
+- **Models:** Codex 5.3 + MiniMax M2.5 (`opencode/minimax-m2.5`) in a structured council pass.
+- **Protocol:** independent answers → cross-critique → revision → rounds 4-5 only on material disagreement with early-stop on convergence.
+- **Output contract:** Recommended action, Confidence, Key risks, What would change decision, Immediate next test.
+
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
 - All agents defined in roster; Reader is next build target ([keeper:handoff:handoff-20260222-1234.md])
