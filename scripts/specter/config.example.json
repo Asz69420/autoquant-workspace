@@ -1,0 +1,24 @@
+{
+  "version": "build1",
+  "defaults": {
+    "timeout_ms": 30000,
+    "cache_ttl_seconds": 3600
+  },
+  "humanize": {
+    "enabled": true,
+    "typing_delay_ms": {
+      "base": 120,
+      "jitter": 80
+    },
+    "pause_ms": {
+      "micro_min": 200,
+      "micro_max": 800,
+      "pre_send_min": 300,
+      "pre_send_max": 1500
+    }
+  },
+  "retries": {
+    "max_attempts": 2,
+    "backoff_ms": 1200
+  }
+}

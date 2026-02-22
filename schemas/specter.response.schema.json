@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "specter.response.schema.json",
+  "title": "SpecterResponse",
+  "type": "object",
+  "required": [
+    "version",
+    "trace_id",
+    "request_id",
+    "status",
+    "provider",
+    "timing_ms",
+    "cache",
+    "ts_iso"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "error", "blocked"]
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_label": {
+      "type": ["string", "null"]
+    },
+    "response_text": {
+      "type": ["string", "null"]
+    },
+    "timing_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cache": {
+      "type": "object",
+      "required": ["hit", "key"],
+      "properties": {
+        "hit": { "type": "boolean" },
+        "key": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "error": {
+      "type": ["object", "null"],
+      "properties": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "retryable": { "type": "boolean" }
+      },
+      "required": ["code", "message", "retryable"],
+      "additionalProperties": false
+    },
+    "ts_iso": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

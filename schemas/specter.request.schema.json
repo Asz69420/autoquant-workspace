@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "specter.request.schema.json",
+  "title": "SpecterRequest",
+  "type": "object",
+  "required": [
+    "version",
+    "trace_id",
+    "request_id",
+    "provider_target",
+    "prompt",
+    "intent"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider_target": {
+      "type": "string",
+      "enum": ["claude_web", "generic_browser_ai"]
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intent": {
+      "type": "string",
+      "enum": ["mock", "execute"]
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 180000,
+      "default": 30000
+    },
+    "humanize": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

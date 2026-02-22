@@ -15,6 +15,7 @@
 | 7 | 🧠 | Strategist | Design strategies, write StrategySpecs, iterate |
 | 8 | 📈 | Backtester | Run backtests, generate BacktestReports, measure |
 | 9 | 🗃️ | Keeper | Index artifacts, deduplicate, curate memory, promote strategies |
+| 10 | 🎭 | Specter | Browser-AI bridge (mock-only Build 1); schema validation + safe contract responses |
 
 ## Single-Sender Logging Rule (MANDATORY)
 
