@@ -124,6 +124,7 @@ Acceptance test:
 - **Council mode for tough calls:** Run `scripts/automation/council.ps1` to get a two-model challenge/revise synthesis before deciding.
 - **Build QC gate (significant builds):** After implementation, run a quick independent second-pass GPT-5.3 review; if FAIL, revise once before handoff. Skip for trivial edits.
 - **QC delivery stamp (required on significant builds):** End handoff with the boxed QC stamp from `docs/RUNBOOKS/build-qc-gate.md` (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`) so verification state is explicit and visually obvious.
+- **QC enforcement (hard rule):** Any significant-build reply without a QC stamp is invalid and must be immediately corrected with a follow-up QC stamp message before any new topic continues.
 
 ## Your Identity
 - **Name:** Ghosted
