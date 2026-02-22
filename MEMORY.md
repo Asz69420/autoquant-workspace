@@ -112,8 +112,9 @@
 ### Build QC Gate (New ✅)
 - **Runbook:** `docs/RUNBOOKS/build-qc-gate.md`
 - **Policy:** Significant builds get an independent second-pass GPT-5.3 review before handoff.
-- **Flow:** PASS → ship; FAIL → single revise pass then handoff.
+- **Flow:** PASS → ship; FAIL → single revise pass, then one re-check.
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
+- **Handoff badge:** Significant-build replies must include QC footer (`✅ VERIFIED` / `⚠️ PARTIAL` / `❌ NOT VERIFIED`).
 
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
