@@ -174,10 +174,11 @@ def main():
         agent_display = f"{AGENT_EMOJI.get(agent, '')} {agent}".strip()
 
         show_reason = bool(reason_code) and reason_code.upper() != "EXPERIMENT"
+        status_text = f"{header_emoji} {status_word}"
         if show_reason:
-            header = f"{header_emoji} {status_word} | {agent_display} | {model_label} ({reason_code})"
-        else:
-            header = f"{header_emoji} {status_word} | {agent_display} | {model_label}"
+            status_text = f"{status_text} ({reason_code})"
+
+        header = f"{agent_display} | {model_label} | {status_text}"
 
         summary_mobile = _fit_summary_mobile(summary, max_lines=3, max_line_len=72)
         timestamp_line = _normalize_timestamp(ts_local, ts_iso)
