@@ -10,6 +10,27 @@ try:
 except Exception:
     pass
 
+def to_model_label(model_id: str) -> str:
+    """Return short human-friendly model label for Telegram logs."""
+    known = {
+        "openai-codex/gpt-5.3-codex": "codex 5.3",
+        "opencode/claude-opus-4-6": "opus 4.6",
+        "anthropic/claude-sonnet-4-6": "sonnet 4.6",
+        "anthropic/claude-haiku-4-5-20251001": "haiku 4.5",
+    }
+    if model_id in known:
+        return known[model_id]
+
+    if model_id in {"system", "build1-mock"}:
+        return model_id
+
+    # Fallback: shorten to last path segment and clean separators
+    short = model_id.split("/")[-1]
+    short = short.replace("gpt-", "").replace("claude-", "")
+    short = short.replace("-", " ").strip()
+    return short if short else model_id
+
+
 def main():
     import argparse
     
@@ -30,6 +51,7 @@ def main():
         # Extract fields
         agent = event["agent"]
         model_id = event["model_id"]
+        model_label = to_model_label(model_id)
         status_emoji = event["status_emoji"]
         status_word = event["status_word"]
         reason_code = event.get("reason_code")
@@ -39,9 +61,9 @@ def main():
         # Header: status_emoji STATUS_WORD | Agent | model_id (reason_code if present)
         # Omit parentheses if reason_code is null/missing
         if reason_code:
-            header = f"{status_emoji} {status_word} | {agent} | {model_id} ({reason_code})"
+            header = f"{status_emoji} {status_word} | {agent} | {model_label} ({reason_code})"
         else:
-            header = f"{status_emoji} {status_word} | {agent} | {model_id}"
+            header = f"{status_emoji} {status_word} | {agent} | {model_label}"
         
         # Body: summary (max 50 chars, truncate if needed) + run_id
         summary_truncated = (summary[:47] + "...") if len(summary) > 50 else summary
