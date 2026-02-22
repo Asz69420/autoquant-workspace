@@ -13,12 +13,12 @@
 ## Allowed Write Paths
 - `research/` (ResearchCard specs, Git-tracked)
 - `artifacts/videos/` (video transcripts, optional)
-- `data/logs/spool/` (ActionEvent emission ONLY)
+- `data/logs/outbox/` (ActionEvent emission ONLY)
 
 ## Forbidden Actions
 - Never modify specs (create new versions)
 - Never write to Git directly (commit via òQ)
-- Never write to errors.ndjson (emit ActionEvent to spool; Logger handles NDJSON)
+- Never write to errors.ndjson (emit ActionEvent to outbox; Logger handles NDJSON)
 - Never follow redirects blindly without checking rights
 - Never write IndicatorRecords or StrategySpecs
 
@@ -32,7 +32,7 @@
 - ✅ OK if content extracted + ResearchCard written
 - ⚠️ WARN if rights unclear (ask Ghosted before using)
 - ❌ FAIL with reason_code (SOURCE_UNREACHABLE, RIGHTS_UNKNOWN, TRANSCRIPT_FAIL)
-- Emit to: `data/logs/spool/` ONLY (Logger handles everything else)
+- Emit to: `data/logs/outbox/` ONLY (Logger handles everything else)
 
 ## Budgets (Per Task)
 - Max links fetched: 3
@@ -60,10 +60,10 @@
 ## Security
 
 - **Secrets:** Never store API keys or auth tokens in ResearchCard or artifacts. If detected → emit ⛔ BLOCKED (SECRET_DETECTED).
-- **Write-allowlist:** Only write to research/, artifacts/videos/, spool/. Emit ⛔ BLOCKED (PATH_VIOLATION) if violated.
+- **Write-allowlist:** Only write to research/, artifacts/videos/, outbox/. Emit ⛔ BLOCKED (PATH_VIOLATION) if violated.
 - **Destructive actions:** Never delete existing ResearchCards. Emit ⛔ BLOCKED (OVERWRITE_DENIED) if requested.
 - **Execution isolation:** No live credentials in research documents; cite sources with public URLs only.
 
 ## Model Recommendations
-- **Primary:** Sonnet (extract insights, write ResearchCard, interpret rights)
-- **Backup:** Opus (if content is dense/technical)
+- **Primary:** Haiku (`anthropic/claude-haiku-4-5-20251001`)
+- **Backup:** Codex 5.3 (`openai-codex/gpt-5.3-codex`)

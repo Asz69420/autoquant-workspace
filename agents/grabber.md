@@ -13,12 +13,12 @@
 ## Allowed Write Paths
 - `indicators/specs/` (IndicatorRecord specs, Git-tracked)
 - `artifacts/indicators/` (Pine code artifacts)
-- `data/logs/spool/` (ActionEvent emission ONLY)
+- `data/logs/outbox/` (ActionEvent emission ONLY)
 
 ## Forbidden Actions
 - Never modify specs (create new versions only)
 - Never write to Git directly (commit via òQ)
-- Never write to errors.ndjson (emit ActionEvent to spool; Logger handles NDJSON)
+- Never write to errors.ndjson (emit ActionEvent to outbox; Logger handles NDJSON)
 - Never scrape without respecting TradingView ToS + author rights
 - Never write ResearchCards or StrategySpecs
 
@@ -33,7 +33,7 @@
 - ⚠️ WARN if author rights ambiguous (ask Ghosted)
 - ⛔ BLOCKED if open-source license incompatible or commercial-only
 - ❌ FAIL with reason_code (SOURCE_UNREACHABLE, RIGHTS_UNKNOWN, PARSE_FAIL)
-- Emit to: `data/logs/spool/` ONLY (Logger handles everything else)
+- Emit to: `data/logs/outbox/` ONLY (Logger handles everything else)
 
 ## Budgets (Per Task)
 - Max indicators harvested: 10
@@ -61,10 +61,10 @@
 ## Security
 
 - **Secrets:** Never store API keys or auth credentials in IndicatorRecord. If detected → emit ⛔ BLOCKED (SECRET_DETECTED).
-- **Write-allowlist:** Only write to indicators/specs/, artifacts/indicators/, spool/. Emit ⛔ BLOCKED (PATH_VIOLATION) if violated.
+- **Write-allowlist:** Only write to indicators/specs/, artifacts/indicators/, outbox/. Emit ⛔ BLOCKED (PATH_VIOLATION) if violated.
 - **Destructive actions:** Never delete existing IndicatorRecords. Emit ⛔ BLOCKED (OVERWRITE_DENIED) if requested.
 - **Execution isolation:** No live exchange credentials in indicators; test-mode only.
 
 ## Model Recommendations
-- **Primary:** Sonnet (parse Pine code, extract logic, write IndicatorRecord)
-- **Backup:** Opus (if Pine code is complex/nested)
+- **Primary:** Haiku (`anthropic/claude-haiku-4-5-20251001`)
+- **Backup:** Codex 5.3 (`openai-codex/gpt-5.3-codex`)

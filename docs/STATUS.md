@@ -11,10 +11,13 @@
 - None currently
 
 ## Next Actions (Top 3)
-1. TBD
+1. Align agent cards with canonical model posture
+2. Enforce outbox-only ActionEvent contract across agent docs
+3. Run startup acceptance check on next /new
 
 ## Recent Completions
-- (none yet)
+- Canonical session resume contract locked in USER.md
+- Startup baseline and post-change simulations completed
 
 ## Quick Links
 - [MEMORY.md](../MEMORY.md) — Project memory
@@ -28,4 +31,7 @@
 - Primary: Codex 5.3
 - Fallback: Haiku
 - Manual-only: MiniMax
-- Agents: (same mapping as above)
+- Agents:
+  - Codex-primary: Specter, Keeper, Strategist, Firewall, òQ
+  - Haiku-primary: Reader, Grabber
+  - System: Logger, Scheduler, Backtester compute (+ Haiku summary path)

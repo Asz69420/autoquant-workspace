@@ -36,6 +36,7 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 - Policy decisions
 - Work packet rollups
 - Milestone completions
+- Sub-agent spawns (START/INFO) and completions (OK/WARN/FAIL)
 
 **Example ActionEvent (partial; see schemas/ActionEvent.md for full spec):**
 ```json
@@ -48,7 +49,7 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
   "action": "git_commit",
   "status_word": "OK",
   "status_emoji": "✅",
-  "model_id": "haiku",
+  "model_id": "openai-codex/gpt-5.3-codex",
   "reason_code": "COMMIT",
   "summary": "chore: simplify agent models",
   "inputs": [],
@@ -59,8 +60,8 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 ```
 
 ## Model Assignment
-- **Primary:** Haiku (`anthropic/claude-haiku-4-5-20251001`)
-- **Fallback:** Codex (`openai-codex/gpt-5.3-codex`)
+- **Primary:** Codex 5.3 (`openai-codex/gpt-5.3-codex`)
+- **Fallback:** Haiku (`anthropic/claude-haiku-4-5-20251001`)
 
 ## Constraints
 - Never overwrite/delete without approval

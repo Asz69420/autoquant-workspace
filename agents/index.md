@@ -9,7 +9,7 @@
 | 1 | 🤖 | òQ | Main orchestrator; enforce USER.md rules; delegate work |
 | 2 | ⏱️ | Scheduler | Schedule tasks, manage timing, cron integration |
 | 3 | 🛡️ | Firewall | Validate specs, enforce security, block unsafe actions |
-| 4 | 🧾 | Logger | **ONLY** Telegram & NDJSON sender; drain spool, format, retry |
+| 4 | 🧾 | Logger | **ONLY** Telegram & NDJSON sender; drain outbox, format, retry |
 | 5 | 🔗 | Reader | Fetch links/videos, extract content, emit ResearchCards |
 | 6 | 🧲 | Grabber | Harvest TradingView indicators, emit IndicatorRecords |
 | 7 | 🧠 | Strategist | Design strategies, write StrategySpecs, iterate |
@@ -30,8 +30,8 @@
 - Never send to Telegram
 - Let Logger handle delivery
 
-Logger drains spool in timestamp order: parse → format → send Telegram → append to actions.ndjson (+ errors.ndjson if FAIL) → delete spool file
-- Retry logic: if send fails, keep spool file, log FAIL to errors.ndjson, continue
+Logger drains outbox in timestamp order: parse → format → send Telegram → append to actions.ndjson (+ errors.ndjson if FAIL) → delete outbox file
+- Retry logic: if send fails, keep outbox file, log FAIL to errors.ndjson, continue
 
 **Event routing:**
 - **actions.ndjson:** ALL events (START, OK, WARN, FAIL, BLOCKED, SKIP, etc.) — complete audit trail
@@ -108,14 +108,14 @@ Logger drains spool in timestamp order: parse → format → send Telegram → a
 | Agent | Read | Write (Allowed) | Forbidden |
 |-------|------|-----------------|-----------|
 | 🤖 òQ | All | **None** (propose only) | Modify MEMORY.md, docs/DECISIONS, delete files |
-| ⏱️ Scheduler | All | cron.log, spool/ | Modify agent logic |
-| 🛡️ Firewall | specs/, docs/, artifacts | spool/ ONLY | Write to other paths, skip security checks |
-| 🧾 Logger | spool/, all | **actions.ndjson, errors.ndjson, Telegram** | Modify source files |
-| 🔗 Reader | external URLs | research/ (ResearchCards), artifacts/videos/, spool/ | IndicatorRecords, StrategySpecs, MEMORY, docs |
-| 🧲 Grabber | external APIs | indicators/specs/, artifacts/indicators/, spool/ | other specs, MEMORY, docs |
-| 🧠 Strategist | research/, indicators/specs/, artifacts/ | indicators/specs/ (custom), strategies/specs/, research/, spool/ | Delete specs, modify MEMORY |
-| 📈 Backtester | strategies/specs/, data/ | data/cache/, artifacts/backtests/, spool/ | Commit to Git, store credentials |
-| 🗃️ Keeper | all artifacts | **artifacts.db, MEMORY.md, ADRs (sole authority)**, spool/ | Delete without backup, store secrets |
+| ⏱️ Scheduler | All | cron.log, outbox/ | Modify agent logic |
+| 🛡️ Firewall | specs/, docs/, artifacts | outbox/ ONLY | Write to other paths, skip security checks |
+| 🧾 Logger | outbox/, all | **actions.ndjson, errors.ndjson, Telegram** | Modify source files |
+| 🔗 Reader | external URLs | research/ (ResearchCards), artifacts/videos/, outbox/ | IndicatorRecords, StrategySpecs, MEMORY, docs |
+| 🧲 Grabber | external APIs | indicators/specs/, artifacts/indicators/, outbox/ | other specs, MEMORY, docs |
+| 🧠 Strategist | research/, indicators/specs/, artifacts/ | indicators/specs/ (custom), strategies/specs/, research/, outbox/ | Delete specs, modify MEMORY |
+| 📈 Backtester | strategies/specs/, data/ | data/cache/, artifacts/backtests/, outbox/ | Commit to Git, store credentials |
+| 🗃️ Keeper | all artifacts | **artifacts.db, MEMORY.md, ADRs (sole authority)**, outbox/ | Delete without backup, store secrets |
 
 ## Anti-Bloat Budgets (Per Run, Strict Caps)
 
@@ -124,7 +124,7 @@ Logger drains spool in timestamp order: parse → format → send Telegram → a
 | 🤖 òQ | 0 | 0 | 0 (propose only) | Any write request |
 | ⏱️ Scheduler | 1 | 0.01 | 0 | Scheduling conflicts |
 | 🛡️ Firewall | 0 | 0 | 0 | Any policy violation |
-| 🧾 Logger | 0 | 10 | 0 (spool processing only) | 20 TG msg/cycle OR send fails 5x |
+| 🧾 Logger | 0 | 10 | 0 (outbox processing only) | 20 TG msg/cycle OR send fails 5x |
 | 🔗 Reader | 3 | 100 | 1–3 ResearchCards per link | Any fetch timeout or rights unclear |
 | 🧲 Grabber | 10 | 200 | 10 indicators | Fetch fails 3x OR rights unknown |
 | 🧠 Strategist | 5 | 5 | 3 StrategySpecs | Generic idea or untestable |
@@ -181,9 +181,9 @@ Firewall is the security layer. It MUST:
 
 ---
 
-## Event Emission Rules (All → Spool; Only Logger → NDJSON + Telegram)
+## Event Emission Rules (All → Outbox; Only Logger → NDJSON + Telegram)
 
-**Every agent (except Logger) emits ActionEvents to `data/logs/spool/`:**
+**Every agent (except Logger) emits ActionEvents to `data/logs/outbox/`:**
 
 Example lifecycle:
 ```
@@ -193,14 +193,14 @@ Example lifecycle:
 4. ✅ OK or ⚠️ WARN or ❌ FAIL or ⛔ BLOCKED (end state)
 ```
 
-**Only 🧾 Logger reads spool, writes NDJSON, sends Telegram:**
-- Drains spool in timestamp order
+**Only 🧾 Logger reads outbox, writes NDJSON, sends Telegram:**
+- Drains outbox in timestamp order
 - Parses ActionEvent JSON
 - Formats → Telegram code-block
 - Sends via env vars (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)
 - Appends original event to data/logs/actions.ndjson (all events)
 - If FAIL: also appends to data/logs/errors.ndjson (runtime errors only; BLOCKED excluded)
-- Deletes spool file on success; keeps on send failure
+- Deletes outbox file on success; keeps on send failure
 
 **Logger rate-limiting:**
 - Max 20 Telegram messages per drain cycle
@@ -214,10 +214,10 @@ Example lifecycle:
 Each agent card includes:
 1. **Emoji + Name + Mission** (one-liner)
 2. **Purpose** (2–4 bullets)
-3. **Allowed write paths** (explicit; spool-only for most)
+3. **Allowed write paths** (explicit; outbox-only for most)
 4. **Forbidden actions** (explicit)
 5. **Required outputs** (schemas to produce)
-6. **Event emission** (which statuses, always to spool)
+6. **Event emission** (which statuses, always to outbox)
 7. **Budgets** (files, MB, specs, stop threshold) — **STRICT CAPS**
 8. **Stop conditions** (when to ask Ghosted)
 9. **Inputs accepted** (links, spec paths, artifact IDs)
