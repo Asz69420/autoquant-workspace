@@ -16,18 +16,22 @@ For significant policy/contract/runbook/multi-file changes, sequence is mandator
 3. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops)
 4. If cap reached: emit one consolidated blocker list, pause for user decision, and stop auto-reruns
    - For minor significant docs-only edits, use lightweight proposal QC mode (one pass + one fix + one recheck)
-5. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
-6. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed)
-7. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
-8. Implement/write + commit changes
-9. Run independent QC on implementation
-10. Handoff with verification status + run_id + boxed QC stamp
+5. Run verifier sub-agent proposal QC automatically; if not PASS, continue internal revise/re-audit loop (no approval ask)
+6. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
+7. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed)
+8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
+9. Implement/write + commit changes
+10. Run independent QC on implementation (🔰 Verifier)
+11. Handoff with verification status + run_id + boxed QC stamp
 
 Before approval, block mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 Valid standalone approvals include: `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.
 Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) block execution and keep approval-wait state.
 Proposal QC reporting must use fixed checklist categories (policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility) and deduplicate repeated issues unless state changed.
 If any gate is skipped, output is process-invalid and must be corrected before topic continuation.
+For significant builds, verifier sub-agent QC is mandatory for both proposal and implementation stages; inline/local-only QC is insufficient as sole gate.
+DM output contract for significant builds: send only clean approval package and final verified handoff unless audit details are explicitly requested.
+If implementation occurs before standalone approval, stop immediately, revert unauthorized commits, and restart from proposal QC.
 
 ---
 

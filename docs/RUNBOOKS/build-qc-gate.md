@@ -37,13 +37,14 @@ For minor significant docs-only edits, use lean proposal QC mode:
    - project compatibility/alignment
 4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops).
 5. If cap reached: emit one consolidated blocker list, require user decision, and stop auto-reruns.
-6. Send verified bill to user for approval (default chat output: `**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**` + boxed stamp; structured status/run_id is log-facing and shared in chat only on request).
-7. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed).
-8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
-9. Implement/write + commit changes.
-10. Run independent QC pass on implementation (🔰 Verifier).
-11. If implementation QC fails: revise once and re-run implementation QC once.
-12. Return final summary + commit hash with QC stamp.
+6. Run verifier sub-agent proposal QC automatically before any approval ask. If not PASS, continue internal revise/re-audit loop; do not ask user approval.
+7. Send verified bill to user for approval (default chat output: `**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**` + boxed stamp; structured status/run_id is log-facing and shared in chat only on request).
+8. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed).
+9. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
+10. Implement/write + commit changes.
+11. Run independent QC pass on implementation (🔰 Verifier).
+12. If implementation QC fails: revise once and re-run implementation QC once.
+13. Return final summary + commit hash with QC stamp.
 
 ## Verification Brief (required input to auditor)
 For significant builds, auditor must receive this context pack:
@@ -96,6 +97,7 @@ Not verified:
 - Valid approval is a standalone user message with clear affirmative intent (case-insensitive, trimmed), e.g. `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.
 - Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) must block execution and keep approval-wait state.
 - Before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
+- If implementation occurs before standalone approval, treat it as process-invalid: stop, disclose, revert unauthorized commits, and restart from proposal QC.
 - Do not send implementation handoff until post-implementation independent QC has completed.
 - Default user-visible mode: report minimal verification confirmation (`**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**`) + boxed stamp and final draft; keep structured status/run_id in logs and provide in chat only when explicitly requested.
 - DM noise suppression: for routine proposal/implementation QC checks, prefer inline/local QC in main chat to avoid `sessions_spawn` auto-announcement noise; reserve `sessions_spawn` for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicitly requested QC runs.
