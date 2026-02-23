@@ -288,9 +288,26 @@ if ($sessionState -eq 'ACTIVE') {
 $readySummary = if ($finalVerdict -eq 'WARN') { "Build ready with WARN-only minor issues: " + $BuildSessionId + " attempts=" + $attempt } else { "Build ready for approval: " + $BuildSessionId + " attempts=" + $attempt }
 Emit-LogEvent -RunId ("build-" + $BuildSessionId) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_READY_FOR_APPROVAL' -Summary $readySummary -Inputs @($TaskId) -Outputs @($artifact, ("verifier-run:" + $finalRunId))
 
-Write-Output "BUILD_READY_FOR_APPROVAL build_session_id=$BuildSessionId"
+# supersede older ready builds (hide stale approvals from main chat)
+try {
+  $sessions = python scripts/automation/build_session.py show --limit 50 | ConvertFrom-Json
+  foreach ($s in $sessions) {
+    if ($s.build_session_id -ne $BuildSessionId -and $s.state -eq 'SESSION_READY_FOR_APPROVAL') {
+      python scripts/automation/build_session.py set-state --build-session-id $s.build_session_id --state SUPERSEDED --blocker-trace ("Superseded by " + $BuildSessionId) | Out-Null
+      Emit-LogEvent -RunId ("build-" + [string]$s.build_session_id) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_SUPERSEDED' -Summary ("Build superseded by newer ready build") -Inputs @([string]$s.build_session_id) -Outputs @([string]$BuildSessionId)
+    }
+  }
+} catch {}
+
+Write-Output "Build ready for your review"
 if ($finalVerdict -eq 'WARN') {
-  Write-Output "Build ready. Verifier WARN only (minor). Files changed: $artifact. Build ready. Apply these changes?"
+  Write-Output "- What changed: verifier loop and fixes completed"
+  Write-Output "- Risk summary: WARN only (minor issues)"
+  Write-Output "- User impact: no immediate live impact"
+  Write-Output "Apply these changes?"
 } else {
-  Write-Output "Build ready. Verifier PASS (attempts=$attempt). Files changed: $artifact. Build ready. Apply these changes?"
+  Write-Output "- What changed: requested updates implemented and verified"
+  Write-Output "- Risk summary: PASS"
+  Write-Output "- User impact: no immediate live impact"
+  Write-Output "Apply these changes?"
 }

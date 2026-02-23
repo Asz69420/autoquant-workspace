@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 
 function Get-Intent([string]$text) {
   $t = $text.ToLowerInvariant()
-  $approve = @('yes','yep','yeah','approve','go ahead','do it','apply it','ship it','looks good','merge it','send it through')
+  $approve = @('yes','yep','yeah','approve','go ahead','do it','apply','okay apply','apply it','ship it','looks good','merge it','send it through')
   $reject = @('no','nope','reject',"don't",'stop','cancel','leave it','not yet','hold off')
 
   foreach ($k in $approve) { if ($t.Contains($k)) { return 'APPROVE' } }
@@ -43,20 +43,15 @@ if (-not [string]::IsNullOrWhiteSpace($BuildSessionId)) {
   exit $LASTEXITCODE
 }
 
-if ($readyBuilds.Count -gt 1) {
-  Write-Output 'Which build?'
-  $readyBuilds | Sort-Object last_update_at -Descending | Select-Object -First 5 | ForEach-Object {
-    Write-Output ("- " + $_.build_session_id + " | " + $_.description + " | " + $_.last_update_at)
-  }
-  exit 4
-}
-
-if ($readyBuilds.Count -eq 1) {
-  $sid = [string]$readyBuilds[0].build_session_id
+if ($readyBuilds.Count -ge 1) {
+  $sorted = $readyBuilds | Sort-Object last_update_at -Descending
+  $sid = [string]$sorted[0].build_session_id
   if ($intent -eq 'APPROVE') {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid
+    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid | Out-Null
+    Write-Output 'Applied the latest ready build.'
   } else {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid
+    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid | Out-Null
+    Write-Output 'Rejected the latest ready build.'
   }
   exit $LASTEXITCODE
 }

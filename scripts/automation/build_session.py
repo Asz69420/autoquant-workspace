@@ -5,7 +5,7 @@ from pathlib import Path
 
 LEDGER = Path("build_session_ledger.jsonl")
 STATE_ACTIVE = "ACTIVE"
-VALID_STATES = {"ACTIVE", "SESSION_READY_FOR_APPROVAL", "SESSION_APPLIED", "BLOCKED", "CLOSED"}
+VALID_STATES = {"ACTIVE", "SESSION_READY_FOR_APPROVAL", "SESSION_APPLIED", "SUPERSEDED", "BLOCKED", "CLOSED"}
 
 def now():
     return datetime.now(UTC).isoformat().replace('+00:00','Z')
