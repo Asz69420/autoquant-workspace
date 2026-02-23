@@ -30,6 +30,19 @@ function Emit-LogEvent {
   python @args | Out-Null
 }
 
+function Apply-AutofixText {
+  param(
+    [Parameter(Mandatory=$true)][string]$Path,
+    [Parameter(Mandatory=$true)][string]$newText
+  )
+  if ([string]::IsNullOrWhiteSpace($newText)) {
+    python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace "autofix_missing_replacement_text" | Out-Null
+    python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
+    throw 'autofix_missing_replacement_text'
+  }
+  Add-Content -Path $Path -Value $newText
+}
+
 if ([string]::IsNullOrWhiteSpace($BuildSessionId)) {
   $startOut = python scripts/automation/build_session.py start --description $Question
   $startObj = $startOut | ConvertFrom-Json
@@ -202,11 +215,11 @@ while ($attempt -lt $MaxAttempts) {
   $filesTouched = @()
   if ($verdict -ne 'PASS') {
     if ($isSmoke -and $verdictText -match 'AUTO_FIX_OK=1') {
-      Add-Content -Path "scripts/tests/run_work_smoke.txt" -Value "AUTO_FIX_OK=1"
+      Apply-AutofixText -Path "scripts/tests/run_work_smoke.txt" -newText "AUTO_FIX_OK=1"
       $filesTouched += "scripts/tests/run_work_smoke.txt"
     }
     if ($verdictText -match 'BATCH_FIX_OK=1') {
-      Add-Content -Path $artifact -Value "BATCH_FIX_OK=1"
+      Apply-AutofixText -Path $artifact -newText "BATCH_FIX_OK=1"
       $filesTouched += $artifact
     }
   }
