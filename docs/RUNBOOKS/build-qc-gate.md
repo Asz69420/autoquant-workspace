@@ -20,7 +20,7 @@ For minor significant docs-only edits, use lean proposal QC mode:
 
 ## Gate pattern
 1. For significant builds, prepare proposal package first (plan + file list + preview/diff + acceptance criteria).
-2. Spawn a second GPT-5.3 pass as independent reviewer (separate session) on the proposal package.
+2. Trigger 🔰 Verifier as independent reviewer (separate session, GPT-5.3 primary) on the proposal package.
 3. Reviewer checks:
    - requirement coverage
    - policy compliance (AutoQuant rules in USER.md)
@@ -37,11 +37,11 @@ For minor significant docs-only edits, use lean proposal QC mode:
    - project compatibility/alignment
 4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops).
 5. If cap reached: emit one consolidated blocker list, require user decision, and stop auto-reruns.
-6. Send verified bill to user for approval (`QC: PASS|FAIL | run_id: ...` + boxed stamp).
+6. Send verified bill to user for approval (default chat output: `**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**` + boxed stamp; structured status/run_id is log-facing and shared in chat only on request).
 7. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed).
 8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
 9. Implement/write + commit changes.
-10. Run independent QC pass on implementation.
+10. Run independent QC pass on implementation (🔰 Verifier).
 11. If implementation QC fails: revise once and re-run implementation QC once.
 12. Return final summary + commit hash with QC stamp.
 
@@ -77,7 +77,7 @@ Not verified:
 ━━━━━━━━━━━━━━━━━━━━
 
 ## Quick command pattern (operator)
-- Spawn QC reviewer in separate session using `sessions_spawn`.
+- Spawn 🔰 Verifier in separate session using `sessions_spawn`.
 - Pass: change summary, file list, acceptance criteria, and policy checks.
 - If FAIL: revise once, re-run QC, then handoff with footer stamp.
 
@@ -97,7 +97,7 @@ Not verified:
 - Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) must block execution and keep approval-wait state.
 - Before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - Do not send implementation handoff until post-implementation independent QC has completed.
-- Default user-visible mode: report only one STATUS line + verification status + run_id + boxed stamp and final draft; provide full audit details only when explicitly requested.
+- Default user-visible mode: report minimal verification confirmation (`**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**`) + boxed stamp and final draft; keep structured status/run_id in logs and provide in chat only when explicitly requested.
 - DM noise suppression: for routine proposal/implementation QC checks, prefer inline/local QC in main chat to avoid `sessions_spawn` auto-announcement noise; reserve `sessions_spawn` for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicitly requested QC runs.
 
 ## Note

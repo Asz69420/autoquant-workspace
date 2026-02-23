@@ -122,10 +122,10 @@ Acceptance test:
 - **Logging is automatic:** All workers emit ActionEvents to `data/logs/outbox/`; Logger handles Telegram + NDJSON. òQ doesn't send Telegram directly.
 - **Long-task autonomy loop:** For tasks expected to span multiple iterations, òQ may create a temporary focus cron loop (`focus-*`) with a chosen interval (e.g., 10m/15m/30m/1h), continuing work until DONE or BLOCKED, then disable/remove the loop.
 - **Council mode for tough calls:** Run `scripts/automation/council.ps1` to get a two-model challenge/revise synthesis before deciding.
-- **Build QC gate (significant builds):** Before final user approval on major changes, run an independent second-pass GPT-5.3 review on the proposal/change set; on FAIL, auto-revise the bill and re-run proposal QC (max 2 loops) before returning the bill. After cap is reached, emit one consolidated blocker list and require user decision (no further auto-reruns). For minor significant docs-only edits, use lightweight proposal QC mode (one pass + one fix + one recheck). Skip for trivial edits.
+- **Build QC gate (significant builds):** Before final user approval on major changes, run an independent second-pass GPT-5.3 review on the proposal/change set (owned by 🔰 Verifier); on FAIL, auto-revise the bill and re-run proposal QC (max 2 loops) before returning the bill. After cap is reached, emit one consolidated blocker list and require user decision (no further auto-reruns). For minor significant docs-only edits, use lightweight proposal QC mode (one pass + one fix + one recheck). Skip for trivial edits.
 - **QC delivery stamp (required on significant builds):** End handoff with the boxed QC stamp from `docs/RUNBOOKS/build-qc-gate.md` (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`) so verification state is explicit and visually obvious.
 - **QC enforcement (hard rule):** Any significant-build reply without a QC stamp is invalid and must be immediately corrected with a follow-up QC stamp message before any new topic continues.
-- **Build handoff order (hard rule):** For major requested builds, sequence is fixed: request → bill (plan + file list + preview + verification summary) → independent proposal QC → send verified bill (status + run_id + boxed stamp) → wait for explicit standalone user approval (natural-language affirmative) → implement/write + commit → independent QC pass on implementation → final verified handoff (status + run_id + boxed stamp).
+- **Build handoff order (hard rule):** For major requested builds, sequence is fixed: request → bill (plan + file list + preview + verification summary) → independent proposal QC (🔰 Verifier) → send verified bill (status + run_id + boxed stamp) → wait for explicit standalone user approval (natural-language affirmative) → implement/write + commit → independent QC pass on implementation (🔰 Verifier) → final verified handoff (status + run_id + boxed stamp).
 - **Proposal QC checklist lock (hard rule):** Proposal-stage QC must use fixed categories only: policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility.
 - **Proposal QC dedup (hard rule):** Do not repeat previously reported issues across reruns unless underlying state changed.
 - **No redundant proposal QC rerun after approval (hard rule):** Once a verified bill is approved, proceed directly to implementation; do not run another proposal-stage QC loop unless scope changes.
@@ -225,6 +225,7 @@ Run: oq--config-update-m2.5
 - 🧠 Analyser → Codex 5.3 (primary) + Haiku (backup)
 - 📈 Backtester → System (compute) + Haiku summary (Codex escalation)
 - 🗃️ Keeper → Codex 5.3 (primary) + Haiku (backup)
+- 🔰 Verifier → Codex 5.3 (primary) + Haiku (backup)
 - 🛡️ Firewall → Codex 5.3 (primary) + Haiku (backup)
 - ⏱️ Scheduler → System
 - 🤖 òQ → Codex 5.3 (primary) + Haiku (backup)

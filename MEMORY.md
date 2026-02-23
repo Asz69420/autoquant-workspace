@@ -126,6 +126,7 @@
 - **Spawn logging:** every `sessions_spawn` must emit terminal outcome (`OK|WARN|FAIL`) with shared run_id; START is conditional for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicit request. All lifecycle events use `scripts/log_event.py` to `data/logs/outbox`.
 - **Lean QC loop control:** proposal QC auto-revise/recheck is capped; on cap reached, emit one consolidated blocker list and pause for user decision (no further auto-reruns). Minor significant docs-only edits use lightweight proposal QC mode (one pass + one fix + one recheck).
 - **Spawn lifecycle tooling:** `scripts/spawn_lifecycle.py` + `scripts/spawn_lifecycle_reconcile.py` added to enforce terminal spawn outcomes and block handoff on missing terminal events.
+- **Verifier rollout:** 🔰 Verifier is now a formal rostered sub-agent for proposal/implementation QC ownership (policy alignment, compatibility, future-proof checks).
 
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])

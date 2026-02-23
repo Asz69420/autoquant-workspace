@@ -67,13 +67,14 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 
 òQ **spawns sub-agents** for these (using Work Orders).
 
-**Mandatory logging for every spawn (including QC/Council subagents):**
+**Mandatory logging for every spawn (including QC/Council/🔰 Verifier subagents):**
 - Use `scripts/spawn_lifecycle.py` as the canonical lifecycle helper for `sessions_spawn` runs.
 - Emit terminal `OK`/`WARN`/`FAIL` ActionEvent when result returns (including timeout/cancel/error paths)
 - Non-success mapping: timeout/cancel/error must emit terminal `WARN` or `FAIL` with reason_code (do not emit terminal `CANCELLED` for spawn lifecycle)
 - Emit `START` only for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicit request
 - Reuse the same run_id for lifecycle pairing
 - Emit via `python scripts/log_event.py ...` (never hand-write JSON)
+- Verifier logging contract: outbox-only writes; never write NDJSON directly; never send Telegram directly.
 - Required fields per lifecycle event: shared `run_id`, `action=sessions_spawn`, `status_word`, `agent`, `summary`, timestamps from `log_event.py`
 - If terminal event is missing or run_id mismatches, mark process-invalid, emit compliance `WARN`/`FAIL`, and block approval/handoff progression until corrected
 - If START exists, it must pair with the same run_id and valid ordering
@@ -335,6 +336,7 @@ Success: 5 IndicatorRecords indexed + logged
 | Spec Drafting | 📊 Strategist | Delegated (work packet) | Auto (Firewall gates) |
 | Backtesting | 📈 Backtester | Delegated (work packet) | Auto (Firewall gates) |
 | Memory/ADRs | 🗃️ Keeper | Delegated (work packet) | Keeper approves |
+| Build Verification | 🔰 Verifier | Delegated (work packet) | Auto (gated by QC workflow) |
 | Safety Gate | 🛡️ Firewall | Sync (block) | Block if violation |
 | Logging | 🧾 Logger | Delegated (work packet) | Auto (outbox → NDJSON) |
 

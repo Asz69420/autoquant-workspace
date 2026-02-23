@@ -16,7 +16,8 @@
 | 8 | 📊 | Strategist | Convert theses into StrategySpecs and prioritize tests |
 | 9 | 📈 | Backtester | Run backtests, generate BacktestReports, measure |
 | 10 | 🗃️ | Keeper | Index artifacts, deduplicate, curate memory, promote strategies |
-| 11 | 🎭 | Specter | Browser-AI bridge (mock-only Build 1); schema validation + safe contract responses |
+| 11 | 🔰 | Verifier | Independent build QC: policy, compatibility, and future-proof checks |
+| 12 | 🎭 | Specter | Browser-AI bridge (mock-only Build 1); schema validation + safe contract responses |
 
 ## Single-Sender Logging Rule (MANDATORY)
 
@@ -127,6 +128,7 @@ Logger drains outbox in timestamp order: parse → format → send Telegram → 
 | 📊 Strategist | research/, indicators/specs/, artifacts/analysis/ | indicators/specs/ (custom), strategies/specs/, research/, outbox/ | Delete specs, modify MEMORY |
 | 📈 Backtester | strategies/specs/, data/ | data/cache/, artifacts/backtests/, outbox/ | Commit to Git, store credentials |
 | 🗃️ Keeper | all artifacts | **artifacts.db, MEMORY.md, ADRs (sole authority)**, outbox/ | Delete without backup, store secrets |
+| 🔰 Verifier | USER.md, runbooks, agents, MEMORY.md, diffs | outbox/ (and optional artifacts/analysis/ when explicitly requested) | Implement code/doc mutations for audited build, direct Telegram/NDJSON writes |
 
 ## Anti-Bloat Budgets (Per Run, Strict Caps)
 
@@ -142,6 +144,7 @@ Logger drains outbox in timestamp order: parse → format → send Telegram → 
 | 📊 Strategist | 5 | 5 | 3 StrategySpecs | Untestable spec or unresolved thesis gaps |
 | 📈 Backtester | 3 | 500 | 0 | Suspected overfitting or timeout |
 | 🗃️ Keeper | 20 | 50 | 0 | 3 promotions per run max |
+| 🔰 Verifier | 0 | 5 | 0 | Missing required evidence or unresolved critical blocker |
 
 ## Memory Authority (Keeper-Only)
 
@@ -241,7 +244,7 @@ Each agent card includes:
 
 ## See Also
 
-- `agents/oq.md` through `agents/keeper.md` (individual contracts)
+- `agents/oq.md` through `agents/verifier.md` (individual contracts)
 - `USER.md` (Operating Rules, Personality, Telegram Policy)
 - `docs/RUNBOOKS/telegram-logging.md` (Logger implementation guide)
 - `schemas/` (ResearchCard, IndicatorRecord, StrategySpec, BacktestReport, ActionEvent)
