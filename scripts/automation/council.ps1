@@ -8,6 +8,7 @@ param(
   [ValidateSet('short','medium')]
   [string]$verbosity = 'short',
   [int]$timeoutSec = 60,
+  [Alias('explicit-user-request')]
   [switch]$explicitUserRequest,
   [switch]$help
 )
