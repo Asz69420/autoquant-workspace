@@ -151,3 +151,8 @@
 - Operator preference lock: build interactions must show verified proposal/handoff (status + run_id), with full audit details only on explicit request; sub-agent spawns must always be lifecycle-logged.
 - Active agents on Codex: Specter, Keeper, 📊 Strategist, 🧠 Analyser, Firewall, òQ
 - Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ
+- Small QC stamp format patch applied and committed. ([keeper:handoff:handoff-20260223-0946.md])
+- Verified stamp now uses a single-line content inside the box. ([keeper:handoff:handoff-20260223-0946.md])
+- Workspace is clean and ready for next session. ([keeper:handoff:handoff-20260223-0946.md])
+- Keeper V2 cadence active via `\AutoQuant-keeper-30m`. ([keeper:handoff:handoff-20260223-0946.md])
+- Commit `1626db8`: condensed VERIFIED QC stamp to one line: ([keeper:handoff:handoff-20260223-0946.md])
