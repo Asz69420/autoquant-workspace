@@ -28,14 +28,17 @@ Set-Content -Path $artifact -Value $content -Encoding utf8
 $verifyMessage = "Verify task ${TaskId}: file ${artifact} exists and includes task_id=${TaskId}. Return PASS/PARTIAL/FAIL concise."
 $verifyOut = openclaw agent --agent verifier --message $verifyMessage --json
 $runId = ""
+$verdictText = ""
 try {
   $verifyObj = $verifyOut | ConvertFrom-Json
   if ($verifyObj.runId) { $runId = [string]$verifyObj.runId }
+  if ($verifyObj.result.payloads[0].text) { $verdictText = [string]$verifyObj.result.payloads[0].text }
 } catch {
   $runId = ""
+  $verdictText = ""
 }
 
-if ([string]::IsNullOrWhiteSpace($runId)) {
+if ([string]::IsNullOrWhiteSpace($runId) -or [string]::IsNullOrWhiteSpace($verdictText)) {
   $trace = ($verifyOut | Out-String).Trim()
   if ($trace.Length -gt 400) { $trace = $trace.Substring(0,400) }
   python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace "verifier_parse_fail: $trace" | Out-Null
@@ -44,7 +47,17 @@ if ([string]::IsNullOrWhiteSpace($runId)) {
   exit 2
 }
 
-python scripts/automation/task_ledger.py update --task-id $TaskId --state COMPLETE --artifact $artifact --verifier-or-audit-artifact ("verifier-run:" + $runId) | Out-Null
-python scripts/automation/evidence_gate.py --task-id $TaskId --claim COMPLETE | Out-Null
+if (-not ($verdictText -match '(?im)^PASS\b')) {
+  $trace = ($verdictText.Trim())
+  if ($trace.Length -gt 400) { $trace = $trace.Substring(0,400) }
+  python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace "verifier_fail: $trace" | Out-Null
+  python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
+  Write-Output "BLOCKED taskId=$TaskId"
+  exit 3
+}
 
-Write-Output "COMPLETE taskId=$TaskId artifact=$artifact verifier_run_id=$runId"
+python scripts/automation/task_ledger.py update --task-id $TaskId --state READY_FOR_USER_APPROVAL --artifact $artifact --verifier-or-audit-artifact ("verifier-run:" + $runId) | Out-Null
+python scripts/automation/evidence_gate.py --task-id $TaskId --claim READY_FOR_USER_APPROVAL | Out-Null
+
+Write-Output "READY_FOR_USER_APPROVAL taskId=$TaskId artifact=$artifact verifier_run_id=$runId verdict=PASS"
+Write-Output "APPROVE taskId=$TaskId"

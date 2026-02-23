@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 LEDGER_PATH = Path("task_ledger.jsonl")
-VALID_STATES = {"NOT_STARTED", "EXECUTING", "BLOCKED", "COMPLETE"}
+VALID_STATES = {"NOT_STARTED", "EXECUTING", "READY_FOR_USER_APPROVAL", "APPLIED", "BLOCKED", "COMPLETE"}
 
 
 def now_iso() -> str:
@@ -55,6 +55,16 @@ def validate_transition(row: dict[str, Any]) -> None:
 
     if state == "EXECUTING" and not row.get("pid_or_session"):
         raise SystemExit("EXECUTING requires pid_or_session")
+    if state == "READY_FOR_USER_APPROVAL":
+        if not row.get("artifacts"):
+            raise SystemExit("READY_FOR_USER_APPROVAL requires at least one artifact")
+        if not row.get("verifier_or_audit_artifact"):
+            raise SystemExit("READY_FOR_USER_APPROVAL requires verifier_or_audit_artifact")
+    if state == "APPLIED":
+        if not row.get("pid_or_session"):
+            raise SystemExit("APPLIED requires pid_or_session (apply command/session evidence)")
+        if not row.get("artifacts"):
+            raise SystemExit("APPLIED requires final artifact")
     if state == "COMPLETE" and not row.get("artifacts"):
         raise SystemExit("COMPLETE requires at least one artifact")
     if state == "BLOCKED" and not row.get("blocker_trace"):

@@ -25,7 +25,7 @@ def load_latest(task_id: str):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--task-id", required=True)
-    ap.add_argument("--claim", required=True, choices=["NOT_STARTED", "EXECUTING", "BLOCKED", "COMPLETE"])
+    ap.add_argument("--claim", required=True, choices=["NOT_STARTED", "EXECUTING", "READY_FOR_USER_APPROVAL", "APPLIED", "BLOCKED", "COMPLETE"])
     ns = ap.parse_args()
 
     row = load_latest(ns.task_id)
@@ -36,6 +36,18 @@ def main():
 
     if ns.claim == "EXECUTING":
         if row.get("state") != "EXECUTING" or not row.get("pid_or_session"):
+            raise SystemExit("NOT_STARTED")
+
+    if ns.claim == "READY_FOR_USER_APPROVAL":
+        if row.get("state") != "READY_FOR_USER_APPROVAL":
+            raise SystemExit("NOT_STARTED")
+        if not row.get("artifacts") or not row.get("verifier_or_audit_artifact"):
+            raise SystemExit("NOT_STARTED")
+
+    if ns.claim == "APPLIED":
+        if row.get("state") != "APPLIED":
+            raise SystemExit("NOT_STARTED")
+        if not row.get("pid_or_session") or not row.get("artifacts"):
             raise SystemExit("NOT_STARTED")
 
     if ns.claim == "COMPLETE":
