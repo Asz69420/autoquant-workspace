@@ -1,5 +1,6 @@
-﻿task_id=build-20260223-224057-task-20260224-084057-ac05e5
-question=telegram logger integration smoke C fail
-ts=2026-02-23T22:40:57.6949340+00:00
+﻿task_id=build-20260223-230026-task-20260224-090026-f094d2
+question=multi issue synthetic smoke
+ts=2026-02-23T23:00:27.3380273+00:00
 
-AUTO_FIX_OK=1;attempt=1
+AUTO_FIX_OK=1
+BATCH_FIX_OK=1
