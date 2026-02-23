@@ -99,6 +99,7 @@ Not verified:
 - Do not send implementation handoff until post-implementation independent QC has completed.
 - Default user-visible mode: report minimal verification confirmation (`**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**`) + boxed stamp and final draft; keep structured status/run_id in logs and provide in chat only when explicitly requested.
 - DM noise suppression: applies to routine/non-significant checks only. Significant-build verifier stages are mandatory per canonical contract and cannot be replaced by inline/local-only QC.
+- Lifecycle logging gate: missing terminal `sessions_spawn` event evidence (`OK|WARN|FAIL`) is fail-closed and blocks progression until reconciled.
 
 ## Note
 This is a **quick** gate, not full audit. Aim for 5-10 minutes.

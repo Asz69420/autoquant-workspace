@@ -275,10 +275,15 @@ Stop anytime: `Ctrl+C`
 python scripts\tg_reporter.py --manual
 ```
 
-### Important: tg_reporter is Always-On
+### Important: tg_reporter is Always-On (Non-Negotiable)
 
-Telegram Reporter is the **only** daemon component that should run continuously.
+Telegram Reporter must run continuously with self-healing automation.
 All other agents (Backtester, Reader, Strategist, etc.) are spawned on-demand per work packet.
+
+Required controls:
+- `AutoQuant-tg_reporter` scheduled task with startup + repeating trigger
+- restart-on-failure policy enabled
+- `AutoQuant-tg_reporter-watchdog` scheduled task to restart on missing/stuck state
 
 ### Health Check Commands
 
@@ -311,12 +316,21 @@ Run: logger-rollup
 
 This prevents log floods while ensuring nothing is permanently lost.
 
-### Windows Startup Option (Future)
+### Windows Tasking (Required)
 
-Currently: Run in a spare terminal window.
+Use scheduled tasks, not manual terminals:
+- `AutoQuant-tg_reporter` (daemon)
+- `AutoQuant-tg_reporter-watchdog` (health + restart)
 
-Later: Consider Windows Scheduled Task or `.bat` wrapper for auto-start on login.
-For now, simplest approach = dedicated terminal or background script.
+Setup/repair command:
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/ops/ensure_tg_reporter_watchdog.ps1
+```
+
+Healthcheck command (fail-closed):
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/ops/check_logger_health.ps1
+```
 
 ---
 

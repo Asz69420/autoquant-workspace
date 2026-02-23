@@ -72,3 +72,8 @@ Verifier override does **not** bypass:
 For Significant builds, both are mandatory:
 - minimal chat badge: `✅ Verified` / `⚠️ Partial` / `❌ Not Verified`
 - boxed QC stamp in approval package and final handoff
+
+## Logger/Lifecycle Invariants (non-negotiable)
+- Telegram Reporter is always-on with self-healing watchdog automation.
+- Every `sessions_spawn` completion must produce terminal lifecycle status (`OK|WARN|FAIL`).
+- Missing terminal lifecycle evidence is fail-closed and blocks progression/handoff until reconciled.

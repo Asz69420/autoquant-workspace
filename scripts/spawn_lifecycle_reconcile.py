@@ -52,6 +52,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--grace-seconds", type=int, default=120)
     ap.add_argument("--strict", action="store_true")
+    ap.add_argument("--require-actions-log", action="store_true", help="Require terminal run_ids to be present in actions.ndjson")
+    ap.add_argument("--max-age-minutes", type=int, default=180, help="Lookback window for actions.ndjson delivery proof")
     args = ap.parse_args()
 
     if not STATE_DIR.exists():
@@ -61,6 +63,34 @@ def main() -> int:
     unresolved = 0
     checked = 0
 
+    delivered_run_ids: set[str] = set()
+    pending_run_ids: set[str] = set()
+    if args.require_actions_log:
+        actions = Path("data/logs/actions.ndjson")
+        if actions.exists():
+            cutoff = now_utc().timestamp() - (args.max_age_minutes * 60)
+            for line in actions.read_text(encoding="utf-8", errors="ignore").splitlines()[-5000:]:
+                try:
+                    obj = json.loads(line)
+                except Exception:
+                    continue
+                if obj.get("action") != "sessions_spawn":
+                    continue
+                if obj.get("status_word") not in {"OK", "WARN", "FAIL"}:
+                    continue
+                ts = parse_iso(obj.get("ts_iso"))
+                if ts and ts.timestamp() >= cutoff:
+                    rid = obj.get("run_id")
+                    if rid:
+                        delivered_run_ids.add(str(rid))
+
+        outbox = Path("data/logs/outbox")
+        if outbox.exists():
+            for fp in outbox.glob("*.json"):
+                parts = fp.name.split("___")
+                if len(parts) >= 2:
+                    pending_run_ids.add(parts[1])
+
     for p in sorted(STATE_DIR.glob("*.json")):
         checked += 1
         try:
@@ -68,7 +98,17 @@ def main() -> int:
         except Exception:
             continue
 
+        run_id = st.get("run_id") or p.stem
+
         if st.get("terminal_emitted"):
+            if args.require_actions_log and str(run_id) not in delivered_run_ids and str(run_id) not in pending_run_ids:
+                unresolved += 1
+                agent = st.get("agent") or "oQ"
+                model_id = st.get("model_id") or "openai-codex/gpt-5.3-codex"
+                summary = "Spawn terminal event missing from actions.ndjson delivery proof"
+                emit_warn(run_id=str(run_id), summary=summary, model_id=model_id, agent=agent)
+                st["terminal_emitted"] = True
+                p.write_text(json.dumps(st, ensure_ascii=False, indent=2), encoding="utf-8")
             continue
 
         started = parse_iso(st.get("started_at"))
@@ -80,11 +120,12 @@ def main() -> int:
             continue
 
         unresolved += 1
-        run_id = st.get("run_id") or p.stem
         agent = st.get("agent") or "oQ"
         model_id = st.get("model_id") or "openai-codex/gpt-5.3-codex"
         summary = f"Spawn lifecycle missing terminal event (age={int(age)}s)"
         emit_warn(run_id=run_id, summary=summary, model_id=model_id, agent=agent)
+        st["terminal_emitted"] = True
+        p.write_text(json.dumps(st, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"Checked={checked} unresolved={unresolved}")
     if args.strict and unresolved > 0:

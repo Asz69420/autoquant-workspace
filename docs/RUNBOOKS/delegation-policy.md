@@ -87,6 +87,7 @@ If implementation occurs before standalone approval, stop immediately, revert un
 - Structured STATUS/run_id fields are log-facing by default and only surfaced in chat when explicitly requested.
 - Result sets remain: QC maps to Verified/Partial/Not Verified; SPAWN maps to OK/WARN/FAIL in logs.
 - DM noise suppression: for routine/non-significant QC checks, prefer inline/local QC (no `sessions_spawn`) so DM does not receive platform auto-announcements; continue emitting ActionEvents to outbox/log channel. This does not weaken mandatory verifier sub-agent stages for significant builds.
+- Sub-agent lifecycle logging is non-negotiable: every `sessions_spawn` completion must have a terminal `OK|WARN|FAIL` ActionEvent and reconcile cleanly under strict checks.
 
 
 ### Content Ingestion (🔗 Reader)
