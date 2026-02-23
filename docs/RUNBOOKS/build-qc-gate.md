@@ -11,19 +11,18 @@ Fail-closed rule applies: if significance is unknown/partial, treat as significa
 
 Skip gate only when clearly trivial under that contract.
 
-### Lightweight mode (minor significant docs-only edits)
-For minor significant docs-only edits, use lean proposal QC mode:
-- one proposal QC pass
-- one fix pass
-- one recheck max
-- then either PASS to approval or consolidated blockers to user decision
+### Proposal-stage loop rule (non-negotiable)
+Proposal-stage QC is internal and continuous:
+- FAIL -> revise -> re-audit (repeat) until PASS.
+- No FAIL-stage pause-for-user is allowed.
+- If a hard safety ceiling is configured and reached, transition to BLOCKED with explicit reason_code.
 
 ## Gate pattern
 1. For significant builds, prepare proposal package first (plan + file list + preview/diff + acceptance criteria).
 2. Run 🔰 Verifier proposal QC before any approval ask.
 3. Require a valid proposal artifact at checkpoint `pre_implementation` with stage=`proposal`, status=`PASS`, and matching `scope_fingerprint`.
-4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops), then provide consolidated blockers on cap.
-5. Send verified bill only after proposal PASS; wait for explicit standalone user approval.
+4. If proposal QC fails: auto-revise bill and re-run proposal QC until PASS.
+5. Send one clean verified bill only after proposal PASS; wait for explicit standalone user approval.
 6. Implement/write + commit only after approval token gate passes.
 7. Run 🔰 Verifier implementation QC.
 8. Require a valid implementation artifact at checkpoint `pre_handoff` with stage=`implementation`, status=`PASS|PARTIAL`.
@@ -85,7 +84,7 @@ Not verified:
 - Auto-recovery: send an immediate correction message containing the correct boxed QC stamp.
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
-- On reaching proposal-loop cap, provide one consolidated blocker list and pause for user decision (no further auto-reruns).
+- Proposal FAIL-stage is internal; do not pause for user decision while in FAIL loop. Only legal pause states are WAIT_USER_APPROVAL or BLOCKED.
 - Proposal approval request in chat should default to minimal human confirmation: `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`) plus boxed QC stamp.
 - Structured STATUS lines are log-facing and should be sent in chat only on explicit request.
 - Proposal QC reports must use fixed checklist categories only: policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility.

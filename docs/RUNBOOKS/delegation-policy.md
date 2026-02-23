@@ -14,11 +14,10 @@ Canonical verification gate: `docs/CONTRACTS/verification-gate.md` (wins on conf
 For significant changes under that contract, sequence is mandatory:
 1. Draft bill (plan + file list + preview/diff + verification summary)
 2. Run independent QC on proposal (with Verification Brief context)
-3. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops)
-4. If cap reached: emit one consolidated blocker list, pause for user decision, and stop auto-reruns
-   - For minor significant docs-only edits, use lightweight proposal QC mode (one pass + one fix + one recheck)
+3. If proposal QC fails: auto-revise bill and re-run proposal QC until PASS (internal loop)
+4. No FAIL-stage pause-for-user is allowed; only legal pause states are WAIT_USER_APPROVAL or BLOCKED
 5. Run verifier sub-agent proposal QC automatically; if not PASS, continue internal revise/re-audit loop (no approval ask)
-6. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
+6. Present one clean verified bill only after proposal PASS (`QC: PASS | run_id: ...` + boxed QC stamp)
 7. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed)
 8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
 9. Implement/write + commit changes

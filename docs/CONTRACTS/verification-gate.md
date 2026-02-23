@@ -5,6 +5,7 @@ Purpose: make verifier audits objective, fail-closed, and non-negotiable for sig
 ## Precedence (hard rule)
 This file is the canonical source for verification gating.
 If any wording in `USER.md` or runbooks conflicts, this contract wins.
+Any conflicting proposal-loop wording in `USER.md` or runbooks is non-authoritative and must be treated as overridden by this contract.
 
 ## Significant Build Trigger Matrix (objective)
 A change is **Significant** if **ANY** condition is true:
