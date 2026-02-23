@@ -87,8 +87,8 @@ Not verified:
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
 - On reaching proposal-loop cap, provide one consolidated blocker list and pause for user decision (no further auto-reruns).
-- Proposal approval request MUST include exactly one explicit status line: `STATUS | type:QC | label:<check-name> | result:<PASS|FAIL|WARN> | run_id:<id>` plus boxed QC stamp.
-- Optional readability header allowed: one human-readable emoji line immediately above STATUS (no blank line), display-only (no machine fields).
+- Proposal approval request in chat should default to minimal human confirmation: `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`) plus boxed QC stamp.
+- Structured STATUS lines are log-facing and should be sent in chat only on explicit request.
 - Proposal QC reports must use fixed checklist categories only: policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility.
 - Proposal QC reruns must deduplicate issues (repeat only when state changed).
 - Pre-handoff checklist MUST verify terminal spawn outcomes for all `sessions_spawn` used in the build (`OK|WARN|FAIL` with run_id). If START exists, verify matching run_id and valid ordering.

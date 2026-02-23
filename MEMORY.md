@@ -120,9 +120,8 @@
 - **Hold semantics:** standalone phrases `wait`, `not yet`, `hold`, `stop` block execution and keep approval-wait state.
 - **Mutation gate:** before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
-- **Visibility default:** user-facing verification output is one STATUS line + run_id + boxed stamp only; full audit details only on explicit request.
-- **Status line standard:** `STATUS | type:<QC|SPAWN> | label:<agent-or-check-name> | result:<PASS|FAIL|OK|WARN> | run_id:<id>` (exactly one per proposal/handoff).
-- **Readability header option:** one optional human-readable emoji header line may appear immediately above STATUS (display-only; no machine fields).
+- **Visibility default:** user-facing verification output is minimal (`**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**`) plus boxed stamp; full audit details only on explicit request.
+- **Structured status fields:** STATUS/run_id details are log-facing by default and surfaced in chat only when requested.
 - **DM noise suppression:** routine QC/check flows should run inline/local (no `sessions_spawn`) to keep DM clean; log outcomes via ActionEvents to log channel.
 - **Spawn logging:** every `sessions_spawn` must emit terminal outcome (`OK|WARN|FAIL`) with shared run_id; START is conditional for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicit request. All lifecycle events use `scripts/log_event.py` to `data/logs/outbox`.
 - **Lean QC loop control:** proposal QC auto-revise/recheck is capped; on cap reached, emit one consolidated blocker list and pause for user decision (no further auto-reruns). Minor significant docs-only edits use lightweight proposal QC mode (one pass + one fix + one recheck).

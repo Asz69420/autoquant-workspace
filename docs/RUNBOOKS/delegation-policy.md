@@ -77,10 +77,9 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 - Required fields per lifecycle event: shared `run_id`, `action=sessions_spawn`, `status_word`, `agent`, `summary`, timestamps from `log_event.py`
 - If terminal event is missing or run_id mismatches, mark process-invalid, emit compliance `WARN`/`FAIL`, and block approval/handoff progression until corrected
 - If START exists, it must pair with the same run_id and valid ordering
-- User-facing chat output should include exactly one STATUS line + run_id by default (no raw audit dump unless requested).
-- STATUS format: `STATUS | type:<QC|SPAWN> | label:<agent-or-check-name> | result:<PASS|FAIL|OK|WARN> | run_id:<id>`.
-- Optional readability header allowed: one human-readable emoji line immediately above STATUS (no blank line), display-only (no machine fields).
-- Result sets: `type:QC` uses `PASS|FAIL` (or `WARN` only for partial outcomes); `type:SPAWN` uses `OK|WARN|FAIL`.
+- User-facing chat output should default to minimal confirmation text (no raw audit dump unless requested): `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`).
+- Structured STATUS/run_id fields are log-facing by default and only surfaced in chat when explicitly requested.
+- Result sets remain: QC maps to Verified/Partial/Not Verified; SPAWN maps to OK/WARN/FAIL in logs.
 - DM noise suppression: for routine QC/checks, prefer inline/local QC (no `sessions_spawn`) so DM does not receive platform auto-announcements; continue emitting ActionEvents to outbox/log channel.
 
 
