@@ -97,7 +97,7 @@ Not verified:
 - Before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - Do not send implementation handoff until post-implementation independent QC has completed.
 - Default user-visible mode: report only one STATUS line + verification status + run_id + boxed stamp and final draft; provide full audit details only when explicitly requested.
-- DM noise suppression: for routine proposal/implementation QC checks, prefer inline/local QC in main chat to avoid `sessions_spawn` auto-announcement noise; reserve `sessions_spawn` for long/multi-step or explicitly requested QC runs.
+- DM noise suppression: for routine proposal/implementation QC checks, prefer inline/local QC in main chat to avoid `sessions_spawn` auto-announcement noise; reserve `sessions_spawn` for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicitly requested QC runs.
 
 ## Note
 This is a **quick** gate, not full audit. Aim for 5-10 minutes.

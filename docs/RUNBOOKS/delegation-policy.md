@@ -70,7 +70,7 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 **Mandatory logging for every spawn (including QC/Council subagents):**
 - Emit terminal `OK`/`WARN`/`FAIL` ActionEvent when result returns (including timeout/cancel/error paths)
 - Non-success mapping: timeout/cancel/error must emit terminal `WARN` or `FAIL` with reason_code (do not emit terminal `CANCELLED` for spawn lifecycle)
-- Emit `START` only for long/multi-step runs or explicit request
+- Emit `START` only for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicit request
 - Reuse the same run_id for lifecycle pairing
 - Emit via `python scripts/log_event.py ...` (never hand-write JSON)
 - Required fields per lifecycle event: shared `run_id`, `action=sessions_spawn`, `status_word`, `agent`, `summary`, timestamps from `log_event.py`
