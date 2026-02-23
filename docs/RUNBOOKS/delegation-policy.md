@@ -78,6 +78,7 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 - If START exists, it must pair with the same run_id and valid ordering
 - User-facing chat output should include exactly one STATUS line + run_id by default (no raw audit dump unless requested).
 - STATUS format: `STATUS | type:<QC|SPAWN> | label:<agent-or-check-name> | result:<PASS|FAIL|OK|WARN> | run_id:<id>`.
+- Optional readability header allowed: one human-readable emoji line immediately above STATUS (no blank line), display-only (no machine fields).
 - Result sets: `type:QC` uses `PASS|FAIL` (or `WARN` only for partial outcomes); `type:SPAWN` uses `OK|WARN|FAIL`.
 
 

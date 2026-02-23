@@ -122,6 +122,7 @@
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
 - **Visibility default:** user-facing verification output is one STATUS line + run_id + boxed stamp only; full audit details only on explicit request.
 - **Status line standard:** `STATUS | type:<QC|SPAWN> | label:<agent-or-check-name> | result:<PASS|FAIL|OK|WARN> | run_id:<id>` (exactly one per proposal/handoff).
+- **Readability header option:** one optional human-readable emoji header line may appear immediately above STATUS (display-only; no machine fields).
 - **Spawn logging:** every `sessions_spawn` must emit terminal outcome (`OK|WARN|FAIL`) with shared run_id; START is conditional for long/multi-step runs or explicit request. All lifecycle events use `scripts/log_event.py` to `data/logs/outbox`.
 - **Lean QC loop control:** proposal QC auto-revise/recheck is capped; on cap reached, emit one consolidated blocker list and pause for user decision (no further auto-reruns). Minor significant docs-only edits use lightweight proposal QC mode (one pass + one fix + one recheck).
 
