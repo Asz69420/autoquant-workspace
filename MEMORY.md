@@ -114,13 +114,13 @@
 
 ### Build QC Gate (New ✅)
 - **Runbook:** `docs/RUNBOOKS/build-qc-gate.md`
-- **Policy:** Significant builds get an independent second-pass GPT-5.3 review before handoff.
-- **Flow:** PASS → ship; FAIL → single revise pass, then one re-check.
+- **Policy:** Significant builds require two-stage verification: proposal QC before approval, then implementation QC before final handoff.
+- **Canonical order lock:** request → bill (plan+file list+preview+verification summary) → proposal QC (auto-revise/recheck up to 2 loops on FAIL) → verified bill (status + run_id + boxed stamp) → standalone `APPROVE BILL` → implement/write+commit → implementation QC → final verified handoff (status + run_id + boxed stamp).
+- **Approval token:** valid approval is a standalone user message whose trimmed content equals `APPROVE BILL` (case-insensitive).
+- **Mutation gate:** before `APPROVE BILL`, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
-- **Handoff stamp:** Significant-build replies must include boxed QC footer stamp (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`).
-- **QC criteria:** Reviewer explicitly checks efficiency, effectiveness, future-proofing, and project compatibility/alignment.
-- **Enforcement:** Missing QC stamp on significant-build handoff is a process failure; immediate correction stamp is mandatory before continuing.
-- **Order lock:** Requested builds follow implement → QC → (revise once if needed) → user-facing bill/handoff with boxed QC stamp.
+- **Visibility default:** user-facing verification output is status + run_id + boxed stamp only; full audit details only on explicit request.
+- **Spawn logging:** every `sessions_spawn` (including QC/Council) must lifecycle-log START + terminal (`OK|WARN|FAIL`) with shared run_id via `scripts/log_event.py` to `data/logs/outbox`.
 
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])
@@ -143,4 +143,4 @@
 - Haiku-primary agents: Reader, Grabber
 - Startup canonical rule: see USER.md → "Session Resume Contract (Canonical)"; do not duplicate startup procedures across docs.
 - Operator preference lock: build interactions must show verified proposal/handoff (status + run_id), with full audit details only on explicit request; sub-agent spawns must always be lifecycle-logged.
-- Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ
+- Active agents on Codex: Specter, Keeper, 📊 Strategist, 🧠 Analyser, Firewall, òQ

@@ -11,14 +11,16 @@
 ## Major-Change Workflow (Hard Gate)
 
 For significant policy/contract/runbook/multi-file changes, sequence is mandatory:
-1. Draft plan + file list + preview/diff
+1. Draft bill (plan + file list + preview/diff + verification summary)
 2. Run independent QC on proposal (with Verification Brief context)
-3. Revise once if needed
-4. Present final draft for Ghosted approval
-5. Implement/write changes
-6. Run independent QC on implementation
-7. Handoff with boxed QC stamp
+3. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops)
+4. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
+5. Wait for explicit standalone approval token `APPROVE BILL` (case-insensitive, trimmed exact match)
+6. Implement/write + commit changes
+7. Run independent QC on implementation
+8. Handoff with verification status + run_id + boxed QC stamp
 
+Before `APPROVE BILL`, block mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 If any gate is skipped, output is process-invalid and must be corrected before topic continuation.
 
 ---

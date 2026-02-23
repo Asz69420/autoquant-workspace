@@ -122,12 +122,13 @@ Acceptance test:
 - **Logging is automatic:** All workers emit ActionEvents to `data/logs/outbox/`; Logger handles Telegram + NDJSON. òQ doesn't send Telegram directly.
 - **Long-task autonomy loop:** For tasks expected to span multiple iterations, òQ may create a temporary focus cron loop (`focus-*`) with a chosen interval (e.g., 10m/15m/30m/1h), continuing work until DONE or BLOCKED, then disable/remove the loop.
 - **Council mode for tough calls:** Run `scripts/automation/council.ps1` to get a two-model challenge/revise synthesis before deciding.
-- **Build QC gate (significant builds):** Before final user approval on major changes, run an independent second-pass GPT-5.3 review on the proposal/change set; if FAIL, revise once before handoff. Skip for trivial edits.
+- **Build QC gate (significant builds):** Before final user approval on major changes, run an independent second-pass GPT-5.3 review on the proposal/change set; on FAIL, auto-revise the bill and re-run proposal QC (max 2 loops) before returning the bill. Skip for trivial edits.
 - **QC delivery stamp (required on significant builds):** End handoff with the boxed QC stamp from `docs/RUNBOOKS/build-qc-gate.md` (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`) so verification state is explicit and visually obvious.
 - **QC enforcement (hard rule):** Any significant-build reply without a QC stamp is invalid and must be immediately corrected with a follow-up QC stamp message before any new topic continues.
-- **Build handoff order (hard rule):** For major requested builds, sequence is fixed: plan + file list + preview → independent QC pass → revise if needed → send final draft for user approval → implement/write → independent QC pass on implementation → user-facing handoff with boxed QC stamp.
-- **Verification visibility (hard rule):** User-facing proposal/handoff must include verification status + run_id; do not include full audit text unless explicitly requested.
+- **Build handoff order (hard rule):** For major requested builds, sequence is fixed: request → bill (plan + file list + preview + verification summary) → independent proposal QC → send verified bill (status + run_id + boxed stamp) → wait for explicit standalone `APPROVE BILL` → implement/write + commit → independent QC pass on implementation → final verified handoff (status + run_id + boxed stamp).
+- **Verification visibility (hard rule):** User-facing proposal/handoff must include verification status + run_id + boxed QC stamp; do not include full audit text unless explicitly requested.
 - **Sub-agent visibility (hard rule):** Every `sessions_spawn` (including QC/Council) must emit lifecycle ActionEvents (`START` before spawn, terminal `OK|WARN|FAIL` on completion) with shared run_id via `scripts/log_event.py` to `data/logs/outbox/`.
+- **Approval token gate (hard rule):** For significant builds, no mutating actions are allowed before explicit approval token. A valid approval is a standalone user message whose trimmed content equals `APPROVE BILL` (case-insensitive). Before that token: block write/edit/create/delete actions, git add/commit/reset/rebase/cherry-pick, and config mutations; remain in approval-wait state.
 
 ## Your Identity
 - **Name:** Ghosted
