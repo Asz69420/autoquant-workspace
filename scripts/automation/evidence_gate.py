@@ -30,13 +30,21 @@ def main():
 
     row = load_latest(ns.task_id)
 
-    if ns.claim == "EXECUTING" and not row.get("pid_or_session"):
-        raise SystemExit("NOT_STARTED")
-    if ns.claim == "COMPLETE":
-        if not row.get("artifacts"):
+    if ns.claim == "NOT_STARTED":
+        if row.get("state") != "NOT_STARTED":
             raise SystemExit("NOT_STARTED")
-    if ns.claim == "BLOCKED" and not row.get("blocker_trace"):
-        raise SystemExit("NOT_STARTED")
+
+    if ns.claim == "EXECUTING":
+        if row.get("state") != "EXECUTING" or not row.get("pid_or_session"):
+            raise SystemExit("NOT_STARTED")
+
+    if ns.claim == "COMPLETE":
+        if row.get("state") != "COMPLETE" or not row.get("artifacts"):
+            raise SystemExit("NOT_STARTED")
+
+    if ns.claim == "BLOCKED":
+        if row.get("state") != "BLOCKED" or not row.get("blocker_trace"):
+            raise SystemExit("NOT_STARTED")
 
     print(json.dumps({"ok": True, "task_id": ns.task_id, "claim": ns.claim, "row": row}, ensure_ascii=False))
 
