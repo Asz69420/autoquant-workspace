@@ -8,6 +8,7 @@ param(
   [ValidateSet('short','medium')]
   [string]$verbosity = 'short',
   [int]$timeoutSec = 60,
+  [switch]$explicitUserRequest,
   [switch]$help
 )
 
@@ -19,7 +20,7 @@ function Show-Usage {
 Council mode (v1)
 
 Usage:
-  ./scripts/automation/council.ps1 --question """Should we do X?""" [--rounds 5] [--name "Decision Name"]
+  ./scripts/automation/council.ps1 --question """Should we do X?""" [--rounds 5] [--name "Decision Name"] --explicit-user-request
 
 Inputs:
   --question   Required. Decision question for the council.
@@ -28,6 +29,7 @@ Inputs:
   --reasoning  adaptive|low|medium|high (default: adaptive)
   --verbosity  short|medium (default: short)
   --timeoutSec Per-call HTTP timeout (default: 60)
+  --explicit-user-request Required guard flag. Council is blocked without explicit user request.
 
 Models:
   - openai-codex/gpt-5.3-codex
@@ -53,6 +55,7 @@ function Parse-LegacyArgs {
       '--reasoning' { $script:reasoning = $RawArgs[++$i] }
       '--verbosity' { $script:verbosity = $RawArgs[++$i] }
       '--timeoutSec' { $script:timeoutSec = [int]$RawArgs[++$i] }
+      '--explicit-user-request' { $script:explicitUserRequest = $true }
     }
   }
 }
@@ -66,6 +69,13 @@ if ($rounds -lt 3 -or $rounds -gt 5) { throw '--rounds must be between 3 and 5' 
 if ($reasoning -notin @('adaptive','low','medium','high')) { throw '--reasoning must be one of: adaptive, low, medium, high' }
 if ($verbosity -notin @('short','medium')) { throw '--verbosity must be one of: short, medium' }
 if ($timeoutSec -le 0) { throw '--timeoutSec must be > 0' }
+
+if ($explicitUserRequest) {
+  powershell -ExecutionPolicy Bypass -File scripts/automation/council_gate.ps1 -ExplicitUserRequest | Out-Null
+} else {
+  powershell -ExecutionPolicy Bypass -File scripts/automation/council_gate.ps1 | Out-Null
+}
+if ($LASTEXITCODE -ne 0) { throw 'BLOCKED_UNAUTHORIZED_COUNCIL: explicit user request required to run council.' }
 
 function Load-DotEnvIfPresent {
   param([string[]]$Paths)

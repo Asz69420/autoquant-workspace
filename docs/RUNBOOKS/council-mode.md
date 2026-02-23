@@ -14,6 +14,9 @@ The workflow is intent-based: if the request clearly asks for a two-model counci
 
 ## Runner
 
+Guard rule (hard): council is blocked unless explicitly user-requested.
+The runner enforces this via `scripts/automation/council_gate.ps1`.
+
 - Script: `scripts/automation/council.ps1`
 - Models:
   - Main: `openai-codex/gpt-5.3-codex`
@@ -25,6 +28,7 @@ The workflow is intent-based: if the request clearly asks for a two-model counci
   - `--reasoning` (`adaptive|low|medium|high`, default `adaptive`)
   - `--verbosity` (`short|medium`, default `short`)
   - `--timeoutSec` (optional HTTP timeout, default `60`)
+- `--explicit-user-request` (required guard; council run is blocked without it)
 
 ## Protocol (deterministic)
 
@@ -74,13 +78,13 @@ Council lifecycle logging (mandatory):
 ./scripts/automation/council.ps1 --help
 
 # Basic
-./scripts/automation/council.ps1 --question "Should we deploy Strategy A this week?"
+./scripts/automation/council.ps1 --question "Should we deploy Strategy A this week?" --explicit-user-request
 
 # Named decision, force max 4 rounds
-./scripts/automation/council.ps1 --question "Cut over to Binance-only data for this sprint?" --rounds 4 --name "Data Feed Cutover"
+./scripts/automation/council.ps1 --question "Cut over to Binance-only data for this sprint?" --rounds 4 --name "Data Feed Cutover" --explicit-user-request
 
 # Use high reasoning for hard calls
-./scripts/automation/council.ps1 --question "Should we productionize strategy X now?" --reasoning high
+./scripts/automation/council.ps1 --question "Should we productionize strategy X now?" --reasoning high --explicit-user-request
 ```
 
 ## Requirements
