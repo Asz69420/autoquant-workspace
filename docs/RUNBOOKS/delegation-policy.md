@@ -14,14 +14,17 @@ For significant policy/contract/runbook/multi-file changes, sequence is mandator
 1. Draft bill (plan + file list + preview/diff + verification summary)
 2. Run independent QC on proposal (with Verification Brief context)
 3. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops)
-4. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
-5. Wait for explicit standalone approval token `APPROVE BILL` (case-insensitive, trimmed exact match)
-6. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
-7. Implement/write + commit changes
-8. Run independent QC on implementation
-9. Handoff with verification status + run_id + boxed QC stamp
+4. If cap reached: emit one consolidated blocker list, pause for user decision, and stop auto-reruns
+   - For minor significant docs-only edits, use lightweight proposal QC mode (one pass + one fix + one recheck)
+5. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
+6. Wait for explicit standalone approval token `APPROVE BILL` (case-insensitive, trimmed exact match)
+7. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
+8. Implement/write + commit changes
+9. Run independent QC on implementation
+10. Handoff with verification status + run_id + boxed QC stamp
 
 Before `APPROVE BILL`, block mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
+Proposal QC reporting must use fixed checklist categories (policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility) and deduplicate repeated issues unless state changed.
 If any gate is skipped, output is process-invalid and must be corrected before topic continuation.
 
 ---

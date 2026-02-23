@@ -120,7 +120,8 @@
 - **Mutation gate:** before `APPROVE BILL`, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
 - **Visibility default:** user-facing verification output is status + run_id + boxed stamp only; full audit details only on explicit request.
-- **Spawn logging:** every `sessions_spawn` (including QC/Council) must lifecycle-log START + terminal (`OK|WARN|FAIL`) with shared run_id via `scripts/log_event.py` to `data/logs/outbox`.
+- **Spawn logging:** every `sessions_spawn` must emit terminal outcome (`OK|WARN|FAIL`) with shared run_id; START is conditional for long/multi-step runs or explicit request. All lifecycle events use `scripts/log_event.py` to `data/logs/outbox`.
+- **Lean QC loop control:** proposal QC auto-revise/recheck is capped; on cap reached, emit one consolidated blocker list and pause for user decision (no further auto-reruns). Minor significant docs-only edits use lightweight proposal QC mode (one pass + one fix + one recheck).
 
 ## Keeper Promotions
 - Phase 1: Logger + tg_reporter live and tested ✅ ([keeper:handoff:handoff-20260222-1234.md])

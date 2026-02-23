@@ -11,6 +11,13 @@ Run QC gate when any of these are true:
 
 Skip gate for tiny edits (typos/format-only/single-line non-functional docs). This trivial-edit carve-out is unaffected by the `APPROVE BILL` token rule.
 
+### Lightweight mode (minor significant docs-only edits)
+For minor significant docs-only edits, use lean proposal QC mode:
+- one proposal QC pass
+- one fix pass
+- one recheck max
+- then either PASS to approval or consolidated blockers to user decision
+
 ## Gate pattern
 1. For significant builds, prepare proposal package first (plan + file list + preview/diff + acceptance criteria).
 2. Spawn a second GPT-5.3 pass as independent reviewer (separate session) on the proposal package.
@@ -29,13 +36,14 @@ Skip gate for tiny edits (typos/format-only/single-line non-functional docs). Th
    - future-proofing
    - project compatibility/alignment
 4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops).
-5. Send verified bill to user for approval (`QC: PASS|FAIL | run_id: ...` + boxed stamp).
-6. Wait for explicit standalone approval token: `APPROVE BILL` (case-insensitive, trimmed exact match).
-7. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
-8. Implement/write + commit changes.
-9. Run independent QC pass on implementation.
-9. If implementation QC fails: revise once and re-run implementation QC once.
-10. Return final summary + commit hash with QC stamp.
+5. If cap reached: emit one consolidated blocker list, require user decision, and stop auto-reruns.
+6. Send verified bill to user for approval (`QC: PASS|FAIL | run_id: ...` + boxed stamp).
+7. Wait for explicit standalone approval token: `APPROVE BILL` (case-insensitive, trimmed exact match).
+8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
+9. Implement/write + commit changes.
+10. Run independent QC pass on implementation.
+11. If implementation QC fails: revise once and re-run implementation QC once.
+12. Return final summary + commit hash with QC stamp.
 
 ## Verification Brief (required input to auditor)
 For significant builds, auditor must receive this context pack:
@@ -78,7 +86,10 @@ Not verified:
 - Auto-recovery: send an immediate correction message containing the correct boxed QC stamp.
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
+- On reaching proposal-loop cap, provide one consolidated blocker list and pause for user decision (no further auto-reruns).
 - Proposal approval request MUST include one-line verifier summary (`QC: PASS|FAIL | run_id: ...`) plus boxed QC stamp.
+- Proposal QC reports must use fixed checklist categories only: policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility.
+- Proposal QC reruns must deduplicate issues (repeat only when state changed).
 - Pre-handoff checklist MUST verify spawn lifecycle pairs for all `sessions_spawn` used in the build (`START` + terminal `OK|WARN|FAIL` with matching run_id).
 - Valid approval token is a standalone user message equal to `APPROVE BILL` (case-insensitive, trimmed exact match).
 - Before approval token, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
