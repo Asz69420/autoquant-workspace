@@ -139,6 +139,6 @@
 - Primary model: Codex 5.3
 - Fallback model: Haiku
 - Manual-only: MiniMax (excluded from automatic fallback)
-- Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ
+- Active agents on Codex: Specter, Keeper, 📊 Strategist, 🧠 Analyser, Firewall, òQ
 - Haiku-primary agents: Reader, Grabber
 - Startup canonical rule: see USER.md → "Session Resume Contract (Canonical)"; do not duplicate startup procedures across docs.

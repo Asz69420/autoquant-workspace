@@ -12,10 +12,11 @@
 | 4 | 🧾 | Logger | **ONLY** Telegram & NDJSON sender; drain outbox, format, retry |
 | 5 | 🔗 | Reader | Fetch links/videos, extract content, emit ResearchCards |
 | 6 | 🧲 | Grabber | Harvest TradingView indicators, emit IndicatorRecords |
-| 7 | 🧠 | Strategist | Design strategies, write StrategySpecs, iterate |
-| 8 | 📈 | Backtester | Run backtests, generate BacktestReports, measure |
-| 9 | 🗃️ | Keeper | Index artifacts, deduplicate, curate memory, promote strategies |
-| 10 | 🎭 | Specter | Browser-AI bridge (mock-only Build 1); schema validation + safe contract responses |
+| 7 | 🧠 | Analyser | Generate non-generic trading theses from source material |
+| 8 | 📊 | Strategist | Convert theses into StrategySpecs and prioritize tests |
+| 9 | 📈 | Backtester | Run backtests, generate BacktestReports, measure |
+| 10 | 🗃️ | Keeper | Index artifacts, deduplicate, curate memory, promote strategies |
+| 11 | 🎭 | Specter | Browser-AI bridge (mock-only Build 1); schema validation + safe contract responses |
 
 ## Single-Sender Logging Rule (MANDATORY)
 
@@ -60,10 +61,19 @@ Logger drains outbox in timestamp order: parse → format → send Telegram → 
 │ ↓                                    │
 └─────────────────────────────────────┘
                 ↓
-┌─ Strategist (Design) ───────────────┐
-│ ResearchCard(s) + IndicatorRecord(s) │
+┌─ Analyser (Thesis) ─────────────────┐
+│ ResearchCard(s) + transcript notes   │
 │ ↓                                    │
-│ Design strategy                      │
+│ Build falsifiable edge hypotheses    │
+│ ↓                                    │
+│ Thesis package (artifact/analysis)   │
+│ ↓                                    │
+└─────────────────────────────────────┘
+                ↓
+┌─ Strategist (Design) ───────────────┐
+│ Thesis package + IndicatorRecord(s)  │
+│ ↓                                    │
+│ Convert to strategy spec              │
 │ ↓                                    │
 │ StrategySpec (Git: strategies/specs/) │
 │ ↓                                    │
@@ -113,7 +123,8 @@ Logger drains outbox in timestamp order: parse → format → send Telegram → 
 | 🧾 Logger | outbox/, all | **actions.ndjson, errors.ndjson, Telegram** | Modify source files |
 | 🔗 Reader | external URLs | research/ (ResearchCards), artifacts/videos/, outbox/ | IndicatorRecords, StrategySpecs, MEMORY, docs |
 | 🧲 Grabber | external APIs | indicators/specs/, artifacts/indicators/, outbox/ | other specs, MEMORY, docs |
-| 🧠 Strategist | research/, indicators/specs/, artifacts/ | indicators/specs/ (custom), strategies/specs/, research/, outbox/ | Delete specs, modify MEMORY |
+| 🧠 Analyser | research/, artifacts/, indicators/specs/ | artifacts/analysis/, outbox/ | Write strategies/specs directly, modify MEMORY |
+| 📊 Strategist | research/, indicators/specs/, artifacts/analysis/ | indicators/specs/ (custom), strategies/specs/, research/, outbox/ | Delete specs, modify MEMORY |
 | 📈 Backtester | strategies/specs/, data/ | data/cache/, artifacts/backtests/, outbox/ | Commit to Git, store credentials |
 | 🗃️ Keeper | all artifacts | **artifacts.db, MEMORY.md, ADRs (sole authority)**, outbox/ | Delete without backup, store secrets |
 
@@ -127,7 +138,8 @@ Logger drains outbox in timestamp order: parse → format → send Telegram → 
 | 🧾 Logger | 0 | 10 | 0 (outbox processing only) | 20 TG msg/cycle OR send fails 5x |
 | 🔗 Reader | 3 | 100 | 1–3 ResearchCards per link | Any fetch timeout or rights unclear |
 | 🧲 Grabber | 10 | 200 | 10 indicators | Fetch fails 3x OR rights unknown |
-| 🧠 Strategist | 5 | 5 | 3 StrategySpecs | Generic idea or untestable |
+| 🧠 Analyser | 5 | 10 | 3 thesis packages | Generic thesis or no falsification criteria |
+| 📊 Strategist | 5 | 5 | 3 StrategySpecs | Untestable spec or unresolved thesis gaps |
 | 📈 Backtester | 3 | 500 | 0 | Suspected overfitting or timeout |
 | 🗃️ Keeper | 20 | 50 | 0 | 3 promotions per run max |
 

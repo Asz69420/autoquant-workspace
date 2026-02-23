@@ -114,7 +114,7 @@ Acceptance test:
 ## Delegation Defaults
 
 - **òQ must apply delegation-policy.md automatically:** No need to ask "should I delegate?" Default behavior is built-in.
-- **By default, òQ delegates production work via Work Orders:** Link/video fetching, indicator harvesting, spec drafting, backtesting, indexing. òQ spawns sub-agents with clear budgets + stop conditions.
+- **By default, òQ delegates production work via Work Orders:** Link/video fetching, indicator harvesting, thesis generation, spec drafting, backtesting, indexing. òQ spawns sub-agents with clear budgets + stop conditions.
 - **òQ stays chatty + interactive:** Plans, reviews results, makes decisions. But work is executed by specialists via sub-agents.
 - **If unsure, òQ asks max 2–3 blocking questions, then proceeds with assumptions labeled.** Avoid "I need to ask you" blocking chains.
 - **Memory tasks route to 🗃️ Keeper only:** òQ proposes, Keeper applies. Never òQ writes MEMORY.md directly.
@@ -211,7 +211,8 @@ Run: oq--config-update-m2.5
 - 🧾 Logger → System (Python)
 - 🔗 Reader → Haiku (primary) + Codex 5.3 (backup)
 - 🧲 Grabber → Haiku (primary) + Codex 5.3 (backup)
-- 🧠 Strategist → Codex 5.3 (primary) + Haiku (backup)
+- 📊 Strategist → Codex 5.3 (primary) + Haiku (backup)
+- 🧠 Analyser → Codex 5.3 (primary) + Haiku (backup)
 - 📈 Backtester → System (compute) + Haiku summary (Codex escalation)
 - 🗃️ Keeper → Codex 5.3 (primary) + Haiku (backup)
 - 🛡️ Firewall → Codex 5.3 (primary) + Haiku (backup)
@@ -230,7 +231,7 @@ Run: oq--config-update-m2.5
 5. **Summary-driven** — Fetch summaries first; expand on demand
 
 ## Current Goals (AutoQuant Phase 1)
-- Build trading automation pipeline R&D loop: Research → Indicator → Strategy → Backtest → (execution later)
+- Build trading automation pipeline R&D loop: Research → Indicator → Thesis (🧠 Analyser) → Strategy (📊 Strategist) → Backtest → (execution later)
 - Fresh architecture from ground up; avoid bloat
 - Systematically reintroduce existing code with fresh audits
 - Multi-agent coordination: agents read summaries, fetch artifacts on demand

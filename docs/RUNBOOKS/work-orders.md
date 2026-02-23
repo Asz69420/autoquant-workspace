@@ -11,7 +11,7 @@
 WORK ORDER
 ═══════════════════════════════════════════════════════════════
 
-Agent: [🔗 Reader | 🧲 Grabber | 🧠 Strategist | 📈 Backtester | 🗃️ Keeper]
+Agent: [🔗 Reader | 🧲 Grabber | 🧠 Analyser | 📊 Strategist | 📈 Backtester | 🗃️ Keeper]
 Priority: [normal | high]
 Deadline: [time limit or "ASAP"]
 
@@ -130,14 +130,53 @@ Prefer peer-reviewed sources. Note any open questions in ResearchCard.
 ═══════════════════════════════════════════════════════════════
 ```
 
-### Example 2: Strategist (Spec Drafting)
+### Example 2: Analyser (Thesis Generation)
 
 ```
 ═══════════════════════════════════════════════════════════════
 WORK ORDER
 ═══════════════════════════════════════════════════════════════
 
-Agent: 🧠 Strategist
+Agent: 🧠 Analyser
+Priority: high
+Deadline: ASAP
+
+───────────────────────────────────────────────────────────────
+GOAL
+───────────────────────────────────────────────────────────────
+Turn Reader outputs into a non-generic, testable thesis package for strategy drafting
+
+───────────────────────────────────────────────────────────────
+INPUTS
+───────────────────────────────────────────────────────────────
+- research/research-volatility-mean-revert-20260222.json
+- Transcript notes from Reader
+
+───────────────────────────────────────────────────────────────
+OUTPUTS
+───────────────────────────────────────────────────────────────
+- artifacts/analysis/thesis-volatility-mean-revert-v1.md
+- ActionEvent to spool: ✅ OK (thesis package produced) or ⚠️ WARN (generic/low confidence)
+
+───────────────────────────────────────────────────────────────
+SUCCESS CRITERIA
+───────────────────────────────────────────────────────────────
+- [ ] Edge hypothesis clearly stated
+- [ ] Regime fit + invalid conditions specified
+- [ ] Falsification tests listed
+- [ ] Concrete backtest seed passed to 📊 Strategist
+
+═══════════════════════════════════════════════════════════════
+```
+
+### Example 3: Strategist (Spec Drafting)
+
+```
+═══════════════════════════════════════════════════════════════
+WORK ORDER
+═══════════════════════════════════════════════════════════════
+
+Agent: 📊 Strategist
 Priority: high
 Deadline: ASAP
 
@@ -194,7 +233,7 @@ Iterate on v1 feedback. If Firewall blocks: stop and report reason.
 ═══════════════════════════════════════════════════════════════
 ```
 
-### Example 3: Backtester (Execution)
+### Example 4: Backtester (Execution)
 
 ```
 ═══════════════════════════════════════════════════════════════

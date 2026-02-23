@@ -63,8 +63,13 @@
 - Parse Pine code + metadata
 - Emit IndicatorRecord specs
 
-### Spec Drafting (🧠 Strategist)
-- Design StrategySpecs from research
+### Thesis Generation (🧠 Analyser)
+- Generate non-generic trading theses from Reader outputs (videos/articles/transcripts)
+- Produce edge hypothesis, regime fit, falsification criteria, and test plan seeds
+- Surface contradictions, unknowns, and confidence before spec drafting
+
+### Spec Drafting (📊 Strategist)
+- Convert validated theses into StrategySpecs
 - Write IndicatorRecords for custom signals
 - Iterate specs based on feedback
 
@@ -225,7 +230,7 @@ Unknown → Ask max 2 clarifying questions, then proceed with assumptions
 **òQ:** (Reads strategy spec, reviews last Firewall feedback, considers research)
 - Summary: Last iteration has overleveraging risk (5x leverage, 0.3% edge). Firewall warned.
 - Recommendation: Iterate spec first (reduce leverage to 2x, increase stop loss).
-- Next step: Spawn Strategist to draft v2, then backtest.
+- Next step: Spawn 🧠 Analyser for thesis revision, then 📊 Strategist to draft v2, then backtest.
 
 *Decision made directly; no sub-agent needed.*
 
@@ -296,7 +301,8 @@ Success: 5 IndicatorRecords indexed + logged
 | Approvals | òQ | Sync | Ask Ghosted if unclear |
 | Content Ingestion | 🔗 Reader | Delegated (work packet) | Auto (use budgets) |
 | Indicator Harvesting | 🧲 Grabber | Delegated (work packet) | Auto (use budgets) |
-| Spec Drafting | 🧠 Strategist | Delegated (work packet) | Auto (Firewall gates) |
+| Thesis Generation | 🧠 Analyser | Delegated (work packet) | Auto (quality gates) |
+| Spec Drafting | 📊 Strategist | Delegated (work packet) | Auto (Firewall gates) |
 | Backtesting | 📈 Backtester | Delegated (work packet) | Auto (Firewall gates) |
 | Memory/ADRs | 🗃️ Keeper | Delegated (work packet) | Keeper approves |
 | Safety Gate | 🛡️ Firewall | Sync (block) | Block if violation |
