@@ -87,7 +87,7 @@ Not verified:
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
 - On reaching proposal-loop cap, provide one consolidated blocker list and pause for user decision (no further auto-reruns).
-- Proposal approval request MUST include one-line verifier summary (`QC: PASS|FAIL | run_id: ...`) plus boxed QC stamp.
+- Proposal approval request MUST include exactly one explicit status line: `STATUS | type:QC | label:<check-name> | result:<PASS|FAIL|WARN> | run_id:<id>` plus boxed QC stamp.
 - Proposal QC reports must use fixed checklist categories only: policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility.
 - Proposal QC reruns must deduplicate issues (repeat only when state changed).
 - Pre-handoff checklist MUST verify terminal spawn outcomes for all `sessions_spawn` used in the build (`OK|WARN|FAIL` with run_id). If START exists, verify matching run_id and valid ordering.
@@ -95,7 +95,7 @@ Not verified:
 - Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) must block execution and keep approval-wait state.
 - Before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - Do not send implementation handoff until post-implementation independent QC has completed.
-- Default user-visible mode: report only verification status + run_id + boxed stamp and final draft; provide full audit details only when explicitly requested.
+- Default user-visible mode: report only one STATUS line + verification status + run_id + boxed stamp and final draft; provide full audit details only when explicitly requested.
 
 ## Note
 This is a **quick** gate, not full audit. Aim for 5-10 minutes.

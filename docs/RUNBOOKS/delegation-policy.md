@@ -75,7 +75,9 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 - Required fields per lifecycle event: shared `run_id`, `action=sessions_spawn`, `status_word`, `agent`, `summary`, timestamps from `log_event.py`
 - If terminal event is missing or run_id mismatches, mark process-invalid, emit compliance `WARN`/`FAIL`, and block approval/handoff progression until corrected
 - If START exists, it must pair with the same run_id and valid ordering
-- User-facing chat output should reference status + run_id only by default (no raw audit dump unless requested).
+- User-facing chat output should include exactly one STATUS line + run_id by default (no raw audit dump unless requested).
+- STATUS format: `STATUS | type:<QC|SPAWN> | label:<agent-or-check-name> | result:<PASS|FAIL|OK|WARN> | run_id:<id>`.
+- Result sets: `type:QC` uses `PASS|FAIL` (or `WARN` only for partial outcomes); `type:SPAWN` uses `OK|WARN|FAIL`.
 
 
 ### Content Ingestion (🔗 Reader)
