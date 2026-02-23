@@ -97,10 +97,7 @@ function Load-DotEnvIfPresent {
 
 Load-DotEnvIfPresent -Paths @('.env', 'C:\Users\Clamps\.openclaw\.env')
 
-$apiKey = if (-not [string]::IsNullOrWhiteSpace($env:OPENROUTER_API_KEY)) { $env:OPENROUTER_API_KEY } elseif (-not [string]::IsNullOrWhiteSpace($env:OPENCODE_API_KEY)) { $env:OPENCODE_API_KEY } else { '' }
-if ([string]::IsNullOrWhiteSpace($apiKey)) { throw 'Missing model API key. Set OPENROUTER_API_KEY or OPENCODE_API_KEY (or place it in .env).' }
-$baseUrl = if ([string]::IsNullOrWhiteSpace($env:OPENROUTER_BASE_URL)) { 'https://openrouter.ai/api/v1' } else { $env:OPENROUTER_BASE_URL.TrimEnd('/') }
-$endpoint = "$baseUrl/chat/completions"
+throw 'DIRECT_API_PATH_REMOVED: council.ps1 no longer uses direct OpenRouter/API key path. Use OpenClaw-native council routing only.'
 
 $models = @(
   @{ id = 'openai-codex/gpt-5.3-codex'; label = 'GPT-5.3' },
