@@ -99,10 +99,10 @@ if ($finalVerdict -ne 'PASS') {
   exit 3
 }
 
-python scripts/automation/task_ledger.py update --task-id $TaskId --state COMPLETE --artifact $artifact --verifier-or-audit-artifact ("verifier-run:" + $finalRunId) | Out-Null
-python scripts/automation/evidence_gate.py --task-id $TaskId --claim COMPLETE | Out-Null
+python scripts/automation/task_ledger.py update --task-id $TaskId --state READY_FOR_USER_APPROVAL --artifact $artifact --verifier-or-audit-artifact ("verifier-run:" + $finalRunId) | Out-Null
+python scripts/automation/evidence_gate.py --task-id $TaskId --claim READY_FOR_USER_APPROVAL | Out-Null
 python scripts/automation/build_session.py add-task --build-session-id $BuildSessionId --task-id $TaskId --artifact $artifact --verifier-run-id $finalRunId | Out-Null
 
 Write-Output "BUILD_SESSION_ACTIVE build_session_id=$BuildSessionId taskId=$TaskId artifact=$artifact final_verifier_run_id=$finalRunId verdict=PASS attempts=$attempt"
-Write-Output "No per-task approval required. Continue adding tasks, then finalize session for one approval."
-Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/finalize_build_session.ps1 -BuildSessionId $BuildSessionId"
+Write-Output "Task is paused in READY_FOR_USER_APPROVAL and attached to the active build session."
+Write-Output "When all tasks are ready, finalize the build session for one approval pause."

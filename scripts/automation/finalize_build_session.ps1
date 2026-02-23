@@ -20,7 +20,4 @@ python scripts/automation/build_session.py set-state --build-session-id $BuildSe
 Write-Output "SESSION_READY_FOR_APPROVAL build_session_id=$BuildSessionId"
 Write-Output "Files changed: $(([string[]]$session.artifacts) -join ', ')"
 Write-Output "Verifier runIds: $(([string[]]$session.verifier_run_ids) -join ', ')"
-Write-Output "APPROVE BUILD"
-Write-Output "REJECT BUILD"
-Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $BuildSessionId"
-Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $BuildSessionId"
+Write-Output "Ready to apply these changes. Want me to apply them?"
