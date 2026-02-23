@@ -8,6 +8,23 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+function Emit-LogEvent {
+  param(
+    [string]$RunId,
+    [string]$StatusWord,
+    [string]$StatusEmoji,
+    [string]$ReasonCode,
+    [string]$Summary,
+    [string[]]$Inputs,
+    [string[]]$Outputs
+  )
+  $args = @('scripts/log_event.py','--run-id',$RunId,'--agent','oQ','--model-id','openai-codex/gpt-5.3-codex','--action','build_session','--status-word',$StatusWord,'--status-emoji',$StatusEmoji,'--summary',$Summary)
+  if ($ReasonCode) { $args += @('--reason-code',$ReasonCode) }
+  if ($Inputs) { foreach($i in $Inputs){ $args += @('--inputs',$i) } }
+  if ($Outputs) { foreach($o in $Outputs){ $args += @('--outputs',$o) } }
+  python @args | Out-Null
+}
+
 if ([string]::IsNullOrWhiteSpace($BuildSessionId)) {
   $startOut = python scripts/automation/build_session.py start --description $Question
   $startObj = $startOut | ConvertFrom-Json
@@ -95,6 +112,7 @@ if ($finalVerdict -ne 'PASS') {
   if ($unresolved.Length -gt 400) { $unresolved = $unresolved.Substring(0,400) }
   python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace ("max_attempts_reached: " + $last + " ; unresolved: " + $unresolved + " ; next: review artifact and rerun") | Out-Null
   python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
+  Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-" + $TaskId) -StatusWord 'FAIL' -StatusEmoji '❌' -ReasonCode 'VERIFIER_FAIL' -Summary ("Build blocked after max attempts: task=" + $TaskId) -Inputs @($TaskId) -Outputs @($unresolved)
   Write-Output "BLOCKED taskId=$TaskId reason=MAX_ATTEMPTS_REACHED"
   exit 3
 }
@@ -103,6 +121,9 @@ python scripts/automation/task_ledger.py update --task-id $TaskId --state READY_
 python scripts/automation/evidence_gate.py --task-id $TaskId --claim READY_FOR_USER_APPROVAL | Out-Null
 python scripts/automation/build_session.py add-task --build-session-id $BuildSessionId --task-id $TaskId --artifact $artifact --verifier-run-id $finalRunId | Out-Null
 
-Write-Output "BUILD_SESSION_ACTIVE build_session_id=$BuildSessionId taskId=$TaskId artifact=$artifact final_verifier_run_id=$finalRunId verdict=PASS attempts=$attempt"
-Write-Output "Task is paused in READY_FOR_USER_APPROVAL and attached to the active build session."
-Write-Output "When all tasks are ready, finalize the build session for one approval pause."
+# auto-finalize session (single-approval UX)
+$finalizeOut = powershell -ExecutionPolicy Bypass -File scripts/automation/finalize_build_session.ps1 -BuildSessionId $BuildSessionId
+Emit-LogEvent -RunId ("build-" + $BuildSessionId) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_READY_FOR_APPROVAL' -Summary ("Build ready for approval: " + $BuildSessionId + " attempts=" + $attempt) -Inputs @($TaskId) -Outputs @($artifact, ("verifier-run:" + $finalRunId))
+
+Write-Output "BUILD_READY_FOR_APPROVAL build_session_id=$BuildSessionId"
+Write-Output "Build ready. Verifier PASS (attempts=$attempt). Files changed: $artifact. Want me to apply these changes?"

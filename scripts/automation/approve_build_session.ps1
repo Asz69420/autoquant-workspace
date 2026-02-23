@@ -5,6 +5,21 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+function Emit-LogEvent {
+  param(
+    [string]$RunId,
+    [string]$StatusWord,
+    [string]$StatusEmoji,
+    [string]$ReasonCode,
+    [string]$Summary,
+    [string[]]$Outputs
+  )
+  $args = @('scripts/log_event.py','--run-id',$RunId,'--agent','oQ','--model-id','openai-codex/gpt-5.3-codex','--action','build_session','--status-word',$StatusWord,'--status-emoji',$StatusEmoji,'--summary',$Summary)
+  if ($ReasonCode) { $args += @('--reason-code',$ReasonCode) }
+  if ($Outputs) { foreach($o in $Outputs){ $args += @('--outputs',$o) } }
+  python @args | Out-Null
+}
+
 if ([string]::IsNullOrWhiteSpace($BuildSessionId)) {
   $latest = python scripts/automation/build_session.py show --limit 1 | ConvertFrom-Json
   if ($latest.Count -eq 0) { throw 'No build session found' }
@@ -18,6 +33,7 @@ if ($session.state -ne 'SESSION_READY_FOR_APPROVAL') {
 
 if ($Action -eq 'REJECT') {
   python scripts/automation/build_session.py set-state --build-session-id $BuildSessionId --state BLOCKED --blocker-trace "Rejected by user" | Out-Null
+  Emit-LogEvent -RunId ("build-" + $BuildSessionId) -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'BUILD_REJECTED' -Summary ("Build rejected: " + $BuildSessionId) -Outputs @('Rejected by user')
   Write-Output "BUILD_BLOCKED build_session_id=$BuildSessionId reason=Rejected by user"
   exit 0
 }
@@ -29,5 +45,6 @@ Set-Content -Path $applyArtifact -Value ("build_session_id=$BuildSessionId`nappl
 
 $applyEvidence = "approve_build_session:" + $PID
 python scripts/automation/build_session.py set-state --build-session-id $BuildSessionId --state SESSION_APPLIED --apply-evidence $applyEvidence | Out-Null
+Emit-LogEvent -RunId ("build-" + $BuildSessionId) -StatusWord 'OK' -StatusEmoji '✅' -ReasonCode 'BUILD_APPLIED' -Summary ("Build applied: " + $BuildSessionId) -Outputs @($applyEvidence, $applyArtifact)
 
 Write-Output "SESSION_APPLIED build_session_id=$BuildSessionId apply_evidence=$applyEvidence artifact=$applyArtifact"
