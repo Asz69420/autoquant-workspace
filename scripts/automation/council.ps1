@@ -104,6 +104,24 @@ function Get-ReasoningMode {
   return 'medium'
 }
 
+function Normalize-FailureReason {
+  param([string]$Message, [Nullable[int]]$StatusCode = $null, [bool]$TimedOut = $false)
+
+  $m = if ($null -eq $Message) { '' } else { $Message.ToLowerInvariant() }
+  if ($StatusCode -in 401,403 -or $m -match 'unauthorized|forbidden|auth|invalid api key|authentication') { return 'AUTH_FAIL' }
+  if ($TimedOut -or $m -match 'timeout|timed out|model unavailable|not found|provider unavailable|route unavailable|no route|overloaded') { return 'MODEL_UNAVAILABLE' }
+  return 'TOOL_PATH_FAIL'
+}
+
+function Merge-FailureReason {
+  param([string]$Current, [string]$Incoming)
+  $rank = @{ 'NONE' = 0; 'TOOL_PATH_FAIL' = 1; 'MODEL_UNAVAILABLE' = 2; 'AUTH_FAIL' = 3 }
+  $c = if ([string]::IsNullOrWhiteSpace($Current)) { 'NONE' } else { $Current }
+  $i = if ([string]::IsNullOrWhiteSpace($Incoming)) { 'NONE' } else { $Incoming }
+  if ($rank[$i] -gt $rank[$c]) { return $i }
+  return $c
+}
+
 function Invoke-ModelText {
   param(
     [Parameter(Mandatory = $true)][string]$Model,
@@ -129,10 +147,15 @@ function Invoke-ModelText {
 
   try {
     $response = Invoke-RestMethod -Method Post -Uri $endpoint -Headers $headers -Body $body -TimeoutSec $timeoutSec
-    return @{ ok = $true; text = [string]$response.choices[0].message.content; error = $null }
+    return @{ ok = $true; text = [string]$response.choices[0].message.content; reason = 'NONE'; statusCode = $null }
   }
   catch {
-    return @{ ok = $false; text = ''; error = $_.Exception.Message }
+    $status = $null
+    try { if ($_.Exception.Response -and $_.Exception.Response.StatusCode) { $status = [int]$_.Exception.Response.StatusCode.value__ } } catch {}
+    $msg = [string]$_.Exception.Message
+    $timedOut = ($msg.ToLowerInvariant() -match 'timeout|timed out')
+    $reason = Normalize-FailureReason -Message $msg -StatusCode $status -TimedOut:$timedOut
+    return @{ ok = $false; text = ''; reason = $reason; statusCode = $status }
   }
 }
 
@@ -169,7 +192,7 @@ Reply exactly YES or NO.
 
 function SafeText([hashtable]$resp,[string]$label) {
   if ($resp.ok) { return $resp.text }
-  return "[${label} unavailable: $($resp.error)]"
+  return "[${label} unavailable: $($resp.reason)]"
 }
 
 function Build-LocalSynthesis {
@@ -202,12 +225,34 @@ Run one constrained test that directly resolves the biggest disagreement from th
 "@
 }
 
+function Has-RequiredSections([string]$Text) {
+  if ([string]::IsNullOrWhiteSpace($Text)) { return $false }
+  $required = @('Recommended action','Confidence','Key risks','What would change decision','Immediate next test')
+  foreach ($r in $required) { if ($Text -notmatch [regex]::Escape($r)) { return $false } }
+  return $true
+}
+
 $decisionName = if ([string]::IsNullOrWhiteSpace($name)) { 'Council Decision' } else { $name }
 Write-Output "=== $decisionName ==="
 Write-Output "Question: $question"
 Write-Output "Max rounds: $rounds"
 Write-Output "Reasoning: $reasoning"
 Write-Output ''
+
+$failureReason = 'NONE'
+
+# Preflight probes (required before round 1)
+$probePrompt = 'ping'
+$probeG = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Prompt $probePrompt -Round 1 -Temperature 0.0
+$probeM = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Prompt $probePrompt -Round 1 -Temperature 0.0
+if (-not $probeG.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $probeG.reason }
+if (-not $probeM.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $probeM.reason }
+
+$gAvailable = $probeG.ok
+$mAvailable = $probeM.ok
+$executionMode = if ($gAvailable -and $mAvailable) { 'normal' } else { 'degraded' }
+
+Write-Output "Preflight: GPT-5.3=$(if($gAvailable){'available'}else{'unavailable'}) | MiniMax M2.5=$(if($mAvailable){'available'}else{'unavailable'})"
 
 $tmpl = @"
 Decision question:
@@ -221,13 +266,21 @@ Use this structure:
 5) Immediate next test
 "@
 
-$r1 = Ask-Both -PromptA $tmpl -PromptB $tmpl -Round 1
-$curG = SafeText $r1.gpt 'GPT-5.3'
-$curM = SafeText $r1.mini 'MiniMax M2.5'
-Write-Output '[Round 1][GPT-5.3]'; Write-Output $curG; Write-Output ''
-Write-Output '[Round 1][MiniMax M2.5]'; Write-Output $curM; Write-Output ''
+$curG = '[GPT-5.3 unavailable: MODEL_UNAVAILABLE]'
+$curM = '[MiniMax M2.5 unavailable: MODEL_UNAVAILABLE]'
+$lastRound = 1
+$stopReason = 'Degraded synthesis path'
 
-$gCrit = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 2 -Prompt @"
+if ($gAvailable -and $mAvailable) {
+  $r1 = Ask-Both -PromptA $tmpl -PromptB $tmpl -Round 1
+  if (-not $r1.gpt.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $r1.gpt.reason }
+  if (-not $r1.mini.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $r1.mini.reason }
+  $curG = SafeText $r1.gpt 'GPT-5.3'
+  $curM = SafeText $r1.mini 'MiniMax M2.5'
+  Write-Output '[Round 1][GPT-5.3]'; Write-Output $curG; Write-Output ''
+  Write-Output '[Round 1][MiniMax M2.5]'; Write-Output $curM; Write-Output ''
+
+  $gCrit = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 2 -Prompt @"
 Question:
 $question
 
@@ -239,7 +292,7 @@ $curM
 
 Critique weak assumptions, missing risks, and strongest opposing points.
 "@
-$mCrit = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 2 -Prompt @"
+  $mCrit = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 2 -Prompt @"
 Question:
 $question
 
@@ -251,10 +304,12 @@ $curG
 
 Critique weak assumptions, missing risks, and strongest opposing points.
 "@
-$critG = SafeText $gCrit 'GPT-5.3 critique'
-$critM = SafeText $mCrit 'MiniMax critique'
+  if (-not $gCrit.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $gCrit.reason }
+  if (-not $mCrit.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $mCrit.reason }
+  $critG = SafeText $gCrit 'GPT-5.3 critique'
+  $critM = SafeText $mCrit 'MiniMax critique'
 
-$gRev = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 3 -Prompt @"
+  $gRev = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 3 -Prompt @"
 Question:
 $question
 
@@ -266,7 +321,7 @@ $critM
 
 Revise using the 5-part structure.
 "@
-$mRev = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 3 -Prompt @"
+  $mRev = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 3 -Prompt @"
 Question:
 $question
 
@@ -278,25 +333,40 @@ $critG
 
 Revise using the 5-part structure.
 "@
-$curG = SafeText $gRev 'GPT-5.3 revised'
-$curM = SafeText $mRev 'MiniMax revised'
-Write-Output '[Round 3][GPT-5.3 revised]'; Write-Output $curG; Write-Output ''
-Write-Output '[Round 3][MiniMax M2.5 revised]'; Write-Output $curM; Write-Output ''
+  if (-not $gRev.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $gRev.reason }
+  if (-not $mRev.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $mRev.reason }
+  $curG = SafeText $gRev 'GPT-5.3 revised'
+  $curM = SafeText $mRev 'MiniMax revised'
+  Write-Output '[Round 3][GPT-5.3 revised]'; Write-Output $curG; Write-Output ''
+  Write-Output '[Round 3][MiniMax M2.5 revised]'; Write-Output $curM; Write-Output ''
 
-$material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round 3
-$lastRound = 3
-for ($r = 4; $r -le $rounds -and $material; $r++) {
-  $lastRound = $r
-  $g = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round $r -Prompt "Question:`n$question`n`nCurrent GPT:`n$curG`n`nCurrent MiniMax:`n$curM`n`nIf disagreement remains, refine toward convergence."
-  $m = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round $r -Prompt "Question:`n$question`n`nCurrent MiniMax:`n$curM`n`nCurrent GPT:`n$curG`n`nIf disagreement remains, refine toward convergence."
-  $curG = SafeText $g 'GPT-5.3'
-  $curM = SafeText $m 'MiniMax M2.5'
-  Write-Output "[Round $r][GPT-5.3]"; Write-Output $curG; Write-Output ''
-  Write-Output "[Round $r][MiniMax M2.5]"; Write-Output $curM; Write-Output ''
-  $material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round $r
+  $material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round 3
+  $lastRound = 3
+  for ($r = 4; $r -le $rounds -and $material; $r++) {
+    $lastRound = $r
+    $g = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round $r -Prompt "Question:`n$question`n`nCurrent GPT:`n$curG`n`nCurrent MiniMax:`n$curM`n`nIf disagreement remains, refine toward convergence."
+    $m = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round $r -Prompt "Question:`n$question`n`nCurrent MiniMax:`n$curM`n`nCurrent GPT:`n$curG`n`nIf disagreement remains, refine toward convergence."
+    if (-not $g.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $g.reason }
+    if (-not $m.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $m.reason }
+    $curG = SafeText $g 'GPT-5.3'
+    $curM = SafeText $m 'MiniMax M2.5'
+    Write-Output "[Round $r][GPT-5.3]"; Write-Output $curG; Write-Output ''
+    Write-Output "[Round $r][MiniMax M2.5]"; Write-Output $curM; Write-Output ''
+    $material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round $r
+  }
+  $stopReason = if ($material) { "Reached max rounds ($lastRound)" } else { "Early stop at round $lastRound (convergence reached)" }
 }
-
-$stopReason = if ($material) { "Reached max rounds ($lastRound)" } else { "Early stop at round $lastRound (convergence reached)" }
+elseif ($gAvailable -or $mAvailable) {
+  $availableModel = if ($gAvailable) { 'openai-codex/gpt-5.3-codex' } else { 'opencode/minimax-m2.5' }
+  $label = if ($gAvailable) { 'GPT-5.3' } else { 'MiniMax M2.5' }
+  $single = Invoke-ModelText -Model $availableModel -Prompt $tmpl -Round 1
+  if (-not $single.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $single.reason }
+  if ($gAvailable) { $curG = SafeText $single $label } else { $curM = SafeText $single $label }
+  $stopReason = 'Single-model degraded path'
+}
+else {
+  $stopReason = 'Both models unavailable at preflight'
+}
 
 $finalPrompt = @"
 Decision question:
@@ -314,12 +384,20 @@ Create final synthesis sections:
 - Key risks
 - What would change decision
 - Immediate next test
-If one model failed, include a brief degraded-mode warning.
 "@
+
 $finalResp = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Prompt $finalPrompt -Round ($lastRound + 1)
-$degraded = (-not $finalResp.ok) -or ($curG -like '[*unavailable:*') -or ($curM -like '[*unavailable:*')
-$finalText = if ($finalResp.ok) { $finalResp.text } else { Build-LocalSynthesis -QuestionText $question -GptText $curG -MiniText $curM -StopReason $stopReason -Degraded $degraded }
+if (-not $finalResp.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $finalResp.reason }
+if ($failureReason -ne 'NONE') { $executionMode = 'degraded' }
+
+$finalText = if ($finalResp.ok -and (Has-RequiredSections -Text $finalResp.text)) {
+  $finalResp.text
+} else {
+  Build-LocalSynthesis -QuestionText $question -GptText $curG -MiniText $curM -StopReason $stopReason -Degraded ($executionMode -eq 'degraded')
+}
 
 Write-Output '=== Council Final Synthesis ==='
 Write-Output "Stop reason: $stopReason"
+Write-Output "Execution mode: $executionMode"
+Write-Output "Failure reason: $failureReason"
 Write-Output $finalText
