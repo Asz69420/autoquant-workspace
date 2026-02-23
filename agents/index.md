@@ -66,7 +66,7 @@ Logger drains outbox in timestamp order: parse → format → send Telegram → 
 │ ↓                                    │
 │ Build falsifiable edge hypotheses    │
 │ ↓                                    │
-│ Thesis package (artifact/analysis)   │
+│ Thesis package (artifacts/analysis)  │
 │ ↓                                    │
 └─────────────────────────────────────┘
                 ↓

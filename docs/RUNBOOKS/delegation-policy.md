@@ -8,6 +8,19 @@
 
 **òQ applies this policy automatically for every request.** No need to ask "should I delegate?"
 
+## Major-Change Workflow (Hard Gate)
+
+For significant policy/contract/runbook/multi-file changes, sequence is mandatory:
+1. Draft plan + file list + preview/diff
+2. Run independent QC on proposal (with Verification Brief context)
+3. Revise once if needed
+4. Present final draft for Ghosted approval
+5. Implement/write changes
+6. Run independent QC on implementation
+7. Handoff with boxed QC stamp
+
+If any gate is skipped, output is process-invalid and must be corrected before topic continuation.
+
 ---
 
 ## Decision Tasks (òQ Does Directly)
@@ -102,7 +115,7 @@
 **òQ workflow for memory changes:**
 1. Identify needed change
 2. Draft proposal (ℹ️ INFO ActionEvent)
-3. Emit to spool (let Logger handle Telegram)
+3. Emit to outbox (let Logger handle Telegram)
 4. **Wait for Keeper approval**
 5. Let Keeper apply the change
 
@@ -265,7 +278,7 @@ Success: 5 IndicatorRecords indexed + logged
 
 1. Propose memory change: "Add summary of backtest--a1b2c3d4e5f6 to MEMORY.md"
 2. Include: metrics (Sharpe 1.2, return 15%), next step (test on live data)
-3. Emit ℹ️ INFO proposal to spool (let Logger handle Telegram)
+3. Emit ℹ️ INFO proposal to outbox (let Logger handle Telegram)
 4. Wait for Keeper approval
 5. Keeper applies the change
 
@@ -306,7 +319,7 @@ Success: 5 IndicatorRecords indexed + logged
 | Backtesting | 📈 Backtester | Delegated (work packet) | Auto (Firewall gates) |
 | Memory/ADRs | 🗃️ Keeper | Delegated (work packet) | Keeper approves |
 | Safety Gate | 🛡️ Firewall | Sync (block) | Block if violation |
-| Logging | 🧾 Logger | Delegated (work packet) | Auto (spool → NDJSON) |
+| Logging | 🧾 Logger | Delegated (work packet) | Auto (outbox → NDJSON) |
 
 ---
 

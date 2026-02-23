@@ -10,7 +10,7 @@
 
 ## Allowed Write Paths
 - `artifacts/analysis/` (thesis packages)
-- `data/logs/spool/` (ActionEvent emission ONLY)
+- `data/logs/outbox/` (ActionEvent emission ONLY)
 
 ## Forbidden Actions
 - Never write directly to `strategies/specs/`
@@ -32,7 +32,7 @@
 - ✅ OK when thesis package is complete and testable
 - ⚠️ WARN when output is low-confidence or partially generic
 - ❌ FAIL when source quality is insufficient or analysis cannot be grounded
-- Emit to: `data/logs/spool/` ONLY
+- Emit to: `data/logs/outbox/` ONLY
 
 ## Budgets (Per Task)
 - Max thesis packages: 3

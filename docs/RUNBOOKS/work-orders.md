@@ -31,7 +31,17 @@ OUTPUTS (Exact Paths + Schemas)
 ───────────────────────────────────────────────────────────────
 - [Path 1: e.g., research/research-volatility-20260222.json (ResearchCard schema)]
 - [Path 2: e.g., indicators/specs/indicator-example-v1.json (IndicatorRecord schema)]
-- [ActionEvent to spool: status ✅ OK or ❌ FAIL + reason_code]
+- [ActionEvent to outbox: status ✅ OK or ❌ FAIL + reason_code]
+
+───────────────────────────────────────────────────────────────
+VERIFICATION BRIEF (Required for Significant Builds)
+───────────────────────────────────────────────────────────────
+- Project intent / North Star alignment:
+- Relevant USER.md constraints:
+- Architecture/role context impacted:
+- Proposed files + expected diffs:
+- Acceptance criteria:
+- Audit focus: efficiency, effectiveness, future-proofing, compatibility, anti-drift
 
 ───────────────────────────────────────────────────────────────
 BUDGET CAPS
@@ -96,7 +106,7 @@ OUTPUTS
 ───────────────────────────────────────────────────────────────
 - research/research-volatility-mean-revert-20260222.json (ResearchCard schema)
 - Optional: artifacts/videos/video--{hash}/ (if transcript available)
-- ActionEvent to spool: ✅ OK (fetched + ResearchCard written)
+- ActionEvent to outbox: ✅ OK (fetched + ResearchCard written)
 
 ───────────────────────────────────────────────────────────────
 BUDGET CAPS
@@ -156,7 +166,7 @@ INPUTS
 OUTPUTS
 ───────────────────────────────────────────────────────────────
 - artifacts/analysis/thesis-volatility-mean-revert-v1.md
-- ActionEvent to spool: ✅ OK (thesis package produced) or ⚠️ WARN (generic/low confidence)
+- ActionEvent to outbox: ✅ OK (thesis package produced) or ⚠️ WARN (generic/low confidence)
 
 ───────────────────────────────────────────────────────────────
 SUCCESS CRITERIA
@@ -196,7 +206,7 @@ INPUTS
 OUTPUTS
 ───────────────────────────────────────────────────────────────
 - strategies/specs/strategy-volatility-mean-revert-btc-v2.json (StrategySpec schema)
-- ActionEvent to spool: ✅ OK (spec written + passed Firewall) or ⚠️ WARN (marginal pass) or ❌ FAIL (blocked)
+- ActionEvent to outbox: ✅ OK (spec written + passed Firewall) or ⚠️ WARN (marginal pass) or ❌ FAIL (blocked)
 
 ───────────────────────────────────────────────────────────────
 BUDGET CAPS
@@ -262,7 +272,7 @@ OUTPUTS
 ───────────────────────────────────────────────────────────────
 - artifacts/backtests/backtest--{hash}/ (folder with metrics.json, equity_curve.csv, trades.csv, config.json)
 - BacktestReport schema (metrics: total_return, sharpe, max_dd, win_rate, trades)
-- ActionEvent to spool: ✅ OK (completed) or ⚠️ WARN (suspicious metrics) or ❌ FAIL (timeout/error)
+- ActionEvent to outbox: ✅ OK (completed) or ⚠️ WARN (suspicious metrics) or ❌ FAIL (timeout/error)
 
 ───────────────────────────────────────────────────────────────
 BUDGET CAPS

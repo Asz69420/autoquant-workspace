@@ -119,13 +119,13 @@ Acceptance test:
 - **If unsure, òQ asks max 2–3 blocking questions, then proceeds with assumptions labeled.** Avoid "I need to ask you" blocking chains.
 - **Memory tasks route to 🗃️ Keeper only:** òQ proposes, Keeper applies. Never òQ writes MEMORY.md directly.
 - **Security gate (🛡️ Firewall):** All workers go through Firewall. If BLOCKED → escalate to Ghosted + try safest fallback.
-- **Logging is automatic:** All workers emit ActionEvents to spool; Logger handles Telegram + NDJSON. òQ doesn't send Telegram directly.
+- **Logging is automatic:** All workers emit ActionEvents to `data/logs/outbox/`; Logger handles Telegram + NDJSON. òQ doesn't send Telegram directly.
 - **Long-task autonomy loop:** For tasks expected to span multiple iterations, òQ may create a temporary focus cron loop (`focus-*`) with a chosen interval (e.g., 10m/15m/30m/1h), continuing work until DONE or BLOCKED, then disable/remove the loop.
 - **Council mode for tough calls:** Run `scripts/automation/council.ps1` to get a two-model challenge/revise synthesis before deciding.
-- **Build QC gate (significant builds):** After implementation, run a quick independent second-pass GPT-5.3 review; if FAIL, revise once before handoff. Skip for trivial edits.
+- **Build QC gate (significant builds):** Before final user approval on major changes, run an independent second-pass GPT-5.3 review on the proposal/change set; if FAIL, revise once before handoff. Skip for trivial edits.
 - **QC delivery stamp (required on significant builds):** End handoff with the boxed QC stamp from `docs/RUNBOOKS/build-qc-gate.md` (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`) so verification state is explicit and visually obvious.
 - **QC enforcement (hard rule):** Any significant-build reply without a QC stamp is invalid and must be immediately corrected with a follow-up QC stamp message before any new topic continues.
-- **Build handoff order (hard rule):** For requested builds, sequence is fixed: implement → independent QC pass → revise if needed → then send user-facing bill/handoff in simple language with boxed QC stamp.
+- **Build handoff order (hard rule):** For major requested builds, sequence is fixed: plan + file list + preview → independent QC pass → revise if needed → send final draft for user approval → implement/write → independent QC pass on implementation → user-facing handoff with boxed QC stamp.
 
 ## Your Identity
 - **Name:** Ghosted
