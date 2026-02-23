@@ -3,7 +3,7 @@
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from pathlib import Path
 
 ALLOWED_STATUS_WORDS = {
@@ -65,7 +65,7 @@ def main():
     if args.ts_iso:
         ts_iso = args.ts_iso
     else:
-        ts_iso = datetime.utcnow().isoformat() + "Z"
+        ts_iso = datetime.now(UTC).isoformat().replace("+00:00", "Z")
     
     # Compute ts_local if not provided
     if args.ts_local:
