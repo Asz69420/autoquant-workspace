@@ -17,13 +17,15 @@ For significant policy/contract/runbook/multi-file changes, sequence is mandator
 4. If cap reached: emit one consolidated blocker list, pause for user decision, and stop auto-reruns
    - For minor significant docs-only edits, use lightweight proposal QC mode (one pass + one fix + one recheck)
 5. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
-6. Wait for explicit standalone approval token `APPROVE BILL` (case-insensitive, trimmed exact match)
+6. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed)
 7. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
 8. Implement/write + commit changes
 9. Run independent QC on implementation
 10. Handoff with verification status + run_id + boxed QC stamp
 
-Before `APPROVE BILL`, block mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
+Before approval, block mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
+Valid standalone approvals include: `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.
+Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) block execution and keep approval-wait state.
 Proposal QC reporting must use fixed checklist categories (policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility) and deduplicate repeated issues unless state changed.
 If any gate is skipped, output is process-invalid and must be corrected before topic continuation.
 
@@ -66,12 +68,13 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 òQ **spawns sub-agents** for these (using Work Orders).
 
 **Mandatory logging for every spawn (including QC/Council subagents):**
-- Emit `START` ActionEvent before `sessions_spawn`
 - Emit terminal `OK`/`WARN`/`FAIL` ActionEvent when result returns (including timeout/cancel/error paths)
+- Emit `START` only for long/multi-step runs or explicit request
 - Reuse the same run_id for lifecycle pairing
 - Emit via `python scripts/log_event.py ...` (never hand-write JSON)
 - Required fields per lifecycle event: shared `run_id`, `action=sessions_spawn`, `status_word`, `agent`, `summary`, timestamps from `log_event.py`
-- If START/terminal pair is missing or run_id mismatches, mark process-invalid, emit compliance `WARN`/`FAIL`, and block approval/handoff progression until corrected
+- If terminal event is missing or run_id mismatches, mark process-invalid, emit compliance `WARN`/`FAIL`, and block approval/handoff progression until corrected
+- If START exists, it must pair with the same run_id and valid ordering
 - User-facing chat output should reference status + run_id only by default (no raw audit dump unless requested).
 
 

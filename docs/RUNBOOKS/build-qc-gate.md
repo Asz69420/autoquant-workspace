@@ -9,7 +9,7 @@ Run QC gate when any of these are true:
 - Multi-file feature build
 - Model routing/delegation behavior changed
 
-Skip gate for tiny edits (typos/format-only/single-line non-functional docs). This trivial-edit carve-out is unaffected by the `APPROVE BILL` token rule.
+Skip gate for tiny edits (typos/format-only/single-line non-functional docs). This trivial-edit carve-out is unaffected by the approval semantics rule.
 
 ### Lightweight mode (minor significant docs-only edits)
 For minor significant docs-only edits, use lean proposal QC mode:
@@ -38,7 +38,7 @@ For minor significant docs-only edits, use lean proposal QC mode:
 4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops).
 5. If cap reached: emit one consolidated blocker list, require user decision, and stop auto-reruns.
 6. Send verified bill to user for approval (`QC: PASS|FAIL | run_id: ...` + boxed stamp).
-7. Wait for explicit standalone approval token: `APPROVE BILL` (case-insensitive, trimmed exact match).
+7. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed).
 8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
 9. Implement/write + commit changes.
 10. Run independent QC pass on implementation.
@@ -90,9 +90,10 @@ Not verified:
 - Proposal approval request MUST include one-line verifier summary (`QC: PASS|FAIL | run_id: ...`) plus boxed QC stamp.
 - Proposal QC reports must use fixed checklist categories only: policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility.
 - Proposal QC reruns must deduplicate issues (repeat only when state changed).
-- Pre-handoff checklist MUST verify spawn lifecycle pairs for all `sessions_spawn` used in the build (`START` + terminal `OK|WARN|FAIL` with matching run_id).
-- Valid approval token is a standalone user message equal to `APPROVE BILL` (case-insensitive, trimmed exact match).
-- Before approval token, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
+- Pre-handoff checklist MUST verify terminal spawn outcomes for all `sessions_spawn` used in the build (`OK|WARN|FAIL` with run_id). If START exists, verify matching run_id and valid ordering.
+- Valid approval is a standalone user message with clear affirmative intent (case-insensitive, trimmed), e.g. `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.
+- Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) must block execution and keep approval-wait state.
+- Before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - Do not send implementation handoff until post-implementation independent QC has completed.
 - Default user-visible mode: report only verification status + run_id + boxed stamp and final draft; provide full audit details only when explicitly requested.
 

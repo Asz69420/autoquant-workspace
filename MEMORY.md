@@ -115,9 +115,10 @@
 ### Build QC Gate (New ✅)
 - **Runbook:** `docs/RUNBOOKS/build-qc-gate.md`
 - **Policy:** Significant builds require two-stage verification: proposal QC before approval, then implementation QC before final handoff.
-- **Canonical order lock:** request → bill (plan+file list+preview+verification summary) → proposal QC (auto-revise/recheck up to 2 loops on FAIL) → verified bill (status + run_id + boxed stamp) → standalone `APPROVE BILL` → direct implementation/write+commit (no extra proposal QC rerun unless scope changes) → implementation QC → final verified handoff (status + run_id + boxed stamp).
-- **Approval token:** valid approval is a standalone user message whose trimmed content equals `APPROVE BILL` (case-insensitive).
-- **Mutation gate:** before `APPROVE BILL`, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
+- **Canonical order lock:** request → bill (plan+file list+preview+verification summary) → proposal QC (auto-revise/recheck up to 2 loops on FAIL) → verified bill (status + run_id + boxed stamp) → standalone user approval (natural-language affirmative) → direct implementation/write+commit (no extra proposal QC rerun unless scope changes) → implementation QC → final verified handoff (status + run_id + boxed stamp).
+- **Approval semantics:** valid approval is a standalone user message with clear affirmative intent (case-insensitive, trimmed), e.g. `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.
+- **Hold semantics:** standalone phrases `wait`, `not yet`, `hold`, `stop` block execution and keep approval-wait state.
+- **Mutation gate:** before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
 - **Visibility default:** user-facing verification output is status + run_id + boxed stamp only; full audit details only on explicit request.
 - **Spawn logging:** every `sessions_spawn` must emit terminal outcome (`OK|WARN|FAIL`) with shared run_id; START is conditional for long/multi-step runs or explicit request. All lifecycle events use `scripts/log_event.py` to `data/logs/outbox`.
