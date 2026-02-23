@@ -233,7 +233,9 @@ function Has-RequiredSections([string]$Text) {
 }
 
 $decisionName = if ([string]::IsNullOrWhiteSpace($name)) { 'Council Decision' } else { $name }
-$councilRunId = "council-" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+$runSuffix = ([guid]::NewGuid().ToString('N')).Substring(0, 6)
+$councilRunId = "council-" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + "-" + $runSuffix
+$script:LogEmitFailures = @()
 
 function Emit-CouncilEvent {
   param(
@@ -246,20 +248,27 @@ function Emit-CouncilEvent {
     $args = @('scripts/log_event.py','--run-id',$councilRunId,'--agent','oQ','--model-id','openai-codex/gpt-5.3-codex','--action','council_run','--status-word',$StatusWord,'--status-emoji',$StatusEmoji,'--summary',$Summary,'--input','council.ps1')
     if (-not [string]::IsNullOrWhiteSpace($ReasonCode)) { $args += @('--reason-code', $ReasonCode) }
     python @args | Out-Null
-  } catch {}
+    return $true
+  }
+  catch {
+    $script:LogEmitFailures += ("${StatusWord}: " + [string]$_.Exception.Message)
+    Write-Warning "Failed to emit council event [$StatusWord]: $([string]$_.Exception.Message)"
+    return $false
+  }
 }
 
 Write-Output "=== $decisionName ==="
+Write-Output "Council run_id: $councilRunId"
 Write-Output "Question: $question"
 Write-Output "Max rounds: $rounds"
 Write-Output "Reasoning: $reasoning"
 Write-Output ''
 
-Emit-CouncilEvent -StatusWord 'START' -StatusEmoji '▶️' -ReasonCode 'COUNCIL_START' -Summary ("Council run started: " + $decisionName)
+$null = Emit-CouncilEvent -StatusWord 'START' -StatusEmoji '▶️' -ReasonCode 'COUNCIL_START' -Summary ("Council run started: " + $decisionName)
 
 $failureReason = 'NONE'
 
-# Preflight probes (required before round 1)
+# Canonical preflight probes (informational only; no path split)
 $probePrompt = 'ping'
 $probeG = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Prompt $probePrompt -Round 1 -Temperature 0.0
 $probeM = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Prompt $probePrompt -Round 1 -Temperature 0.0
@@ -268,8 +277,6 @@ if (-not $probeM.ok) { $failureReason = Merge-FailureReason -Current $failureRea
 
 $gAvailable = $probeG.ok
 $mAvailable = $probeM.ok
-$executionMode = if ($gAvailable -and $mAvailable) { 'normal' } else { 'degraded' }
-
 Write-Output "Preflight: GPT-5.3=$(if($gAvailable){'available'}else{'unavailable'}) | MiniMax M2.5=$(if($mAvailable){'available'}else{'unavailable'})"
 
 $tmpl = @"
@@ -287,18 +294,19 @@ Use this structure:
 $curG = '[GPT-5.3 unavailable: MODEL_UNAVAILABLE]'
 $curM = '[MiniMax M2.5 unavailable: MODEL_UNAVAILABLE]'
 $lastRound = 1
-$stopReason = 'Degraded synthesis path'
+$stopReason = 'Reached max rounds'
 
-if ($gAvailable -and $mAvailable) {
-  $r1 = Ask-Both -PromptA $tmpl -PromptB $tmpl -Round 1
-  if (-not $r1.gpt.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $r1.gpt.reason }
-  if (-not $r1.mini.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $r1.mini.reason }
-  $curG = SafeText $r1.gpt 'GPT-5.3'
-  $curM = SafeText $r1.mini 'MiniMax M2.5'
-  Write-Output '[Round 1][GPT-5.3]'; Write-Output $curG; Write-Output ''
-  Write-Output '[Round 1][MiniMax M2.5]'; Write-Output $curM; Write-Output ''
+# Round 1: both lanes (canonical path)
+$r1 = Ask-Both -PromptA $tmpl -PromptB $tmpl -Round 1
+if (-not $r1.gpt.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $r1.gpt.reason }
+if (-not $r1.mini.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $r1.mini.reason }
+$curG = SafeText $r1.gpt 'GPT-5.3'
+$curM = SafeText $r1.mini 'MiniMax M2.5'
+Write-Output '[Round 1][GPT-5.3]'; Write-Output $curG; Write-Output ''
+Write-Output '[Round 1][MiniMax M2.5]'; Write-Output $curM; Write-Output ''
 
-  $gCrit = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 2 -Prompt @"
+# Round 2: critiques (canonical path)
+$gCrit = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 2 -Prompt @"
 Question:
 $question
 
@@ -310,7 +318,7 @@ $curM
 
 Critique weak assumptions, missing risks, and strongest opposing points.
 "@
-  $mCrit = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 2 -Prompt @"
+$mCrit = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 2 -Prompt @"
 Question:
 $question
 
@@ -322,12 +330,13 @@ $curG
 
 Critique weak assumptions, missing risks, and strongest opposing points.
 "@
-  if (-not $gCrit.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $gCrit.reason }
-  if (-not $mCrit.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $mCrit.reason }
-  $critG = SafeText $gCrit 'GPT-5.3 critique'
-  $critM = SafeText $mCrit 'MiniMax critique'
+if (-not $gCrit.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $gCrit.reason }
+if (-not $mCrit.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $mCrit.reason }
+$critG = SafeText $gCrit 'GPT-5.3 critique'
+$critM = SafeText $mCrit 'MiniMax critique'
 
-  $gRev = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 3 -Prompt @"
+# Round 3: revisions (canonical path)
+$gRev = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round 3 -Prompt @"
 Question:
 $question
 
@@ -339,7 +348,7 @@ $critM
 
 Revise using the 5-part structure.
 "@
-  $mRev = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 3 -Prompt @"
+$mRev = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round 3 -Prompt @"
 Question:
 $question
 
@@ -351,39 +360,32 @@ $critG
 
 Revise using the 5-part structure.
 "@
-  if (-not $gRev.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $gRev.reason }
-  if (-not $mRev.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $mRev.reason }
-  $curG = SafeText $gRev 'GPT-5.3 revised'
-  $curM = SafeText $mRev 'MiniMax revised'
-  Write-Output '[Round 3][GPT-5.3 revised]'; Write-Output $curG; Write-Output ''
-  Write-Output '[Round 3][MiniMax M2.5 revised]'; Write-Output $curM; Write-Output ''
+if (-not $gRev.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $gRev.reason }
+if (-not $mRev.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $mRev.reason }
+$curG = SafeText $gRev 'GPT-5.3 revised'
+$curM = SafeText $mRev 'MiniMax revised'
+Write-Output '[Round 3][GPT-5.3 revised]'; Write-Output $curG; Write-Output ''
+Write-Output '[Round 3][MiniMax M2.5 revised]'; Write-Output $curM; Write-Output ''
 
-  $material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round 3
-  $lastRound = 3
-  for ($r = 4; $r -le $rounds -and $material; $r++) {
-    $lastRound = $r
-    $g = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round $r -Prompt "Question:`n$question`n`nCurrent GPT:`n$curG`n`nCurrent MiniMax:`n$curM`n`nIf disagreement remains, refine toward convergence."
-    $m = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round $r -Prompt "Question:`n$question`n`nCurrent MiniMax:`n$curM`n`nCurrent GPT:`n$curG`n`nIf disagreement remains, refine toward convergence."
-    if (-not $g.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $g.reason }
-    if (-not $m.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $m.reason }
-    $curG = SafeText $g 'GPT-5.3'
-    $curM = SafeText $m 'MiniMax M2.5'
-    Write-Output "[Round $r][GPT-5.3]"; Write-Output $curG; Write-Output ''
-    Write-Output "[Round $r][MiniMax M2.5]"; Write-Output $curM; Write-Output ''
-    $material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round $r
-  }
-  $stopReason = if ($material) { "Reached max rounds ($lastRound)" } else { "Early stop at round $lastRound (convergence reached)" }
+$material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round 3
+$lastRound = 3
+for ($r = 4; $r -le $rounds -and $material; $r++) {
+  $lastRound = $r
+  $g = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Round $r -Prompt "Question:`n$question`n`nCurrent GPT:`n$curG`n`nCurrent MiniMax:`n$curM`n`nIf disagreement remains, refine toward convergence."
+  $m = Invoke-ModelText -Model 'opencode/minimax-m2.5' -Round $r -Prompt "Question:`n$question`n`nCurrent MiniMax:`n$curM`n`nCurrent GPT:`n$curG`n`nIf disagreement remains, refine toward convergence."
+  if (-not $g.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $g.reason }
+  if (-not $m.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $m.reason }
+  $curG = SafeText $g 'GPT-5.3'
+  $curM = SafeText $m 'MiniMax M2.5'
+  Write-Output "[Round $r][GPT-5.3]"; Write-Output $curG; Write-Output ''
+  Write-Output "[Round $r][MiniMax M2.5]"; Write-Output $curM; Write-Output ''
+  $material = Test-MaterialDisagreement -A $curG -B $curM -QuestionText $question -Round $r
 }
-elseif ($gAvailable -or $mAvailable) {
-  $availableModel = if ($gAvailable) { 'openai-codex/gpt-5.3-codex' } else { 'opencode/minimax-m2.5' }
-  $label = if ($gAvailable) { 'GPT-5.3' } else { 'MiniMax M2.5' }
-  $single = Invoke-ModelText -Model $availableModel -Prompt $tmpl -Round 1
-  if (-not $single.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $single.reason }
-  if ($gAvailable) { $curG = SafeText $single $label } else { $curM = SafeText $single $label }
-  $stopReason = 'Single-model degraded path'
-}
-else {
-  $stopReason = 'Both models unavailable at preflight'
+
+if (-not $material) {
+  $stopReason = "Early stop at round $lastRound (convergence reached)"
+} else {
+  $stopReason = "Reached max rounds ($lastRound)"
 }
 
 $finalPrompt = @"
@@ -406,8 +408,11 @@ Create final synthesis sections:
 
 $finalResp = Invoke-ModelText -Model 'openai-codex/gpt-5.3-codex' -Prompt $finalPrompt -Round ($lastRound + 1)
 if (-not $finalResp.ok) { $failureReason = Merge-FailureReason -Current $failureReason -Incoming $finalResp.reason }
-if ($failureReason -ne 'NONE') { $executionMode = 'degraded' }
+if ($script:LogEmitFailures.Count -gt 0) {
+  $failureReason = Merge-FailureReason -Current $failureReason -Incoming 'TOOL_PATH_FAIL'
+}
 
+$executionMode = if ($failureReason -eq 'NONE') { 'normal' } else { 'degraded' }
 $finalText = if ($finalResp.ok -and (Has-RequiredSections -Text $finalResp.text)) {
   $finalResp.text
 } else {
@@ -416,9 +421,13 @@ $finalText = if ($finalResp.ok -and (Has-RequiredSections -Text $finalResp.text)
 
 Write-Output "Execution mode: $executionMode"
 Write-Output "Failure reason: $failureReason"
+Write-Output "Stop reason: $stopReason"
+if ($script:LogEmitFailures.Count -gt 0) {
+  Write-Output ('Log emit warnings: ' + ($script:LogEmitFailures -join '; '))
+}
 Write-Output $finalText
 
 $terminalStatus = if ($executionMode -eq 'normal' -and $failureReason -eq 'NONE') { 'OK' } else { 'WARN' }
 $terminalEmoji = if ($terminalStatus -eq 'OK') { '✅' } else { '⚠️' }
 $terminalReason = if ($failureReason -eq 'NONE') { 'COUNCIL_OK' } else { $failureReason }
-Emit-CouncilEvent -StatusWord $terminalStatus -StatusEmoji $terminalEmoji -ReasonCode $terminalReason -Summary ("Council run finished: mode=" + $executionMode + ", reason=" + $failureReason)
+$null = Emit-CouncilEvent -StatusWord $terminalStatus -StatusEmoji $terminalEmoji -ReasonCode $terminalReason -Summary ("Council run finished: mode=" + $executionMode + ", reason=" + $failureReason + ", stop=" + $stopReason)
