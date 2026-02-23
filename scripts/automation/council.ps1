@@ -396,8 +396,6 @@ $finalText = if ($finalResp.ok -and (Has-RequiredSections -Text $finalResp.text)
   Build-LocalSynthesis -QuestionText $question -GptText $curG -MiniText $curM -StopReason $stopReason -Degraded ($executionMode -eq 'degraded')
 }
 
-Write-Output '=== Council Final Synthesis ==='
-Write-Output "Stop reason: $stopReason"
 Write-Output "Execution mode: $executionMode"
 Write-Output "Failure reason: $failureReason"
 Write-Output $finalText
