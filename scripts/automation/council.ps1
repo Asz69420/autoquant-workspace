@@ -10,7 +10,8 @@ param(
   [int]$timeoutSec = 60,
   [Alias('explicit-user-request')]
   [switch]$explicitUserRequest,
-  [switch]$help
+  [switch]$help,
+  [string]$taskId
 )
 
 Set-StrictMode -Version Latest
@@ -249,6 +250,26 @@ $runSuffix = ([guid]::NewGuid().ToString('N')).Substring(0, 6)
 $councilRunId = "council-" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + "-" + $runSuffix
 $script:LogEmitFailures = @()
 
+function Invoke-EvidenceGate {
+  param(
+    [string]$Claim
+  )
+
+  if ([string]::IsNullOrWhiteSpace($taskId)) { return $true }
+  try {
+    $eg = python scripts/automation/evidence_gate.py --task-id $taskId --claim $Claim 2>&1
+    if ($LASTEXITCODE -ne 0) {
+      Write-Warning "Evidence gate failed for claim $Claim: $eg"
+      return $false
+    }
+    return $true
+  }
+  catch {
+    Write-Warning "Evidence gate error for claim $Claim: $([string]$_.Exception.Message)"
+    return $false
+  }
+}
+
 function Emit-CouncilEvent {
   param(
     [string]$StatusWord,
@@ -276,6 +297,9 @@ Write-Output "Max rounds: $rounds"
 Write-Output "Reasoning: $reasoning"
 Write-Output ''
 
+if (-not (Invoke-EvidenceGate -Claim 'EXECUTING')) {
+  throw 'EVIDENCE_GATE_BLOCKED_EXECUTING: missing or invalid ledger evidence for EXECUTING claim.'
+}
 $null = Emit-CouncilEvent -StatusWord 'START' -StatusEmoji '▶️' -ReasonCode 'COUNCIL_START' -Summary ("Council run started: " + $decisionName)
 
 $failureReason = 'NONE'
@@ -442,4 +466,8 @@ Write-Output $finalText
 $terminalStatus = if ($executionMode -eq 'normal' -and $failureReason -eq 'NONE') { 'OK' } else { 'WARN' }
 $terminalEmoji = if ($terminalStatus -eq 'OK') { '✅' } else { '⚠️' }
 $terminalReason = if ($failureReason -eq 'NONE') { 'COUNCIL_OK' } else { $failureReason }
+$completionClaim = if ($terminalStatus -eq 'OK') { 'COMPLETE' } else { 'BLOCKED' }
+if (-not (Invoke-EvidenceGate -Claim $completionClaim)) {
+  throw "EVIDENCE_GATE_BLOCKED_${completionClaim}: missing or invalid ledger evidence for terminal claim."
+}
 $null = Emit-CouncilEvent -StatusWord $terminalStatus -StatusEmoji $terminalEmoji -ReasonCode $terminalReason -Summary ("Council run finished: mode=" + $executionMode + ", reason=" + $failureReason + ", stop=" + $stopReason)
