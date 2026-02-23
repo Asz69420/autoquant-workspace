@@ -233,11 +233,29 @@ function Has-RequiredSections([string]$Text) {
 }
 
 $decisionName = if ([string]::IsNullOrWhiteSpace($name)) { 'Council Decision' } else { $name }
+$councilRunId = "council-" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+
+function Emit-CouncilEvent {
+  param(
+    [string]$StatusWord,
+    [string]$StatusEmoji,
+    [string]$ReasonCode,
+    [string]$Summary
+  )
+  try {
+    $args = @('scripts/log_event.py','--run-id',$councilRunId,'--agent','oQ','--model-id','openai-codex/gpt-5.3-codex','--action','council_run','--status-word',$StatusWord,'--status-emoji',$StatusEmoji,'--summary',$Summary,'--input','council.ps1')
+    if (-not [string]::IsNullOrWhiteSpace($ReasonCode)) { $args += @('--reason-code', $ReasonCode) }
+    python @args | Out-Null
+  } catch {}
+}
+
 Write-Output "=== $decisionName ==="
 Write-Output "Question: $question"
 Write-Output "Max rounds: $rounds"
 Write-Output "Reasoning: $reasoning"
 Write-Output ''
+
+Emit-CouncilEvent -StatusWord 'START' -StatusEmoji '▶️' -ReasonCode 'COUNCIL_START' -Summary ("Council run started: " + $decisionName)
 
 $failureReason = 'NONE'
 
@@ -399,3 +417,8 @@ $finalText = if ($finalResp.ok -and (Has-RequiredSections -Text $finalResp.text)
 Write-Output "Execution mode: $executionMode"
 Write-Output "Failure reason: $failureReason"
 Write-Output $finalText
+
+$terminalStatus = if ($executionMode -eq 'normal' -and $failureReason -eq 'NONE') { 'OK' } else { 'WARN' }
+$terminalEmoji = if ($terminalStatus -eq 'OK') { '✅' } else { '⚠️' }
+$terminalReason = if ($failureReason -eq 'NONE') { 'COUNCIL_OK' } else { $failureReason }
+Emit-CouncilEvent -StatusWord $terminalStatus -StatusEmoji $terminalEmoji -ReasonCode $terminalReason -Summary ("Council run finished: mode=" + $executionMode + ", reason=" + $failureReason)

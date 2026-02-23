@@ -61,6 +61,12 @@ Metadata lines are emitted outside those sections:
 - `Execution mode: normal|degraded`
 - `Failure reason: NONE|AUTH_FAIL|MODEL_UNAVAILABLE|TOOL_PATH_FAIL`
 
+Council lifecycle logging (mandatory):
+- Emit `START` ActionEvent when council begins.
+- Emit terminal `OK|WARN|FAIL` ActionEvent on completion.
+- Reuse the same `run_id` for start + terminal pair.
+- Emit via `scripts/log_event.py` to outbox (logger handles channel delivery).
+
 ## Usage examples
 
 ```powershell
