@@ -156,3 +156,8 @@
 - Workspace is clean and ready for next session. ([keeper:handoff:handoff-20260223-0946.md])
 - Keeper V2 cadence active via `\AutoQuant-keeper-30m`. ([keeper:handoff:handoff-20260223-0946.md])
 - Commit `1626db8`: condensed VERIFIED QC stamp to one line: ([keeper:handoff:handoff-20260223-0946.md])
+- Significant-build QC flow hardened and committed: verifier-led gate is now explicit in core policy docs. ([keeper:handoff:handoff-20260223-1816.md])
+- Verifier sub-agent is callable from main (`allowAgents` includes `verifier`) and used for proposal/implementation QC runs. ([keeper:handoff:handoff-20260223-1816.md])
+- Workspace is clean except one untracked note file: `memory/2026-02-23-framework-review.md`. ([keeper:handoff:handoff-20260223-1816.md])
+- Gateway/channel healthy; Telegram logging pipeline active (outbox drains to actions log). ([keeper:handoff:handoff-20260223-1816.md])
+- No active sub-agent runs. ([keeper:handoff:handoff-20260223-1816.md])
