@@ -16,12 +16,15 @@ For significant policy/contract/runbook/multi-file changes, sequence is mandator
 3. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops)
 4. If cap reached: emit one consolidated blocker list, pause for user decision, and stop auto-reruns
    - For minor significant docs-only edits, use lightweight proposal QC mode (one pass + one fix + one recheck)
-5. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp)
-6. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed)
-7. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
-8. Implement/write + commit changes
-9. Run independent QC on implementation
-10. Handoff with verification status + run_id + boxed QC stamp
+5. Before any approval ask, run: `python scripts/qc_guard.py --stage proposal --require-evidence --evidence-file <path-or-json> --run-id <id>`
+6. Present verified bill (`QC: PASS|FAIL | run_id: ...` + boxed QC stamp) only when guard passes
+7. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed)
+8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes)
+9. Implement/write + commit changes
+10. Run independent QC on implementation
+11. Handoff with verification status + run_id + boxed QC stamp
+
+Automation mode (significant builds): audits run automatically in the background. Do not send mid-audit iterations to DM; only send the final approval package once proposal QC is clean and guard-passed.
 
 Before approval, block mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 Valid standalone approvals include: `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.

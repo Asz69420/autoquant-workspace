@@ -37,13 +37,14 @@ For minor significant docs-only edits, use lean proposal QC mode:
    - project compatibility/alignment
 4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops).
 5. If cap reached: emit one consolidated blocker list, require user decision, and stop auto-reruns.
-6. Send verified bill to user for approval (default chat output: `**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**` + boxed stamp; structured status/run_id is log-facing and shared in chat only on request).
-7. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed).
-8. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
-9. Implement/write + commit changes.
-10. Run independent QC pass on implementation (🔰 Verifier).
-11. If implementation QC fails: revise once and re-run implementation QC once.
-12. Return final summary + commit hash with QC stamp.
+6. Before any approval ask, run proposal gate check: `python scripts/qc_guard.py --stage proposal --require-evidence --evidence-file <path-or-json> --run-id <id>`.
+7. Send verified bill to user for approval only if guard passes (default chat output: `**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**` + boxed stamp; structured status/run_id is log-facing and shared in chat only on request).
+8. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed).
+9. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
+10. Implement/write + commit changes.
+11. Run independent QC pass on implementation (🔰 Verifier).
+12. If implementation QC fails: revise once and re-run implementation QC once.
+13. Return final summary + commit hash with QC stamp.
 
 ## Verification Brief (required input to auditor)
 For significant builds, auditor must receive this context pack:
@@ -86,6 +87,7 @@ Not verified:
 - Auto-recovery: send an immediate correction message containing the correct boxed QC stamp.
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
+- A significant-build approval request is process-invalid unless a verifier evidence block is attached (`verifier_run_id`, checklist verdict `PASS|PARTIAL|FAIL`, blockers/fixes summary when non-pass). If absent/malformed: force `**❌ Not Verified**`, block approval ask, and emit a compliance ActionEvent.
 - On reaching proposal-loop cap, provide one consolidated blocker list and pause for user decision (no further auto-reruns).
 - Proposal approval request in chat should default to minimal human confirmation: `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`) plus boxed QC stamp.
 - Structured STATUS lines are log-facing and should be sent in chat only on explicit request.
