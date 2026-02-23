@@ -63,9 +63,11 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 
 **Mandatory logging for every spawn (including QC/Council subagents):**
 - Emit `START` ActionEvent before `sessions_spawn`
-- Emit terminal `OK`/`WARN`/`FAIL` ActionEvent when result returns
+- Emit terminal `OK`/`WARN`/`FAIL` ActionEvent when result returns (including timeout/cancel/error paths)
 - Reuse the same run_id for lifecycle pairing
 - Emit via `python scripts/log_event.py ...` (never hand-write JSON)
+- Required fields per lifecycle event: shared `run_id`, `action=sessions_spawn`, `status_word`, `agent`, `summary`, timestamps from `log_event.py`
+- If START/terminal pair is missing or run_id mismatches, mark process-invalid, emit compliance `WARN`/`FAIL`, and block approval/handoff progression until corrected
 - User-facing chat output should reference status + run_id only by default (no raw audit dump unless requested).
 
 

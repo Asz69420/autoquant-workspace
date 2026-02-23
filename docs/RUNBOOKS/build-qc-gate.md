@@ -78,6 +78,7 @@ Not verified:
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
 - Proposal approval request MUST include one-line verifier summary (`QC: PASS|FAIL | run_id: ...`) plus boxed QC stamp.
+- Pre-handoff checklist MUST verify spawn lifecycle pairs for all `sessions_spawn` used in the build (`START` + terminal `OK|WARN|FAIL` with matching run_id).
 - Valid approval token is a standalone user message equal to `APPROVE BILL` (case-insensitive, trimmed exact match).
 - Before approval token, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - Do not send implementation handoff until post-implementation independent QC has completed.

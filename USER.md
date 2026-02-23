@@ -128,6 +128,7 @@ Acceptance test:
 - **Build handoff order (hard rule):** For major requested builds, sequence is fixed: request → bill (plan + file list + preview + verification summary) → independent proposal QC → send verified bill (status + run_id + boxed stamp) → wait for explicit standalone `APPROVE BILL` → implement/write + commit → independent QC pass on implementation → final verified handoff (status + run_id + boxed stamp).
 - **Verification visibility (hard rule):** User-facing proposal/handoff must include verification status + run_id + boxed QC stamp; do not include full audit text unless explicitly requested.
 - **Sub-agent visibility (hard rule):** Every `sessions_spawn` (including QC/Council) must emit lifecycle ActionEvents (`START` before spawn, terminal `OK|WARN|FAIL` on completion) with shared run_id via `scripts/log_event.py` to `data/logs/outbox/`.
+- **Spawn log schema (hard rule):** Spawn lifecycle events must include: shared `run_id`, `action=sessions_spawn`, `status_word` (`START|OK|WARN|FAIL`), `agent`, `summary`, and timestamp fields from `log_event.py`. Missing START/terminal pair makes the run process-invalid until corrected.
 - **Approval token gate (hard rule):** For significant builds, no mutating actions are allowed before explicit approval token. A valid approval is a standalone user message whose trimmed content equals `APPROVE BILL` (case-insensitive). Before that token: block write/edit/create/delete actions, git add/commit/reset/rebase/cherry-pick, and config mutations; remain in approval-wait state.
 
 ## Your Identity
