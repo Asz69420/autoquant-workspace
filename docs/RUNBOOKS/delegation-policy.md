@@ -10,7 +10,8 @@
 
 ## Major-Change Workflow (Hard Gate)
 
-For significant policy/contract/runbook/multi-file changes, sequence is mandatory:
+Canonical verification gate: `docs/CONTRACTS/verification-gate.md` (wins on conflict).
+For significant changes under that contract, sequence is mandatory:
 1. Draft bill (plan + file list + preview/diff + verification summary)
 2. Run independent QC on proposal (with Verification Brief context)
 3. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops)
@@ -29,7 +30,7 @@ Valid standalone approvals include: `approved`, `go ahead`, `commit it`, `approv
 Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) block execution and keep approval-wait state.
 Proposal QC reporting must use fixed checklist categories (policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility) and deduplicate repeated issues unless state changed.
 If any gate is skipped, output is process-invalid and must be corrected before topic continuation.
-For significant builds, verifier sub-agent QC is mandatory for both proposal and implementation stages; inline/local-only QC is insufficient as sole gate.
+For significant builds, verifier sub-agent QC is mandatory for both proposal and implementation stages; inline/local-only QC is insufficient as sole gate. Missing/invalid required artifact at required checkpoint is `PROCESS_INVALID` and blocks progression.
 DM output contract for significant builds: send only clean approval package and final verified handoff unless audit details are explicitly requested.
 If implementation occurs before standalone approval, stop immediately, revert unauthorized commits, and restart from proposal QC.
 
@@ -85,7 +86,7 @@ If implementation occurs before standalone approval, stop immediately, revert un
 - User-facing chat output should default to minimal confirmation text (no raw audit dump unless requested): `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`).
 - Structured STATUS/run_id fields are log-facing by default and only surfaced in chat when explicitly requested.
 - Result sets remain: QC maps to Verified/Partial/Not Verified; SPAWN maps to OK/WARN/FAIL in logs.
-- DM noise suppression: for routine QC/checks, prefer inline/local QC (no `sessions_spawn`) so DM does not receive platform auto-announcements; continue emitting ActionEvents to outbox/log channel.
+- DM noise suppression: for routine/non-significant QC checks, prefer inline/local QC (no `sessions_spawn`) so DM does not receive platform auto-announcements; continue emitting ActionEvents to outbox/log channel. This does not weaken mandatory verifier sub-agent stages for significant builds.
 
 
 ### Content Ingestion (🔗 Reader)

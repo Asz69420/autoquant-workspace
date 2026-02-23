@@ -2,14 +2,14 @@
 
 Purpose: add a fast second-pass quality check before final handoff on significant builds.
 
-## Trigger condition (significant build)
-Run QC gate when any of these are true:
-- Automation/scheduler behavior changed
-- Policy/contracts/runbooks changed
-- Multi-file feature build
-- Model routing/delegation behavior changed
+Canonical contract: `docs/CONTRACTS/verification-gate.md`.
+If this runbook conflicts with that contract, the contract wins.
 
-Skip gate for tiny edits (typos/format-only/single-line non-functional docs). This trivial-edit carve-out is unaffected by the approval semantics rule.
+## Trigger condition (significant build)
+Use the objective trigger matrix in `docs/CONTRACTS/verification-gate.md`.
+Fail-closed rule applies: if significance is unknown/partial, treat as significant.
+
+Skip gate only when clearly trivial under that contract.
 
 ### Lightweight mode (minor significant docs-only edits)
 For minor significant docs-only edits, use lean proposal QC mode:
@@ -20,31 +20,29 @@ For minor significant docs-only edits, use lean proposal QC mode:
 
 ## Gate pattern
 1. For significant builds, prepare proposal package first (plan + file list + preview/diff + acceptance criteria).
-2. Trigger 🔰 Verifier as independent reviewer (separate session, GPT-5.3 primary) on the proposal package.
-3. Reviewer checks:
-   - requirement coverage
-   - policy compliance (AutoQuant rules in USER.md)
-   - explicit AutoQuant Operating Rules compliance:
-     - no overwrite/delete without approval
-     - plan → file list → diff/preview before write
-     - no secrets in files
-     - artifacts/data outputs are not Git-tracked
-   - edge cases/regressions
-   - docs/memory sync completeness
-   - efficiency
-   - effectiveness
-   - future-proofing
-   - project compatibility/alignment
-4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops).
-5. If cap reached: emit one consolidated blocker list, require user decision, and stop auto-reruns.
-6. Run verifier sub-agent proposal QC automatically before any approval ask. If not PASS, continue internal revise/re-audit loop; do not ask user approval.
-7. Send verified bill to user for approval (default chat output: `**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**` + boxed stamp; structured status/run_id is log-facing and shared in chat only on request).
-8. Wait for explicit standalone user approval (natural-language affirmative, case-insensitive, trimmed).
-9. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
-10. Implement/write + commit changes.
-11. Run independent QC pass on implementation (🔰 Verifier).
-12. If implementation QC fails: revise once and re-run implementation QC once.
-13. Return final summary + commit hash with QC stamp.
+2. Run 🔰 Verifier proposal QC before any approval ask.
+3. Require a valid proposal artifact at checkpoint `pre_implementation` with stage=`proposal`, status=`PASS`, and matching `scope_fingerprint`.
+4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops), then provide consolidated blockers on cap.
+5. Send verified bill only after proposal PASS; wait for explicit standalone user approval.
+6. Implement/write + commit only after approval token gate passes.
+7. Run 🔰 Verifier implementation QC.
+8. Require a valid implementation artifact at checkpoint `pre_handoff` with stage=`implementation`, status=`PASS|PARTIAL`.
+9. If required artifact is missing/invalid at either checkpoint: mark `PROCESS_INVALID`, stop progression, correct, then continue.
+10. Return final summary + commit hash with QC stamp.
+
+## Verifier artifact contract (required)
+Every required verifier checkpoint must produce a machine-checkable artifact containing:
+- `artifact_version`
+- `run_id`
+- `stage`
+- `status`
+- `scope_fingerprint`
+- `checkpoint` (`pre_implementation` | `pre_handoff`)
+- `producer` (verifier sub-agent identity)
+- `timestamp_utc`
+
+Canonical location: `artifacts/verification/<run_id>/<stage>.json`
+Fallback location: `docs/verification/<run_id>/<stage>.json`
 
 ## Verification Brief (required input to auditor)
 For significant builds, auditor must receive this context pack:
@@ -100,7 +98,7 @@ Not verified:
 - If implementation occurs before standalone approval, treat it as process-invalid: stop, disclose, revert unauthorized commits, and restart from proposal QC.
 - Do not send implementation handoff until post-implementation independent QC has completed.
 - Default user-visible mode: report minimal verification confirmation (`**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**`) + boxed stamp and final draft; keep structured status/run_id in logs and provide in chat only when explicitly requested.
-- DM noise suppression: for routine proposal/implementation QC checks, prefer inline/local QC in main chat to avoid `sessions_spawn` auto-announcement noise; reserve `sessions_spawn` for long/multi-step runs (expected >5 minutes or >1 execution phase) or explicitly requested QC runs.
+- DM noise suppression: applies to routine/non-significant checks only. Significant-build verifier stages are mandatory per canonical contract and cannot be replaced by inline/local-only QC.
 
 ## Note
 This is a **quick** gate, not full audit. Aim for 5-10 minutes.
