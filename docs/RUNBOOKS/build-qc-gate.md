@@ -78,6 +78,7 @@ Not verified:
 ━━━━━━━━━━━━━━━━━━━━
 
 ## Quick command pattern (operator)
+- Verifier operational precheck: `python -m unittest scripts.tests.test_verifier_agent_path`
 - Spawn 🔰 Verifier in separate session using `sessions_spawn`.
 - Pass: change summary, file list, acceptance criteria, and policy checks.
 - If FAIL: revise once, re-run QC, then handoff with footer stamp.
@@ -87,6 +88,8 @@ Not verified:
 - Auto-recovery: send an immediate correction message containing the correct boxed QC stamp.
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
+- Mandatory precheck before significant-build cycles: verifier operational path must pass (`python -m unittest scripts.tests.test_verifier_agent_path`).
+- If verifier precheck fails/unavailable, force `**❌ Not Verified**`, block approval ask, and emit a compliance ActionEvent.
 - A significant-build approval request is process-invalid unless a verifier evidence block is attached (`verifier_run_id`, checklist verdict `PASS|PARTIAL|FAIL`, blockers/fixes summary when non-pass). If absent/malformed: force `**❌ Not Verified**`, block approval ask, and emit a compliance ActionEvent.
 - On reaching proposal-loop cap, provide one consolidated blocker list and pause for user decision (no further auto-reruns).
 - Proposal approval request in chat should default to minimal human confirmation: `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`) plus boxed QC stamp.
