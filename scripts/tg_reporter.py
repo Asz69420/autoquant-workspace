@@ -15,7 +15,7 @@ ACTIONS_LOG = Path("data/logs/actions.ndjson")
 ERRORS_LOG = Path("data/logs/errors.ndjson")
 LOCK_FILE = Path("data/logs/tg_reporter.lock")
 
-# Anti-spam dedup: (run_id, status_word) → last send time (in-memory only per cycle)
+# Anti-spam dedup: (run_id, status_word, ts_iso) → last send time (in-memory only per cycle)
 last_sent = {}
 DEDUP_WINDOW_SECONDS = 60
 
@@ -32,22 +32,22 @@ def compute_ts_local_aest(ts_iso_str):
     
     return f"{day} {month} {hour_12}:{minute} {ampm} AEST"
 
-def is_duplicate(run_id, status_word):
-    """Check if (run_id, status_word) sent in last 60s (in-memory only)."""
-    key = f"{run_id}_{status_word}"
+def is_duplicate(run_id, status_word, ts_iso):
+    """Check if (run_id, status_word, ts_iso) sent in last 60s (in-memory only)."""
+    key = f"{run_id}_{status_word}_{ts_iso}"
     if key in last_sent:
         elapsed = time.time() - last_sent[key]
         if elapsed < DEDUP_WINDOW_SECONDS:
             return True
     return False
 
-def mark_sent(run_id, status_word):
-    """Mark (run_id, status_word) as sent (in-memory only)."""
-    key = f"{run_id}_{status_word}"
+def mark_sent(run_id, status_word, ts_iso):
+    """Mark (run_id, status_word, ts_iso) as sent (in-memory only)."""
+    key = f"{run_id}_{status_word}_{ts_iso}"
     last_sent[key] = time.time()
 
 
-def already_logged(run_id, status_word):
+def already_logged(run_id, status_word, ts_iso):
     """Persistent dedup: skip if already appended in actions.ndjson."""
     if not ACTIONS_LOG.exists():
         return False
@@ -61,7 +61,11 @@ def already_logged(run_id, status_word):
                     e = json.loads(line)
                 except Exception:
                     continue
-                if e.get("run_id") == run_id and e.get("status_word") == status_word:
+                if (
+                    e.get("run_id") == run_id
+                    and e.get("status_word") == status_word
+                    and e.get("ts_iso") == ts_iso
+                ):
                     return True
     except Exception:
         return False
@@ -232,27 +236,33 @@ def drain_once(max_messages=20):
             
             run_id = event["run_id"]
             status_word = event["status_word"]
+            ts_iso = event.get("ts_iso", "")
             agent = event.get("agent")
 
-            # Result-first policy: suppress START notifications in Telegram.
-            # Final statuses (OK/WARN/FAIL/BLOCKED/etc.) are what matter in chat.
-            if status_word == "START":
-                event_file.unlink()
-                skipped += 1
-                print(f"Skipped (start-suppressed): {event_file.name}", file=sys.stderr)
-                continue
-            
-            # Check dedup (in-memory only)
-            if is_duplicate(run_id, status_word):
-                skipped += 1
-                print(f"Skipped (dedup): {event_file.name}", file=sys.stderr)
-                continue
-
             # Persistent dedup across process restarts
-            if already_logged(run_id, status_word):
+            if already_logged(run_id, status_word, ts_iso):
                 event_file.unlink()
                 skipped += 1
                 print(f"Skipped (already-logged): {event_file.name}", file=sys.stderr)
+                continue
+
+            # Result-first policy: suppress START notifications in Telegram.
+            # Final statuses (OK/WARN/FAIL/BLOCKED/etc.) are what matter in chat.
+            # Keep START in actions.ndjson for lifecycle auditability.
+            if status_word == "START":
+                event_line = json.dumps(event)
+                with open(ACTIONS_LOG, "a") as f:
+                    f.write(event_line + "\n")
+                event_file.unlink()
+                mark_sent(run_id, status_word, ts_iso)
+                skipped += 1
+                print(f"Skipped (start-suppressed, logged): {event_file.name}", file=sys.stderr)
+                continue
+            
+            # Check dedup (in-memory only)
+            if is_duplicate(run_id, status_word, ts_iso):
+                skipped += 1
+                print(f"Skipped (dedup): {event_file.name}", file=sys.stderr)
                 continue
             
             # Send to Telegram
@@ -267,7 +277,7 @@ def drain_once(max_messages=20):
                         f.write(event_line + "\n")
                 
                 event_file.unlink()
-                mark_sent(run_id, status_word)
+                mark_sent(run_id, status_word, ts_iso)
                 sent += 1
                 consecutive_failures = 0
                 print(f"Sent: {event_file.name}", file=sys.stderr)

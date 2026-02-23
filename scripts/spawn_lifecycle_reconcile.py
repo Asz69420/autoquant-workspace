@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""Reconcile spawn lifecycle state and surface missing terminal events.
+
+- Scans data/logs/spawn_state/*.json
+- For stale runs with no terminal event, emits WARN ActionEvent with reason_code=MISSING_TERMINAL_EVENT
+- --strict exits nonzero if unresolved stale runs exist
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+STATE_DIR = Path("data/logs/spawn_state")
+LOG_EVENT = Path("scripts/log_event.py")
+
+
+def now_utc() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def parse_iso(s: str | None) -> datetime | None:
+    if not s:
+        return None
+    try:
+        return datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except Exception:
+        return None
+
+
+def emit_warn(run_id: str, summary: str, model_id: str, agent: str) -> None:
+    cmd = [
+        sys.executable,
+        str(LOG_EVENT),
+        "--run-id", run_id,
+        "--agent", agent,
+        "--action", "sessions_spawn",
+        "--status-word", "WARN",
+        "--status-emoji", "⚠️",
+        "--model-id", model_id,
+        "--reason-code", "MISSING_TERMINAL_EVENT",
+        "--summary", summary,
+        "--inputs", "sessions_spawn",
+    ]
+    subprocess.run(cmd, check=True)
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--grace-seconds", type=int, default=120)
+    ap.add_argument("--strict", action="store_true")
+    args = ap.parse_args()
+
+    if not STATE_DIR.exists():
+        print("No spawn state directory; nothing to reconcile.")
+        return 0
+
+    unresolved = 0
+    checked = 0
+
+    for p in sorted(STATE_DIR.glob("*.json")):
+        checked += 1
+        try:
+            st = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+
+        if st.get("terminal_emitted"):
+            continue
+
+        started = parse_iso(st.get("started_at"))
+        if not started:
+            continue
+
+        age = (now_utc() - started).total_seconds()
+        if age < args.grace_seconds:
+            continue
+
+        unresolved += 1
+        run_id = st.get("run_id") or p.stem
+        agent = st.get("agent") or "oQ"
+        model_id = st.get("model_id") or "openai-codex/gpt-5.3-codex"
+        summary = f"Spawn lifecycle missing terminal event (age={int(age)}s)"
+        emit_warn(run_id=run_id, summary=summary, model_id=model_id, agent=agent)
+
+    print(f"Checked={checked} unresolved={unresolved}")
+    if args.strict and unresolved > 0:
+        return 2
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -92,6 +92,7 @@ Not verified:
 - Proposal QC reports must use fixed checklist categories only: policy alignment, scope fit, mutation gate compliance, logging contract, verification visibility.
 - Proposal QC reruns must deduplicate issues (repeat only when state changed).
 - Pre-handoff checklist MUST verify terminal spawn outcomes for all `sessions_spawn` used in the build (`OK|WARN|FAIL` with run_id). If START exists, verify matching run_id and valid ordering.
+- Run `python scripts/spawn_lifecycle_reconcile.py --strict` before final handoff when spawn workflows were used; unresolved runs block handoff.
 - Valid approval is a standalone user message with clear affirmative intent (case-insensitive, trimmed), e.g. `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.
 - Standalone hold phrases (`wait`, `not yet`, `hold`, `stop`) must block execution and keep approval-wait state.
 - Before approval, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
