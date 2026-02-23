@@ -25,7 +25,6 @@ For significant policy/contract/runbook/multi-file changes, sequence is mandator
 11. Handoff with verification status + run_id + boxed QC stamp
 
 Automation mode (significant builds): audits run automatically in the background. Do not send mid-audit iterations to DM; only send the final approval package once proposal QC is clean and guard-passed.
-If verifier is unavailable/unspawnable (or verifier precheck fails), auto-fail gate to `NOT VERIFIED` and do not ask user approval.
 
 Before approval, block mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 Valid standalone approvals include: `approved`, `go ahead`, `commit it`, `approved go ahead and commit`.
