@@ -84,14 +84,20 @@ def to_model_label(model_id: str) -> str:
 
 def _normalize_status_emoji(status_emoji: str, status_word: str) -> str:
     """Return a sane emoji; repair malformed values like status_emoji='START'."""
-    se = _as_str(status_emoji, "")
+    se = _as_str(status_emoji, "").strip()
     sw = _as_str(status_word, "").upper()
 
-    # Missing, mojibake-ish, or textual status tokens should fallback.
-    bad = (not se) or (se.upper() == sw) or (se.upper() in STATUS_EMOJI_FALLBACK)
-    if bad:
-        return STATUS_EMOJI_FALLBACK.get(sw, se or "ℹ️")
-    return se
+    fallback = STATUS_EMOJI_FALLBACK.get(sw, "ℹ️")
+
+    # If missing, textual token, lone variation selector, or clearly mojibake -> fallback.
+    if (not se) or (se.upper() == sw) or (se == "️") or any(ch in se for ch in ("Ã", "â", "�")):
+        return fallback
+
+    # If the provided emoji is one of our known status emojis, keep it; otherwise normalize.
+    if se in STATUS_EMOJI_FALLBACK.values():
+        return se
+
+    return fallback
 
 
 def _is_spawned_subagent_event(event: dict) -> bool:
