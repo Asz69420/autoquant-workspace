@@ -77,13 +77,13 @@ Not verified:
 ## Quick command pattern (operator)
 - Spawn 🔰 Verifier in separate session using `sessions_spawn`.
 - Pass: change summary, file list, acceptance criteria, and policy checks.
-- If FAIL: revise once, re-run QC, then handoff with footer stamp.
+- If FAIL: keep proposal-stage loop internal (FAIL -> revise -> re-audit) until PASS; no FAIL-stage user approval ask.
 
 ## Enforcement guardrail (automation behavior)
 - Treat missing QC stamp on significant-build handoff as a process failure.
 - Auto-recovery: send an immediate correction message containing the correct boxed QC stamp.
 - Do not continue to new topics until the correction stamp is sent.
-- For major requested builds, do not request final user approval until proposal QC has completed (with auto-revise/recheck up to 2 loops on proposal FAIL).
+- For major requested builds, do not request final user approval until proposal QC has completed with PASS (internal FAIL -> revise -> re-audit loop until PASS).
 - Proposal FAIL-stage is internal; do not pause for user decision while in FAIL loop. Only legal pause states are WAIT_USER_APPROVAL or BLOCKED.
 - Proposal approval request in chat should default to minimal human confirmation: `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`) plus boxed QC stamp.
 - Structured STATUS lines are log-facing and should be sent in chat only on explicit request.
