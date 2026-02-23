@@ -1,4 +1,5 @@
-﻿task_id=build-20260223-221914-task-20260224-081934-2469d9
-question=build-session smoke step 2
-ts=2026-02-23T22:19:35.2127557+00:00
+﻿task_id=build-20260223-223107-task-20260224-083107-a5d847
+question=controlled failing change smoke
+ts=2026-02-23T22:31:08.0196445+00:00
 
+AUTO_FIX_OK=1;attempt=1
