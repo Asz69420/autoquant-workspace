@@ -97,7 +97,7 @@ Not verified:
 - If implementation occurs before standalone approval, treat it as process-invalid: stop, disclose, revert unauthorized commits, and restart from proposal QC.
 - Do not send implementation handoff until post-implementation independent QC has completed.
 - Default user-visible mode: report minimal verification confirmation (`**✅ Verified**` / `**⚠️ Partial**` / `**❌ Not Verified**`) + boxed stamp and final draft; keep structured status/run_id in logs and provide in chat only when explicitly requested.
-- DM noise suppression: applies to routine/non-significant checks only. Significant-build verifier stages are mandatory per canonical contract and cannot be replaced by inline/local-only QC.
+- DM noise suppression: significant-build verifier stages remain mandatory, but should be orchestrated off-DM by default when platform supports it; DM should receive only the clean approval package and final handoff unless detailed audit output is explicitly requested.
 - Lifecycle logging gate: missing terminal `sessions_spawn` event evidence (`OK|WARN|FAIL`) is fail-closed and blocks progression until reconciled.
 
 ## Note

@@ -85,7 +85,7 @@ If implementation occurs before standalone approval, stop immediately, revert un
 - User-facing chat output should default to minimal confirmation text (no raw audit dump unless requested): `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`).
 - Structured STATUS/run_id fields are log-facing by default and only surfaced in chat when explicitly requested.
 - Result sets remain: QC maps to Verified/Partial/Not Verified; SPAWN maps to OK/WARN/FAIL in logs.
-- DM noise suppression: for routine/non-significant QC checks, prefer inline/local QC (no `sessions_spawn`) so DM does not receive platform auto-announcements; continue emitting ActionEvents to outbox/log channel. This does not weaken mandatory verifier sub-agent stages for significant builds.
+- DM noise suppression (default routing): run `sessions_spawn` in a non-DM orchestration session/surface by default, then deliver only final summaries/results to DM. Use in-DM spawning only when explicitly requested by user or when no alternate orchestration surface is available.
 - Sub-agent lifecycle logging is non-negotiable: every `sessions_spawn` completion must have a terminal `OK|WARN|FAIL` ActionEvent and reconcile cleanly under strict checks.
 
 
