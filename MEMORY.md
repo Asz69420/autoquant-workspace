@@ -115,7 +115,7 @@
 ### Build QC Gate (New ✅)
 - **Runbook:** `docs/RUNBOOKS/build-qc-gate.md`
 - **Policy:** Significant builds require two-stage verification: proposal QC before approval, then implementation QC before final handoff.
-- **Canonical order lock:** request → bill (plan+file list+preview+verification summary) → proposal QC (auto-revise/recheck up to 2 loops on FAIL) → verified bill (status + run_id + boxed stamp) → standalone `APPROVE BILL` → implement/write+commit → implementation QC → final verified handoff (status + run_id + boxed stamp).
+- **Canonical order lock:** request → bill (plan+file list+preview+verification summary) → proposal QC (auto-revise/recheck up to 2 loops on FAIL) → verified bill (status + run_id + boxed stamp) → standalone `APPROVE BILL` → direct implementation/write+commit (no extra proposal QC rerun unless scope changes) → implementation QC → final verified handoff (status + run_id + boxed stamp).
 - **Approval token:** valid approval is a standalone user message whose trimmed content equals `APPROVE BILL` (case-insensitive).
 - **Mutation gate:** before `APPROVE BILL`, block all mutating actions (write/edit/create/delete, git add/commit/reset/rebase/cherry-pick, config mutations) and remain in approval-wait state.
 - **Scope:** Required for non-trivial feature/policy/automation/model-routing changes; skipped for trivial edits.
@@ -144,3 +144,4 @@
 - Startup canonical rule: see USER.md → "Session Resume Contract (Canonical)"; do not duplicate startup procedures across docs.
 - Operator preference lock: build interactions must show verified proposal/handoff (status + run_id), with full audit details only on explicit request; sub-agent spawns must always be lifecycle-logged.
 - Active agents on Codex: Specter, Keeper, 📊 Strategist, 🧠 Analyser, Firewall, òQ
+- Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ

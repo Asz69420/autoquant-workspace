@@ -31,8 +31,9 @@ Skip gate for tiny edits (typos/format-only/single-line non-functional docs). Th
 4. If proposal QC fails: auto-revise bill and re-run proposal QC (max 2 loops).
 5. Send verified bill to user for approval (`QC: PASS|FAIL | run_id: ...` + boxed stamp).
 6. Wait for explicit standalone approval token: `APPROVE BILL` (case-insensitive, trimmed exact match).
-7. Implement/write + commit changes.
-8. Run independent QC pass on implementation.
+7. On approval, proceed directly to implementation (no additional proposal-stage QC rerun unless scope changes).
+8. Implement/write + commit changes.
+9. Run independent QC pass on implementation.
 9. If implementation QC fails: revise once and re-run implementation QC once.
 10. Return final summary + commit hash with QC stamp.
 
