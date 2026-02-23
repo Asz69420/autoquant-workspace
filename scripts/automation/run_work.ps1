@@ -6,7 +6,9 @@ param(
 $ErrorActionPreference = 'Stop'
 
 if ([string]::IsNullOrWhiteSpace($TaskId)) {
-  $TaskId = "task-" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+  $ts = Get-Date -Format "yyyyMMdd-HHmmss"
+  $rand = ([guid]::NewGuid().ToString('N')).Substring(0,6)
+  $TaskId = "task-$ts-$rand"
 }
 
 $createOut = python scripts/automation/task_ledger.py create --task-id $TaskId --description $Question 2>&1
@@ -60,4 +62,8 @@ python scripts/automation/task_ledger.py update --task-id $TaskId --state READY_
 python scripts/automation/evidence_gate.py --task-id $TaskId --claim READY_FOR_USER_APPROVAL | Out-Null
 
 Write-Output "READY_FOR_USER_APPROVAL taskId=$TaskId artifact=$artifact verifier_run_id=$runId verdict=PASS"
+Write-Output "Generated taskId: $TaskId"
 Write-Output "APPROVE taskId=$TaskId"
+Write-Output "REJECT taskId=$TaskId"
+Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action APPROVE -TaskId $TaskId"
+Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action REJECT -TaskId $TaskId"
