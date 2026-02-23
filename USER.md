@@ -131,6 +131,7 @@ Acceptance test:
 - **Approval token gate (hard rule):** For significant builds, no mutating actions before explicit standalone approval.
 - **Verification visibility (hard rule):** Default user output remains minimal (`✅/⚠️/❌`) with mandatory QC stamp in significant-build handoffs.
 - **Sub-agent routing (hard rule):** Keep sub-agent delegation enabled, but route `sessions_spawn` through non-DM orchestration by default where possible. DM should receive only final summaries/results unless user explicitly requests in-DM spawn behavior.
+- **DM spawn enforcement (hard rule):** Before any `sessions_spawn`, run `scripts/automation/spawn_gate.ps1`. If it returns `BLOCKED_DM_SPAWN` (exit 42), spawning is forbidden and workflow must continue via non-DM orchestration or inline/local path.
 
 ## Your Identity
 - **Name:** Ghosted
