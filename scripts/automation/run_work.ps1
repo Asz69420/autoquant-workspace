@@ -1,14 +1,21 @@
 param(
   [Parameter(Mandatory = $true)][string]$Question,
-  [string]$TaskId
+  [string]$TaskId,
+  [string]$BuildSessionId
 )
 
 $ErrorActionPreference = 'Stop'
 
+if ([string]::IsNullOrWhiteSpace($BuildSessionId)) {
+  $startOut = python scripts/automation/build_session.py start --description $Question
+  $startObj = $startOut | ConvertFrom-Json
+  $BuildSessionId = [string]$startObj.build_session_id
+}
+
 if ([string]::IsNullOrWhiteSpace($TaskId)) {
   $ts = Get-Date -Format "yyyyMMdd-HHmmss"
   $rand = ([guid]::NewGuid().ToString('N')).Substring(0,6)
-  $TaskId = "task-$ts-$rand"
+  $TaskId = "$BuildSessionId-task-$ts-$rand"
 }
 
 $createOut = python scripts/automation/task_ledger.py create --task-id $TaskId --description $Question 2>&1
@@ -58,12 +65,10 @@ if (-not ($verdictText -match '(?im)^PASS\b')) {
   exit 3
 }
 
-python scripts/automation/task_ledger.py update --task-id $TaskId --state READY_FOR_USER_APPROVAL --artifact $artifact --verifier-or-audit-artifact ("verifier-run:" + $runId) | Out-Null
-python scripts/automation/evidence_gate.py --task-id $TaskId --claim READY_FOR_USER_APPROVAL | Out-Null
+python scripts/automation/task_ledger.py update --task-id $TaskId --state COMPLETE --artifact $artifact --verifier-or-audit-artifact ("verifier-run:" + $runId) | Out-Null
+python scripts/automation/evidence_gate.py --task-id $TaskId --claim COMPLETE | Out-Null
+python scripts/automation/build_session.py add-task --build-session-id $BuildSessionId --task-id $TaskId --artifact $artifact --verifier-run-id $runId | Out-Null
 
-Write-Output "READY_FOR_USER_APPROVAL taskId=$TaskId artifact=$artifact verifier_run_id=$runId verdict=PASS"
-Write-Output "Generated taskId: $TaskId"
-Write-Output "APPROVE taskId=$TaskId"
-Write-Output "REJECT taskId=$TaskId"
-Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action APPROVE -TaskId $TaskId"
-Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action REJECT -TaskId $TaskId"
+Write-Output "BUILD_SESSION_ACTIVE build_session_id=$BuildSessionId taskId=$TaskId artifact=$artifact verifier_run_id=$runId verdict=PASS"
+Write-Output "No per-task approval required. Continue adding tasks, then finalize session for one approval."
+Write-Output "powershell -ExecutionPolicy Bypass -File scripts/automation/finalize_build_session.ps1 -BuildSessionId $BuildSessionId"
