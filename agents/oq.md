@@ -73,5 +73,6 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 - Route memory lifecycle + compatibility upkeep tasks to 🗃️ Keeper by default
 - Auto-commit policy applies (git status → add → commit → log)
 - All notable decisions logged as ActionEvents to log group
-- For every `sessions_spawn`, emit lifecycle logs with the same `run_id`: START before spawn and OK/WARN/FAIL on completion
+- For every `sessions_spawn`, emit terminal lifecycle logs with the same `run_id`: OK/WARN/FAIL on completion (mandatory)
+- Emit START only for long/multi-step runs or when explicitly requested; if emitted, it must use the same `run_id` and correct ordering
 - Use `scripts/log_event.py` for all ActionEvent emission (no manual JSON writes)

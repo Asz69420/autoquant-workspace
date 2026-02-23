@@ -1,7 +1,7 @@
 # ActionEvent Schema
 
 **Purpose:** Structured log of every action (start, completion, error, retry, etc.). 
-All agents emit ActionEvents locally to `data/logs/spool/`; only Logger sends to Telegram.
+All agents emit ActionEvents locally to `data/logs/outbox/` (primary; `spool/` is legacy read-compat only); only Logger sends to Telegram.
 
 ## Required Fields
 - `ts_iso` (ISO 8601 UTC): "2026-02-22T15:01:00Z"
@@ -31,7 +31,8 @@ All agents emit ActionEvents locally to `data/logs/spool/`; only Logger sends to
 - `lineage_json` (object): `{ "depends_on": [...], "generated_by": "...", "notes": "..." }`
 
 ## File Naming
-- Path: `data/logs/spool/{ts_file}___{run_id}___{agent}___{status_word}.json`
+- Primary path: `data/logs/outbox/{ts_file}___{run_id}___{agent}___{status_word}.json`
+- Legacy compat path (read-only fallback in reporter): `data/logs/spool/{ts_file}___{run_id}___{agent}___{status_word}.json`
 - `ts_file` format: `YYYYMMDDTHHMMSSZ` (filename-safe, no colons)
 - Example: `20260222T150100Z___backtest--a1b2c3d4e5f6___BacktestRunner___OK.json`
 - Spool files are deleted after Logger successfully processes + sends to Telegram
