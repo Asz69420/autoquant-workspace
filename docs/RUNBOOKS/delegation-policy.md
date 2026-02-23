@@ -59,11 +59,12 @@ If any gate is skipped, output is process-invalid and must be corrected before t
 
 òQ **spawns sub-agents** for these (using Work Orders).
 
-**Mandatory logging for every spawn:**
+**Mandatory logging for every spawn (including QC/Council subagents):**
 - Emit `START` ActionEvent before `sessions_spawn`
 - Emit terminal `OK`/`WARN`/`FAIL` ActionEvent when result returns
 - Reuse the same run_id for lifecycle pairing
 - Emit via `python scripts/log_event.py ...` (never hand-write JSON)
+- User-facing chat output should reference status + run_id only by default (no raw audit dump unless requested).
 
 
 ### Content Ingestion (🔗 Reader)

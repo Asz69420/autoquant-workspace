@@ -77,7 +77,8 @@ Not verified:
 - Do not continue to new topics until the correction stamp is sent.
 - For major requested builds, do not request final user approval until proposal QC has completed (and one revise pass is applied if QC fails).
 - Do not send implementation handoff until post-implementation independent QC has completed.
-- Default user-visible mode: report only issues fixed + final draft; provide full audit details only when explicitly requested.
+- Default user-visible mode: report only verification status + run_id and final draft; provide full audit details only when explicitly requested.
+- For proposal approval requests, include a single-line verifier summary (`QC: PASS|FAIL | run_id: ...`) and never paste raw auditor output by default.
 
 ## Note
 This is a **quick** gate, not full audit. Aim for 5-10 minutes.

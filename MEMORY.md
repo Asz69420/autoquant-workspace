@@ -142,3 +142,5 @@
 - Active agents on Codex: Specter, Keeper, 📊 Strategist, 🧠 Analyser, Firewall, òQ
 - Haiku-primary agents: Reader, Grabber
 - Startup canonical rule: see USER.md → "Session Resume Contract (Canonical)"; do not duplicate startup procedures across docs.
+- Operator preference lock: build interactions must show verified proposal/handoff (status + run_id), with full audit details only on explicit request; sub-agent spawns must always be lifecycle-logged.
+- Active agents on Codex: Specter, Keeper, Strategist, Firewall, òQ

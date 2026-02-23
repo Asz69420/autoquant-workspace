@@ -126,6 +126,8 @@ Acceptance test:
 - **QC delivery stamp (required on significant builds):** End handoff with the boxed QC stamp from `docs/RUNBOOKS/build-qc-gate.md` (`✅ QC VERIFIED` / `⚠️ QC PARTIAL` / `❌ QC NOT VERIFIED`) so verification state is explicit and visually obvious.
 - **QC enforcement (hard rule):** Any significant-build reply without a QC stamp is invalid and must be immediately corrected with a follow-up QC stamp message before any new topic continues.
 - **Build handoff order (hard rule):** For major requested builds, sequence is fixed: plan + file list + preview → independent QC pass → revise if needed → send final draft for user approval → implement/write → independent QC pass on implementation → user-facing handoff with boxed QC stamp.
+- **Verification visibility (hard rule):** User-facing proposal/handoff must include verification status + run_id; do not include full audit text unless explicitly requested.
+- **Sub-agent visibility (hard rule):** Every `sessions_spawn` (including QC/Council) must emit lifecycle ActionEvents (`START` before spawn, terminal `OK|WARN|FAIL` on completion) with shared run_id via `scripts/log_event.py` to `data/logs/outbox/`.
 
 ## Your Identity
 - **Name:** Ghosted
