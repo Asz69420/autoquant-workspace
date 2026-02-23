@@ -4,8 +4,11 @@ param(
   [string]$BuildSessionId,
   [int]$MaxAttempts = 3,
   [int]$MaxFixTimeSeconds = 120,
+  [int]$MaxTotalEditsPerRun = 3,
   [switch]$SimulateFail,
-  [switch]$SimulateMultiIssue
+  [switch]$SimulateMultiIssue,
+  [switch]$SimulateRepeatIssue,
+  [switch]$SimulateMinorOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -39,6 +42,25 @@ if ([string]::IsNullOrWhiteSpace($TaskId)) {
   $TaskId = "$BuildSessionId-task-$ts-$rand"
 }
 
+# single-flight guard: only one EXECUTING task per build session
+if (Test-Path 'task_ledger.jsonl') {
+  $activeTaskId = python -c "import json,pathlib; sid='$BuildSessionId'; latest={};
+for l in pathlib.Path('task_ledger.jsonl').read_text(encoding='utf-8').splitlines():
+  if not l.strip(): continue
+  o=json.loads(l)
+  tid=o.get('task_id','')
+  if tid.startswith(sid+'-task-'): latest[tid]=o
+act=[v.get('task_id') for v in latest.values() if v.get('state')=='EXECUTING']
+print(act[0] if act else '')"
+  if (-not [string]::IsNullOrWhiteSpace($activeTaskId)) {
+    python scripts/automation/task_ledger.py create --task-id $TaskId --description $Question | Out-Null
+    python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace ("single_flight_active: " + $activeTaskId + " ; wait until READY_FOR_USER_APPROVAL/SESSION_APPLIED/BLOCKED") | Out-Null
+    python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
+    Write-Output "BLOCKED taskId=$TaskId reason=SINGLE_FLIGHT_ACTIVE"
+    exit 7
+  }
+}
+
 $createOut = python scripts/automation/task_ledger.py create --task-id $TaskId --description $Question 2>&1
 if ($LASTEXITCODE -ne 0) {
   if (-not ($createOut -match 'task_id already exists')) {
@@ -63,17 +85,29 @@ $issues = @()
 $startAt = Get-Date
 $warnOnly = $false
 $lastVerifierOutPath = ""
+$totalEdits = 0
+$issueSigCounts = @{}
 
 while ($attempt -lt $MaxAttempts) {
   if (((Get-Date) - $startAt).TotalSeconds -gt $MaxFixTimeSeconds) { break }
   $attempt += 1
 
-  $verifyMessage = "Verify task ${TaskId}: file ${artifact} exists and includes task_id=${TaskId}. Return JSON when possible: {verdict,total_issues_found,issues_returned,issues:[{severity,file,message,suggested_fix}]}. If JSON not possible, return text with 'total issues: X' and up to TopN=10 actionable issues. "
+  $verifyMessage = "Verify task ${TaskId}: file ${artifact} exists and includes task_id=${TaskId}. Return JSON when possible: {verdict,total_issues_found,issues_returned,issues:[{severity,file,message,suggested_fix}]}. If JSON not possible, return text with 'total issues: X' and up to TopN=10 actionable issues. Prioritize CRITICAL then MAJOR then MINOR within TopN. "
   if (($SimulateFail -and $attempt -eq 1) -or ($isSmoke -and $attempt -eq 1)) {
     $verifyMessage += "For smoke validation require AUTO_FIX_OK=1 to PASS. "
   }
   if ($SimulateMultiIssue -and $attempt -eq 1) {
     $verifyMessage += "For synthetic multi-issue validation require BATCH_FIX_OK=1 and AUTO_FIX_OK=1 to PASS. "
+  }
+  if ($SimulateRepeatIssue) {
+    $verifyMessage += "Emit the same MAJOR issue signature each run: file=scripts/tests/run_work_smoke.txt message='REPEAT_SIG_DEMO'. "
+  }
+  if ($SimulateMinorOnly) {
+    if ($attempt -ge 2) {
+      $verifyMessage += "Return WARN with only MINOR issue(s), include total_issues_found and issues_returned, no CRITICAL/MAJOR. "
+    } else {
+      $verifyMessage += "Emit only MINOR issues if any remain; no CRITICAL/MAJOR. "
+    }
   }
 
   $verifyOut = openclaw agent --agent verifier --message $verifyMessage --json
@@ -143,6 +177,27 @@ while ($attempt -lt $MaxAttempts) {
     $verdict = if ($verdictText -match '(?im)^PASS\b') { 'PASS' } elseif ($verdictText -match '(?im)^WARN\b') { 'WARN' } else { 'FAIL' }
   }
 
+  # issue signature tracking + early stop
+  $sigList = @()
+  foreach ($it in $issuesReturned) {
+    $sig = (($it -replace '\s+',' ').Trim())
+    if (-not [string]::IsNullOrWhiteSpace($sig)) {
+      $sigList += $sig
+      if (-not $issueSigCounts.ContainsKey($sig)) { $issueSigCounts[$sig] = 0 }
+      $issueSigCounts[$sig] = [int]$issueSigCounts[$sig] + 1
+    }
+  }
+  $repeatSig = $null
+  foreach ($k in $issueSigCounts.Keys) { if ($issueSigCounts[$k] -ge 2) { $repeatSig = $k; break } }
+  if ($repeatSig -and $verdict -ne 'PASS') {
+    $trace = "REPEATED_ISSUE_SIGNATURE: $repeatSig ; next: manual intervention required"
+    python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace $trace | Out-Null
+    python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
+    Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-" + $TaskId) -StatusWord 'FAIL' -StatusEmoji '❌' -ReasonCode 'VERIFIER_FAIL' -Summary ("Build blocked early-stop repeated issue: task=" + $TaskId) -Inputs @($TaskId) -Outputs @($lastVerifierOutPath)
+    Write-Output "BLOCKED taskId=$TaskId reason=REPEATED_ISSUE_SIGNATURE"
+    exit 8
+  }
+
   # Batch-fix all returned issues in one pass (token-driven minimal fixes)
   $filesTouched = @()
   if ($verdict -ne 'PASS') {
@@ -156,8 +211,12 @@ while ($attempt -lt $MaxAttempts) {
     }
   }
 
+  $filesTouched = @($filesTouched | Select-Object -Unique | Select-Object -First $MaxTotalEditsPerRun)
   $issuesAddressedCount = $filesTouched.Count
+  $totalEdits += $issuesAddressedCount
+
   python scripts/automation/task_ledger.py update --task-id $TaskId --state EXECUTING --pid-or-session $pidSession --artifact ("verifier_attempt=" + $attempt + ";run_id=" + $runId + ";verdict=" + $verdict + ";total_issues_found=" + $totalIssues + ";issues_returned=" + $issuesReturned.Count + ";issues_addressed_count=" + $issuesAddressedCount + ";files_touched=" + (($filesTouched -join ',') -replace ' ','_')) --artifact ("verifier_output_artifact=" + $verifierOutPath) | Out-Null
+  Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-" + $TaskId + "-attempt-" + $attempt) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'VERIFIER_ATTEMPT' -Summary ("Verifier attempt=" + $attempt + " verdict=" + $verdict + " issues_returned=" + $issuesReturned.Count) -Inputs @($TaskId) -Outputs @($verifierOutPath)
 
   if ($verdict -eq 'PASS') {
     $finalRunId = $runId
@@ -165,17 +224,23 @@ while ($attempt -lt $MaxAttempts) {
     break
   }
 
-  $issue = ($verdictText.Trim())
-  if ($issue.Length -gt 240) { $issue = $issue.Substring(0,240) }
-  $issues += $issue
-
   $hasMajor = ($severityList -contains 'CRITICAL' -or $severityList -contains 'MAJOR')
-  if (-not $hasMajor -and $severityList.Count -gt 0) {
+  if ($attempt -ge 2 -and -not $hasMajor -and $issuesReturned.Count -gt 0) {
     $warnOnly = $true
     $finalRunId = $runId
     $finalVerdict = 'WARN'
     break
   }
+
+  if ($totalEdits -ge $MaxTotalEditsPerRun) {
+    break
+  }
+
+  $issue = ($verdictText.Trim())
+  if ($issue.Length -gt 240) { $issue = $issue.Substring(0,240) }
+  $issues += $issue
+
+  # minor-only handling is evaluated earlier (attempt>=2) to limit churn
 }
 
 if ($finalVerdict -eq '') {
@@ -185,7 +250,7 @@ if ($finalVerdict -eq '') {
   $lastSafe = ($last -replace '[^a-zA-Z0-9 _\-\.:]','')
   $unresolvedSafe = ($unresolved -replace '[^a-zA-Z0-9 _\-\.:|]','')
   $elapsed = [int]((Get-Date) - $startAt).TotalSeconds
-  $reason = if ($elapsed -gt $MaxFixTimeSeconds) { 'MAX_FIX_TIME_EXCEEDED' } else { 'MAX_ATTEMPTS_REACHED' }
+  $reason = if ($elapsed -gt $MaxFixTimeSeconds) { 'MAX_FIX_TIME_EXCEEDED' } elseif ($totalEdits -ge $MaxTotalEditsPerRun) { 'MAX_TOTAL_EDITS_REACHED' } else { 'MAX_ATTEMPTS_REACHED' }
   $traceMsg = ($reason + ": " + $lastSafe + " ; unresolved: " + $unresolvedSafe + " ; next: review artifact and rerun")
   python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace $traceMsg | Out-Null
   python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
@@ -199,13 +264,20 @@ python scripts/automation/evidence_gate.py --task-id $TaskId --claim READY_FOR_U
 python scripts/automation/build_session.py add-task --build-session-id $BuildSessionId --task-id $TaskId --artifact $artifact --verifier-run-id $finalRunId | Out-Null
 
 # auto-finalize session (single-approval UX)
-$finalizeOut = powershell -ExecutionPolicy Bypass -File scripts/automation/finalize_build_session.ps1 -BuildSessionId $BuildSessionId
+$sessionState = ''
+try {
+  $sessionObj = python scripts/automation/build_session.py show --build-session-id $BuildSessionId | ConvertFrom-Json
+  $sessionState = [string]$sessionObj.state
+} catch { $sessionState = '' }
+if ($sessionState -eq 'ACTIVE') {
+  $finalizeOut = powershell -ExecutionPolicy Bypass -File scripts/automation/finalize_build_session.ps1 -BuildSessionId $BuildSessionId
+}
 $readySummary = if ($finalVerdict -eq 'WARN') { "Build ready with WARN-only minor issues: " + $BuildSessionId + " attempts=" + $attempt } else { "Build ready for approval: " + $BuildSessionId + " attempts=" + $attempt }
 Emit-LogEvent -RunId ("build-" + $BuildSessionId) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_READY_FOR_APPROVAL' -Summary $readySummary -Inputs @($TaskId) -Outputs @($artifact, ("verifier-run:" + $finalRunId))
 
 Write-Output "BUILD_READY_FOR_APPROVAL build_session_id=$BuildSessionId"
 if ($finalVerdict -eq 'WARN') {
-  Write-Output "Build ready. Verifier WARN only (minor). Files changed: $artifact. Apply anyway?"
+  Write-Output "Build ready. Verifier WARN only (minor). Files changed: $artifact. Build ready. Apply these changes?"
 } else {
-  Write-Output "Build ready. Verifier PASS (attempts=$attempt). Files changed: $artifact. Want me to apply these changes?"
+  Write-Output "Build ready. Verifier PASS (attempts=$attempt). Files changed: $artifact. Build ready. Apply these changes?"
 }

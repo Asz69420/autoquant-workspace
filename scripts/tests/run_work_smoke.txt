@@ -1,6 +1,5 @@
-﻿task_id=build-20260223-230026-task-20260224-090026-f094d2
-question=multi issue synthetic smoke
-ts=2026-02-23T23:00:27.3380273+00:00
+﻿task_id=build-20260223-231146-task-20260224-091146-a9ad3f
+question=minor only smoke two
+ts=2026-02-23T23:11:46.9522261+00:00
 
 AUTO_FIX_OK=1
-BATCH_FIX_OK=1
