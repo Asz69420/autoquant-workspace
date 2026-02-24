@@ -64,13 +64,23 @@ logs/
 .ipynb_checkpoints/
 .jupyter/
 
+# ======== Dev/Test Artifact Hygiene ========
+# Keep working tree clean from replay/test clutter
+/tmp/
+docs/DAILY/*-summary.md
+docs/HANDOFFS/handoff-*.md
+memory/*-route-spam.md
+
 # ======== Keep These (DO NOT IGNORE) ========
 # Source of truth: specs are Git-tracked
 # !research/
 # !indicators/specs/
 # !strategies/specs/
 # !MEMORY.md
+# !MEMORY-INDEX.md
+# !memory/MEMORY-FULL-*.md
 # !USER.md
+# !USER-EXTENDED.md
 # !docs/
 # !schemas/
 # !.gitignore
