@@ -23,12 +23,24 @@ function Emit-LogEvent {
 
 if ([string]::IsNullOrWhiteSpace($BuildSessionId)) {
   $latest = python scripts/automation/build_session.py show --limit 1 | ConvertFrom-Json
-  if ($latest.Count -eq 0) { throw 'No build session found' }
+  if ($latest.Count -eq 0) {
+    if ($DryRun) {
+      Emit-LogEvent -RunId ("build-none-dryrun-" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - no pending approvals' -Outputs @('no_pending_approvals')
+      Write-Output 'Dry run — no pending approvals.'
+      exit 0
+    }
+    throw 'No build session found'
+  }
   $BuildSessionId = [string]$latest[0].build_session_id
 }
 
 $session = python scripts/automation/build_session.py show --build-session-id $BuildSessionId | ConvertFrom-Json
 if ($session.state -ne 'SESSION_READY_FOR_APPROVAL') {
+  if ($DryRun) {
+    Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-dryrun") -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary ('Dry run - no pending approvals') -Outputs @('no_pending_approvals')
+    Write-Output 'Dry run — no pending approvals.'
+    exit 0
+  }
   throw "Session not ready for approval: $($session.state)"
 }
 

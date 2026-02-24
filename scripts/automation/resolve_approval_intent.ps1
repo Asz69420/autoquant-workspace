@@ -7,6 +7,21 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+function Emit-LogEvent {
+  param(
+    [string]$RunId,
+    [string]$StatusWord,
+    [string]$StatusEmoji,
+    [string]$ReasonCode,
+    [string]$Summary,
+    [string[]]$Outputs
+  )
+  $args = @('scripts/log_event.py','--run-id',$RunId,'--agent','oQ','--model-id','openai-codex/gpt-5.3-codex','--action','request_router','--status-word',$StatusWord,'--status-emoji',$StatusEmoji,'--summary',$Summary)
+  if ($ReasonCode) { $args += @('--reason-code',$ReasonCode) }
+  if ($Outputs) { foreach($o in $Outputs){ $args += @('--outputs',$o) } }
+  python @args 2>$null | Out-Null
+}
+
 function Get-Intent([string]$text) {
   $t = $text.ToLowerInvariant()
   $approve = @('yes','yep','yeah','approve','go ahead','do it','apply','okay apply','apply it','ship it','looks good','merge it','send it through')
@@ -50,6 +65,12 @@ if (-not [string]::IsNullOrWhiteSpace($BuildSessionId)) {
     }
   }
   exit $LASTEXITCODE
+}
+
+if ($DryRun -and $readyBuilds.Count -eq 0 -and [string]::IsNullOrWhiteSpace($BuildSessionId)) {
+  Emit-LogEvent -RunId ("approval-intent-" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() + "-dryrun") -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - no pending approvals' -Outputs @('no_pending_approvals')
+  Write-Output 'Dry run — no pending approvals.'
+  exit 0
 }
 
 if ($readyBuilds.Count -ge 1) {

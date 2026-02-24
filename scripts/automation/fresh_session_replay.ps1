@@ -47,8 +47,20 @@ function Get-LatestRouteDecision {
   return $matches[-1]
 }
 
+function Has-ReadyBuildApproval {
+  if (-not (Test-Path 'build_session_ledger.jsonl')) { return $false }
+  $latest = @{}
+  Get-Content build_session_ledger.jsonl | ForEach-Object {
+    if ([string]::IsNullOrWhiteSpace($_)) { return }
+    try { $o = $_ | ConvertFrom-Json } catch { return }
+    $latest[$o.build_session_id] = $o
+  }
+  $ready = @($latest.Values | Where-Object { $_.state -eq 'SESSION_READY_FOR_APPROVAL' })
+  return ($ready.Count -gt 0)
+}
+
 $steps = @(
-  @{ name='A'; prompt='Any builds waiting for approval?'; expected='FAST_PATH'; mode='route' },
+  @{ name='A'; prompt='any builds waiting for approval'; expected='FAST_PATH'; mode='route' },
   @{ name='B'; prompt='turn warnings off'; expected='FAST_PATH'; mode='route' },
   @{ name='C'; prompt='build a tiny harmless change'; expected='BUILD_PATH'; mode='route' },
   @{ name='D'; prompt='yeah apply it'; expected='FAST_PATH'; mode='approve' }
@@ -59,6 +71,7 @@ $allPass = $true
 $pain = @()
 
 $isDryRun = [bool]$DryRun
+$gitBefore = @(git status --porcelain)
 Write-Output ("Fresh session replay start: dry_run=" + $isDryRun.ToString().ToLowerInvariant() + "; start=" + $StartTimeIso)
 
 for ($i=0; $i -lt $steps.Count; $i++) {
@@ -91,13 +104,22 @@ for ($i=0; $i -lt $steps.Count; $i++) {
   }
 
   # approval intent step
+  $hasPending = Has-ReadyBuildApproval
+  if ($isDryRun -and -not $hasPending) {
+    $status = 'PASS'
+    Write-Output ("[$status] Step $($s.name): route=FAST_PATH expected=FAST_PATH")
+    Write-Output '  reply: Dry run — no pending approvals.'
+    Emit-LogEvent -RunId $stepId -StatusWord 'OK' -StatusEmoji '✅' -ReasonCode 'FRESH_SESSION_STEP' -Summary ("step="+$s.name+" route=FAST_PATH dry_run=true result=PASS skip_reason=no_pending_approvals") -Inputs @($prompt) -Outputs @('FAST_PATH','SKIP')
+    continue
+  }
+
   if ($isDryRun) {
     $out = powershell -ExecutionPolicy Bypass -File scripts/automation/resolve_approval_intent.ps1 -Message $prompt -DryRun 2>&1
   } else {
     $out = powershell -ExecutionPolicy Bypass -File scripts/automation/resolve_approval_intent.ps1 -Message $prompt 2>&1
   }
   $pass = ($out -join "`n") -match 'Dry run — would apply the latest ready build\.'
-  if (-not $pass) { $allPass = $false; $pain += 'D: approval dry-run did not return expected text' }
+  if (-not $pass) { $allPass = $false; $pain += 'D: approval dry-run handler failed with pending approval' }
   $status = if ($pass) { 'PASS' } else { 'FAIL' }
   Write-Output ("[$status] Step $($s.name): route=FAST_PATH expected=FAST_PATH")
   Write-Output ("  reply: " + (($out | Select-Object -First 1) -join ''))
@@ -106,9 +128,20 @@ for ($i=0; $i -lt $steps.Count; $i++) {
   Emit-LogEvent -RunId $stepId -StatusWord $evWord -StatusEmoji $evEmoji -ReasonCode 'FRESH_SESSION_STEP' -Summary ("step="+$s.name+" route=FAST_PATH dry_run="+$isDryRun.ToString().ToLowerInvariant()+" result="+$status) -Inputs @($prompt) -Outputs @('FAST_PATH')
 }
 
+$gitAfter = @(git status --porcelain)
+$gitUnchanged = ((($gitBefore -join "`n") -eq ($gitAfter -join "`n")))
+if (-not $gitUnchanged) {
+  $allPass = $false
+  $pain += 'Working tree changed during replay (dry-run not non-mutating).'
+}
+
 $overall = if ($allPass) { 'PASS' } else { 'FAIL' }
 Write-Output '---'
 Write-Output ("Fresh replay overall: " + $overall)
+Write-Output 'git status before:'
+if ($gitBefore.Count -eq 0) { Write-Output '(clean)' } else { $gitBefore | ForEach-Object { Write-Output $_ } }
+Write-Output 'git status after:'
+if ($gitAfter.Count -eq 0) { Write-Output '(clean)' } else { $gitAfter | ForEach-Object { Write-Output $_ } }
 if ($pain.Count -gt 0) {
   Write-Output 'Pain points:'
   $pain | ForEach-Object { Write-Output ("- " + $_) }
@@ -116,4 +149,4 @@ if ($pain.Count -gt 0) {
 
 $sumWord = if ($allPass) { 'OK' } else { 'WARN' }
 $sumEmoji = if ($allPass) { '✅' } else { '⚠️' }
-Emit-LogEvent -RunId ($runRoot + '-summary') -StatusWord $sumWord -StatusEmoji $sumEmoji -ReasonCode 'FRESH_SESSION_STEP' -Summary ("fresh_session_replay overall="+$overall+" dry_run="+$isDryRun.ToString().ToLowerInvariant()) -Inputs @('A','B','C','D') -Outputs @($overall)
+Emit-LogEvent -RunId ($runRoot + '-summary') -StatusWord $sumWord -StatusEmoji $sumEmoji -ReasonCode 'FRESH_SESSION_STEP' -Summary ("fresh_session_replay overall="+$overall+" dry_run="+$isDryRun.ToString().ToLowerInvariant()+" git_unchanged="+$gitUnchanged.ToString().ToLowerInvariant()) -Inputs @('A','B','C','D') -Outputs @($overall)

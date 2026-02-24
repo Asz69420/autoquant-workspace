@@ -132,7 +132,7 @@ function Write-MainChatFiltered {
 }
 
 $buildVerbs = @('build','implement','patch','update','add feature','refactor')
-$fastStatus = @('show pending builds','show latest status','show logs summary','show debug','details','help','usage')
+$fastStatus = @('show pending builds','any builds waiting for approval','builds waiting for approval','show latest status','show logs summary','show debug','details','help','usage')
 $fastApply = @('apply latest','reject latest')
 $toggleWarnOff = @('turn warnings off','disable warnings','warnings off')
 $toggleWarnOn = @('turn warnings on','enable warnings','warnings on')
@@ -215,7 +215,7 @@ if ($route -eq 'FAST_PATH') {
     }
     exit 0
   }
-  if ($m.Contains('show pending builds')) {
+  if ($m.Contains('show pending builds') -or $m.Contains('builds waiting for approval')) {
     $arr = python scripts/automation/build_session.py show --limit 10 | ConvertFrom-Json
     $ready = @($arr | Where-Object { $_.state -eq 'SESSION_READY_FOR_APPROVAL' })
     if ($ready.Count -eq 0) { Write-Output 'No builds waiting for approval.'; exit 0 }
