@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "target_tokens_max": 8000,
+  "default_load": [
+    "USER.md",
+    "AGENTS-CORE.md",
+    "SOUL-DIGEST.md",
+    "MEMORY-INDEX.md"
+  ],
+  "on_demand": [
+    "USER-EXTENDED.md",
+    "AGENTS.md",
+    "AGENTS-FULL.md",
+    "SOUL.md",
+    "SOUL-FULL.md",
+    "MEMORY.md",
+    "memory/MEMORY-FULL-2026-02-24.md",
+    "BOOTSTRAP.md",
+    "TOOLS.md",
+    "IDENTITY.md",
+    "HEARTBEAT.md"
+  ],
+  "notes": "Routing, approvals, verifier loops, and ledger logic unchanged; this manifest controls baseline context intent only."
+}
