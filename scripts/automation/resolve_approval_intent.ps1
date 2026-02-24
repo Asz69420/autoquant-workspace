@@ -48,10 +48,10 @@ if ($readyBuilds.Count -ge 1) {
   $sid = [string]$sorted[0].build_session_id
   if ($intent -eq 'APPROVE') {
     powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid | Out-Null
-    Write-Output 'Applied the latest ready build.'
+    Write-Output 'Done — applied the latest ready build.'
   } else {
     powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid | Out-Null
-    Write-Output 'Rejected the latest ready build.'
+    Write-Output 'Done — rejected the latest ready build.'
   }
   exit $LASTEXITCODE
 }

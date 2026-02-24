@@ -12,6 +12,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$PSNativeCommandUseErrorActionPreference = $false
 
 function Emit-LogEvent {
   param(
@@ -27,7 +28,10 @@ function Emit-LogEvent {
   if ($ReasonCode) { $args += @('--reason-code',$ReasonCode) }
   if ($Inputs) { foreach($i in $Inputs){ $args += @('--inputs',$i) } }
   if ($Outputs) { foreach($o in $Outputs){ $args += @('--outputs',$o) } }
-  python @args | Out-Null
+  $oldEap = $ErrorActionPreference
+  $ErrorActionPreference = 'SilentlyContinue'
+  python @args 2>$null | Out-Null
+  $ErrorActionPreference = $oldEap
 }
 
 function Apply-AutofixText {
@@ -69,7 +73,7 @@ print(act[0] if act else '')"
     python scripts/automation/task_ledger.py create --task-id $TaskId --description $Question | Out-Null
     python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace ("single_flight_active: " + $activeTaskId + " ; wait until READY_FOR_USER_APPROVAL/SESSION_APPLIED/BLOCKED") | Out-Null
     python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
-    Write-Output "BLOCKED taskId=$TaskId reason=SINGLE_FLIGHT_ACTIVE"
+    Write-Output "Blocked — another build task is already running for this build session."
     exit 7
   }
 }
@@ -143,7 +147,7 @@ while ($attempt -lt $MaxAttempts) {
     if ($trace.Length -gt 400) { $trace = $trace.Substring(0,400) }
     python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --artifact ("verifier_attempt=" + $attempt + ";run_id=none;verdict=UNPARSEABLE") --blocker-trace "verifier_parse_fail: $trace" | Out-Null
     python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
-    Write-Output "BLOCKED taskId=$TaskId"
+    Write-Output "Blocked — verifier output could not be parsed. Say 'show debug' for details."
     exit 2
   }
 
@@ -207,7 +211,7 @@ while ($attempt -lt $MaxAttempts) {
     python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace $trace | Out-Null
     python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
     Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-" + $TaskId) -StatusWord 'FAIL' -StatusEmoji '❌' -ReasonCode 'VERIFIER_FAIL' -Summary ("Build blocked early-stop repeated issue: task=" + $TaskId) -Inputs @($TaskId) -Outputs @($lastVerifierOutPath)
-    Write-Output "BLOCKED taskId=$TaskId reason=REPEATED_ISSUE_SIGNATURE"
+    Write-Output "Blocked — the same verification issue repeated. Say 'show debug' for details."
     exit 8
   }
 
@@ -268,7 +272,7 @@ if ($finalVerdict -eq '') {
   python scripts/automation/task_ledger.py update --task-id $TaskId --state BLOCKED --blocker-trace $traceMsg | Out-Null
   python scripts/automation/evidence_gate.py --task-id $TaskId --claim BLOCKED | Out-Null
   Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-" + $TaskId) -StatusWord 'FAIL' -StatusEmoji '❌' -ReasonCode 'VERIFIER_FAIL' -Summary ("Build blocked: task=" + $TaskId + " reason=" + $reason) -Inputs @($TaskId) -Outputs @($unresolved, $lastVerifierOutPath)
-  Write-Output "BLOCKED taskId=$TaskId reason=$reason"
+  Write-Output "Blocked — couldn’t pass verification within limits. Say 'show debug' for details."
   exit 3
 }
 
