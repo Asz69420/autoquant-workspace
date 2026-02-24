@@ -13,7 +13,10 @@ def parse_rules(lines: list[str]) -> dict[str, float]:
     for line in lines:
         if '=' in line:
             k, v = line.split('=', 1)
-            out[k.strip()] = float(v.strip())
+            try:
+                out[k.strip()] = float(v.strip())
+            except ValueError:
+                continue
     return out
 
 
@@ -78,6 +81,11 @@ def main() -> int:
     csv_path = Path(args.dataset_meta.replace('.meta.json', '.csv'))
     spec = json.loads(Path(args.strategy_spec).read_text(encoding='utf-8'))
     variant = next(v for v in spec['variants'] if v['name'] == args.variant)
+    if not isinstance(variant.get('risk_policy'), dict) or not isinstance(variant.get('execution_policy'), dict):
+        raise SystemExit('reason_code=STRATEGYSPEC_MISSING_RISK_POLICY')
+
+    risk_policy = variant['risk_policy']
+    execution_policy = variant['execution_policy']
     rules = parse_rules(variant.get('risk_rules', []))
     costs = json.loads((ROOT / args.cost_config).read_text(encoding='utf-8'))
     gates = json.loads((ROOT / args.gate_config).read_text(encoding='utf-8')) if (ROOT / args.gate_config).exists() else {}
@@ -87,8 +95,10 @@ def main() -> int:
     slippage_bps = args.slippage_bps if args.slippage_bps >= 0 else float(costs.get('hl_slippage_bps', 1.0))
 
     atr_period = int(rules.get('atr_period', 14))
-    sl_mult = float(rules.get('stop_atr_mult', 1.5))
-    tp_mult = float(rules.get('take_profit_atr_mult', 2.0))
+    stop_type = str(risk_policy.get('stop_type', 'none'))
+    tp_type = str(risk_policy.get('tp_type', 'none'))
+    sl_mult = float(risk_policy.get('stop_atr_mult', 0.0)) if stop_type == 'atr' else 0.0
+    tp_mult = float(risk_policy.get('tp_atr_mult', 0.0)) if tp_type == 'atr' else 0.0
 
     rows = list(csv.DictReader(csv_path.open('r', encoding='utf-8-sig', newline='')))
     bars = [{
@@ -103,6 +113,10 @@ def main() -> int:
     rsi = None
     trs = []
     atr = None
+
+    entry_fill = str(execution_policy.get('entry_fill', args.fill_rule))
+    tie_break = str(execution_policy.get('tie_break', 'worst_case'))
+    allow_reverse = bool(execution_policy.get('allow_reverse', True))
 
     is_trendpullback = 'trendpullback' in args.variant.lower()
     ema_trend = int(rules.get('ema_trend', 200))
@@ -169,7 +183,7 @@ def main() -> int:
             pos = None
 
         if pos is not None:
-            if (pos['side'] == 'long' and short_sig) or (pos['side'] == 'short' and long_sig):
+            if allow_reverse and ((pos['side'] == 'long' and short_sig) or (pos['side'] == 'short' and long_sig)):
                 close_position(b['close'], 'reversal')
                 eside = 'sell' if short_sig else 'buy'
                 ep, eslip = apply_fill(b['close'], eside, slippage_bps)
@@ -179,19 +193,22 @@ def main() -> int:
                 prev_close = b['close']
                 continue
 
-            stop = pos['entry_price'] - sl_mult * atr if pos['side'] == 'long' else pos['entry_price'] + sl_mult * atr
-            tp = pos['entry_price'] + tp_mult * atr if pos['side'] == 'long' else pos['entry_price'] - tp_mult * atr
-            hit_sl = (b['low'] <= stop) if pos['side'] == 'long' else (b['high'] >= stop)
-            hit_tp = (b['high'] >= tp) if pos['side'] == 'long' else (b['low'] <= tp)
+            stop = pos['entry_price'] - sl_mult * atr if (stop_type == 'atr' and pos['side'] == 'long') else (pos['entry_price'] + sl_mult * atr if stop_type == 'atr' else None)
+            tp = pos['entry_price'] + tp_mult * atr if (tp_type == 'atr' and pos['side'] == 'long') else (pos['entry_price'] - tp_mult * atr if tp_type == 'atr' else None)
+            hit_sl = ((b['low'] <= stop) if pos['side'] == 'long' else (b['high'] >= stop)) if stop is not None else False
+            hit_tp = ((b['high'] >= tp) if pos['side'] == 'long' else (b['low'] <= tp)) if tp is not None else False
             if hit_sl or hit_tp:
                 reason = 'sl' if hit_sl else 'tp'
                 if hit_sl and hit_tp:
-                    reason = 'sl'
-                close_position(stop if reason == 'sl' else tp, reason)
+                    if tie_break in ('tp_first', 'best_case'):
+                        reason = 'tp'
+                    else:
+                        reason = 'sl'
+                close_position((stop if reason == 'sl' else tp), reason)
 
         if pos is None and (long_sig or short_sig):
-            raw_ep = b['close'] if args.fill_rule == 'bar_close' else (bars[i + 1]['open'] if i + 1 < len(bars) else b['close'])
-            et = b['time'] if args.fill_rule == 'bar_close' else (bars[i + 1]['time'] if i + 1 < len(bars) else b['time'])
+            raw_ep = b['close'] if entry_fill == 'bar_close' else (bars[i + 1]['open'] if i + 1 < len(bars) else b['close'])
+            et = b['time'] if entry_fill == 'bar_close' else (bars[i + 1]['time'] if i + 1 < len(bars) else b['time'])
             eside = 'buy' if long_sig else 'sell'
             ep, eslip = apply_fill(raw_ep, eside, slippage_bps)
             total_slippage_cost_est += eslip
@@ -234,7 +251,7 @@ def main() -> int:
         'id': f"hl_{datetime.now().strftime('%Y%m%d')}_{uuid.uuid4().hex[:8]}",
         'created_at': datetime.now(UTC).isoformat(),
         'inputs': {'dataset_meta': args.dataset_meta, 'dataset_csv': str(csv_path), 'strategy_spec': args.strategy_spec, 'variant': args.variant},
-        'settings': {'entry_fill_rule': args.fill_rule, 'tie_break': 'worst_case', 'fee_mode': fee_mode, 'fee_bps': fee_bps, 'slippage_bps': slippage_bps},
+        'settings': {'entry_fill_rule': entry_fill, 'tie_break': tie_break, 'fee_mode': fee_mode, 'fee_bps': fee_bps, 'slippage_bps': slippage_bps},
         'results': {
             'net_profit': round(net, 8),
             'net_profit_pct': round((net / args.initial_capital), 8) if args.initial_capital else None,

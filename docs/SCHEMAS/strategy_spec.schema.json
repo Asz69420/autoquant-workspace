@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["schema_version", "id", "created_at", "source_thesis_path", "variants"],
   "properties": {
-    "schema_version": { "const": "1.0" },
+    "schema_version": { "type": "string", "enum": ["1.0", "1.1"] },
     "id": { "type": "string", "minLength": 1, "maxLength": 128 },
     "created_at": { "type": "string", "format": "date-time" },
     "source_thesis_path": { "type": "string", "minLength": 1, "maxLength": 1024 },
@@ -23,7 +23,6 @@
           "entry_short",
           "filters",
           "exit_rules",
-          "risk_rules",
           "parameters",
           "constraints"
         ],
@@ -35,6 +34,28 @@
           "filters": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
           "exit_rules": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
           "risk_rules": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
+          "risk_policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stop_type", "stop_atr_mult", "tp_type", "tp_atr_mult"],
+            "properties": {
+              "stop_type": { "type": "string", "enum": ["atr", "fixed", "none"] },
+              "stop_atr_mult": { "type": "number", "minimum": 0 },
+              "tp_type": { "type": "string", "enum": ["atr", "fixed", "none"] },
+              "tp_atr_mult": { "type": "number", "minimum": 0 },
+              "risk_per_trade_pct": { "type": "number", "minimum": 0 }
+            }
+          },
+          "execution_policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["entry_fill", "tie_break", "allow_reverse"],
+            "properties": {
+              "entry_fill": { "type": "string", "enum": ["bar_close", "next_open"] },
+              "tie_break": { "type": "string", "enum": ["worst_case", "best_case", "stop_first", "tp_first"] },
+              "allow_reverse": { "type": "boolean" }
+            }
+          },
           "parameters": {
             "type": "array",
             "maxItems": 20,

@@ -44,6 +44,27 @@ def unique(items: list[str], limit: int) -> list[str]:
     return out
 
 
+def _with_structured_policies(variant: dict, *, stop_atr_mult: float, tp_atr_mult: float, entry_fill: str = 'bar_close', tie_break: str = 'worst_case', allow_reverse: bool = True, risk_pct: float = 1.0, note: str = '') -> dict:
+    v = copy.deepcopy(variant)
+    notes = unique(v.get('risk_rules', []), 10)
+    if note:
+        notes = unique(notes + [note], 10)
+    v['risk_rules'] = notes
+    v['risk_policy'] = {
+        'stop_type': 'atr',
+        'stop_atr_mult': float(stop_atr_mult),
+        'tp_type': 'atr',
+        'tp_atr_mult': float(tp_atr_mult),
+        'risk_per_trade_pct': float(risk_pct),
+    }
+    v['execution_policy'] = {
+        'entry_fill': entry_fill,
+        'tie_break': tie_break,
+        'allow_reverse': bool(allow_reverse),
+    }
+    return v
+
+
 def build_baseline(thesis: dict) -> dict:
     constraints = unique(thesis.get('constraints', []), 10)
     req = unique(thesis.get('required_data', []), 10)
@@ -74,9 +95,9 @@ def build_baseline(thesis: dict) -> dict:
     ] + [f"Hypothesis failure mode guard: {m}" for h in hyps for m in h.get('failure_modes', [])], 10)
 
     risk_rules = unique([
-        'Risk per trade <= 1R.',
-        'Stop at structure invalidation level.',
-        'Take profit with minimum 2R objective.',
+        'Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.',
+        'Risk note: risk per trade target is 1%.',
+        'Take profit objective maps to ATR multiple for deterministic execution.',
     ], 10)
 
     parameters = [
@@ -88,7 +109,7 @@ def build_baseline(thesis: dict) -> dict:
     if req:
         filters = unique(filters + [f"Data required: {req[0]}"], 10)
 
-    return {
+    base = {
         'name': 'baseline',
         'description': 'Direct deterministic mapping from thesis signals, constraints, and hypotheses.',
         'entry_long': entry_long,
@@ -99,6 +120,7 @@ def build_baseline(thesis: dict) -> dict:
         'parameters': parameters,
         'constraints': constraints,
     }
+    return _with_structured_policies(base, stop_atr_mult=1.5, tp_atr_mult=2.0, entry_fill='bar_close', tie_break='worst_case', allow_reverse=True, risk_pct=1.0)
 
 
 def variant_perturbation(base: dict) -> dict:
@@ -109,7 +131,7 @@ def variant_perturbation(base: dict) -> dict:
         if p['name'] == 'confidence_threshold':
             p['default'] = min(p['max'], round(float(p.get('default', 0.6)) + 0.1, 2))
             break
-    return v
+    return _with_structured_policies(v, stop_atr_mult=1.7, tp_atr_mult=2.2, entry_fill='bar_close', tie_break='worst_case', allow_reverse=True, risk_pct=1.0)
 
 
 def variant_remove_component(base: dict) -> dict:
@@ -118,7 +140,7 @@ def variant_remove_component(base: dict) -> dict:
     v['description'] = 'Remove one non-critical filter component.'
     if v['filters']:
         v['filters'] = v['filters'][1:] or v['filters']
-    return v
+    return _with_structured_policies(v, stop_atr_mult=1.5, tp_atr_mult=1.8, entry_fill='bar_close', tie_break='worst_case', allow_reverse=True, risk_pct=1.0)
 
 
 def variant_threshold_mutation(base: dict) -> dict:
@@ -129,7 +151,7 @@ def variant_threshold_mutation(base: dict) -> dict:
     for p in v['parameters']:
         if p['name'] == 'max_bars_in_trade':
             p['default'] = max(p['min'], int(p.get('default', 15) - 3))
-    return v
+    return _with_structured_policies(v, stop_atr_mult=1.3, tp_atr_mult=2.0, entry_fill='next_open', tie_break='stop_first', allow_reverse=False, risk_pct=0.75)
 
 
 def main() -> int:
@@ -149,7 +171,7 @@ def main() -> int:
 
     sid = f"strategy-spec-{datetime.now().strftime('%Y%m%d')}-{thesis.get('id','thesis')[-12:]}"
     spec = {
-        'schema_version': '1.0',
+        'schema_version': '1.1',
         'id': sid,
         'created_at': now_iso(),
         'source_thesis_path': args.thesis_path.replace('\\', '/'),
