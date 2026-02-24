@@ -28,6 +28,7 @@
 | 🏁 | Ranker | Compare/rank candidates across regimes and constraints | PLANNED |
 | 📚 | Librarian | Curate lessons/patterns and maintain retrieval-ready references | PLANNED |
 | 🔁 | Refiner | Iterate weak strategies into improved testable variants | PLANNED |
+| 🧑‍💻 | Coder | Convert Pine ↔ Python, generate code from StrategySpec, maintain adapters | PLANNED |
 
 ### Execution (Planned)
 
