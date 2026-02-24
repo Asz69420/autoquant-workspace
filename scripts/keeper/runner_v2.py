@@ -84,15 +84,22 @@ def upsert_model_policy(memory_text: str, add: list[str], remove: list[str]) -> 
     return memory_text[:start] + new_section + memory_text[end:]
 
 
+KEEPER_STATUS_START = "<!-- KEEPER_STATUS_START -->"
+KEEPER_STATUS_END = "<!-- KEEPER_STATUS_END -->"
+
+
 def upsert_status(status_text: str, lines: list[str]) -> str:
-    header = "## Current model posture"
-    new_block = header + "\n" + "\n".join(f"- {ln}" for ln in lines) + "\n"
-    if header not in status_text:
-        return status_text.rstrip() + "\n\n" + new_block
-    start = status_text.index(header)
-    after = status_text[start:]
-    nxt = re.search(r"\n## ", after[1:])
-    end = start + (nxt.start() + 1 if nxt else len(after))
+    if KEEPER_STATUS_START not in status_text or KEEPER_STATUS_END not in status_text:
+        raise ValueError("STATUS_SECTION_MARKERS_MISSING")
+    start = status_text.index(KEEPER_STATUS_START)
+    end = status_text.index(KEEPER_STATUS_END) + len(KEEPER_STATUS_END)
+    new_block = (
+        f"{KEEPER_STATUS_START}\n"
+        "## Keeper Status (LOCKED)\n"
+        + "\n".join(f"- {ln}" for ln in lines)
+        + "\n"
+        f"{KEEPER_STATUS_END}"
+    )
     return status_text[:start] + new_block + status_text[end:]
 
 
@@ -280,27 +287,38 @@ def main() -> int:
             stat = STATUS.read_text(encoding="utf-8", errors="ignore") if STATUS.exists() else ""
 
             mem_new = upsert_model_policy(mem, wo.memory_add, wo.memory_remove)
-            stat_new = upsert_status(stat, wo.status_lines)
+            try:
+                stat_new = upsert_status(stat, wo.status_lines)
+            except ValueError as e:
+                if str(e) == "STATUS_SECTION_MARKERS_MISSING":
+                    emit(run_id, "FAIL", "❌", "STATUS section markers missing in docs/STATUS.md", reason_code="STATUS_SECTION_MARKERS_MISSING")
+                    fatal = "FAIL"
+                    fatal_summary = "status section markers missing"
+                    stat_new = stat
+                else:
+                    raise
             handoff_path = ROOT / wo.handoff_path
             handoff_new = handoff_content(wo.path.name)
 
-            write_if_changed(MEMORY, mem_new, touched, counter)
-            write_if_changed(STATUS, stat_new, touched, counter)
-            write_if_changed(handoff_path, handoff_new, touched, counter)
+            if not fatal:
+                write_if_changed(MEMORY, mem_new, touched, counter)
+                write_if_changed(STATUS, stat_new, touched, counter)
+                write_if_changed(handoff_path, handoff_new, touched, counter)
 
-            checks: list[tuple[str, bool]] = [
-                ("USER.md matches Model Policy (Locked)", True),
-                ("MEMORY.md matches docs/STATUS.md snapshot", "Codex 5.3" in mem_new and "Codex 5.3" in stat_new),
-                ("Latest handoff exists and references evidence", handoff_path.exists()),
-                ("openclaw.json posture matches curated docs (read-only)", check_openclaw_posture()),
-            ]
-            if not all(ok for _, ok in checks):
-                warnings_count += 1
+            if not fatal:
+                checks: list[tuple[str, bool]] = [
+                    ("USER.md matches Model Policy (Locked)", True),
+                    ("MEMORY.md matches docs/STATUS.md snapshot", "Codex 5.3" in mem_new and "Codex 5.3" in stat_new),
+                    ("Latest handoff exists and references evidence", handoff_path.exists()),
+                    ("openclaw.json posture matches curated docs (read-only)", check_openclaw_posture()),
+                ]
+                if not all(ok for _, ok in checks):
+                    warnings_count += 1
 
-            print("VALIDATION")
-            for label, ok in checks:
-                print(f"[{'PASS' if ok else 'WARN'}] {label}")
-            print(f"RESULT: {'PASS' if all(ok for _, ok in checks) else 'WARN'}")
+                print("VALIDATION")
+                for label, ok in checks:
+                    print(f"[{'PASS' if ok else 'WARN'}] {label}")
+                print(f"RESULT: {'PASS' if all(ok for _, ok in checks) else 'WARN'}")
 
     # budget checks
     runtime_s = time.time() - start

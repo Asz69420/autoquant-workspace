@@ -1,5 +1,9 @@
 # MEMORY-INDEX.md
 
+> **CANONICAL INDEX (baseline-loaded)**
+> Keep <= 20 bullets and <= ~400 tokens.
+> Full history is retrieval-only under `memory/` (do not baseline-load full snapshots).
+
 last_updated: 2026-02-24T10:00:00+10:00
 
 ## Memory Stores
