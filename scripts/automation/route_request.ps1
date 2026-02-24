@@ -259,8 +259,8 @@ if ($route -eq 'FAST_PATH') {
   if ($m.Contains('cancel next')) {
     $res = Cancel-NextJob
     if ($res.Cancelled) {
-      Write-Output ("Cancelled next queued build: " + [string]$res.Job.question)
-      Emit-LogEvent -RunId ($runId + '-cancel-next') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'QUEUE_CANCEL_NEXT' -Summary 'Cancelled next queued build' -Inputs @($Message) -Outputs @([string]$res.Job.job_id)
+      Write-Output ("Cancelled first queued build: " + [string]$res.Job.question)
+      Emit-LogEvent -RunId ($runId + '-cancel-next') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'QUEUE_CANCEL_NEXT' -Summary 'Cancelled first queued build' -Inputs @($Message) -Outputs @([string]$res.Job.job_id)
     } else {
       Write-Output 'No queued build to cancel.'
     }
@@ -286,6 +286,9 @@ if ($DryRun) {
   Emit-LogEvent -RunId ($runId + '-build-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would execute BUILD_PATH and start verification loop' -Inputs @($Message) -Outputs @('would_run:scripts/automation/run_work.ps1')
   Write-Output 'Dry run - would route to BUILD_PATH and start verification, then request approval.'
   exit 0
+}
+if ([string]::IsNullOrWhiteSpace($ChatId) -and [string]::IsNullOrWhiteSpace($MessageId) -and [string]::IsNullOrWhiteSpace($UpdateId)) {
+  Emit-LogEvent -RunId ($runId + '-missing-target') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_MISSING_CHAT_TARGET' -Summary 'Ingress metadata missing; enqueue will be log-only' -Inputs @($Message) -Outputs @('log_only_enqueue')
 }
 $enqueue = Enqueue-BuildJob -Question $Message -ChatId $ChatId -MessageId $MessageId -UpdateId $UpdateId -IdemKey $idemKey
 if ($enqueue.QueueFull) {

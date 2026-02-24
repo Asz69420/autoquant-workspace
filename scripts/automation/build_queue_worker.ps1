@@ -28,14 +28,23 @@ function Emit-LogEvent {
 }
 
 function Send-MainChatNotice {
-  param([string]$ChatId,[string]$Text)
+  param([string]$ChatId,[string]$Text,[string]$MessageId)
   if ([string]::IsNullOrWhiteSpace($ChatId)) { return $false }
   try {
-    openclaw message send --channel telegram --target $ChatId --message $Text | Out-Null
+    if ([string]::IsNullOrWhiteSpace($MessageId)) {
+      openclaw message send --channel telegram --target $ChatId --message $Text | Out-Null
+    } else {
+      openclaw message send --channel telegram --target $ChatId --message $Text --reply-to $MessageId | Out-Null
+    }
     return ($LASTEXITCODE -eq 0)
   } catch {
     return $false
   }
+}
+
+function Emit-MissingChatTargetWarn {
+  param([string]$RunId,[string]$JobId,[string]$BuildSessionId,[string]$TaskId)
+  Emit-LogEvent -RunId $RunId -StatusWord 'WARN' -StatusEmoji 'WARN' -ReasonCode 'QUEUE_MISSING_CHAT_TARGET' -Summary 'Missing/invalid chat target; user notify skipped; logs only' -Inputs @($JobId) -Outputs @($BuildSessionId,$TaskId)
 }
 
 function Get-LatestTaskState {
@@ -134,11 +143,13 @@ try {
 
   if ($taskState -eq 'READY_FOR_USER_APPROVAL' -or $text -match 'Build ready for your review') {
     Emit-LogEvent -RunId $runId -StatusWord 'INFO' -StatusEmoji 'INFO' -ReasonCode 'BUILD_READY_FOR_APPROVAL' -Summary ('Build ready: ' + $job.job_id) -Inputs @($taskId) -Outputs @($buildSessionId)
-    [void](Send-MainChatNotice -ChatId ([string]$job.chat_id) -Text 'Build ready for your review. Apply these changes?')
+    $notified = Send-MainChatNotice -ChatId ([string]$job.chat_id) -Text 'Build ready for your review. Apply these changes?' -MessageId ([string]$job.message_id)
+    if (-not $notified) { Emit-MissingChatTargetWarn -RunId $runId -JobId ([string]$job.job_id) -BuildSessionId $buildSessionId -TaskId $taskId }
     $result = 'READY'
   } else {
     Emit-LogEvent -RunId $runId -StatusWord 'WARN' -StatusEmoji 'WARN' -ReasonCode 'BUILD_BLOCKED' -Summary ('Build blocked: ' + $job.job_id) -Inputs @($taskId) -Outputs @('blocked')
-    [void](Send-MainChatNotice -ChatId ([string]$job.chat_id) -Text "Blocked - could not pass verification within limits. Say 'show debug' for details.")
+    $notified = Send-MainChatNotice -ChatId ([string]$job.chat_id) -Text "Blocked - could not pass verification within limits. Say 'show debug' for details." -MessageId ([string]$job.message_id)
+    if (-not $notified) { Emit-MissingChatTargetWarn -RunId $runId -JobId ([string]$job.job_id) -BuildSessionId $buildSessionId -TaskId $taskId }
     $result = 'BLOCKED'
   }
 
