@@ -1,0 +1,6 @@
+{
+  "hl_taker_fee_bps": 4.5,
+  "hl_maker_fee_bps": 1.5,
+  "hl_slippage_bps": 1.0,
+  "fee_mode": "taker"
+}
