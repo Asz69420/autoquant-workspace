@@ -76,8 +76,8 @@ def build_combo_proposals(indicators: list[dict], rc: dict, timeframe: str) -> l
         },
         {
             'indicator': tpx,
-            'role': 'filter',
-            'description': f'Filter out entries when {tpx} is near zero / below control threshold to avoid weak-pressure chop.',
+            'role': 'regime_gate',
+            'description': f'Gate entries when {tpx} stays above control threshold to avoid weak-pressure chop.',
             'confidence': 0.66,
         },
         {
@@ -170,6 +170,7 @@ def main() -> int:
         'thesis_bullets': bullets[:10],
         'hypotheses': hypotheses,
         'candidate_signals': candidate_signals,
+        'role_catalog': ['trend', 'entry', 'confirmation', 'regime_gate', 'exit'],
         'combo_proposals': combo_proposals[:10],
         'mutation_catalog': mutation_catalog[:10],
         'required_data': non_empty([

@@ -29,9 +29,14 @@ def check_schema_like(thesis: dict) -> None:
         must(len(c.get('uses_indicators', [])) <= 5, 'uses_indicators cap exceeded')
     for k, cap in [('required_data', 10), ('constraints', 10), ('tags', 20)]:
         must(len(thesis.get(k, [])) <= cap, f'{k} cap exceeded')
+    role_catalog = thesis.get('role_catalog', [])
+    must(len(role_catalog) <= 10, 'role_catalog cap exceeded')
+    for r in role_catalog:
+        must(r in ['trend', 'entry', 'confirmation', 'regime_gate', 'exit'], 'invalid role_catalog role')
     must(len(thesis.get('combo_proposals', [])) <= 10, 'combo_proposals cap exceeded')
     for c in thesis.get('combo_proposals', []):
-        must(c.get('role') in ['trend', 'entry', 'exit', 'confirmation', 'filter'], 'invalid combo_proposals.role')
+        must(c.get('role') in ['trend', 'entry', 'confirmation', 'regime_gate', 'exit'], 'invalid combo_proposals.role')
+        must(len(str(c.get('description', ''))) <= 160 and bool(c.get('description')), 'invalid combo_proposals.description')
         must(0 <= float(c.get('confidence', -1)) <= 1, 'combo_proposals confidence out of range')
     must(len(thesis.get('mutation_catalog', [])) <= 10, 'mutation_catalog cap exceeded')
     for m in thesis.get('mutation_catalog', []):

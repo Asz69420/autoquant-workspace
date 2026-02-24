@@ -56,6 +56,30 @@
               "allow_reverse": { "type": "boolean" }
             }
           },
+          "components": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["indicator", "role", "notes"],
+              "properties": {
+                "indicator": { "type": "string", "minLength": 1, "maxLength": 120 },
+                "role": { "type": "string", "enum": ["trend", "entry", "confirmation", "regime_gate", "exit"] },
+                "notes": { "type": "string", "minLength": 1, "maxLength": 240 }
+              }
+            }
+          },
+          "complexity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["indicator_count", "condition_count", "parameter_count"],
+            "properties": {
+              "indicator_count": { "type": "integer", "minimum": 0 },
+              "condition_count": { "type": "integer", "minimum": 0 },
+              "parameter_count": { "type": "integer", "minimum": 0 }
+            }
+          },
           "parameters": {
             "type": "array",
             "maxItems": 20,

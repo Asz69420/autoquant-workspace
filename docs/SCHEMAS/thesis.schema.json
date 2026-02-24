@@ -66,6 +66,11 @@
         }
       }
     },
+    "role_catalog": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "type": "string", "enum": ["trend", "entry", "confirmation", "regime_gate", "exit"] }
+    },
     "combo_proposals": {
       "type": "array",
       "maxItems": 10,
@@ -75,8 +80,8 @@
         "required": ["indicator", "role", "description", "confidence"],
         "properties": {
           "indicator": { "type": "string", "minLength": 1, "maxLength": 120 },
-          "role": { "type": "string", "enum": ["trend", "entry", "exit", "confirmation", "filter"] },
-          "description": { "type": "string", "minLength": 1, "maxLength": 260 },
+          "role": { "type": "string", "enum": ["trend", "entry", "confirmation", "regime_gate", "exit"] },
+          "description": { "type": "string", "minLength": 1, "maxLength": 160 },
           "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
         }
       }
