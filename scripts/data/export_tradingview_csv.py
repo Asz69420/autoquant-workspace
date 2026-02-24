@@ -1,36 +1,20 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse
-import csv
-import hashlib
-import json
-import math
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+import argparse, csv, hashlib, json, math
+from datetime import datetime, timezone
 from pathlib import Path
+from statistics import median
 
 ROOT = Path(__file__).resolve().parents[2]
 INDEX_PATH = ROOT / "artifacts" / "data" / "tradingview_export" / "INDEX.json"
 
 
-@dataclass
-class ExportResult:
-    status: str
-    reason_code: str
-    meta_path: str | None
-    csv_path: str | None
-
-
-def _load_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
 def _sha256(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(65536), b""):
-            h.update(chunk)
+        for c in iter(lambda: f.read(65536), b""):
+            h.update(c)
     return h.hexdigest()
 
 
@@ -38,225 +22,148 @@ def _sanitize_symbol(s: str) -> str:
     return s.replace(":", "__").replace("/", "_")
 
 
-def _parse_ts(v: str) -> datetime:
-    v = v.strip()
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+def _parse_ts(v: str):
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
         try:
-            return datetime.strptime(v, fmt).replace(tzinfo=timezone.utc)
+            return datetime.strptime(v.strip(), fmt).replace(tzinfo=timezone.utc)
         except ValueError:
-            continue
+            pass
     return datetime.fromisoformat(v.replace("Z", "+00:00")).astimezone(timezone.utc)
 
 
-def _read_csv_rows(path: Path) -> tuple[list[dict], list[str], dict[str, str]]:
+def _read(path: Path):
     with path.open("r", encoding="utf-8-sig", newline="") as f:
         r = csv.DictReader(f)
         rows = list(r)
-        headers = r.fieldnames or []
-    low = {h.lower().strip(): h for h in headers}
-    mapping = {
-        "time": low.get("time") or low.get("date"),
-        "open": low.get("open"),
-        "high": low.get("high"),
-        "low": low.get("low"),
-        "close": low.get("close"),
-        "volume": low.get("volume") or low.get("vol") or low.get("volume usdt"),
+        hdr = r.fieldnames or []
+    low = {h.lower().strip(): h for h in hdr}
+    m = {"time": low.get("time") or low.get("date"), "open": low.get("open"), "high": low.get("high"), "low": low.get("low"), "close": low.get("close"), "volume": low.get("volume") or low.get("vol")}
+    return rows, hdr, m
+
+
+def _alignment(rows, tcol, tf):
+    ts = [_parse_ts(r[tcol]) for r in rows if r.get(tcol)]
+    bad = [t.strftime("%Y-%m-%d %H:%M:%S") for t in ts if tf == "15" and t.minute not in {0, 15, 30, 45}][:5]
+    deltas = [int((ts[i] - ts[i-1]).total_seconds()) for i in range(1, len(ts))]
+    med = int(median(deltas)) if deltas else None
+    ok = (not bad) and (med == 900 if tf == "15" else True)
+    return ok, med, bad
+
+
+def _synthetic_stats(rows, close_col, vol_col):
+    closes = [float(r[close_col]) for r in rows if r.get(close_col) not in (None, "")]
+    vols = [str(r[vol_col]) for r in rows if r.get(vol_col) not in (None, "")]
+    close_min, close_max = (min(closes), max(closes)) if closes else (None, None)
+    vur = (len(set(vols)) / len(vols)) if vols else 0.0
+    vol_med = median([float(v) for v in vols]) if vols else 0.0
+    most_common_ratio = 0.0
+    if vols:
+        counts = {}
+        for v in vols:
+            counts[v] = counts.get(v, 0) + 1
+        most_common_ratio = max(counts.values()) / len(vols)
+    tiny_range = False
+    if close_min and close_max:
+        tiny_range = ((close_max - close_min) / max(close_min, 1e-9)) < 0.005
+    synthetic = (vur < 0.01) or tiny_range or (most_common_ratio > 0.95)
+    return {
+        "close_min": close_min,
+        "close_max": close_max,
+        "volume_unique_ratio": round(vur, 8),
+        "volume_median": float(vol_med),
+        "synthetic_detected": synthetic,
     }
-    return rows, headers, mapping
 
 
-def _bars_per_day(tf: str) -> float:
-    mins = int(tf)
-    return (24 * 60) / mins
-
-
-def _write_index(pointer: dict) -> None:
-    INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
-    idx = []
-    if INDEX_PATH.exists():
-        try:
-            idx = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-        except Exception:
-            idx = []
-    idx.append(pointer)
-    idx = idx[-200:]
-    INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
-
-
-def _timeframe_alignment(rows: list[dict], time_col: str, timeframe: str) -> tuple[bool, int | None, list[str]]:
-    if not rows:
-        return False, None, []
-    ts = [_parse_ts(r[time_col]) for r in rows if r.get(time_col)]
-    bad = []
-    if timeframe == "15":
-        for t in ts:
-            if t.minute not in {0, 15, 30, 45}:
-                bad.append(t.strftime("%Y-%m-%d %H:%M:%S"))
-                if len(bad) >= 5:
-                    break
-    deltas = []
-    for i in range(1, len(ts)):
-        deltas.append(int((ts[i] - ts[i - 1]).total_seconds()))
-    median_delta = sorted(deltas)[len(deltas) // 2] if deltas else None
-    ok = (len(bad) == 0)
-    if timeframe == "15" and median_delta != 900:
-        ok = False
-    return ok, median_delta, bad
-
-
-def export_one(target: dict, mode: str, source_csv: Path, simulate_plateau: bool = False) -> ExportResult:
-    tv_symbol = target["tv_symbol"]
-    tf = str(target["timeframe"])
-    rows, headers, mapping = _read_csv_rows(source_csv)
-
-    if not rows:
-        return ExportResult("PARTIAL", "TV_EXPORT_INCOMPLETE", None, None)
-
-    if mapping["volume"] is None:
-        failed = _save_failed(target, mode, source_csv, "TV_EXPORT_MISSING_VOLUME", False, 0)
-        return ExportResult("PARTIAL", "TV_EXPORT_MISSING_VOLUME", str(failed), None)
-
-    tf_ui_verified = True  # UI verification stub; browser flow should set/check chart label with retries.
-    if not tf_ui_verified:
-        failed = _save_failed(target, mode, source_csv, "TV_EXPORT_TIMEFRAME_MISMATCH", True, len(rows), None, ["ui_timeframe_label_mismatch"])
-        return ExportResult("PARTIAL", "TV_EXPORT_TIMEFRAME_MISMATCH", str(failed), None)
-
-    first_ts = _parse_ts(rows[0][mapping["time"]])
-    last_ts = _parse_ts(rows[-1][mapping["time"]])
-    row_count = len(rows)
-
-    alignment_ok, median_delta, bad_samples = _timeframe_alignment(rows, mapping["time"], tf)
-    if not alignment_ok:
-        failed = _save_failed(target, mode, source_csv, "TV_EXPORT_TIMEFRAME_MISMATCH", True, row_count, median_delta, bad_samples)
-        return ExportResult("PARTIAL", "TV_EXPORT_TIMEFRAME_MISMATCH", str(failed), None)
-
-    # validation freshness: within ~4 bars
-    now_utc = datetime.now(timezone.utc)
-    bars_late = (now_utc - last_ts).total_seconds() / (int(tf) * 60)
-    if bars_late > 4.5 and mode == "incremental":
-        failed = _save_failed(target, mode, source_csv, "TV_EXPORT_INCOMPLETE", True, row_count)
-        return ExportResult("PARTIAL", "TV_EXPORT_INCOMPLETE", str(failed), None)
-
-    if mode == "incremental":
-        lookback = int(target.get("incremental", {}).get("lookback_days", 30))
-        expected_min = math.floor(0.8 * (lookback * _bars_per_day(tf)))
-        if row_count < expected_min:
-            failed = _save_failed(target, mode, source_csv, "TV_EXPORT_INCOMPLETE", True, row_count)
-            return ExportResult("PARTIAL", "TV_EXPORT_INCOMPLETE", str(failed), None)
-    else:
-        prev_inc = _latest_incremental_count(tv_symbol, tf)
-        if prev_inc > 0 and row_count <= prev_inc and not simulate_plateau:
-            failed = _save_failed(target, mode, source_csv, "TV_EXPORT_INCOMPLETE", True, row_count)
-            return ExportResult("PARTIAL", "TV_EXPORT_INCOMPLETE", str(failed), None)
-
-    sym = _sanitize_symbol(tv_symbol)
-    start = first_ts.strftime("%Y%m%dT%H%M%SZ")
-    end = last_ts.strftime("%Y%m%dT%H%M%SZ")
-    out_dir = ROOT / "artifacts" / "data" / "tradingview_export" / sym / tf / mode
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_csv = out_dir / f"{start}-{end}.csv"
-    out_meta = out_dir / f"{start}-{end}.meta.json"
-
-    out_csv.write_bytes(source_csv.read_bytes())
-    meta = {
-        "source": "tradingview_export",
-        "backend": "openclaw",
-        "tv_symbol": tv_symbol,
-        "timeframe": tf,
-        "history_mode": mode,
-        "export_ts": datetime.now(timezone.utc).isoformat(),
-        "row_count": row_count,
-        "first_ts": first_ts.isoformat(),
-        "last_ts": last_ts.isoformat(),
-        "sha256": _sha256(out_csv),
-        "deep_plateau_reached": bool(simulate_plateau if mode == "deep" else False),
-        "stagnation_count": int(target.get("deep", {}).get("stagnation_checks", 0) if mode == "deep" else 0),
-        "volume_present": True,
-        "timeframe_alignment_ok": alignment_ok,
-        "median_bar_delta_seconds": median_delta,
-        "bad_timestamp_samples": bad_samples,
-        "columns": headers,
-    }
-    out_meta.write_text(json.dumps(meta, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
-
-    _write_index({
-        "tv_symbol": tv_symbol,
-        "tf": tf,
-        "mode": mode,
-        "first_ts": meta["first_ts"],
-        "last_ts": meta["last_ts"],
-        "sha256": meta["sha256"],
-        "path": str(out_csv).replace("\\", "/"),
-    })
-    return ExportResult("PASS", "OK", str(out_meta), str(out_csv))
-
-
-def _latest_incremental_count(tv_symbol: str, tf: str) -> int:
-    if not INDEX_PATH.exists():
-        return 0
-    try:
-        idx = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-    except Exception:
-        return 0
-    for p in reversed(idx):
-        if p.get("tv_symbol") == tv_symbol and str(p.get("tf")) == str(tf) and p.get("mode") == "incremental":
-            meta = Path(str(p.get("path")).replace("/", "\\")).with_suffix(".meta.json")
-            if meta.exists():
-                try:
-                    return int(json.loads(meta.read_text(encoding="utf-8")).get("row_count", 0))
-                except Exception:
-                    return 0
-    return 0
-
-
-def _save_failed(target: dict, mode: str, source_csv: Path, reason: str, volume_present: bool, row_count: int, median_bar_delta_seconds: int | None = None, bad_timestamp_samples: list[str] | None = None) -> Path:
-    sym = _sanitize_symbol(target["tv_symbol"])
-    tf = str(target["timeframe"])
-    fail_dir = ROOT / "artifacts" / "data" / "tradingview_export" / "_failed" / sym / tf / mode
-    fail_dir.mkdir(parents=True, exist_ok=True)
+def _save_failed(target, mode, src, reason, extra):
+    d = ROOT / "artifacts" / "data" / "tradingview_export" / "_failed" / _sanitize_symbol(target["tv_symbol"]) / str(target["timeframe"]) / mode
+    d.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out_csv = fail_dir / f"{ts}.csv"
-    out_meta = fail_dir / f"{ts}.meta.json"
-    out_csv.write_bytes(source_csv.read_bytes())
-    out_meta.write_text(json.dumps({
-        "status": "PARTIAL",
-        "reason_code": reason,
-        "tv_symbol": target["tv_symbol"],
-        "timeframe": str(target["timeframe"]),
-        "history_mode": mode,
-        "row_count": row_count,
-        "volume_present": volume_present,
-        "timeframe_alignment_ok": False,
-        "median_bar_delta_seconds": median_bar_delta_seconds,
-        "bad_timestamp_samples": bad_timestamp_samples or [],
-        "source": "tradingview_export",
-        "backend": "openclaw",
-    }, separators=(",", ":")), encoding="utf-8")
+    out_csv = d / f"{ts}.csv"
+    out_meta = d / f"{ts}.meta.json"
+    out_csv.write_bytes(src.read_bytes())
+    base = {"status": "PARTIAL", "reason_code": reason, "tv_symbol": target["tv_symbol"], "timeframe": str(target["timeframe"]), "history_mode": mode, "source": "tradingview_export", "backend": "openclaw"}
+    base.update(extra)
+    out_meta.write_text(json.dumps(base, separators=(",", ":")), encoding="utf-8")
     return out_meta
 
 
+def _write_index(ptr):
+    INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
+    idx = json.loads(INDEX_PATH.read_text(encoding="utf-8")) if INDEX_PATH.exists() else []
+    idx.append(ptr)
+    INDEX_PATH.write_text(json.dumps(idx[-200:], indent=2), encoding="utf-8")
+
+
 def main() -> int:
-    ap = argparse.ArgumentParser(description="TradingView CSV exporter workflow (artifact + validation layer).")
+    ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="config/tv_export_targets.json")
     ap.add_argument("--target", default="eth_perp_15m")
     ap.add_argument("--mode", choices=["incremental", "deep"], required=True)
-    ap.add_argument("--source-csv", required=True, help="Captured TradingView export CSV path.")
-    ap.add_argument("--simulate-plateau", action="store_true")
+    ap.add_argument("--downloaded-csv", required=True)
+    ap.add_argument("--download-timeout-seconds", type=int, default=45)
+    ap.add_argument("--chart-url-used", required=True)
+    ap.add_argument("--tv-symbol-ui", required=True)
+    ap.add_argument("--timeframe-ui", required=True)
     args = ap.parse_args()
 
-    cfg = _load_json(ROOT / args.config)
+    cfg = json.loads((ROOT / args.config).read_text(encoding="utf-8"))
     target = next((t for t in cfg.get("targets", []) if t.get("name") == args.target), None)
     if not target:
         raise SystemExit("target_not_found")
 
-    res = export_one(target, args.mode, Path(args.source_csv), simulate_plateau=args.simulate_plateau)
-    print(json.dumps({
-        "status": res.status,
-        "reason_code": res.reason_code,
-        "meta_path": res.meta_path,
-        "csv_path": res.csv_path,
-        "index_path": str(INDEX_PATH),
-    }))
+    src = Path(args.downloaded_csv)
+    if not src.exists():
+        print(json.dumps({"status": "PARTIAL", "reason_code": "TV_EXPORT_DOWNLOAD_MISSING", "meta_path": None, "csv_path": None, "index_path": str(INDEX_PATH)}))
+        return 0
+
+    rows, hdr, m = _read(src)
+    if not rows or any(m[k] is None for k in ("time", "open", "high", "low", "close", "volume")):
+        meta = _save_failed(target, args.mode, src, "TV_EXPORT_INCOMPLETE", {"row_count": len(rows), "columns": hdr})
+        print(json.dumps({"status": "PARTIAL", "reason_code": "TV_EXPORT_INCOMPLETE", "meta_path": str(meta), "csv_path": None, "index_path": str(INDEX_PATH)}))
+        return 0
+
+    tf = str(target["timeframe"])
+    if tf == "15" and args.timeframe_ui not in ("15", "15m", "15min", "15 minutes"):
+        meta = _save_failed(target, args.mode, src, "TV_EXPORT_TIMEFRAME_MISMATCH", {"timeframe_ui": args.timeframe_ui})
+        print(json.dumps({"status": "PARTIAL", "reason_code": "TV_EXPORT_TIMEFRAME_MISMATCH", "meta_path": str(meta), "csv_path": None, "index_path": str(INDEX_PATH)}))
+        return 0
+
+    align_ok, med_delta, bad = _alignment(rows, m["time"], tf)
+    stats = _synthetic_stats(rows, m["close"], m["volume"])
+
+    if not align_ok:
+        meta = _save_failed(target, args.mode, src, "TV_EXPORT_TIMEFRAME_MISMATCH", {"timeframe_alignment_ok": False, "median_bar_delta_seconds": med_delta, "bad_timestamp_samples": bad})
+        print(json.dumps({"status": "PARTIAL", "reason_code": "TV_EXPORT_TIMEFRAME_MISMATCH", "meta_path": str(meta), "csv_path": None, "index_path": str(INDEX_PATH)}))
+        return 0
+
+    if stats["synthetic_detected"]:
+        meta = _save_failed(target, args.mode, src, "TV_EXPORT_SYNTHETIC_DETECTED", {"sanity_stats": stats, "chart_url_used": args.chart_url_used, "tv_symbol_ui": args.tv_symbol_ui, "timeframe_ui": args.timeframe_ui, "download_filename": src.name})
+        print(json.dumps({"status": "PARTIAL", "reason_code": "TV_EXPORT_SYNTHETIC_DETECTED", "meta_path": str(meta), "csv_path": None, "index_path": str(INDEX_PATH)}))
+        return 0
+
+    first_ts = _parse_ts(rows[0][m["time"]])
+    last_ts = _parse_ts(rows[-1][m["time"]])
+    sym = _sanitize_symbol(target["tv_symbol"])
+    out_dir = ROOT / "artifacts" / "data" / "tradingview_export" / sym / tf / args.mode
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stem = f"{first_ts.strftime('%Y%m%dT%H%M%SZ')}-{last_ts.strftime('%Y%m%dT%H%M%SZ')}"
+    out_csv = out_dir / f"{stem}.csv"
+    out_meta = out_dir / f"{stem}.meta.json"
+    out_csv.write_bytes(src.read_bytes())
+
+    meta = {
+        "source": "tradingview_export", "backend": "openclaw", "tv_symbol": target["tv_symbol"], "timeframe": tf,
+        "history_mode": args.mode, "export_ts": datetime.now(timezone.utc).isoformat(), "row_count": len(rows),
+        "first_ts": first_ts.isoformat(), "last_ts": last_ts.isoformat(), "sha256": _sha256(out_csv),
+        "chart_url_used": args.chart_url_used, "tv_symbol_ui": args.tv_symbol_ui, "timeframe_ui": args.timeframe_ui,
+        "download_filename": src.name, "timeframe_alignment_ok": True, "median_bar_delta_seconds": med_delta,
+        "bad_timestamp_samples": bad, "sanity_stats": stats, "volume_present": True, "columns": hdr
+    }
+    out_meta.write_text(json.dumps(meta, separators=(",", ":")), encoding="utf-8")
+
+    _write_index({"tv_symbol": target["tv_symbol"], "tf": tf, "mode": args.mode, "first_ts": meta["first_ts"], "last_ts": meta["last_ts"], "sha256": meta["sha256"], "path": str(out_csv).replace("\\", "/")})
+    print(json.dumps({"status": "PASS", "reason_code": "OK", "meta_path": str(out_meta), "csv_path": str(out_csv), "index_path": str(INDEX_PATH)}))
     return 0
 
 
