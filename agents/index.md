@@ -37,6 +37,21 @@
 | ⚡ | Executor-HL | Execute approved configs on Hyperliquid with guardrails | PLANNED |
 | 🛑 | Risk Manager | Enforce live risk policy, limits, and circuit-breakers | PLANNED |
 
+## Systems (Scripts / Workers)
+
+| Emoji | Name | Role | Status |
+|---|---|---|---|
+| 🧵 | Build Queue Worker | Single-flight queued BUILD_PATH execution | ACTIVE |
+| 📣 | TG Reporter | Telegram posting filter/high-signal reporting | ACTIVE |
+| 🗄️ | HL Data Ingest | Hyperliquid OHLCV dataset ingestion + validation | ACTIVE |
+| 🧪 | HL Backtest Engine | hl_backtest_engine.py execution engine | ACTIVE |
+| 📦 | Batch Backtest Runner | run_batch_backtests.py + emit_experiment_plan.py orchestration | ACTIVE |
+| 🔁 | Refinement Loop Runner | run_refinement_loop.py bounded variant loop | ACTIVE |
+| 📚 | Librarian v1 | run_librarian.py + dedup + archive management | ACTIVE |
+| 🧾 | Stage Verifiers | verify_pipeline_stage1/2/3 + stage4 gates | ACTIVE |
+| 📤 | TV Exporter | export_tradingview_csv.py capture/export path | WIP / BLOCKED: real download capture |
+| 🧪 | TV Parity Harness | tv_parity_engine.py + compare_tv_trades.py parity checks | WIP |
+
 ## Canonical Pipeline (Artifact-Based)
 
 `ResearchCard → Thesis → StrategySpec → BacktestResult → Lesson → Promotion → ExecutionConfig → Live Execution`

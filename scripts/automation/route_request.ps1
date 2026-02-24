@@ -1,4 +1,4 @@
-param(
+﻿param(
   [Parameter(Mandatory = $true)][string]$Message,
   [string]$UpdateId,
   [string]$MessageId,
@@ -384,6 +384,40 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
 
+  if ($intentAction -eq 'show_roster' -or $m -eq 'roster' -or $m -eq 'show roster' -or $m -eq 'agent roster' -or $m -eq 'roster details') {
+    $isDetails = ($m -eq 'roster details')
+    Write-Output "Agents (LLM)"
+    Write-Output "🤖 oQ - Main orchestrator and delegation control."
+    Write-Output "🔰 Verifier - Independent QC gate for policy and compatibility checks."
+    Write-Output "🗃️ Keeper - Artifact indexing, dedup, and memory curation authority."
+    Write-Output "🛡️ Firewall - Spec/security guard and write-allowlist enforcement."
+    Write-Output "🔗 Reader - Source ingestion into ResearchCards."
+    Write-Output "🧲 Grabber - TradingView indicator harvesting into IndicatorRecords."
+    Write-Output "🧠 Analyser - Falsifiable thesis generation from research inputs."
+    Write-Output "📊 Strategist - Thesis-to-StrategySpec translation."
+    Write-Output "📈 Backtester - Batch backtest execution and report output."
+    if ($isDetails) {
+      Write-Output "🏁 Ranker - Planned ranking across regimes and constraints."
+      Write-Output "📚 Librarian - Planned long-horizon lesson curation agent persona."
+      Write-Output "🔁 Refiner - Planned iterative candidate improver persona."
+      Write-Output "🧑‍💻 Coder - Planned Pine/Python conversion and adapter maintainer."
+      Write-Output "⚡ Executor-HL - Planned live Hyperliquid executor under guardrails."
+      Write-Output "🛑 Risk Manager - Planned live risk and circuit-breaker enforcement."
+    }
+    Write-Output "Systems (scripts)"
+    Write-Output "🧵 Build Queue Worker - Single-flight queued BUILD_PATH execution."
+    Write-Output "📣 TG Reporter - High-signal Telegram reporting and filters."
+    Write-Output "🗄️ HL Data Ingest - Hyperliquid OHLCV ingestion + validation."
+    Write-Output "🧪 HL Backtest Engine - Core hl_backtest_engine.py runner."
+    Write-Output "📦 Batch Backtest Runner - Batch runs + experiment-plan emission."
+    Write-Output "🔁 Refinement Loop Runner - Bounded refinement-cycle orchestration."
+    Write-Output "📚 Librarian v1 - Indexing, dedup, archive rotation, top candidates."
+    Write-Output "🧾 Stage Verifiers - Stage1/2/3 verifiers + stage4 gates."
+    Write-Output "📤 TV Exporter - WIP; blocked on reliable real-download capture."
+    Write-Output "🧪 TV Parity Harness - WIP parity validation against TV trade outputs."
+    exit 0
+  }
+
   if ($intentAction -eq 'toggle_warnings_off' -or $m.Contains('turn warnings off') -or $m.Contains('disable warnings') -or $m.Contains('warnings off')) {
     $f = 'config/runtime_flags.json'
     if ($DryRun) {
@@ -541,4 +575,4 @@ if ($enqueue.Duplicate) {
 $jobId = [string]$enqueue.Job.job_id
 $pos = [int]$enqueue.Position
 Emit-LogEvent -RunId ($runId + '-enqueued') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_ENQUEUED' -Summary ('Build enqueued: ' + $jobId + ' position=' + $pos) -Inputs @($buildQuestion) -Outputs @($jobId,('position=' + $pos))
-Write-Output ('Queued. Position: ' + $pos + '. I’ll start it after the current build finishes.')
+Write-Output ("Queued. Position: " + $pos + ". I will start it after the current build finishes.")

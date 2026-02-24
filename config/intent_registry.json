@@ -77,6 +77,12 @@
       "action": "show_logs_summary"
     },
     {
+      "name": "roster",
+      "patterns": ["roster", "show roster", "agent roster", "roster details"],
+      "route": "FAST_PATH",
+      "action": "show_roster"
+    },
+    {
       "name": "show_help",
       "patterns": ["help", "usage", "what can you do"],
       "route": "FAST_PATH",
