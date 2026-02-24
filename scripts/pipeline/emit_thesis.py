@@ -52,6 +52,53 @@ def non_empty(lines: list[str], limit: int, max_len: int) -> list[str]:
     return out
 
 
+def build_combo_proposals(indicators: list[dict], rc: dict, timeframe: str) -> list[dict]:
+    names = [i.get('name', 'unknown') for i in indicators][:5]
+    tpx = next((n for n in names if 'pressure' in n.lower() or 'tpx' in n.lower()), names[0] if names else 'TPX')
+    proposals = [
+        {
+            'indicator': tpx,
+            'role': 'confirmation',
+            'description': f'Confirm long only when {tpx} bullish pressure is above control level (>=30) on {timeframe} bar close.',
+            'confidence': 0.76,
+        },
+        {
+            'indicator': 'MACD-long',
+            'role': 'trend',
+            'description': 'Use longer MACD side of zero as trend direction gate before entries.',
+            'confidence': 0.71,
+        },
+        {
+            'indicator': 'MACD-short',
+            'role': 'entry',
+            'description': 'Trigger entries when shorter MACD aligns with longer MACD direction.',
+            'confidence': 0.69,
+        },
+        {
+            'indicator': tpx,
+            'role': 'filter',
+            'description': f'Filter out entries when {tpx} is near zero / below control threshold to avoid weak-pressure chop.',
+            'confidence': 0.66,
+        },
+        {
+            'indicator': 'ATR14',
+            'role': 'exit',
+            'description': 'Derived idea: use ATR-based stop/TP envelope for deterministic testability of swing-style stops.',
+            'confidence': 0.62,
+        },
+    ]
+    return proposals[:5]
+
+
+def build_mutation_catalog() -> list[dict]:
+    return [
+        {'type': 'threshold', 'suggestion': 'Sweep TPX control level', 'bounds': '20,30,40'},
+        {'type': 'risk', 'suggestion': 'Sweep ATR stop/TP multipliers', 'bounds': 'stop:1.2-2.0,tp:1.8-3.0'},
+        {'type': 'execution', 'suggestion': 'Entry fill rule sweep', 'bounds': 'bar_close|next_open'},
+        {'type': 'filter', 'suggestion': 'Role swap TPX confirmation/filter', 'bounds': 'confirmation|filter|entry'},
+    ][:10]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--research-card-path', required=True)
@@ -107,8 +154,11 @@ def main() -> int:
         'confidence': 0.68,
     }][:10]
 
+    combo_proposals = build_combo_proposals(indicators, rc, timeframe) if indicators else []
+    mutation_catalog = build_mutation_catalog() if indicators else []
+
     thesis = {
-        'schema_version': '1.0',
+        'schema_version': '1.1',
         'id': f"thesis-{datetime.now().strftime('%Y%m%d')}-{sha256_inputs[:12]}",
         'created_at': now_iso(),
         'inputs': {
@@ -120,6 +170,8 @@ def main() -> int:
         'thesis_bullets': bullets[:10],
         'hypotheses': hypotheses,
         'candidate_signals': candidate_signals,
+        'combo_proposals': combo_proposals[:10],
+        'mutation_catalog': mutation_catalog[:10],
         'required_data': non_empty([
             f'{asset} OHLCV on {timeframe}',
             'Indicator values at bar close',

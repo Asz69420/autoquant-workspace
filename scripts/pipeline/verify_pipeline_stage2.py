@@ -15,7 +15,7 @@ def must(cond: bool, msg: str) -> None:
 
 
 def check_schema_like(thesis: dict) -> None:
-    must(thesis.get('schema_version') == '1.0', 'schema_version must be 1.0')
+    must(thesis.get('schema_version') in ('1.0', '1.1'), 'schema_version must be 1.0 or 1.1')
     must(len(thesis.get('title', '')) <= 120 and thesis.get('title'), 'invalid title')
     must(len(thesis.get('thesis_bullets', [])) <= 10, 'thesis_bullets cap exceeded')
     must(len(thesis.get('hypotheses', [])) <= 5, 'hypotheses cap exceeded')
@@ -29,6 +29,14 @@ def check_schema_like(thesis: dict) -> None:
         must(len(c.get('uses_indicators', [])) <= 5, 'uses_indicators cap exceeded')
     for k, cap in [('required_data', 10), ('constraints', 10), ('tags', 20)]:
         must(len(thesis.get(k, [])) <= cap, f'{k} cap exceeded')
+    must(len(thesis.get('combo_proposals', [])) <= 10, 'combo_proposals cap exceeded')
+    for c in thesis.get('combo_proposals', []):
+        must(c.get('role') in ['trend', 'entry', 'exit', 'confirmation', 'filter'], 'invalid combo_proposals.role')
+        must(0 <= float(c.get('confidence', -1)) <= 1, 'combo_proposals confidence out of range')
+    must(len(thesis.get('mutation_catalog', [])) <= 10, 'mutation_catalog cap exceeded')
+    for m in thesis.get('mutation_catalog', []):
+        must(m.get('type') in ['threshold', 'risk', 'execution', 'filter'], 'invalid mutation_catalog.type')
+        must(bool(m.get('suggestion')) and bool(m.get('bounds')), 'mutation_catalog missing fields')
     inputs = thesis.get('inputs', {})
     must(len(inputs.get('research_card_paths', [])) <= 5, 'research_card_paths cap exceeded')
     must(len(inputs.get('indicator_record_paths', [])) <= 10, 'indicator_record_paths cap exceeded')

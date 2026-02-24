@@ -19,6 +19,7 @@
         "additionalProperties": false,
         "required": ["symbol", "timeframe", "dataset_meta_path", "backtest_result_path", "trade_list_path", "gate_pass"],
         "properties": {
+          "variant_name": { "type": "string", "minLength": 1, "maxLength": 120 },
           "symbol": { "type": "string", "minLength": 1, "maxLength": 24 },
           "timeframe": { "type": "string", "minLength": 1, "maxLength": 16 },
           "dataset_meta_path": { "type": "string", "minLength": 1, "maxLength": 2048 },

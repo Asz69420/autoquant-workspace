@@ -97,6 +97,7 @@ def main() -> int:
             info = json.loads(out)
             bt = _load_json(info['backtest_result'])
             run = {
+                'variant_name': variant,
                 'symbol': meta.get('symbol'),
                 'timeframe': meta.get('timeframe'),
                 'dataset_meta_path': dataset_meta,
