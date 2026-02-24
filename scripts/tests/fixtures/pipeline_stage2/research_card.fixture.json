@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "research-fixture-1",
+  "created_at": "2026-02-24T09:00:00Z",
+  "source_type": "transcript",
+  "source_ref": "fixture://research-card",
+  "title": "Trend + confirmation walkthrough",
+  "summary_bullets": [
+    "Use Supertrend with RSI divergence confirmation",
+    "Prefer trend-continuation entries on 1h"
+  ],
+  "extracted_rules": [
+    "Enter on aligned trend + momentum",
+    "Avoid entries during low volume"
+  ],
+  "indicators_mentioned": ["Supertrend", "RSI Divergence"],
+  "tv_search_hints": [
+    {"name": "Supertrend", "confidence": 0.8},
+    {"name": "RSI Divergence", "confidence": 0.7}
+  ],
+  "timeframes_mentioned": ["1h"],
+  "assets_mentioned": ["BTC"],
+  "tags": ["fixture", "stage2"],
+  "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "truncated": false
+}

@@ -1,0 +1,9 @@
+{
+  "research_card_path": "scripts/tests/fixtures/pipeline_stage2/research_card.fixture.json",
+  "indicator_record_paths": [
+    "scripts/tests/fixtures/pipeline_stage2/indicator_record.fixture.json"
+  ],
+  "grabber_queue": [
+    {"hint": "Supertrend", "confidence": 0.8}
+  ]
+}

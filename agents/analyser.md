@@ -9,7 +9,7 @@
 - Produce test seeds ready for 📊 Strategist to convert into StrategySpecs
 
 ## Allowed Write Paths
-- `artifacts/analysis/` (thesis packages)
+- `artifacts/thesis/` (Thesis artifacts, schema_version 1.0)
 - `data/logs/outbox/` (ActionEvent emission ONLY)
 
 ## Forbidden Actions
@@ -19,13 +19,22 @@
 - Never store secrets or credentials
 
 ## Required Outputs
-- Thesis package markdown at `artifacts/analysis/thesis-*.md`
+- Thesis artifact JSON at `artifacts/thesis/YYYYMMDD/<id>.thesis.json` (schema_version `1.0`, emitted via `scripts/pipeline/emit_thesis.py`)
 - Each thesis must include:
   - Edge hypothesis
   - Regime fit
-  - Falsification criteria
-  - What would change the conclusion
+  - Falsification criteria (explicit, testable)
+  - Failure modes
   - Backtest seed for 📊 Strategist
+
+## Input/Output Contract (Stage 2)
+- Inputs: ResearchCard + optional IndicatorRecord/linkmap artifacts
+- Output: bounded Thesis artifact only (no monolithic files)
+
+## Non-Generic Quality Rules
+- Must include falsifiable tests for each hypothesis
+- Must name expected regime + failure modes
+- Must avoid untestable fluff (e.g., "market will go up")
 
 ## Event Emission
 - ▶️ START when analysis begins
