@@ -37,6 +37,17 @@ KEEPER_REASON_HINTS = {
     "CONTEXT_DRIFT": "re-scope or rerun with pinned context",
 }
 
+INFO_TELEGRAM_ALLOWLIST = {
+    "YT_WATCH_SUMMARY",
+    "TV_CATALOG_SUMMARY",
+    "GRABBER_SUMMARY",
+    "PROMOTION_SUMMARY",
+    "BATCH_BACKTEST_SUMMARY",
+    "REFINEMENT_SUMMARY",
+    "LIBRARIAN_SUMMARY",
+    "AUTOPILOT_SUMMARY",
+}
+
 def compute_ts_local_aest(ts_iso_str):
     """Convert ISO UTC timestamp to ts_local (12-hour AEST)."""
     dt_utc = datetime.fromisoformat(ts_iso_str.replace("Z", "+00:00"))
@@ -238,6 +249,10 @@ def send_event_to_telegram(event):
                 return None
             formatted_msg = _keeper_telegram_message(event)
         else:
+            status_word = str(event.get("status_word") or "").upper()
+            reason_code = str(event.get("reason_code") or "").upper()
+            if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST:
+                return None
             event_json = json.dumps(event)
             env = {**os.environ, "PYTHONUTF8": "1"}
             result = subprocess.run(

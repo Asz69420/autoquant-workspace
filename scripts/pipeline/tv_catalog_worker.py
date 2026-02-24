@@ -112,6 +112,9 @@ def main() -> int:
     created = []
     added = 0
     skipped = 0
+    invalid = 0
+    grabber_ok = 0
+    grabber_fail = 0
 
     top = _fetch_mode('top')
     _log('TV_CATALOG_CHECK', 'TV_CATALOG_CHECK', f'mode=TOP candidates={len(top)}', 'INFO')
@@ -123,13 +126,16 @@ def main() -> int:
         if _is_invalid_candidate(cand['name'], cand['author']):
             _log('TV_CATALOG_PARSE_INVALID', 'TV_CATALOG_PARSE_INVALID', f"skip top candidate name={cand['name']} author={cand['author']}", 'WARN')
             skipped += 1
+            invalid += 1
         elif key not in st['seen_tv_keys']:
             try:
                 ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_top']))
                 _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
+                grabber_ok += 1
             except Exception:
                 _log('GRABBER_FETCH_FAIL', 'GRABBER_FETCH_FAIL', f"script_id={cand['script_id']} name={cand['name']}", 'WARN')
                 skipped += 1
+                grabber_fail += 1
                 ir = None
             if not ir:
                 pass
@@ -156,6 +162,7 @@ def main() -> int:
         if _is_invalid_candidate(cand['name'], cand['author']):
             _log('TV_CATALOG_PARSE_INVALID', 'TV_CATALOG_PARSE_INVALID', f"skip trending candidate name={cand['name']} author={cand['author']}", 'WARN')
             skipped += 1
+            invalid += 1
             continue
         if key in st['seen_tv_keys']:
             skipped += 1
@@ -163,9 +170,11 @@ def main() -> int:
         try:
             ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_trending']))
             _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
+            grabber_ok += 1
         except Exception:
             _log('GRABBER_FETCH_FAIL', 'GRABBER_FETCH_FAIL', f"script_id={cand['script_id']} name={cand['name']}", 'WARN')
             skipped += 1
+            grabber_fail += 1
             continue
         rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Trending catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
         bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
@@ -184,7 +193,9 @@ def main() -> int:
     _w(INDICATOR_INDEX, idx[:500])
     _w(STATE_PATH, {**st, 'seen_tv_keys': st['seen_tv_keys'][-1000:], 'seen_script_ids': st['seen_script_ids'][-1000:], 'last_trending_seen': st['last_trending_seen'][-50:]})
     _w(BUNDLE_INDEX, (created + bundles)[:500])
-    print(json.dumps({'created_bundles': created, 'new_indicators_added': added, 'skipped_dedup': skipped}))
+    _log('GRABBER_SUMMARY', 'GRABBER_SUMMARY', f"Grabber: fetched={grabber_ok} dedup={skipped} failed={grabber_fail}", 'INFO')
+    _log('TV_CATALOG_SUMMARY', 'TV_CATALOG_SUMMARY', f"TV: mode=TOP/TRENDING added={added} dedup={skipped} invalid={invalid}", 'INFO')
+    print(json.dumps({'created_bundles': created, 'new_indicators_added': added, 'skipped_dedup': skipped, 'invalid': invalid, 'grabber_ok': grabber_ok, 'grabber_fail': grabber_fail}))
     return 0
 
 

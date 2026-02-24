@@ -95,22 +95,34 @@ def main() -> int:
 
     created = []
     seen_videos = set(state.get('seen_video_ids', []))
+    channels_checked = 0
+    processed = 0
+    dedup = 0
+    failed = 0
+    new_total = 0
     for ch in state.get('channels', []):
         channel_id = ch.get('channel_id', '')
         if not channel_id:
             continue
+        channels_checked += 1
         latest = _fetch_latest(channel_id)
         new_count = len([x for x in latest if x['video_id'] not in seen_videos])
+        new_total += new_count
         _log('YT_WATCH_CHECK', 'YT_WATCH_CHECK', f"channel={channel_id} new_count={new_count}", 'INFO')
         for item in latest:
             if len(created) >= MAX_NEW:
                 break
             vid = item['video_id']
             if vid in seen_videos:
+                dedup += 1
                 continue
-            txt = _transcript(vid)
-            rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'transcript', '--raw-text', txt, '--title', item['title'], '--author', ch.get('name', 'youtube'))
-            _log('YT_VIDEO_INGESTED', 'YT_VIDEO_INGESTED', f"video_id={vid}", 'INFO', outputs=[rc['research_card_path']])
+            try:
+                txt = _transcript(vid)
+                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'transcript', '--raw-text', txt, '--title', item['title'], '--author', ch.get('name', 'youtube'))
+                _log('YT_VIDEO_INGESTED', 'YT_VIDEO_INGESTED', f"video_id={vid}", 'INFO', outputs=[rc['research_card_path']])
+            except Exception:
+                failed += 1
+                continue
 
             linked = []
             for h in _extract_hints(txt):
@@ -137,10 +149,12 @@ def main() -> int:
             bundles = [str(bpath).replace('\\', '/')] + [x for x in bundles if x != str(bpath).replace('\\', '/')]
             seen_videos.add(vid)
             created.append(str(bpath).replace('\\', '/'))
+            processed += 1
 
     _w(BUNDLE_INDEX, bundles[:500])
     state['seen_video_ids'] = list(seen_videos)[-1000:]
     _w(STATE_PATH, state)
+    _log('YT_WATCH_SUMMARY', 'YT_WATCH_SUMMARY', f"YT: channels={channels_checked} new={new_total} processed={processed} dedup={dedup} failed={failed}", 'INFO')
     print(json.dumps({'created_bundles': created, 'count': len(created)}))
     return 0
 
