@@ -1,6 +1,7 @@
 param(
   [Parameter(Mandatory = $true)][ValidateSet('APPROVE','REJECT')][string]$Action,
-  [string]$BuildSessionId
+  [string]$BuildSessionId,
+  [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
@@ -29,6 +30,17 @@ if ([string]::IsNullOrWhiteSpace($BuildSessionId)) {
 $session = python scripts/automation/build_session.py show --build-session-id $BuildSessionId | ConvertFrom-Json
 if ($session.state -ne 'SESSION_READY_FOR_APPROVAL') {
   throw "Session not ready for approval: $($session.state)"
+}
+
+if ($DryRun) {
+  if ($Action -eq 'REJECT') {
+    Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-dryrun") -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary ("Dry run - would reject build: " + $BuildSessionId) -Outputs @('would_set_state=BLOCKED')
+    Write-Output "DRY_RUN build_session_id=$BuildSessionId action=REJECT would_set_state=BLOCKED"
+    exit 0
+  }
+  Emit-LogEvent -RunId ("build-" + $BuildSessionId + "-dryrun") -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary ("Dry run - would apply build: " + $BuildSessionId) -Outputs @('would_set_state=SESSION_APPLIED')
+  Write-Output "DRY_RUN build_session_id=$BuildSessionId action=APPROVE would_set_state=SESSION_APPLIED"
+  exit 0
 }
 
 if ($Action -eq 'REJECT') {

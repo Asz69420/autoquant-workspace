@@ -2,7 +2,8 @@ param(
   [Parameter(Mandatory = $true)][string]$Message,
   [string]$UpdateId,
   [string]$MessageId,
-  [string]$ChatId
+  [string]$ChatId,
+  [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
@@ -161,6 +162,12 @@ Emit-LogEvent -RunId $runId -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode
 
 if ($route -eq 'FAST_PATH') {
   if ($toggleWarnOff | Where-Object { $m.Contains($_) }) {
+    $f = 'config/runtime_flags.json'
+    if ($DryRun) {
+      Emit-LogEvent -RunId ($runId + '-toggle-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would set warningsEnabled=false' -Inputs @($f) -Outputs @('would_set:warningsEnabled=false')
+      Write-Output 'Dry run — would set warningsEnabled=false.'
+      exit 0
+    }
     $f = Ensure-RuntimeFlags
     $obj = Get-Content $f -Raw | ConvertFrom-Json
     $obj.warningsEnabled = $false
@@ -170,6 +177,12 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
   if ($toggleWarnOn | Where-Object { $m.Contains($_) }) {
+    $f = 'config/runtime_flags.json'
+    if ($DryRun) {
+      Emit-LogEvent -RunId ($runId + '-toggle-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would set warningsEnabled=true' -Inputs @($f) -Outputs @('would_set:warningsEnabled=true')
+      Write-Output 'Dry run — would set warningsEnabled=true.'
+      exit 0
+    }
     $f = Ensure-RuntimeFlags
     $obj = Get-Content $f -Raw | ConvertFrom-Json
     $obj.warningsEnabled = $true
@@ -181,15 +194,25 @@ if ($route -eq 'FAST_PATH') {
   if ($m.Contains('apply latest')) {
     $sid = Get-LatestReadyBuildId
     if ([string]::IsNullOrWhiteSpace($sid)) { Write-Output 'Done — there is no ready build to apply.'; exit 0 }
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid | Out-Null
-    Write-Output 'Done — applied the latest ready build.'
+    if ($DryRun) {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid -DryRun | Out-Null
+      Write-Output 'Dry run — would apply the latest ready build.'
+    } else {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid | Out-Null
+      Write-Output 'Done — applied the latest ready build.'
+    }
     exit 0
   }
   if ($m.Contains('reject latest')) {
     $sid = Get-LatestReadyBuildId
     if ([string]::IsNullOrWhiteSpace($sid)) { Write-Output 'Done — there is no ready build to reject.'; exit 0 }
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid | Out-Null
-    Write-Output 'Done — rejected the latest ready build.'
+    if ($DryRun) {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid -DryRun | Out-Null
+      Write-Output 'Dry run — would reject the latest ready build.'
+    } else {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid | Out-Null
+      Write-Output 'Done — rejected the latest ready build.'
+    }
     exit 0
   }
   if ($m.Contains('show pending builds')) {
@@ -220,7 +243,12 @@ if ($route -eq 'FAST_PATH') {
 }
 
 # BUILD_PATH
-Write-Output "Working on it - I'll verify it and then ask for approval."
+if ($DryRun) {
+  Emit-LogEvent -RunId ($runId + '-build-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would execute BUILD_PATH and start verification loop' -Inputs @($Message) -Outputs @('would_run:scripts/automation/run_work.ps1')
+  Write-Output 'Dry run - would route to BUILD_PATH and start verification, then request approval.'
+  exit 0
+}
+Write-Output 'Working on it - I will verify it and then ask for approval.'
 $runOut = @()
 $runCode = 0
 try {
@@ -234,7 +262,7 @@ if ($runCode -ne 0) {
   if ($debugOverride) {
     Write-MainChatFiltered -Lines @($runOut) -Debug $true
   } else {
-    Write-Output "Blocked - couldn't pass verification within limits. Say 'show debug' for details."
+    Write-Output 'Blocked - verification did not pass within limits. Say show debug for details.'
   }
   exit $runCode
 }

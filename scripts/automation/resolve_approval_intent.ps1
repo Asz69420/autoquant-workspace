@@ -1,7 +1,8 @@
 param(
   [Parameter(Mandatory = $true)][string]$Message,
   [string]$BuildSessionId,
-  [string]$TaskId
+  [string]$TaskId,
+  [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
@@ -36,9 +37,17 @@ if (Test-Path 'build_session_ledger.jsonl') {
 
 if (-not [string]::IsNullOrWhiteSpace($BuildSessionId)) {
   if ($intent -eq 'APPROVE') {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $BuildSessionId
+    if ($DryRun) {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $BuildSessionId -DryRun
+    } else {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $BuildSessionId
+    }
   } else {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $BuildSessionId
+    if ($DryRun) {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $BuildSessionId -DryRun
+    } else {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $BuildSessionId
+    }
   }
   exit $LASTEXITCODE
 }
@@ -47,11 +56,21 @@ if ($readyBuilds.Count -ge 1) {
   $sorted = $readyBuilds | Sort-Object last_update_at -Descending
   $sid = [string]$sorted[0].build_session_id
   if ($intent -eq 'APPROVE') {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid | Out-Null
-    Write-Output 'Done — applied the latest ready build.'
+    if ($DryRun) {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid -DryRun | Out-Null
+      Write-Output 'Dry run — would apply the latest ready build.'
+    } else {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action APPROVE -BuildSessionId $sid | Out-Null
+      Write-Output 'Done — applied the latest ready build.'
+    }
   } else {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid | Out-Null
-    Write-Output 'Done — rejected the latest ready build.'
+    if ($DryRun) {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid -DryRun | Out-Null
+      Write-Output 'Dry run — would reject the latest ready build.'
+    } else {
+      powershell -ExecutionPolicy Bypass -File scripts/automation/approve_build_session.ps1 -Action REJECT -BuildSessionId $sid | Out-Null
+      Write-Output 'Done — rejected the latest ready build.'
+    }
   }
   exit $LASTEXITCODE
 }
