@@ -69,11 +69,22 @@ def main() -> int:
         if rp and not rc.get("creator_notes"):
             print("WARN: creator_notes missing while transcript/raw exists")
 
-        if words_count(raw_text) > 300 and not rc.get("strategy_components"):
+        comps = rc.get("strategy_components") or []
+        if words_count(raw_text) > 300 and not comps:
             must(False, "strategy_components missing for transcript >300 words")
+
+        if words_count(raw_text) > 300 and comps:
+            ui_terms = ["click", "indicators", "settings", "style tab", "search"]
+            ui_count = sum(1 for c in comps if any(t in str(c.get("description", "")).lower() for t in ui_terms))
+            if ui_count / max(len(comps), 1) > 0.5:
+                must(False, "more than 50% of strategy_components are UI/navigation language")
 
         if re.search(r"\bset\s+it\s+at\b", raw_text, re.I) and not rc.get("parameters_set"):
             print("WARN: parameters_set missing despite transcript containing 'set it at'")
+
+        structured = [x for x in (rc.get("explicit_conditions") or []) if any(k in str(x).lower() for k in ["require", "confirm", "entry:", "stop:", "target:", "above 30", "center line"])]
+        if len(structured) < 2:
+            print("WARN: fewer than 2 structured entry/confirmation conditions detected")
 
     if args.indicator_record:
         ir_path = Path(args.indicator_record)

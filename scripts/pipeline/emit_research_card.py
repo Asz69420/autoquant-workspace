@@ -92,27 +92,19 @@ def is_fluff(text: str) -> bool:
 
 
 def to_sentences(raw: str) -> list[str]:
-    lines = [norm_spaces(x) for x in raw.splitlines() if norm_spaces(x)]
+    text = norm_spaces(raw.replace("\n", " "))
+    parts = [norm_spaces(p) for p in re.split(r"(?<=[.!?])\s+", text) if norm_spaces(p)]
     out: list[str] = []
-    buf: list[str] = []
-    for line in lines:
-        buf.append(line)
-        joined = norm_spaces(" ".join(buf))
-        if line.endswith((".", "!", "?")) or words_count(joined) >= 14:
-            if not joined.endswith((".", "!", "?")):
-                joined += "."
-            last_word = re.findall(r"[a-zA-Z]+", joined.lower())[-1] if re.findall(r"[a-zA-Z]+", joined.lower()) else ""
-            if words_count(joined) >= 6 and not is_fluff(joined) and last_word not in {"if", "and", "or", "to", "with", "for", "that", "which", "most", "on", "in"}:
-                if not any(similarity(joined, x) >= 0.85 for x in out):
-                    out.append(joined[:500])
-            buf = []
-    if buf:
-        joined = norm_spaces(" ".join(buf))
-        if not joined.endswith((".", "!", "?")):
-            joined += "."
-        if words_count(joined) >= 6 and not is_fluff(joined):
-            if not any(similarity(joined, x) >= 0.85 for x in out):
-                out.append(joined[:500])
+    for p in parts:
+        if words_count(p) < 6:
+            continue
+        if not p.endswith((".", "!", "?")):
+            p += "."
+        if is_fluff(p):
+            continue
+        if any(similarity(p, x) >= 0.88 for x in out):
+            continue
+        out.append(p[:500])
     return out
 
 
@@ -204,8 +196,8 @@ def extract_parameters(raw: str, max_items: int = 20) -> list[dict]:
         if name.startswith("the "):
             name = name[4:]
         value = normalize_num_word(m.group("value").strip().strip(".,;:"))
-        context = norm_spaces(text[max(0, m.start()-40):m.end()+60])
-        item = {"name": name[:80], "value": value[:40], "context": context[:180]}
+        context = norm_spaces(text[max(0, m.start()-30):m.end()+40])
+        item = {"name": name[:80], "value": value[:40], "context": context[:120]}
         if any(item["name"] == x["name"] and item["value"] == x["value"] for x in params):
             continue
         params.append(item)
@@ -214,17 +206,34 @@ def extract_parameters(raw: str, max_items: int = 20) -> list[dict]:
     return params
 
 
+def normalize_statement(s: str) -> str:
+    x = norm_spaces(s)
+    repl = [
+        (r"\bwe should have\b", "Require"),
+        (r"\bwe could enter\b", "Entry:"),
+        (r"\bwe enter\b", "Entry:"),
+        (r"\bstop loss below\b", "Stop: below"),
+        (r"\bprofit target at risk[- ]to[- ]reward ratio of two\b", "Target: 2R"),
+    ]
+    for pat, rep in repl:
+        x = re.sub(pat, rep, x, flags=re.I)
+    x = re.sub(r"\s+", " ", x).strip()
+    if not x.endswith((".", "!", "?")):
+        x += "."
+    return x[:500]
+
+
 def classify_component(s: str) -> str:
     l = s.lower()
-    if any(k in l for k in ["risk", "stop loss", "profit target", "risk-to-reward", "1%"]):
+    if any(k in l for k in ["risk", "stop:", "stop loss", "target:", "profit target", "risk-to-reward", "1%"]):
         return "risk"
     if any(k in l for k in ["trend", "longer macd", "downtrend", "uptrend"]):
         return "trend"
     if any(k in l for k in ["shorter macd", "momentum", "histogram"]):
         return "momentum"
-    if any(k in l for k in ["confirmed", "final confirmation", "above 30", "control level"]):
+    if any(k in l for k in ["confirmed", "require", "above 30", "control level"]):
         return "confirmation"
-    if any(k in l for k in ["rejected", "avoid", "doesn't show", "condition"]):
+    if any(k in l for k in ["rejected", "avoid", "doesn't show", "filter"]):
         return "filter"
     return "other"
 
@@ -234,28 +243,51 @@ def extract_conditions_and_components(sentences: list[str]) -> tuple[list[str], 
     components: list[dict] = []
     risk_notes: list[str] = []
 
-    action_keywords = [
-        "center line", "above 30", "below 30", "confirmed", "enter", "stop loss",
-        "profit target", "risk", "long position", "short position", "goes above", "goes below"
-    ]
+    ui_noise = ["click on", "indicators", "style tab", "settings", "search "]
+    action_keywords = ["center line", "above 30", "confirmed", "entry", "stop", "target", "risk", "long position", "short position", "goes above", "goes below"]
 
     for s in sentences:
         if is_fluff(s):
             continue
-        l = s.lower()
+        ns = normalize_statement(s)
+        l = ns.lower()
+
+        if any(n in l for n in ui_noise) and not any(k in l for k in ["enter", "stop", "target", "risk", "confirmed", "above 30"]):
+            continue
 
         cond = any(re.search(p, l) for p in COND_PATTERNS) and any(k in l for k in action_keywords)
-        if cond and not any(similarity(s, c) >= 0.88 for c in conditions):
-            conditions.append(s[:500])
+        if cond and not any(similarity(ns, c) >= 0.88 for c in conditions):
+            conditions.append(ns)
 
-        ctype = classify_component(s)
+        ctype = classify_component(ns)
         if ctype in {"trend", "momentum", "confirmation", "filter", "risk"}:
-            entry = {"type": ctype, "description": s[:220]}
+            desc = ns
+            if "above 30" in l and "bull" in l:
+                desc = "Bullish pressure must exceed 30 to confirm long setup."
+            elif "above 30" in l and "red" in l:
+                desc = "Bearish pressure must exceed 30 to confirm short setup."
+            elif "entry:" in l:
+                desc = ns.replace("Entry:", "Entry:").strip()
+            elif "stop:" in l:
+                desc = "Stop: below previous swing low."
+            elif "target: 2r" in l or "risk-to-reward ratio of two" in l:
+                desc = "Target: 2R."
+            entry = {"type": ctype, "description": desc[:220]}
             if not any(similarity(entry["description"], x["description"]) >= 0.88 for x in components):
                 components.append(entry)
 
-        if ctype == "risk" and not any(similarity(s, r) >= 0.88 for r in risk_notes):
-            risk_notes.append(s[:220])
+        if ctype == "risk":
+            rn = None
+            if "stop" in l:
+                rn = "Stop below previous swing low."
+            elif "target" in l or "2r" in l or "risk-to-reward ratio of two" in l:
+                rn = "Target at 2R."
+            elif "1%" in l or "1% roll" in l:
+                rn = "Apply 1% risk rule."
+            elif "manage your risk" in l:
+                rn = "Use explicit risk management on every trade."
+            if rn and not any(similarity(rn, r) >= 0.9 for r in risk_notes):
+                risk_notes.append(rn[:220])
 
         if len(conditions) >= 20 and len(components) >= 20 and len(risk_notes) >= 10:
             break

@@ -67,7 +67,7 @@
         "properties": {
           "name": { "type": "string", "maxLength": 80 },
           "value": { "type": "string", "maxLength": 40 },
-          "context": { "type": "string", "maxLength": 180 }
+          "context": { "type": "string", "maxLength": 120 }
         }
       }
     },
