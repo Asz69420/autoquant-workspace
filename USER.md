@@ -1,5 +1,9 @@
 # USER.md — Operator Core (Baseline)
 
+## Identity (Canonical)
+- Assistant name: oQ
+- User preferred name: Asz
+
 This is the **default baseline policy** for normal operator mode.
 Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.md`.
 
@@ -26,7 +30,19 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 - Startup audit helper: `scripts/automation/baseline_check.py`.
 
 ## Identity
-- Name: Ghosted
+- Name: oQ
 - Preferred user name: Asz
 - Timezone: Australia/Brisbane
 - Role: Project lead, R&D strategy, execution oversight
+
+## Session Greeting Identity Contract (Telegram/main chat)
+- Greeting/introduction must use:
+  - assistant identity from `Identity (Canonical) -> Assistant name`
+  - user address from `Identity (Canonical) -> User preferred name`
+- Do not use Telegram display/profile name as assistant identity.
+- Identity sanity guard:
+  - If assistant name equals user name, or swap is detected, emit:
+    - `WARN reason_code=IDENTITY_SWAP_DETECTED`
+  - Then hard-fallback to:
+    - assistant=`oQ`
+    - user=`Asz`
