@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/strategy_spec.schema.json",
+  "title": "StrategySpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "created_at", "source_thesis_path", "variants"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "source_thesis_path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "variants": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description",
+          "entry_long",
+          "entry_short",
+          "filters",
+          "exit_rules",
+          "risk_rules",
+          "parameters",
+          "constraints"
+        ],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "description": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "entry_long": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
+          "entry_short": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
+          "filters": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
+          "exit_rules": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
+          "risk_rules": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
+          "parameters": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "min", "max"],
+              "properties": {
+                "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+                "min": { "type": "number" },
+                "max": { "type": "number" },
+                "step": { "type": "number" },
+                "default": { "type": "number" }
+              }
+            }
+          },
+          "constraints": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 200 } }
+        }
+      }
+    }
+  },
+  "allOf": [
+    { "description": "StrategySpec JSON must be <= 60KB (enforced by emitter/verifier)." }
+  ]
+}
