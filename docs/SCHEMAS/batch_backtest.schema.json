@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/batch_backtest.schema.json",
+  "title": "BatchBacktest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "created_at", "strategy_spec_path", "variant", "runs", "summary"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "strategy_spec_path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "variant": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "runs": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["symbol", "timeframe", "dataset_meta_path", "backtest_result_path", "trade_list_path", "gate_pass"],
+        "properties": {
+          "symbol": { "type": "string", "minLength": 1, "maxLength": 24 },
+          "timeframe": { "type": "string", "minLength": 1, "maxLength": 16 },
+          "dataset_meta_path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "backtest_result_path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "trade_list_path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+          "gate_pass": { "type": "boolean" },
+          "net_profit": { "type": "number" },
+          "trades": { "type": "integer", "minimum": 0 },
+          "profit_factor": { "type": "number", "minimum": 0 },
+          "max_drawdown": { "type": "number", "minimum": 0 },
+          "relax_suggestion_path": { "type": "string", "minLength": 1, "maxLength": 2048 }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_runs", "failed_runs", "net_profit", "trades", "profit_factor", "max_drawdown"],
+      "properties": {
+        "total_runs": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "failed_runs": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "net_profit": { "type": "number" },
+        "trades": { "type": "integer", "minimum": 0 },
+        "profit_factor": { "type": "number", "minimum": 0 },
+        "max_drawdown": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}
