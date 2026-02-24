@@ -6,5 +6,13 @@
   "min_signals": {
     "1h": 50,
     "4h": 15
+  },
+  "min_fire_count_total": {
+    "1h": 30,
+    "4h": 10
+  },
+  "expected_hold_bars": {
+    "1h": 48,
+    "4h": 24
   }
 }

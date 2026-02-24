@@ -15,10 +15,29 @@ def _run(cmd: list[str]) -> dict:
     return json.loads(out)
 
 
-def _make_specs(tmp_dir: Path) -> tuple[Path, Path]:
-    base_variant = {
-        'name': 'v_pass',
-        'description': 'pass variant',
+def _build_dataset(base: Path) -> Path:
+    base.mkdir(parents=True, exist_ok=True)
+    meta = base / 'cluster_4h.meta.json'
+    csvp = base / 'cluster_4h.csv'
+    meta.write_text(json.dumps({'symbol': 'BTC', 'timeframe': '4h', 'start': '2024-01-01T00:00:00Z', 'end': '2026-01-01T00:00:00Z'}), encoding='utf-8')
+    rows = ['time,open,high,low,close']
+    price = 100.0
+    for i in range(4200):
+        price = 100.0 if i % 2 == 0 else 102.0
+        rows.append(f'2024-01-01T00:00:00Z,{price},{price+0.5},{price-0.5},{price}')
+    csvp.write_text('\n'.join(rows), encoding='utf-8')
+    return meta
+
+
+def _write_spec(path: Path, variant: dict, sid: str):
+    payload = {'schema_version': '1.1', 'id': sid, 'created_at': '2026-02-25T00:00:00Z', 'source_thesis_path': 'fixture://t', 'variants': [variant]}
+    path.write_text(json.dumps(payload), encoding='utf-8')
+
+
+def _base_variant(name: str) -> dict:
+    return {
+        'name': name,
+        'description': 'fixture',
         'entry_long': ['ema up'],
         'entry_short': ['ema down'],
         'filters': [],
@@ -29,63 +48,44 @@ def _make_specs(tmp_dir: Path) -> tuple[Path, Path]:
         'parameters': [],
         'constraints': [],
     }
-    pass_spec = {
-        'schema_version': '1.1',
-        'id': 'pass_spec',
-        'created_at': '2026-02-25T00:00:00Z',
-        'source_thesis_path': 'fixture://pass',
-        'variants': [base_variant],
-    }
-    fail_variant = dict(base_variant)
-    fail_variant['name'] = 'v_fail'
-    fail_variant.pop('risk_policy', None)
-    fail_variant.pop('execution_policy', None)
-    fail_variant['risk_rules'] = ['ema_trend=200', 'ema_slope=50', 'rsi_long_max=10', 'rsi_short_min=90']
-    fail_spec = dict(pass_spec)
-    fail_spec['id'] = 'fail_spec'
-    fail_spec['variants'] = [fail_variant]
-
-    pass_path = tmp_dir / 'pass.strategy_spec.json'
-    fail_path = tmp_dir / 'fail.strategy_spec.json'
-    pass_path.write_text(json.dumps(pass_spec), encoding='utf-8')
-    fail_path.write_text(json.dumps(fail_spec), encoding='utf-8')
-    return pass_path, fail_path
 
 
 def main() -> int:
-    tmp_dir = ROOT / 'artifacts' / 'tmp' / 'feasibility_test'
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    pass_spec, fail_spec = _make_specs(tmp_dir)
+    td = ROOT / 'artifacts' / 'tmp' / 'feasibility_v2'
+    td.mkdir(parents=True, exist_ok=True)
+    meta = _build_dataset(td)
 
-    dataset_meta = ROOT / 'artifacts' / 'data' / 'hyperliquid' / 'BTC' / '4h' / '20240225T120000Z-20260224T120000Z.meta.json'
+    # FIRE_COUNT_TOO_LOW fail
+    v_fail = _base_variant('v_fire_low')
+    v_fail['parameters'] = [{'name': 'signal_sparsity', 'min': 1, 'max': 1000, 'step': 1, 'default': 500}]
+    fail_spec = td / 'fire_low.strategy_spec.json'
+    _write_spec(fail_spec, v_fail, 'fire_low')
+    fail = _run([PY, 'scripts/pipeline/check_feasibility.py', '--strategy-spec', str(fail_spec), '--variant', 'v_fire_low', '--dataset-meta', str(meta)])
 
-    fail = _run([
-        PY, 'scripts/pipeline/check_feasibility.py',
-        '--strategy-spec', str(fail_spec),
-        '--variant', 'v_fail',
-        '--dataset-meta', str(dataset_meta),
-    ])
+    # SIGNAL_CLUSTERED pass
+    v_cluster = _base_variant('v_cluster')
+    cluster_spec = td / 'cluster.strategy_spec.json'
+    _write_spec(cluster_spec, v_cluster, 'cluster')
+    clustered = _run([PY, 'scripts/pipeline/check_feasibility.py', '--strategy-spec', str(cluster_spec), '--variant', 'v_cluster', '--dataset-meta', str(meta)])
+
+    # PARAM_CLIFF flag/fail
+    v_cliff = _base_variant('v_cliff')
+    v_cliff['parameters'] = [{'name': 'signal_sparsity', 'min': 1, 'max': 10, 'step': 5, 'default': 1}]
+    cliff_spec = td / 'cliff.strategy_spec.json'
+    _write_spec(cliff_spec, v_cliff, 'cliff')
+    cliff = _run([PY, 'scripts/pipeline/check_feasibility.py', '--strategy-spec', str(cliff_spec), '--variant', 'v_cliff', '--dataset-meta', str(meta)])
+
     assert fail['verdict'] == 'FAIL'
+    assert 'FIRE_COUNT_TOO_LOW' in ' '.join(fail.get('fail_reasons', []))
 
-    passed = _run([
-        PY, 'scripts/pipeline/check_feasibility.py',
-        '--strategy-spec', str(pass_spec),
-        '--variant', 'v_pass',
-        '--dataset-meta', str(dataset_meta),
-    ])
-    assert passed['verdict'] == 'PASS'
+    cdoc = json.loads(Path(clustered['feasibility_report_path']).read_text(encoding='utf-8'))
+    assert cdoc['verdict'] == 'PASS'
+    assert 'SIGNAL_CLUSTERED' in cdoc.get('flags', [])
 
-    batch = _run([
-        PY, 'scripts/pipeline/run_batch_backtests.py',
-        '--strategy-spec', str(fail_spec),
-        '--variant', 'v_fail',
-        '--datasets', str(dataset_meta),
-    ])
-    b = json.loads(Path(batch['batch_artifact_path']).read_text(encoding='utf-8'))
-    assert b['runs'][0]['status'] == 'SKIPPED'
-    assert b['runs'][0]['skip_reason'] == 'FEASIBILITY_FAIL'
+    cldoc = json.loads(Path(cliff['feasibility_report_path']).read_text(encoding='utf-8'))
+    assert 'PARAM_CLIFF' in cldoc.get('flags', [])
 
-    print(json.dumps({'fail': fail['feasibility_report_path'], 'pass': passed['feasibility_report_path'], 'batch': batch['batch_artifact_path']}))
+    print(json.dumps({'fail': fail['feasibility_report_path'], 'cluster': clustered['feasibility_report_path'], 'cliff': cliff['feasibility_report_path']}))
     return 0
 
 

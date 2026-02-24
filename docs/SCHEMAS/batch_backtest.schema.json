@@ -26,6 +26,7 @@
           "backtest_result_path": { "type": "string", "maxLength": 2048 },
           "trade_list_path": { "type": "string", "maxLength": 2048 },
           "feasibility_report_path": { "type": "string", "maxLength": 2048 },
+          "feasibility_flags": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 80 } },
           "status": { "type": "string", "enum": ["EXECUTED", "SKIPPED"] },
           "skip_reason": { "type": "string", "maxLength": 120 },
           "gate_pass": { "type": "boolean" },

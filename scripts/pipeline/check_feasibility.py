@@ -32,17 +32,21 @@ def _ema(prev: float | None, price: float, period: int) -> float:
     return price if prev is None else (a * price + (1 - a) * prev)
 
 
-def _estimate_signals(closes: list[float], variant: dict) -> tuple[int, int, int]:
+def _fire_indices(closes: list[float], variant: dict, param_override: tuple[str, float] | None = None) -> tuple[list[int], list[int]]:
     rules = _parse_rules(variant.get('risk_rules', []))
-    is_trendpullback = 'trendpullback' in variant.get('name', '').lower()
+    params = {str(p.get('name')): float(p.get('default', 0)) for p in variant.get('parameters', []) if isinstance(p, dict) and 'name' in p}
+    if param_override:
+        params[param_override[0]] = float(param_override[1])
 
+    is_trendpullback = 'trendpullback' in variant.get('name', '').lower()
     ema9 = ema21 = ema50 = ema200 = None
     prev_ema9 = prev_ema21 = prev_ema50 = None
 
-    long_n = short_n = 0
+    long_idx: list[int] = []
+    short_idx: list[int] = []
     rsi_long_max = float(rules.get('rsi_long_max', 40))
     rsi_short_min = float(rules.get('rsi_short_min', 60))
-    # cheap proxy RSI: directional persistence on last 14 closes
+
     for i, c in enumerate(closes):
         prev_ema9, prev_ema21, prev_ema50 = ema9, ema21, ema50
         ema9 = _ema(ema9, c, 9)
@@ -52,9 +56,9 @@ def _estimate_signals(closes: list[float], variant: dict) -> tuple[int, int, int
 
         if i < 15:
             continue
-        window = closes[max(0, i - 14): i + 1]
-        up = sum(1 for j in range(1, len(window)) if window[j] > window[j - 1])
-        rsi_proxy = (up / max(1, len(window) - 1)) * 100.0
+        w = closes[max(0, i - 14): i + 1]
+        up = sum(1 for j in range(1, len(w)) if w[j] > w[j - 1])
+        rsi_proxy = (up / max(1, len(w) - 1)) * 100.0
 
         if is_trendpullback:
             ema50_up = prev_ema50 is not None and ema50 > prev_ema50
@@ -65,10 +69,46 @@ def _estimate_signals(closes: list[float], variant: dict) -> tuple[int, int, int
             long_sig = prev_ema9 is not None and prev_ema21 is not None and prev_ema9 <= prev_ema21 and ema9 > ema21
             short_sig = prev_ema9 is not None and prev_ema21 is not None and prev_ema9 >= prev_ema21 and ema9 < ema21
 
-        long_n += 1 if long_sig else 0
-        short_n += 1 if short_sig else 0
+        conf = float(params.get('confidence_threshold', 0.6))
+        if conf > 0:
+            score = abs(c - (ema21 if ema21 is not None else c)) / max(abs(c), 1.0)
+            gate = score >= (conf * 0.01)
+            long_sig = long_sig and gate
+            short_sig = short_sig and gate
 
-    return long_n, short_n, long_n + short_n
+        sparsity = max(1, int(round(float(params.get('signal_sparsity', 1.0)))))
+        if sparsity > 1:
+            if long_sig and (i % sparsity != 0):
+                long_sig = False
+            if short_sig and (i % sparsity != 0):
+                short_sig = False
+
+        if long_sig:
+            long_idx.append(i)
+        if short_sig:
+            short_idx.append(i)
+
+    return long_idx, short_idx
+
+
+def _cluster_ratio(indices: list[int], decay_window_bars: int) -> float:
+    if len(indices) <= 1:
+        return 0.0
+    clustered = 0
+    for i, t in enumerate(indices):
+        d_prev = abs(t - indices[i - 1]) if i > 0 else 10**9
+        d_next = abs(indices[i + 1] - t) if i < len(indices) - 1 else 10**9
+        if min(d_prev, d_next) < decay_window_bars:
+            clustered += 1
+    return clustered / len(indices)
+
+
+def _safe_ratio(a: int, b: int) -> float:
+    if a == 0 and b == 0:
+        return 1.0
+    if a == 0 or b == 0:
+        return 999.0
+    return max(a / b, b / a)
 
 
 def main() -> int:
@@ -87,6 +127,7 @@ def main() -> int:
     gates = _load(ROOT / args.gate_config)
     min_bars = int(gates.get('min_bars', {}).get(tf, 1000))
     min_signals = int(gates.get('min_signals', {}).get(tf, 10))
+    min_fire_total = int(gates.get('min_fire_count_total', {}).get(tf, 10))
 
     csv_path = Path(args.dataset_meta.replace('.meta.json', '.csv'))
     rows = list(csv.DictReader(csv_path.open('r', encoding='utf-8-sig', newline='')))
@@ -105,26 +146,73 @@ def main() -> int:
         if float(rp.get('stop_atr_mult', 0)) < 0 or float(rp.get('tp_atr_mult', 0)) < 0:
             parameter_ranges_ok = False
 
-    long_n, short_n, total_n = _estimate_signals(closes, variant)
+    long_idx, short_idx = _fire_indices(closes, variant)
+    long_n, short_n = len(long_idx), len(short_idx)
+    total_n = long_n + short_n
+
     signal_frequency_estimate_ok = total_n >= min_signals
+    fire_count_ok = total_n >= min_fire_total
+
+    expected_hold_bars = int(gates.get('expected_hold_bars', {}).get(tf, 48 if tf == '1h' else 24))
+    decay_window_bars = 2 * expected_hold_bars
+    all_idx = sorted(long_idx + short_idx)
+    cluster_ratio = _cluster_ratio(all_idx, decay_window_bars)
+
+    flags: list[str] = []
+    suggestions: list[str] = []
+
+    if cluster_ratio > 0.85:
+        flags.append('SIGNAL_CLUSTERED')
+        suggestions.append('raise evidence threshold / require stronger score')
+
+    # parameter cliff on first stepped parameter if available
+    param_cliff = {'param_name': 'none', 'base_fire': total_n, 'minus_step_fire': total_n, 'plus_step_fire': total_n, 'ratio_max': 1.0}
+    cliff_ratio = 1.0
+    for p in variant.get('parameters', []):
+        if 'step' in p and 'default' in p:
+            name = str(p.get('name'))
+            step = float(p.get('step', 0))
+            base = float(p.get('default', 0))
+            if step <= 0:
+                continue
+            _, _ = _fire_indices(closes, variant)
+            m_long, m_short = _fire_indices(closes, variant, (name, base - step))
+            p_long, p_short = _fire_indices(closes, variant, (name, base + step))
+            minus_fire = len(m_long) + len(m_short)
+            plus_fire = len(p_long) + len(p_short)
+            cliff_ratio = max(_safe_ratio(total_n, minus_fire), _safe_ratio(total_n, plus_fire), _safe_ratio(minus_fire, plus_fire))
+            param_cliff = {
+                'param_name': name,
+                'base_fire': total_n,
+                'minus_step_fire': minus_fire,
+                'plus_step_fire': plus_fire,
+                'ratio_max': round(cliff_ratio, 8),
+            }
+            if cliff_ratio > 5:
+                flags.append('PARAM_CLIFF')
+            break
 
     fail_reasons = []
-    suggestion = []
     if not timeframe_ok:
         fail_reasons.append('unsupported timeframe')
-        suggestion.append('use 1h or 4h dataset')
+        suggestions.append('use 1h or 4h dataset')
     if not history_ok:
         fail_reasons.append('insufficient history')
-        suggestion.append('use longer history dataset')
+        suggestions.append('use longer history dataset')
     if not required_fields_ok:
         fail_reasons.append('missing risk_policy or execution_policy')
-        suggestion.append('emit StrategySpec schema v1.1+')
+        suggestions.append('emit StrategySpec schema v1.1+')
     if not signal_frequency_estimate_ok:
         fail_reasons.append('estimated signals below threshold')
-        suggestion.append('relax threshold or remove filter')
+        suggestions.append('relax threshold or remove filter')
+    if not fire_count_ok:
+        fail_reasons.append('FIRE_COUNT_TOO_LOW')
+        suggestions.append('increase signal opportunities or loosen gate')
     if not parameter_ranges_ok:
         fail_reasons.append('invalid parameter ranges')
-        suggestion.append('fix negative/invalid risk params')
+        suggestions.append('fix negative/invalid risk params')
+    if cliff_ratio > 10:
+        fail_reasons.append('PARAMETER_CLIFF_EXTREME')
 
     verdict = 'PASS' if not fail_reasons else 'FAIL'
 
@@ -149,10 +237,15 @@ def main() -> int:
             'bars_required': bars_required,
             'estimated_signal_count': {'long': long_n, 'short': short_n, 'total': total_n},
             'estimated_trades_min': total_n,
+            'fire_count': {'long': long_n, 'short': short_n, 'total': total_n},
+            'cluster_ratio': round(cluster_ratio, 8),
+            'decay_window_bars': decay_window_bars,
+            'param_cliff': param_cliff,
         },
+        'flags': flags[:10],
         'verdict': verdict,
         'fail_reasons': fail_reasons[:10],
-        'suggestion': suggestion[:5],
+        'suggestion': suggestions[:5],
     }
 
     out_dir = ROOT / 'artifacts' / 'feasibility' / datetime.now().strftime('%Y%m%d')
@@ -160,7 +253,7 @@ def main() -> int:
     out_path = out_dir / f"{payload['id']}.feasibility_report.json"
     out_path.write_text(json.dumps(payload, separators=(',', ':')), encoding='utf-8')
 
-    print(json.dumps({'feasibility_report_path': str(out_path), 'verdict': verdict, 'fail_reasons': payload['fail_reasons']}))
+    print(json.dumps({'feasibility_report_path': str(out_path), 'verdict': verdict, 'fail_reasons': payload['fail_reasons'], 'flags': payload['flags']}))
     return 0
 
 

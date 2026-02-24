@@ -48,9 +48,34 @@
             "total": { "type": "integer", "minimum": 0 }
           }
         },
-        "estimated_trades_min": { "type": "integer", "minimum": 0 }
+        "estimated_trades_min": { "type": "integer", "minimum": 0 },
+        "fire_count": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["long", "short", "total"],
+          "properties": {
+            "long": { "type": "integer", "minimum": 0 },
+            "short": { "type": "integer", "minimum": 0 },
+            "total": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "cluster_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "decay_window_bars": { "type": "integer", "minimum": 1 },
+        "param_cliff": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["param_name", "base_fire", "minus_step_fire", "plus_step_fire", "ratio_max"],
+          "properties": {
+            "param_name": { "type": "string", "minLength": 1, "maxLength": 80 },
+            "base_fire": { "type": "integer", "minimum": 0 },
+            "minus_step_fire": { "type": "integer", "minimum": 0 },
+            "plus_step_fire": { "type": "integer", "minimum": 0 },
+            "ratio_max": { "type": "number", "minimum": 0 }
+          }
+        }
       }
     },
+    "flags": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 80 } },
     "verdict": { "type": "string", "enum": ["PASS", "FAIL"] },
     "fail_reasons": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 160 } },
     "suggestion": { "type": "array", "maxItems": 5, "items": { "type": "string", "maxLength": 160 } }
