@@ -1,9 +1,62 @@
 param(
-  [Parameter(Mandatory = $true)][string]$Message
+  [Parameter(Mandatory = $true)][string]$Message,
+  [string]$UpdateId,
+  [string]$MessageId,
+  [string]$ChatId
 )
 
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
+
+$IdemPath = 'data/state/ingress_idempotency.json'
+$IdemTtlSec = 600
+
+function Get-IdempotencyKey {
+  if (-not [string]::IsNullOrWhiteSpace($UpdateId)) { return ('tg:update:' + $UpdateId) }
+  if (-not [string]::IsNullOrWhiteSpace($MessageId) -and -not [string]::IsNullOrWhiteSpace($ChatId)) { return ('tg:msg:' + $ChatId + ':' + $MessageId) }
+  $bucket = [int]([DateTimeOffset]::UtcNow.ToUnixTimeSeconds() / 60)
+  $chatPart = if ([string]::IsNullOrWhiteSpace($ChatId)) { '' } else { $ChatId }
+  $raw = ($chatPart + '|' + $Message + '|' + $bucket)
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  $bytes = [System.Text.Encoding]::UTF8.GetBytes($raw)
+  $hash = ($sha.ComputeHash($bytes) | ForEach-Object { $_.ToString('x2') }) -join ''
+  return ('fallback:' + $hash)
+}
+
+function Should-SkipByIdempotency {
+  param([string]$Key)
+  $dir = Split-Path -Parent $IdemPath
+  if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
+
+  $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+  $cache = @{}
+  if (Test-Path $IdemPath) {
+    try {
+      $raw = Get-Content $IdemPath -Raw
+      if (-not [string]::IsNullOrWhiteSpace($raw)) {
+        $obj = ConvertFrom-Json $raw
+        foreach ($p in $obj.PSObject.Properties) { $cache[$p.Name] = [int64]$p.Value }
+      }
+    } catch { $cache = @{} }
+  }
+
+  # GC expired
+  $alive = @{}
+  foreach ($k in $cache.Keys) {
+    $ts = [int64]$cache[$k]
+    if (($now - $ts) -lt $IdemTtlSec) { $alive[$k] = $ts }
+  }
+
+  $skip = $false
+  if ($alive.ContainsKey($Key)) {
+    $skip = $true
+  } else {
+    $alive[$Key] = $now
+  }
+
+  ($alive | ConvertTo-Json -Depth 4) | Set-Content -Path $IdemPath -Encoding utf8
+  return $skip
+}
 
 function Emit-LogEvent {
   param(
@@ -93,6 +146,14 @@ if ($toggleWarnOff | Where-Object { $m.Contains($_) }) {
   $route = 'FAST_PATH'; $rule = 'read_only_query_or_help'
 } elseif ($buildVerbs | Where-Object { $m.Contains($_) }) {
   $route = 'BUILD_PATH'; $rule = 'explicit_build_intent'
+}
+
+$idemKey = Get-IdempotencyKey
+if (Should-SkipByIdempotency -Key $idemKey) {
+  $skipRunId = 'route-skip-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+  Emit-LogEvent -RunId $skipRunId -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'IDEMPOTENT_SKIP' -Summary 'Duplicate ingress message skipped' -Inputs @($idemKey) -Outputs @('SKIPPED')
+  Write-Output 'Done — duplicate message ignored.'
+  exit 0
 }
 
 $runId = 'route-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
