@@ -148,36 +148,60 @@ function Resolve-Intent {
 }
 
 function Get-IdentityCanonical {
-  $assistant = ''
-  $user = ''
+  $parsedAssistant = ''
+  $parsedUser = ''
+  $legacyAssistant = ''
+  $legacyUser = ''
   $defaultAssistant = 'oQ'
   $defaultUser = 'Asz'
+
   if (Test-Path $UserMdPath) {
     try {
       $lines = Get-Content $UserMdPath
       foreach ($line in $lines) {
         if ($line -match '^\s*-\s*Assistant name\s*:\s*(.+?)\s*$') {
-          if ([string]::IsNullOrWhiteSpace($assistant)) { $assistant = $matches[1].Trim() }
+          if ([string]::IsNullOrWhiteSpace($parsedAssistant)) { $parsedAssistant = $matches[1].Trim() }
         }
         if ($line -match '^\s*-\s*User preferred name\s*:\s*(.+?)\s*$') {
-          if ([string]::IsNullOrWhiteSpace($user)) { $user = $matches[1].Trim() }
+          if ([string]::IsNullOrWhiteSpace($parsedUser)) { $parsedUser = $matches[1].Trim() }
+        }
+        if ($line -match '^\s*-\s*Name\s*:\s*(.+?)\s*$') {
+          if ([string]::IsNullOrWhiteSpace($legacyAssistant)) { $legacyAssistant = $matches[1].Trim() }
+        }
+        if ($line -match '^\s*-\s*Preferred user name\s*:\s*(.+?)\s*$') {
+          if ([string]::IsNullOrWhiteSpace($legacyUser)) { $legacyUser = $matches[1].Trim() }
         }
       }
     } catch {}
   }
 
-  $hasParsed = (-not [string]::IsNullOrWhiteSpace($assistant) -and -not [string]::IsNullOrWhiteSpace($user))
+  $hasParsed = (-not [string]::IsNullOrWhiteSpace($parsedAssistant) -and -not [string]::IsNullOrWhiteSpace($parsedUser))
   if (-not $hasParsed) {
     return [PSCustomObject]@{ Assistant = $defaultAssistant; User = $defaultUser }
   }
 
-  $swapDetected = ($assistant -ieq $defaultUser -and $user -ieq $defaultAssistant)
-  if (($assistant -ieq $user) -or $swapDetected) {
-    Emit-LogEvent -RunId ('identity-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'IDENTITY_SWAP_DETECTED' -Summary 'Identity equal/swapped; corrected using USER.md values' -Inputs @($assistant,$user) -Outputs @('assistant=' + $defaultAssistant,'user=' + $defaultUser)
+  $correctedAssistant = $parsedAssistant
+  $correctedUser = $parsedUser
+
+  $swapDetected = $false
+  if ((-not [string]::IsNullOrWhiteSpace($legacyAssistant)) -and (-not [string]::IsNullOrWhiteSpace($legacyUser))) {
+    $swapDetected = ($parsedAssistant -ieq $legacyUser -and $parsedUser -ieq $legacyAssistant)
+    if ($swapDetected) {
+      $correctedAssistant = $legacyAssistant
+      $correctedUser = $legacyUser
+    }
+  }
+
+  if ($correctedAssistant -ieq $correctedUser) {
+    Emit-LogEvent -RunId ('identity-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'IDENTITY_SWAP_DETECTED' -Summary 'Identity equal; defaults applied' -Inputs @('parsed_assistant=' + $parsedAssistant,'parsed_user=' + $parsedUser) -Outputs @('corrected_assistant=' + $defaultAssistant,'corrected_user=' + $defaultUser)
     return [PSCustomObject]@{ Assistant = $defaultAssistant; User = $defaultUser }
   }
 
-  return [PSCustomObject]@{ Assistant = $assistant; User = $user }
+  if ($swapDetected) {
+    Emit-LogEvent -RunId ('identity-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'IDENTITY_SWAP_DETECTED' -Summary 'Identity swapped; corrected using USER.md parsed values' -Inputs @('parsed_assistant=' + $parsedAssistant,'parsed_user=' + $parsedUser) -Outputs @('corrected_assistant=' + $correctedAssistant,'corrected_user=' + $correctedUser)
+  }
+
+  return [PSCustomObject]@{ Assistant = $correctedAssistant; User = $correctedUser }
 }
 
 function Get-ClarifierKey {
