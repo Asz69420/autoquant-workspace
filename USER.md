@@ -27,5 +27,6 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 
 ## Identity
 - Name: Ghosted
+- Preferred user name: Asz
 - Timezone: Australia/Brisbane
 - Role: Project lead, R&D strategy, execution oversight
