@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "id": "HL_EMA9_21_ATR14_SL1p5_TP2",
+  "created_at": "2026-02-24T00:00:00Z",
+  "source_thesis_path": "fixture://hl_ema_atr",
+  "variants": [
+    {
+      "name": "HL_EMA9_21_ATR14_SL1p5_TP2",
+      "description": "EMA9/EMA21 crossover with ATR14 stop 1.5x and take profit 2.0x",
+      "entry_long": ["ema9_crosses_above_ema21"],
+      "entry_short": ["ema9_crosses_below_ema21"],
+      "filters": [],
+      "exit_rules": ["reverse_on_opposite_signal"],
+      "risk_rules": ["atr_period=14", "stop_atr_mult=1.5", "take_profit_atr_mult=2.0"],
+      "parameters": [],
+      "constraints": []
+    }
+  ]
+}
