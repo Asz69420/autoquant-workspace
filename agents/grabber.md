@@ -23,9 +23,14 @@
 - Never write ResearchCards or StrategySpecs
 
 ## Required Outputs
-- IndicatorRecord JSON (`indicators/specs/indicator-{name}-v1.json`)
-- Pine code artifact (`artifacts/indicators/indicator--{hash}/pine.txt`)
+- IndicatorRecord artifact JSON (`artifacts/indicators/YYYYMMDD/<id>.indicator_record.json` via `scripts/pipeline/emit_indicator_record.py`)
+- Pine code artifact pointer (`artifacts/indicators/YYYYMMDD/<id>.pine.txt`, capped/truncated)
 - ActionEvent: ✅ OK (harvested + parsed), ⛔ BLOCKED (rights deny use)
+
+### Emitter Contract (Stage 1 Standardize)
+After indicator metadata/source is obtained, call emitter with:
+- `--tv-ref` (+ optional `--url`, `--author`, `--version`)
+- `--name`, optional `--source-code`, `--key-inputs`, `--signals`, `--notes`
 
 ## Event Emission
 - ▶️ START when harvesting indicator

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/research_card.schema.json",
+  "title": "ResearchCard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "source_type",
+    "source_ref",
+    "summary_bullets",
+    "extracted_rules",
+    "indicators_mentioned",
+    "tv_search_hints",
+    "timeframes_mentioned",
+    "assets_mentioned",
+    "tags",
+    "sha256",
+    "truncated"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "source_type": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "source_ref": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "title": { "type": "string", "maxLength": 300 },
+    "author": { "type": "string", "maxLength": 200 },
+    "summary_bullets": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "type": "string", "maxLength": 500 }
+    },
+    "extracted_rules": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "maxLength": 500 }
+    },
+    "indicators_mentioned": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "maxLength": 200 }
+    },
+    "tv_search_hints": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "confidence"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "author_hint": { "type": "string", "maxLength": 200 },
+          "keywords": {
+            "type": "array",
+            "maxItems": 8,
+            "items": { "type": "string", "maxLength": 80 }
+          },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "timeframes_mentioned": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "maxLength": 64 }
+    },
+    "assets_mentioned": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "maxLength": 64 }
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "maxLength": 64 }
+    },
+    "raw_pointer": { "type": "string", "maxLength": 1024 },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "truncated": { "type": "boolean" }
+  },
+  "allOf": [
+    {
+      "description": "ResearchCard JSON must be <= 40KB (enforced by emitter/verifier)."
+    },
+    {
+      "description": "Raw text payload must be <= 200KB when stored externally (enforced by emitter/verifier)."
+    }
+  ]
+}

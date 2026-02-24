@@ -23,9 +23,15 @@
 - Never write IndicatorRecords or StrategySpecs
 
 ## Required Outputs
-- ResearchCard JSON (`research/research-{topic}-{date}.json`)
+- ResearchCard artifact JSON (`artifacts/research/YYYYMMDD/<id>.research_card.json` via `scripts/pipeline/emit_research_card.py`)
+- Optional raw transcript pointer (`artifacts/research/YYYYMMDD/<id>.raw.txt`, capped/truncated)
 - Optional: video artifact metadata (transcript, link, duration)
 - ActionEvent: ✅ OK (fetched + parsed), ❌ FAIL (fetch timeout, rights unknown)
+
+### Emitter Contract (Stage 1 Standardize)
+After transcript/page text is obtained, call the emitter with:
+- `--source-ref`, `--raw-text`, optional `--title`, `--author`, `--tags`
+- Emitter auto-populates bounded fields and `tv_search_hints` from spoken indicator mentions.
 
 ## Event Emission
 - ▶️ START when fetching link
