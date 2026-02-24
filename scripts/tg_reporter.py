@@ -19,6 +19,24 @@ LOCK_FILE = Path("data/logs/tg_reporter.lock")
 last_sent = {}
 DEDUP_WINDOW_SECONDS = 60
 
+KEEPER_ALWAYS_REASON_CODES = {
+    "BASELINE_MANIFEST_VIOLATION",
+    "BASELINE_OVER_CAP",
+    "MEMORY_INDEX_TOO_LARGE",
+    "STATUS_SECTION_MARKERS_MISSING",
+    "KEEPER_BUDGET_EXCEEDED",
+    "CONTEXT_DRIFT",
+}
+
+KEEPER_REASON_HINTS = {
+    "BASELINE_MANIFEST_VIOLATION": "check baseline manifest + pinned files",
+    "BASELINE_OVER_CAP": "reduce baseline scope/token load",
+    "MEMORY_INDEX_TOO_LARGE": "trim MEMORY-INDEX summary bullets",
+    "STATUS_SECTION_MARKERS_MISSING": "restore STATUS section markers",
+    "KEEPER_BUDGET_EXCEEDED": "reduce writes/time and rerun keeper",
+    "CONTEXT_DRIFT": "re-scope or rerun with pinned context",
+}
+
 def compute_ts_local_aest(ts_iso_str):
     """Convert ISO UTC timestamp to ts_local (12-hour AEST)."""
     dt_utc = datetime.fromisoformat(ts_iso_str.replace("Z", "+00:00"))
@@ -134,32 +152,112 @@ def _event_sort_key(path_obj):
         return ("", "", 99, path_obj.name)
 
 
+def _parse_keeper_summary(summary: str) -> dict:
+    parsed = {}
+    for part in (summary or "").split(";"):
+        s = part.strip()
+        if "=" not in s:
+            continue
+        k, v = s.split("=", 1)
+        parsed[k.strip().lower()] = v.strip()
+    return parsed
+
+
+def _to_int(val, default=0):
+    try:
+        return int(str(val).strip())
+    except Exception:
+        return default
+
+
+def _escape_md_v2(text: str) -> str:
+    text = str(text)
+    for ch in r"_[]()~`>#+-=|{}.!":
+        text = text.replace(ch, f"\\{ch}")
+    return text
+
+
+def _keeper_should_post(event: dict) -> bool:
+    status_word = str(event.get("status_word") or "").upper()
+    reason_code = str(event.get("reason_code") or "").upper()
+
+    if status_word in {"WARN", "FAIL"}:
+        return True
+    if reason_code in KEEPER_ALWAYS_REASON_CODES:
+        return True
+
+    if reason_code == "KEEPER_SUMMARY":
+        kv = _parse_keeper_summary(event.get("summary") or "")
+        status = (kv.get("status") or status_word).upper()
+        files_written = _to_int(kv.get("files_written"), 0)
+        bytes_changed = _to_int(kv.get("bytes_changed"), 0)
+        warnings_count = _to_int(kv.get("warnings_count"), 0)
+
+        if status == "NOOP" and warnings_count == 0:
+            return False
+        if status == "OK" and (files_written > 0 or bytes_changed > 0):
+            return True
+        if status == "NOOP":
+            return False
+
+    if reason_code == "BASELINE_OK":
+        kv = _parse_keeper_summary(event.get("summary") or "")
+        if (kv.get("simulation", "").lower() == "false"):
+            return False
+
+    return False
+
+
+def _keeper_telegram_message(event: dict) -> str:
+    status_word = str(event.get("status_word") or "").upper()
+    reason_code = str(event.get("reason_code") or "").upper()
+
+    if reason_code == "KEEPER_SUMMARY":
+        kv = _parse_keeper_summary(event.get("summary") or "")
+        status = (kv.get("status") or status_word).upper()
+        files_written = _to_int(kv.get("files_written"), 0)
+        bytes_changed = _to_int(kv.get("bytes_changed"), 0)
+        if status == "OK":
+            return _escape_md_v2(f"Keeper: OK (wrote {files_written} file{'s' if files_written != 1 else ''}, bytes {bytes_changed})")
+        if status == "NOOP":
+            return _escape_md_v2("Keeper: NOOP")
+        return _escape_md_v2(f"Keeper: {status}")
+
+    if status_word in {"WARN", "FAIL"} or reason_code in KEEPER_ALWAYS_REASON_CODES:
+        hint = KEEPER_REASON_HINTS.get(reason_code, "check keeper summary")
+        return _escape_md_v2(f"Keeper: {status_word} ({reason_code}) - {hint}")
+
+    return _escape_md_v2(f"Keeper: {status_word}")
+
+
 def send_event_to_telegram(event):
     """Format and send an ActionEvent to Telegram. Returns True on success."""
     try:
-        # Format event via stdin (bytes-based for Windows robustness)
-        event_json = json.dumps(event)
-        env = {**os.environ, "PYTHONUTF8": "1"}
-        result = subprocess.run(
-            [sys.executable, "scripts/tg_format.py"],
-            input=event_json.encode("utf-8"),
-            text=False,
-            capture_output=True,
-            check=True,
-            env=env
-        )
-        formatted_msg = result.stdout.decode("utf-8", errors="replace").strip()
-        
-        # Send to Telegram
+        if str(event.get("agent") or "").lower() == "keeper":
+            if not _keeper_should_post(event):
+                return None
+            formatted_msg = _keeper_telegram_message(event)
+        else:
+            event_json = json.dumps(event)
+            env = {**os.environ, "PYTHONUTF8": "1"}
+            result = subprocess.run(
+                [sys.executable, "scripts/tg_format.py"],
+                input=event_json.encode("utf-8"),
+                text=False,
+                capture_output=True,
+                check=True,
+                env=env
+            )
+            formatted_msg = result.stdout.decode("utf-8", errors="replace").strip()
+
         send_result = subprocess.run(
             [sys.executable, "scripts/tg_notify.py", formatted_msg],
             capture_output=True,
             text=True
         )
-        
+
         return send_result.returncode == 0
     except subprocess.CalledProcessError as e:
-        # tg_format.py failed; print diagnostics
         exit_code = e.returncode
         stderr_text = e.stderr.decode("utf-8", errors="replace") if e.stderr else "(no stderr)"
         stdout_preview = e.stdout.decode("utf-8", errors="replace")[:200] if e.stdout else "(no stdout)"
@@ -265,8 +363,22 @@ def drain_once(max_messages=20):
                 print(f"Skipped (dedup): {event_file.name}", file=sys.stderr)
                 continue
             
-            # Send to Telegram
-            if send_event_to_telegram(event):
+            # Send to Telegram (or suppress per reporter policy)
+            send_result = send_event_to_telegram(event)
+            if send_result is None:
+                # Suppressed from Telegram; still append to NDJSON and clear outbox
+                event_line = json.dumps(event)
+                with open(ACTIONS_LOG, "a") as f:
+                    f.write(event_line + "\n")
+                if status_word == "FAIL":
+                    with open(ERRORS_LOG, "a") as f:
+                        f.write(event_line + "\n")
+                event_file.unlink()
+                mark_sent(run_id, status_word, ts_iso)
+                skipped += 1
+                consecutive_failures = 0
+                print(f"Skipped (telegram-policy, logged): {event_file.name}", file=sys.stderr)
+            elif send_result:
                 # Success: append to NDJSON, delete event file
                 event_line = json.dumps(event)
                 with open(ACTIONS_LOG, "a") as f:
