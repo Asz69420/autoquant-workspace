@@ -57,6 +57,43 @@
         }
       }
     },
+    "parameters_set": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "value", "context"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 80 },
+          "value": { "type": "string", "maxLength": 40 },
+          "context": { "type": "string", "maxLength": 180 }
+        }
+      }
+    },
+    "strategy_components": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "description"],
+        "properties": {
+          "type": { "enum": ["trend", "momentum", "confirmation", "filter", "risk", "other"] },
+          "description": { "type": "string", "maxLength": 220 }
+        }
+      }
+    },
+    "explicit_conditions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "maxLength": 500 }
+    },
+    "risk_management_notes": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "type": "string", "maxLength": 220 }
+    },
     "indicators_mentioned": {
       "type": "array",
       "maxItems": 20,

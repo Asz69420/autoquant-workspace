@@ -15,7 +15,34 @@ MAX_INDEX = 200
 TF_RE = re.compile(r"\b(1m|3m|5m|15m|30m|45m|1h|2h|4h|1d|1w|1mo|daily|weekly|monthly)\b", re.I)
 ASSET_RE = re.compile(r"\b(BTC|ETH|SOL|XRP|EURUSD|GBPUSD|SPX|NASDAQ|AAPL|TSLA|GOLD|XAUUSD)\b", re.I)
 TS_PREFIX_RE = re.compile(r"^\s*(?P<ts>\d{1,2}:\d{2}(?::\d{2})?)\s*[-–—|]?\s*(?P<text>.+)$")
-SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
+
+FLUFF_PATTERNS = [
+    r"\bsubscrib\w*\b",
+    r"\blike (the )?video\b",
+    r"\bwatch (this )?video until the end\b",
+    r"\bwatch\b.*\bend\b",
+    r"\bproud to announce\b",
+    r"\bpublished a book\b",
+    r"\blink is in the description\b",
+    r"\bthank you for watching\b",
+    r"\bgood luck with your trading\b",
+]
+
+COND_PATTERNS = [
+    r"\bwhen\b.+",
+    r"\bif\b.+",
+    r"\bwe enter\b.+",
+    r"\bwe could enter\b.+",
+    r"\bstop loss\b.+",
+    r"\bprofit target\b.+",
+    r"\brisk\b.+",
+]
+
+NUM_WORDS = {
+    "zero": "0", "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
+    "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10", "fifteen": "15",
+    "thirty": "30", "fifty": "50", "hundred": "100", "two hundred": "200",
+}
 
 
 def now_iso() -> str:
@@ -59,77 +86,55 @@ def similarity(a: str, b: str) -> float:
     return len(ta & tb) / max(len(ta), len(tb))
 
 
-def split_sentences(raw: str) -> list[str]:
-    chunks = [norm_spaces(x) for x in raw.splitlines() if norm_spaces(x)]
-    merged: list[str] = []
-    cur = ""
-    for c in chunks:
-        cur = f"{cur} {c}".strip() if cur else c
-        if re.search(r"[.!?]$", c) or words_count(cur) >= 18:
-            merged.append(cur)
-            cur = ""
-    if cur:
-        merged.append(cur)
+def is_fluff(text: str) -> bool:
+    t = text.lower()
+    return any(re.search(p, t) for p in FLUFF_PATTERNS)
 
-    parts: list[str] = []
-    for m in merged:
-        parts.extend([norm_spaces(p) for p in SENTENCE_SPLIT_RE.split(m) if norm_spaces(p)])
 
+def to_sentences(raw: str) -> list[str]:
+    lines = [norm_spaces(x) for x in raw.splitlines() if norm_spaces(x)]
     out: list[str] = []
-    bad_endings = {"if", "and", "or", "to", "on", "in", "with", "for", "that", "which", "based", "most"}
-    for p in parts:
-        if words_count(p) < 6:
-            continue
-        if not re.search(r"[.!?]$", p):
-            p = p + "."
-        last_word = re.findall(r"[a-zA-Z]+", p.lower())[-1] if re.findall(r"[a-zA-Z]+", p.lower()) else ""
-        if last_word in bad_endings:
-            continue
-        if any(similarity(p, x) >= 0.85 for x in out):
-            continue
-        out.append(p[:500])
+    buf: list[str] = []
+    for line in lines:
+        buf.append(line)
+        joined = norm_spaces(" ".join(buf))
+        if line.endswith((".", "!", "?")) or words_count(joined) >= 14:
+            if not joined.endswith((".", "!", "?")):
+                joined += "."
+            last_word = re.findall(r"[a-zA-Z]+", joined.lower())[-1] if re.findall(r"[a-zA-Z]+", joined.lower()) else ""
+            if words_count(joined) >= 6 and not is_fluff(joined) and last_word not in {"if", "and", "or", "to", "with", "for", "that", "which", "most", "on", "in"}:
+                if not any(similarity(joined, x) >= 0.85 for x in out):
+                    out.append(joined[:500])
+            buf = []
+    if buf:
+        joined = norm_spaces(" ".join(buf))
+        if not joined.endswith((".", "!", "?")):
+            joined += "."
+        if words_count(joined) >= 6 and not is_fluff(joined):
+            if not any(similarity(joined, x) >= 0.85 for x in out):
+                out.append(joined[:500])
     return out
 
 
 def extract_creator_notes(raw: str, max_items: int = 12) -> list[dict]:
     notes: list[dict] = []
-    sentences = split_sentences(raw)
-    for s in sentences:
+    for s in to_sentences(raw):
         ts = None
-        text = s
         m = TS_PREFIX_RE.match(s)
+        text = norm_spaces(m.group("text")) if m else s
         if m:
-            text = norm_spaces(m.group("text"))
             ts_raw = m.group("ts")
-            if len(ts_raw.split(":")) == 2:
-                ts = f"00:{ts_raw}"
-            else:
-                ts = ts_raw
-        if words_count(text) < 6:
-            continue
-        if any(similarity(text, n["quote"]) >= 0.9 for n in notes):
+            ts = f"00:{ts_raw}" if len(ts_raw.split(":")) == 2 else ts_raw
+        if is_fluff(text):
             continue
         quote = text[:200]
-        note = f"Creator explains: {text}"[:160]
+        note = f"Meaning: {text}"[:160]
+        if any(similarity(quote, n["quote"]) >= 0.9 for n in notes):
+            continue
         notes.append({"timestamp": ts, "quote": quote, "note": note})
         if len(notes) >= max_items:
             break
     return notes
-
-
-def extract_rules(sentences: list[str], limit: int = 20) -> list[str]:
-    rule_markers = ("rule", "wait", "enter", "exit", "avoid", "use", "search", "click")
-    rules: list[str] = []
-    for s in sentences:
-        l = s.lower()
-        if any(m in l for m in rule_markers):
-            if not any(similarity(s, r) >= 0.88 for r in rules):
-                rules.append(s[:500])
-        if len(rules) >= limit:
-            break
-    if not rules:
-        return ["Not specified in content."]
-    return rules[:limit]
 
 
 def extract_indicator_hints(raw: str) -> tuple[list[str], list[dict]]:
@@ -170,6 +175,94 @@ def extract_indicator_hints(raw: str) -> tuple[list[str], list[dict]]:
     return names[:20], hints[:10]
 
 
+def extract_rules(sentences: list[str], limit: int = 20) -> list[str]:
+    rules: list[str] = []
+    for s in sentences:
+        l = s.lower()
+        if any(re.search(p, l) for p in COND_PATTERNS) or "rule" in l:
+            if not any(similarity(s, r) >= 0.88 for r in rules):
+                rules.append(s[:500])
+        if len(rules) >= limit:
+            break
+    return rules if rules else ["Not specified in content."]
+
+
+def normalize_num_word(v: str) -> str:
+    x = v.strip().lower()
+    return NUM_WORDS.get(x, v.strip())
+
+
+def extract_parameters(raw: str, max_items: int = 20) -> list[dict]:
+    params: list[dict] = []
+    text = raw.replace("\n", " ")
+    pat = re.compile(
+        r"for\s+(?:the\s+)?(?P<name>[a-zA-Z][a-zA-Z0-9\- ]{2,40}?)\s+we\s+set\s+it\s+at\s+(?P<value>[a-zA-Z0-9.%-]{1,20})",
+        re.I,
+    )
+    for m in pat.finditer(text):
+        name = norm_spaces(m.group("name")).lower()
+        if name.startswith("the "):
+            name = name[4:]
+        value = normalize_num_word(m.group("value").strip().strip(".,;:"))
+        context = norm_spaces(text[max(0, m.start()-40):m.end()+60])
+        item = {"name": name[:80], "value": value[:40], "context": context[:180]}
+        if any(item["name"] == x["name"] and item["value"] == x["value"] for x in params):
+            continue
+        params.append(item)
+        if len(params) >= max_items:
+            break
+    return params
+
+
+def classify_component(s: str) -> str:
+    l = s.lower()
+    if any(k in l for k in ["risk", "stop loss", "profit target", "risk-to-reward", "1%"]):
+        return "risk"
+    if any(k in l for k in ["trend", "longer macd", "downtrend", "uptrend"]):
+        return "trend"
+    if any(k in l for k in ["shorter macd", "momentum", "histogram"]):
+        return "momentum"
+    if any(k in l for k in ["confirmed", "final confirmation", "above 30", "control level"]):
+        return "confirmation"
+    if any(k in l for k in ["rejected", "avoid", "doesn't show", "condition"]):
+        return "filter"
+    return "other"
+
+
+def extract_conditions_and_components(sentences: list[str]) -> tuple[list[str], list[dict], list[str]]:
+    conditions: list[str] = []
+    components: list[dict] = []
+    risk_notes: list[str] = []
+
+    action_keywords = [
+        "center line", "above 30", "below 30", "confirmed", "enter", "stop loss",
+        "profit target", "risk", "long position", "short position", "goes above", "goes below"
+    ]
+
+    for s in sentences:
+        if is_fluff(s):
+            continue
+        l = s.lower()
+
+        cond = any(re.search(p, l) for p in COND_PATTERNS) and any(k in l for k in action_keywords)
+        if cond and not any(similarity(s, c) >= 0.88 for c in conditions):
+            conditions.append(s[:500])
+
+        ctype = classify_component(s)
+        if ctype in {"trend", "momentum", "confirmation", "filter", "risk"}:
+            entry = {"type": ctype, "description": s[:220]}
+            if not any(similarity(entry["description"], x["description"]) >= 0.88 for x in components):
+                components.append(entry)
+
+        if ctype == "risk" and not any(similarity(s, r) >= 0.88 for r in risk_notes):
+            risk_notes.append(s[:220])
+
+        if len(conditions) >= 20 and len(components) >= 20 and len(risk_notes) >= 10:
+            break
+
+    return conditions[:20], components[:20], risk_notes[:10]
+
+
 def update_index(index_path: Path, pointer: str) -> None:
     index = []
     if index_path.exists():
@@ -205,11 +298,14 @@ def main() -> int:
     raw_path = out_dir / f"{rid}.raw.txt"
     raw_path.write_text(raw_trunc, encoding="utf-8")
 
-    sentences = split_sentences(raw_trunc)
+    sentences = to_sentences(raw_trunc)
     bullets = sentences[:10]
-    rules = extract_rules(sentences, 20)
     creator_notes = extract_creator_notes(raw_trunc, 12)
+    rules = extract_rules(sentences, 20)
     indicators, hints = extract_indicator_hints(raw_trunc)
+
+    parameters_set = extract_parameters(raw_trunc, 20)
+    explicit_conditions, strategy_components, risk_management_notes = extract_conditions_and_components(sentences)
 
     timeframes = list(dict.fromkeys([m.group(1).lower() for m in TF_RE.finditer(raw_trunc)]))[:20]
     assets = list(dict.fromkeys([m.group(1).upper() for m in ASSET_RE.finditer(raw_trunc)]))[:20]
@@ -226,6 +322,10 @@ def main() -> int:
         "summary_bullets": bullets,
         "creator_notes": creator_notes if creator_notes else None,
         "extracted_rules": rules,
+        "parameters_set": parameters_set if parameters_set else None,
+        "strategy_components": strategy_components if strategy_components else None,
+        "explicit_conditions": explicit_conditions if explicit_conditions else None,
+        "risk_management_notes": risk_management_notes if risk_management_notes else None,
         "indicators_mentioned": indicators,
         "tv_search_hints": hints,
         "timeframes_mentioned": timeframes,

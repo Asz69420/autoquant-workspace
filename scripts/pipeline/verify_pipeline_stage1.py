@@ -60,8 +60,20 @@ def main() -> int:
             for j in range(i + 1, len(bullets)):
                 must(similarity(str(bullets[i]), str(bullets[j])) < 0.85, "summary_bullets contains repeated/near-identical fragments")
 
+        raw_text = ""
+        if rp:
+            raw_path = Path(rp)
+            if raw_path.exists():
+                raw_text = raw_path.read_text(encoding="utf-8", errors="ignore")
+
         if rp and not rc.get("creator_notes"):
             print("WARN: creator_notes missing while transcript/raw exists")
+
+        if words_count(raw_text) > 300 and not rc.get("strategy_components"):
+            must(False, "strategy_components missing for transcript >300 words")
+
+        if re.search(r"\bset\s+it\s+at\b", raw_text, re.I) and not rc.get("parameters_set"):
+            print("WARN: parameters_set missing despite transcript containing 'set it at'")
 
     if args.indicator_record:
         ir_path = Path(args.indicator_record)
