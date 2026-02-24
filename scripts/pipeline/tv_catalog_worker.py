@@ -5,7 +5,6 @@ import json
 import re
 from datetime import datetime, UTC
 from pathlib import Path
-from urllib.parse import quote
 from urllib.request import urlopen
 import subprocess
 import sys
@@ -36,21 +35,62 @@ def _run(*args: str) -> dict:
     return json.loads(out)
 
 
+def _log(action: str, reason: str, summary: str, status: str = 'INFO', inputs: list[str] | None = None, outputs: list[str] | None = None):
+    try:
+        cmd = [
+            PY, 'scripts/log_event.py',
+            '--run-id', f"tv-catalog-{int(datetime.now(UTC).timestamp())}",
+            '--agent', 'oQ',
+            '--model-id', 'openai-codex/gpt-5.3-codex',
+            '--action', action,
+            '--status-word', status,
+            '--status-emoji', 'INFO' if status == 'INFO' else ('WARN' if status == 'WARN' else 'FAIL'),
+            '--reason-code', reason,
+            '--summary', summary,
+        ]
+        for x in (inputs or []):
+            cmd += ['--input', str(x)]
+        for x in (outputs or []):
+            cmd += ['--output', str(x)]
+        subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
+    except Exception:
+        pass
+
+
 def _tv_key(name: str, author: str) -> str:
     return re.sub(r'\s+', ' ', f'{name}|{author}'.strip().lower())
 
 
 def _fetch_mode(mode: str):
-    # Lightweight HTML parse fallback. TOP and TRENDING share page; we just sample distinct windows.
     url = 'https://www.tradingview.com/scripts/'
     html = urlopen(url, timeout=20).read().decode('utf-8', errors='ignore')
-    cards = re.findall(r'/script/([A-Za-z0-9]+)/"[^>]*>([^<]{2,120})<', html)
+
     out = []
-    for sid, name in cards[:40]:
-        out.append({'script_id': sid, 'name': re.sub(r'\s+', ' ', name).strip(), 'author': 'tradingview'})
+    seen = set()
+    patt = re.compile(r'href="(https://www\.tradingview\.com/script/([A-Za-z0-9]+)[^"]*)"[^>]*data-qa-id="ui-lib-card-link-title"[^>]*>([^<]+)</a>', re.I)
+    for m in patt.finditer(html):
+        full_url, sid, raw_title = m.group(1), m.group(2), m.group(3)
+        title = re.sub(r'\s+', ' ', raw_title).strip()
+        chunk = html[m.end(): m.end() + 25000]
+        ma = re.search(r'href="/u/[^"]+"[^>]*data-username="([^"]+)"', chunk, re.I)
+        author = re.sub(r'\s+', ' ', ma.group(1)).strip() if ma else ''
+        key = (sid, title, author)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({'script_id': sid, 'url': full_url, 'name': title, 'author': author})
+
     if mode == 'top':
-        return out
-    return out[10:]
+        return out[:30]
+    return out[10:40]
+
+
+def _is_invalid_candidate(name: str, author: str) -> bool:
+    bad_fragments = ['adds volume', 'down ltf candle', '\n', '\r', 'open)']
+    n = (name or '').lower()
+    if not author or not author.strip():
+        return True
+    return any(x in n for x in bad_fragments)
 
 
 def _emit_bundle(rc_path: str, ir_paths: list[str], key: str):
@@ -74,15 +114,31 @@ def main() -> int:
     skipped = 0
 
     top = _fetch_mode('top')
+    _log('TV_CATALOG_CHECK', 'TV_CATALOG_CHECK', f'mode=TOP candidates={len(top)}', 'INFO')
     if top:
         c = st.get('top_cursor', 0) % len(top)
         cand = top[c]
         st['top_cursor'] = c + 1
         key = _tv_key(cand['name'], cand['author'])
-        if key not in st['seen_tv_keys']:
-            ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', f"https://www.tradingview.com/script/{cand['script_id']}/", '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_top']))
-            rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f"https://www.tradingview.com/script/{cand['script_id']}/", '--source-type', 'tradingview_catalog', '--raw-text', f"Top catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
-            created.append(_emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key))
+        if _is_invalid_candidate(cand['name'], cand['author']):
+            _log('TV_CATALOG_PARSE_INVALID', 'TV_CATALOG_PARSE_INVALID', f"skip top candidate name={cand['name']} author={cand['author']}", 'WARN')
+            skipped += 1
+        elif key not in st['seen_tv_keys']:
+            try:
+                ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_top']))
+                _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
+            except Exception:
+                _log('GRABBER_FETCH_FAIL', 'GRABBER_FETCH_FAIL', f"script_id={cand['script_id']} name={cand['name']}", 'WARN')
+                skipped += 1
+                ir = None
+            if not ir:
+                pass
+            else:
+                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Top catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
+                bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
+                created.append(bp)
+                _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
+                _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=tradingview_catalog tv_key={key}", 'INFO', outputs=[bp])
             row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['top']}
             idx = [row] + [x for x in idx if x.get('tv_key') != key]
             st['seen_tv_keys'].append(key)
@@ -92,16 +148,30 @@ def main() -> int:
             skipped += 1
 
     tr = _fetch_mode('trending')
+    _log('TV_CATALOG_CHECK', 'TV_CATALOG_CHECK', f'mode=TRENDING candidates={len(tr)}', 'INFO')
     for cand in tr[:8]:
         if len(created) >= 3:
             break
         key = _tv_key(cand['name'], cand['author'])
+        if _is_invalid_candidate(cand['name'], cand['author']):
+            _log('TV_CATALOG_PARSE_INVALID', 'TV_CATALOG_PARSE_INVALID', f"skip trending candidate name={cand['name']} author={cand['author']}", 'WARN')
+            skipped += 1
+            continue
         if key in st['seen_tv_keys']:
             skipped += 1
             continue
-        ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', f"https://www.tradingview.com/script/{cand['script_id']}/", '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_trending']))
-        rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f"https://www.tradingview.com/script/{cand['script_id']}/", '--source-type', 'tradingview_catalog', '--raw-text', f"Trending catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
-        created.append(_emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key))
+        try:
+            ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_trending']))
+            _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
+        except Exception:
+            _log('GRABBER_FETCH_FAIL', 'GRABBER_FETCH_FAIL', f"script_id={cand['script_id']} name={cand['name']}", 'WARN')
+            skipped += 1
+            continue
+        rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Trending catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
+        bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
+        created.append(bp)
+        _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
+        _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=trending tv_key={key}", 'INFO', outputs=[bp])
         row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['trending']}
         idx = [row] + [x for x in idx if x.get('tv_key') != key]
         st['seen_tv_keys'].append(key)

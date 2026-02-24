@@ -37,6 +37,28 @@ def _run(*args: str) -> dict:
     return json.loads(out)
 
 
+def _log(action: str, reason: str, summary: str, status: str = 'INFO', inputs: list[str] | None = None, outputs: list[str] | None = None):
+    try:
+        cmd = [
+            PY, 'scripts/log_event.py',
+            '--run-id', f"yt-watch-{int(datetime.now(UTC).timestamp())}",
+            '--agent', 'oQ',
+            '--model-id', 'openai-codex/gpt-5.3-codex',
+            '--action', action,
+            '--status-word', status,
+            '--status-emoji', 'INFO' if status == 'INFO' else ('WARN' if status == 'WARN' else 'FAIL'),
+            '--reason-code', reason,
+            '--summary', summary,
+        ]
+        for x in (inputs or []):
+            cmd += ['--input', str(x)]
+        for x in (outputs or []):
+            cmd += ['--output', str(x)]
+        subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
+    except Exception:
+        pass
+
+
 def _fetch_latest(channel_id: str):
     rss = f'https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}'
     xml = urlopen(rss, timeout=20).read()
@@ -77,7 +99,10 @@ def main() -> int:
         channel_id = ch.get('channel_id', '')
         if not channel_id:
             continue
-        for item in _fetch_latest(channel_id):
+        latest = _fetch_latest(channel_id)
+        new_count = len([x for x in latest if x['video_id'] not in seen_videos])
+        _log('YT_WATCH_CHECK', 'YT_WATCH_CHECK', f"channel={channel_id} new_count={new_count}", 'INFO')
+        for item in latest:
             if len(created) >= MAX_NEW:
                 break
             vid = item['video_id']
@@ -85,6 +110,7 @@ def main() -> int:
                 continue
             txt = _transcript(vid)
             rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'transcript', '--raw-text', txt, '--title', item['title'], '--author', ch.get('name', 'youtube'))
+            _log('YT_VIDEO_INGESTED', 'YT_VIDEO_INGESTED', f"video_id={vid}", 'INFO', outputs=[rc['research_card_path']])
 
             linked = []
             for h in _extract_hints(txt):
@@ -107,6 +133,7 @@ def main() -> int:
                 'status': 'NEW',
             }
             _w(bpath, b)
+            _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=youtube video_id={vid}", 'INFO', outputs=[str(bpath).replace('\\', '/')])
             bundles = [str(bpath).replace('\\', '/')] + [x for x in bundles if x != str(bpath).replace('\\', '/')]
             seen_videos.add(vid)
             created.append(str(bpath).replace('\\', '/'))
