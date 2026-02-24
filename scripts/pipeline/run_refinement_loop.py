@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import argparse
+import csv
+import hashlib
 import json
 import subprocess
 import sys
 import uuid
 from copy import deepcopy
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,17 +39,10 @@ def _abs(path: str | None) -> str | None:
 
 def _emit_thesis_from_promotion(promo: dict) -> str:
     linkmap_path = _abs(promo.get('input_linkmap_path'))
-    if not linkmap_path:
-        raise SystemExit('promotion_run missing input_linkmap_path')
     lm = _load(linkmap_path)
     rc = _abs(lm.get('research_card_path'))
     ir = [_abs(p) for p in lm.get('indicator_record_paths', [])[:10]]
-    out = _run([
-        PY, 'scripts/pipeline/emit_thesis.py',
-        '--research-card-path', rc,
-        '--indicator-record-paths', json.dumps(ir),
-        '--linkmap-paths', json.dumps([linkmap_path]),
-    ])
+    out = _run([PY, 'scripts/pipeline/emit_thesis.py', '--research-card-path', rc, '--indicator-record-paths', json.dumps(ir), '--linkmap-paths', json.dumps([linkmap_path])])
     thesis_path = json.loads(out)['thesis_path']
     _run([PY, 'scripts/pipeline/verify_pipeline_stage2.py', '--thesis', thesis_path])
     return thesis_path
@@ -67,11 +62,7 @@ def _ensure_components_and_complexity(v: dict) -> dict:
     ]
     vv['components'] = comps[:10]
     condition_count = len(vv.get('entry_long', [])) + len(vv.get('entry_short', [])) + len(vv.get('filters', [])) + len(vv.get('exit_rules', []))
-    vv['complexity'] = {
-        'indicator_count': len(vv['components']),
-        'condition_count': condition_count,
-        'parameter_count': len(vv.get('parameters', [])),
-    }
+    vv['complexity'] = {'indicator_count': len(vv['components']), 'condition_count': condition_count, 'parameter_count': len(vv.get('parameters', []))}
     return vv
 
 
@@ -79,9 +70,8 @@ def _variant_name(base: str, suffix: str) -> str:
     return f"{base[:40]}_{suffix}"[:80]
 
 
-def _explore_mutations(base: dict) -> list[dict]:
+def _explore_catalog(base: dict) -> list[dict]:
     out = []
-    # 1) role_swap TPX across entry/confirmation/regime_gate
     for role in ['entry', 'confirmation', 'regime_gate']:
         v = _ensure_components_and_complexity(base)
         for c in v['components']:
@@ -89,43 +79,24 @@ def _explore_mutations(base: dict) -> list[dict]:
                 c['role'] = role
                 c['notes'] = f'TPX role_swap to {role}'
         v['name'] = _variant_name(base['name'], f'role_{role}')
-        v['description'] = f'Explore role swap TPX->{role}'
         out.append(v)
 
-    # 2) add_gate (session filter note if unsupported)
     v2 = _ensure_components_and_complexity(base)
     v2['name'] = _variant_name(base['name'], 'session_gate')
-    v2['filters'] = (v2.get('filters', []) + ['session_gate=US (note: skip if unsupported)'])[:10]
-    v2['components'] = (v2['components'] + [{'indicator': 'SESSION', 'role': 'regime_gate', 'notes': 'US session gate (conditional support)'}])[:10]
-    v2 = _ensure_components_and_complexity(v2)
-    out.append(v2)
+    v2['filters'] = (v2.get('filters', []) + ['session_gate=US (skip if unsupported)'])[:10]
+    out.append(_ensure_components_and_complexity(v2))
 
-    # 3) remove_component (one confirmation/filter)
     v3 = _ensure_components_and_complexity(base)
     v3['name'] = _variant_name(base['name'], 'remove_component')
-    for i, c in enumerate(v3['components']):
-        if c['role'] in ('confirmation', 'regime_gate'):
-            del v3['components'][i]
-            break
-    v3 = _ensure_components_and_complexity(v3)
-    out.append(v3)
+    if v3['components']:
+        v3['components'] = v3['components'][:-1]
+    out.append(_ensure_components_and_complexity(v3))
 
-    # 4) add_builtin_filter
     v4 = _ensure_components_and_complexity(base)
     v4['name'] = _variant_name(base['name'], 'builtin_gate')
     v4['components'] = (v4['components'] + [{'indicator': 'MA_SLOPE', 'role': 'regime_gate', 'notes': 'builtin slope regime filter'}])[:10]
-    v4['filters'] = (v4.get('filters', []) + ['builtin_filter=ma_slope_positive'])[:10]
-    v4 = _ensure_components_and_complexity(v4)
-    out.append(v4)
-
-    uniq = []
-    seen = set()
-    for v in out:
-        if v['name'] in seen:
-            continue
-        seen.add(v['name'])
-        uniq.append(v)
-    return uniq[:MAX_EXPLORE_PER_ITER]
+    out.append(_ensure_components_and_complexity(v4))
+    return out
 
 
 def _exploit_mutations(base: dict) -> list[dict]:
@@ -136,7 +107,6 @@ def _exploit_mutations(base: dict) -> list[dict]:
         v['name'] = _variant_name(base['name'], f'exploit_{i}')
         v['risk_policy']['stop_atr_mult'] = float(sm)
         v['risk_policy']['tp_atr_mult'] = float(tm)
-        v['description'] = f'Exploit ATR risk tweak stop={sm}, tp={tm}'
         out.append(v)
     return out[:MAX_VARIANTS_PER_ITER - MAX_EXPLORE_PER_ITER]
 
@@ -155,12 +125,74 @@ def _write_spec(template: dict, thesis_path: str, variants: list[dict]) -> str:
 
 def _score_batch_summary(summary: dict, complexity: dict) -> float:
     base_score = float(summary.get('profit_factor', 0.0)) - (float(summary.get('max_drawdown', 0.0)) / 10000.0)
-    indicator_count = int(complexity.get('indicator_count', 0))
-    condition_count = int(complexity.get('condition_count', 0))
-    parameter_count = int(complexity.get('parameter_count', 0))
-    complexity_pen = 0.05 * max(0, indicator_count - 2) + 0.03 * max(0, condition_count - 8) + 0.02 * max(0, parameter_count - 6)
+    complexity_pen = 0.05 * max(0, int(complexity.get('indicator_count', 0)) - 2) + 0.03 * max(0, int(complexity.get('condition_count', 0)) - 8) + 0.02 * max(0, int(complexity.get('parameter_count', 0)) - 6)
     gate_pen = 1000.0 if int(summary.get('failed_runs', 0)) > 0 else 0.0
     return base_score - complexity_pen - gate_pen
+
+
+def _latest_meta(symbol: str, tf: str) -> Path:
+    d = ROOT / 'artifacts' / 'data' / 'hyperliquid' / symbol / tf
+    metas = sorted(d.glob('*.meta.json'))
+    return metas[-1]
+
+
+def _add_months(dt: datetime, months: int) -> datetime:
+    # UTC naive-safe month arithmetic
+    y = dt.year + (dt.month - 1 + months) // 12
+    m = (dt.month - 1 + months) % 12 + 1
+    d = min(dt.day, 28)
+    return dt.replace(year=y, month=m, day=d)
+
+
+def _holdout_windows(start: datetime, end: datetime) -> list[tuple[datetime, datetime]]:
+    if (end - start).days >= 180:
+        w1 = (_add_months(end, -6), _add_months(end, -4))
+        w2 = (_add_months(end, -3), _add_months(end, -2))
+        w3 = (_add_months(end, -1), end)
+        return [(max(start, a), min(end, b)) for a, b in [w1, w2, w3]]
+    tail = end - timedelta(days=max(30, int((end - start).days * 0.5)))
+    total = max(3, (end - tail).days)
+    seg = total // 3
+    a1, b1 = tail, tail + timedelta(days=seg)
+    a2, b2 = b1, b1 + timedelta(days=seg)
+    a3, b3 = b2, end
+    return [(a1, b1), (a2, b2), (a3, b3)]
+
+
+def _slice_training_meta(meta_path: Path, holdout: tuple[datetime, datetime], iter_idx: int) -> Path:
+    meta = _load(meta_path)
+    csv_path = Path(str(meta_path).replace('.meta.json', '.csv'))
+    rows = list(csv.DictReader(csv_path.open('r', encoding='utf-8-sig', newline='')))
+    hs, he = holdout
+    keep = []
+    for r in rows:
+        t = datetime.fromisoformat(r['time'].replace('Z', '+00:00'))
+        if hs.tzinfo is not None and t.tzinfo is None:
+            t = t.replace(tzinfo=hs.tzinfo)
+        if hs.tzinfo is None and t.tzinfo is not None:
+            hs = hs.replace(tzinfo=t.tzinfo)
+            he = he.replace(tzinfo=t.tzinfo)
+        if hs <= t < he:
+            continue
+        keep.append(r)
+    out_dir = ROOT / 'artifacts' / 'datasets' / datetime.now().strftime('%Y%m%d')
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_csv = out_dir / f"iter{iter_idx}_{meta.get('symbol')}_{meta.get('timeframe')}.csv"
+    out_meta = out_dir / f"iter{iter_idx}_{meta.get('symbol')}_{meta.get('timeframe')}.meta.json"
+    with out_csv.open('w', encoding='utf-8', newline='') as f:
+        fieldnames = list(rows[0].keys()) if rows else ['time', 'open', 'high', 'low', 'close']
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
+        w.writerows(keep)
+    start_t = keep[0]['time'] if keep else meta.get('start')
+    end_t = keep[-1]['time'] if keep else meta.get('end')
+    out_meta.write_text(json.dumps({'symbol': meta.get('symbol'), 'timeframe': meta.get('timeframe'), 'start': start_t, 'end': end_t}), encoding='utf-8')
+    return out_meta
+
+
+def _sobol_seed(strategy_spec_path: str, strategy_index_counter: int) -> int:
+    h = hashlib.sha256(Path(strategy_spec_path).read_bytes()).hexdigest()
+    return int(h[:8], 16) ^ int(strategy_index_counter)
 
 
 def main() -> int:
@@ -176,44 +208,45 @@ def main() -> int:
     base_spec = _load(_abs(base_spec_path))
     champion = _ensure_components_and_complexity(deepcopy(base_spec['variants'][0]))
 
-    history = []
-    best_score = None
-    best_delta = None
+    meta_ref = _load(_latest_meta('BTC', '4h'))
+    start = datetime.fromisoformat(meta_ref['start'].replace('Z', '+00:00'))
+    end = datetime.fromisoformat(meta_ref['end'].replace('Z', '+00:00'))
+    holdouts = _holdout_windows(start, end)
+
+    history, winner = [], None
+    best_score, best_delta = None, None
     total_explore_used = 0
+    strategy_index_counter = 0
     stop_reason = 'max_iterations_reached'
     final_recommendation = 'NO_IMPROVEMENT'
-    winner = None
 
     for it in range(1, min(args.max_iters, MAX_ITERS) + 1):
         exploit = _exploit_mutations(champion)
-        explore = _explore_mutations(champion)
+        catalog = _explore_catalog(champion)
+        sobol_seed = _sobol_seed(_abs(base_spec_path), strategy_index_counter)
+        base_explore_index = (10 + strategy_index_counter) if it == 2 else strategy_index_counter
+        explore = [catalog[(base_explore_index + i) % len(catalog)] for i in range(MAX_EXPLORE_PER_ITER)]
         total_explore_used += len(explore)
 
-        variants = [champion] + exploit + explore
-        variants = variants[:MAX_VARIANTS_PER_ITER]
-
+        variants = ([champion] + exploit + explore)[:MAX_VARIANTS_PER_ITER]
         iter_spec_path = _write_spec(base_spec, thesis_path, variants)
+
+        holdout = holdouts[it - 1]
+        train_metas = []
+        for sym, tf in [('BTC', '1h'), ('BTC', '4h'), ('ETH', '1h'), ('ETH', '4h')]:
+            m = _latest_meta(sym, tf)
+            train_metas.append(str(_slice_training_meta(m, holdout, it)))
+        meta_list_path = ROOT / 'artifacts' / 'datasets' / datetime.now().strftime('%Y%m%d') / f'iter{it}_datasets.json'
+        meta_list_path.write_text(json.dumps(train_metas), encoding='utf-8')
 
         iter_results = []
         for v in variants:
-            bout = _run([
-                PY, 'scripts/pipeline/run_batch_backtests.py',
-                '--strategy-spec', iter_spec_path,
-                '--variant', v['name'],
-            ])
+            bout = _run([PY, 'scripts/pipeline/run_batch_backtests.py', '--strategy-spec', iter_spec_path, '--variant', v['name'], '--datasets', str(meta_list_path)])
             bi = json.loads(bout)
             b = _load(bi['batch_artifact_path'])
             summary = b.get('summary', {})
             score = _score_batch_summary(summary, v.get('complexity', {}))
-            iter_results.append({
-                'variant_name': v['name'],
-                'batch_backtest_path': bi['batch_artifact_path'],
-                'experiment_plan_path': bi.get('experiment_plan_path'),
-                'summary': summary,
-                'complexity': v.get('complexity', {}),
-                'score': score,
-                'explore': v in explore,
-            })
+            iter_results.append({'variant_name': v['name'], 'batch_backtest_path': bi['batch_artifact_path'], 'summary': summary, 'complexity': v.get('complexity', {}), 'score': score, 'explore': v in explore})
 
         iter_results.sort(key=lambda x: x['score'], reverse=True)
         iter_best = iter_results[0]
@@ -230,32 +263,31 @@ def main() -> int:
 
         history.append({
             'iteration': it,
+            'sobol_seed': sobol_seed,
+            'base_explore_index': base_explore_index,
             'explore_variants_count': len(explore),
             'exploit_variants_count': len(exploit),
             'variants_total': len(variants),
+            'holdout_window': {'start': holdout[0].isoformat(), 'end': holdout[1].isoformat()},
             'best_variant': iter_best['variant_name'],
             'best_score': iter_best['score'],
             'score_delta_vs_prev_best': delta,
             'results': iter_results,
         })
 
+        strategy_index_counter += 1
         if delta is not None and delta < args.improvement_threshold:
             stop_reason = 'early_stop_no_improvement'
-            final_recommendation = 'NO_IMPROVEMENT'
             break
 
     if winner and winner['summary'].get('failed_runs', 0) == 0:
         final_recommendation = 'CANDIDATE_FOUND'
 
     payload = {
-        'schema_version': '2.0',
+        'schema_version': '2.1',
         'id': f"refine_{datetime.now().strftime('%Y%m%d')}_{uuid.uuid4().hex[:8]}",
         'created_at': datetime.now(UTC).isoformat(),
-        'seed': {
-            'promotion_run_path': args.promotion_run,
-            'thesis_path': thesis_path,
-            'base_strategy_spec_path': base_spec_path,
-        },
+        'seed': {'promotion_run_path': args.promotion_run, 'thesis_path': thesis_path, 'base_strategy_spec_path': base_spec_path},
         'iterations_used': len(history),
         'explore_variants_used_total': total_explore_used,
         'improvement_threshold': args.improvement_threshold,
@@ -270,7 +302,6 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{payload['id']}.refinement_cycle.json"
     out_path.write_text(json.dumps(payload, separators=(',', ':')), encoding='utf-8')
-
     print(json.dumps({'refinement_cycle_path': str(out_path), 'iterations_used': len(history), 'explore_variants_used_total': total_explore_used, 'best_score_delta': best_delta}))
     return 0
 
