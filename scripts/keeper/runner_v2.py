@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import glob
 import json
+import os
 import re
 import subprocess
 import sys
@@ -176,6 +177,11 @@ def write_if_changed(path: Path, new_text: str, touched: set[str], counter: dict
     counter["bytes_changed"] += abs(len(new_text) - len(existing))
 
 
+def is_simulation_run() -> bool:
+    v = os.getenv("KEEPER_SIMULATION", "").strip().lower()
+    return v in {"1", "true", "yes", "on"}
+
+
 def main() -> int:
     start = time.time()
     run_id = f"keeper-v2-{int(start)}"
@@ -184,6 +190,8 @@ def main() -> int:
     counter = {"bytes_changed": 0}
     fatal: str | None = None
     fatal_summary: str | None = None
+
+    simulation = is_simulation_run()
 
     baseline = run_baseline_check()
     baseline_tokens = int(baseline.get("baseline_tokens_est", 0) or 0)
@@ -195,22 +203,16 @@ def main() -> int:
     )[:3]
     top3 = ", ".join(f"{c.get('path')}={int(c.get('tokens_est', 0) or 0)}" for c in contributors) if contributors else "none"
 
-    if target_tokens > 0 and baseline_tokens > target_tokens:
-        warnings_count += 1
-        ratio = baseline_tokens / max(1, target_tokens)
-        if ratio > 1.5:
-            emit(run_id, "FAIL", "❌", f"Baseline over cap extreme: {baseline_tokens}/{target_tokens}; top3={top3}", reason_code="BASELINE_OVER_CAP")
-            fatal = "FAIL"
-            fatal_summary = "baseline over cap extreme"
-        else:
-            emit(run_id, "WARN", "⚠️", f"Baseline over cap: {baseline_tokens}/{target_tokens}; top3={top3}", reason_code="BASELINE_OVER_CAP")
-    else:
-        emit(run_id, "INFO", "ℹ️", f"Baseline OK: {baseline_tokens}/{target_tokens}; top3={top3}", reason_code="BASELINE_OK")
-
     try:
         default_load = load_manifest_default_load()
     except Exception as e:
-        emit(run_id, "FAIL", "❌", f"Manifest load failed: {e}", reason_code="BASELINE_MANIFEST_VIOLATION")
+        emit(
+            run_id,
+            "FAIL",
+            "❌",
+            f"Manifest load failed: {e}; baseline_tokens_est={baseline_tokens}; target_tokens_max={target_tokens}; top3={top3}; simulation={str(simulation).lower()}",
+            reason_code="BASELINE_MANIFEST_VIOLATION",
+        )
         fatal = "FAIL"
         fatal_summary = "manifest unreadable"
         default_load = []
@@ -218,9 +220,47 @@ def main() -> int:
     if not fatal:
         bad = manifest_violations(default_load)
         if bad:
-            emit(run_id, "FAIL", "❌", f"Manifest violation in default_load: {', '.join(bad)}", reason_code="BASELINE_MANIFEST_VIOLATION")
+            emit(
+                run_id,
+                "FAIL",
+                "❌",
+                f"Manifest violation in default_load: {', '.join(bad)}; baseline_tokens_est={baseline_tokens}; target_tokens_max={target_tokens}; top3={top3}; simulation={str(simulation).lower()}",
+                reason_code="BASELINE_MANIFEST_VIOLATION",
+            )
             fatal = "FAIL"
             fatal_summary = "manifest violation"
+
+    over_cap = target_tokens > 0 and baseline_tokens > target_tokens
+    if not fatal:
+        if over_cap:
+            warnings_count += 1
+            ratio = baseline_tokens / max(1, target_tokens)
+            if ratio > 1.5:
+                emit(
+                    run_id,
+                    "FAIL",
+                    "❌",
+                    f"Baseline over cap extreme: baseline_tokens_est={baseline_tokens}; target_tokens_max={target_tokens}; top3={top3}; simulation={str(simulation).lower()}",
+                    reason_code="BASELINE_OVER_CAP",
+                )
+                fatal = "FAIL"
+                fatal_summary = "baseline over cap extreme"
+            else:
+                emit(
+                    run_id,
+                    "WARN",
+                    "⚠️",
+                    f"Baseline over cap: baseline_tokens_est={baseline_tokens}; target_tokens_max={target_tokens}; top3={top3}; simulation={str(simulation).lower()}",
+                    reason_code="BASELINE_OVER_CAP",
+                )
+        else:
+            emit(
+                run_id,
+                "INFO",
+                "ℹ️",
+                f"Baseline OK: baseline_tokens_est={baseline_tokens}; target_tokens_max={target_tokens}; top3={top3}; simulation={str(simulation).lower()}",
+                reason_code="BASELINE_OK",
+            )
 
     idx_status, idx_msg = check_memory_index_size()
     if idx_status == "WARN":
@@ -228,8 +268,6 @@ def main() -> int:
         emit(run_id, "WARN", "⚠️", idx_msg, reason_code="MEMORY_INDEX_TOO_LARGE")
     elif idx_status == "INFO":
         emit(run_id, "INFO", "ℹ️", idx_msg, reason_code="MEMORY_INDEX_MISSING")
-
-    over_cap = target_tokens > 0 and baseline_tokens > target_tokens
 
     if not fatal and not over_cap:
         try:
@@ -300,7 +338,7 @@ def main() -> int:
         f"{run_id}-summary",
         final_status,
         "✅" if final_status in {"OK", "NOOP"} else ("⚠️" if final_status == "WARN" else "❌"),
-        f"status={final_status}; {summary}; files_written={files_written}; bytes_changed={counter['bytes_changed']}; baseline_tokens_est={baseline_tokens}; warnings_count={warnings_count}",
+        f"status={final_status}; {summary}; files_written={files_written}; bytes_changed={counter['bytes_changed']}; baseline_tokens_est={baseline_tokens}; target_tokens_max={target_tokens}; warnings_count={warnings_count}; simulation={str(simulation).lower()}",
         reason_code="KEEPER_SUMMARY",
     )
 
@@ -309,7 +347,9 @@ def main() -> int:
         "files_written": files_written,
         "bytes_changed": counter["bytes_changed"],
         "baseline_tokens_est": baseline_tokens,
+        "target_tokens_max": target_tokens,
         "warnings_count": warnings_count,
+        "simulation": simulation,
         "ts_iso": now_iso(),
     }))
     return 0 if final_status in {"OK", "NOOP", "WARN"} else 2
