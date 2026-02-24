@@ -1,0 +1,21 @@
+{
+  "targets": [
+    {
+      "name": "eth_perp_15m",
+      "tv_symbol": "BINANCE:ETHUSDTPERP",
+      "timeframe": "15",
+      "history_mode": "max_then_incremental",
+      "deep": {
+        "max_scroll_seconds": 120,
+        "stagnation_checks": 5,
+        "min_years_target": 3
+      },
+      "incremental": {
+        "lookback_days": 30
+      }
+    }
+  ],
+  "max_targets_per_run": 3,
+  "max_runtime_seconds": 300,
+  "retries_per_target": 2
+}
