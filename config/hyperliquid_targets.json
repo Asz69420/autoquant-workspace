@@ -1,13 +1,5 @@
 {
-  "targets": [
-    {
-      "name": "eth_15m",
-      "symbol": "ETH",
-      "timeframe": "15m",
-      "lookback_days": 30
-    }
-  ],
-  "max_targets_per_run": 3,
-  "max_runtime_seconds": 180,
-  "retries_per_target": 2
+  "symbols": ["BTC", "ETH"],
+  "timeframes": ["1h", "4h"],
+  "lookback_days": 730
 }

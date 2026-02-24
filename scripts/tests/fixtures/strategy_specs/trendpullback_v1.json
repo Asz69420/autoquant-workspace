@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "id": "TrendPullback_v1",
+  "created_at": "2026-02-25T00:00:00Z",
+  "source_thesis_path": "fixture://trendpullback_v1",
+  "variants": [
+    {
+      "name": "TrendPullback_v1",
+      "description": "EMA200 trend filter + EMA50 slope + RSI14 pullback + ATR exits",
+      "entry_long": ["trendpullback_long"],
+      "entry_short": ["trendpullback_short"],
+      "filters": [],
+      "exit_rules": [],
+      "risk_rules": ["atr_period=14", "stop_atr_mult=1.5", "take_profit_atr_mult=3.0", "ema_trend=200", "ema_slope=50", "rsi_period=14", "rsi_long_max=40", "rsi_short_min=60"],
+      "parameters": [],
+      "constraints": ["bar_close_execution", "no_pyramiding"]
+    }
+  ]
+}
