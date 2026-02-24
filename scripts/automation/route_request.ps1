@@ -476,7 +476,8 @@ if ($route -eq 'FAST_PATH') {
         foreach ($j in $top) { Write-Output ("- " + [string]$j.question) }
       }
     } else {
-      Write-Output ("Active: " + [string]$active.question)
+      $activeExec = if ($active.executor_type) { [string]$active.executor_type } else { 'UNKNOWN' }
+      Write-Output ("Active: " + [string]$active.question + " [executor_type=" + $activeExec + "]")
       Write-Output ("Queued: " + $queue.Count)
       $top = @($queue | Select-Object -First 3)
       foreach ($j in $top) { Write-Output ("- next: " + [string]$j.question) }
@@ -522,7 +523,12 @@ if ($DryRun) {
 if ([string]::IsNullOrWhiteSpace($ChatId) -and [string]::IsNullOrWhiteSpace($MessageId) -and [string]::IsNullOrWhiteSpace($UpdateId)) {
   Emit-LogEvent -RunId ($runId + '-missing-target') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_MISSING_CHAT_TARGET' -Summary 'Ingress metadata missing; enqueue will be log-only' -Inputs @($buildQuestion) -Outputs @('log_only_enqueue')
 }
-$enqueue = Enqueue-BuildJob -Question $buildQuestion -ChatId $ChatId -MessageId $MessageId -UpdateId $UpdateId -IdemKey $idemKey
+$enqueue = Enqueue-BuildJob -Question $buildQuestion -ChatId $ChatId -MessageId $MessageId -UpdateId $UpdateId -IdemKey $idemKey -ExecutorType 'LOCAL_SCRIPT'
+if ($enqueue.ExecutorError) {
+  Emit-LogEvent -RunId ($runId + '-executor') -StatusWord 'FAIL' -StatusEmoji '❌' -ReasonCode 'EXECUTOR_NOT_CONFIGURED' -Summary 'Build blocked: explicit executor not configured' -Inputs @($buildQuestion) -Outputs @('executor=none')
+  Write-Output 'FAIL reason_code=EXECUTOR_NOT_CONFIGURED'
+  exit 12
+}
 if ($enqueue.QueueFull) {
   Emit-LogEvent -RunId ($runId + '-queue-full') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_FULL' -Summary ('Build queue full (cap=' + $enqueue.Cap + ')') -Inputs @($buildQuestion) -Outputs @('queue_full')
   Write-Output 'Queue is full right now. Please try again after current builds finish.'

@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "allow_local_binary_fallback": false,
+  "anyBins": [],
+  "allowed_executor_types": ["LOCAL_SCRIPT", "PROVIDER_MODEL"],
+  "default_executor_type": "LOCAL_SCRIPT"
+}

@@ -4,6 +4,7 @@ $QueuePath = 'data/state/build_queue.json'
 $LockPath = 'data/state/build_queue.lock'
 $QueueCap = 20
 $LockStaleSeconds = 300
+$ExecutorPolicyPath = 'config/executor_policy.json'
 
 function Get-NowIso {
   return ([DateTimeOffset]::UtcNow.ToString('o'))
@@ -101,13 +102,41 @@ function New-QueueJobId {
   return ('job-' + [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds())
 }
 
+function Get-ExecutorPolicy {
+  if (-not (Test-Path $ExecutorPolicyPath)) {
+    return @{ schema_version = '1.0'; allow_local_binary_fallback = $false; anyBins = @(); allowed_executor_types = @('LOCAL_SCRIPT','PROVIDER_MODEL'); default_executor_type = '' }
+  }
+  try {
+    return (Get-Content -Path $ExecutorPolicyPath -Raw -Encoding utf8 | ConvertFrom-Json)
+  } catch {
+    return @{ schema_version = '1.0'; allow_local_binary_fallback = $false; anyBins = @(); allowed_executor_types = @('LOCAL_SCRIPT','PROVIDER_MODEL'); default_executor_type = '' }
+  }
+}
+
+function Resolve-ExecutorType {
+  param([string]$RequestedExecutorType)
+  $policy = Get-ExecutorPolicy
+  $explicit = $RequestedExecutorType
+  if ([string]::IsNullOrWhiteSpace($explicit)) { $explicit = [string]$policy.default_executor_type }
+  if ([string]::IsNullOrWhiteSpace($explicit)) {
+    return @{ Ok = $false; ReasonCode = 'EXECUTOR_NOT_CONFIGURED'; Message = 'No explicit executor configured.' }
+  }
+  $allowed = @($policy.allowed_executor_types)
+  if ($allowed.Count -eq 0) { $allowed = @('LOCAL_SCRIPT','PROVIDER_MODEL') }
+  if (-not ($allowed -contains $explicit)) {
+    return @{ Ok = $false; ReasonCode = 'EXECUTOR_NOT_CONFIGURED'; Message = ('Executor not allowed: ' + $explicit) }
+  }
+  return @{ Ok = $true; ExecutorType = $explicit }
+}
+
 function Enqueue-BuildJob {
   param(
     [Parameter(Mandatory = $true)][string]$Question,
     [string]$ChatId,
     [string]$MessageId,
     [string]$UpdateId,
-    [Parameter(Mandatory = $true)][string]$IdemKey
+    [Parameter(Mandatory = $true)][string]$IdemKey,
+    [string]$ExecutorType
   )
   $state = Load-QueueState
 
@@ -122,6 +151,11 @@ function Enqueue-BuildJob {
     return @{ Enqueued = $false; QueueFull = $true; Cap = $QueueCap }
   }
 
+  $resolved = Resolve-ExecutorType -RequestedExecutorType $ExecutorType
+  if (-not $resolved.Ok) {
+    return @{ Enqueued = $false; ExecutorError = $true; ReasonCode = $resolved.ReasonCode; Message = $resolved.Message }
+  }
+
   $job = [ordered]@{
     job_id = (New-QueueJobId)
     question = $Question
@@ -130,6 +164,7 @@ function Enqueue-BuildJob {
     message_id = $MessageId
     update_id = $UpdateId
     idem_key = $IdemKey
+    executor_type = $resolved.ExecutorType
   }
   $q = @($state.queue)
   $q += $job

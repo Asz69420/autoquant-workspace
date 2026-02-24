@@ -5,6 +5,7 @@ param(
   [int]$MaxAttempts = 3,
   [int]$MaxFixTimeSeconds = 120,
   [int]$MaxTotalEditsPerRun = 3,
+  [string]$ExecutorType = 'LOCAL_SCRIPT',
   [switch]$AllowRescope,
   [switch]$SimulateFail,
   [switch]$SimulateMultiIssue,
@@ -14,6 +15,15 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
+
+if ([string]::IsNullOrWhiteSpace($ExecutorType)) {
+  Write-Output 'FAIL reason_code=EXECUTOR_NOT_CONFIGURED'
+  exit 12
+}
+if ($ExecutorType -notin @('LOCAL_SCRIPT','PROVIDER_MODEL')) {
+  Write-Output 'FAIL reason_code=EXECUTOR_NOT_CONFIGURED'
+  exit 12
+}
 
 function Emit-LogEvent {
   param(

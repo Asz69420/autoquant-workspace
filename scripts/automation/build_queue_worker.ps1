@@ -122,6 +122,7 @@ try {
     message_id = $job.message_id
     update_id = $job.update_id
     idem_key = $job.idem_key
+    executor_type = $job.executor_type
     task_id = $taskId
     build_session_id = $buildSessionId
     worker_pid = "$PID"
@@ -133,7 +134,7 @@ try {
 
   $runOut = @()
   try {
-    $runOut = powershell -ExecutionPolicy Bypass -File scripts/automation/run_work.ps1 -Question $job.question -TaskId $taskId -BuildSessionId $buildSessionId *>&1
+    $runOut = powershell -ExecutionPolicy Bypass -File scripts/automation/run_work.ps1 -Question $job.question -TaskId $taskId -BuildSessionId $buildSessionId -ExecutorType ([string]$job.executor_type) *>&1
   } catch {
     $runOut = @([string]$_.Exception.Message)
   }
