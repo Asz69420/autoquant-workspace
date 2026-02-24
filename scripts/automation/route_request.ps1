@@ -12,6 +12,8 @@ $PSNativeCommandUseErrorActionPreference = $false
 $IdemPath = 'data/state/ingress_idempotency.json'
 $IdemTtlSec = 600
 
+. "$PSScriptRoot/build_queue_lib.ps1"
+
 function Get-IdempotencyKey {
   if (-not [string]::IsNullOrWhiteSpace($UpdateId)) { return ('tg:update:' + $UpdateId) }
   if (-not [string]::IsNullOrWhiteSpace($MessageId) -and -not [string]::IsNullOrWhiteSpace($ChatId)) { return ('tg:msg:' + $ChatId + ':' + $MessageId) }
@@ -132,7 +134,7 @@ function Write-MainChatFiltered {
 }
 
 $buildVerbs = @('build','implement','patch','update','add feature','refactor')
-$fastStatus = @('show pending builds','any builds waiting for approval','builds waiting for approval','show latest status','show logs summary','show debug','details','help','usage')
+$fastStatus = @('show pending builds','any builds waiting for approval','builds waiting for approval','show latest status','show logs summary','show debug','details','help','usage','queue status','cancel next','clear queue')
 $fastApply = @('apply latest','reject latest')
 $toggleWarnOff = @('turn warnings off','disable warnings','warnings off')
 $toggleWarnOn = @('turn warnings on','enable warnings','warnings on')
@@ -233,6 +235,43 @@ if ($route -eq 'FAST_PATH') {
     Write-Output 'Recent activity is available in the logger channel.'
     exit 0
   }
+  if ($m.Contains('queue status')) {
+    $qs = Get-QueueStatus
+    $active = $qs.Active
+    $queue = @($qs.Queue)
+    if ($null -eq $active) {
+      if ($queue.Count -eq 0) {
+        Write-Output 'Queue is empty. No active build.'
+      } else {
+        Write-Output ("No active build. Queued: " + $queue.Count)
+        $top = @($queue | Select-Object -First 3)
+        foreach ($j in $top) { Write-Output ("- " + [string]$j.question) }
+      }
+    } else {
+      Write-Output ("Active: " + [string]$active.question)
+      Write-Output ("Queued: " + $queue.Count)
+      $top = @($queue | Select-Object -First 3)
+      foreach ($j in $top) { Write-Output ("- next: " + [string]$j.question) }
+    }
+    Emit-LogEvent -RunId ($runId + '-queue-status') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'QUEUE_STATUS' -Summary 'Queue status requested' -Inputs @($Message) -Outputs @(("active=" + [string]($null -ne $active)),("queued=" + $queue.Count))
+    exit 0
+  }
+  if ($m.Contains('cancel next')) {
+    $res = Cancel-NextJob
+    if ($res.Cancelled) {
+      Write-Output ("Cancelled next queued build: " + [string]$res.Job.question)
+      Emit-LogEvent -RunId ($runId + '-cancel-next') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'QUEUE_CANCEL_NEXT' -Summary 'Cancelled next queued build' -Inputs @($Message) -Outputs @([string]$res.Job.job_id)
+    } else {
+      Write-Output 'No queued build to cancel.'
+    }
+    exit 0
+  }
+  if ($m.Contains('clear queue')) {
+    $res = Clear-Queue
+    Write-Output ("Cleared queued builds: " + $res.Cleared)
+    Emit-LogEvent -RunId ($runId + '-clear-queue') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'QUEUE_CLEARED' -Summary ('Cleared queued builds: ' + $res.Cleared) -Inputs @($Message) -Outputs @([string]$res.Cleared)
+    exit 0
+  }
   if ($m.Contains('show debug') -or $m.Contains('details')) {
     python scripts/automation/build_session.py show --limit 5
     Get-Content task_ledger.jsonl -Tail 10
@@ -248,22 +287,17 @@ if ($DryRun) {
   Write-Output 'Dry run - would route to BUILD_PATH and start verification, then request approval.'
   exit 0
 }
-Write-Output 'Working on it - I will verify it and then ask for approval.'
-$runOut = @()
-$runCode = 0
-try {
-  $runOut = powershell -ExecutionPolicy Bypass -File scripts/automation/run_work.ps1 -Question $Message *>&1
-  $runCode = $LASTEXITCODE
-} catch {
-  $runOut = @([string]$_.Exception.Message)
-  $runCode = 1
+$enqueue = Enqueue-BuildJob -Question $Message -ChatId $ChatId -MessageId $MessageId -UpdateId $UpdateId -IdemKey $idemKey
+if ($enqueue.QueueFull) {
+  Emit-LogEvent -RunId ($runId + '-queue-full') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_FULL' -Summary ('Build queue full (cap=' + $enqueue.Cap + ')') -Inputs @($Message) -Outputs @('queue_full')
+  Write-Output 'Queue is full right now. Please try again after current builds finish.'
+  exit 9
 }
-if ($runCode -ne 0) {
-  if ($debugOverride) {
-    Write-MainChatFiltered -Lines @($runOut) -Debug $true
-  } else {
-    Write-Output 'Blocked - verification did not pass within limits. Say show debug for details.'
-  }
-  exit $runCode
+if ($enqueue.Duplicate) {
+  Write-Output 'Already queued. I will process it after the current build finishes.'
+  exit 0
 }
-Write-MainChatFiltered -Lines @($runOut) -Debug $debugOverride
+$jobId = [string]$enqueue.Job.job_id
+$pos = [int]$enqueue.Position
+Emit-LogEvent -RunId ($runId + '-enqueued') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_ENQUEUED' -Summary ('Build enqueued: ' + $jobId + ' position=' + $pos) -Inputs @($Message) -Outputs @($jobId,('position=' + $pos))
+Write-Output ('Queued. Position: ' + $pos + '. I’ll start it after the current build finishes.')

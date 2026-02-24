@@ -71,6 +71,8 @@ docs/DAILY/*-summary.md
 docs/HANDOFFS/handoff-*.md
 memory/*-route-spam.md
 memory/*-memory-audit.md
+data/state/build_queue.json
+data/state/build_queue.lock
 
 # ======== Keep These (DO NOT IGNORE) ========
 # Source of truth: specs are Git-tracked
