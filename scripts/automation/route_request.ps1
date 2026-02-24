@@ -380,7 +380,7 @@ Emit-LogEvent -RunId $runId -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode
 
 if ($route -eq 'FAST_PATH') {
   if ($intentAction -eq 'clarifier_explain') {
-    Write-Output 'Got it — I’ll explain only. Tell me what you want explained.'
+    Write-Output "Got it - I will explain only. Tell me what you want explained."
     exit 0
   }
 
@@ -415,6 +415,60 @@ if ($route -eq 'FAST_PATH') {
     Write-Output "🧾 Stage Verifiers - Stage1/2/3 verifiers + stage4 gates."
     Write-Output "📤 TV Exporter - WIP; blocked on reliable real-download capture."
     Write-Output "🧪 TV Parity Harness - WIP parity validation against TV trade outputs."
+    exit 0
+  }
+
+  if ($intentAction -eq 'show_report' -or $m -eq 'report' -or $m -eq 'status report' -or $m -eq 'lab report' -or $m -eq 'top candidates') {
+    $topPath = 'artifacts/library/TOP_CANDIDATES.json'
+    $lessonPath = 'artifacts/library/LESSONS_INDEX.json'
+    $autoPath = 'data/state/autopilot_summary.json'
+
+    $top = @()
+    if (Test-Path $topPath) {
+      try { $top = @(Get-Content $topPath -Raw | ConvertFrom-Json) } catch { $top = @() }
+    }
+    $lessons = @()
+    if (Test-Path $lessonPath) {
+      try { $lessons = @(Get-Content $lessonPath -Raw | ConvertFrom-Json) } catch { $lessons = @() }
+    }
+    $auto = $null
+    if (Test-Path $autoPath) {
+      try { $auto = Get-Content $autoPath -Raw | ConvertFrom-Json } catch { $auto = $null }
+    }
+
+    Write-Output 'Lab Report'
+    Write-Output 'Top candidates:'
+    $top5 = @($top | Select-Object -First 5)
+    if ($top5.Count -eq 0) {
+      Write-Output '- none yet'
+    } else {
+      foreach ($c in $top5) {
+        $ds = if ($c.datasets_tested -and $c.datasets_tested.Count -gt 0) { ($c.datasets_tested[0].symbol + '/' + $c.datasets_tested[0].timeframe) } else { 'n/a' }
+        $pf = if ($c.profit_factor -is [System.Array]) { $c.profit_factor[0] } else { $c.profit_factor }
+        $dd = if ($c.max_drawdown -is [System.Array]) { $c.max_drawdown[0] } else { $c.max_drawdown }
+        $tr = if ($c.trades -is [System.Array]) { $c.trades[0] } else { $c.trades }
+        $np = if ($c.net_profit -is [System.Array]) { $c.net_profit[0] } else { $c.net_profit }
+        Write-Output ("- " + $ds + " | PF " + [string]$pf + " | DD " + [string]$dd + " | trades " + [string]$tr + " | net " + [string]$np)
+      }
+    }
+
+    Write-Output 'Latest lessons:'
+    $l2 = @($lessons | Select-Object -First 2)
+    if ($l2.Count -eq 0) {
+      Write-Output '- none'
+    } else {
+      foreach ($l in $l2) {
+        $pat = if ($l.pattern -is [System.Array]) { $l.pattern[0] } else { $l.pattern }
+        $sug = if ($l.suggestion -is [System.Array]) { $l.suggestion[0] } else { $l.suggestion }
+        Write-Output ("- " + [string]$pat + ": " + [string]$sug)
+      }
+    }
+
+    if ($null -ne $auto) {
+      Write-Output ("Autopilot: promotions " + [string]$auto.promotions_processed + ", refinements " + [string]$auto.refinements_run + ", new candidates " + [string]$auto.new_candidates_count + ", errors " + [string]$auto.errors_count)
+    } else {
+      Write-Output 'Autopilot: no recent summary'
+    }
     exit 0
   }
 
