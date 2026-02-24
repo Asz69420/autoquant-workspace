@@ -11,6 +11,10 @@ $PSNativeCommandUseErrorActionPreference = $false
 
 $IdemPath = 'data/state/ingress_idempotency.json'
 $IdemTtlSec = 600
+$IntentRegistryPath = 'config/intent_registry.json'
+$ClarifierStatePath = 'data/state/clarifier_state.json'
+$ClarifierTtlSec = 600
+$UserMdPath = 'USER.md'
 
 . "$PSScriptRoot/build_queue_lib.ps1"
 
@@ -104,6 +108,137 @@ function Ensure-RuntimeFlags {
   return $path
 }
 
+function Ensure-IntentRegistry {
+  if (-not (Test-Path $IntentRegistryPath)) {
+    throw "Missing intent registry at $IntentRegistryPath"
+  }
+  return (Get-Content $IntentRegistryPath -Raw | ConvertFrom-Json)
+}
+
+function Match-WildcardPattern {
+  param([string]$Text,[string]$Pattern)
+  $rx = [Regex]::Escape($Pattern).Replace('\*','(.+)')
+  $m = [Regex]::Match($Text, ('^' + $rx + '$'), [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+  if (-not $m.Success) { return $null }
+  $captures = @()
+  if ($m.Groups.Count -gt 1) {
+    for ($i = 1; $i -lt $m.Groups.Count; $i++) {
+      $captures += $m.Groups[$i].Value.Trim()
+    }
+  }
+  return [PSCustomObject]@{ Captures = $captures }
+}
+
+function Resolve-Intent {
+  param([object]$Registry,[string]$InputText)
+  if ($null -eq $Registry -or $null -eq $Registry.intents) { return $null }
+  foreach ($intent in $Registry.intents) {
+    if ($null -eq $intent.patterns) { continue }
+    foreach ($pattern in $intent.patterns) {
+      $mm = Match-WildcardPattern -Text $InputText -Pattern ([string]$pattern)
+      if ($null -ne $mm) {
+        return [PSCustomObject]@{
+          Intent = $intent
+          Captures = $mm.Captures
+        }
+      }
+    }
+  }
+  return $null
+}
+
+function Get-IdentityCanonical {
+  $assistant = ''
+  $user = ''
+  if (Test-Path $UserMdPath) {
+    try {
+      $lines = Get-Content $UserMdPath
+      foreach ($line in $lines) {
+        if ($line -match '^\s*-\s*Assistant name\s*:\s*(.+?)\s*$') { $assistant = $matches[1].Trim() }
+        if ($line -match '^\s*-\s*User preferred name\s*:\s*(.+?)\s*$') { $user = $matches[1].Trim() }
+      }
+    } catch {}
+  }
+  $swapDetected = ($assistant -ieq 'Asz' -or $user -ieq 'oQ')
+  if ([string]::IsNullOrWhiteSpace($assistant) -or [string]::IsNullOrWhiteSpace($user) -or ($assistant -ieq $user) -or $swapDetected) {
+    Emit-LogEvent -RunId ('identity-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'IDENTITY_SWAP_DETECTED' -Summary 'Identity missing/equal/swapped; fallback applied' -Inputs @($assistant,$user) -Outputs @('assistant=oQ','user=Asz')
+    return [PSCustomObject]@{ Assistant = 'oQ'; User = 'Asz' }
+  }
+  return [PSCustomObject]@{ Assistant = $assistant; User = $user }
+}
+
+function Get-ClarifierKey {
+  if (-not [string]::IsNullOrWhiteSpace($ChatId)) { return ('chat:' + $ChatId) }
+  if (-not [string]::IsNullOrWhiteSpace($MessageId)) { return ('msg:' + $MessageId) }
+  return 'default'
+}
+
+function Get-ClarifierState {
+  $dir = Split-Path -Parent $ClarifierStatePath
+  if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
+  if (-not (Test-Path $ClarifierStatePath)) { return @{} }
+  try {
+    $raw = Get-Content $ClarifierStatePath -Raw
+    if ([string]::IsNullOrWhiteSpace($raw)) { return @{} }
+    $obj = ConvertFrom-Json $raw
+    $map = @{}
+    foreach ($p in $obj.PSObject.Properties) { $map[$p.Name] = $p.Value }
+    return $map
+  } catch {
+    return @{}
+  }
+}
+
+function Save-ClarifierState {
+  param([hashtable]$State)
+  ($State | ConvertTo-Json -Depth 6) | Set-Content -Path $ClarifierStatePath -Encoding utf8
+}
+
+function Set-PendingClarifier {
+  param([string]$Key,[string]$OriginalMessage)
+  $state = Get-ClarifierState
+  $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+  $alive = @{}
+  foreach ($k in $state.Keys) {
+    $entry = $state[$k]
+    $ts = [int64]$entry.ts
+    if (($now - $ts) -lt $ClarifierTtlSec) { $alive[$k] = $entry }
+  }
+  $alive[$Key] = @{ ts = $now; original = $OriginalMessage }
+  Save-ClarifierState -State $alive
+}
+
+function Pop-PendingClarifier {
+  param([string]$Key)
+  $state = Get-ClarifierState
+  $now = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+  $alive = @{}
+  $val = $null
+  foreach ($k in $state.Keys) {
+    $entry = $state[$k]
+    $ts = [int64]$entry.ts
+    if (($now - $ts) -lt $ClarifierTtlSec) {
+      if ($k -eq $Key) { $val = $entry } else { $alive[$k] = $entry }
+    }
+  }
+  Save-ClarifierState -State $alive
+  return $val
+}
+
+function Build-QuestionFromIntent {
+  param([object]$Intent,[string[]]$Captures)
+  $name = [string]$Intent.name
+  if ($name -eq 'set_user_name') {
+    $rawVal = if ($Captures.Count -ge 1) { $Captures[0] } else { '' }
+    return ('Update USER.md: set User preferred name to "' + $rawVal + '". Keep all routing/verifier/keeper/logger/queue behavior unchanged.')
+  }
+  if ($name -eq 'set_assistant_name') {
+    $rawVal = if ($Captures.Count -ge 1) { $Captures[0] } else { '' }
+    return ('Update USER.md: set Assistant name to "' + $rawVal + '" in canonical identity. Keep all routing/verifier/keeper/logger/queue behavior unchanged.')
+  }
+  return $Message
+}
+
 # Deterministic routing rules (verbatim)
 # FAST_PATH allowed actions (exact):
 # - toggle a boolean setting / switch (enable/disable a feature flag)
@@ -117,39 +252,13 @@ function Ensure-RuntimeFlags {
 # - request creates new files outside tests/docs
 # Default on uncertainty: BUILD_PATH
 
-$m = $Message.ToLowerInvariant()
-$debugOverride = ($m.Contains('show debug') -or $m.Contains('details'))
+$m = $Message.ToLowerInvariant().Trim()
 $route = 'BUILD_PATH'
 $rule = 'default_unsure_to_build'
-
-function Write-MainChatFiltered {
-  param([string[]]$Lines,[bool]$Debug)
-  foreach ($ln in $Lines) {
-    $s = [string]$ln
-    if ([string]::IsNullOrWhiteSpace($s)) { continue }
-    if ($Debug) { Write-Output $s; continue }
-    if ($s -match '(^\s*\{)|(^\s*\[)|run_id|reason_code|route=|FAST_PATH|BUILD_PATH|taskId=|build_session_id=|model_id|artifacts/|verifier-run:|^Emitted:') { continue }
-    Write-Output $s
-  }
-}
-
-$buildVerbs = @('build','implement','patch','update','add feature','refactor')
-$fastStatus = @('show pending builds','any builds waiting for approval','builds waiting for approval','show latest status','show logs summary','show debug','details','help','usage','queue status','cancel next','clear queue')
-$fastApply = @('apply latest','reject latest')
-$toggleWarnOff = @('turn warnings off','disable warnings','warnings off')
-$toggleWarnOn = @('turn warnings on','enable warnings','warnings on')
-
-if ($toggleWarnOff | Where-Object { $m.Contains($_) }) {
-  $route = 'FAST_PATH'; $rule = 'toggle_boolean_setting'
-} elseif ($toggleWarnOn | Where-Object { $m.Contains($_) }) {
-  $route = 'FAST_PATH'; $rule = 'toggle_boolean_setting'
-} elseif ($fastApply | Where-Object { $m.Contains($_) }) {
-  $route = 'FAST_PATH'; $rule = 'apply_or_reject_latest_ready_build'
-} elseif ($fastStatus | Where-Object { $m.Contains($_) }) {
-  $route = 'FAST_PATH'; $rule = 'read_only_query_or_help'
-} elseif ($buildVerbs | Where-Object { $m.Contains($_) }) {
-  $route = 'BUILD_PATH'; $rule = 'explicit_build_intent'
-}
+$intentMatch = $null
+$intentAction = ''
+$intentName = ''
+$buildQuestion = $Message
 
 $idemKey = Get-IdempotencyKey
 if (Should-SkipByIdempotency -Key $idemKey) {
@@ -160,10 +269,75 @@ if (Should-SkipByIdempotency -Key $idemKey) {
 }
 
 $runId = 'route-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+
+# Clarifier response handling (single question flow)
+$clarifierKey = Get-ClarifierKey
+$pendingClarifier = Pop-PendingClarifier -Key $clarifierKey
+if ($null -ne $pendingClarifier) {
+  if ($m -match '^(change it|change|yes change|make changes)$') {
+    $route = 'BUILD_PATH'
+    $rule = 'clarifier_change_it'
+    $buildQuestion = [string]$pendingClarifier.original
+  } elseif ($m -match '^(just explain|explain|only explain)$') {
+    $route = 'FAST_PATH'
+    $rule = 'clarifier_just_explain'
+    $intentAction = 'clarifier_explain'
+  }
+}
+
+if ($rule -ne 'clarifier_change_it' -and $rule -ne 'clarifier_just_explain') {
+  $registry = Ensure-IntentRegistry
+  $intentMatch = Resolve-Intent -Registry $registry -InputText $m
+  if ($null -ne $intentMatch) {
+    $intentName = [string]$intentMatch.Intent.name
+    $intentAction = [string]$intentMatch.Intent.action
+    $route = [string]$intentMatch.Intent.route
+    $rule = 'intent_registry_first_match'
+    if ($route -eq 'BUILD_PATH') {
+      $buildQuestion = Build-QuestionFromIntent -Intent $intentMatch.Intent -Captures $intentMatch.Captures
+      [void](Get-IdentityCanonical)
+    }
+    Emit-LogEvent -RunId ($runId + '-intent') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'INTENT_MATCH' -Summary ('intent=' + $intentName + '; route=' + $route) -Inputs @($Message) -Outputs @($intentName,$route)
+  }
+}
+
+if ($null -eq $intentMatch -and $rule -ne 'clarifier_change_it' -and $rule -ne 'clarifier_just_explain') {
+  $buildVerbs = @('build','implement','patch','update','add feature','refactor')
+  $fastStatus = @('show pending builds','any builds waiting for approval','builds waiting for approval','show latest status','show logs summary','show debug','details','help','usage','queue status','cancel next','clear queue','do i need to approve','what''s pending','whats pending','any builds waiting')
+  $fastApply = @('apply latest','reject latest','apply','go ahead','yes apply','ok apply','ship it')
+  $toggleWarnOff = @('turn warnings off','disable warnings','warnings off')
+  $toggleWarnOn = @('turn warnings on','enable warnings','warnings on')
+
+  if ($toggleWarnOff | Where-Object { $m.Contains($_) }) {
+    $route = 'FAST_PATH'; $rule = 'toggle_boolean_setting'; $intentAction = 'toggle_warnings_off'
+  } elseif ($toggleWarnOn | Where-Object { $m.Contains($_) }) {
+    $route = 'FAST_PATH'; $rule = 'toggle_boolean_setting'; $intentAction = 'toggle_warnings_on'
+  } elseif ($fastApply | Where-Object { $m.Contains($_) }) {
+    $route = 'FAST_PATH'; $rule = 'apply_or_reject_latest_ready_build'; $intentAction = 'apply_latest'
+  } elseif ($fastStatus | Where-Object { $m.Contains($_) }) {
+    $route = 'FAST_PATH'; $rule = 'read_only_query_or_help'; $intentAction = 'status_or_help'
+  } elseif ($buildVerbs | Where-Object { $m.Contains($_) }) {
+    $route = 'BUILD_PATH'; $rule = 'explicit_build_intent'
+  }
+
+  if ($route -eq 'BUILD_PATH' -and $rule -eq 'default_unsure_to_build') {
+    Set-PendingClarifier -Key $clarifierKey -OriginalMessage $Message
+    Emit-LogEvent -RunId ($runId + '-clarifier') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'AMBIGUOUS_CLARIFIER' -Summary 'Asked single clarifier question' -Inputs @($Message) -Outputs @('clarifier_asked')
+    Write-Output 'Do you want me to change something, or just explain?'
+    Write-Output 'Options: Change it / Just explain'
+    exit 0
+  }
+}
+
 Emit-LogEvent -RunId $runId -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'ROUTE_DECISION' -Summary ("route=" + $route + "; rule=" + $rule) -Inputs @($Message) -Outputs @($route)
 
 if ($route -eq 'FAST_PATH') {
-  if ($toggleWarnOff | Where-Object { $m.Contains($_) }) {
+  if ($intentAction -eq 'clarifier_explain') {
+    Write-Output 'Got it — I’ll explain only. Tell me what you want explained.'
+    exit 0
+  }
+
+  if ($intentAction -eq 'toggle_warnings_off' -or $m.Contains('turn warnings off') -or $m.Contains('disable warnings') -or $m.Contains('warnings off')) {
     $f = 'config/runtime_flags.json'
     if ($DryRun) {
       Emit-LogEvent -RunId ($runId + '-toggle-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would set warningsEnabled=false' -Inputs @($f) -Outputs @('would_set:warningsEnabled=false')
@@ -178,7 +352,8 @@ if ($route -eq 'FAST_PATH') {
     Write-Output 'Done — warnings are now off.'
     exit 0
   }
-  if ($toggleWarnOn | Where-Object { $m.Contains($_) }) {
+
+  if ($intentAction -eq 'toggle_warnings_on' -or $m.Contains('turn warnings on') -or $m.Contains('enable warnings') -or $m.Contains('warnings on')) {
     $f = 'config/runtime_flags.json'
     if ($DryRun) {
       Emit-LogEvent -RunId ($runId + '-toggle-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would set warningsEnabled=true' -Inputs @($f) -Outputs @('would_set:warningsEnabled=true')
@@ -193,7 +368,8 @@ if ($route -eq 'FAST_PATH') {
     Write-Output 'Done — warnings are now on.'
     exit 0
   }
-  if ($m.Contains('apply latest')) {
+
+  if ($intentAction -eq 'apply_latest_ready' -or $intentAction -eq 'apply_latest' -or $m -eq 'apply latest' -or $m -eq 'apply' -or $m -eq 'go ahead' -or $m -eq 'yes apply' -or $m -eq 'ok apply' -or $m -eq 'ship it') {
     $sid = Get-LatestReadyBuildId
     if ([string]::IsNullOrWhiteSpace($sid)) { Write-Output 'Done — there is no ready build to apply.'; exit 0 }
     if ($DryRun) {
@@ -205,7 +381,8 @@ if ($route -eq 'FAST_PATH') {
     }
     exit 0
   }
-  if ($m.Contains('reject latest')) {
+
+  if ($intentAction -eq 'reject_latest' -or $m.Contains('reject latest')) {
     $sid = Get-LatestReadyBuildId
     if ([string]::IsNullOrWhiteSpace($sid)) { Write-Output 'Done — there is no ready build to reject.'; exit 0 }
     if ($DryRun) {
@@ -217,7 +394,8 @@ if ($route -eq 'FAST_PATH') {
     }
     exit 0
   }
-  if ($m.Contains('show pending builds') -or $m.Contains('builds waiting for approval')) {
+
+  if ($intentAction -eq 'show_pending_approvals' -or $m.Contains('show pending builds') -or $m.Contains('builds waiting for approval') -or $m.Contains('any builds waiting') -or $m.Contains('do i need to approve') -or $m.Contains('what''s pending') -or $m.Contains('whats pending')) {
     $arr = python scripts/automation/build_session.py show --limit 10 | ConvertFrom-Json
     $ready = @($arr | Where-Object { $_.state -eq 'SESSION_READY_FOR_APPROVAL' })
     if ($ready.Count -eq 0) { Write-Output 'No builds waiting for approval.'; exit 0 }
@@ -225,16 +403,19 @@ if ($route -eq 'FAST_PATH') {
     Write-Output ('Latest: ' + [string]$ready[0].description)
     exit 0
   }
+
   if ($m.Contains('show latest status')) {
     $one = python scripts/automation/build_session.py show --limit 1 | ConvertFrom-Json
     if ($one.Count -eq 0) { Write-Output 'No build session yet.'; exit 0 }
     Write-Output ('Latest build status: ' + [string]$one[0].state)
     exit 0
   }
+
   if ($m.Contains('show logs summary')) {
     Write-Output 'Recent activity is available in the logger channel.'
     exit 0
   }
+
   if ($m.Contains('queue status')) {
     $qs = Get-QueueStatus
     $active = $qs.Active
@@ -256,6 +437,7 @@ if ($route -eq 'FAST_PATH') {
     Emit-LogEvent -RunId ($runId + '-queue-status') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'QUEUE_STATUS' -Summary 'Queue status requested' -Inputs @($Message) -Outputs @(("active=" + [string]($null -ne $active)),("queued=" + $queue.Count))
     exit 0
   }
+
   if ($m.Contains('cancel next')) {
     $res = Cancel-NextJob
     if ($res.Cancelled) {
@@ -266,33 +448,36 @@ if ($route -eq 'FAST_PATH') {
     }
     exit 0
   }
+
   if ($m.Contains('clear queue')) {
     $res = Clear-Queue
     Write-Output ("Cleared queued builds: " + $res.Cleared)
     Emit-LogEvent -RunId ($runId + '-clear-queue') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'QUEUE_CLEARED' -Summary ('Cleared queued builds: ' + $res.Cleared) -Inputs @($Message) -Outputs @([string]$res.Cleared)
     exit 0
   }
+
   if ($m.Contains('show debug') -or $m.Contains('details')) {
     python scripts/automation/build_session.py show --limit 5
     Get-Content task_ledger.jsonl -Tail 10
     exit 0
   }
+
   Write-Output 'Done — say what you want changed and I will route it automatically.'
   exit 0
 }
 
 # BUILD_PATH
 if ($DryRun) {
-  Emit-LogEvent -RunId ($runId + '-build-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would execute BUILD_PATH and start verification loop' -Inputs @($Message) -Outputs @('would_run:scripts/automation/run_work.ps1')
+  Emit-LogEvent -RunId ($runId + '-build-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would execute BUILD_PATH and start verification loop' -Inputs @($buildQuestion) -Outputs @('would_run:scripts/automation/run_work.ps1')
   Write-Output 'Dry run - would route to BUILD_PATH and start verification, then request approval.'
   exit 0
 }
 if ([string]::IsNullOrWhiteSpace($ChatId) -and [string]::IsNullOrWhiteSpace($MessageId) -and [string]::IsNullOrWhiteSpace($UpdateId)) {
-  Emit-LogEvent -RunId ($runId + '-missing-target') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_MISSING_CHAT_TARGET' -Summary 'Ingress metadata missing; enqueue will be log-only' -Inputs @($Message) -Outputs @('log_only_enqueue')
+  Emit-LogEvent -RunId ($runId + '-missing-target') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_MISSING_CHAT_TARGET' -Summary 'Ingress metadata missing; enqueue will be log-only' -Inputs @($buildQuestion) -Outputs @('log_only_enqueue')
 }
-$enqueue = Enqueue-BuildJob -Question $Message -ChatId $ChatId -MessageId $MessageId -UpdateId $UpdateId -IdemKey $idemKey
+$enqueue = Enqueue-BuildJob -Question $buildQuestion -ChatId $ChatId -MessageId $MessageId -UpdateId $UpdateId -IdemKey $idemKey
 if ($enqueue.QueueFull) {
-  Emit-LogEvent -RunId ($runId + '-queue-full') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_FULL' -Summary ('Build queue full (cap=' + $enqueue.Cap + ')') -Inputs @($Message) -Outputs @('queue_full')
+  Emit-LogEvent -RunId ($runId + '-queue-full') -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'QUEUE_FULL' -Summary ('Build queue full (cap=' + $enqueue.Cap + ')') -Inputs @($buildQuestion) -Outputs @('queue_full')
   Write-Output 'Queue is full right now. Please try again after current builds finish.'
   exit 9
 }
@@ -302,5 +487,5 @@ if ($enqueue.Duplicate) {
 }
 $jobId = [string]$enqueue.Job.job_id
 $pos = [int]$enqueue.Position
-Emit-LogEvent -RunId ($runId + '-enqueued') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_ENQUEUED' -Summary ('Build enqueued: ' + $jobId + ' position=' + $pos) -Inputs @($Message) -Outputs @($jobId,('position=' + $pos))
+Emit-LogEvent -RunId ($runId + '-enqueued') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_ENQUEUED' -Summary ('Build enqueued: ' + $jobId + ' position=' + $pos) -Inputs @($buildQuestion) -Outputs @($jobId,('position=' + $pos))
 Write-Output ('Queued. Position: ' + $pos + '. I’ll start it after the current build finishes.')
