@@ -418,6 +418,24 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
 
+  if ($intentAction -eq 'make_review_pack' -or $m -eq 'make review pack' -or $m -eq 'review pack' -or $m -eq 'prep opus review') {
+    $scope = ''
+    if ($null -ne $intentMatch -and $intentMatch.Captures -and $intentMatch.Captures.Count -gt 0) { $scope = [string]$intentMatch.Captures[0] }
+    if ([string]::IsNullOrWhiteSpace($scope)) {
+      Write-Output 'What should the review be about?'
+      exit 0
+    }
+    $latestCommit = (git rev-parse --short HEAD)
+    $auto = 'data/state/autopilot_summary.json'
+    $top = 'artifacts/library/TOP_CANDIDATES.json'
+    $less = 'artifacts/library/LESSONS_INDEX.json'
+    $title = 'Opus review - ' + $scope
+    $pack = python scripts/pipeline/make_review_pack.py --title $title --scope $scope --commit $latestCommit --artifacts ($auto + ',' + $top + ',' + $less)
+    $packObj = $pack | ConvertFrom-Json
+    Write-Output ('Review pack ready: ' + [string]$packObj.review_pack_path)
+    exit 0
+  }
+
   if ($intentAction -eq 'show_report' -or $m -eq 'report' -or $m -eq 'status report' -or $m -eq 'lab report' -or $m -eq 'top candidates') {
     $topPath = 'artifacts/library/TOP_CANDIDATES.json'
     $lessonPath = 'artifacts/library/LESSONS_INDEX.json'

@@ -89,6 +89,12 @@
       "action": "show_report"
     },
     {
+      "name": "make_review_pack",
+      "patterns": ["make review pack", "review pack", "prep opus review", "make review pack *", "review pack *", "prep opus review *"],
+      "route": "FAST_PATH",
+      "action": "make_review_pack"
+    },
+    {
       "name": "show_help",
       "patterns": ["help", "usage", "what can you do"],
       "route": "FAST_PATH",
