@@ -34,6 +34,7 @@ if (Test-Path 'tmp') {
 $targets += Get-ChildItem 'docs/DAILY' -Filter '*-summary.md' -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
 $targets += Get-ChildItem 'docs/HANDOFFS' -Filter 'handoff-*.md' -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
 $targets += Get-ChildItem 'memory' -Filter '*-route-spam.md' -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
+$targets += Get-ChildItem 'memory' -Filter '*-memory-audit.md' -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
 
 $targets = $targets | Sort-Object -Unique
 

@@ -70,6 +70,7 @@ logs/
 docs/DAILY/*-summary.md
 docs/HANDOFFS/handoff-*.md
 memory/*-route-spam.md
+memory/*-memory-audit.md
 
 # ======== Keep These (DO NOT IGNORE) ========
 # Source of truth: specs are Git-tracked
