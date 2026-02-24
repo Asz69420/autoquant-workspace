@@ -150,20 +150,33 @@ function Resolve-Intent {
 function Get-IdentityCanonical {
   $assistant = ''
   $user = ''
+  $defaultAssistant = 'oQ'
+  $defaultUser = 'Asz'
   if (Test-Path $UserMdPath) {
     try {
       $lines = Get-Content $UserMdPath
       foreach ($line in $lines) {
-        if ($line -match '^\s*-\s*Assistant name\s*:\s*(.+?)\s*$') { $assistant = $matches[1].Trim() }
-        if ($line -match '^\s*-\s*User preferred name\s*:\s*(.+?)\s*$') { $user = $matches[1].Trim() }
+        if ($line -match '^\s*-\s*Assistant name\s*:\s*(.+?)\s*$') {
+          if ([string]::IsNullOrWhiteSpace($assistant)) { $assistant = $matches[1].Trim() }
+        }
+        if ($line -match '^\s*-\s*User preferred name\s*:\s*(.+?)\s*$') {
+          if ([string]::IsNullOrWhiteSpace($user)) { $user = $matches[1].Trim() }
+        }
       }
     } catch {}
   }
-  $swapDetected = ($assistant -ieq 'Asz' -or $user -ieq 'oQ')
-  if ([string]::IsNullOrWhiteSpace($assistant) -or [string]::IsNullOrWhiteSpace($user) -or ($assistant -ieq $user) -or $swapDetected) {
-    Emit-LogEvent -RunId ('identity-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'IDENTITY_SWAP_DETECTED' -Summary 'Identity missing/equal/swapped; fallback applied' -Inputs @($assistant,$user) -Outputs @('assistant=oQ','user=Asz')
-    return [PSCustomObject]@{ Assistant = 'oQ'; User = 'Asz' }
+
+  $hasParsed = (-not [string]::IsNullOrWhiteSpace($assistant) -and -not [string]::IsNullOrWhiteSpace($user))
+  if (-not $hasParsed) {
+    return [PSCustomObject]@{ Assistant = $defaultAssistant; User = $defaultUser }
   }
+
+  $swapDetected = ($assistant -ieq $defaultUser -and $user -ieq $defaultAssistant)
+  if (($assistant -ieq $user) -or $swapDetected) {
+    Emit-LogEvent -RunId ('identity-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'WARN' -StatusEmoji '⚠️' -ReasonCode 'IDENTITY_SWAP_DETECTED' -Summary 'Identity equal/swapped; corrected using USER.md values' -Inputs @($assistant,$user) -Outputs @('assistant=' + $defaultAssistant,'user=' + $defaultUser)
+    return [PSCustomObject]@{ Assistant = $defaultAssistant; User = $defaultUser }
+  }
+
   return [PSCustomObject]@{ Assistant = $assistant; User = $user }
 }
 
@@ -294,6 +307,16 @@ if ($rule -ne 'clarifier_change_it' -and $rule -ne 'clarifier_just_explain') {
     $route = [string]$intentMatch.Intent.route
     $rule = 'intent_registry_first_match'
     if ($route -eq 'BUILD_PATH') {
+      $trimmed = $m.Trim()
+      $singleWord = ($trimmed -notmatch '\s')
+      $veryShort = ($trimmed.Length -lt 4)
+      if ($veryShort -or $singleWord) {
+        Set-PendingClarifier -Key $clarifierKey -OriginalMessage $Message
+        Emit-LogEvent -RunId ($runId + '-intent-short') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'AMBIGUOUS_CLARIFIER' -Summary 'Short/ambiguous BUILD_PATH intent; asked clarifier' -Inputs @($Message) -Outputs @('clarifier_asked')
+        Write-Output 'Do you want me to change something, or just explain?'
+        Write-Output 'Options: Change it / Just explain'
+        exit 0
+      }
       $buildQuestion = Build-QuestionFromIntent -Intent $intentMatch.Intent -Captures $intentMatch.Captures
       [void](Get-IdentityCanonical)
     }

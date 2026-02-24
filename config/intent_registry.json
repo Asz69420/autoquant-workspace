@@ -132,7 +132,7 @@
     },
     {
       "name": "reject_short",
-      "patterns": ["reject", "dont ship latest"],
+      "patterns": ["cancel latest", "dont ship latest"],
       "route": "FAST_PATH",
       "action": "reject_latest"
     },
