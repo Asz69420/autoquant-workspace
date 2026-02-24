@@ -14,6 +14,8 @@ MAX_INDEX = 200
 
 TF_RE = re.compile(r"\b(1m|3m|5m|15m|30m|45m|1h|2h|4h|1d|1w|1mo|daily|weekly|monthly)\b", re.I)
 ASSET_RE = re.compile(r"\b(BTC|ETH|SOL|XRP|EURUSD|GBPUSD|SPX|NASDAQ|AAPL|TSLA|GOLD|XAUUSD)\b", re.I)
+TS_PREFIX_RE = re.compile(r"^\s*(?P<ts>\d{1,2}:\d{2}(?::\d{2})?)\s*[-–—|]?\s*(?P<text>.+)$")
+SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
 
 
 def now_iso() -> str:
@@ -41,37 +43,130 @@ def truncate_text(text: str, max_bytes: int) -> tuple[str, bool]:
             trimmed = trimmed[:-1]
 
 
-def pick_lines(raw: str, limit: int, max_len: int) -> list[str]:
-    out = []
-    for line in [l.strip(" -\t") for l in raw.splitlines() if l.strip()]:
-        if line not in out:
-            out.append(line[:max_len])
-        if len(out) >= limit:
-            break
+def norm_spaces(s: str) -> str:
+    return " ".join(s.strip().split())
+
+
+def words_count(s: str) -> int:
+    return len(re.findall(r"[A-Za-z0-9']+", s))
+
+
+def similarity(a: str, b: str) -> float:
+    ta = set(re.findall(r"[a-z0-9']+", a.lower()))
+    tb = set(re.findall(r"[a-z0-9']+", b.lower()))
+    if not ta or not tb:
+        return 0.0
+    return len(ta & tb) / max(len(ta), len(tb))
+
+
+def split_sentences(raw: str) -> list[str]:
+    chunks = [norm_spaces(x) for x in raw.splitlines() if norm_spaces(x)]
+    merged: list[str] = []
+    cur = ""
+    for c in chunks:
+        cur = f"{cur} {c}".strip() if cur else c
+        if re.search(r"[.!?]$", c) or words_count(cur) >= 18:
+            merged.append(cur)
+            cur = ""
+    if cur:
+        merged.append(cur)
+
+    parts: list[str] = []
+    for m in merged:
+        parts.extend([norm_spaces(p) for p in SENTENCE_SPLIT_RE.split(m) if norm_spaces(p)])
+
+    out: list[str] = []
+    bad_endings = {"if", "and", "or", "to", "on", "in", "with", "for", "that", "which", "based", "most"}
+    for p in parts:
+        if words_count(p) < 6:
+            continue
+        if not re.search(r"[.!?]$", p):
+            p = p + "."
+        last_word = re.findall(r"[a-zA-Z]+", p.lower())[-1] if re.findall(r"[a-zA-Z]+", p.lower()) else ""
+        if last_word in bad_endings:
+            continue
+        if any(similarity(p, x) >= 0.85 for x in out):
+            continue
+        out.append(p[:500])
     return out
+
+
+def extract_creator_notes(raw: str, max_items: int = 12) -> list[dict]:
+    notes: list[dict] = []
+    sentences = split_sentences(raw)
+    for s in sentences:
+        ts = None
+        text = s
+        m = TS_PREFIX_RE.match(s)
+        if m:
+            text = norm_spaces(m.group("text"))
+            ts_raw = m.group("ts")
+            if len(ts_raw.split(":")) == 2:
+                ts = f"00:{ts_raw}"
+            else:
+                ts = ts_raw
+        if words_count(text) < 6:
+            continue
+        if any(similarity(text, n["quote"]) >= 0.9 for n in notes):
+            continue
+        quote = text[:200]
+        note = f"Creator explains: {text}"[:160]
+        notes.append({"timestamp": ts, "quote": quote, "note": note})
+        if len(notes) >= max_items:
+            break
+    return notes
+
+
+def extract_rules(sentences: list[str], limit: int = 20) -> list[str]:
+    rule_markers = ("rule", "wait", "enter", "exit", "avoid", "use", "search", "click")
+    rules: list[str] = []
+    for s in sentences:
+        l = s.lower()
+        if any(m in l for m in rule_markers):
+            if not any(similarity(s, r) >= 0.88 for r in rules):
+                rules.append(s[:500])
+        if len(rules) >= limit:
+            break
+    if not rules:
+        return ["Not specified in content."]
+    return rules[:limit]
 
 
 def extract_indicator_hints(raw: str) -> tuple[list[str], list[dict]]:
     names: list[str] = []
     hints: list[dict] = []
-    patterns = [
-        r"\b(?:indicator|using|use|called|named)\s+([A-Z][A-Za-z0-9\- ]{2,60})",
-        r"\b([A-Z][A-Za-z0-9\- ]{2,60})\s+(?:indicator|oscillator|strategy)\b",
-    ]
-    for p in patterns:
-        for m in re.finditer(p, raw):
-            n = " ".join(m.group(1).split())
-            if n.lower() in {"the", "this", "that"}:
-                continue
-            if n not in names:
-                names.append(n)
-                hints.append({
-                    "name": n,
-                    "keywords": n.lower().split()[:4],
-                    "confidence": 0.75,
-                })
-            if len(names) >= 20 or len(hints) >= 10:
-                return names[:20], hints[:10]
+
+    author_global = None
+    m_auth = re.search(r"\bwritten\s+by\s+([A-Za-z][A-Za-z0-9\- ]{2,60})", raw, re.I)
+    if m_auth:
+        author_global = norm_spaces(m_auth.group(1).strip(" .,:;"))
+
+    candidates: list[tuple[str, float]] = []
+    for m in re.finditer(r"\bsearch\s+([A-Za-z][A-Za-z0-9\- ]{3,80})", raw, re.I):
+        n = norm_spaces(re.split(r"[.,;:!?]", m.group(1))[0])
+        if words_count(n) >= 3:
+            candidates.append((n, 0.93))
+
+    for m in re.finditer(r"\b([A-Za-z][A-Za-z0-9\- ]{3,80}\s+pressure\s+index)\b", raw, re.I):
+        n = norm_spaces(m.group(1))
+        if words_count(n) >= 3:
+            candidates.append((n, 0.88))
+
+    for n, conf in candidates:
+        if any(similarity(n, x) >= 0.75 for x in names):
+            continue
+        names.append(n)
+        hint = {
+            "name": n,
+            "keywords": re.findall(r"[a-z0-9]+", n.lower())[:5],
+            "confidence": conf,
+        }
+        if author_global:
+            hint["author_hint"] = author_global
+        hints.append(hint)
+        if len(names) >= 20 or len(hints) >= 10:
+            break
+
     return names[:20], hints[:10]
 
 
@@ -110,9 +205,11 @@ def main() -> int:
     raw_path = out_dir / f"{rid}.raw.txt"
     raw_path.write_text(raw_trunc, encoding="utf-8")
 
+    sentences = split_sentences(raw_trunc)
+    bullets = sentences[:10]
+    rules = extract_rules(sentences, 20)
+    creator_notes = extract_creator_notes(raw_trunc, 12)
     indicators, hints = extract_indicator_hints(raw_trunc)
-    rules = pick_lines(raw_trunc, 20, 500)
-    bullets = pick_lines(raw_trunc, 10, 500)
 
     timeframes = list(dict.fromkeys([m.group(1).lower() for m in TF_RE.finditer(raw_trunc)]))[:20]
     assets = list(dict.fromkeys([m.group(1).upper() for m in ASSET_RE.finditer(raw_trunc)]))[:20]
@@ -127,6 +224,7 @@ def main() -> int:
         "title": args.title or None,
         "author": args.author or None,
         "summary_bullets": bullets,
+        "creator_notes": creator_notes if creator_notes else None,
         "extracted_rules": rules,
         "indicators_mentioned": indicators,
         "tv_search_hints": hints,

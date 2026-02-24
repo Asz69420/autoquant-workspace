@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 MAX_RC_JSON = 40 * 1024
@@ -22,6 +23,18 @@ def check_size(path: Path, cap: int, label: str) -> None:
     must(path.stat().st_size <= cap, f"{label} too large: {path}")
 
 
+def words_count(s: str) -> int:
+    return len(re.findall(r"[A-Za-z0-9']+", s))
+
+
+def similarity(a: str, b: str) -> float:
+    ta = set(re.findall(r"[a-z0-9']+", a.lower()))
+    tb = set(re.findall(r"[a-z0-9']+", b.lower()))
+    if not ta or not tb:
+        return 0.0
+    return len(ta & tb) / max(len(ta), len(tb))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--research-card")
@@ -39,6 +52,16 @@ def main() -> int:
         rp = rc.get("raw_pointer")
         if rp:
             check_size(Path(rp), MAX_RAW, "Research raw")
+
+        bullets = rc.get("summary_bullets", [])
+        for b in bullets:
+            must(words_count(str(b)) >= 6, "summary_bullets contains fragment (<6 words)")
+        for i in range(len(bullets)):
+            for j in range(i + 1, len(bullets)):
+                must(similarity(str(bullets[i]), str(bullets[j])) < 0.85, "summary_bullets contains repeated/near-identical fragments")
+
+        if rp and not rc.get("creator_notes"):
+            print("WARN: creator_notes missing while transcript/raw exists")
 
     if args.indicator_record:
         ir_path = Path(args.indicator_record)

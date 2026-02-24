@@ -38,6 +38,25 @@
       "maxItems": 20,
       "items": { "type": "string", "maxLength": 500 }
     },
+    "creator_notes": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["timestamp", "quote", "note"],
+        "properties": {
+          "timestamp": {
+            "oneOf": [
+              { "type": "null" },
+              { "type": "string", "pattern": "^\\d{2}:\\d{2}:\\d{2}$" }
+            ]
+          },
+          "quote": { "type": "string", "maxLength": 200 },
+          "note": { "type": "string", "maxLength": 160 }
+        }
+      }
+    },
     "indicators_mentioned": {
       "type": "array",
       "maxItems": 20,
