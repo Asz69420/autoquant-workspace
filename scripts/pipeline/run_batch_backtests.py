@@ -84,6 +84,37 @@ def main() -> int:
     for variant in selected_variants:
         for dataset_meta in dataset_metas:
             meta = _load_json(dataset_meta)
+            fout = _run([
+                PY,
+                'scripts/pipeline/check_feasibility.py',
+                '--strategy-spec',
+                args.strategy_spec,
+                '--variant',
+                variant,
+                '--dataset-meta',
+                dataset_meta,
+            ])
+            f = json.loads(fout)
+            if f.get('verdict') == 'FAIL':
+                run = {
+                    'variant_name': variant,
+                    'symbol': meta.get('symbol'),
+                    'timeframe': meta.get('timeframe'),
+                    'dataset_meta_path': dataset_meta,
+                    'backtest_result_path': '',
+                    'trade_list_path': '',
+                    'gate_pass': False,
+                    'status': 'SKIPPED',
+                    'skip_reason': 'FEASIBILITY_FAIL',
+                    'feasibility_report_path': f.get('feasibility_report_path'),
+                    'net_profit': 0.0,
+                    'trades': 0,
+                    'profit_factor': 0.0,
+                    'max_drawdown': 0.0,
+                }
+                runs.append(run)
+                continue
+
             out = _run([
                 PY,
                 'scripts/backtester/hl_backtest_engine.py',
@@ -103,6 +134,8 @@ def main() -> int:
                 'dataset_meta_path': dataset_meta,
                 'backtest_result_path': info['backtest_result'],
                 'trade_list_path': info['trade_list'],
+                'feasibility_report_path': f.get('feasibility_report_path'),
+                'status': 'EXECUTED',
                 'gate_pass': bool(bt.get('gate', {}).get('gate_pass', True)),
                 'net_profit': bt.get('results', {}).get('net_profit', 0.0),
                 'trades': bt.get('results', {}).get('total_trades', 0),
