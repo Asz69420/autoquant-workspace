@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse, csv, json, uuid
+import argparse, csv, json, subprocess, sys, uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -44,6 +44,23 @@ def apply_fill(raw_price: float, side: str, slippage_bps: float) -> tuple[float,
     return px, raw_price - px
 
 
+def _min_trades_required(meta: dict, gates: dict) -> int:
+    timeframe = str(meta.get('timeframe', '')).lower()
+    start = meta.get('start')
+    end = meta.get('end')
+    if not timeframe or not start or not end:
+        return 0
+    try:
+        start_dt = datetime.fromisoformat(start.replace('Z', '+00:00'))
+        end_dt = datetime.fromisoformat(end.replace('Z', '+00:00'))
+    except ValueError:
+        return 0
+    days = (end_dt - start_dt).days
+    if days < 700:
+        return 0
+    return int(gates.get('min_trades', {}).get('2y', {}).get(timeframe, 0))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--dataset-meta', required=True)
@@ -52,6 +69,7 @@ def main() -> int:
     ap.add_argument('--initial-capital', type=float, default=10000.0)
     ap.add_argument('--fill-rule', default='bar_close', choices=['bar_close', 'next_open'])
     ap.add_argument('--cost-config', default='config/backtest_costs.json')
+    ap.add_argument('--gate-config', default='config/backtest_gates.json')
     ap.add_argument('--fee-mode', choices=['taker', 'maker'], default='')
     ap.add_argument('--slippage-bps', type=float, default=-1.0)
     args = ap.parse_args()
@@ -62,6 +80,7 @@ def main() -> int:
     variant = next(v for v in spec['variants'] if v['name'] == args.variant)
     rules = parse_rules(variant.get('risk_rules', []))
     costs = json.loads((ROOT / args.cost_config).read_text(encoding='utf-8'))
+    gates = json.loads((ROOT / args.gate_config).read_text(encoding='utf-8')) if (ROOT / args.gate_config).exists() else {}
 
     fee_mode = args.fee_mode or costs.get('fee_mode', 'taker')
     fee_bps = float(costs.get('hl_taker_fee_bps', 4.5) if fee_mode == 'taker' else costs.get('hl_maker_fee_bps', 1.5))
@@ -96,6 +115,11 @@ def main() -> int:
     pos = None
     total_fees_paid = 0.0
     total_slippage_cost_est = 0.0
+    signals_seen_long = 0
+    signals_seen_short = 0
+    entries_taken = 0
+    exits_taken = 0
+    total_bars_in_position = 0
 
     for i, b in enumerate(bars):
         tr = max(b['high'] - b['low'], abs(b['high'] - (prev_close if prev_close is not None else b['close'])), abs(b['low'] - (prev_close if prev_close is not None else b['close'])))
@@ -121,8 +145,15 @@ def main() -> int:
             long_sig = prev_ema9 is not None and prev_ema21 is not None and prev_ema9 <= prev_ema21 and ema9 > ema21
             short_sig = prev_ema9 is not None and prev_ema21 is not None and prev_ema9 >= prev_ema21 and ema9 < ema21
 
+        if long_sig:
+            signals_seen_long += 1
+        if short_sig:
+            signals_seen_short += 1
+        if pos is not None:
+            total_bars_in_position += 1
+
         def close_position(raw_exit_price: float, reason: str):
-            nonlocal pos, total_fees_paid, total_slippage_cost_est
+            nonlocal pos, total_fees_paid, total_slippage_cost_est, exits_taken
             if pos is None:
                 return
             qty = 1.0
@@ -134,6 +165,7 @@ def main() -> int:
             total_fees_paid += fees
             pnl = gross - fees
             trades.append({'entry_time': pos['entry_time'], 'entry_price': round(pos['entry_price'], 8), 'exit_time': b['time'], 'exit_price': round(exit_px, 8), 'side': pos['side'], 'qty': qty, 'pnl': round(pnl, 8), 'reason': reason, 'bars_held': max(1, i - pos['entry_idx'] + 1)})
+            exits_taken += 1
             pos = None
 
         if pos is not None:
@@ -143,6 +175,7 @@ def main() -> int:
                 ep, eslip = apply_fill(b['close'], eside, slippage_bps)
                 total_slippage_cost_est += eslip
                 pos = {'side': 'short' if short_sig else 'long', 'entry_price': ep, 'entry_time': b['time'], 'entry_idx': i}
+                entries_taken += 1
                 prev_close = b['close']
                 continue
 
@@ -163,6 +196,7 @@ def main() -> int:
             ep, eslip = apply_fill(raw_ep, eside, slippage_bps)
             total_slippage_cost_est += eslip
             pos = {'side': 'long' if long_sig else 'short', 'entry_price': ep, 'entry_time': et, 'entry_idx': i}
+            entries_taken += 1
 
         prev_close = b['close']
 
@@ -177,6 +211,24 @@ def main() -> int:
 
     total = len(trades)
     net = sum(pnls)
+    bars_tested = len(bars)
+    avg_bars_in_trade = (sum(t['bars_held'] for t in trades) / total) if total else 0.0
+    coverage = {
+        'bars_tested': bars_tested,
+        'time_in_market_pct': round((total_bars_in_position / bars_tested), 8) if bars_tested else 0.0,
+        'avg_bars_in_trade': round(avg_bars_in_trade, 8),
+        'entry_signals_seen': {
+            'long': signals_seen_long,
+            'short': signals_seen_short,
+            'total': signals_seen_long + signals_seen_short,
+        },
+        'entries_taken': entries_taken,
+        'exits_taken': exits_taken,
+    }
+    min_trades_required = _min_trades_required(meta, gates)
+    gate_pass = total >= min_trades_required if min_trades_required > 0 else True
+    gate_reason = 'OK' if gate_pass else 'INSUFFICIENT_TRADES'
+
     result = {
         'schema_version': '1.0',
         'id': f"hl_{datetime.now().strftime('%Y%m%d')}_{uuid.uuid4().hex[:8]}",
@@ -194,6 +246,12 @@ def main() -> int:
             'total_slippage_cost_est': round(total_slippage_cost_est, 8),
             'start_ts': meta.get('start'),
             'end_ts': meta.get('end')
+        },
+        'coverage': coverage,
+        'gate': {
+            'min_trades_required': min_trades_required,
+            'gate_pass': gate_pass,
+            'gate_reason': gate_reason,
         }
     }
 
@@ -206,7 +264,29 @@ def main() -> int:
     if len(blob.encode('utf-8')) > 80 * 1024:
         raise SystemExit('BACKTEST_RESULT_TOO_LARGE')
     bt_path.write_text(blob, encoding='utf-8')
-    print(json.dumps({'trade_list': str(trade_path), 'backtest_result': str(bt_path)}))
+
+    relax_suggestion_path = None
+    if not gate_pass:
+        cmd = [
+            sys.executable,
+            str((ROOT / 'scripts/pipeline/emit_relax_suggestion.py').resolve()),
+            '--strategy-spec-path', args.strategy_spec,
+            '--variant', args.variant,
+            '--symbol', str(meta.get('symbol', 'unknown')),
+            '--timeframe', str(meta.get('timeframe', 'unknown')),
+            '--start', str(meta.get('start', '')),
+            '--end', str(meta.get('end', '')),
+            '--observed-trades', str(total),
+            '--min-trades-required', str(min_trades_required),
+            '--id', result['id'],
+        ]
+        p = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=True)
+        relax_suggestion_path = json.loads(p.stdout)['relax_suggestion_path']
+
+    out = {'trade_list': str(trade_path), 'backtest_result': str(bt_path)}
+    if relax_suggestion_path:
+        out['relax_suggestion_path'] = relax_suggestion_path
+    print(json.dumps(out))
     return 0
 
 

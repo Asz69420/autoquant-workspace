@@ -56,6 +56,45 @@
       "properties": {
         "parity_report_path": { "type": "string", "minLength": 1, "maxLength": 2048 }
       }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bars_tested",
+        "time_in_market_pct",
+        "avg_bars_in_trade",
+        "entry_signals_seen",
+        "entries_taken",
+        "exits_taken"
+      ],
+      "properties": {
+        "bars_tested": { "type": "integer", "minimum": 0 },
+        "time_in_market_pct": { "type": "number", "minimum": 0, "maximum": 1 },
+        "avg_bars_in_trade": { "type": "number", "minimum": 0 },
+        "entry_signals_seen": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["long", "short", "total"],
+          "properties": {
+            "long": { "type": "integer", "minimum": 0 },
+            "short": { "type": "integer", "minimum": 0 },
+            "total": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "entries_taken": { "type": "integer", "minimum": 0 },
+        "exits_taken": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_trades_required", "gate_pass", "gate_reason"],
+      "properties": {
+        "min_trades_required": { "type": "integer", "minimum": 0 },
+        "gate_pass": { "type": "boolean" },
+        "gate_reason": { "type": "string", "minLength": 1, "maxLength": 64 }
+      }
     }
   },
   "allOf": [
