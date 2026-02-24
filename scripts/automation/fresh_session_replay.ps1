@@ -5,6 +5,11 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
+
+# Guardrail: always run from repository root so relative ledger paths cannot drift into tmp/ clones.
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location $repoRoot
+
 if ([string]::IsNullOrWhiteSpace($StartTimeIso)) {
   $StartTimeIso = [DateTimeOffset]::UtcNow.ToString('o')
 }
@@ -47,6 +52,13 @@ function Get-LatestRouteDecision {
   return $matches[-1]
 }
 
+function Get-TmpLedgerClones {
+  if (-not (Test-Path 'tmp')) { return @() }
+  return @(Get-ChildItem -Path 'tmp' -Recurse -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -in @('task_ledger.jsonl','build_session_ledger.jsonl') } |
+    ForEach-Object { $_.FullName })
+}
+
 function Has-ReadyBuildApproval {
   if (-not (Test-Path 'build_session_ledger.jsonl')) { return $false }
   $latest = @{}
@@ -72,6 +84,7 @@ $pain = @()
 
 $isDryRun = [bool]$DryRun
 $gitBefore = @(git status --porcelain)
+$tmpLedgersBefore = @(Get-TmpLedgerClones)
 Write-Output ("Fresh session replay start: dry_run=" + $isDryRun.ToString().ToLowerInvariant() + "; start=" + $StartTimeIso)
 
 for ($i=0; $i -lt $steps.Count; $i++) {
@@ -129,10 +142,16 @@ for ($i=0; $i -lt $steps.Count; $i++) {
 }
 
 $gitAfter = @(git status --porcelain)
+$tmpLedgersAfter = @(Get-TmpLedgerClones)
 $gitUnchanged = ((($gitBefore -join "`n") -eq ($gitAfter -join "`n")))
 if (-not $gitUnchanged) {
   $allPass = $false
   $pain += 'Working tree changed during replay (dry-run not non-mutating).'
+}
+$newTmpLedgers = @($tmpLedgersAfter | Where-Object { $_ -notin $tmpLedgersBefore })
+if ($newTmpLedgers.Count -gt 0) {
+  $allPass = $false
+  $pain += ('tmp ledger clone(s) created: ' + ($newTmpLedgers -join ', '))
 }
 
 $overall = if ($allPass) { 'PASS' } else { 'FAIL' }
@@ -142,6 +161,8 @@ Write-Output 'git status before:'
 if ($gitBefore.Count -eq 0) { Write-Output '(clean)' } else { $gitBefore | ForEach-Object { Write-Output $_ } }
 Write-Output 'git status after:'
 if ($gitAfter.Count -eq 0) { Write-Output '(clean)' } else { $gitAfter | ForEach-Object { Write-Output $_ } }
+Write-Output ('tmp ledger clones before: ' + $tmpLedgersBefore.Count)
+Write-Output ('tmp ledger clones after: ' + $tmpLedgersAfter.Count)
 if ($pain.Count -gt 0) {
   Write-Output 'Pain points:'
   $pain | ForEach-Object { Write-Output ("- " + $_) }

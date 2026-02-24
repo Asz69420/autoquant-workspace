@@ -96,44 +96,5 @@ if ($readyBuilds.Count -ge 1) {
   exit $LASTEXITCODE
 }
 
-# Fallback to task-level approvals if no build session ready
-$readyTasks = @()
-if (Test-Path 'task_ledger.jsonl') {
-  $latestTask = @{}
-  Get-Content task_ledger.jsonl | ForEach-Object {
-    if ([string]::IsNullOrWhiteSpace($_)) { return }
-    $obj = $_ | ConvertFrom-Json
-    $latestTask[$obj.task_id] = $obj
-  }
-  $readyTasks = @($latestTask.Values | Where-Object { $_.state -eq 'READY_FOR_USER_APPROVAL' })
-}
-
-if (-not [string]::IsNullOrWhiteSpace($TaskId)) {
-  if ($intent -eq 'APPROVE') {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action APPROVE -TaskId $TaskId
-  } else {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action REJECT -TaskId $TaskId
-  }
-  exit $LASTEXITCODE
-}
-
-if ($readyTasks.Count -gt 1) {
-  Write-Output 'Which build?'
-  $readyTasks | Sort-Object last_update_at -Descending | Select-Object -First 5 | ForEach-Object {
-    Write-Output ("- " + $_.task_id + " | " + $_.description + " | " + $_.last_update_at)
-  }
-  exit 5
-}
-
-if ($readyTasks.Count -eq 1) {
-  $tid = [string]$readyTasks[0].task_id
-  if ($intent -eq 'APPROVE') {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action APPROVE -TaskId $tid
-  } else {
-    powershell -ExecutionPolicy Bypass -File scripts/automation/approve_work.ps1 -Action REJECT -TaskId $tid
-  }
-  exit $LASTEXITCODE
-}
-
-Write-Output 'No approval-ready item found.'
+Write-Output 'No approval-ready build session found.'
 exit 6

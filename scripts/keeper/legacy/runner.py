@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Keeper Build 1 runner: automated maintenance + compatibility checks."""
+"""LEGACY — not scheduled; do not use.
+Kept only for archival/reference. Active runner: scripts/keeper/runner_v2.py.
+"""
 
 from __future__ import annotations
 

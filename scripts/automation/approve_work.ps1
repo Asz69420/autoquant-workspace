@@ -1,3 +1,4 @@
+# LEGACY task-level approval; prefer scripts/automation/approve_build_session.ps1
 param(
   [Parameter(Mandatory = $true)][ValidateSet('APPROVE','REJECT')][string]$Action,
   [Parameter(Mandatory = $true)][string]$TaskId
