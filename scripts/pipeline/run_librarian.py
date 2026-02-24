@@ -30,8 +30,13 @@ def _recent(path: Path, since: datetime) -> bool:
     return datetime.fromtimestamp(path.stat().st_mtime, tz=UTC) >= since
 
 
-def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | None = None, refinement_ptr: str | None = None) -> dict:
-    bt_path = Path(r['backtest_result_path'])
+def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | None = None, refinement_ptr: str | None = None) -> dict | None:
+    bt_raw = str(r.get('backtest_result_path', '') or '')
+    if not bt_raw:
+        return None
+    bt_path = Path(bt_raw)
+    if not bt_path.exists() or bt_path.is_dir():
+        return None
     bt = _j(bt_path)
     dataset_meta = str(r.get('dataset_meta_path', ''))
     strategy_spec = str(bt.get('inputs', {}).get('strategy_spec') or bt.get('inputs', {}).get('strategy_spec_path') or '')
@@ -129,6 +134,8 @@ def main() -> int:
         bj = _j(batch)
         for r in bj.get('runs', []):
             e = _run_entry_from_batch_run(batch, r)
+            if not e:
+                continue
             sp_norm = str(Path(e['strategy_spec_path'])) if e.get('strategy_spec_path') else ''
             e['pointers']['promotion_run'] = promo_map.get(sp_norm)
             e['pointers']['refinement_cycle'] = refine_map.get(sp_norm)
@@ -168,6 +175,45 @@ def main() -> int:
     lessons = _cap(lessons, 50)
     _write(lessons_p, lessons)
 
+    # Indicator dedup index (bounded)
+    indicator_idx_path = lib_root / 'INDICATOR_INDEX.json'
+    existing_ind = _load_index(indicator_idx_path)
+    by_key = {str(x.get('tv_key')): x for x in existing_ind if isinstance(x, dict) and x.get('tv_key')}
+    new_indicators_added = 0
+    skipped_indicators_dedup = 0
+
+    for ir_path in (artifacts_root / 'indicators').rglob('*.indicator_record.json'):
+        try:
+            ir = _j(ir_path)
+        except Exception:
+            continue
+        name = str(ir.get('name', ''))
+        author = str(ir.get('author', 'unknown'))
+        tv_ref = str(ir.get('tv_ref', ''))
+        script_id = tv_ref.split(':', 1)[1] if tv_ref.startswith('tradingview:') else ''
+        tv_key = (name + '|' + author).strip().lower()
+        row = {
+            'tv_key': tv_key,
+            'script_id': script_id or None,
+            'name': name,
+            'author': author,
+            'indicator_record_path': str(ir_path).replace('\\', '/'),
+            'first_seen_ts': str(ir.get('created_at') or datetime.now(UTC).isoformat()),
+            'sources': ['librarian'],
+        }
+        if tv_key in by_key:
+            skipped_indicators_dedup += 1
+            prev = by_key[tv_key]
+            src = prev.get('sources', []) if isinstance(prev.get('sources', []), list) else []
+            prev['sources'] = (src + ['librarian'])[-10:]
+        else:
+            by_key[tv_key] = row
+            new_indicators_added += 1
+
+    indicator_rows = list(by_key.values())
+    indicator_rows.sort(key=lambda x: str(x.get('first_seen_ts', '')), reverse=True)
+    _write(indicator_idx_path, _cap(indicator_rows, 500))
+
     archived = None
     if args.archive:
         out = subprocess.check_output([
@@ -185,6 +231,8 @@ def main() -> int:
         'run_count': len(combined),
         'lessons_count': len(lessons),
         'example_top': top[0] if top else None,
+        'new_indicators_added': new_indicators_added,
+        'skipped_indicators_dedup': skipped_indicators_dedup,
         'archived': archived,
     }))
     return 0

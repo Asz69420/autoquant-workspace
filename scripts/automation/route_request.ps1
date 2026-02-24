@@ -483,7 +483,7 @@ if ($route -eq 'FAST_PATH') {
     }
 
     if ($null -ne $auto) {
-      Write-Output ("Autopilot: promotions " + [string]$auto.promotions_processed + ", refinements " + [string]$auto.refinements_run + ", new candidates " + [string]$auto.new_candidates_count + ", errors " + [string]$auto.errors_count)
+      Write-Output ("Autopilot: bundles " + [string]$auto.bundles_processed + ", promotions " + [string]$auto.promotions_processed + ", refinements " + [string]$auto.refinements_run + ", new indicators " + [string]$auto.new_indicators_added + ", dedup skips " + [string]$auto.skipped_indicators_dedup + ", new candidates " + [string]$auto.new_candidates_count + ", errors " + [string]$auto.errors_count)
     } else {
       Write-Output 'Autopilot: no recent summary'
     }
