@@ -2,22 +2,45 @@
 
 **Objective:** Durable, bloat-free multi-agent pipeline for trading R&D.
 
-## Fixed Agent Roster
+## Canonical Agent Roster
 
-| # | Emoji | Name | Mission |
-|---|-------|------|---------|
-| 1 | 🤖 | òQ | Main orchestrator; enforce USER.md rules; delegate work |
-| 2 | ⏱️ | Scheduler | Schedule tasks, manage timing, cron integration |
-| 3 | 🛡️ | Firewall | Validate specs, enforce security, block unsafe actions |
-| 4 | 🧾 | Logger | **ONLY** Telegram & NDJSON sender; drain outbox, format, retry |
-| 5 | 🔗 | Reader | Fetch links/videos, extract content, emit ResearchCards |
-| 6 | 🧲 | Grabber | Harvest TradingView indicators, emit IndicatorRecords |
-| 7 | 🧠 | Analyser | Generate non-generic trading theses from source material |
-| 8 | 📊 | Strategist | Convert theses into StrategySpecs and prioritize tests |
-| 9 | 📈 | Backtester | Run backtests, generate BacktestReports, measure |
-| 10 | 🗃️ | Keeper | Index artifacts, deduplicate, curate memory, promote strategies |
-| 11 | 🔰 | Verifier | Independent build QC: policy, compatibility, and future-proof checks |
-| 12 | 🎭 | Specter | Browser-AI bridge (mock-only Build 1); schema validation + safe contract responses |
+### Core Infra
+
+| Emoji | Agent | Role | Status |
+|---|---|---|---|
+| 🤖 | oQ | Main orchestrator; enforce USER rules and delegate work | EXISTS |
+| 🔰 | Verifier | Independent QC gate for policy/compatibility/future-proof checks | EXISTS |
+| 🗃️ | Keeper | Artifact indexing, dedup, memory curation authority | EXISTS |
+| 🧾 | Logger | ONLY Telegram + NDJSON sender/drain from outbox | EXISTS |
+| 🛡️ | Firewall | Spec/security gate and write-allowlist enforcement | EXISTS |
+| ⏱️ | Scheduler | Timing, cron orchestration, recurring task control | EXISTS |
+| 🔗 | Reader | Ingestion of links/videos into ResearchCards | EXISTS |
+| 🧲 | Grabber | TradingView indicator harvesting into IndicatorRecords | EXISTS |
+| 🕵️ | Specter | Browser-AI bridge for schema-validated interactions | PARTIAL |
+
+### Strategy Pipeline
+
+| Emoji | Agent | Role | Status |
+|---|---|---|---|
+| 🧠 | Analyser | Build falsifiable theses from source material | EXISTS |
+| 📊 | Strategist | Convert theses to testable StrategySpecs | EXISTS |
+| 📈 | Backtester | Execute backtests and produce performance reports | EXISTS |
+| 🏁 | Ranker | Compare/rank candidates across regimes and constraints | PLANNED |
+| 📚 | Librarian | Curate lessons/patterns and maintain retrieval-ready references | PLANNED |
+| 🔁 | Refiner | Iterate weak strategies into improved testable variants | PLANNED |
+
+### Execution (Planned)
+
+| Emoji | Agent | Role | Status |
+|---|---|---|---|
+| ⚡ | Executor-HL | Execute approved configs on Hyperliquid with guardrails | PLANNED |
+| 🛑 | Risk Manager | Enforce live risk policy, limits, and circuit-breakers | PLANNED |
+
+## Canonical Pipeline (Artifact-Based)
+
+`ResearchCard → Thesis → StrategySpec → BacktestResult → Lesson → Promotion → ExecutionConfig → Live Execution`
+
+**Non-goal:** Execution agents do not invent strategies; they only execute approved specs under risk policy.
 
 ## Single-Sender Logging Rule (MANDATORY)
 
