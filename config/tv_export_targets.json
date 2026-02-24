@@ -2,7 +2,7 @@
   "targets": [
     {
       "name": "eth_perp_15m",
-      "tv_symbol": "BINANCE:ETHUSDTPERP",
+      "tv_symbol": "BINANCE:ETHUSDT.P",
       "timeframe": "15",
       "history_mode": "max_then_incremental",
       "deep": {

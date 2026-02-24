@@ -83,6 +83,27 @@ def _write_index(pointer: dict) -> None:
     INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
 
 
+def _timeframe_alignment(rows: list[dict], time_col: str, timeframe: str) -> tuple[bool, int | None, list[str]]:
+    if not rows:
+        return False, None, []
+    ts = [_parse_ts(r[time_col]) for r in rows if r.get(time_col)]
+    bad = []
+    if timeframe == "15":
+        for t in ts:
+            if t.minute not in {0, 15, 30, 45}:
+                bad.append(t.strftime("%Y-%m-%d %H:%M:%S"))
+                if len(bad) >= 5:
+                    break
+    deltas = []
+    for i in range(1, len(ts)):
+        deltas.append(int((ts[i] - ts[i - 1]).total_seconds()))
+    median_delta = sorted(deltas)[len(deltas) // 2] if deltas else None
+    ok = (len(bad) == 0)
+    if timeframe == "15" and median_delta != 900:
+        ok = False
+    return ok, median_delta, bad
+
+
 def export_one(target: dict, mode: str, source_csv: Path, simulate_plateau: bool = False) -> ExportResult:
     tv_symbol = target["tv_symbol"]
     tf = str(target["timeframe"])
@@ -95,9 +116,19 @@ def export_one(target: dict, mode: str, source_csv: Path, simulate_plateau: bool
         failed = _save_failed(target, mode, source_csv, "TV_EXPORT_MISSING_VOLUME", False, 0)
         return ExportResult("PARTIAL", "TV_EXPORT_MISSING_VOLUME", str(failed), None)
 
+    tf_ui_verified = True  # UI verification stub; browser flow should set/check chart label with retries.
+    if not tf_ui_verified:
+        failed = _save_failed(target, mode, source_csv, "TV_EXPORT_TIMEFRAME_MISMATCH", True, len(rows), None, ["ui_timeframe_label_mismatch"])
+        return ExportResult("PARTIAL", "TV_EXPORT_TIMEFRAME_MISMATCH", str(failed), None)
+
     first_ts = _parse_ts(rows[0][mapping["time"]])
     last_ts = _parse_ts(rows[-1][mapping["time"]])
     row_count = len(rows)
+
+    alignment_ok, median_delta, bad_samples = _timeframe_alignment(rows, mapping["time"], tf)
+    if not alignment_ok:
+        failed = _save_failed(target, mode, source_csv, "TV_EXPORT_TIMEFRAME_MISMATCH", True, row_count, median_delta, bad_samples)
+        return ExportResult("PARTIAL", "TV_EXPORT_TIMEFRAME_MISMATCH", str(failed), None)
 
     # validation freshness: within ~4 bars
     now_utc = datetime.now(timezone.utc)
@@ -141,6 +172,9 @@ def export_one(target: dict, mode: str, source_csv: Path, simulate_plateau: bool
         "deep_plateau_reached": bool(simulate_plateau if mode == "deep" else False),
         "stagnation_count": int(target.get("deep", {}).get("stagnation_checks", 0) if mode == "deep" else 0),
         "volume_present": True,
+        "timeframe_alignment_ok": alignment_ok,
+        "median_bar_delta_seconds": median_delta,
+        "bad_timestamp_samples": bad_samples,
         "columns": headers,
     }
     out_meta.write_text(json.dumps(meta, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
@@ -175,7 +209,7 @@ def _latest_incremental_count(tv_symbol: str, tf: str) -> int:
     return 0
 
 
-def _save_failed(target: dict, mode: str, source_csv: Path, reason: str, volume_present: bool, row_count: int) -> Path:
+def _save_failed(target: dict, mode: str, source_csv: Path, reason: str, volume_present: bool, row_count: int, median_bar_delta_seconds: int | None = None, bad_timestamp_samples: list[str] | None = None) -> Path:
     sym = _sanitize_symbol(target["tv_symbol"])
     tf = str(target["timeframe"])
     fail_dir = ROOT / "artifacts" / "data" / "tradingview_export" / "_failed" / sym / tf / mode
@@ -192,6 +226,9 @@ def _save_failed(target: dict, mode: str, source_csv: Path, reason: str, volume_
         "history_mode": mode,
         "row_count": row_count,
         "volume_present": volume_present,
+        "timeframe_alignment_ok": False,
+        "median_bar_delta_seconds": median_bar_delta_seconds,
+        "bad_timestamp_samples": bad_timestamp_samples or [],
         "source": "tradingview_export",
         "backend": "openclaw",
     }, separators=(",", ":")), encoding="utf-8")
