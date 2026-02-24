@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/tv_ohlcv.schema.json",
+  "title": "TradingViewOHLCVExportMeta",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "symbol",
+    "timeframe",
+    "start",
+    "end",
+    "timezone",
+    "row_count",
+    "sha256",
+    "column_mapping",
+    "source_file"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "symbol": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "timeframe": { "type": "string", "minLength": 1, "maxLength": 16 },
+    "start": { "type": "string", "format": "date-time" },
+    "end": { "type": "string", "format": "date-time" },
+    "timezone": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "row_count": { "type": "integer", "minimum": 1 },
+    "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+    "column_mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time", "open", "high", "low", "close", "volume"],
+      "properties": {
+        "time": { "type": "string" },
+        "open": { "type": "string" },
+        "high": { "type": "string" },
+        "low": { "type": "string" },
+        "close": { "type": "string" },
+        "volume": { "type": "string" }
+      }
+    },
+    "source_file": { "type": "string", "minLength": 1, "maxLength": 2048 }
+  }
+}

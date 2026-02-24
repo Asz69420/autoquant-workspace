@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/trade_list.schema.json",
+  "title": "TradeList",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "created_at", "trades"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "trades": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "entry_time",
+          "entry_price",
+          "exit_time",
+          "exit_price",
+          "side",
+          "pnl",
+          "reason",
+          "bars_held"
+        ],
+        "properties": {
+          "entry_time": { "type": "string", "format": "date-time" },
+          "entry_price": { "type": "number" },
+          "exit_time": { "type": "string", "format": "date-time" },
+          "exit_price": { "type": "number" },
+          "side": { "type": "string", "enum": ["long", "short"] },
+          "qty": { "type": "number", "exclusiveMinimum": 0 },
+          "pnl": { "type": "number" },
+          "reason": { "type": "string", "enum": ["tp", "sl", "close", "reversal"] },
+          "bars_held": { "type": "integer", "minimum": 1 }
+        }
+      }
+    }
+  }
+}

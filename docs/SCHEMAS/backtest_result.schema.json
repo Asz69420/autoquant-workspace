@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/backtest_result.schema.json",
+  "title": "BacktestResultStage1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "inputs",
+    "settings",
+    "results"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dataset_path", "strategy_spec_path", "variant"],
+      "properties": {
+        "dataset_path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "strategy_spec_path": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "variant": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commission_pct", "slippage", "fill_rule", "tie_break"],
+      "properties": {
+        "commission_pct": { "type": "number", "minimum": 0 },
+        "slippage": { "const": 0 },
+        "fill_rule": { "type": "string", "enum": ["next_open", "close_entry"] },
+        "tie_break": { "type": "string", "enum": ["worst_case", "best_case"] }
+      }
+    },
+    "results": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trades", "net_return", "max_drawdown_proxy", "win_rate", "profit_factor"],
+      "properties": {
+        "trades": { "type": "integer", "minimum": 0 },
+        "net_return": { "type": "number" },
+        "max_drawdown_proxy": { "type": "number" },
+        "win_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "profit_factor": { "type": "number", "minimum": 0 }
+      }
+    },
+    "parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parity_report_path"],
+      "properties": {
+        "parity_report_path": { "type": "string", "minLength": 1, "maxLength": 2048 }
+      }
+    }
+  },
+  "allOf": [
+    { "description": "Serialized JSON must be <= 80KB (enforced by emitter)." }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "id": "fixture-strategy-tv-parity",
+  "created_at": "2026-02-24T00:00:00Z",
+  "source_thesis_path": "fixtures://test",
+  "variants": [
+    {
+      "name": "baseline",
+      "description": "Simple deterministic parity fixture",
+      "entry_long": ["close_gt_open"],
+      "entry_short": ["close_lt_open"],
+      "filters": [],
+      "exit_rules": ["close_lt_open"],
+      "risk_rules": ["stop_loss_pct=0.03", "take_profit_pct=0.03"],
+      "parameters": [],
+      "constraints": []
+    }
+  ]
+}
