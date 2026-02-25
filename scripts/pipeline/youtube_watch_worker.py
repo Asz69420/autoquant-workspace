@@ -46,7 +46,7 @@ def _log(action: str, reason: str, summary: str, status: str = 'INFO', inputs: l
             '--model-id', 'openai-codex/gpt-5.3-codex',
             '--action', action,
             '--status-word', status,
-            '--status-emoji', 'INFO' if status == 'INFO' else ('WARN' if status == 'WARN' else 'FAIL'),
+            '--status-emoji', ('OK' if status == 'OK' else ('INFO' if status == 'INFO' else ('WARN' if status == 'WARN' else 'FAIL'))),
             '--reason-code', reason,
             '--summary', summary,
         ]
@@ -154,7 +154,12 @@ def main() -> int:
     _w(BUNDLE_INDEX, bundles[:500])
     state['seen_video_ids'] = list(seen_videos)[-1000:]
     _w(STATE_PATH, state)
-    _log('YT_WATCH_SUMMARY', 'YT_WATCH_SUMMARY', f"YT: channels={channels_checked} new={new_total} processed={processed} dedup={dedup} failed={failed}", 'INFO', agent='Reader')
+    y_status = 'OK'
+    if failed > 0 and processed == 0 and new_total > 0:
+        y_status = 'FAIL'
+    elif failed > 0 or channels_checked == 0:
+        y_status = 'WARN'
+    _log('YT_WATCH_SUMMARY', 'YT_WATCH_SUMMARY', f"YT: channels={channels_checked} new={new_total} processed={processed} dedup={dedup} failed={failed}", y_status, agent='Reader')
     print(json.dumps({'created_bundles': created, 'count': len(created)}))
     return 0
 

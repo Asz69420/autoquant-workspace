@@ -44,7 +44,7 @@ def _log(action: str, reason: str, summary: str, status: str = 'INFO', inputs: l
             '--model-id', 'openai-codex/gpt-5.3-codex',
             '--action', action,
             '--status-word', status,
-            '--status-emoji', 'INFO' if status == 'INFO' else ('WARN' if status == 'WARN' else 'FAIL'),
+            '--status-emoji', ('OK' if status == 'OK' else ('INFO' if status == 'INFO' else ('WARN' if status == 'WARN' else 'FAIL'))),
             '--reason-code', reason,
             '--summary', summary,
         ]
@@ -193,8 +193,18 @@ def main() -> int:
     _w(INDICATOR_INDEX, idx[:500])
     _w(STATE_PATH, {**st, 'seen_tv_keys': st['seen_tv_keys'][-1000:], 'seen_script_ids': st['seen_script_ids'][-1000:], 'last_trending_seen': st['last_trending_seen'][-50:]})
     _w(BUNDLE_INDEX, (created + bundles)[:500])
-    _log('GRABBER_SUMMARY', 'GRABBER_SUMMARY', f"Grabber: fetched={grabber_ok} dedup={skipped} failed={grabber_fail}", 'INFO', agent='Grabber')
-    _log('TV_CATALOG_SUMMARY', 'TV_CATALOG_SUMMARY', f"TV: mode=TOP/TRENDING added={added} dedup={skipped} invalid={invalid}", 'INFO', agent='TV Catalog')
+    g_status = 'OK'
+    if grabber_fail > 0 and grabber_ok == 0:
+        g_status = 'FAIL'
+    elif grabber_fail > 0 or grabber_ok == 0:
+        g_status = 'WARN'
+    tv_status = 'OK'
+    if added == 0 and (grabber_fail > 0 or invalid > 0):
+        tv_status = 'FAIL'
+    elif added == 0 or skipped > 0 or invalid > 0:
+        tv_status = 'WARN'
+    _log('GRABBER_SUMMARY', 'GRABBER_SUMMARY', f"Grabber: fetched={grabber_ok} dedup={skipped} failed={grabber_fail}", g_status, agent='Grabber')
+    _log('TV_CATALOG_SUMMARY', 'TV_CATALOG_SUMMARY', f"TV: mode=TOP/TRENDING added={added} dedup={skipped} invalid={invalid}", tv_status, agent='TV Catalog')
     print(json.dumps({'created_bundles': created, 'new_indicators_added': added, 'skipped_dedup': skipped, 'invalid': invalid, 'grabber_ok': grabber_ok, 'grabber_fail': grabber_fail}))
     return 0
 

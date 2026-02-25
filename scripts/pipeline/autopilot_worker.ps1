@@ -27,7 +27,7 @@ $CycleRunId = 'autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 function Emit-Summary($reasonCode, $summary, $statusWord = 'INFO', $agent = 'oQ') {
   if ($DryRun) { return }
   try {
-    $emoji = if ($statusWord -eq 'WARN') { 'WARN' } elseif ($statusWord -eq 'FAIL') { 'FAIL' } else { 'INFO' }
+    $emoji = if ($statusWord -eq 'OK') { 'OK' } elseif ($statusWord -eq 'WARN') { 'WARN' } elseif ($statusWord -eq 'FAIL') { 'FAIL' } else { 'INFO' }
     $rid = if ($reasonCode -eq 'AUTOPILOT_SUMMARY') { $CycleRunId } else { $CycleRunId + '-' + $reasonCode }
     python scripts/log_event.py --run-id $rid --agent $agent --model-id openai-codex/gpt-5.3-codex --action $reasonCode --status-word $statusWord --status-emoji $emoji --reason-code $reasonCode --summary $summary 2>$null | Out-Null
   } catch {}
@@ -79,17 +79,18 @@ try {
       if ($tv.grabber_ok) { $grabberFetched = [int]$tv.grabber_ok }
       if ($tv.skipped_dedup) { $grabberDedup = [int]$tv.skipped_dedup }
       if ($tv.grabber_fail) { $grabberFailed = [int]$tv.grabber_fail }
-      Emit-InfoSummary 'GRABBER_SUMMARY' ("Grabber: fetched=" + $grabberFetched + " dedup=" + $grabberDedup + " failed=" + $grabberFailed) 'Grabber'
+      $gStatus = if ($grabberFailed -gt 0 -and $grabberFetched -eq 0) { 'FAIL' } elseif ($grabberFailed -gt 0 -or $grabberFetched -eq 0) { 'WARN' } else { 'OK' }
+      Emit-Summary 'GRABBER_SUMMARY' ("Grabber: fetched=" + $grabberFetched + " dedup=" + $grabberDedup + " failed=" + $grabberFailed) $gStatus 'Grabber'
       $grabberEmitted = $true
     } catch {
       $errorsCount += 1
-      Emit-InfoSummary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'Grabber'
+      Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'WARN' 'Grabber'
       $grabberEmitted = $true
     }
   }
 
   if (-not $grabberEmitted -and -not $DryRun) {
-    Emit-InfoSummary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'Grabber'
+    Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'WARN' 'Grabber'
     $grabberEmitted = $true
   }
 
@@ -115,18 +116,18 @@ try {
           if ($variantCount -eq 0) { $promoStatus = 'BLOCKED' }
 
           if ($promoStatus -eq 'BLOCKED') {
-            Emit-InfoSummary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'Promotion'
+            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'WARN' 'Promotion'
           } else {
-            Emit-InfoSummary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'Promotion'
+            Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'OK' 'Promotion'
           }
           $promotionEmitted = $true
 
           $batch = $null
           if ($promoStatus -eq 'BLOCKED') {
-            Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: blocked promotion)' 'Backtester'
+            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: blocked promotion)' 'WARN' 'Backtester'
             $batchEmitted = $true
           } elseif ($variantCount -eq 0) {
-            Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'Backtester'
+            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'WARN' 'Backtester'
             $batchEmitted = $true
           } else {
             try {
@@ -136,10 +137,12 @@ try {
               $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $batchSkipped += [int]$bdoc.summary.failed_runs
               foreach ($rr in $bdoc.runs) { if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 } }
-              Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + ($bdoc.summary.total_runs - $bdoc.summary.failed_runs) + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail) 'Backtester'
+              $execCount = ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
+              $bStatus = if ($execCount -le 0) { 'WARN' } else { 'OK' }
+              Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail) $bStatus 'Backtester'
               $batchEmitted = $true
             } catch {
-              Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: batch error)' 'Backtester'
+              Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: batch error)' 'FAIL' 'Backtester'
               $batchEmitted = $true
             }
           }
@@ -163,7 +166,7 @@ try {
           ($promoObj | ConvertTo-Json -Depth 8) | Set-Content -Path $promoPath -Encoding utf8
 
           if ($promoStatus -eq 'BLOCKED') {
-            Emit-InfoSummary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'Refinement'
+            Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'WARN' 'Refinement'
             $refineEmitted = $true
           } elseif ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
@@ -173,10 +176,11 @@ try {
               $refineVariants = [int]$rdoc.winner.summary.total_runs
               $refineExplore = [int]$rdoc.explore_variants_used_total
               $refineDelta = [string]$rdoc.best_score_delta
-              Emit-InfoSummary 'REFINEMENT_SUMMARY' ("Refine: iters=" + $rdoc.iterations_used + " variants=" + $refineVariants + " explore=" + $refineExplore + " delta=" + $refineDelta + " status=" + $rdoc.final_recommendation) 'Refinement'
+              $rStatus = if ([string]$rdoc.final_recommendation -eq 'NO_IMPROVEMENT') { 'WARN' } else { 'OK' }
+              Emit-Summary 'REFINEMENT_SUMMARY' ("Refine: iters=" + $rdoc.iterations_used + " variants=" + $refineVariants + " explore=" + $refineExplore + " delta=" + $refineDelta + " status=" + $rdoc.final_recommendation) $rStatus 'Refinement'
               $refineEmitted = $true
             } catch {
-              Emit-InfoSummary 'REFINEMENT_SUMMARY' 'Refine: iters=1 variants=0 explore=0 delta=n/a status=NO_IMPROVEMENT' 'Refinement'
+              Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=1 variants=0 explore=0 delta=n/a status=NO_IMPROVEMENT' 'WARN' 'Refinement'
               $refineEmitted = $true
             }
           }
@@ -188,7 +192,7 @@ try {
   }
 
   if (-not $batchEmitted -and -not $DryRun) {
-    Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'Backtester'
+    Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'WARN' 'Backtester'
     $batchEmitted = $true
   }
 
@@ -229,7 +233,7 @@ try {
       if ($readOk) {
         $libraryRunCount = [int]$runCountActual
         $libraryLessons = [int]$lessCountActual
-        Emit-InfoSummary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0") 'Librarian'
+        Emit-Summary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0") 'OK' 'Librarian'
         $libraryEmitted = $true
       } else {
         Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: read fail)' 'WARN' 'Librarian'
@@ -249,15 +253,15 @@ catch {
 finally {
   if (-not $DryRun) {
     if (-not $promotionEmitted) {
-      Emit-InfoSummary 'PROMOTION_SUMMARY' 'Promote: bundles=0 thesis=SKIPPED spec=SKIPPED variants=0 status=SKIPPED' 'Promotion'
+      Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=0 thesis=SKIPPED spec=SKIPPED variants=0 status=SKIPPED' 'WARN' 'Promotion'
       $promotionEmitted = $true
     }
     if (-not $batchEmitted) {
-      Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 gate_fail=0 (skipped: no variants)' 'Backtester'
+      Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 gate_fail=0 (skipped: no variants)' 'WARN' 'Backtester'
       $batchEmitted = $true
     }
     if (-not $refineEmitted) {
-      Emit-InfoSummary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'Refinement'
+      Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'WARN' 'Refinement'
       $refineEmitted = $true
     }
     if (-not $libraryEmitted) {
@@ -286,7 +290,8 @@ if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir |
 ($summary | ConvertTo-Json -Depth 5) | Set-Content -Path 'data/state/autopilot_summary.json' -Encoding utf8
 
 if (-not $DryRun) {
-  Emit-InfoSummary 'AUTOPILOT_SUMMARY' ("Autopilot: bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) 'oQ'
+  $aStatus = if ($errorsCount -gt 0) { 'FAIL' } elseif ($bundlesProcessed -eq 0 -or $promotionsProcessed -eq 0) { 'WARN' } else { 'OK' }
+  Emit-Summary 'AUTOPILOT_SUMMARY' ("Autopilot: bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)
