@@ -22,11 +22,16 @@ function Ensure-Lock($name) {
   return $lockPath
 }
 
-function Emit-InfoSummary($reasonCode, $summary) {
+function Emit-Summary($reasonCode, $summary, $statusWord = 'INFO') {
   if ($DryRun) { return }
   try {
-    python scripts/log_event.py --run-id ('autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) --agent oQ --model-id openai-codex/gpt-5.3-codex --action $reasonCode --status-word INFO --status-emoji INFO --reason-code $reasonCode --summary $summary 2>$null | Out-Null
+    $emoji = if ($statusWord -eq 'WARN') { 'WARN' } elseif ($statusWord -eq 'FAIL') { 'FAIL' } else { 'INFO' }
+    python scripts/log_event.py --run-id ('autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) --agent oQ --model-id openai-codex/gpt-5.3-codex --action $reasonCode --status-word $statusWord --status-emoji $emoji --reason-code $reasonCode --summary $summary 2>$null | Out-Null
   } catch {}
+}
+
+function Emit-InfoSummary($reasonCode, $summary) {
+  Emit-Summary $reasonCode $summary 'INFO'
 }
 
 $promotionsProcessed = 0
@@ -138,16 +143,37 @@ try {
       $topPath = 'artifacts/library/TOP_CANDIDATES.json'
       $runPath = 'artifacts/library/RUN_INDEX.json'
       $lessPath = 'artifacts/library/LESSONS_INDEX.json'
-      $topCountActual = 0
-      $runCountActual = 0
-      $lessCountActual = 0
-      try { if (Test-Path $topPath) { $topCountActual = @((Get-Content $topPath -Raw | ConvertFrom-Json)).Count } } catch {}
-      try { if (Test-Path $runPath) { $runCountActual = @((Get-Content $runPath -Raw | ConvertFrom-Json)).Count } } catch {}
-      try { if (Test-Path $lessPath) { $lessCountActual = @((Get-Content $lessPath -Raw | ConvertFrom-Json)).Count } } catch {}
 
-      $libraryRunCount = $runCountActual
-      $libraryLessons = $lessCountActual
-      Emit-InfoSummary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0")
+      $topCountActual = $null
+      $runCountActual = $null
+      $lessCountActual = $null
+      $readOk = $true
+
+      try {
+        if (-not (Test-Path $topPath)) { throw 'TOP_CANDIDATES missing' }
+        $topObj = Get-Content $topPath -Raw | ConvertFrom-Json
+        $topCountActual = @($topObj).Count
+      } catch { $readOk = $false }
+
+      try {
+        if (-not (Test-Path $runPath)) { throw 'RUN_INDEX missing' }
+        $runObj = Get-Content $runPath -Raw | ConvertFrom-Json
+        $runCountActual = @($runObj).Count
+      } catch { $readOk = $false }
+
+      try {
+        if (-not (Test-Path $lessPath)) { throw 'LESSONS_INDEX missing' }
+        $lessObj = Get-Content $lessPath -Raw | ConvertFrom-Json
+        $lessCountActual = @($lessObj).Count
+      } catch { $readOk = $false }
+
+      if ($readOk) {
+        $libraryRunCount = [int]$runCountActual
+        $libraryLessons = [int]$lessCountActual
+        Emit-InfoSummary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0")
+      } else {
+        Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=?' 'WARN'
+      }
     } catch { $errorsCount += 1 }
   }
 }
