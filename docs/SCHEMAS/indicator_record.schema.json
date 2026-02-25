@@ -18,8 +18,10 @@
     "pine_raw_lines",
     "pine_min_bytes",
     "pine_min_lines",
-    "pine_size_class",
+    "pine_size_class_bytes",
+    "pine_size_class_lines",
     "pine_too_large",
+    "pine_too_large_reason",
     "sha256",
     "truncated"
   ],
@@ -54,8 +56,20 @@
     "pine_raw_lines": { "type": "integer", "minimum": 0 },
     "pine_min_bytes": { "type": "integer", "minimum": 0 },
     "pine_min_lines": { "type": "integer", "minimum": 0 },
-    "pine_size_class": { "type": "string", "enum": ["small", "medium", "large"] },
+    "pine_size_class": {
+      "type": "string",
+      "enum": ["small", "medium", "large"],
+      "description": "Deprecated: use pine_size_class_bytes and pine_size_class_lines"
+    },
+    "pine_size_class_bytes": { "type": "string", "enum": ["small", "medium", "large"] },
+    "pine_size_class_lines": { "type": "string", "enum": ["small", "medium", "large"] },
     "pine_too_large": { "type": "boolean" },
+    "pine_too_large_reason": {
+      "oneOf": [
+        { "type": "string", "enum": ["lines", "bytes"] },
+        { "type": "null" }
+      ]
+    },
     "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "truncated": { "type": "boolean" }
   },

@@ -146,6 +146,7 @@ try {
             $irObj = Get-Content $indPaths[0] -Raw | ConvertFrom-Json
             if ($irObj.component_type) { $componentType = [string]$irObj.component_type }
             if ($null -ne $irObj.pine_too_large) { $componentTooLarge = [bool]$irObj.pine_too_large }
+            if ($irObj.pine_too_large_reason) { $componentReason = [string]$irObj.pine_too_large_reason }
           }
         } catch {}
 
@@ -157,7 +158,8 @@ try {
               $b.reason_code = 'COMPONENT_TOO_LARGE'
               ($b | ConvertTo-Json -Depth 8) | Set-Content -LiteralPath $bp -Encoding utf8
             } catch {}
-            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=SKIPPED spec=BLOCKED variants=0 status=BLOCKED reason=COMPONENT_TOO_LARGE summary=Component too large; skipped' 'WARN' 'Promotion'
+            $sizeDetail = if ([string]::IsNullOrWhiteSpace($componentReason)) { 'unknown' } else { $componentReason }
+            Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=SKIPPED spec=BLOCKED variants=0 status=BLOCKED reason=COMPONENT_TOO_LARGE summary=Component too large (" + $sizeDetail + "); skipped") 'WARN' 'Promotion'
             $promotionEmitted = $true
             Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: COMPONENT_TOO_LARGE)' 'WARN' 'Backtester'
             $batchEmitted = $true

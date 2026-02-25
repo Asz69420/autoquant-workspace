@@ -123,10 +123,18 @@ def component_type(source: str) -> str:
     return "STRATEGY" if any(x in s for x in needles) else "INDICATOR"
 
 
-def size_class(min_bytes: int) -> str:
+def size_class_bytes(min_bytes: int) -> str:
     if min_bytes < 20 * 1024:
         return "small"
     if min_bytes < 80 * 1024:
+        return "medium"
+    return "large"
+
+
+def size_class_lines(min_lines: int) -> str:
+    if min_lines < 200:
+        return "small"
+    if min_lines < 600:
         return "medium"
     return "large"
 
@@ -153,8 +161,12 @@ def main() -> int:
     min_bytes = len(src_min.encode("utf-8", errors="ignore"))
     min_lines = len(src_min.splitlines()) if src_min else 0
 
-    p_size_class = size_class(min_bytes)
+    p_size_class_bytes = size_class_bytes(min_bytes)
+    p_size_class_lines = size_class_lines(min_lines)
     too_large = min_lines > 600 or min_bytes >= 80 * 1024
+    too_large_reason = None
+    if too_large:
+        too_large_reason = "bytes" if min_bytes >= 80 * 1024 else "lines"
     ctype = component_type(src_trunc)
 
     iid = make_id(args.tv_ref, src_trunc)
@@ -192,8 +204,11 @@ def main() -> int:
         "pine_raw_lines": raw_lines,
         "pine_min_bytes": min_bytes,
         "pine_min_lines": min_lines,
-        "pine_size_class": p_size_class,
+        "pine_size_class": p_size_class_bytes,
+        "pine_size_class_bytes": p_size_class_bytes,
+        "pine_size_class_lines": p_size_class_lines,
         "pine_too_large": too_large,
+        "pine_too_large_reason": too_large_reason,
         "sha256": sha256_text(src_trunc if src_trunc else args.name),
         "truncated": src_truncated,
     }
