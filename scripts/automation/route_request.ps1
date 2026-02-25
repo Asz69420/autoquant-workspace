@@ -339,31 +339,12 @@ function Send-NoodleReply {
 
   Write-Output $reply
 
-  $sendOk = $false
-  $sendErr = ''
-  $tgChat = ''
-  if (-not [string]::IsNullOrWhiteSpace($ChatId)) {
-    if ($ChatId -match '^telegram:group:(-?\d+)$') { $tgChat = $matches[1] }
-    elseif ($ChatId -match '^telegram:(-?\d+)$') { $tgChat = $matches[1] }
-  }
-
-  if (-not [string]::IsNullOrWhiteSpace($tgChat)) {
-    try {
-      $null = python scripts/tg_notify.py --chat-id $tgChat -- "$reply"
-      if ($LASTEXITCODE -eq 0) { $sendOk = $true } else { $sendErr = ('tg_notify_exit=' + $LASTEXITCODE) }
-    } catch {
-      $sendErr = [string]$_.Exception.Message
-    }
-  } else {
-    $sendErr = 'invalid_chat_id'
-  }
-
-  $statusWord = if ($sendOk) { 'INFO' } else { 'WARN' }
-  $statusEmoji = if ($sendOk) { 'ℹ️' } else { '⚠️' }
-  $summary = ('chat_id=' + $ChatId + '; reply_length=' + $reply.Length + '; send_ok=' + ($sendOk.ToString().ToLowerInvariant()))
-  $outs = @('chat_id=' + $ChatId, 'reply_length=' + $reply.Length)
-  if (-not [string]::IsNullOrWhiteSpace($sendErr)) { $outs += ('error=' + $sendErr) }
-  Emit-LogEvent -RunId ('noodle-reply-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord $statusWord -StatusEmoji $statusEmoji -ReasonCode 'NOODLE_REPLY_SENT' -Summary $summary -Inputs @() -Outputs $outs
+  # Primary send path is stdout -> OpenClaw ingress responder.
+  # Keep this deterministic and channel-agnostic for Noodle group replies.
+  $sendOk = $true
+  $summary = ('chat_id=' + $ChatId + '; reply_length=' + $reply.Length + '; send_ok=true')
+  $outs = @('chat_id=' + $ChatId, 'reply_length=' + $reply.Length, 'delivery=stdout')
+  Emit-LogEvent -RunId ('noodle-reply-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'NOODLE_REPLY_SENT' -Summary $summary -Inputs @() -Outputs $outs
 }
 
 function Invoke-NoodleReadonly {
@@ -947,3 +928,4 @@ $jobId = [string]$enqueue.Job.job_id
 $pos = [int]$enqueue.Position
 Emit-LogEvent -RunId ($runId + '-enqueued') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_ENQUEUED' -Summary ('Build enqueued: ' + $jobId + ' position=' + $pos) -Inputs @($buildQuestion) -Outputs @($jobId,('position=' + $pos))
 Write-Output ("Queued. Position: " + $pos + ". I will start it after the current build finishes.")
+
