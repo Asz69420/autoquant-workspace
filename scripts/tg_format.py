@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert ActionEvent JSON to single-line Telegram message."""
+"""Convert ActionEvent JSON to legacy single-line Telegram message."""
 import json
 import re
 import sys
@@ -13,9 +13,12 @@ except Exception:
     pass
 
 STATUS_EMOJI_FALLBACK = {
+    "START": "▶️",
     "OK": "✅",
     "WARN": "⚠️",
     "FAIL": "❌",
+    "BLOCKED": "⛔",
+    "INFO": "ℹ️",
 }
 
 AGENT_EMOJI = {
@@ -44,40 +47,53 @@ def _as_str(v: Any, default: str = "") -> str:
     return str(v)
 
 
-def _normalize_status_word(status_word: str) -> str:
-    sw = _as_str(status_word, "").upper().strip()
-    if sw not in {"OK", "WARN", "FAIL"}:
-        return "OK"
-    return sw
-
-
-def _normalize_status_emoji(status_emoji: str, status_word: str) -> str:
-    sw = _normalize_status_word(status_word)
-    se = _as_str(status_emoji, "").strip()
-    if se in STATUS_EMOJI_FALLBACK.values():
-        return se
-    return STATUS_EMOJI_FALLBACK.get(sw, "✅")
-
-
 def _clean_one_line(text: str) -> str:
-    t = _as_str(text, "")
-    t = re.sub(r"\s+", " ", t).strip()
-    return t
+    return re.sub(r"\s+", " ", _as_str(text, "")).strip()
+
+
+def to_model_label(model_id: str) -> str:
+    known = {
+        "openai-codex/gpt-5.3-codex": "codex 5.3",
+        "opencode/claude-opus-4-6": "opus 4.6",
+        "anthropic/claude-sonnet-4-6": "sonnet 4.6",
+        "anthropic/claude-haiku-4-5-20251001": "haiku 4.5",
+    }
+    if model_id in known:
+        return known[model_id]
+    short = model_id.split("/")[-1].replace("-", " ").replace("gpt", "gpt").replace("claude", "").strip()
+    return _clean_one_line(short) or _clean_one_line(model_id)
 
 
 def render_one_line(event: dict) -> str:
     agent = _clean_one_line(event.get("agent", "Unknown")) or "Unknown"
     agent_emoji = AGENT_EMOJI.get(agent, "🤖")
 
-    status_word = _normalize_status_word(event.get("status_word", "OK"))
-    status_emoji = _normalize_status_emoji(event.get("status_emoji", ""), status_word)
+    status_word = _clean_one_line(event.get("status_word", "INFO")).upper()
+    status_emoji = _clean_one_line(event.get("status_emoji", ""))
+    if not status_emoji or status_emoji.upper() == status_word:
+        status_emoji = STATUS_EMOJI_FALLBACK.get(status_word, "ℹ️")
 
-    reason_code = _clean_one_line(event.get("reason_code", "")) or "NO_REASON"
-    summary = _clean_one_line(event.get("summary", "")) or "Completed"
+    reason_code = _clean_one_line(event.get("reason_code", ""))
+    reason_suffix = f" ({reason_code})" if reason_code else ""
 
-    line = f"{agent_emoji} {agent} | {status_emoji} {status_word} ({reason_code}) — {summary}"
-    line = line.replace("`", "'")
-    return f"```{line}```"
+    summary = _clean_one_line(event.get("summary", ""))
+    model_label = to_model_label(_clean_one_line(event.get("model_id", "")))
+
+    ts_local = _clean_one_line(event.get("ts_local", ""))
+    if ts_local.endswith(" AEST"):
+        ts_local = ts_local[:-5]
+
+    parts = [
+        f"{agent_emoji} {agent}",
+        model_label,
+        f"{status_emoji} {status_word}{reason_suffix}",
+    ]
+    if summary:
+        parts.append(summary)
+    if ts_local:
+        parts.append(ts_local)
+
+    return " | ".join(parts[:3]) + (" " + " ".join(parts[3:]) if len(parts) > 3 else "")
 
 
 def main() -> int:

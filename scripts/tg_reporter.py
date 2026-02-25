@@ -313,7 +313,7 @@ def send_event_to_telegram(event):
                     env=env
                 )
                 formatted_msg = result.stdout.decode("utf-8", errors="replace").strip()
-                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg, "--parse-mode", "MarkdownV2"]
+                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg]
                 if reason_code:
                     notify_cmd.extend(["--reason-code", reason_code])
 
