@@ -4,7 +4,9 @@
 
 ## Canonical Agent Roster
 
-### Core Infra
+### ✅ Active Agents (LLM)
+
+#### Core Infra
 
 | Emoji | Agent | Role | Status |
 |---|---|---|---|
@@ -18,26 +20,15 @@
 | 🧲 | Grabber | TradingView indicator harvesting into IndicatorRecords | EXISTS |
 | 🕵️ | Specter | Browser-AI bridge for schema-validated interactions | PARTIAL |
 
-### Strategy Pipeline
+#### Strategy Pipeline
 
 | Emoji | Agent | Role | Status |
 |---|---|---|---|
 | 🧠 | Analyser | Build falsifiable theses from source material | EXISTS |
 | 📊 | Strategist | Convert theses to testable StrategySpecs | EXISTS |
 | 📈 | Backtester | Execute backtests and produce performance reports | EXISTS |
-| 🏁 | Ranker | Compare/rank candidates across regimes and constraints | PLANNED |
-| 📚 | Librarian | Curate lessons/patterns and maintain retrieval-ready references | PLANNED |
-| 🔁 | Refiner | Iterate weak strategies into improved testable variants | PLANNED |
-| 🧑‍💻 | Coder | Convert Pine ↔ Python, generate code from StrategySpec, maintain adapters | PLANNED |
 
-### Execution (Planned)
-
-| Emoji | Agent | Role | Status |
-|---|---|---|---|
-| ⚡ | Executor-HL | Execute approved configs on Hyperliquid with guardrails | PLANNED |
-| 🛑 | Risk Manager | Enforce live risk policy, limits, and circuit-breakers | PLANNED |
-
-## Systems (Scripts / Workers)
+### ✅ Active Systems (Scripts / Workers)
 
 | Emoji | Name | Role | Status |
 |---|---|---|---|
@@ -51,6 +42,17 @@
 | 🧾 | Stage Verifiers | verify_pipeline_stage1/2/3 + stage4 gates | ACTIVE |
 | 📤 | TV Exporter | export_tradingview_csv.py capture/export path | WIP / BLOCKED: real download capture |
 | 🧪 | TV Parity Harness | tv_parity_engine.py + compare_tv_trades.py parity checks | WIP |
+
+### 🛠️ Planned
+
+| Emoji | Agent/System | Role | Status |
+|---|---|---|---|
+| 🏁 | Ranker (agent) | Compare/rank candidates across regimes and constraints | PLANNED |
+| 📚 | Librarian (agent form) | Planned persona wrapper for lesson curation (system is active as Librarian v1) | PLANNED |
+| 🔁 | Refiner (agent form) | Planned persona wrapper for iterative candidate improvement (system runner is active) | PLANNED |
+| 🧑‍💻 | Coder (agent) | Convert Pine ↔ Python, generate code from StrategySpec, maintain adapters | PLANNED |
+| ⚡ | Executor-HL (agent) | Execute approved configs on Hyperliquid with guardrails | PLANNED |
+| 🛑 | Risk Manager (agent) | Enforce live risk policy, limits, and circuit-breakers | PLANNED |
 
 ## Canonical Pipeline (Artifact-Based)
 

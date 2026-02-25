@@ -385,8 +385,7 @@ if ($route -eq 'FAST_PATH') {
   }
 
   if ($intentAction -eq 'show_roster' -or $m -eq 'roster' -or $m -eq 'show roster' -or $m -eq 'agent roster' -or $m -eq 'roster details') {
-    $isDetails = ($m -eq 'roster details')
-    Write-Output "Agents (LLM)"
+    Write-Output "✅ Active Agents (LLM)"
     Write-Output "🤖 oQ - Main orchestrator and delegation control."
     Write-Output "🔰 Verifier - Independent QC gate for policy and compatibility checks."
     Write-Output "🗃️ Keeper - Artifact indexing, dedup, and memory curation authority."
@@ -396,25 +395,26 @@ if ($route -eq 'FAST_PATH') {
     Write-Output "🧠 Analyser - Falsifiable thesis generation from research inputs."
     Write-Output "📊 Strategist - Thesis-to-StrategySpec translation."
     Write-Output "📈 Backtester - Batch backtest execution and report output."
-    if ($isDetails) {
-      Write-Output "🏁 Ranker - Planned ranking across regimes and constraints."
-      Write-Output "📚 Librarian - Planned long-horizon lesson curation agent persona."
-      Write-Output "🔁 Refiner - Planned iterative candidate improver persona."
-      Write-Output "🧑‍💻 Coder - Planned Pine/Python conversion and adapter maintainer."
-      Write-Output "⚡ Executor-HL - Planned live Hyperliquid executor under guardrails."
-      Write-Output "🛑 Risk Manager - Planned live risk and circuit-breaker enforcement."
-    }
-    Write-Output "Systems (scripts)"
+
+    Write-Output "✅ Active Systems (Scripts)"
     Write-Output "🧵 Build Queue Worker - Single-flight queued BUILD_PATH execution."
     Write-Output "📣 TG Reporter - High-signal Telegram reporting and filters."
     Write-Output "🗄️ HL Data Ingest - Hyperliquid OHLCV ingestion + validation."
     Write-Output "🧪 HL Backtest Engine - Core hl_backtest_engine.py runner."
     Write-Output "📦 Batch Backtest Runner - Batch runs + experiment-plan emission."
-    Write-Output "🔁 Refinement Loop Runner - Bounded refinement-cycle orchestration."
-    Write-Output "📚 Librarian v1 - Indexing, dedup, archive rotation, top candidates."
+    Write-Output "🔁 Refinement Loop Runner - run_refinement_loop.py bounded refinement-cycle orchestration."
+    Write-Output "📚 Librarian v1 - run_librarian.py + dedup + archive rotation + top candidates."
     Write-Output "🧾 Stage Verifiers - Stage1/2/3 verifiers + stage4 gates."
     Write-Output "📤 TV Exporter - WIP; blocked on reliable real-download capture."
     Write-Output "🧪 TV Parity Harness - WIP parity validation against TV trade outputs."
+
+    Write-Output "🛠️ Planned"
+    Write-Output "🏁 Ranker - Planned ranking across regimes and constraints."
+    Write-Output "📚 Librarian (agent form) - Planned persona wrapper (system is active as Librarian v1)."
+    Write-Output "🔁 Refiner (agent form) - Planned persona wrapper (system runner is active)."
+    Write-Output "🧑‍💻 Coder - Planned Pine/Python conversion and adapter maintainer."
+    Write-Output "⚡ Executor-HL - Planned live Hyperliquid executor under guardrails."
+    Write-Output "🛑 Risk Manager - Planned live risk and circuit-breaker enforcement."
     exit 0
   }
 
