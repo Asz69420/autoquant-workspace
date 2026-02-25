@@ -56,6 +56,81 @@ def parse_list(s: str) -> list[str]:
     return [str(x) for x in json.loads(s)]
 
 
+def minify_pine(source: str) -> str:
+    out: list[str] = []
+    i = 0
+    n = len(source)
+    in_block = False
+    in_line = False
+    in_str = False
+    str_q = ""
+
+    while i < n:
+        ch = source[i]
+        nxt = source[i + 1] if i + 1 < n else ""
+
+        if in_line:
+            if ch == "\n":
+                in_line = False
+                out.append(ch)
+            i += 1
+            continue
+
+        if in_block:
+            if ch == "*" and nxt == "/":
+                in_block = False
+                i += 2
+            else:
+                i += 1
+            continue
+
+        if in_str:
+            out.append(ch)
+            if ch == str_q and (i == 0 or source[i - 1] != "\\"):
+                in_str = False
+                str_q = ""
+            i += 1
+            continue
+
+        if ch in {'"', "'"}:
+            in_str = True
+            str_q = ch
+            out.append(ch)
+            i += 1
+            continue
+
+        if ch == "/" and nxt == "/":
+            in_line = True
+            i += 2
+            continue
+
+        if ch == "/" and nxt == "*":
+            in_block = True
+            i += 2
+            continue
+
+        out.append(ch)
+        i += 1
+
+    text = "".join(out)
+    lines = [ln.rstrip() for ln in text.splitlines() if ln.strip() != ""]
+    return "\n".join(lines)
+
+
+def component_type(source: str) -> str:
+    s = source.lower()
+    needles = ["strategy(", "strategy.entry", "strategy.exit", "strategy.order"]
+    return "STRATEGY" if any(x in s for x in needles) else "INDICATOR"
+
+
+def size_class(min_bytes: int) -> str:
+    if min_bytes < 20 * 1024:
+        return "small"
+    if min_bytes < 80 * 1024:
+        return "medium"
+    return "large"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tv-ref", required=True)
@@ -71,16 +146,32 @@ def main() -> int:
     args = ap.parse_args()
 
     src_trunc, src_truncated = truncate_text(args.source_code, MAX_SRC_BYTES)
+    src_min = minify_pine(src_trunc)
+
+    raw_bytes = len(src_trunc.encode("utf-8", errors="ignore"))
+    raw_lines = len(src_trunc.splitlines()) if src_trunc else 0
+    min_bytes = len(src_min.encode("utf-8", errors="ignore"))
+    min_lines = len(src_min.splitlines()) if src_min else 0
+
+    p_size_class = size_class(min_bytes)
+    too_large = min_lines > 600 or min_bytes >= 80 * 1024
+    ctype = component_type(src_trunc)
+
     iid = make_id(args.tv_ref, src_trunc)
     day = datetime.now().strftime("%Y%m%d")
     out_dir = Path(args.output_root) / day
     out_dir.mkdir(parents=True, exist_ok=True)
 
     source_pointer = None
+    source_min_pointer = None
     if src_trunc:
         pine_path = out_dir / f"{iid}.pine.txt"
         pine_path.write_text(src_trunc, encoding="utf-8")
         source_pointer = str(pine_path).replace('\\', '/')
+
+        pine_min_path = out_dir / f"{iid}.pine.min.txt"
+        pine_min_path.write_text(src_min, encoding="utf-8")
+        source_min_pointer = str(pine_min_path).replace('\\', '/')
 
     record = {
         "schema_version": "1.0",
@@ -95,6 +186,14 @@ def main() -> int:
         "signals_described": parse_list(args.signals)[:20],
         "notes": parse_list(args.notes)[:10],
         "source_pointer": source_pointer,
+        "source_min_pointer": source_min_pointer,
+        "component_type": ctype,
+        "pine_raw_bytes": raw_bytes,
+        "pine_raw_lines": raw_lines,
+        "pine_min_bytes": min_bytes,
+        "pine_min_lines": min_lines,
+        "pine_size_class": p_size_class,
+        "pine_too_large": too_large,
         "sha256": sha256_text(src_trunc if src_trunc else args.name),
         "truncated": src_truncated,
     }
@@ -108,7 +207,7 @@ def main() -> int:
     rec_path.write_text(payload, encoding="utf-8")
 
     update_index(Path(args.output_root) / "INDEX.json", str(rec_path).replace('\\', '/'))
-    print(json.dumps({"indicator_record_path": str(rec_path).replace('\\', '/'), "pine_path": source_pointer}))
+    print(json.dumps({"indicator_record_path": str(rec_path).replace('\\', '/'), "pine_path": source_pointer, "pine_min_path": source_min_pointer}))
     return 0
 
 

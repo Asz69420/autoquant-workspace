@@ -103,6 +103,13 @@ def _emit_bundle(rc_path: str, ir_paths: list[str], key: str):
     return str(bpath).replace('\\', '/')
 
 
+def _ir_meta(ir_path: str) -> dict:
+    try:
+        return json.loads(Path(ir_path).read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+
+
 def main() -> int:
     st = _j(STATE_PATH, {'top_cursor': 0, 'seen_tv_keys': [], 'seen_script_ids': [], 'last_trending_seen': []})
     bundles = _j(BUNDLE_INDEX, [])
@@ -115,6 +122,7 @@ def main() -> int:
     invalid = 0
     grabber_ok = 0
     grabber_fail = 0
+    too_large_skipped_count = 0
 
     top = _fetch_mode('top')
     _log('TV_CATALOG_CHECK', 'TV_CATALOG_CHECK', f'mode=TOP candidates={len(top)}', 'INFO')
@@ -140,16 +148,22 @@ def main() -> int:
             if not ir:
                 pass
             else:
-                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Top catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
-                bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
-                created.append(bp)
-                _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
-                _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=tradingview_catalog tv_key={key}", 'INFO', outputs=[bp])
-            row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['top']}
-            idx = [row] + [x for x in idx if x.get('tv_key') != key]
-            st['seen_tv_keys'].append(key)
-            st['seen_script_ids'].append(cand['script_id'])
-            added += 1
+                ir_meta = _ir_meta(ir['indicator_record_path'])
+                if ir_meta.get('pine_too_large') is True:
+                    too_large_skipped_count += 1
+                    _log('COMPONENT_TOO_LARGE', 'COMPONENT_TOO_LARGE', 'Component too large; skipped', 'WARN', outputs=[ir['indicator_record_path']])
+                else:
+                    rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Top catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
+                    bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
+                    created.append(bp)
+                    _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
+                    _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=tradingview_catalog tv_key={key}", 'INFO', outputs=[bp])
+            if ir:
+                row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['top']}
+                idx = [row] + [x for x in idx if x.get('tv_key') != key]
+                st['seen_tv_keys'].append(key)
+                st['seen_script_ids'].append(cand['script_id'])
+                added += 1
         else:
             skipped += 1
 
@@ -176,11 +190,16 @@ def main() -> int:
             skipped += 1
             grabber_fail += 1
             continue
-        rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Trending catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
-        bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
-        created.append(bp)
-        _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
-        _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=trending tv_key={key}", 'INFO', outputs=[bp])
+        ir_meta = _ir_meta(ir['indicator_record_path'])
+        if ir_meta.get('pine_too_large') is True:
+            too_large_skipped_count += 1
+            _log('COMPONENT_TOO_LARGE', 'COMPONENT_TOO_LARGE', 'Component too large; skipped', 'WARN', outputs=[ir['indicator_record_path']])
+        else:
+            rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Trending catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
+            bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
+            created.append(bp)
+            _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
+            _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=trending tv_key={key}", 'INFO', outputs=[bp])
         row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['trending']}
         idx = [row] + [x for x in idx if x.get('tv_key') != key]
         st['seen_tv_keys'].append(key)
@@ -196,16 +215,16 @@ def main() -> int:
     g_status = 'OK'
     if grabber_fail > 0 and grabber_ok == 0:
         g_status = 'FAIL'
-    elif grabber_fail > 0 or grabber_ok == 0:
+    elif grabber_fail > 0 or grabber_ok == 0 or too_large_skipped_count > 0:
         g_status = 'WARN'
     tv_status = 'OK'
     if added == 0 and (grabber_fail > 0 or invalid > 0):
         tv_status = 'FAIL'
     elif added == 0 or skipped > 0 or invalid > 0:
         tv_status = 'WARN'
-    _log('GRABBER_SUMMARY', 'GRABBER_SUMMARY', f"Grabber: fetched={grabber_ok} dedup={skipped} failed={grabber_fail}", g_status, agent='Grabber')
+    _log('GRABBER_SUMMARY', 'GRABBER_SUMMARY', f"Grabber: fetched={grabber_ok} dedup={skipped} failed={grabber_fail} too_large_skipped_count={too_large_skipped_count}", g_status, agent='Grabber')
     _log('TV_CATALOG_SUMMARY', 'TV_CATALOG_SUMMARY', f"TV: mode=TOP/TRENDING added={added} dedup={skipped} invalid={invalid}", tv_status, agent='TV Catalog')
-    print(json.dumps({'created_bundles': created, 'new_indicators_added': added, 'skipped_dedup': skipped, 'invalid': invalid, 'grabber_ok': grabber_ok, 'grabber_fail': grabber_fail}))
+    print(json.dumps({'created_bundles': created, 'new_indicators_added': added, 'skipped_dedup': skipped, 'invalid': invalid, 'grabber_ok': grabber_ok, 'grabber_fail': grabber_fail, 'too_large_skipped_count': too_large_skipped_count}))
     return 0
 
 

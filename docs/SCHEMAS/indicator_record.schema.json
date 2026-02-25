@@ -13,6 +13,13 @@
     "key_inputs",
     "signals_described",
     "notes",
+    "component_type",
+    "pine_raw_bytes",
+    "pine_raw_lines",
+    "pine_min_bytes",
+    "pine_min_lines",
+    "pine_size_class",
+    "pine_too_large",
     "sha256",
     "truncated"
   ],
@@ -41,6 +48,14 @@
       "items": { "type": "string", "maxLength": 500 }
     },
     "source_pointer": { "type": "string", "maxLength": 1024 },
+    "source_min_pointer": { "type": "string", "maxLength": 1024 },
+    "component_type": { "type": "string", "enum": ["INDICATOR", "STRATEGY"] },
+    "pine_raw_bytes": { "type": "integer", "minimum": 0 },
+    "pine_raw_lines": { "type": "integer", "minimum": 0 },
+    "pine_min_bytes": { "type": "integer", "minimum": 0 },
+    "pine_min_lines": { "type": "integer", "minimum": 0 },
+    "pine_size_class": { "type": "string", "enum": ["small", "medium", "large"] },
+    "pine_too_large": { "type": "boolean" },
     "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "truncated": { "type": "boolean" }
   },

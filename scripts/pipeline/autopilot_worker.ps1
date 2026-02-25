@@ -56,6 +56,7 @@ $grabberFetched = 0
 $grabberDedup = 0
 $grabberFailed = 0
 $grabberEmitted = $false
+$tooLargeSkippedCount = 0
 $refineVariants = 0
 $refineExplore = 0
 $refineDelta = 'n/a'
@@ -86,18 +87,19 @@ try {
       if ($tv.grabber_ok) { $grabberFetched = [int]$tv.grabber_ok }
       if ($tv.skipped_dedup) { $grabberDedup = [int]$tv.skipped_dedup }
       if ($tv.grabber_fail) { $grabberFailed = [int]$tv.grabber_fail }
-      $gStatus = if ($grabberFailed -gt 0 -and $grabberFetched -eq 0) { 'FAIL' } elseif ($grabberFailed -gt 0 -or $grabberFetched -eq 0) { 'WARN' } else { 'OK' }
-      Emit-Summary 'GRABBER_SUMMARY' ("Grabber: fetched=" + $grabberFetched + " dedup=" + $grabberDedup + " failed=" + $grabberFailed) $gStatus 'Grabber'
+      if ($tv.too_large_skipped_count) { $tooLargeSkippedCount = [int]$tv.too_large_skipped_count }
+      $gStatus = if ($grabberFailed -gt 0 -and $grabberFetched -eq 0) { 'FAIL' } elseif ($grabberFailed -gt 0 -or $grabberFetched -eq 0 -or $tooLargeSkippedCount -gt 0) { 'WARN' } else { 'OK' }
+      Emit-Summary 'GRABBER_SUMMARY' ("Grabber: fetched=" + $grabberFetched + " dedup=" + $grabberDedup + " failed=" + $grabberFailed + " too_large_skipped_count=" + $tooLargeSkippedCount) $gStatus 'Grabber'
       $grabberEmitted = $true
     } catch {
       $errorsCount += 1
-      Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'OK' 'Grabber'
+      Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 too_large_skipped_count=0 (skipped: no indicator hints)' 'OK' 'Grabber'
       $grabberEmitted = $true
     }
   }
 
   if (-not $grabberEmitted -and -not $DryRun) {
-    Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'OK' 'Grabber'
+    Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 too_large_skipped_count=0 (skipped: no indicator hints)' 'OK' 'Grabber'
     $grabberEmitted = $true
   }
 
@@ -121,13 +123,51 @@ try {
     $bundlePaths = @()
     try { $bundlePaths = @(Get-Content $bundleIndexPath -Raw | ConvertFrom-Json) } catch { $bundlePaths = @() }
 
-    $take = @($bundlePaths | Select-Object -First $MaxBundlesPerRun)
-    foreach ($bp in $take) {
+    $bundleSlotsUsed = 0
+    foreach ($bp in $bundlePaths) {
+      if ($bundleSlotsUsed -ge $MaxBundlesPerRun) { break }
       if (-not (Test-Path -LiteralPath $bp)) { continue }
       try {
         $b = Get-Content -LiteralPath $bp -Raw | ConvertFrom-Json
+        if ($b.status -eq 'BLOCKED' -and $b.reason_code -eq 'COMPONENT_TOO_LARGE') { continue }
         $lm = $b.linkmap_path
+
+        $componentType = 'INDICATOR'
+        $componentTooLarge = $false
+        $componentReason = ''
+        try {
+          $indPaths = @()
+          if ($b.indicator_record_paths) { $indPaths = @($b.indicator_record_paths) }
+          if ($indPaths.Count -eq 0 -and $lm -and (Test-Path $lm)) {
+            $lmObj = Get-Content $lm -Raw | ConvertFrom-Json
+            if ($lmObj.indicator_record_paths) { $indPaths = @($lmObj.indicator_record_paths) }
+          }
+          if ($indPaths.Count -gt 0 -and (Test-Path $indPaths[0])) {
+            $irObj = Get-Content $indPaths[0] -Raw | ConvertFrom-Json
+            if ($irObj.component_type) { $componentType = [string]$irObj.component_type }
+            if ($null -ne $irObj.pine_too_large) { $componentTooLarge = [bool]$irObj.pine_too_large }
+          }
+        } catch {}
+
         if (-not $DryRun) {
+          if ($componentTooLarge) {
+            $tooLargeSkippedCount += 1
+            try {
+              $b.status = 'BLOCKED'
+              $b.reason_code = 'COMPONENT_TOO_LARGE'
+              ($b | ConvertTo-Json -Depth 8) | Set-Content -LiteralPath $bp -Encoding utf8
+            } catch {}
+            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=SKIPPED spec=BLOCKED variants=0 status=BLOCKED reason=COMPONENT_TOO_LARGE summary=Component too large; skipped' 'WARN' 'Promotion'
+            $promotionEmitted = $true
+            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: COMPONENT_TOO_LARGE)' 'WARN' 'Backtester'
+            $batchEmitted = $true
+            Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED (COMPONENT_TOO_LARGE)' 'WARN' 'Refinement'
+            $refineEmitted = $true
+            $bundlesProcessed += 1
+            $bundleSlotsUsed += 1
+            continue
+          }
+
           $an = Run-Py @('scripts/pipeline/run_analyser.py','--research-card-path',$b.research_card_path,'--linkmap-path',$lm) | ConvertFrom-Json
           Run-Py @('scripts/pipeline/verify_pipeline_stage2.py','--thesis',$an.thesis_path) | Out-Null
           $sp = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$an.thesis_path) | ConvertFrom-Json
@@ -213,6 +253,7 @@ try {
         }
         $bundlesProcessed += 1
         $promotionsProcessed += 1
+        $bundleSlotsUsed += 1
       } catch { $errorsCount += 1 }
     }
   }
