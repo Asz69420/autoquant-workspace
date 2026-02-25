@@ -22,11 +22,14 @@ function Ensure-Lock($name) {
   return $lockPath
 }
 
+$CycleRunId = 'autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+
 function Emit-Summary($reasonCode, $summary, $statusWord = 'INFO') {
   if ($DryRun) { return }
   try {
     $emoji = if ($statusWord -eq 'WARN') { 'WARN' } elseif ($statusWord -eq 'FAIL') { 'FAIL' } else { 'INFO' }
-    python scripts/log_event.py --run-id ('autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) --agent oQ --model-id openai-codex/gpt-5.3-codex --action $reasonCode --status-word $statusWord --status-emoji $emoji --reason-code $reasonCode --summary $summary 2>$null | Out-Null
+    $rid = if ($reasonCode -eq 'AUTOPILOT_SUMMARY') { $CycleRunId } else { $CycleRunId + '-' + $reasonCode }
+    python scripts/log_event.py --run-id $rid --agent oQ --model-id openai-codex/gpt-5.3-codex --action $reasonCode --status-word $statusWord --status-emoji $emoji --reason-code $reasonCode --summary $summary 2>$null | Out-Null
   } catch {}
 }
 
@@ -46,6 +49,9 @@ $batchExecuted = 0
 $batchSkipped = 0
 $batchGateFail = 0
 $batchEmitted = $false
+$promotionEmitted = $false
+$refineEmitted = $false
+$libraryEmitted = $false
 $grabberFetched = 0
 $grabberDedup = 0
 $grabberFailed = 0
@@ -104,7 +110,8 @@ try {
           $sp = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$an.thesis_path) | ConvertFrom-Json
           $variantCount = 0
           try { $variantCount = @((Get-Content $sp.strategy_spec_path -Raw | ConvertFrom-Json).variants).Count } catch { $variantCount = 0 }
-          Emit-InfoSummary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + "; status=OK")
+          Emit-InfoSummary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK")
+          $promotionEmitted = $true
 
           $batch = $null
           if ($variantCount -eq 0) {
@@ -151,8 +158,10 @@ try {
               $refineExplore = [int]$rdoc.explore_variants_used_total
               $refineDelta = [string]$rdoc.best_score_delta
               Emit-InfoSummary 'REFINEMENT_SUMMARY' ("Refine: iters=" + $rdoc.iterations_used + " variants=" + $refineVariants + " explore=" + $refineExplore + " delta=" + $refineDelta + " status=" + $rdoc.final_recommendation)
+              $refineEmitted = $true
             } catch {
               Emit-InfoSummary 'REFINEMENT_SUMMARY' 'Refine: iters=1 variants=0 explore=0 delta=n/a status=NO_IMPROVEMENT'
+              $refineEmitted = $true
             }
           }
         }
@@ -205,16 +214,41 @@ try {
         $libraryRunCount = [int]$runCountActual
         $libraryLessons = [int]$lessCountActual
         Emit-InfoSummary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0")
+        $libraryEmitted = $true
       } else {
-        Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=?' 'WARN'
+        Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: read fail)' 'WARN'
+        $libraryEmitted = $true
       }
-    } catch { $errorsCount += 1 }
+    } catch {
+      $errorsCount += 1
+      Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: run fail)' 'WARN'
+      $libraryEmitted = $true
+    }
   }
+
 }
 catch {
   $errorsCount += 1
 }
 finally {
+  if (-not $DryRun) {
+    if (-not $promotionEmitted) {
+      Emit-InfoSummary 'PROMOTION_SUMMARY' 'Promote: bundles=0 thesis=SKIPPED spec=SKIPPED variants=0 status=SKIPPED'
+      $promotionEmitted = $true
+    }
+    if (-not $batchEmitted) {
+      Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 gate_fail=0 (skipped: no variants)'
+      $batchEmitted = $true
+    }
+    if (-not $refineEmitted) {
+      Emit-InfoSummary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED'
+      $refineEmitted = $true
+    }
+    if (-not $libraryEmitted) {
+      Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: not run)' 'WARN'
+      $libraryEmitted = $true
+    }
+  }
   if ($lock -and (Test-Path $lock)) { Remove-Item $lock -Force -ErrorAction SilentlyContinue }
 }
 
@@ -236,9 +270,7 @@ if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir |
 ($summary | ConvertTo-Json -Depth 5) | Set-Content -Path 'data/state/autopilot_summary.json' -Encoding utf8
 
 if (-not $DryRun) {
-  try {
-    python scripts/log_event.py --run-id ('autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) --agent oQ --model-id openai-codex/gpt-5.3-codex --action AUTOPILOT_SUMMARY --status-word INFO --status-emoji INFO --reason-code AUTOPILOT_SUMMARY --summary ("bundles=" + $bundlesProcessed + "; promotions=" + $promotionsProcessed + "; refinements=" + $refinementsRun + "; new_indicators=" + $newIndicatorsAdded + "; dedup_skips=" + $skippedIndicatorsDedup + "; errors=" + $errorsCount) 2>$null | Out-Null
-  } catch {}
+  Emit-InfoSummary 'AUTOPILOT_SUMMARY' ("bundles=" + $bundlesProcessed + "; promotions=" + $promotionsProcessed + "; refinements=" + $refinementsRun + "; new_indicators=" + $newIndicatorsAdded + "; dedup_skips=" + $skippedIndicatorsDedup + "; errors=" + $errorsCount)
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)
