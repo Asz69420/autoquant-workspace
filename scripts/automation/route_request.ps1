@@ -276,6 +276,83 @@ function Build-QuestionFromIntent {
   return $Message
 }
 
+function Get-TelegramChatRoute {
+  param([string]$TargetChatId)
+  if ([string]::IsNullOrWhiteSpace($TargetChatId)) { return $null }
+  $path = 'data/state/telegram_chat_routes.json'
+  if (-not (Test-Path $path)) { return $null }
+  try {
+    $raw = Get-Content $path -Raw
+    if ([string]::IsNullOrWhiteSpace($raw)) { return $null }
+    $obj = ConvertFrom-Json $raw
+    if ($null -eq $obj.routes) { return $null }
+    foreach ($r in $obj.routes) {
+      if ([string]$r.chat_id -eq $TargetChatId) { return $r }
+    }
+  } catch {}
+  return $null
+}
+
+function Invoke-NoodleReadonly {
+  param([string]$InputMessage,[string]$InputLower)
+
+  $blockedWrite = @('idea','insight','concept:','save','record','update doctrine','run','build','apply')
+  foreach ($kw in $blockedWrite) {
+    if ($InputLower -like ('*' + $kw + '*')) {
+      Write-Output 'Noodle is read-only in this chat. Use the main oQ chat for saves or running the pipeline.'
+      return
+    }
+  }
+
+  $privacyPatterns = @(
+    'token','tokens','key','keys','auth','secret','password','api key',
+    'private user info','other chat content','local file path','config secret','show me your tokens'
+  )
+  foreach ($p in $privacyPatterns) {
+    if ($InputLower -like ('*' + $p + '*')) {
+      Write-Output "Can't share that here."
+      return
+    }
+  }
+
+  $packPath = 'artifacts/thesis_packs/20260226/michaelionita-last10.automation_thesis_pack.json'
+  if (($InputLower -like '*michael*') -and ($InputLower -like '*last*10*') -and (Test-Path $packPath)) {
+    try {
+      $pack = Get-Content $packPath -Raw | ConvertFrom-Json
+      $ideas = @($pack.key_ideas | Select-Object -First 5)
+      $hooks = @($pack.trading_relevant_concept_hooks | Select-Object -First 3)
+      Write-Output 'Noodle notes (read-only, evidence-first):'
+      foreach ($x in $ideas) { Write-Output ('- signal: ' + [string]$x) }
+      foreach ($h in $hooks) { Write-Output ('- hook: ' + [string]$h) }
+      Write-Output '- assumption: concept frequency != live edge; treat as hypothesis only.'
+      Write-Output '- uncertainty: transcript quality/context limits may hide nuance.'
+      Write-Output 'Q1) Which hook should we pressure-test first: session gating or execution-quality telemetry?'
+      Write-Output 'Q2) Want me to map these into a strict test checklist (still read-only)?'
+      return
+    } catch {
+      Write-Output 'Noodle is in read-only mode and could not load the referenced pack cleanly.'
+      Write-Output 'Q1) Share a thesis/research artifact path to inspect?'
+      Write-Output 'Q2) Should I summarise doctrine heuristics only?'
+      return
+    }
+  }
+
+  if ($InputLower -like '*doctrine*' -and (Test-Path 'docs/DOCTRINE/analyser-doctrine.md')) {
+    $lines = Get-Content 'docs/DOCTRINE/analyser-doctrine.md' | Where-Object { $_ -match '^- \[' } | Select-Object -First 6
+    Write-Output 'Noodle doctrine skim (read-only):'
+    foreach ($l in $lines) {
+      $clean = ($l -replace '^- \[[^\]]+\]\s*','').Trim()
+      Write-Output ('- ' + $clean)
+    }
+    Write-Output '- uncertainty: this is compact guidance, not full transcript evidence.'
+    Write-Output 'Q1) Want research heuristics or automation heuristics next?'
+    return
+  }
+
+  Write-Output 'Noodle is read-only here: I can summarise referenced thesis/research/doctrine artifacts only.'
+  Write-Output 'Q1) Which artifact path should I inspect?'
+}
+
 # Deterministic routing rules (verbatim)
 # FAST_PATH allowed actions (exact):
 # - toggle a boolean setting / switch (enable/disable a feature flag)
@@ -290,6 +367,14 @@ function Build-QuestionFromIntent {
 # Default on uncertainty: BUILD_PATH
 
 $m = $Message.ToLowerInvariant().Trim()
+$routeRecord = Get-TelegramChatRoute -TargetChatId $ChatId
+if ($null -ne $routeRecord -and [string]$routeRecord.mode -eq 'ANALYSER_READONLY') {
+  $rrun = 'route-noodle-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+  Emit-LogEvent -RunId $rrun -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'ROUTE_ANALYSER_READONLY' -Summary ('chat routed to ANALYSER_READONLY: ' + [string]$ChatId) -Inputs @($Message) -Outputs @('ANALYSER_READONLY')
+  Invoke-NoodleReadonly -InputMessage $Message -InputLower $m
+  exit 0
+}
+
 $route = 'BUILD_PATH'
 $rule = 'default_unsure_to_build'
 $intentMatch = $null
