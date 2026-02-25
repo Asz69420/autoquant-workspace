@@ -6,6 +6,7 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import re
 
 MAX_JSON_BYTES = 50 * 1024
 MAX_INDEX = 200
@@ -52,50 +53,84 @@ def non_empty(lines: list[str], limit: int, max_len: int) -> list[str]:
     return out
 
 
-def build_combo_proposals(indicators: list[dict], rc: dict, timeframe: str) -> list[dict]:
+def load_doctrine_guidance(path: Path) -> dict[str, list[str]]:
+    if not path.exists():
+        return {'strategy': [], 'automation': []}
+    lines = path.read_text(encoding='utf-8').splitlines()
+    section = None
+    out = {'strategy': [], 'automation': []}
+    bullet_re = re.compile(r'^- \[[^\]]+\]\s+(.*)$')
+    for line in lines:
+        s = line.strip()
+        if s == '## 2) Strategy hypothesis heuristics':
+            section = 'strategy'
+            continue
+        if s == '## 3) Automation/system heuristics':
+            section = 'automation'
+            continue
+        if s.startswith('## '):
+            section = None
+            continue
+        if section in out:
+            m = bullet_re.match(s)
+            if m:
+                out[section].append(m.group(1).strip())
+    out['strategy'] = out['strategy'][:5]
+    out['automation'] = out['automation'][:5]
+    return out
+
+
+def build_combo_proposals(indicators: list[dict], rc: dict, timeframe: str, doctrine_strategy: list[str]) -> list[dict]:
     names = [i.get('name', 'unknown') for i in indicators][:5]
     tpx = next((n for n in names if 'pressure' in n.lower() or 'tpx' in n.lower()), names[0] if names else 'TPX')
+    doctrine_hint = doctrine_strategy[0] if doctrine_strategy else ''
     proposals = [
         {
             'indicator': tpx,
             'role': 'confirmation',
             'description': f'Confirm long only when {tpx} bullish pressure is above control level (>=30) on {timeframe} bar close.',
             'confidence': 0.76,
+            'doctrine_hint': doctrine_hint,
         },
         {
             'indicator': 'MACD-long',
             'role': 'trend',
             'description': 'Use longer MACD side of zero as trend direction gate before entries.',
             'confidence': 0.71,
+            'doctrine_hint': doctrine_hint,
         },
         {
             'indicator': 'MACD-short',
             'role': 'entry',
             'description': 'Trigger entries when shorter MACD aligns with longer MACD direction.',
             'confidence': 0.69,
+            'doctrine_hint': doctrine_hint,
         },
         {
             'indicator': tpx,
             'role': 'regime_gate',
             'description': f'Gate entries when {tpx} stays above control threshold to avoid weak-pressure chop.',
             'confidence': 0.66,
+            'doctrine_hint': doctrine_hint,
         },
         {
             'indicator': 'ATR14',
             'role': 'exit',
             'description': 'Derived idea: use ATR-based stop/TP envelope for deterministic testability of swing-style stops.',
             'confidence': 0.62,
+            'doctrine_hint': doctrine_hint,
         },
     ]
     return proposals[:5]
 
 
-def build_mutation_catalog() -> list[dict]:
+def build_mutation_catalog(doctrine_automation: list[str]) -> list[dict]:
+    hint = doctrine_automation[0] if doctrine_automation else ''
     return [
-        {'type': 'threshold', 'suggestion': 'Sweep TPX control level', 'bounds': '20,30,40'},
-        {'type': 'risk', 'suggestion': 'Sweep ATR stop/TP multipliers', 'bounds': 'stop:1.2-2.0,tp:1.8-3.0'},
-        {'type': 'execution', 'suggestion': 'Entry fill rule sweep', 'bounds': 'bar_close|next_open'},
-        {'type': 'filter', 'suggestion': 'Role swap TPX confirmation/filter', 'bounds': 'confirmation|filter|entry'},
+        {'type': 'threshold', 'suggestion': 'Sweep TPX control level', 'bounds': '20,30,40', 'doctrine_hint': hint},
+        {'type': 'risk', 'suggestion': 'Sweep ATR stop/TP multipliers', 'bounds': 'stop:1.2-2.0,tp:1.8-3.0', 'doctrine_hint': hint},
+        {'type': 'execution', 'suggestion': 'Entry fill rule sweep', 'bounds': 'bar_close|next_open', 'doctrine_hint': hint},
+        {'type': 'filter', 'suggestion': 'Role swap TPX confirmation/filter', 'bounds': 'confirmation|filter|entry', 'doctrine_hint': hint},
     ][:10]
 
 
@@ -113,6 +148,7 @@ def main() -> int:
 
     rc = jload(rc_paths[0])
     indicators = [jload(p) for p in ir_paths if Path(p).exists()]
+    doctrine = load_doctrine_guidance(Path('docs/DOCTRINE/analyser-doctrine.md'))
 
     in_hashes = []
     for p in rc_paths + ir_paths + lm_paths:
@@ -154,8 +190,8 @@ def main() -> int:
         'confidence': 0.68,
     }][:10]
 
-    combo_proposals = build_combo_proposals(indicators, rc, timeframe) if indicators else []
-    mutation_catalog = build_mutation_catalog() if indicators else []
+    combo_proposals = build_combo_proposals(indicators, rc, timeframe, doctrine.get('strategy', [])) if indicators else []
+    mutation_catalog = build_mutation_catalog(doctrine.get('automation', [])) if indicators else []
 
     thesis = {
         'schema_version': '1.1',
@@ -185,6 +221,11 @@ def main() -> int:
             'bar-close execution',
         ], 10, 200),
         'tags': non_empty((rc.get('tags') or []) + ['thesis', 'pipeline-stage2'], 20, 60),
+        'guidance': {
+            'doctrine_path': 'docs/DOCTRINE/analyser-doctrine.md',
+            'strategy_heuristics_used': doctrine.get('strategy', [])[:3],
+            'automation_heuristics_used': doctrine.get('automation', [])[:3],
+        },
         'sha256_inputs': sha256_inputs,
     }
 
