@@ -94,20 +94,11 @@ def send_telegram_message(
 
     target_chat_id = chat_id if chat_id else log_chat_id
 
-    reason = (reason_code or "").strip().upper()
-    cmd = (command or "").strip().lower()
-    looks_like_leaderboard = ("TF" in message and "P&L" in message and "DD" in message)
-    is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard
-
-    if is_leaderboard:
-        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", "HTML", message)
+    if (reason_code or '').strip().upper().endswith('_DEBUG'):
+        _append_action_event(str(reason_code or 'DEBUG'), str(parse_mode or 'NONE'), message)
 
     try:
-        send_message(
-            target_chat_id,
-            message,
-            parse_mode=("HTML" if is_leaderboard else parse_mode),
-        )
+        send_message(target_chat_id, message, parse_mode=parse_mode)
         return True
     except requests.exceptions.RequestException as e:
         raise Exception(f"Telegram API error: {e}")

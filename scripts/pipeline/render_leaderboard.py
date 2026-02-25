@@ -57,9 +57,9 @@ def _fmt_dd(v: float | None) -> str:
     return 'n/a' if v is None else f'{v:.1f}'
 
 
-def render_leaderboard(rows: list[dict]) -> str:
+def render_leaderboard(rows: list[dict]) -> tuple[str, dict]:
     if not rows:
-        return '<pre>No strategies in leaderboard.</pre>'
+        return '<pre>No strategies in leaderboard.</pre>', {'parse_mode': 'HTML'}
 
     lines: list[str] = []
     emitted = 0
@@ -120,10 +120,11 @@ def render_leaderboard(rows: list[dict]) -> str:
             break
 
     if not lines:
-        return '<pre>No strategies in leaderboard.</pre>'
+        return '<pre>No strategies in leaderboard.</pre>', {'parse_mode': 'HTML'}
 
     body = '\n'.join(lines).rstrip('\n')
-    return f'<pre>{escape(body)}</pre>'
+    rendered_text = f'<pre>{escape(body)}</pre>'
+    return rendered_text, {'parse_mode': 'HTML'}
 
 
 def main() -> int:
@@ -134,6 +135,7 @@ def main() -> int:
 
     ap = argparse.ArgumentParser()
     ap.add_argument('--assets', default='')
+    ap.add_argument('--json', action='store_true', dest='as_json')
     args = ap.parse_args()
 
     req = [x.strip().upper() for x in args.assets.replace('/', ',').split(',') if x.strip()]
@@ -173,7 +175,11 @@ def main() -> int:
             'dd': dd,
         })
 
-    print(render_leaderboard(rows))
+    rendered_text, send_opts = render_leaderboard(rows)
+    if args.as_json:
+        print(json.dumps({'rendered_text': rendered_text, 'send_opts': send_opts}, ensure_ascii=False))
+    else:
+        print(rendered_text)
     return 0
 
 

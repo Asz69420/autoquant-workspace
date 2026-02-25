@@ -454,15 +454,19 @@ if ($route -eq 'FAST_PATH') {
     $assetArg = ''
     if ($m -match '^leaderboard\s+(.+)$') { $assetArg = [string]$matches[1] }
 
-    $lb = ''
+    $lbJson = ''
     if ([string]::IsNullOrWhiteSpace($assetArg)) {
-      $lb = (python scripts/pipeline/render_leaderboard.py) -join "`n"
+      $lbJson = (python scripts/pipeline/render_leaderboard.py --json) -join "`n"
     } else {
-      $lb = (python scripts/pipeline/render_leaderboard.py --assets $assetArg) -join "`n"
+      $lbJson = (python scripts/pipeline/render_leaderboard.py --assets $assetArg --json) -join "`n"
     }
 
-    Emit-LogEvent -RunId ($runId + '-leaderboard') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'LEADERBOARD' -Summary 'Rendered leaderboard table' -Inputs @($Message) -Outputs @('leaderboard_table')
-    Write-Output $lb
+    $lbObj = $lbJson | ConvertFrom-Json
+    $lbText = [string]$lbObj.rendered_text
+    $sendOpts = [string](($lbObj.send_opts | ConvertTo-Json -Compress))
+
+    Emit-LogEvent -RunId ($runId + '-leaderboard') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'LEADERBOARD' -Summary 'Rendered leaderboard table' -Inputs @($Message) -Outputs @('leaderboard_table',$sendOpts)
+    Write-Output $lbText
     exit 0
   }
 

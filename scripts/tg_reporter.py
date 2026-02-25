@@ -255,18 +255,17 @@ def send_event_to_telegram(event):
 
         notify_cmd = None
 
-        if event_type == "LEADERBOARD" and event.get("rendered_html") and event.get("chat_id"):
+        if event_type == "LEADERBOARD" and event.get("rendered_text") and event.get("chat_id"):
+            send_opts = event.get("send_opts") or {}
             notify_cmd = [
                 sys.executable,
                 "scripts/tg_notify.py",
-                str(event.get("rendered_html")),
+                str(event.get("rendered_text")),
                 "--chat-id",
                 str(event.get("chat_id")),
-                "--parse-mode",
-                "HTML",
-                "--reason-code",
-                "LEADERBOARD",
             ]
+            if isinstance(send_opts, dict) and send_opts.get("parse_mode"):
+                notify_cmd.extend(["--parse-mode", str(send_opts.get("parse_mode"))])
         elif str(event.get("agent") or "").lower() == "keeper":
             if not _keeper_should_post(event):
                 return None
@@ -281,9 +280,13 @@ def send_event_to_telegram(event):
             if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST and reason_code != "LEADERBOARD":
                 return None
 
-            if reason_code == "LEADERBOARD" and event.get("rendered_html"):
-                formatted_msg = str(event.get("rendered_html"))
-                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg, "--parse-mode", "HTML", "--reason-code", "LEADERBOARD"]
+            if reason_code == "LEADERBOARD" and event.get("rendered_text"):
+                formatted_msg = str(event.get("rendered_text"))
+                send_opts = event.get("send_opts") or {}
+                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg]
+                if isinstance(send_opts, dict) and send_opts.get("parse_mode"):
+                    notify_cmd.extend(["--parse-mode", str(send_opts.get("parse_mode"))])
+                notify_cmd.extend(["--reason-code", "LEADERBOARD"])
             else:
                 event_json = json.dumps(event)
                 env = {**os.environ, "PYTHONUTF8": "1"}
