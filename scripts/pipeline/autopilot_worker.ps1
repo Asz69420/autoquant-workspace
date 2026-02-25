@@ -4,7 +4,8 @@ param(
   [int]$MaxBundlesPerRun = 1,
   [switch]$RunYouTubeWatcher,
   [switch]$RunTVCatalogWorker,
-  [switch]$ForceRecombine
+  [switch]$ForceRecombine,
+  [string]$FastCommand = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -21,6 +22,57 @@ function Ensure-Lock($name) {
   if (Test-Path $lockPath) { throw "Lock exists: $lockPath" }
   Set-Content -Path $lockPath -Value ([DateTime]::UtcNow.ToString('o')) -Encoding utf8
   return $lockPath
+}
+
+function Set-BundleState([string]$bundlePath, [string]$status, [string]$lastError = '', [bool]$incrementAttempt = $false) {
+  if (-not (Test-Path -LiteralPath $bundlePath)) { return }
+  try {
+    $b = Get-Content -LiteralPath $bundlePath -Raw | ConvertFrom-Json
+    $b | Add-Member -NotePropertyName status -NotePropertyValue $status -Force
+    $b | Add-Member -NotePropertyName last_processed_at -NotePropertyValue ([DateTime]::UtcNow.ToString('o')) -Force
+    $attemptsVal = 0
+    try { if ($null -ne $b.attempts) { $attemptsVal = [int]$b.attempts } } catch { $attemptsVal = 0 }
+    if ($incrementAttempt) { $attemptsVal += 1 }
+    $b | Add-Member -NotePropertyName attempts -NotePropertyValue $attemptsVal -Force
+    if ([string]::IsNullOrWhiteSpace($lastError)) {
+      $b | Add-Member -NotePropertyName last_error -NotePropertyValue $null -Force
+    } else {
+      $trimmed = ([string]$lastError).Substring(0, [Math]::Min(240, ([string]$lastError).Length))
+      $b | Add-Member -NotePropertyName last_error -NotePropertyValue $trimmed -Force
+    }
+    ($b | ConvertTo-Json -Depth 10) | Set-Content -LiteralPath $bundlePath -Encoding utf8
+  } catch {}
+}
+
+function Handle-FastCommand([string]$cmd) {
+  if ([string]::IsNullOrWhiteSpace($cmd)) { return $false }
+  $m = [regex]::Match($cmd.Trim(), '^retry\s+bundle\s+(.+)$', [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+  if (-not $m.Success) { return $false }
+  $needle = $m.Groups[1].Value.Trim()
+  $bundleIndexPath = 'artifacts/bundles/INDEX.json'
+  if (-not (Test-Path $bundleIndexPath)) {
+    Write-Output '{"status":"WARN","reason_code":"BUNDLE_INDEX_MISSING"}'
+    return $true
+  }
+  $paths = @()
+  try {
+    $tmp = Get-Content $bundleIndexPath -Raw | ConvertFrom-Json
+    if ($tmp -is [System.Array]) { $paths = $tmp } elseif ($null -ne $tmp) { $paths = @($tmp) } else { $paths = @() }
+  } catch { $paths = @() }
+  foreach ($p in $paths) {
+    if (-not (Test-Path -LiteralPath $p)) { continue }
+    try {
+      $b = Get-Content -LiteralPath $p -Raw | ConvertFrom-Json
+      $bid = [string]$b.id
+      if ($bid -eq $needle -or $p -like "*$needle*" -or [IO.Path]::GetFileNameWithoutExtension($p) -eq $needle) {
+        Set-BundleState -bundlePath $p -status 'NEW' -lastError '' -incrementAttempt $false
+        Write-Output (ConvertTo-Json @{ status='OK'; action='retry bundle'; bundle=$bid; path=$p; new_status='NEW' })
+        return $true
+      }
+    } catch {}
+  }
+  Write-Output (ConvertTo-Json @{ status='WARN'; action='retry bundle'; reason_code='BUNDLE_NOT_FOUND'; needle=$needle })
+  return $true
 }
 
 $CycleRunId = 'autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
@@ -77,6 +129,10 @@ $recombineIndicator = ''
 $recombineTemplate = ''
 $recombineEmitted = $false
 $starvationCyclesPrev = 0
+
+if (Handle-FastCommand $FastCommand) {
+  exit 0
+}
 
 try {
   $lock = Ensure-Lock 'autopilot_worker'
@@ -136,7 +192,10 @@ try {
   $bundleIndexPath = 'artifacts/bundles/INDEX.json'
   if (Test-Path $bundleIndexPath) {
     $bundlePaths = @()
-    try { $bundlePaths = @(Get-Content $bundleIndexPath -Raw | ConvertFrom-Json) } catch { $bundlePaths = @() }
+    try {
+      $tmpBundlePaths = Get-Content $bundleIndexPath -Raw | ConvertFrom-Json
+      if ($tmpBundlePaths -is [System.Array]) { $bundlePaths = $tmpBundlePaths } elseif ($null -ne $tmpBundlePaths) { $bundlePaths = @($tmpBundlePaths) } else { $bundlePaths = @() }
+    } catch { $bundlePaths = @() }
 
     if (-not $DryRun -and (($bundlePaths.Count -eq 0 -and $starvationCyclesPrev -ge 12) -or $ForceRecombine)) {
       try {
@@ -168,7 +227,15 @@ try {
       if (-not (Test-Path -LiteralPath $bp)) { continue }
       try {
         $b = Get-Content -LiteralPath $bp -Raw | ConvertFrom-Json
-        if ($b.status -eq 'BLOCKED' -and $b.reason_code -eq 'COMPONENT_TOO_LARGE') { continue }
+        $bundleStatus = [string]$b.status
+        if ([string]::IsNullOrWhiteSpace($bundleStatus)) { $bundleStatus = 'NEW' }
+        if ($bundleStatus -ne 'NEW') { continue }
+
+        if (-not $DryRun) {
+          Set-BundleState -bundlePath $bp -status 'IN_PROGRESS' -lastError '' -incrementAttempt $true
+          $b = Get-Content -LiteralPath $bp -Raw | ConvertFrom-Json
+        }
+
         $lm = $b.linkmap_path
 
         $componentType = 'INDICATOR'
@@ -192,12 +259,8 @@ try {
         if (-not $DryRun) {
           if ($componentTooLarge) {
             $tooLargeSkippedCount += 1
-            try {
-              $b.status = 'BLOCKED'
-              $b.reason_code = 'COMPONENT_TOO_LARGE'
-              ($b | ConvertTo-Json -Depth 8) | Set-Content -LiteralPath $bp -Encoding utf8
-            } catch {}
             $sizeDetail = if ([string]::IsNullOrWhiteSpace($componentReason)) { 'unknown' } else { $componentReason }
+            Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError ("COMPONENT_TOO_LARGE: " + $sizeDetail) -incrementAttempt $false
             Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=SKIPPED spec=BLOCKED variants=0 status=BLOCKED reason=COMPONENT_TOO_LARGE summary=Component too large (" + $sizeDetail + "); skipped") 'WARN' 'Promotion'
             $promotionEmitted = $true
             Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: COMPONENT_TOO_LARGE)' 'WARN' 'Backtester'
@@ -220,6 +283,7 @@ try {
 
           if ($promoStatus -eq 'BLOCKED') {
             Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'WARN' 'Promotion'
+            Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'NO_VARIANTS_COMPILED' -incrementAttempt $false
           } else {
             Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'OK' 'Promotion'
           }
@@ -291,11 +355,20 @@ try {
               $refineEmitted = $true
             }
           }
+
+          if ($promoStatus -ne 'BLOCKED') {
+            Set-BundleState -bundlePath $bp -status 'DONE' -lastError '' -incrementAttempt $false
+          }
         }
         $bundlesProcessed += 1
         $promotionsProcessed += 1
         $bundleSlotsUsed += 1
-      } catch { $errorsCount += 1 }
+      } catch {
+        $errorsCount += 1
+        $errMsg = ''
+        try { $errMsg = [string]$_.Exception.Message } catch { $errMsg = 'PROCESSING_ERROR' }
+        Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError $errMsg -incrementAttempt $false
+      }
     }
   }
 
