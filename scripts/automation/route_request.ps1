@@ -279,6 +279,41 @@ function Build-QuestionFromIntent {
 function Get-TelegramChatRoute {
   param([string]$TargetChatId)
   if ([string]::IsNullOrWhiteSpace($TargetChatId)) { return $null }
+
+  $noodleGroupNumeric = '-5230682562'
+
+  function Normalize-TgChatId {
+    param([string]$cid)
+    if ([string]::IsNullOrWhiteSpace($cid)) { return '' }
+    $c = $cid.Trim().ToLowerInvariant()
+    if ($c -match '^telegram:group:(-?\d+)$') { return ('telegram:group:' + $matches[1]) }
+    if ($c -match '^telegram:(-?\d+)$') { return ('telegram:group:' + $matches[1]) }
+    if ($c -match '^(-?\d+)$') { return ('telegram:group:' + $matches[1]) }
+    return $c
+  }
+
+  $targetNorm = Normalize-TgChatId -cid $TargetChatId
+
+  # Hard safety fallback: ensure Noodle route still matches if upstream delivers chat_id in a different telegram form.
+  if ($targetNorm -eq ('telegram:group:' + $noodleGroupNumeric)) {
+    $path = 'data/state/telegram_chat_routes.json'
+    if (Test-Path $path) {
+      try {
+        $raw = Get-Content $path -Raw
+        if (-not [string]::IsNullOrWhiteSpace($raw)) {
+          $obj = ConvertFrom-Json $raw
+          if ($null -ne $obj.routes) {
+            foreach ($r in $obj.routes) {
+              $rn = Normalize-TgChatId -cid ([string]$r.chat_id)
+              if ($rn -eq $targetNorm) { return $r }
+            }
+          }
+        }
+      } catch {}
+    }
+    return [PSCustomObject]@{ chat_id = ('telegram:group:' + $noodleGroupNumeric); mode = 'ANALYSER_READONLY'; name = 'Noodle' }
+  }
+
   $path = 'data/state/telegram_chat_routes.json'
   if (-not (Test-Path $path)) { return $null }
   try {
@@ -287,7 +322,8 @@ function Get-TelegramChatRoute {
     $obj = ConvertFrom-Json $raw
     if ($null -eq $obj.routes) { return $null }
     foreach ($r in $obj.routes) {
-      if ([string]$r.chat_id -eq $TargetChatId) { return $r }
+      $rn = Normalize-TgChatId -cid ([string]$r.chat_id)
+      if ($rn -eq $targetNorm) { return $r }
     }
   } catch {}
   return $null
