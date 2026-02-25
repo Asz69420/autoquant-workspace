@@ -21,13 +21,14 @@ PNL_CAP = 9
 PF_CAP = 6
 WR_CAP = 4
 TC_CAP = 6
-DD_CAP = 10
+DD_CAP = 11
 
 ASSET_EMOJI = {"BTC": "🟠", "ETH": "🔵", "SOL": "🟣"}
 ASSET_PRIORITY = ["BTC", "ETH", "SOL"]
 TF_ORDER = ["15m", "1h", "4h"]
 
 PLACEHOLDER_RE = re.compile(r"999\.9|\+X\.X|need|no data|<pre>|</pre>", re.IGNORECASE)
+SEP = "  "
 
 
 def load_json(path: Path):
@@ -98,11 +99,11 @@ def compute_widths(rows: list[tuple[str, str, str, str, str, str]]) -> tuple[int
 
 def format_header(tf_w: int, pnl_w: int, pf_w: int, wr_w: int, tc_w: int, dd_w: int) -> str:
     return (
-        f"{'TF'.ljust(tf_w)} "
-        f"{'P&L'.rjust(pnl_w)} "
-        f"{'PF'.rjust(pf_w)} "
-        f"{'WR'.rjust(wr_w)} "
-        f"{'TC'.rjust(tc_w)} "
+        f"{'TF'.ljust(tf_w)}{SEP}"
+        f"{'P&L'.rjust(pnl_w)}{SEP}"
+        f"{'PF'.rjust(pf_w)}{SEP}"
+        f"{'WR'.rjust(wr_w)}{SEP}"
+        f"{'TC'.rjust(tc_w)}{SEP}"
         f"{'DD'.rjust(dd_w)}"
     )
 
@@ -110,11 +111,11 @@ def format_header(tf_w: int, pnl_w: int, pf_w: int, wr_w: int, tc_w: int, dd_w: 
 def format_row(row: tuple[str, str, str, str, str, str], tf_w: int, pnl_w: int, pf_w: int, wr_w: int, tc_w: int, dd_w: int) -> str:
     tf, pnl, pf, wr, tc, dd = row
     return (
-        f"{truncate_to_width(tf, tf_w).ljust(tf_w)} "
-        f"{truncate_to_width(pnl, pnl_w).rjust(pnl_w)} "
-        f"{truncate_to_width(pf, pf_w).rjust(pf_w)} "
-        f"{truncate_to_width(wr, wr_w).rjust(wr_w)} "
-        f"{truncate_to_width(tc, tc_w).rjust(tc_w)} "
+        f"{truncate_to_width(tf, tf_w).ljust(tf_w)}{SEP}"
+        f"{truncate_to_width(pnl, pnl_w).rjust(pnl_w)}{SEP}"
+        f"{truncate_to_width(pf, pf_w).rjust(pf_w)}{SEP}"
+        f"{truncate_to_width(wr, wr_w).rjust(wr_w)}{SEP}"
+        f"{truncate_to_width(tc, tc_w).rjust(tc_w)}{SEP}"
         f"{truncate_to_width(dd, dd_w).rjust(dd_w)}"
     )
 
@@ -234,7 +235,7 @@ def main() -> int:
                     f"{pf:.2f}",
                     f"{int(round(wr))}%",
                     str(tc),
-                    f"{dd:.1f}",
+                    f"{dd:.1f}%",
                 ))
 
     all_rows = [row for rows in selected_by_asset.values() for row in rows]
