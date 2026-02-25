@@ -132,11 +132,22 @@ try {
     try {
       $lib = Run-Py @('scripts/pipeline/run_librarian.py','--since-days','7') | ConvertFrom-Json
       $newCandidatesCount = [int]$lib.top_count
-      $libraryRunCount = [int]$lib.run_count
-      $libraryLessons = [int]$lib.lessons_count
       if ($lib.new_indicators_added) { $newIndicatorsAdded += [int]$lib.new_indicators_added }
       if ($lib.skipped_indicators_dedup) { $skippedIndicatorsDedup += [int]$lib.skipped_indicators_dedup }
-      Emit-InfoSummary 'LIBRARIAN_SUMMARY' ("Library: top=" + $lib.top_count + " run=" + $lib.run_count + " lessons=" + $lib.lessons_count + " new=" + $newIndicatorsAdded + " archived=0")
+
+      $topPath = 'artifacts/library/TOP_CANDIDATES.json'
+      $runPath = 'artifacts/library/RUN_INDEX.json'
+      $lessPath = 'artifacts/library/LESSONS_INDEX.json'
+      $topCountActual = 0
+      $runCountActual = 0
+      $lessCountActual = 0
+      try { if (Test-Path $topPath) { $topCountActual = @((Get-Content $topPath -Raw | ConvertFrom-Json)).Count } } catch {}
+      try { if (Test-Path $runPath) { $runCountActual = @((Get-Content $runPath -Raw | ConvertFrom-Json)).Count } } catch {}
+      try { if (Test-Path $lessPath) { $lessCountActual = @((Get-Content $lessPath -Raw | ConvertFrom-Json)).Count } } catch {}
+
+      $libraryRunCount = $runCountActual
+      $libraryLessons = $lessCountActual
+      Emit-InfoSummary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0")
     } catch { $errorsCount += 1 }
   }
 }
