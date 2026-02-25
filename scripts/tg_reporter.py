@@ -251,6 +251,8 @@ def send_event_to_telegram(event):
         else:
             status_word = str(event.get("status_word") or "").upper()
             reason_code = str(event.get("reason_code") or "").upper()
+            if reason_code.startswith("AUTOPILOT_STAGE_"):
+                return None
             if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST:
                 return None
             event_json = json.dumps(event)

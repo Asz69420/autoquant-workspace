@@ -37,12 +37,12 @@ def _run(*args: str) -> dict:
     return json.loads(out)
 
 
-def _log(action: str, reason: str, summary: str, status: str = 'INFO', inputs: list[str] | None = None, outputs: list[str] | None = None):
+def _log(action: str, reason: str, summary: str, status: str = 'INFO', inputs: list[str] | None = None, outputs: list[str] | None = None, agent: str = 'oQ'):
     try:
         cmd = [
             PY, 'scripts/log_event.py',
             '--run-id', f"yt-watch-{int(datetime.now(UTC).timestamp())}",
-            '--agent', 'oQ',
+            '--agent', agent,
             '--model-id', 'openai-codex/gpt-5.3-codex',
             '--action', action,
             '--status-word', status,
@@ -154,7 +154,7 @@ def main() -> int:
     _w(BUNDLE_INDEX, bundles[:500])
     state['seen_video_ids'] = list(seen_videos)[-1000:]
     _w(STATE_PATH, state)
-    _log('YT_WATCH_SUMMARY', 'YT_WATCH_SUMMARY', f"YT: channels={channels_checked} new={new_total} processed={processed} dedup={dedup} failed={failed}", 'INFO')
+    _log('YT_WATCH_SUMMARY', 'YT_WATCH_SUMMARY', f"YT: channels={channels_checked} new={new_total} processed={processed} dedup={dedup} failed={failed}", 'INFO', agent='Reader')
     print(json.dumps({'created_bundles': created, 'count': len(created)}))
     return 0
 
