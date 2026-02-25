@@ -451,22 +451,18 @@ if ($route -eq 'FAST_PATH') {
   }
 
   if ($intentAction -eq 'show_leaderboard' -or $m -like 'leaderboard*') {
-    $assetArg = ''
-    if ($m -match '^leaderboard\s+(.+)$') { $assetArg = [string]$matches[1] }
+    $writerOut = (python scripts/pipeline/write_leaderboard_txt.py --send-telegram) -join "`n"
+    $writerObj = $null
+    try { $writerObj = $writerOut | ConvertFrom-Json } catch { $writerObj = $null }
 
-    $lbJson = ''
-    if ([string]::IsNullOrWhiteSpace($assetArg)) {
-      $lbJson = (python scripts/pipeline/render_leaderboard.py --json) -join "`n"
-    } else {
-      $lbJson = (python scripts/pipeline/render_leaderboard.py --assets $assetArg --json) -join "`n"
+    if ($null -eq $writerObj -or -not $writerObj.ok) {
+      Emit-LogEvent -RunId ($runId + '-leaderboard-fail') -StatusWord 'FAIL' -StatusEmoji '❌' -ReasonCode 'LEADERBOARD_PLACEHOLDER_DETECTED' -Summary 'leaderboard.txt generation failed; blocked send' -Inputs @($Message) -Outputs @('blocked')
+      Write-Output 'leaderboard.txt'
+      exit 2
     }
 
-    $lbObj = $lbJson | ConvertFrom-Json
-    $lbText = [string]$lbObj.rendered_text
-    $sendOpts = [string](($lbObj.send_opts | ConvertTo-Json -Compress))
-
-    Emit-LogEvent -RunId ($runId + '-leaderboard') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'LEADERBOARD' -Summary 'Rendered leaderboard table' -Inputs @($Message) -Outputs @('leaderboard_table',$sendOpts)
-    Write-Output $lbText
+    Emit-LogEvent -RunId ($runId + '-leaderboard') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'LEADERBOARD' -Summary 'Generated and sent leaderboard.txt' -Inputs @($Message) -Outputs @(('assets=' + [string]$writerObj.assets_included),('rows=' + [string]$writerObj.rows_included),('placeholders=' + [string]$writerObj.placeholders_found))
+    Write-Output 'leaderboard.txt'
     exit 0
   }
 
