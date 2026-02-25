@@ -6,6 +6,8 @@ import argparse
 from pathlib import Path
 import requests
 import html
+import json
+from datetime import datetime, timezone
 
 
 def load_env_fallback() -> None:
@@ -29,6 +31,35 @@ def load_env_fallback() -> None:
                 os.environ[k] = v
     except Exception:
         # Silent fallback: caller handles missing vars explicitly.
+        return
+
+
+def _append_action_event(reason_code: str, parse_mode: str, text_value: str) -> None:
+    """Append lightweight debug event to actions.ndjson (never user-visible)."""
+    try:
+        logs_dir = Path.cwd() / "data" / "logs"
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        actions_path = logs_dir / "actions.ndjson"
+        ts = datetime.now(timezone.utc)
+        prefix = (text_value or "")[:30]
+        event = {
+            "ts_iso": ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "run_id": f"tg-notify-{int(ts.timestamp())}",
+            "agent": "Logger",
+            "model_id": "system",
+            "action": "TG_NOTIFY_PAYLOAD_DEBUG",
+            "status_word": "INFO",
+            "status_emoji": "ℹ️",
+            "reason_code": reason_code,
+            "summary": "Telegram payload debug (leaderboard)",
+            "inputs": [],
+            "outputs": [f"parse_mode={parse_mode}", f"text_prefix={prefix}"],
+            "attempt": None,
+            "error": None,
+        }
+        with actions_path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(event, ensure_ascii=False) + "\n")
+    except Exception:
         return
 
 
@@ -59,9 +90,10 @@ def send_telegram_message(
     looks_like_leaderboard = ("TF  P&L" in message) and any(
         token in message for token in ("BTC ", "ETH ", "SOL ")
     )
-    if reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard:
+    is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard
+    if is_leaderboard:
         final_mode = "HTML"
-        final_text = f"<pre>{html.escape(message)}</pre>"
+        final_text = f"<pre><code>{html.escape(message)}</code></pre>"
 
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     payload = {
@@ -69,6 +101,9 @@ def send_telegram_message(
         "text": final_text,
         "parse_mode": final_mode,
     }
+
+    if is_leaderboard:
+        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", final_mode, final_text)
 
     try:
         response = requests.post(url, json=payload, timeout=10)
