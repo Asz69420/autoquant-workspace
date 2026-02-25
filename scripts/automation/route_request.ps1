@@ -566,6 +566,21 @@ if ($route -eq 'FAST_PATH') {
       try { $auto = Get-Content $autoPath -Raw | ConvertFrom-Json } catch { $auto = $null }
     }
 
+    $bundleNewCount = 0
+    $bundleIndexPath = 'artifacts/bundles/INDEX.json'
+    if (Test-Path $bundleIndexPath) {
+      try {
+        $bundlePaths = @(Get-Content $bundleIndexPath -Raw | ConvertFrom-Json)
+        foreach ($bp in $bundlePaths) {
+          if (-not (Test-Path -LiteralPath $bp)) { continue }
+          try {
+            $b = Get-Content -LiteralPath $bp -Raw | ConvertFrom-Json
+            if ($b.status -eq 'NEW') { $bundleNewCount += 1 }
+          } catch {}
+        }
+      } catch {}
+    }
+
     Write-Output 'Lab Report'
     Write-Output 'Top candidates:'
     $top5 = @($top | Select-Object -First 5)
@@ -599,6 +614,7 @@ if ($route -eq 'FAST_PATH') {
     } else {
       Write-Output 'Autopilot: no recent summary'
     }
+    Write-Output ("Queue: bundles_new=" + [string]$bundleNewCount)
     exit 0
   }
 
