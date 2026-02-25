@@ -384,6 +384,33 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
 
+  if ($intentAction -eq 'emit_insight_card') {
+    $concept = ''
+    if ($Message -match '^\s*(?:idea|insight|concept)\s+(.+)$') {
+      $concept = $matches[1].Trim()
+    }
+    if ([string]::IsNullOrWhiteSpace($concept)) {
+      Write-Output 'Share the insight after the keyword (idea/insight/concept).'
+      exit 0
+    }
+
+    $words = @($concept -split '\s+' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    $titleWords = @($words | Select-Object -First 6)
+    $title = ($titleWords -join ' ').Trim()
+    if ([string]::IsNullOrWhiteSpace($title)) { $title = 'Manual insight' }
+
+    if ($DryRun) {
+      Emit-LogEvent -RunId ($runId + '-insight-dryrun') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'DRYRUN_SKIPPED_WRITE' -Summary 'Dry run - would emit insight card' -Inputs @($concept) -Outputs @('would_run:scripts/pipeline/emit_insight_card.py')
+      Write-Output 'Insight recorded.'
+      exit 0
+    }
+
+    python scripts/pipeline/emit_insight_card.py --title $title --concept $concept | Out-Null
+    Emit-LogEvent -RunId ($runId + '-insight') -StatusWord 'OK' -StatusEmoji '✅' -ReasonCode 'INSIGHT_RECORDED' -Summary 'Manual insight card emitted' -Inputs @($concept) -Outputs @('artifact=insight_card')
+    Write-Output 'Insight recorded.'
+    exit 0
+  }
+
   if ($intentAction -eq 'show_roster' -or $m -eq 'roster' -or $m -eq 'show roster' -or $m -eq 'agent roster' -or $m -eq 'roster details') {
     Write-Output "✅ Active Agents (LLM)"
     Write-Output "🤖 oQ - Main orchestrator and delegation control."

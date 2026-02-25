@@ -65,6 +65,9 @@ $candidatesIngested = 0
 $candidatesReachingRefinement = 0
 $candidatesPassingGate = 0
 $activeLibrarySize = 0
+$insightNew = 0
+$insightProcessed = 0
+$insightFailed = 0
 $lock = $null
 
 try {
@@ -96,6 +99,21 @@ try {
   if (-not $grabberEmitted -and -not $DryRun) {
     Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'OK' 'Grabber'
     $grabberEmitted = $true
+  }
+
+  if (-not $DryRun) {
+    try {
+      $insight = python scripts/pipeline/process_insight_cycle.py --max-refinements $MaxRefinementsPerRun | ConvertFrom-Json
+      $insightNew = [int]$insight.new
+      $insightProcessed = [int]$insight.processed
+      $insightFailed = [int]$insight.failed
+      if ($insightFailed -gt 0) { $errorsCount += $insightFailed }
+      Emit-Summary 'INSIGHT_SUMMARY' ("Insight: new=" + $insightNew + " processed=" + $insightProcessed + " failed=" + $insightFailed) 'INFO' 'oQ'
+    } catch {
+      $insightFailed += 1
+      $errorsCount += 1
+      Emit-Summary 'INSIGHT_SUMMARY' ("Insight: new=" + $insightNew + " processed=" + $insightProcessed + " failed=" + $insightFailed) 'WARN' 'oQ'
+    }
   }
 
   $bundleIndexPath = 'artifacts/bundles/INDEX.json'
@@ -298,6 +316,9 @@ $summary = [ordered]@{
   skipped_indicators_dedup = $skippedIndicatorsDedup
   errors_count = $errorsCount
   dry_run = [bool]$DryRun
+  insight_new = $insightNew
+  insight_processed = $insightProcessed
+  insight_failed = $insightFailed
 }
 
 $stateDir = 'data/state'

@@ -2,175 +2,309 @@
   "intents": [
     {
       "name": "set_user_name",
-      "patterns": ["call me *", "my name is *", "remember my name is *"],
+      "patterns": [
+        "call me *",
+        "my name is *",
+        "remember my name is *"
+      ],
       "route": "BUILD_PATH",
       "action": "update_user_md",
-      "params": { "field": "User preferred name", "value_from_wildcard": 1 }
+      "params": {
+        "field": "User preferred name",
+        "value_from_wildcard": 1
+      }
     },
     {
       "name": "set_assistant_name",
-      "patterns": ["your name is *", "rename yourself to *"],
+      "patterns": [
+        "your name is *",
+        "rename yourself to *"
+      ],
       "route": "BUILD_PATH",
       "action": "update_user_md",
-      "params": { "field": "Assistant name", "value_from_wildcard": 1 }
+      "params": {
+        "field": "Assistant name",
+        "value_from_wildcard": 1
+      }
     },
     {
       "name": "status_builds_waiting",
-      "patterns": ["any builds waiting*", "do i need to approve*", "what's pending*", "whats pending*"],
+      "patterns": [
+        "any builds waiting*",
+        "do i need to approve*",
+        "what's pending*",
+        "whats pending*"
+      ],
       "route": "FAST_PATH",
       "action": "show_pending_approvals"
     },
     {
       "name": "apply_latest",
-      "patterns": ["apply", "go ahead", "yes apply", "ok apply", "ship it", "apply latest"],
+      "patterns": [
+        "apply",
+        "go ahead",
+        "yes apply",
+        "ok apply",
+        "ship it",
+        "apply latest"
+      ],
       "route": "FAST_PATH",
       "action": "apply_latest_ready"
     },
     {
       "name": "reject_latest",
-      "patterns": ["reject latest", "skip latest", "dont apply latest"],
+      "patterns": [
+        "reject latest",
+        "skip latest",
+        "dont apply latest"
+      ],
       "route": "FAST_PATH",
       "action": "reject_latest"
     },
     {
       "name": "toggle_warnings_off",
-      "patterns": ["turn warnings off", "disable warnings", "warnings off"],
+      "patterns": [
+        "turn warnings off",
+        "disable warnings",
+        "warnings off"
+      ],
       "route": "FAST_PATH",
       "action": "toggle_warnings_off",
-      "params": { "flag": "warningsEnabled", "value": false }
+      "params": {
+        "flag": "warningsEnabled",
+        "value": false
+      }
     },
     {
       "name": "toggle_warnings_on",
-      "patterns": ["turn warnings on", "enable warnings", "warnings on"],
+      "patterns": [
+        "turn warnings on",
+        "enable warnings",
+        "warnings on"
+      ],
       "route": "FAST_PATH",
       "action": "toggle_warnings_on",
-      "params": { "flag": "warningsEnabled", "value": true }
+      "params": {
+        "flag": "warningsEnabled",
+        "value": true
+      }
     },
     {
       "name": "queue_status",
-      "patterns": ["queue status", "show queue", "what is in queue"],
+      "patterns": [
+        "queue status",
+        "show queue",
+        "what is in queue"
+      ],
       "route": "FAST_PATH",
       "action": "queue_status"
     },
     {
       "name": "cancel_next",
-      "patterns": ["cancel next", "drop next", "remove next"],
+      "patterns": [
+        "cancel next",
+        "drop next",
+        "remove next"
+      ],
       "route": "FAST_PATH",
       "action": "cancel_next"
     },
     {
       "name": "clear_queue",
-      "patterns": ["clear queue", "empty queue"],
+      "patterns": [
+        "clear queue",
+        "empty queue"
+      ],
       "route": "FAST_PATH",
       "action": "clear_queue"
     },
     {
       "name": "show_latest_status",
-      "patterns": ["show latest status", "latest build status", "what is latest status"],
+      "patterns": [
+        "show latest status",
+        "latest build status",
+        "what is latest status"
+      ],
       "route": "FAST_PATH",
       "action": "show_latest_status"
     },
     {
       "name": "show_logs_summary",
-      "patterns": ["show logs summary", "logs summary", "recent logs"],
+      "patterns": [
+        "show logs summary",
+        "logs summary",
+        "recent logs"
+      ],
       "route": "FAST_PATH",
       "action": "show_logs_summary"
     },
     {
       "name": "roster",
-      "patterns": ["roster", "show roster", "agent roster", "roster details"],
+      "patterns": [
+        "roster",
+        "show roster",
+        "agent roster",
+        "roster details"
+      ],
       "route": "FAST_PATH",
       "action": "show_roster"
     },
     {
       "name": "report",
-      "patterns": ["report", "status report", "lab report", "top candidates"],
+      "patterns": [
+        "report",
+        "status report",
+        "lab report",
+        "top candidates"
+      ],
       "route": "FAST_PATH",
       "action": "show_report"
     },
     {
       "name": "leaderboard",
-      "patterns": ["leaderboard", "leaderboard *"],
+      "patterns": [
+        "leaderboard",
+        "leaderboard *"
+      ],
       "route": "FAST_PATH",
       "action": "show_leaderboard"
     },
     {
       "name": "make_review_pack",
-      "patterns": ["make review pack", "review pack", "prep opus review", "make review pack *", "review pack *", "prep opus review *"],
+      "patterns": [
+        "make review pack",
+        "review pack",
+        "prep opus review",
+        "make review pack *",
+        "review pack *",
+        "prep opus review *"
+      ],
       "route": "FAST_PATH",
       "action": "make_review_pack"
     },
     {
       "name": "show_help",
-      "patterns": ["help", "usage", "what can you do"],
+      "patterns": [
+        "help",
+        "usage",
+        "what can you do"
+      ],
       "route": "FAST_PATH",
       "action": "show_help"
     },
     {
       "name": "show_debug",
-      "patterns": ["show debug", "details"],
+      "patterns": [
+        "show debug",
+        "details"
+      ],
       "route": "FAST_PATH",
       "action": "show_debug"
     },
     {
       "name": "build_request",
-      "patterns": ["build *", "implement *", "patch *", "update *", "add feature *", "refactor *"],
+      "patterns": [
+        "build *",
+        "implement *",
+        "patch *",
+        "update *",
+        "add feature *",
+        "refactor *"
+      ],
       "route": "BUILD_PATH",
       "action": "enqueue_build"
     },
     {
       "name": "docs_change",
-      "patterns": ["change docs *", "update docs *"],
+      "patterns": [
+        "change docs *",
+        "update docs *"
+      ],
       "route": "BUILD_PATH",
       "action": "enqueue_build"
     },
     {
       "name": "tests_change",
-      "patterns": ["add tests *", "fix tests *"],
+      "patterns": [
+        "add tests *",
+        "fix tests *"
+      ],
       "route": "BUILD_PATH",
       "action": "enqueue_build"
     },
     {
       "name": "config_change",
-      "patterns": ["change config *", "update config *"],
+      "patterns": [
+        "change config *",
+        "update config *"
+      ],
       "route": "BUILD_PATH",
       "action": "enqueue_build"
     },
     {
       "name": "explain_request",
-      "patterns": ["explain *", "what does * mean", "how does * work"],
+      "patterns": [
+        "explain *",
+        "what does * mean",
+        "how does * work"
+      ],
       "route": "FAST_PATH",
       "action": "show_help"
     },
     {
       "name": "pending_approval_short",
-      "patterns": ["pending approvals", "pending builds"],
+      "patterns": [
+        "pending approvals",
+        "pending builds"
+      ],
       "route": "FAST_PATH",
       "action": "show_pending_approvals"
     },
     {
       "name": "apply_short",
-      "patterns": ["approve latest", "ship latest"],
+      "patterns": [
+        "approve latest",
+        "ship latest"
+      ],
       "route": "FAST_PATH",
       "action": "apply_latest_ready"
     },
     {
       "name": "reject_short",
-      "patterns": ["cancel latest", "dont ship latest"],
+      "patterns": [
+        "cancel latest",
+        "dont ship latest"
+      ],
       "route": "FAST_PATH",
       "action": "reject_latest"
     },
     {
       "name": "warnings_off_short",
-      "patterns": ["mute warnings", "quiet warnings"],
+      "patterns": [
+        "mute warnings",
+        "quiet warnings"
+      ],
       "route": "FAST_PATH",
       "action": "toggle_warnings_off"
     },
     {
       "name": "warnings_on_short",
-      "patterns": ["unmute warnings", "loud warnings"],
+      "patterns": [
+        "unmute warnings",
+        "loud warnings"
+      ],
       "route": "FAST_PATH",
       "action": "toggle_warnings_on"
+    },
+    {
+      "name": "add_insight",
+      "patterns": [
+        "idea *",
+        "insight *",
+        "concept *"
+      ],
+      "route": "FAST_PATH",
+      "action": "emit_insight_card"
     }
   ]
 }
