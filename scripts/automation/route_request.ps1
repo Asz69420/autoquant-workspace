@@ -414,9 +414,14 @@ function Invoke-NoodleReadonly {
 $m = $Message.ToLowerInvariant().Trim()
 $routeRecord = Get-TelegramChatRoute -TargetChatId $ChatId
 if ($null -ne $routeRecord -and [string]$routeRecord.mode -eq 'ANALYSER_READONLY') {
+  # Noodle must respond to any normal group message in this chat route.
+  # Do not require reply context/message-id presence.
+  $safeMessage = if ([string]::IsNullOrWhiteSpace($Message)) { 'help' } else { $Message }
+  $safeLower = $safeMessage.ToLowerInvariant().Trim()
+
   $rrun = 'route-noodle-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-  Emit-LogEvent -RunId $rrun -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'ROUTE_ANALYSER_READONLY' -Summary ('chat routed to ANALYSER_READONLY: ' + [string]$ChatId) -Inputs @($Message) -Outputs @('ANALYSER_READONLY')
-  Invoke-NoodleReadonly -InputMessage $Message -InputLower $m -ChatId $ChatId
+  Emit-LogEvent -RunId $rrun -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'ROUTE_ANALYSER_READONLY' -Summary ('chat routed to ANALYSER_READONLY: ' + [string]$ChatId) -Inputs @($safeMessage) -Outputs @('ANALYSER_READONLY')
+  Invoke-NoodleReadonly -InputMessage $safeMessage -InputLower $safeLower -ChatId $ChatId
   exit 0
 }
 
