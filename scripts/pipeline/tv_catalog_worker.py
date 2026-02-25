@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 from __future__ import annotations
 
 import argparse
@@ -114,8 +114,10 @@ def _ir_meta(ir_path: str) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--max-new-indicators-per-run', type=int, default=2)
+    ap.add_argument('--max-candidates-evaluated', type=int, default=20)
     args = ap.parse_args()
     max_new_indicators_per_run = max(1, int(args.max_new_indicators_per_run))
+    max_candidates_evaluated = max(1, int(args.max_candidates_evaluated))
 
     st = _j(STATE_PATH, {'top_cursor': 0, 'seen_tv_keys': [], 'seen_script_ids': [], 'last_trending_seen': []})
     bundles = _j(BUNDLE_INDEX, [])
@@ -132,13 +134,14 @@ def main() -> int:
 
     top = _fetch_mode('top')
     _log('TV_CATALOG_CHECK', 'TV_CATALOG_CHECK', f'mode=TOP candidates={len(top)}', 'INFO')
+    evaluated_count = 0
     if top:
-        cursor = st.get('top_cursor', 0) % len(top)
-        checked = 0
-        while checked < len(top) and added < max_new_indicators_per_run:
-            cand = top[cursor]
-            cursor = (cursor + 1) % len(top)
-            checked += 1
+        while evaluated_count < min(len(top), max_candidates_evaluated) and added < max_new_indicators_per_run:
+            top_cursor = int(st.get('top_cursor', 0))
+            idx_sel = top_cursor % len(top)
+            cand = top[idx_sel]
+            st['top_cursor'] = top_cursor + 1
+            evaluated_count += 1
             key = _tv_key(cand['name'], cand['author'])
 
             if _is_invalid_candidate(cand['name'], cand['author']):
@@ -177,7 +180,6 @@ def main() -> int:
             st['seen_script_ids'].append(cand['script_id'])
             added += 1
 
-        st['top_cursor'] = cursor
 
     tr = _fetch_mode('trending')
     _log('TV_CATALOG_CHECK', 'TV_CATALOG_CHECK', f'mode=TRENDING candidates={len(tr)}', 'INFO')
