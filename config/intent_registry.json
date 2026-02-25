@@ -89,6 +89,12 @@
       "action": "show_report"
     },
     {
+      "name": "leaderboard",
+      "patterns": ["leaderboard", "leaderboard *"],
+      "route": "FAST_PATH",
+      "action": "show_leaderboard"
+    },
+    {
       "name": "make_review_pack",
       "patterns": ["make review pack", "review pack", "prep opus review", "make review pack *", "review pack *", "prep opus review *"],
       "route": "FAST_PATH",

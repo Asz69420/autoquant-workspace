@@ -439,6 +439,17 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
 
+  if ($intentAction -eq 'show_leaderboard' -or $m -like 'leaderboard*') {
+    $assetArg = ''
+    if ($m -match '^leaderboard\s+(.+)$') { $assetArg = [string]$matches[1] }
+    if ([string]::IsNullOrWhiteSpace($assetArg)) {
+      python scripts/pipeline/render_leaderboard.py
+    } else {
+      python scripts/pipeline/render_leaderboard.py --assets $assetArg
+    }
+    exit 0
+  }
+
   if ($intentAction -eq 'show_report' -or $m -eq 'report' -or $m -eq 'status report' -or $m -eq 'lab report' -or $m -eq 'top candidates') {
     $topPath = 'artifacts/library/TOP_CANDIDATES.json'
     $lessonPath = 'artifacts/library/LESSONS_INDEX.json'
