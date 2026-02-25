@@ -42,11 +42,20 @@ INFO_TELEGRAM_ALLOWLIST = {
     "YT_WATCH_SUMMARY",
     "TV_CATALOG_SUMMARY",
     "GRABBER_SUMMARY",
+    "INSIGHT_SUMMARY",
     "PROMOTION_SUMMARY",
     "BATCH_BACKTEST_SUMMARY",
     "REFINEMENT_SUMMARY",
     "LIBRARIAN_SUMMARY",
+    "RECOMBINE_SUMMARY",
     "AUTOPILOT_SUMMARY",
+}
+
+INFO_TELEGRAM_SUPPRESS = {
+    "GRABBER_FETCH_OK",
+    "GRABBER_FETCH_FAIL",
+    "BUNDLE_CREATED",
+    "TV_INDICATOR_ADDED",
 }
 
 def compute_ts_local_aest(ts_iso_str):
@@ -276,6 +285,8 @@ def send_event_to_telegram(event):
         else:
             status_word = str(event.get("status_word") or "").upper()
             if reason_code.startswith("AUTOPILOT_STAGE_"):
+                return None
+            if status_word == "INFO" and reason_code in INFO_TELEGRAM_SUPPRESS:
                 return None
             if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST and reason_code != "LEADERBOARD":
                 return None
