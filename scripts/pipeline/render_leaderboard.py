@@ -11,7 +11,7 @@ RUN_INDEX = ROOT / 'artifacts' / 'library' / 'RUN_INDEX.json'
 
 ASSET_ORDER = ['BTC', 'ETH', 'SOL']
 TF_ORDER = ['15m', '1h', '4h']
-LINE = '----------------------------------'
+LINE = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
 
 
 def trunc(s: str, n: int = 18) -> str:

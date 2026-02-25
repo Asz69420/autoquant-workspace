@@ -5,7 +5,6 @@ import sys
 import argparse
 from pathlib import Path
 import requests
-import html
 import json
 from datetime import datetime, timezone
 
@@ -34,7 +33,7 @@ def load_env_fallback() -> None:
         return
 
 
-def _append_action_event(reason_code: str, parse_mode: str, text_value: str) -> None:
+def _append_action_event(reason_code: str, parse_mode: str, text_value: str, used_pre_entities: bool = False) -> None:
     """Append lightweight debug event to actions.ndjson (never user-visible)."""
     try:
         logs_dir = Path.cwd() / "data" / "logs"
@@ -53,7 +52,7 @@ def _append_action_event(reason_code: str, parse_mode: str, text_value: str) -> 
             "reason_code": reason_code,
             "summary": "Telegram payload debug (leaderboard)",
             "inputs": [],
-            "outputs": [f"parse_mode={parse_mode}", f"text_prefix={prefix}"],
+            "outputs": [f"parse_mode={parse_mode}", f"text_prefix={prefix}", f"entities_pre={str(used_pre_entities).lower()}"],
             "attempt": None,
             "error": None,
         }
@@ -91,19 +90,21 @@ def send_telegram_message(
         token in message for token in ("BTC ", "ETH ", "SOL ")
     )
     is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard
-    if is_leaderboard:
-        final_mode = "HTML"
-        final_text = f"<pre><code>{html.escape(message)}</code></pre>"
 
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    payload = {
-        "chat_id": target_chat_id,
-        "text": final_text,
-        "parse_mode": final_mode,
-    }
-
     if is_leaderboard:
-        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", final_mode, final_text)
+        payload = {
+            "chat_id": target_chat_id,
+            "text": final_text,
+            "entities": [{"type": "pre", "offset": 0, "length": len(final_text)}],
+        }
+        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", "NONE", final_text, used_pre_entities=True)
+    else:
+        payload = {
+            "chat_id": target_chat_id,
+            "text": final_text,
+            "parse_mode": final_mode,
+        }
 
     try:
         response = requests.post(url, json=payload, timeout=10)
