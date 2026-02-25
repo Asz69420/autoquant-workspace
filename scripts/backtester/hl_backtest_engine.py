@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse, csv, json, subprocess, sys, uuid
+import argparse, csv, hashlib, json, subprocess, sys, uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -87,7 +87,9 @@ def main() -> int:
     risk_policy = variant['risk_policy']
     execution_policy = variant['execution_policy']
     rules = parse_rules(variant.get('risk_rules', []))
-    costs = json.loads((ROOT / args.cost_config).read_text(encoding='utf-8'))
+    cost_config_path = ROOT / args.cost_config
+    costs = json.loads(cost_config_path.read_text(encoding='utf-8'))
+    fee_model_hash = hashlib.sha256(cost_config_path.read_bytes()).hexdigest()
     gates = json.loads((ROOT / args.gate_config).read_text(encoding='utf-8')) if (ROOT / args.gate_config).exists() else {}
 
     fee_mode = args.fee_mode or costs.get('fee_mode', 'taker')
@@ -251,7 +253,8 @@ def main() -> int:
         'id': f"hl_{datetime.now().strftime('%Y%m%d')}_{uuid.uuid4().hex[:8]}",
         'created_at': datetime.now(UTC).isoformat(),
         'inputs': {'dataset_meta': args.dataset_meta, 'dataset_csv': str(csv_path), 'strategy_spec': args.strategy_spec, 'variant': args.variant},
-        'settings': {'entry_fill_rule': entry_fill, 'tie_break': tie_break, 'fee_mode': fee_mode, 'fee_bps': fee_bps, 'slippage_bps': slippage_bps},
+        'fee_model_hash': fee_model_hash,
+        'settings': {'entry_fill_rule': entry_fill, 'tie_break': tie_break, 'fee_mode': fee_mode, 'fee_bps': fee_bps, 'slippage_bps': slippage_bps, 'cost_config_path': str(cost_config_path), 'fee_model_hash': fee_model_hash},
         'results': {
             'net_profit': round(net, 8),
             'net_profit_pct': round((net / args.initial_capital), 8) if args.initial_capital else None,

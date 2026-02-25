@@ -6,6 +6,8 @@ import csv
 import hashlib
 import json
 import statistics
+import subprocess
+import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from urllib import request
@@ -71,6 +73,25 @@ def update_index(ptr: dict) -> None:
     INDEX_PATH.write_text(json.dumps(idx[-200:], indent=2), encoding="utf-8")
 
 
+def emit_warn(reason_code: str, summary: str) -> None:
+    try:
+        rid = f"ingest-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
+        subprocess.run([
+            sys.executable,
+            str((ROOT / "scripts" / "log_event.py").resolve()),
+            "--run-id", rid,
+            "--agent", "oQ",
+            "--model-id", "openai-codex/gpt-5.3-codex",
+            "--action", "data_ingest",
+            "--status-word", "WARN",
+            "--status-emoji", "WARN",
+            "--reason-code", reason_code,
+            "--summary", summary,
+        ], cwd=ROOT, check=False, capture_output=True, text=True)
+    except Exception:
+        pass
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Fetch Hyperliquid OHLCV into canonical dataset artifacts.")
     ap.add_argument("--symbol", required=True)
@@ -79,7 +100,8 @@ def main() -> int:
     ap.add_argument("--end-ms", type=int, default=0)
     args = ap.parse_args()
 
-    now = int(datetime.now(UTC).timestamp() * 1000) if args.end_ms <= 0 else args.end_ms
+    fetch_ts_ms = int(datetime.now(UTC).timestamp() * 1000)
+    now = fetch_ts_ms if args.end_ms <= 0 else args.end_ms
     start = now - args.lookback_days * 24 * 60 * 60 * 1000
 
     rows = fetch(args.symbol, args.timeframe, start, now)
@@ -88,8 +110,18 @@ def main() -> int:
         raise SystemExit("HYPERLIQUID_DATA_INVALID")
 
     rows = sorted(rows, key=lambda x: int(x["t"]))
+    interval_ms = INTERVAL_MS[args.timeframe]
+    filtered_rows = [r for r in rows if (int(r["t"]) + interval_ms) < fetch_ts_ms]
+    dropped_unclosed_count = len(rows) - len(filtered_rows)
+    if not filtered_rows:
+        raise SystemExit("HYPERLIQUID_DATA_NO_CLOSED_CANDLES")
+    if dropped_unclosed_count > 0:
+        emit_warn("UNFINISHED_CANDLE_DROPPED", f"Dropped {dropped_unclosed_count} unfinished candle(s) for {args.symbol} {args.timeframe}")
+
+    rows = filtered_rows
     first_ts = datetime.fromtimestamp(int(rows[0]["t"]) / 1000, tz=UTC)
     last_ts = datetime.fromtimestamp(int(rows[-1]["t"]) / 1000, tz=UTC)
+    last_closed_candle_ts = datetime.fromtimestamp((int(rows[-1]["t"]) + interval_ms) / 1000, tz=UTC)
 
     out_dir = ROOT / "artifacts" / "data" / "hyperliquid" / args.symbol / args.timeframe
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -117,6 +149,9 @@ def main() -> int:
         "tz": "UTC",
         "start": first_ts.isoformat(),
         "end": last_ts.isoformat(),
+        "fetch_ts": datetime.fromtimestamp(fetch_ts_ms / 1000, tz=UTC).isoformat(),
+        "last_closed_candle_ts": last_closed_candle_ts.isoformat(),
+        "dropped_unclosed_count": dropped_unclosed_count,
         "row_count": len(rows),
         "sha256": sha256(out_csv),
         "fetch_params": {"start_ms": start, "end_ms": now, "lookback_days": args.lookback_days},

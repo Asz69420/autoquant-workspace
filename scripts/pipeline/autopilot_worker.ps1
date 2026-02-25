@@ -61,6 +61,10 @@ $refineExplore = 0
 $refineDelta = 'n/a'
 $libraryLessons = 0
 $libraryRunCount = 0
+$candidatesIngested = 0
+$candidatesReachingRefinement = 0
+$candidatesPassingGate = 0
+$activeLibrarySize = 0
 $lock = $null
 
 try {
@@ -136,7 +140,10 @@ try {
               $batchRuns += [int]$bdoc.summary.total_runs
               $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $batchSkipped += [int]$bdoc.summary.failed_runs
-              foreach ($rr in $bdoc.runs) { if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 } }
+              foreach ($rr in $bdoc.runs) {
+                if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 }
+                if ($rr.gate_pass -eq $true) { $candidatesPassingGate += 1 }
+              }
               $execCount = ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $bStatus = if ($execCount -le 0) { 'WARN' } else { 'OK' }
               Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail) $bStatus 'Backtester'
@@ -171,6 +178,7 @@ try {
           } elseif ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
             $refinementsRun += 1
+            $candidatesReachingRefinement += 1
             try {
               $rdoc = Get-Content $ref.refinement_cycle_path -Raw | ConvertFrom-Json
               $refineVariants = [int]$rdoc.winner.summary.total_runs
@@ -233,6 +241,7 @@ try {
       if ($readOk) {
         $libraryRunCount = [int]$runCountActual
         $libraryLessons = [int]$lessCountActual
+        $activeLibrarySize = ([int]$topCountActual + [int]$runCountActual + [int]$lessCountActual)
         Emit-Summary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0") 'OK' 'Librarian'
         $libraryEmitted = $true
       } else {
@@ -272,6 +281,8 @@ finally {
   if ($lock -and (Test-Path $lock)) { Remove-Item $lock -Force -ErrorAction SilentlyContinue }
 }
 
+$candidatesIngested = $bundlesProcessed
+
 $summary = [ordered]@{
   event = 'AUTOPILOT_SUMMARY'
   created_at = [DateTime]::UtcNow.ToString('o')
@@ -279,6 +290,10 @@ $summary = [ordered]@{
   promotions_processed = $promotionsProcessed
   refinements_run = $refinementsRun
   new_candidates_count = $newCandidatesCount
+  candidates_ingested = $candidatesIngested
+  candidates_reaching_refinement = $candidatesReachingRefinement
+  candidates_passing_gate = $candidatesPassingGate
+  active_library_size = $activeLibrarySize
   new_indicators_added = $newIndicatorsAdded
   skipped_indicators_dedup = $skippedIndicatorsDedup
   errors_count = $errorsCount
@@ -287,11 +302,37 @@ $summary = [ordered]@{
 
 $stateDir = 'data/state'
 if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir | Out-Null }
+
+$countersPath = Join-Path $stateDir 'autopilot_counters.json'
+$counters = [ordered]@{ starvation_cycles = 0; drought_cycles = 0; updated_at = [DateTime]::UtcNow.ToString('o') }
+if (Test-Path $countersPath) {
+  try {
+    $prev = Get-Content $countersPath -Raw | ConvertFrom-Json
+    if ($null -ne $prev.starvation_cycles) { $counters.starvation_cycles = [int]$prev.starvation_cycles }
+    if ($null -ne $prev.drought_cycles) { $counters.drought_cycles = [int]$prev.drought_cycles }
+  } catch {}
+}
+
+if ([int]$candidatesReachingRefinement -eq 0) { $counters.starvation_cycles = [int]$counters.starvation_cycles + 1 } else { $counters.starvation_cycles = 0 }
+if ([int]$candidatesPassingGate -eq 0) { $counters.drought_cycles = [int]$counters.drought_cycles + 1 } else { $counters.drought_cycles = 0 }
+$counters.updated_at = [DateTime]::UtcNow.ToString('o')
+($counters | ConvertTo-Json -Depth 5) | Set-Content -Path $countersPath -Encoding utf8
+
+$summary.starvation_cycles = [int]$counters.starvation_cycles
+$summary.drought_cycles = [int]$counters.drought_cycles
+
 ($summary | ConvertTo-Json -Depth 5) | Set-Content -Path 'data/state/autopilot_summary.json' -Encoding utf8
 
 if (-not $DryRun) {
+  if ([int]$counters.starvation_cycles -ge 12) {
+    Emit-Summary 'AUTOPILOT_STARVATION_WARN' ("Autopilot starvation: starvation_cycles=" + $counters.starvation_cycles + " candidates_reaching_refinement=" + $candidatesReachingRefinement) 'WARN' 'oQ'
+  }
+  if ([int]$counters.drought_cycles -ge 30) {
+    Emit-Summary 'AUTOPILOT_DROUGHT_WARN' ("Autopilot drought: drought_cycles=" + $counters.drought_cycles + " candidates_passing_gate=" + $candidatesPassingGate) 'WARN' 'oQ'
+  }
+
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'AUTOPILOT_SUMMARY' ("Autopilot: bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'AUTOPILOT_SUMMARY' ("Autopilot: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)

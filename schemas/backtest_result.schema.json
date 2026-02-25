@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autoquant.local/schemas/backtest_result.schema.json",
+  "title": "BacktestResult",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "inputs",
+    "fee_model_hash",
+    "settings",
+    "results",
+    "coverage",
+    "gate"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "fee_model_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "inputs": { "type": "object" },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "fee_model_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "results": { "type": "object" },
+    "coverage": { "type": "object" },
+    "gate": { "type": "object" }
+  }
+}

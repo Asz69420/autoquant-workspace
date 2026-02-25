@@ -48,6 +48,7 @@ def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | No
         'created_at': bt.get('created_at'),
         'strategy_spec_path': strategy_spec,
         'variant_name': variant,
+        'fee_model_hash': bt.get('fee_model_hash') or bt.get('settings', {}).get('fee_model_hash'),
         'datasets_tested': [{'symbol': r.get('symbol'), 'timeframe': r.get('timeframe')}],
         'net_profit': res.get('net_profit', 0.0),
         'profit_factor': res.get('profit_factor', 0.0),
@@ -88,6 +89,25 @@ def _cap(items: list[dict], n: int) -> list[dict]:
     return items[:n]
 
 
+def _ensure_fee_model_hash(entry: dict) -> dict:
+    if not isinstance(entry, dict):
+        return entry
+    if entry.get('fee_model_hash'):
+        return entry
+    bt_ptr = str(entry.get('pointers', {}).get('backtest_result') or '')
+    if bt_ptr:
+        try:
+            bt = _j(Path(bt_ptr))
+            fee_hash = bt.get('fee_model_hash') or bt.get('settings', {}).get('fee_model_hash')
+            if fee_hash:
+                entry['fee_model_hash'] = fee_hash
+        except Exception:
+            pass
+    if 'fee_model_hash' not in entry:
+        entry['fee_model_hash'] = None
+    return entry
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--since-days', type=int, default=7)
@@ -104,7 +124,7 @@ def main() -> int:
 
     since = datetime.now(UTC) - timedelta(days=args.since_days)
 
-    existing_runs = _load_index(run_idx_p)
+    existing_runs = [_ensure_fee_model_hash(x) for x in _load_index(run_idx_p)]
     seen_sha = {x.get('sha256_inputs') for x in existing_runs if isinstance(x, dict)}
 
     promo_map = {}
@@ -146,7 +166,7 @@ def main() -> int:
                 seen_sha.add(e['sha256_inputs'])
             new_entries.append(e)
 
-    combined = sorted(existing_runs + new_entries, key=lambda x: x.get('created_at', ''), reverse=True)
+    combined = sorted([_ensure_fee_model_hash(x) for x in (existing_runs + new_entries)], key=lambda x: x.get('created_at', ''), reverse=True)
     combined = _cap(combined, 500)
     _write(run_idx_p, combined)
 
