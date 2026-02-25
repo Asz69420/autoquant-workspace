@@ -36,7 +36,7 @@ def load_env_fallback() -> None:
 
 
 def _append_action_event(reason_code: str, parse_mode: str, text_value: str) -> None:
-    """Append debug event to actions.ndjson only (never user-visible)."""
+    """Append debug/audit event to actions.ndjson only (never user-visible)."""
     try:
         logs_dir = Path.cwd() / "data" / "logs"
         logs_dir.mkdir(parents=True, exist_ok=True)
@@ -97,6 +97,35 @@ def _unwrap_triple_backticks(text: str) -> str:
     return t
 
 
+def _append_send_audit(parse_mode: str, text_value: str) -> None:
+    try:
+        logs_dir = Path.cwd() / "data" / "logs"
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        actions_path = logs_dir / "actions.ndjson"
+        ts = datetime.now(timezone.utc)
+        event = {
+            "ts_iso": ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "run_id": f"tg-audit-{int(ts.timestamp())}",
+            "agent": "Logger",
+            "model_id": "system",
+            "action": "TG_SEND_AUDIT_LOG",
+            "type": "TG_SEND_AUDIT_LOG",
+            "debug": True,
+            "status_word": "INFO",
+            "status_emoji": "ℹ️",
+            "reason_code": "TG_SEND_AUDIT_LOG",
+            "summary": "Telegram send payload audit (log channel)",
+            "inputs": [],
+            "outputs": [f"parse_mode={parse_mode}", f"text_prefix={(text_value or '')[:10]}"],
+            "attempt": None,
+            "error": None,
+        }
+        with actions_path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(event, ensure_ascii=False) + "\n")
+    except Exception:
+        return
+
+
 def send_telegram_message(
     message: str,
     chat_id: str | None = None,
@@ -124,6 +153,7 @@ def send_telegram_message(
         body = _unwrap_triple_backticks(outbound_message)
         outbound_message = f"<pre>{_escape_html(body)}</pre>"
         effective_parse_mode = 'HTML'
+        _append_send_audit('HTML', outbound_message)
 
     try:
         send_message(target_chat_id, outbound_message, parse_mode=effective_parse_mode)
