@@ -81,6 +81,22 @@ def send_message(chat_id: str, text: str, **kwargs) -> dict:
     return resp.json()
 
 
+def _escape_html(text: str) -> str:
+    return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _unwrap_triple_backticks(text: str) -> str:
+    t = (text or "").strip()
+    if t.startswith("```") and t.endswith("```"):
+        inner = t[3:-3]
+        if inner.startswith("\n"):
+            inner = inner[1:]
+        if inner.endswith("\n"):
+            inner = inner[:-1]
+        return inner
+    return t
+
+
 def send_telegram_message(
     message: str,
     chat_id: str | None = None,
@@ -98,12 +114,19 @@ def send_telegram_message(
         _append_action_event(str(reason_code or 'DEBUG'), str(parse_mode or 'NONE'), message)
 
     effective_parse_mode = parse_mode
+    outbound_message = message
     msg_trim = (message or '').strip()
     if not effective_parse_mode and msg_trim.startswith('<pre>') and msg_trim.endswith('</pre>'):
         effective_parse_mode = 'HTML'
 
+    # Log channel: keep existing content, but render monospace via HTML <pre> wrapper only.
+    if str(target_chat_id) == str(log_chat_id):
+        body = _unwrap_triple_backticks(outbound_message)
+        outbound_message = f"<pre>{_escape_html(body)}</pre>"
+        effective_parse_mode = 'HTML'
+
     try:
-        send_message(target_chat_id, message, parse_mode=effective_parse_mode)
+        send_message(target_chat_id, outbound_message, parse_mode=effective_parse_mode)
         return True
     except requests.exceptions.RequestException as e:
         raise Exception(f"Telegram API error: {e}")
