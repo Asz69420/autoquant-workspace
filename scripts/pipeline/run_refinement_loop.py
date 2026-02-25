@@ -5,6 +5,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import uuid
@@ -21,8 +22,11 @@ MAX_EXPLORE_PER_ITER = 3
 IMPROVEMENT_THRESHOLD = 0.02
 
 
-def _run(cmd: list[str]) -> str:
-    p = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=True)
+def _run(cmd: list[str], extra_env: dict[str, str] | None = None) -> str:
+    env = os.environ.copy()
+    if extra_env:
+        env.update(extra_env)
+    p = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=True, env=env)
     return p.stdout.strip()
 
 
@@ -42,14 +46,22 @@ def _emit_thesis_from_promotion(promo: dict) -> str:
     lm = _load(linkmap_path)
     rc = _abs(lm.get('research_card_path'))
     ir = [_abs(p) for p in lm.get('indicator_record_paths', [])[:10]]
-    out = _run([PY, 'scripts/pipeline/emit_thesis.py', '--research-card-path', rc, '--indicator-record-paths', json.dumps(ir), '--linkmap-paths', json.dumps([linkmap_path])])
+    reasoning_env = {
+        'OPENCLAW_MODEL_ID': 'openai-codex/gpt-5.3-codex',
+        'OPENCLAW_REASONING_EFFORT': 'high',
+    }
+    out = _run([PY, 'scripts/pipeline/emit_thesis.py', '--research-card-path', rc, '--indicator-record-paths', json.dumps(ir), '--linkmap-paths', json.dumps([linkmap_path])], extra_env=reasoning_env)
     thesis_path = json.loads(out)['thesis_path']
     _run([PY, 'scripts/pipeline/verify_pipeline_stage2.py', '--thesis', thesis_path])
     return thesis_path
 
 
 def _emit_base_spec(thesis_path: str) -> str:
-    out = _run([PY, 'scripts/pipeline/emit_strategy_spec.py', '--thesis-path', thesis_path])
+    reasoning_env = {
+        'OPENCLAW_MODEL_ID': 'openai-codex/gpt-5.3-codex',
+        'OPENCLAW_REASONING_EFFORT': 'high',
+    }
+    out = _run([PY, 'scripts/pipeline/emit_strategy_spec.py', '--thesis-path', thesis_path], extra_env=reasoning_env)
     return json.loads(out)['strategy_spec_path']
 
 

@@ -4,12 +4,43 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 import re
 
 MAX_JSON_BYTES = 50 * 1024
 MAX_INDEX = 200
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def _set_reasoning_effort_for_analyser() -> None:
+    model_id = (os.getenv('OPENCLAW_MODEL_ID') or 'openai-codex/gpt-5.3-codex').strip()
+    effort = 'default'
+    if 'gpt-5.3-codex' in model_id:
+        os.environ['OPENAI_REASONING_EFFORT'] = 'high'
+        os.environ['OPENCLAW_REASONING_EFFORT'] = 'high'
+        effort = 'high'
+
+    cmd = [
+        sys.executable,
+        'scripts/log_event.py',
+        '--run-id', f"reasoning-analyser-{datetime.now().strftime('%Y%m%dT%H%M%SZ')}",
+        '--agent', 'oQ',
+        '--model-id', model_id,
+        '--action', 'analyser_reasoning',
+        '--status-word', 'INFO',
+        '--status-emoji', 'ℹ️',
+        '--reason-code', 'REASONING_EFFORT_SET',
+        '--summary', f'stage=Analyser effort={effort}',
+        '--outputs', f'model={model_id}'
+    ]
+    try:
+        subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
+    except Exception:
+        pass
 
 
 def now_iso() -> str:
@@ -135,6 +166,8 @@ def build_mutation_catalog(doctrine_automation: list[str]) -> list[dict]:
 
 
 def main() -> int:
+    _set_reasoning_effort_for_analyser()
+
     ap = argparse.ArgumentParser()
     ap.add_argument('--research-card-path', required=True)
     ap.add_argument('--indicator-record-paths', default='[]')

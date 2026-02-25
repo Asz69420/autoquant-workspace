@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -12,8 +13,11 @@ PY = sys.executable
 REVISIT_STATE_PATH = ROOT / 'data' / 'state' / 'insight_revisit_state.json'
 
 
-def run(cmd: list[str]) -> str:
-    p = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=True)
+def run(cmd: list[str], extra_env: dict[str, str] | None = None) -> str:
+    env = os.environ.copy()
+    if extra_env:
+        env.update(extra_env)
+    p = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=True, env=env)
     return p.stdout.strip()
 
 
@@ -91,8 +95,13 @@ def run_pipeline_for_card(card: dict, max_refinements: int, mode: str) -> None:
     except Exception as e:
         raise RuntimeError(f'emit_research_card failed: {short_err(e)}') from e
 
+    reasoning_env = {
+        'OPENCLAW_MODEL_ID': 'openai-codex/gpt-5.3-codex',
+        'OPENCLAW_REASONING_EFFORT': 'high',
+    }
+
     try:
-        an = json.loads(run([PY, 'scripts/pipeline/run_analyser.py', '--research-card-path', rc['research_card_path'], '--linkmap-path', '']))
+        an = json.loads(run([PY, 'scripts/pipeline/run_analyser.py', '--research-card-path', rc['research_card_path'], '--linkmap-path', ''], extra_env=reasoning_env))
     except Exception as e:
         raise RuntimeError(f'run_analyser failed: {short_err(e)}') from e
 
@@ -102,7 +111,7 @@ def run_pipeline_for_card(card: dict, max_refinements: int, mode: str) -> None:
         raise RuntimeError(f'verify_stage2 failed: {short_err(e)}') from e
 
     try:
-        sp = json.loads(run([PY, 'scripts/pipeline/emit_strategy_spec.py', '--thesis-path', an['thesis_path']]))
+        sp = json.loads(run([PY, 'scripts/pipeline/emit_strategy_spec.py', '--thesis-path', an['thesis_path']], extra_env=reasoning_env))
     except Exception as e:
         raise RuntimeError(f'emit_strategy_spec failed: {short_err(e)}') from e
 
