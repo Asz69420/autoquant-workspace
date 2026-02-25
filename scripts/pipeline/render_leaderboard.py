@@ -11,18 +11,20 @@ RUN_INDEX = ROOT / 'artifacts' / 'library' / 'RUN_INDEX.json'
 
 ASSET_ORDER = ['BTC', 'ETH', 'SOL']
 TF_ORDER = ['15m', '1h', '4h']
-LINE = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-TF_W = 3
-PNL_W = 7
-PF_W = 5
-WR_W = 4
-TC_W = 4
-STRAT_W = 12
+LINE = '━━━━━━━━━━━━━━━━━━━━━━━━'
+TF_W = 2
+PNL_W = 6
+PF_W = 4
+WR_W = 3
+TC_W = 3
+DD_W = 5
 
 
-def trunc(s: str, n: int = STRAT_W) -> str:
-    s = (s or '').strip() or 'unknown'
-    return s if len(s) <= n else s[: n - 1] + '…'
+def _fmt_dd(value: float | None) -> str:
+    if value is None:
+        return 'n/a'
+    v = max(min(float(value), 999.9), -999.9)
+    return f"{v:.1f}"
 
 
 def load_json(path: Path):
@@ -31,18 +33,26 @@ def load_json(path: Path):
     return json.loads(path.read_text(encoding='utf-8'))
 
 
-def win_rate_pct(backtest_path: str) -> float | None:
+def backtest_metrics(backtest_path: str) -> tuple[float | None, float | None]:
     if not backtest_path:
-        return None
+        return None, None
     p = Path(backtest_path)
     if not p.exists():
-        return None
+        return None, None
     try:
         j = json.loads(p.read_text(encoding='utf-8'))
-        wr = j.get('results', {}).get('win_rate')
-        return (float(wr) * 100.0) if wr is not None else None
+        results = j.get('results', {})
+        wr = results.get('win_rate')
+        wr_pct = (float(wr) * 100.0) if wr is not None else None
+
+        dd_raw = results.get('max_drawdown')
+        dd_pct = None
+        if dd_raw is not None:
+            dd_val = float(dd_raw)
+            dd_pct = dd_val * 100.0 if abs(dd_val) <= 1.0 else dd_val
+        return wr_pct, dd_pct
     except Exception:
-        return None
+        return None, None
 
 
 def main() -> int:
@@ -87,7 +97,7 @@ def main() -> int:
             continue
 
         bt = str((r.get('pointers') or {}).get('backtest_result') or '')
-        wr = win_rate_pct(bt)
+        wr, dd = backtest_metrics(bt)
 
         row = {
             'tf': tf,
@@ -95,7 +105,7 @@ def main() -> int:
             'pf': pf,
             'wr': wr,
             'tc': tc,
-            'strat': trunc(str(r.get('variant_name') or 'unknown')),
+            'dd': dd,
         }
         grouped[asset][tf].append(row)
 
@@ -108,43 +118,47 @@ def main() -> int:
             if not rows:
                 continue
 
-            by_strat: dict[str, dict] = {}
-            for x in rows:
-                k = x['strat']
-                old = by_strat.get(k)
-                if old is None or (x['pnl'], x['pf']) > (old['pnl'], old['pf']):
-                    by_strat[k] = x
-            top = sorted(by_strat.values(), key=lambda x: (x['pnl'], x['pf']), reverse=True)[:3]
+            deduped: list[dict] = []
+            seen: set[tuple] = set()
+            for x in sorted(rows, key=lambda z: (z['pnl'], z['pf']), reverse=True):
+                key = (round(x['pnl'], 1), round(x['pf'], 2), x['wr'], x['tc'], None if x.get('dd') is None else round(x['dd'], 1))
+                if key in seen:
+                    continue
+                seen.add(key)
+                deduped.append(x)
+                if len(deduped) >= 3:
+                    break
+            top = deduped
             if not top:
                 continue
 
             any_tf = True
             out.append(f"{asset} {tf}")
             header = (
-                f"{'TF'.ljust(TF_W)}"
+                f"{'TF'.ljust(TF_W)} "
                 f"{'P&L'.rjust(PNL_W)} "
                 f"{'PF'.rjust(PF_W)} "
                 f"{'WR'.rjust(WR_W)} "
                 f"{'TC'.rjust(TC_W)} "
-                f"{'Strat'.ljust(STRAT_W)}"
+                f"{'DD'.rjust(DD_W)}"
             )
-            out.append(header[:32])
+            out.append(header)
             out.append(LINE)
             for x in top:
                 pnl = f"{x['pnl']:+.1f}"[:PNL_W]
                 pf = f"{x['pf']:.2f}"[:PF_W]
                 wr = ('n/a' if x['wr'] is None else f"{x['wr']:.0f}%")[:WR_W]
                 tc = str(x['tc'])[:TC_W]
-                strat = trunc(x['strat'], STRAT_W)
+                dd = _fmt_dd(x.get('dd'))[:DD_W]
                 row = (
-                    f"{x['tf'][:TF_W].ljust(TF_W)}"
+                    f"{x['tf'][:TF_W].ljust(TF_W)} "
                     f"{pnl.rjust(PNL_W)} "
                     f"{pf.rjust(PF_W)} "
                     f"{wr.rjust(WR_W)} "
                     f"{tc.rjust(TC_W)} "
-                    f"{strat.ljust(STRAT_W)}"
+                    f"{dd.rjust(DD_W)}"
                 )
-                out.append(row[:32])
+                out.append(row)
             out.append('')
 
         if not any_tf:
