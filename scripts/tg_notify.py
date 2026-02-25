@@ -90,16 +90,19 @@ def send_telegram_message(
         token in message for token in ("BTC ", "ETH ", "SOL ")
     )
     is_mono_test = reason == "MONO_TEST" or cmd in {"mono test", "mono_test"} or message.startswith("AAA   BBB")
-    is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard or is_mono_test
+    is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard
 
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    if is_leaderboard:
+    if is_leaderboard or is_mono_test:
+        safe = message.replace("\\", "\\\\").replace("`", "\\`")
+        final_mode = "MarkdownV2"
+        final_text = f"```\n{safe}\n```"
         payload = {
             "chat_id": target_chat_id,
             "text": final_text,
-            "entities": [{"type": "pre", "offset": 0, "length": len(final_text)}],
+            "parse_mode": final_mode,
         }
-        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", "NONE", final_text, used_pre_entities=True)
+        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", final_mode, final_text, used_pre_entities=False)
     else:
         payload = {
             "chat_id": target_chat_id,

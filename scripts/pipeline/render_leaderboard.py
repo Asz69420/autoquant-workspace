@@ -12,9 +12,15 @@ RUN_INDEX = ROOT / 'artifacts' / 'library' / 'RUN_INDEX.json'
 ASSET_ORDER = ['BTC', 'ETH', 'SOL']
 TF_ORDER = ['15m', '1h', '4h']
 LINE = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+TF_W = 3
+PNL_W = 7
+PF_W = 5
+WR_W = 4
+TC_W = 4
+STRAT_W = 12
 
 
-def trunc(s: str, n: int = 12) -> str:
+def trunc(s: str, n: int = STRAT_W) -> str:
     s = (s or '').strip() or 'unknown'
     return s if len(s) <= n else s[: n - 1] + '…'
 
@@ -114,15 +120,31 @@ def main() -> int:
 
             any_tf = True
             out.append(f"{asset} {tf}")
-            out.append('TFP&L   PF   WR  TC Strat')
+            header = (
+                f"{'TF'.ljust(TF_W)}"
+                f"{'P&L'.rjust(PNL_W)} "
+                f"{'PF'.rjust(PF_W)} "
+                f"{'WR'.rjust(WR_W)} "
+                f"{'TC'.rjust(TC_W)} "
+                f"{'Strat'.ljust(STRAT_W)}"
+            )
+            out.append(header[:32])
             out.append(LINE)
             for x in top:
-                pnl = f"{x['pnl']:+.1f}"[:6]
-                pf = f"{x['pf']:.2f}"[:4]
-                wr = 'n/a' if x['wr'] is None else f"{x['wr']:.0f}%"
-                wr = wr[:3]
-                tc = str(x['tc'])[:3]
-                out.append(f"{x['tf'][:2]:>2}{pnl:>6} {pf:>4} {wr:>3} {tc:>3} {x['strat']:<12}")
+                pnl = f"{x['pnl']:+.1f}"[:PNL_W]
+                pf = f"{x['pf']:.2f}"[:PF_W]
+                wr = ('n/a' if x['wr'] is None else f"{x['wr']:.0f}%")[:WR_W]
+                tc = str(x['tc'])[:TC_W]
+                strat = trunc(x['strat'], STRAT_W)
+                row = (
+                    f"{x['tf'][:TF_W].ljust(TF_W)}"
+                    f"{pnl.rjust(PNL_W)} "
+                    f"{pf.rjust(PF_W)} "
+                    f"{wr.rjust(WR_W)} "
+                    f"{tc.rjust(TC_W)} "
+                    f"{strat.ljust(STRAT_W)}"
+                )
+                out.append(row[:32])
             out.append('')
 
         if not any_tf:
