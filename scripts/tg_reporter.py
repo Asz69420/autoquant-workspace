@@ -38,7 +38,7 @@ KEEPER_REASON_HINTS = {
     "CONTEXT_DRIFT": "re-scope or rerun with pinned context",
 }
 
-INFO_TELEGRAM_ALLOWLIST = {
+COMPLETION_REASON_ALLOWLIST = {
     "YT_WATCH_SUMMARY",
     "TV_CATALOG_SUMMARY",
     "GRABBER_SUMMARY",
@@ -46,6 +46,7 @@ INFO_TELEGRAM_ALLOWLIST = {
     "BATCH_BACKTEST_SUMMARY",
     "REFINEMENT_SUMMARY",
     "LIBRARIAN_SUMMARY",
+    "INSIGHT_SUMMARY",
     "AUTOPILOT_SUMMARY",
 }
 
@@ -277,7 +278,14 @@ def send_event_to_telegram(event):
             status_word = str(event.get("status_word") or "").upper()
             if reason_code.startswith("AUTOPILOT_STAGE_"):
                 return None
-            if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST and reason_code != "LEADERBOARD":
+
+            # completion-only Telegram policy:
+            # - allow completion summaries from allowlist
+            # - allow WARN/FAIL broadly
+            # - suppress INFO outside completion allowlist
+            if status_word == "INFO" and reason_code not in COMPLETION_REASON_ALLOWLIST and reason_code != "LEADERBOARD":
+                return None
+            if status_word not in {"OK", "WARN", "FAIL", "INFO"} and reason_code not in COMPLETION_REASON_ALLOWLIST and reason_code != "LEADERBOARD":
                 return None
 
             if reason_code == "LEADERBOARD" and event.get("rendered_text"):
@@ -288,7 +296,13 @@ def send_event_to_telegram(event):
                     notify_cmd.extend(["--parse-mode", str(send_opts.get("parse_mode"))])
                 notify_cmd.extend(["--reason-code", "LEADERBOARD"])
             else:
-                event_json = json.dumps(event)
+                event_for_tg = dict(event)
+                # Normalize completion events to OK/WARN/FAIL in Telegram output.
+                if str(event_for_tg.get("status_word") or "").upper() == "INFO":
+                    event_for_tg["status_word"] = "OK"
+                    event_for_tg["status_emoji"] = "✅"
+
+                event_json = json.dumps(event_for_tg)
                 env = {**os.environ, "PYTHONUTF8": "1"}
                 result = subprocess.run(
                     [sys.executable, "scripts/tg_format.py"],
@@ -299,7 +313,7 @@ def send_event_to_telegram(event):
                     env=env
                 )
                 formatted_msg = result.stdout.decode("utf-8", errors="replace").strip()
-                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg, "--parse-mode", "MarkdownV2"]
+                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg]
                 if reason_code:
                     notify_cmd.extend(["--reason-code", reason_code])
 
