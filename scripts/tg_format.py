@@ -75,7 +75,9 @@ def render_one_line(event: dict) -> str:
     reason_code = _clean_one_line(event.get("reason_code", "")) or "NO_REASON"
     summary = _clean_one_line(event.get("summary", "")) or "Completed"
 
-    return f"{agent_emoji} {agent} | {status_emoji} {status_word} ({reason_code}) — {summary}"
+    line = f"{agent_emoji} {agent} | {status_emoji} {status_word} ({reason_code}) — {summary}"
+    line = line.replace("`", "'")
+    return f"```{line}```"
 
 
 def main() -> int:
