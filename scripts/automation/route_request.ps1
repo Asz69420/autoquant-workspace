@@ -302,6 +302,11 @@ if ($m -match '^retry\s+insight\s+.+$') {
   $rule = 'explicit_retry_insight'
   $intentAction = 'retry_insight'
 }
+if ($m -match '^(idea|insight|concept)\s*$') {
+  $route = 'FAST_PATH'
+  $rule = 'explicit_empty_insight_keyword'
+  $intentAction = 'emit_insight_card'
+}
 
 $idemKey = Get-IdempotencyKey
 if (Should-SkipByIdempotency -Key $idemKey) {
@@ -396,7 +401,7 @@ if ($route -eq 'FAST_PATH') {
       $concept = $matches[1].Trim()
     }
     if ([string]::IsNullOrWhiteSpace($concept)) {
-      Write-Output 'Share the insight after the keyword (idea/insight/concept).'
+      Write-Output 'Idea rejected: add text after idea/insight/concept.'
       exit 0
     }
 

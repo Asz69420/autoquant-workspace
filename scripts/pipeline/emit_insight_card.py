@@ -112,6 +112,10 @@ def main() -> int:
 
     title = args.title.strip()
     concept = args.concept.strip()
+    if not concept:
+        raise SystemExit("concept cannot be empty")
+    if not title:
+        raise SystemExit("title cannot be empty")
     tags = dedup_cap(parse_csv(args.tags), 10)
     roles = dedup_cap(parse_csv(args.roles), 6)
 
