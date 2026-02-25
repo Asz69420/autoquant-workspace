@@ -154,6 +154,113 @@ def variant_threshold_mutation(base: dict) -> dict:
     return _with_structured_policies(v, stop_atr_mult=1.3, tp_atr_mult=2.0, entry_fill='next_open', tie_break='stop_first', allow_reverse=False, risk_pct=0.75)
 
 
+def _indicator_evaluable(thesis: dict) -> bool:
+    if not isinstance(thesis, dict):
+        return False
+    if thesis.get('candidate_signals'):
+        return True
+    if thesis.get('combo_proposals'):
+        return True
+    if thesis.get('required_data'):
+        return True
+
+    # Soft signal: mention of indicator usage in hypotheses or bullets
+    text_pool = []
+    text_pool.extend(thesis.get('thesis_bullets', []) or [])
+    for h in thesis.get('hypotheses', []) or []:
+        if isinstance(h, dict):
+            text_pool.extend([h.get('statement', ''), h.get('rationale', '')])
+    blob = ' '.join(str(x).lower() for x in text_pool if x)
+    return any(k in blob for k in ['indicator', 'signal', 'trend', 'regime', 'confirmation', 'ohlcv'])
+
+
+def _fallback_templates(thesis: dict) -> list[dict]:
+    constraints = unique(thesis.get('constraints', []), 10)
+    req = unique(thesis.get('required_data', []), 10)
+    indicator_names = unique([
+        cp.get('indicator', '') for cp in (thesis.get('combo_proposals', []) or []) if isinstance(cp, dict)
+    ], 5)
+    indicator_hint = indicator_names[0] if indicator_names else 'catalog_indicator'
+
+    common_filters = unique([
+        'No repaint sources only.',
+        'Bar-close execution only.',
+        f'Indicator evaluable: {indicator_hint}',
+    ] + constraints + ([f'Data required: {req[0]}'] if req else []), 10)
+
+    common_exit = unique([
+        'Exit on opposite directional confirmation.',
+        'Exit on max bars in trade threshold.',
+        'Exit if confidence drops below 0.45.',
+    ], 10)
+
+    params = [
+        {"name": "confidence_threshold", "min": 0.45, "max": 0.9, "step": 0.05, "default": 0.6},
+        {"name": "max_bars_in_trade", "min": 3, "max": 50, "step": 1, "default": 15},
+        {"name": "risk_r", "min": 0.25, "max": 2.0, "step": 0.25, "default": 1.0},
+    ]
+
+    trend = {
+        'name': 'FALLBACK_TEMPLATE_TREND',
+        'description': f'Fallback executable template: use {indicator_hint} as trend direction gate.',
+        'entry_long': unique([
+            f'Long when {indicator_hint} trend state is bullish at bar close.',
+            'Require confidence >= 0.60.',
+        ], 10),
+        'entry_short': unique([
+            f'Short when {indicator_hint} trend state is bearish at bar close.',
+            'Require confidence >= 0.60.',
+        ], 10),
+        'filters': common_filters,
+        'exit_rules': common_exit,
+        'risk_rules': unique(['Fallback template: trend gate mode.'], 10),
+        'parameters': copy.deepcopy(params),
+        'constraints': constraints,
+    }
+
+    confirmation = {
+        'name': 'FALLBACK_TEMPLATE_CONFIRMATION',
+        'description': f'Fallback executable template: use {indicator_hint} as confirmation with baseline trend proxy.',
+        'entry_long': unique([
+            'Long only if baseline trend proxy is up.',
+            f'And {indicator_hint} confirms bullish pressure.',
+        ], 10),
+        'entry_short': unique([
+            'Short only if baseline trend proxy is down.',
+            f'And {indicator_hint} confirms bearish pressure.',
+        ], 10),
+        'filters': common_filters,
+        'exit_rules': common_exit,
+        'risk_rules': unique(['Fallback template: confirmation mode.'], 10),
+        'parameters': copy.deepcopy(params),
+        'constraints': constraints,
+    }
+
+    regime = {
+        'name': 'FALLBACK_TEMPLATE_REGIME_GATE',
+        'description': f'Fallback executable template: use {indicator_hint} as regime gate to enable/disable entries.',
+        'entry_long': unique([
+            'Long on baseline directional trigger.',
+            f'Only when {indicator_hint} regime gate allows risk-on.',
+        ], 10),
+        'entry_short': unique([
+            'Short on baseline directional trigger.',
+            f'Only when {indicator_hint} regime gate allows risk-off.',
+        ], 10),
+        'filters': common_filters,
+        'exit_rules': common_exit,
+        'risk_rules': unique(['Fallback template: regime gate mode.'], 10),
+        'parameters': copy.deepcopy(params),
+        'constraints': constraints,
+    }
+
+    return [
+        _with_structured_policies(trend, stop_atr_mult=1.5, tp_atr_mult=2.0, entry_fill='bar_close', tie_break='worst_case', allow_reverse=True, risk_pct=1.0),
+        _with_structured_policies(confirmation, stop_atr_mult=1.6, tp_atr_mult=2.1, entry_fill='bar_close', tie_break='worst_case', allow_reverse=True, risk_pct=1.0),
+        _with_structured_policies(regime, stop_atr_mult=1.4, tp_atr_mult=1.9, entry_fill='next_open', tie_break='stop_first', allow_reverse=False, risk_pct=0.75),
+    ][:3]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--thesis-path', required=True)
@@ -162,23 +269,26 @@ def main() -> int:
 
     thesis = jload(args.thesis_path)
     candidate_signals = thesis.get('candidate_signals', []) if isinstance(thesis, dict) else []
-    if not candidate_signals:
-        print(json.dumps({
-            'status': 'BLOCKED',
-            'reason_code': 'NO_VARIANTS_COMPILED',
-            'suggestion': 'Indicator not mapped to executable signals yet; needs rule extraction or builtin mapping.',
-            'variants': 0,
-            'strategy_spec_path': '',
-        }))
-        return 0
 
-    baseline = build_baseline(thesis)
-    variants = [
-        baseline,
-        variant_perturbation(baseline),
-        variant_remove_component(baseline),
-        variant_threshold_mutation(baseline),
-    ][:5]
+    if candidate_signals:
+        baseline = build_baseline(thesis)
+        variants = [
+            baseline,
+            variant_perturbation(baseline),
+            variant_remove_component(baseline),
+            variant_threshold_mutation(baseline),
+        ][:5]
+    else:
+        if not _indicator_evaluable(thesis):
+            print(json.dumps({
+                'status': 'BLOCKED',
+                'reason_code': 'INDICATOR_NOT_EVALUABLE',
+                'suggestion': 'Indicator cannot be evaluated from available thesis/card data.',
+                'variants': 0,
+                'strategy_spec_path': '',
+            }))
+            return 0
+        variants = _fallback_templates(thesis)
 
     if len(variants) == 0:
         print(json.dumps({
