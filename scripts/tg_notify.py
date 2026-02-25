@@ -97,8 +97,13 @@ def send_telegram_message(
     if (reason_code or '').strip().upper().endswith('_DEBUG'):
         _append_action_event(str(reason_code or 'DEBUG'), str(parse_mode or 'NONE'), message)
 
+    effective_parse_mode = parse_mode
+    msg_trim = (message or '').strip()
+    if not effective_parse_mode and msg_trim.startswith('<pre>') and msg_trim.endswith('</pre>'):
+        effective_parse_mode = 'HTML'
+
     try:
-        send_message(target_chat_id, message, parse_mode=parse_mode)
+        send_message(target_chat_id, message, parse_mode=effective_parse_mode)
         return True
     except requests.exceptions.RequestException as e:
         raise Exception(f"Telegram API error: {e}")
