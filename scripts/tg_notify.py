@@ -56,7 +56,10 @@ def send_telegram_message(
     final_mode = parse_mode
     final_text = message
 
-    if reason == "LEADERBOARD" or cmd == "leaderboard":
+    looks_like_leaderboard = ("TF  P&L" in message) and any(
+        token in message for token in ("BTC ", "ETH ", "SOL ")
+    )
+    if reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard:
         final_mode = "HTML"
         final_text = f"<pre>{html.escape(message)}</pre>"
 

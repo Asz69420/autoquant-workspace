@@ -11,8 +11,7 @@ RUN_INDEX = ROOT / 'artifacts' / 'library' / 'RUN_INDEX.json'
 
 ASSET_ORDER = ['BTC', 'ETH', 'SOL']
 TF_ORDER = ['15m', '1h', '4h']
-ASSET_EMOJI = {'BTC': '🟠', 'ETH': '🔵', 'SOL': '🟣'}
-LINE = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+LINE = '----------------------------------'
 
 
 def trunc(s: str, n: int = 18) -> str:
@@ -97,10 +96,7 @@ def main() -> int:
     out: list[str] = []
 
     for ai, asset in enumerate(assets):
-        out.append(f"{ASSET_EMOJI.get(asset, '⚪')} {asset}")
-
         any_tf = False
-        first_tf = True
         for tf in TF_ORDER:
             rows = grouped.get(asset, {}).get(tf, [])
             if not rows:
@@ -117,11 +113,7 @@ def main() -> int:
                 continue
 
             any_tf = True
-            if not first_tf:
-                out.append('')
-            first_tf = False
-
-            out.append(tf)
+            out.append(f"{asset} {tf}")
             out.append('TF  P&L     PF   WR   TC   Strat')
             out.append(LINE)
             for x in top:
@@ -130,11 +122,10 @@ def main() -> int:
                 wr = 'n/a' if x['wr'] is None else f"{x['wr']:.0f}%"
                 tc = str(x['tc'])
                 out.append(f"{x['tf']:<3} {pnl:>7} {pf:>4} {wr:>4} {tc:>4}  {x['strat']}")
+            out.append('')
 
         if not any_tf:
-            out.append('(no data)')
-
-        if ai < len(assets) - 1:
+            out.append(f"{asset} (no data)")
             out.append('')
 
     print('\n'.join(out).rstrip())
