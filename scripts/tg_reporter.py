@@ -246,39 +246,61 @@ def send_event_to_telegram(event):
     """Format and send an ActionEvent to Telegram. Returns True on success."""
     try:
         reason_code = str(event.get("reason_code") or "").upper()
-        if str(event.get("agent") or "").lower() == "keeper":
+        event_type = str(event.get("type") or "").upper()
+
+        if event.get("debug", False):
+            return None
+        if event_type.endswith("_DEBUG") or reason_code.endswith("_DEBUG"):
+            return None
+
+        notify_cmd = None
+
+        if event_type == "LEADERBOARD" and event.get("rendered_html") and event.get("chat_id"):
+            notify_cmd = [
+                sys.executable,
+                "scripts/tg_notify.py",
+                str(event.get("rendered_html")),
+                "--chat-id",
+                str(event.get("chat_id")),
+                "--parse-mode",
+                "HTML",
+                "--reason-code",
+                "LEADERBOARD",
+            ]
+        elif str(event.get("agent") or "").lower() == "keeper":
             if not _keeper_should_post(event):
                 return None
             formatted_msg = _keeper_telegram_message(event)
+            notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg, "--parse-mode", "MarkdownV2"]
+            if reason_code:
+                notify_cmd.extend(["--reason-code", reason_code])
         else:
             status_word = str(event.get("status_word") or "").upper()
             if reason_code.startswith("AUTOPILOT_STAGE_"):
                 return None
-            if reason_code == "LEADERBOARD_PAYLOAD_DEBUG":
+            if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST and reason_code != "LEADERBOARD":
                 return None
-            if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST:
-                return None
-            event_json = json.dumps(event)
-            env = {**os.environ, "PYTHONUTF8": "1"}
-            result = subprocess.run(
-                [sys.executable, "scripts/tg_format.py"],
-                input=event_json.encode("utf-8"),
-                text=False,
-                capture_output=True,
-                check=True,
-                env=env
-            )
-            formatted_msg = result.stdout.decode("utf-8", errors="replace").strip()
 
-        notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg]
-        if reason_code:
-            notify_cmd.extend(["--reason-code", reason_code])
+            if reason_code == "LEADERBOARD" and event.get("rendered_html"):
+                formatted_msg = str(event.get("rendered_html"))
+                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg, "--parse-mode", "HTML", "--reason-code", "LEADERBOARD"]
+            else:
+                event_json = json.dumps(event)
+                env = {**os.environ, "PYTHONUTF8": "1"}
+                result = subprocess.run(
+                    [sys.executable, "scripts/tg_format.py"],
+                    input=event_json.encode("utf-8"),
+                    text=False,
+                    capture_output=True,
+                    check=True,
+                    env=env
+                )
+                formatted_msg = result.stdout.decode("utf-8", errors="replace").strip()
+                notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg, "--parse-mode", "MarkdownV2"]
+                if reason_code:
+                    notify_cmd.extend(["--reason-code", reason_code])
 
-        send_result = subprocess.run(
-            notify_cmd,
-            capture_output=True,
-            text=True
-        )
+        send_result = subprocess.run(notify_cmd, capture_output=True, text=True)
 
         return send_result.returncode == 0
     except subprocess.CalledProcessError as e:

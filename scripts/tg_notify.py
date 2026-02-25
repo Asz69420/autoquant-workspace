@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
-"""Send a message to Telegram using Bot API with proper formatting."""
+"""Send a message to Telegram using Bot API."""
+import argparse
+import json
 import os
 import sys
-import argparse
-from pathlib import Path
-import requests
-import json
 from datetime import datetime, timezone
+from pathlib import Path
+
+import requests
+
+
+TG_API = "https://api.telegram.org"
 
 
 def load_env_fallback() -> None:
-    """Load TELEGRAM_* vars from .env when process env is missing (e.g., SYSTEM task)."""
     if os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("TELEGRAM_LOG_CHAT_ID"):
         return
 
@@ -29,30 +32,30 @@ def load_env_fallback() -> None:
             if k in {"TELEGRAM_BOT_TOKEN", "TELEGRAM_LOG_CHAT_ID", "TELEGRAM_CMD_CHAT_ID"} and not os.getenv(k):
                 os.environ[k] = v
     except Exception:
-        # Silent fallback: caller handles missing vars explicitly.
         return
 
 
-def _append_action_event(reason_code: str, parse_mode: str, text_value: str, used_pre_entities: bool = False) -> None:
-    """Append lightweight debug event to actions.ndjson (never user-visible)."""
+def _append_action_event(reason_code: str, parse_mode: str, text_value: str) -> None:
+    """Append debug event to actions.ndjson only (never user-visible)."""
     try:
         logs_dir = Path.cwd() / "data" / "logs"
         logs_dir.mkdir(parents=True, exist_ok=True)
         actions_path = logs_dir / "actions.ndjson"
         ts = datetime.now(timezone.utc)
-        prefix = (text_value or "")[:30]
         event = {
             "ts_iso": ts.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "run_id": f"tg-notify-{int(ts.timestamp())}",
             "agent": "Logger",
             "model_id": "system",
             "action": "TG_NOTIFY_PAYLOAD_DEBUG",
+            "type": "LEADERBOARD_PAYLOAD_DEBUG",
+            "debug": True,
             "status_word": "INFO",
             "status_emoji": "ℹ️",
             "reason_code": reason_code,
             "summary": "Telegram payload debug (leaderboard)",
             "inputs": [],
-            "outputs": [f"parse_mode={parse_mode}", f"text_prefix={prefix}", f"entities_pre={str(used_pre_entities).lower()}"],
+            "outputs": [f"parse_mode={parse_mode}", f"text_prefix={(text_value or '')[:30]}"],
             "attempt": None,
             "error": None,
         }
@@ -62,20 +65,30 @@ def _append_action_event(reason_code: str, parse_mode: str, text_value: str, use
         return
 
 
+def send_message(chat_id: str, text: str, **kwargs) -> dict:
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+    if not bot_token:
+        raise ValueError("TELEGRAM_BOT_TOKEN env var not set")
+
+    payload = {"chat_id": chat_id, "text": text}
+    payload.update({k: v for k, v in kwargs.items() if v is not None})
+
+    if "parse_mode" in payload and "entities" in payload:
+        del payload["entities"]
+
+    resp = requests.post(f"{TG_API}/bot{bot_token}/sendMessage", json=payload, timeout=10)
+    resp.raise_for_status()
+    return resp.json()
+
+
 def send_telegram_message(
     message: str,
-    chat_id: str = None,
-    parse_mode: str = "MarkdownV2",
+    chat_id: str | None = None,
+    parse_mode: str | None = None,
     reason_code: str | None = None,
     command: str | None = None,
 ) -> bool:
-    """Send a message to Telegram Bot API with configurable formatting."""
-
-    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
     log_chat_id = os.getenv("TELEGRAM_LOG_CHAT_ID")
-
-    if not bot_token:
-        raise ValueError("TELEGRAM_BOT_TOKEN env var not set")
     if not log_chat_id:
         raise ValueError("TELEGRAM_LOG_CHAT_ID env var not set")
 
@@ -83,36 +96,18 @@ def send_telegram_message(
 
     reason = (reason_code or "").strip().upper()
     cmd = (command or "").strip().lower()
-    final_mode = parse_mode
-    final_text = message
-
-    looks_like_leaderboard = ("Strat" in message) and any(
-        token in message for token in ("BTC ", "ETH ", "SOL ")
-    )
-    is_mono_test = reason == "MONO_TEST" or cmd in {"mono test", "mono_test"} or message.startswith("AAA   BBB")
+    looks_like_leaderboard = ("TF" in message and "P&L" in message and "DD" in message)
     is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard
 
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    if is_leaderboard or is_mono_test:
-        safe = message.replace("\\", "\\\\").replace("`", "\\`")
-        final_mode = "MarkdownV2"
-        final_text = f"```\n{safe}\n```"
-        payload = {
-            "chat_id": target_chat_id,
-            "text": final_text,
-            "parse_mode": final_mode,
-        }
-        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", final_mode, final_text, used_pre_entities=False)
-    else:
-        payload = {
-            "chat_id": target_chat_id,
-            "text": final_text,
-            "parse_mode": final_mode,
-        }
+    if is_leaderboard:
+        _append_action_event("LEADERBOARD_PAYLOAD_DEBUG", "HTML", message)
 
     try:
-        response = requests.post(url, json=payload, timeout=10)
-        response.raise_for_status()
+        send_message(
+            target_chat_id,
+            message,
+            parse_mode=("HTML" if is_leaderboard else parse_mode),
+        )
         return True
     except requests.exceptions.RequestException as e:
         raise Exception(f"Telegram API error: {e}")
@@ -121,41 +116,21 @@ def send_telegram_message(
 def main():
     load_env_fallback()
 
-    parser = argparse.ArgumentParser(
-        description="Send a message to Telegram (default: log group)."
-    )
+    parser = argparse.ArgumentParser(description="Send a message to Telegram (default: log group).")
     parser.add_argument("message", help="Message to send")
-    parser.add_argument(
-        "--chat-id",
-        help="Override target chat ID (default: TELEGRAM_LOG_CHAT_ID). Use for Commander/testing only."
-    )
-    parser.add_argument(
-        "--parse-mode",
-        default="MarkdownV2",
-        help="Telegram parse mode override (default: MarkdownV2)."
-    )
-    parser.add_argument(
-        "--reason-code",
-        help="Optional reason code for message-specific formatting rules (e.g. LEADERBOARD)."
-    )
-    parser.add_argument(
-        "--command",
-        help="Optional command name for message-specific formatting rules (e.g. leaderboard)."
-    )
-
+    parser.add_argument("--chat-id", help="Override target chat ID (default: TELEGRAM_LOG_CHAT_ID).")
+    parser.add_argument("--parse-mode", default=None, help="Telegram parse mode override.")
+    parser.add_argument("--reason-code", help="Optional reason code for message-specific formatting.")
+    parser.add_argument("--command", help="Optional command name for message-specific formatting.")
     args = parser.parse_args()
-    
-    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
-    log_chat_id = os.getenv("TELEGRAM_LOG_CHAT_ID")
-    
-    if not bot_token:
+
+    if not os.getenv("TELEGRAM_BOT_TOKEN"):
         print("Error: TELEGRAM_BOT_TOKEN env var not set", file=sys.stderr)
         sys.exit(1)
-    
-    if not log_chat_id:
+    if not os.getenv("TELEGRAM_LOG_CHAT_ID"):
         print("Error: TELEGRAM_LOG_CHAT_ID env var not set", file=sys.stderr)
         sys.exit(1)
-    
+
     try:
         send_telegram_message(
             args.message,
