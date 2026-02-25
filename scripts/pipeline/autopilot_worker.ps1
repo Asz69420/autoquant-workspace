@@ -109,12 +109,23 @@ try {
           Run-Py @('scripts/pipeline/verify_pipeline_stage2.py','--thesis',$an.thesis_path) | Out-Null
           $sp = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$an.thesis_path) | ConvertFrom-Json
           $variantCount = 0
-          try { $variantCount = @((Get-Content $sp.strategy_spec_path -Raw | ConvertFrom-Json).variants).Count } catch { $variantCount = 0 }
-          Emit-InfoSummary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'Promotion'
+          if ($sp.variants) { $variantCount = [int]$sp.variants }
+          $promoStatus = 'OK'
+          if ($sp.status -and [string]$sp.status -eq 'BLOCKED') { $promoStatus = 'BLOCKED' }
+          if ($variantCount -eq 0) { $promoStatus = 'BLOCKED' }
+
+          if ($promoStatus -eq 'BLOCKED') {
+            Emit-InfoSummary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'Promotion'
+          } else {
+            Emit-InfoSummary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'Promotion'
+          }
           $promotionEmitted = $true
 
           $batch = $null
-          if ($variantCount -eq 0) {
+          if ($promoStatus -eq 'BLOCKED') {
+            Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: blocked promotion)' 'Backtester'
+            $batchEmitted = $true
+          } elseif ($variantCount -eq 0) {
             Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'Backtester'
             $batchEmitted = $true
           } else {
@@ -139,7 +150,9 @@ try {
             schema_version = '1.0'
             id = "promo_" + $promoId
             created_at = [DateTime]::UtcNow.ToString('o')
-            status = 'OK'
+            status = $(if ($promoStatus -eq 'BLOCKED') { 'BLOCKED' } else { 'OK' })
+            reason_code = $(if ($promoStatus -eq 'BLOCKED') { 'NO_VARIANTS_COMPILED' } else { $null })
+            suggestion = $(if ($promoStatus -eq 'BLOCKED') { 'Indicator not mapped to executable signals yet; needs rule extraction or builtin mapping.' } else { $null })
             input_linkmap_path = $lm
             thesis_artifact_path = $an.thesis_path
             strategy_spec_artifact_path = $sp.strategy_spec_path
@@ -149,7 +162,10 @@ try {
           New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($promoPath)) | Out-Null
           ($promoObj | ConvertTo-Json -Depth 8) | Set-Content -Path $promoPath -Encoding utf8
 
-          if ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
+          if ($promoStatus -eq 'BLOCKED') {
+            Emit-InfoSummary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'Refinement'
+            $refineEmitted = $true
+          } elseif ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
             $refinementsRun += 1
             try {

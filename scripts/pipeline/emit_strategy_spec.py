@@ -161,6 +161,17 @@ def main() -> int:
     args = ap.parse_args()
 
     thesis = jload(args.thesis_path)
+    candidate_signals = thesis.get('candidate_signals', []) if isinstance(thesis, dict) else []
+    if not candidate_signals:
+        print(json.dumps({
+            'status': 'BLOCKED',
+            'reason_code': 'NO_VARIANTS_COMPILED',
+            'suggestion': 'Indicator not mapped to executable signals yet; needs rule extraction or builtin mapping.',
+            'variants': 0,
+            'strategy_spec_path': '',
+        }))
+        return 0
+
     baseline = build_baseline(thesis)
     variants = [
         baseline,
@@ -168,6 +179,16 @@ def main() -> int:
         variant_remove_component(baseline),
         variant_threshold_mutation(baseline),
     ][:5]
+
+    if len(variants) == 0:
+        print(json.dumps({
+            'status': 'BLOCKED',
+            'reason_code': 'NO_VARIANTS_COMPILED',
+            'suggestion': 'Indicator not mapped to executable signals yet; needs rule extraction or builtin mapping.',
+            'variants': 0,
+            'strategy_spec_path': '',
+        }))
+        return 0
 
     sid = f"strategy-spec-{datetime.now().strftime('%Y%m%d')}-{thesis.get('id','thesis')[-12:]}"
     spec = {
@@ -188,7 +209,7 @@ def main() -> int:
     out_path.write_text(payload, encoding='utf-8')
 
     update_index(Path(args.output_root) / 'INDEX.json', str(out_path).replace('\\', '/'))
-    print(json.dumps({'strategy_spec_path': str(out_path).replace('\\', '/'), 'variants': len(variants), 'baseline_entry_long': variants[0]['entry_long'][:1]}))
+    print(json.dumps({'status':'OK','reason_code':None,'strategy_spec_path': str(out_path).replace('\\', '/'), 'variants': len(variants), 'baseline_entry_long': variants[0]['entry_long'][:1]}))
     return 0
 
 
