@@ -293,13 +293,50 @@ function Get-TelegramChatRoute {
   return $null
 }
 
+function Send-NoodleReply {
+  param([string]$ChatId,[string]$ReplyText)
+
+  $reply = ([string]$ReplyText).Trim()
+  if ([string]::IsNullOrWhiteSpace($reply)) {
+    $reply = 'Noodle is read-only here: I can summarise referenced thesis/research/doctrine artifacts only.'
+  }
+
+  Write-Output $reply
+
+  $sendOk = $false
+  $sendErr = ''
+  $tgChat = ''
+  if (-not [string]::IsNullOrWhiteSpace($ChatId)) {
+    if ($ChatId -match '^telegram:group:(-?\d+)$') { $tgChat = $matches[1] }
+    elseif ($ChatId -match '^telegram:(-?\d+)$') { $tgChat = $matches[1] }
+  }
+
+  if (-not [string]::IsNullOrWhiteSpace($tgChat)) {
+    try {
+      $null = python scripts/tg_notify.py --chat-id $tgChat -- "$reply"
+      if ($LASTEXITCODE -eq 0) { $sendOk = $true } else { $sendErr = ('tg_notify_exit=' + $LASTEXITCODE) }
+    } catch {
+      $sendErr = [string]$_.Exception.Message
+    }
+  } else {
+    $sendErr = 'invalid_chat_id'
+  }
+
+  $statusWord = if ($sendOk) { 'INFO' } else { 'WARN' }
+  $statusEmoji = if ($sendOk) { 'ℹ️' } else { '⚠️' }
+  $summary = ('chat_id=' + $ChatId + '; reply_length=' + $reply.Length + '; send_ok=' + ($sendOk.ToString().ToLowerInvariant()))
+  $outs = @('chat_id=' + $ChatId, 'reply_length=' + $reply.Length)
+  if (-not [string]::IsNullOrWhiteSpace($sendErr)) { $outs += ('error=' + $sendErr) }
+  Emit-LogEvent -RunId ('noodle-reply-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord $statusWord -StatusEmoji $statusEmoji -ReasonCode 'NOODLE_REPLY_SENT' -Summary $summary -Inputs @() -Outputs $outs
+}
+
 function Invoke-NoodleReadonly {
-  param([string]$InputMessage,[string]$InputLower)
+  param([string]$InputMessage,[string]$InputLower,[string]$ChatId)
 
   $blockedWrite = @('idea','insight','concept:','save','record','update doctrine','run','build','apply')
   foreach ($kw in $blockedWrite) {
     if ($InputLower -like ('*' + $kw + '*')) {
-      Write-Output 'Noodle is read-only in this chat. Use the main oQ chat for saves or running the pipeline.'
+      Send-NoodleReply -ChatId $ChatId -ReplyText 'Noodle is read-only in this chat. Use the main oQ chat for saves or running the pipeline.'
       return
     }
   }
@@ -310,7 +347,7 @@ function Invoke-NoodleReadonly {
   )
   foreach ($p in $privacyPatterns) {
     if ($InputLower -like ('*' + $p + '*')) {
-      Write-Output "Can't share that here."
+      Send-NoodleReply -ChatId $ChatId -ReplyText "Can't share that here."
       return
     }
   }
@@ -321,36 +358,44 @@ function Invoke-NoodleReadonly {
       $pack = Get-Content $packPath -Raw | ConvertFrom-Json
       $ideas = @($pack.key_ideas | Select-Object -First 5)
       $hooks = @($pack.trading_relevant_concept_hooks | Select-Object -First 3)
-      Write-Output 'Noodle notes (read-only, evidence-first):'
-      foreach ($x in $ideas) { Write-Output ('- signal: ' + [string]$x) }
-      foreach ($h in $hooks) { Write-Output ('- hook: ' + [string]$h) }
-      Write-Output '- assumption: concept frequency != live edge; treat as hypothesis only.'
-      Write-Output '- uncertainty: transcript quality/context limits may hide nuance.'
-      Write-Output 'Q1) Which hook should we pressure-test first: session gating or execution-quality telemetry?'
-      Write-Output 'Q2) Want me to map these into a strict test checklist (still read-only)?'
+      $parts = @('Noodle notes (read-only, evidence-first):')
+      foreach ($x in $ideas) { $parts += ('- signal: ' + [string]$x) }
+      foreach ($h in $hooks) { $parts += ('- hook: ' + [string]$h) }
+      $parts += '- assumption: concept frequency != live edge; treat as hypothesis only.'
+      $parts += '- uncertainty: transcript quality/context limits may hide nuance.'
+      $parts += 'Q1) Which hook should we pressure-test first: session gating or execution-quality telemetry?'
+      $parts += 'Q2) Want me to map these into a strict test checklist (still read-only)?'
+      Send-NoodleReply -ChatId $ChatId -ReplyText ($parts -join "`n")
       return
     } catch {
-      Write-Output 'Noodle is in read-only mode and could not load the referenced pack cleanly.'
-      Write-Output 'Q1) Share a thesis/research artifact path to inspect?'
-      Write-Output 'Q2) Should I summarise doctrine heuristics only?'
+      $parts = @(
+        'Noodle is in read-only mode and could not load the referenced pack cleanly.',
+        'Q1) Share a thesis/research artifact path to inspect?',
+        'Q2) Should I summarise doctrine heuristics only?'
+      )
+      Send-NoodleReply -ChatId $ChatId -ReplyText ($parts -join "`n")
       return
     }
   }
 
   if ($InputLower -like '*doctrine*' -and (Test-Path 'docs/DOCTRINE/analyser-doctrine.md')) {
     $lines = Get-Content 'docs/DOCTRINE/analyser-doctrine.md' | Where-Object { $_ -match '^- \[' } | Select-Object -First 6
-    Write-Output 'Noodle doctrine skim (read-only):'
+    $parts = @('Noodle doctrine skim (read-only):')
     foreach ($l in $lines) {
       $clean = ($l -replace '^- \[[^\]]+\]\s*','').Trim()
-      Write-Output ('- ' + $clean)
+      $parts += ('- ' + $clean)
     }
-    Write-Output '- uncertainty: this is compact guidance, not full transcript evidence.'
-    Write-Output 'Q1) Want research heuristics or automation heuristics next?'
+    $parts += '- uncertainty: this is compact guidance, not full transcript evidence.'
+    $parts += 'Q1) Want research heuristics or automation heuristics next?'
+    Send-NoodleReply -ChatId $ChatId -ReplyText ($parts -join "`n")
     return
   }
 
-  Write-Output 'Noodle is read-only here: I can summarise referenced thesis/research/doctrine artifacts only.'
-  Write-Output 'Q1) Which artifact path should I inspect?'
+  $fallback = @(
+    'Noodle is read-only here: I can summarise referenced thesis/research/doctrine artifacts only.',
+    'Q1) Which artifact path should I inspect?'
+  )
+  Send-NoodleReply -ChatId $ChatId -ReplyText ($fallback -join "`n")
 }
 
 # Deterministic routing rules (verbatim)
@@ -371,7 +416,7 @@ $routeRecord = Get-TelegramChatRoute -TargetChatId $ChatId
 if ($null -ne $routeRecord -and [string]$routeRecord.mode -eq 'ANALYSER_READONLY') {
   $rrun = 'route-noodle-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
   Emit-LogEvent -RunId $rrun -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'ROUTE_ANALYSER_READONLY' -Summary ('chat routed to ANALYSER_READONLY: ' + [string]$ChatId) -Inputs @($Message) -Outputs @('ANALYSER_READONLY')
-  Invoke-NoodleReadonly -InputMessage $Message -InputLower $m
+  Invoke-NoodleReadonly -InputMessage $Message -InputLower $m -ChatId $ChatId
   exit 0
 }
 
