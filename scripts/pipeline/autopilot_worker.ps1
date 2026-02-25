@@ -3,7 +3,8 @@ param(
   [int]$MaxRefinementsPerRun = 1,
   [int]$MaxBundlesPerRun = 1,
   [switch]$RunYouTubeWatcher,
-  [switch]$RunTVCatalogWorker
+  [switch]$RunTVCatalogWorker,
+  [switch]$ForceRecombine
 )
 
 $ErrorActionPreference = 'Stop'
@@ -70,6 +71,12 @@ $insightNew = 0
 $insightProcessed = 0
 $insightFailed = 0
 $lock = $null
+$recombineCreated = 0
+$recombineBundlePath = ''
+$recombineIndicator = ''
+$recombineTemplate = ''
+$recombineEmitted = $false
+$starvationCyclesPrev = 0
 
 try {
   $lock = Ensure-Lock 'autopilot_worker'
@@ -118,10 +125,42 @@ try {
     }
   }
 
+  try {
+    $prevCountersPath = 'data/state/autopilot_counters.json'
+    if (Test-Path $prevCountersPath) {
+      $prevCounters = Get-Content $prevCountersPath -Raw | ConvertFrom-Json
+      if ($null -ne $prevCounters.starvation_cycles) { $starvationCyclesPrev = [int]$prevCounters.starvation_cycles }
+    }
+  } catch {}
+
   $bundleIndexPath = 'artifacts/bundles/INDEX.json'
   if (Test-Path $bundleIndexPath) {
     $bundlePaths = @()
     try { $bundlePaths = @(Get-Content $bundleIndexPath -Raw | ConvertFrom-Json) } catch { $bundlePaths = @() }
+
+    if (-not $DryRun -and (($bundlePaths.Count -eq 0 -and $starvationCyclesPrev -ge 12) -or $ForceRecombine)) {
+      try {
+        $rcb = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
+        $rcCreated = 0
+        try { $rcCreated = [int]$rcb.created } catch { $rcCreated = 0 }
+        if (($rcCreated -ge 1 -or $rcb.bundle_path) -and $rcb.bundle_path) {
+          $recombineCreated = 1
+          $recombineBundlePath = [string]$rcb.bundle_path
+          $recombineIndicator = [string]$rcb.indicator_name
+          $recombineTemplate = [string]$rcb.template_name
+          $bundlePaths = @($recombineBundlePath) + @($bundlePaths)
+          Emit-Summary 'RECOMBINE_SUMMARY' ("Recombine: created=1 indicator=" + $recombineIndicator + " template=" + $recombineTemplate) 'OK' 'oQ'
+          $recombineEmitted = $true
+        } else {
+          Emit-Summary 'RECOMBINE_SUMMARY' 'Recombine: created=0 indicator=n/a template=n/a' 'WARN' 'oQ'
+          $recombineEmitted = $true
+        }
+      } catch {
+        $errorsCount += 1
+        Emit-Summary 'RECOMBINE_SUMMARY' 'Recombine: created=0 indicator=n/a template=n/a (error)' 'FAIL' 'oQ'
+        $recombineEmitted = $true
+      }
+    }
 
     $bundleSlotsUsed = 0
     foreach ($bp in $bundlePaths) {
@@ -362,6 +401,8 @@ $summary = [ordered]@{
   insight_new = $insightNew
   insight_processed = $insightProcessed
   insight_failed = $insightFailed
+  recombine_created = $recombineCreated
+  recombine_bundle_path = $recombineBundlePath
 }
 
 $stateDir = 'data/state'
