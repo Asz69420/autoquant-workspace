@@ -350,7 +350,7 @@ if ($rule -ne 'clarifier_change_it' -and $rule -ne 'clarifier_just_explain') {
 
 if ($null -eq $intentMatch -and $rule -ne 'clarifier_change_it' -and $rule -ne 'clarifier_just_explain') {
   $buildVerbs = @('build','implement','patch','update','add feature','refactor')
-  $fastStatus = @('show pending builds','any builds waiting for approval','builds waiting for approval','show latest status','show logs summary','show debug','details','help','usage','queue status','cancel next','clear queue','do i need to approve','what''s pending','whats pending','any builds waiting')
+  $fastStatus = @('show pending builds','any builds waiting for approval','builds waiting for approval','show latest status','show logs summary','show debug','details','help','usage','queue status','cancel next','clear queue','do i need to approve','what''s pending','whats pending','any builds waiting','mono test')
   $fastApply = @('apply latest','reject latest','apply','go ahead','yes apply','ok apply','ship it')
   $toggleWarnOff = @('turn warnings off','disable warnings','warnings off')
   $toggleWarnOn = @('turn warnings on','enable warnings','warnings on')
@@ -436,6 +436,17 @@ if ($route -eq 'FAST_PATH') {
     $pack = python scripts/pipeline/make_review_pack.py --title $title --scope $scope --commit $latestCommit --artifacts ($auto + ',' + $top + ',' + $less)
     $packObj = $pack | ConvertFrom-Json
     Write-Output ('Review pack ready: ' + [string]$packObj.review_pack_path)
+    exit 0
+  }
+
+  if ($m -eq 'mono test') {
+    $mono = @(
+      'AAA   BBB'
+      '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+      '111   222'
+    ) -join "`n"
+    Emit-LogEvent -RunId ($runId + '-mono-test') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'MONO_TEST' -Summary 'Rendered monospace probe text' -Inputs @($Message) -Outputs @('mono_probe')
+    Write-Output $mono
     exit 0
   }
 

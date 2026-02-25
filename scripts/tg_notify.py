@@ -86,10 +86,11 @@ def send_telegram_message(
     final_mode = parse_mode
     final_text = message
 
-    looks_like_leaderboard = ("TF  P&L" in message) and any(
+    looks_like_leaderboard = ("Strat" in message) and any(
         token in message for token in ("BTC ", "ETH ", "SOL ")
     )
-    is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard
+    is_mono_test = reason == "MONO_TEST" or cmd in {"mono test", "mono_test"} or message.startswith("AAA   BBB")
+    is_leaderboard = reason == "LEADERBOARD" or cmd == "leaderboard" or looks_like_leaderboard or is_mono_test
 
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
     if is_leaderboard:
