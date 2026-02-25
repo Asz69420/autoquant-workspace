@@ -297,6 +297,12 @@ $intentAction = ''
 $intentName = ''
 $buildQuestion = $Message
 
+if ($m -match '^retry\s+insight\s+.+$') {
+  $route = 'FAST_PATH'
+  $rule = 'explicit_retry_insight'
+  $intentAction = 'retry_insight'
+}
+
 $idemKey = Get-IdempotencyKey
 if (Should-SkipByIdempotency -Key $idemKey) {
   $skipRunId = 'route-skip-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
@@ -322,7 +328,7 @@ if ($null -ne $pendingClarifier) {
   }
 }
 
-if ($rule -ne 'clarifier_change_it' -and $rule -ne 'clarifier_just_explain') {
+if ($rule -ne 'clarifier_change_it' -and $rule -ne 'clarifier_just_explain' -and [string]::IsNullOrWhiteSpace($intentAction)) {
   $registry = Ensure-IntentRegistry
   $intentMatch = Resolve-Intent -Registry $registry -InputText $m
   if ($null -ne $intentMatch) {
@@ -408,6 +414,50 @@ if ($route -eq 'FAST_PATH') {
     python scripts/pipeline/emit_insight_card.py --title $title --concept $concept | Out-Null
     Emit-LogEvent -RunId ($runId + '-insight') -StatusWord 'OK' -StatusEmoji '✅' -ReasonCode 'INSIGHT_RECORDED' -Summary 'Manual insight card emitted' -Inputs @($concept) -Outputs @('artifact=insight_card')
     Write-Output 'Insight recorded.'
+    exit 0
+  }
+
+  if ($intentAction -eq 'retry_insight') {
+    $insightId = ''
+    if ($Message -match '^\s*retry\s+insight\s+(.+)$') {
+      $insightId = $matches[1].Trim()
+    }
+    if ([string]::IsNullOrWhiteSpace($insightId)) {
+      Write-Output 'Provide an insight id (retry insight <id>).'
+      exit 0
+    }
+
+    $indexPath = 'artifacts/insights/INDEX.json'
+    if (-not (Test-Path $indexPath)) {
+      Write-Output 'Insight not found.'
+      exit 0
+    }
+
+    $paths = @()
+    try { $paths = @(Get-Content $indexPath -Raw | ConvertFrom-Json) } catch { $paths = @() }
+    $found = $false
+    foreach ($p in $paths) {
+      if (-not (Test-Path -LiteralPath $p)) { continue }
+      try {
+        $card = Get-Content -LiteralPath $p -Raw | ConvertFrom-Json
+        $cardId = ([string]$card.id).Trim().ToLowerInvariant()
+        $targetId = ([string]$insightId).Trim().ToLowerInvariant()
+        if ($cardId -eq $targetId -or [IO.Path]::GetFileNameWithoutExtension([string]$p).StartsWith($targetId)) {
+          $card.status = 'NEW'
+          $card.last_error = $null
+          ($card | ConvertTo-Json -Depth 8) | Set-Content -LiteralPath $p -Encoding utf8
+          $found = $true
+          break
+        }
+      } catch {}
+    }
+
+    if ($found) {
+      Emit-LogEvent -RunId ($runId + '-retry-insight') -StatusWord 'OK' -StatusEmoji '✅' -ReasonCode 'INSIGHT_RETRY_QUEUED' -Summary 'Insight reset to NEW for retry' -Inputs @($insightId) -Outputs @('status=NEW')
+      Write-Output 'Insight retry queued.'
+    } else {
+      Write-Output 'Insight not found.'
+    }
     exit 0
   }
 

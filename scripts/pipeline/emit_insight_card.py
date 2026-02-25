@@ -50,8 +50,8 @@ def validate_lightweight(card: dict) -> None:
     conf = card.get("confidence")
     if not isinstance(conf, (int, float)) or conf < 0 or conf > 1:
         raise SystemExit("confidence must be number 0..1")
-    if card.get("status") not in {"NEW", "PROCESSED"}:
-        raise SystemExit("status must be NEW|PROCESSED")
+    if card.get("status") not in {"NEW", "PROCESSED", "FAILED"}:
+        raise SystemExit("status must be NEW|PROCESSED|FAILED")
     lra = card.get("last_reviewed_at")
     if lra is not None and not isinstance(lra, str):
         raise SystemExit("last_reviewed_at must be null|string")
@@ -138,6 +138,7 @@ def main() -> int:
         "status": "NEW",
         "last_reviewed_at": None,
         "times_used": 0,
+        "last_error": None,
     }
 
     validate_with_schema(card)

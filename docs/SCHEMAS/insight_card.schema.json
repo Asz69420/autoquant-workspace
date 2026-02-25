@@ -39,13 +39,19 @@
       }
     },
     "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-    "status": { "type": "string", "enum": ["NEW", "PROCESSED"] },
+    "status": { "type": "string", "enum": ["NEW", "PROCESSED", "FAILED"] },
     "last_reviewed_at": {
       "oneOf": [
         { "type": "null" },
         { "type": "string", "format": "date-time" }
       ]
     },
-    "times_used": { "type": "integer", "minimum": 0 }
+    "times_used": { "type": "integer", "minimum": 0 },
+    "last_error": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "maxLength": 500 }
+      ]
+    }
   }
 }

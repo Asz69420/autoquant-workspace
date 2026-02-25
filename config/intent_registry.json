@@ -305,6 +305,14 @@
       ],
       "route": "FAST_PATH",
       "action": "emit_insight_card"
+    },
+    {
+      "name": "retry_insight",
+      "patterns": [
+        "retry insight *"
+      ],
+      "route": "FAST_PATH",
+      "action": "retry_insight"
     }
   ]
 }
