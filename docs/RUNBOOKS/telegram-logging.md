@@ -243,6 +243,12 @@ find data/logs/outbox/ -mtime +1 -type f
 - Temporary; deleted after Logger processes
 - If files pile up, Logger may be stuck
 
+## Leaderboard
+
+- Official output: `artifacts/reports/leaderboard.txt`
+- Generator: `scripts/pipeline/write_leaderboard_txt.py`
+- Telegram command: `leaderboard` (regenerates and sends the file as a document attachment)
+
 ## Running tg_reporter (Daemon vs Manual)
 
 ### When to Use Daemon

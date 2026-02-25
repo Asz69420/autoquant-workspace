@@ -42,6 +42,7 @@
 | 🧾 | Stage Verifiers | verify_pipeline_stage1/2/3 + stage4 gates | ACTIVE |
 | 📤 | TV Exporter | export_tradingview_csv.py capture/export path | WIP / BLOCKED: real download capture |
 | 🧪 | TV Parity Harness | tv_parity_engine.py + compare_tv_trades.py parity checks | WIP |
+| 📊 | Leaderboard Report | writes `artifacts/reports/leaderboard.txt` via `scripts/pipeline/write_leaderboard_txt.py` | ACTIVE |
 
 ### 🛠️ Planned
 
