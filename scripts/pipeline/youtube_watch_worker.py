@@ -8,6 +8,7 @@ from pathlib import Path
 import subprocess
 import sys
 from urllib.request import urlopen
+from urllib.parse import urlparse
 from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -59,6 +60,26 @@ def _log(action: str, reason: str, summary: str, status: str = 'INFO', inputs: l
         pass
 
 
+def _resolve_channel_id(url: str, fallback: str = '') -> str:
+    if fallback:
+        return fallback
+    try:
+        p = urlparse(url)
+        parts = [x for x in p.path.split('/') if x]
+        if len(parts) >= 2 and parts[0].lower() == 'channel' and parts[1].startswith('UC'):
+            return parts[1]
+        html = urlopen(url, timeout=20).read().decode('utf-8', errors='ignore')
+        m = re.search(r'"channelId"\s*:\s*"(UC[0-9A-Za-z_-]{20,})"', html)
+        if m:
+            return m.group(1)
+        m2 = re.search(r'channel/(UC[0-9A-Za-z_-]{20,})', html)
+        if m2:
+            return m2.group(1)
+    except Exception:
+        return ''
+    return ''
+
+
 def _fetch_latest(channel_id: str):
     rss = f'https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}'
     xml = urlopen(rss, timeout=20).read()
@@ -72,6 +93,56 @@ def _fetch_latest(channel_id: str):
             continue
         items.append({'video_id': vid.text, 'title': title.text if title is not None else vid.text})
     return items
+
+
+def _resolve_existing_indicators(rc_path: str, ind_idx: list[dict]) -> list[str]:
+    try:
+        card = _j(Path(rc_path), {})
+    except Exception:
+        card = {}
+    hints = card.get('tv_search_hints', []) if isinstance(card, dict) else []
+    names = []
+    for h in hints:
+        if isinstance(h, dict) and h.get('name'):
+            names.append(str(h.get('name')).lower())
+        if isinstance(h, dict):
+            for kw in h.get('keywords', []) or []:
+                names.append(str(kw).lower())
+    out = []
+    for row in ind_idx:
+        if not isinstance(row, dict):
+            continue
+        ir = row.get('indicator_record_path')
+        tv_key = str(row.get('tv_key', '')).lower()
+        nm = str(row.get('name', '')).lower()
+        if not ir:
+            continue
+        if any(n and (n in tv_key or n in nm) for n in names):
+            p = str(ir).replace('\\', '/')
+            if p not in out:
+                out.append(p)
+        if len(out) >= 2:
+            break
+    return out
+
+
+def _append_usage_note(linkmap_path: str, *, channel_name: str, channel_url: str, video_id: str):
+    try:
+        lm_path = Path(linkmap_path)
+        lm = _j(lm_path, {})
+        notes = lm.get('usage_notes', []) if isinstance(lm.get('usage_notes', []), list) else []
+        notes.append({
+            'source': 'youtube',
+            'channel': channel_name,
+            'channel_url': channel_url,
+            'video_url': f'https://www.youtube.com/watch?v={video_id}',
+            'video_id': video_id,
+            'noted_at': datetime.now(UTC).isoformat(),
+        })
+        lm['usage_notes'] = notes[-20:]
+        _w(lm_path, lm)
+    except Exception:
+        pass
 
 
 def _transcript(video_id: str) -> str:
@@ -88,10 +159,10 @@ def _extract_hints(text: str):
 
 
 def main() -> int:
-    state = _j(STATE_PATH, {'channels': [], 'seen_video_ids': []})
+    state = _j(STATE_PATH, {'channels': [], 'seen_video_ids': [], 'max_new_videos_per_run': 2})
     bundles = _j(BUNDLE_INDEX, [])
     ind_idx = _j(INDICATOR_INDEX, [])
-    seen_tv = {x.get('tv_key') for x in ind_idx if isinstance(x, dict)}
+    max_new = max(1, int(state.get('max_new_videos_per_run', MAX_NEW)))
 
     created = []
     seen_videos = set(state.get('seen_video_ids', []))
@@ -101,16 +172,30 @@ def main() -> int:
     failed = 0
     new_total = 0
     for ch in state.get('channels', []):
-        channel_id = ch.get('channel_id', '')
-        if not channel_id:
+        if ch.get('enabled', True) is False:
             continue
+        channel_url = str(ch.get('url', '') or '')
+        channel_id = _resolve_channel_id(channel_url, str(ch.get('channel_id', '') or ''))
+        if not channel_id:
+            failed += 1
+            continue
+        ch['channel_id'] = channel_id
         channels_checked += 1
         latest = _fetch_latest(channel_id)
-        new_count = len([x for x in latest if x['video_id'] not in seen_videos])
+        if latest and not ch.get('last_seen_video_id'):
+            ch['last_seen_video_id'] = latest[0]['video_id']
+            seen_videos.add(latest[0]['video_id'])
+        marker = str(ch.get('last_seen_video_id', '') or '')
+        unseen_since_marker = []
+        for x in latest:
+            if marker and x['video_id'] == marker:
+                break
+            unseen_since_marker.append(x)
+        new_count = len([x for x in unseen_since_marker if x['video_id'] not in seen_videos])
         new_total += new_count
         _log('YT_WATCH_CHECK', 'YT_WATCH_CHECK', f"channel={channel_id} new_count={new_count}", 'INFO')
-        for item in latest:
-            if len(created) >= MAX_NEW:
+        for item in unseen_since_marker:
+            if len(created) >= max_new:
                 break
             vid = item['video_id']
             if vid in seen_videos:
@@ -124,14 +209,10 @@ def main() -> int:
                 failed += 1
                 continue
 
-            linked = []
-            for h in _extract_hints(txt):
-                tv_key = f'{h}|catalog'
-                for row in ind_idx:
-                    if row.get('tv_key') == tv_key and row.get('indicator_record_path'):
-                        linked.append(row['indicator_record_path'])
+            linked = _resolve_existing_indicators(rc['research_card_path'], ind_idx)
 
             lm = _run('scripts/pipeline/link_research_indicators.py', '--research-card-path', rc['research_card_path'], '--indicator-record-paths', json.dumps(linked[:2]))
+            _append_usage_note(lm['linkmap_path'], channel_name=str(ch.get('name', 'youtube')), channel_url=channel_url, video_id=vid)
             bday = datetime.now(UTC).strftime('%Y%m%d')
             bpath = ROOT / 'artifacts' / 'bundles' / bday / f'{vid}.bundle.json'
             b = {
@@ -150,6 +231,10 @@ def main() -> int:
             seen_videos.add(vid)
             created.append(str(bpath).replace('\\', '/'))
             processed += 1
+
+        if latest:
+            ch['last_seen_video_id'] = latest[0]['video_id']
+            seen_videos.add(latest[0]['video_id'])
 
     _w(BUNDLE_INDEX, bundles[:500])
     state['seen_video_ids'] = list(seen_videos)[-1000:]
