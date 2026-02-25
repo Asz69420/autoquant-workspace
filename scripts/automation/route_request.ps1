@@ -442,11 +442,17 @@ if ($route -eq 'FAST_PATH') {
   if ($intentAction -eq 'show_leaderboard' -or $m -like 'leaderboard*') {
     $assetArg = ''
     if ($m -match '^leaderboard\s+(.+)$') { $assetArg = [string]$matches[1] }
+
+    $lb = ''
     if ([string]::IsNullOrWhiteSpace($assetArg)) {
-      python scripts/pipeline/render_leaderboard.py
+      $lb = (python scripts/pipeline/render_leaderboard.py) -join "`n"
     } else {
-      python scripts/pipeline/render_leaderboard.py --assets $assetArg
+      $lb = (python scripts/pipeline/render_leaderboard.py --assets $assetArg) -join "`n"
     }
+
+    Write-Output '```'
+    Write-Output $lb
+    Write-Output '```'
     exit 0
   }
 
