@@ -16,15 +16,12 @@ ROOT = Path(__file__).resolve().parents[2]
 RUN_INDEX = ROOT / "artifacts" / "library" / "RUN_INDEX.json"
 OUT_PATH = ROOT / "artifacts" / "reports" / "leaderboard.txt"
 
-DIVIDER = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"  # exactly 32
-HEADER = "TF   P&L      PF    WR    TC     DD"
-
-TF_W = 4
-PNL_W = 8
-PF_W = 5
-WR_W = 4
-TC_W = 6
-DD_W = 9
+TF_CAP = 4
+PNL_CAP = 9
+PF_CAP = 6
+WR_CAP = 4
+TC_CAP = 6
+DD_CAP = 10
 
 ASSET_EMOJI = {"BTC": "🟠", "ETH": "🔵", "SOL": "🟣"}
 ASSET_PRIORITY = ["BTC", "ETH", "SOL"]
@@ -85,14 +82,41 @@ def valid_metrics(pnl, pf, wr, tc, dd) -> bool:
     return True
 
 
-def fmt_row(tf: str, pnl: float, pf: float, wr: float, tc: int, dd: float) -> str:
-    tf_s = str(tf)[:TF_W].ljust(TF_W)
-    pnl_s = f"{pnl:+.1f}".rjust(PNL_W)
-    pf_s = f"{pf:.2f}".rjust(PF_W)
-    wr_s = f"{int(round(wr))}%".rjust(WR_W)
-    tc_s = str(tc).rjust(TC_W)
-    dd_s = f"{dd:.1f}".rjust(DD_W)
-    return f"{tf_s}{pnl_s} {pf_s} {wr_s} {tc_s} {dd_s}"
+def truncate_to_width(value: str, width: int) -> str:
+    return value if len(value) <= width else value[:width]
+
+
+def compute_widths(rows: list[tuple[str, str, str, str, str, str]]) -> tuple[int, int, int, int, int, int]:
+    tf_w = min(max([len("TF")] + [len(r[0]) for r in rows]), TF_CAP)
+    pnl_w = min(max([len("P&L")] + [len(r[1]) for r in rows]), PNL_CAP)
+    pf_w = min(max([len("PF")] + [len(r[2]) for r in rows]), PF_CAP)
+    wr_w = min(max([len("WR")] + [len(r[3]) for r in rows]), WR_CAP)
+    tc_w = min(max([len("TC")] + [len(r[4]) for r in rows]), TC_CAP)
+    dd_w = min(max([len("DD")] + [len(r[5]) for r in rows]), DD_CAP)
+    return tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w
+
+
+def format_header(tf_w: int, pnl_w: int, pf_w: int, wr_w: int, tc_w: int, dd_w: int) -> str:
+    return (
+        f"{'TF'.ljust(tf_w)} "
+        f"{'P&L'.rjust(pnl_w)} "
+        f"{'PF'.rjust(pf_w)} "
+        f"{'WR'.rjust(wr_w)} "
+        f"{'TC'.rjust(tc_w)} "
+        f"{'DD'.rjust(dd_w)}"
+    )
+
+
+def format_row(row: tuple[str, str, str, str, str, str], tf_w: int, pnl_w: int, pf_w: int, wr_w: int, tc_w: int, dd_w: int) -> str:
+    tf, pnl, pf, wr, tc, dd = row
+    return (
+        f"{truncate_to_width(tf, tf_w).ljust(tf_w)} "
+        f"{truncate_to_width(pnl, pnl_w).rjust(pnl_w)} "
+        f"{truncate_to_width(pf, pf_w).rjust(pf_w)} "
+        f"{truncate_to_width(wr, wr_w).rjust(wr_w)} "
+        f"{truncate_to_width(tc, tc_w).rjust(tc_w)} "
+        f"{truncate_to_width(dd, dd_w).rjust(dd_w)}"
+    )
 
 
 def asset_sort_key(asset: str):
@@ -186,14 +210,10 @@ def main() -> int:
 
         grouped[asset][tf].append((pnl, pf, wr, tc, dd))
 
-    lines: list[str] = []
-    assets_included = 0
-    rows_included = 0
+    selected_by_asset: dict[str, list[tuple[str, str, str, str, str, str]]] = defaultdict(list)
 
     for asset in sorted(grouped.keys(), key=asset_sort_key):
         tf_rows = grouped[asset]
-        rendered_rows: list[str] = []
-
         for tf in sorted(tf_rows.keys(), key=tf_sort_key):
             rows = sorted(tf_rows[tf], key=lambda x: (x[0], x[1]), reverse=True)
             unique = []
@@ -208,18 +228,38 @@ def main() -> int:
                     break
 
             for pnl, pf, wr, tc, dd in unique:
-                rendered_rows.append(fmt_row(tf, pnl, pf, wr, tc, dd))
+                selected_by_asset[asset].append((
+                    tf,
+                    f"{pnl:+.1f}",
+                    f"{pf:.2f}",
+                    f"{int(round(wr))}%",
+                    str(tc),
+                    f"{dd:.1f}",
+                ))
 
-        if not rendered_rows:
-            continue
+    all_rows = [row for rows in selected_by_asset.values() for row in rows]
 
-        assets_included += 1
-        lines.append(f"{ASSET_EMOJI.get(asset, '⚪')} {asset}")
-        lines.append(HEADER)
-        lines.append(DIVIDER)
-        lines.extend(rendered_rows)
-        lines.append("")
-        rows_included += len(rendered_rows)
+    lines: list[str] = []
+    assets_included = 0
+    rows_included = 0
+
+    if all_rows:
+        tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w = compute_widths(all_rows)
+        header = format_header(tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w)
+        divider = "━" * len(header)
+
+        for asset in sorted(selected_by_asset.keys(), key=asset_sort_key):
+            asset_rows = selected_by_asset.get(asset, [])
+            if not asset_rows:
+                continue
+            assets_included += 1
+            lines.append(f"{ASSET_EMOJI.get(asset, '⚪')} {asset}")
+            lines.append(header)
+            lines.append(divider)
+            for row in asset_rows:
+                lines.append(format_row(row, tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w))
+            lines.append("")
+            rows_included += len(asset_rows)
 
     text = "\n".join(lines).rstrip() + "\n"
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
