@@ -45,6 +45,11 @@ $batchRuns = 0
 $batchExecuted = 0
 $batchSkipped = 0
 $batchGateFail = 0
+$batchEmitted = $false
+$grabberFetched = 0
+$grabberDedup = 0
+$grabberFailed = 0
+$grabberEmitted = $false
 $refineVariants = 0
 $refineExplore = 0
 $refineDelta = 'n/a'
@@ -65,7 +70,21 @@ try {
       $tv = Run-Py @('scripts/pipeline/tv_catalog_worker.py') | ConvertFrom-Json
       $newIndicatorsAdded += [int]$tv.new_indicators_added
       $skippedIndicatorsDedup += [int]$tv.skipped_dedup
-    } catch { $errorsCount += 1 }
+      if ($tv.grabber_ok) { $grabberFetched = [int]$tv.grabber_ok }
+      if ($tv.skipped_dedup) { $grabberDedup = [int]$tv.skipped_dedup }
+      if ($tv.grabber_fail) { $grabberFailed = [int]$tv.grabber_fail }
+      Emit-InfoSummary 'GRABBER_SUMMARY' ("Grabber: fetched=" + $grabberFetched + " dedup=" + $grabberDedup + " failed=" + $grabberFailed)
+      $grabberEmitted = $true
+    } catch {
+      $errorsCount += 1
+      Emit-InfoSummary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)'
+      $grabberEmitted = $true
+    }
+  }
+
+  if (-not $grabberEmitted -and -not $DryRun) {
+    Emit-InfoSummary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)'
+    $grabberEmitted = $true
   }
 
   $bundleIndexPath = 'artifacts/bundles/INDEX.json'
@@ -87,15 +106,25 @@ try {
           try { $variantCount = @((Get-Content $sp.strategy_spec_path -Raw | ConvertFrom-Json).variants).Count } catch { $variantCount = 0 }
           Emit-InfoSummary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + "; status=OK")
 
-          $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all') | ConvertFrom-Json
-          try {
-            $bdoc = Get-Content $batch.batch_artifact_path -Raw | ConvertFrom-Json
-            $batchRuns += [int]$bdoc.summary.total_runs
-            $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
-            $batchSkipped += [int]$bdoc.summary.failed_runs
-            foreach ($rr in $bdoc.runs) { if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 } }
-            Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + ($bdoc.summary.total_runs - $bdoc.summary.failed_runs) + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail)
-          } catch {}
+          $batch = $null
+          if ($variantCount -eq 0) {
+            Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)'
+            $batchEmitted = $true
+          } else {
+            try {
+              $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all') | ConvertFrom-Json
+              $bdoc = Get-Content $batch.batch_artifact_path -Raw | ConvertFrom-Json
+              $batchRuns += [int]$bdoc.summary.total_runs
+              $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
+              $batchSkipped += [int]$bdoc.summary.failed_runs
+              foreach ($rr in $bdoc.runs) { if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 } }
+              Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + ($bdoc.summary.total_runs - $bdoc.summary.failed_runs) + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail)
+              $batchEmitted = $true
+            } catch {
+              Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: batch error)'
+              $batchEmitted = $true
+            }
+          }
 
           $promoId = [IO.Path]::GetFileNameWithoutExtension($sp.strategy_spec_path)
           $promoPath = "artifacts/promotions/" + (Get-Date -Format 'yyyyMMdd') + "/promo_" + $promoId + ".promotion_run.json"
@@ -107,8 +136,8 @@ try {
             input_linkmap_path = $lm
             thesis_artifact_path = $an.thesis_path
             strategy_spec_artifact_path = $sp.strategy_spec_path
-            batch_backtest_artifact_path = $batch.batch_artifact_path
-            experiment_plan_artifact_path = $batch.experiment_plan_path
+            batch_backtest_artifact_path = $(if ($null -ne $batch) { $batch.batch_artifact_path } else { '' })
+            experiment_plan_artifact_path = $(if ($null -ne $batch) { $batch.experiment_plan_path } else { '' })
           }
           New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($promoPath)) | Out-Null
           ($promoObj | ConvertTo-Json -Depth 8) | Set-Content -Path $promoPath -Encoding utf8
@@ -131,6 +160,11 @@ try {
         $promotionsProcessed += 1
       } catch { $errorsCount += 1 }
     }
+  }
+
+  if (-not $batchEmitted -and -not $DryRun) {
+    Emit-InfoSummary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)'
+    $batchEmitted = $true
   }
 
   if (-not $DryRun) {
