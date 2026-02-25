@@ -52,6 +52,12 @@ def validate_lightweight(card: dict) -> None:
         raise SystemExit("confidence must be number 0..1")
     if card.get("status") not in {"NEW", "PROCESSED"}:
         raise SystemExit("status must be NEW|PROCESSED")
+    lra = card.get("last_reviewed_at")
+    if lra is not None and not isinstance(lra, str):
+        raise SystemExit("last_reviewed_at must be null|string")
+    tu = card.get("times_used")
+    if not isinstance(tu, int) or tu < 0:
+        raise SystemExit("times_used must be integer >= 0")
 
 
 def validate_with_schema(card: dict) -> None:
@@ -130,6 +136,8 @@ def main() -> int:
         "suggested_roles": roles,
         "confidence": float(args.confidence),
         "status": "NEW",
+        "last_reviewed_at": None,
+        "times_used": 0,
     }
 
     validate_with_schema(card)

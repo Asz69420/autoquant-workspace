@@ -103,16 +103,16 @@ try {
 
   if (-not $DryRun) {
     try {
-      $insight = python scripts/pipeline/process_insight_cycle.py --max-refinements $MaxRefinementsPerRun | ConvertFrom-Json
-      $insightNew = [int]$insight.new
-      $insightProcessed = [int]$insight.processed
+      $insight = python scripts/pipeline/process_insight_cycle.py --max-refinements $MaxRefinementsPerRun --max-insights 1 | ConvertFrom-Json
+      $insightNew = [int]$insight.new_processed
+      $insightProcessed = [int]$insight.revisited
       $insightFailed = [int]$insight.failed
       if ($insightFailed -gt 0) { $errorsCount += $insightFailed }
-      Emit-Summary 'INSIGHT_SUMMARY' ("Insight: new=" + $insightNew + " processed=" + $insightProcessed + " failed=" + $insightFailed) 'INFO' 'oQ'
+      Emit-Summary 'INSIGHT_SUMMARY' ("Insight: new_processed=" + $insightNew + " revisited=" + $insightProcessed + " failed=" + $insightFailed) 'INFO' 'oQ'
     } catch {
       $insightFailed += 1
       $errorsCount += 1
-      Emit-Summary 'INSIGHT_SUMMARY' ("Insight: new=" + $insightNew + " processed=" + $insightProcessed + " failed=" + $insightFailed) 'WARN' 'oQ'
+      Emit-Summary 'INSIGHT_SUMMARY' ("Insight: new_processed=" + $insightNew + " revisited=" + $insightProcessed + " failed=" + $insightFailed) 'WARN' 'oQ'
     }
   }
 

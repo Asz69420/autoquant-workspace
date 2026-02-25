@@ -14,7 +14,9 @@
     "tags",
     "suggested_roles",
     "confidence",
-    "status"
+    "status",
+    "last_reviewed_at",
+    "times_used"
   ],
   "properties": {
     "schema_version": { "const": "1.0" },
@@ -37,6 +39,13 @@
       }
     },
     "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-    "status": { "type": "string", "enum": ["NEW", "PROCESSED"] }
+    "status": { "type": "string", "enum": ["NEW", "PROCESSED"] },
+    "last_reviewed_at": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "format": "date-time" }
+      ]
+    },
+    "times_used": { "type": "integer", "minimum": 0 }
   }
 }

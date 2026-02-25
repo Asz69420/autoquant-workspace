@@ -1,7 +1,7 @@
 param(
   [int]$YouTubeHours = 2,
   [int]$TVHours = 12,
-  [int]$AutopilotHours = 6
+  [int]$AutopilotHours = 2
 )
 
 $ErrorActionPreference = 'Stop'

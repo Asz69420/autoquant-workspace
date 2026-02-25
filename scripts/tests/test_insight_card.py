@@ -32,6 +32,8 @@ def main() -> int:
     assert card['schema_version'] == '1.0'
     assert card['source'] == 'manual'
     assert card['status'] == 'NEW'
+    assert card['times_used'] == 0
+    assert card['last_reviewed_at'] is None
     assert len(card['title']) <= 120
     assert len(card['concept']) <= 2000
     assert len(card['tags']) <= 10
@@ -64,7 +66,10 @@ def main() -> int:
     card_after_2 = json.loads((ROOT / card_path_2).read_text(encoding='utf-8'))
     assert card_after_1['status'] == 'PROCESSED' or card_after_2['status'] == 'PROCESSED'
 
+    chosen_card = card_after_1 if card_after_1['status'] == 'PROCESSED' else card_after_2
     chosen = card_path_1 if card_after_1['status'] == 'PROCESSED' else card_path_2
+    assert int(chosen_card.get('times_used', 0)) >= 1
+    assert chosen_card.get('last_reviewed_at') is not None
     print(json.dumps({'insight_card_path': chosen, 'index_len': idx_len, 'status_1': card_after_1['status'], 'status_2': card_after_2['status']}))
     return 0
 
