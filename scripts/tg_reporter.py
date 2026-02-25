@@ -245,13 +245,13 @@ def _keeper_telegram_message(event: dict) -> str:
 def send_event_to_telegram(event):
     """Format and send an ActionEvent to Telegram. Returns True on success."""
     try:
+        reason_code = str(event.get("reason_code") or "").upper()
         if str(event.get("agent") or "").lower() == "keeper":
             if not _keeper_should_post(event):
                 return None
             formatted_msg = _keeper_telegram_message(event)
         else:
             status_word = str(event.get("status_word") or "").upper()
-            reason_code = str(event.get("reason_code") or "").upper()
             if reason_code.startswith("AUTOPILOT_STAGE_"):
                 return None
             if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST:
@@ -268,8 +268,12 @@ def send_event_to_telegram(event):
             )
             formatted_msg = result.stdout.decode("utf-8", errors="replace").strip()
 
+        notify_cmd = [sys.executable, "scripts/tg_notify.py", formatted_msg]
+        if reason_code:
+            notify_cmd.extend(["--reason-code", reason_code])
+
         send_result = subprocess.run(
-            [sys.executable, "scripts/tg_notify.py", formatted_msg],
+            notify_cmd,
             capture_output=True,
             text=True
         )

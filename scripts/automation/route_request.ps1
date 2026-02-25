@@ -450,9 +450,8 @@ if ($route -eq 'FAST_PATH') {
       $lb = (python scripts/pipeline/render_leaderboard.py --assets $assetArg) -join "`n"
     }
 
-    Write-Output '```'
+    Emit-LogEvent -RunId ($runId + '-leaderboard') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'LEADERBOARD' -Summary 'Rendered leaderboard table' -Inputs @($Message) -Outputs @('leaderboard_table')
     Write-Output $lb
-    Write-Output '```'
     exit 0
   }
 
