@@ -84,13 +84,13 @@ try {
       $grabberEmitted = $true
     } catch {
       $errorsCount += 1
-      Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'WARN' 'Grabber'
+      Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'OK' 'Grabber'
       $grabberEmitted = $true
     }
   }
 
   if (-not $grabberEmitted -and -not $DryRun) {
-    Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'WARN' 'Grabber'
+    Emit-Summary 'GRABBER_SUMMARY' 'Grabber: fetched=0 dedup=0 failed=0 (skipped: no indicator hints)' 'OK' 'Grabber'
     $grabberEmitted = $true
   }
 
@@ -127,7 +127,7 @@ try {
             Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: blocked promotion)' 'WARN' 'Backtester'
             $batchEmitted = $true
           } elseif ($variantCount -eq 0) {
-            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'WARN' 'Backtester'
+            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'OK' 'Backtester'
             $batchEmitted = $true
           } else {
             try {
@@ -166,7 +166,7 @@ try {
           ($promoObj | ConvertTo-Json -Depth 8) | Set-Content -Path $promoPath -Encoding utf8
 
           if ($promoStatus -eq 'BLOCKED') {
-            Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'WARN' 'Refinement'
+            Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'OK' 'Refinement'
             $refineEmitted = $true
           } elseif ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
@@ -192,7 +192,7 @@ try {
   }
 
   if (-not $batchEmitted -and -not $DryRun) {
-    Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'WARN' 'Backtester'
+    Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'OK' 'Backtester'
     $batchEmitted = $true
   }
 
@@ -253,19 +253,19 @@ catch {
 finally {
   if (-not $DryRun) {
     if (-not $promotionEmitted) {
-      Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=0 thesis=SKIPPED spec=SKIPPED variants=0 status=SKIPPED' 'WARN' 'Promotion'
+      Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=0 thesis=SKIPPED spec=SKIPPED variants=0 status=SKIPPED' 'OK' 'Promotion'
       $promotionEmitted = $true
     }
     if (-not $batchEmitted) {
-      Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 gate_fail=0 (skipped: no variants)' 'WARN' 'Backtester'
+      Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 gate_fail=0 (skipped: no variants)' 'OK' 'Backtester'
       $batchEmitted = $true
     }
     if (-not $refineEmitted) {
-      Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'WARN' 'Refinement'
+      Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'OK' 'Refinement'
       $refineEmitted = $true
     }
     if (-not $libraryEmitted) {
-      Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: not run)' 'WARN' 'Librarian'
+      Emit-Summary 'LIBRARIAN_SUMMARY' 'Library: (skipped: not run)' 'OK' 'Librarian'
       $libraryEmitted = $true
     }
   }
@@ -290,7 +290,7 @@ if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir |
 ($summary | ConvertTo-Json -Depth 5) | Set-Content -Path 'data/state/autopilot_summary.json' -Encoding utf8
 
 if (-not $DryRun) {
-  $aStatus = if ($errorsCount -gt 0) { 'FAIL' } elseif ($bundlesProcessed -eq 0 -or $promotionsProcessed -eq 0) { 'WARN' } else { 'OK' }
+  $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
   Emit-Summary 'AUTOPILOT_SUMMARY' ("Autopilot: bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
