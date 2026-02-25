@@ -89,9 +89,15 @@ def _unwrap_triple_backticks(text: str) -> str:
     t = (text or "").strip()
     if t.startswith("```") and t.endswith("```"):
         inner = t[3:-3]
-        if inner.startswith("\n"):
+        # Handle both LF and CRLF without altering internal formatting.
+        if inner.startswith("\r\n"):
+            inner = inner[2:]
+        elif inner.startswith("\n"):
             inner = inner[1:]
-        if inner.endswith("\n"):
+
+        if inner.endswith("\r\n"):
+            inner = inner[:-2]
+        elif inner.endswith("\n"):
             inner = inner[:-1]
         return inner
     return t
