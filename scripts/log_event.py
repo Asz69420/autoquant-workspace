@@ -103,13 +103,15 @@ def main():
     outbox_dir = Path("data/logs/outbox")
     outbox_dir.mkdir(parents=True, exist_ok=True)
     
-    tmp_path = outbox_dir / f"{filename}.tmp"
     final_path = outbox_dir / filename
-    
-    with open(tmp_path, "w") as f:
+    tmp_path = outbox_dir / f"{filename}.{os.getpid()}.tmp"
+
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(event, f)
-    
-    tmp_path.replace(final_path)
+        f.flush()
+        os.fsync(f.fileno())
+
+    os.replace(tmp_path, final_path)
     print(f"Emitted: {final_path.name}", file=sys.stderr)
     sys.exit(0)
 

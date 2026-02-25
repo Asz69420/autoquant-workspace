@@ -6,6 +6,7 @@ import sys
 import subprocess
 import time
 import atexit
+import errno
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -287,6 +288,33 @@ def send_event_to_telegram(event):
         print(f"Error formatting/sending event: {e}", file=sys.stderr)
         return False
 
+def _emit_missing_file_warn(filename: str):
+    ts_iso = datetime.utcnow().isoformat() + "Z"
+    ts_local = compute_ts_local_aest(ts_iso)
+    ev = {
+        "ts_iso": ts_iso,
+        "ts_local": ts_local,
+        "ts_file": datetime.utcnow().strftime("%Y%m%dT%H%M%SZ"),
+        "run_id": "tg-reporter-missing-file",
+        "agent": "Logger",
+        "model_id": "system",
+        "action": "TG_OUTBOX_MISSING_FILE",
+        "status_word": "WARN",
+        "status_emoji": "WARN",
+        "reason_code": "TG_OUTBOX_MISSING_FILE",
+        "summary": f"outbox file missing: {filename}",
+        "inputs": [],
+        "outputs": [],
+        "attempt": None,
+        "error": None,
+    }
+    try:
+        with open(ACTIONS_LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(ev) + "\n")
+    except Exception:
+        pass
+
+
 def drain_once(max_messages=20):
     """
     Drain outbox and spool (legacy compat) files.
@@ -346,9 +374,31 @@ def drain_once(max_messages=20):
             break
         
         try:
-            with open(event_file) as f:
-                event = json.load(f)
-            
+            event = None
+            missing_after_retries = False
+            for attempt in range(3):
+                try:
+                    with open(event_file, "r", encoding="utf-8", errors="replace") as f:
+                        event = json.load(f)
+                    break
+                except FileNotFoundError as e:
+                    if getattr(e, "errno", None) == errno.ENOENT:
+                        if attempt < 2:
+                            time.sleep(0.3)
+                            continue
+                        missing_after_retries = True
+                        break
+                    raise
+            if missing_after_retries:
+                _emit_missing_file_warn(event_file.name)
+                skipped += 1
+                consecutive_failures = 0
+                print(f"Skipped (missing-after-retry): {event_file.name}", file=sys.stderr)
+                continue
+            if event is None:
+                skipped += 1
+                continue
+
             run_id = event["run_id"]
             status_word = event["status_word"]
             ts_iso = event.get("ts_iso", "")
