@@ -2,14 +2,18 @@
 from __future__ import annotations
 
 import json
+import os
+import re
+import shutil
 import subprocess
 import time
 from datetime import datetime, UTC
 from pathlib import Path
-import re
 
 ROOT = Path(__file__).resolve().parents[2]
 LOG_PATH = ROOT / 'data' / 'logs' / 'llm_calls.ndjson'
+DEFAULT_OPENCLAW_CLI = r'C:\Users\Clamps\AppData\Roaming\npm\openclaw.cmd'
+OPENCLAW_CLI = shutil.which('openclaw') or os.environ.get('OPENCLAW_CLI_PATH') or (DEFAULT_OPENCLAW_CLI if Path(DEFAULT_OPENCLAW_CLI).exists() else 'openclaw')
 
 
 def _log_call(agent: str, prompt_len: int, response_len: int, latency_ms: int, success: bool, error: str | None):
@@ -33,7 +37,7 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'reader', timeout: 
     if system:
         full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
 
-    cmd = ['openclaw', 'agent', '--agent', agent, '--message', full_prompt, '--json']
+    cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--message', full_prompt, '--json']
     last_err: str | None = None
 
     for attempt in range(2):
