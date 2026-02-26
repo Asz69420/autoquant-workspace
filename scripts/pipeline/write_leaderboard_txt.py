@@ -4,38 +4,34 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import subprocess
 import sys
 from collections import defaultdict
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
 RUN_INDEX = ROOT / "artifacts" / "library" / "RUN_INDEX.json"
 OUT_PATH = ROOT / "artifacts" / "reports" / "leaderboard.txt"
+BATCH_ROOT = ROOT / "artifacts" / "batches"
+PROMO_ROOT = ROOT / "artifacts" / "promotions"
 
-RANK_CAP = 2
-TF_CAP = 4
-PNL_CAP = 9
-PF_CAP = 6
-WR_CAP = 4
-TC_CAP = 6
-DD_CAP = 11
-
-ASSET_EMOJI = {"BTC": "🟠", "ETH": "🔵", "SOL": "🟣"}
-ASSET_PRIORITY = ["BTC", "ETH", "SOL"]
-TF_ORDER = ["15m", "1h", "4h"]
-
-PLACEHOLDER_RE = re.compile(r"999\.9|\+X\.X|need|no data|<pre>|</pre>", re.IGNORECASE)
-SEP = "  "
+AEST = ZoneInfo("Australia/Brisbane")
+NOW_UTC = datetime.now(timezone.utc)
+SINCE_24H = NOW_UTC - timedelta(hours=24)
 
 
-def load_json(path: Path):
+def load_json(path: Path, default):
     if not path.exists():
-        return []
-    return json.loads(path.read_text(encoding="utf-8-sig"))
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return default
 
 
 def as_float(v):
@@ -52,91 +48,120 @@ def as_int(v):
         return None
 
 
-def extract_wr_dd(backtest_path: str) -> tuple[float | None, float | None]:
-    p = Path(backtest_path)
-    if not backtest_path or not p.exists():
-        return None, None
+def parse_dt(v: str | None) -> datetime | None:
+    if not v:
+        return None
+    s = str(v).strip()
+    if not s:
+        return None
     try:
-        j = json.loads(p.read_text(encoding="utf-8-sig"))
-        results = j.get("results", {})
-        wr = as_float(results.get("win_rate"))
-        dd = as_float(results.get("max_drawdown"))
-        if wr is None or dd is None:
-            return None, None
-        wr_pct = wr * 100.0
-        dd_pct = dd * 100.0 if abs(dd) <= 1.0 else dd
-        return wr_pct, dd_pct
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        return datetime.fromisoformat(s).astimezone(timezone.utc)
     except Exception:
-        return None, None
+        return None
 
 
-def valid_metrics(pnl, pf, wr, tc, dd) -> bool:
-    if any(v is None for v in (pnl, pf, wr, tc, dd)):
-        return False
-    if not all(isinstance(v, (int, float)) for v in (pnl, pf, wr, dd)):
-        return False
-    if not isinstance(tc, int):
-        return False
-    if tc <= 0:
-        return False
-    if round(dd, 1) == 999.9:
-        return False
-    # Drawdown must be a realistic percentage for display.
-    if dd < 0 or dd > 100:
-        return False
-    return True
+def short_strategy(name: str, width: int = 18) -> str:
+    return name if len(name) <= width else name[: width - 1] + "…"
 
 
-def truncate_to_width(value: str, width: int) -> str:
-    return value if len(value) <= width else value[:width]
+def norm_pct(v: float | None) -> float | None:
+    if v is None:
+        return None
+    return v * 100.0 if abs(v) <= 1.0 else v
 
 
-def compute_widths(rows: list[tuple[str, str, str, str, str, str, str]]) -> tuple[int, int, int, int, int, int, int]:
-    rank_w = min(max([len("#")] + [len(r[0]) for r in rows]), RANK_CAP)
-    tf_w = min(max([len("TF")] + [len(r[1]) for r in rows]), TF_CAP)
-    pnl_w = min(max([len("P&L")] + [len(r[2]) for r in rows]), PNL_CAP)
-    pf_w = min(max([len("PF")] + [len(r[3]) for r in rows]), PF_CAP)
-    wr_w = min(max([len("WR")] + [len(r[4]) for r in rows]), WR_CAP)
-    tc_w = min(max([len("TC")] + [len(r[5]) for r in rows]), TC_CAP)
-    dd_w = min(max([len("DD")] + [len(r[6]) for r in rows]), DD_CAP)
-    return rank_w, tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w
+def pf_trend(prev_pf: float | None, curr_pf: float | None) -> str:
+    if prev_pf is None:
+        return "NEW"
+    if curr_pf is None:
+        return "→"
+    delta = curr_pf - prev_pf
+    if delta > 0.02:
+        return "↑"
+    if delta < -0.02:
+        return "↓"
+    return "→"
 
 
-def format_header(rank_w: int, tf_w: int, pnl_w: int, pf_w: int, wr_w: int, tc_w: int, dd_w: int) -> str:
-    return (
-        f"{'#'.ljust(rank_w)}{SEP}"
-        f"{'TF'.ljust(tf_w)}{SEP}"
-        f"{'P&L'.rjust(pnl_w)}{SEP}"
-        f"{'PF'.rjust(pf_w)}{SEP}"
-        f"{'WR'.rjust(wr_w)}{SEP}"
-        f"{'TC'.rjust(tc_w)}{SEP}"
-        f"{'DD'.rjust(dd_w)}"
-    )
+@dataclass
+class Row:
+    created_at: datetime
+    asset: str
+    tf: str
+    strategy: str
+    strategy_key: str
+    pf: float
+    wr_pct: float | None
+    tc: int
+    dd_pct: float | None
+    pnl_pct: float | None
+    trend: str
 
 
-def format_row(row: tuple[str, str, str, str, str, str, str], rank_w: int, tf_w: int, pnl_w: int, pf_w: int, wr_w: int, tc_w: int, dd_w: int) -> str:
-    rank, tf, pnl, pf, wr, tc, dd = row
-    return (
-        f"{truncate_to_width(rank, rank_w).ljust(rank_w)}{SEP}"
-        f"{truncate_to_width(tf, tf_w).ljust(tf_w)}{SEP}"
-        f"{truncate_to_width(pnl, pnl_w).rjust(pnl_w)}{SEP}"
-        f"{truncate_to_width(pf, pf_w).rjust(pf_w)}{SEP}"
-        f"{truncate_to_width(wr, wr_w).rjust(wr_w)}{SEP}"
-        f"{truncate_to_width(tc, tc_w).rjust(tc_w)}{SEP}"
-        f"{truncate_to_width(dd, dd_w).rjust(dd_w)}"
-    )
+def extract_strategy_name(spec_path: str, fallback_variant: str) -> tuple[str, str]:
+    p = Path(spec_path)
+    fallback = p.stem or fallback_variant or "unknown"
+    try:
+        j = load_json(Path(spec_path), {})
+        fam = str(j.get("strategy_family") or j.get("id") or fallback).strip()
+        return fam, fam
+    except Exception:
+        return fallback, fallback
 
 
-def asset_sort_key(asset: str):
-    if asset in ASSET_PRIORITY:
-        return (0, ASSET_PRIORITY.index(asset), asset)
-    return (1, 999, asset)
+def metrics_from_backtest(backtest_path: str, run_obj: dict) -> tuple[float | None, float | None, float | None, int | None]:
+    wr = None
+    dd_pct = None
+    pnl_pct = None
+    tc = None
+
+    if backtest_path and Path(backtest_path).exists():
+        bj = load_json(Path(backtest_path), {})
+        res = bj.get("results") or {}
+        wr = norm_pct(as_float(res.get("win_rate")))
+        tc = as_int(res.get("total_trades") or res.get("trades") or run_obj.get("trades"))
+
+        pnl_pct = norm_pct(as_float(res.get("net_profit_pct")))
+        dd_pct = norm_pct(as_float(res.get("max_drawdown_pct")))
+
+        if dd_pct is None:
+            dd_raw = as_float(res.get("max_drawdown"))
+            net_raw = as_float(res.get("net_profit"))
+            net_pct = as_float(res.get("net_profit_pct"))
+            if dd_raw is not None and net_raw is not None and net_pct not in (None, 0):
+                # infer start equity from net profit percentage: pct = net/start
+                pct = net_pct if abs(net_pct) <= 1.0 else (net_pct / 100.0)
+                if pct != 0:
+                    start_equity = net_raw / pct
+                    if start_equity:
+                        dd_pct = (dd_raw / abs(start_equity)) * 100.0
+
+    if wr is None:
+        wr = norm_pct(as_float(run_obj.get("win_rate")))
+    if tc is None:
+        tc = as_int(run_obj.get("trades"))
+    if pnl_pct is None:
+        net = as_float(run_obj.get("net_profit"))
+        if net is not None:
+            pnl_pct = (net / 10000.0) * 100.0
+
+    return wr, dd_pct, pnl_pct, tc
 
 
-def tf_sort_key(tf: str):
-    if tf in TF_ORDER:
-        return (0, TF_ORDER.index(tf), tf)
-    return (1, 999, tf)
+def send_file_to_telegram(path: Path) -> None:
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CMD_CHAT_ID") or os.getenv("TELEGRAM_LOG_CHAT_ID")
+    if not token or not chat_id:
+        raise RuntimeError("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CMD_CHAT_ID")
+
+    url = f"https://api.telegram.org/bot{token}/sendDocument"
+    with path.open("rb") as f:
+        files = {"document": (path.name, f, "text/plain")}
+        data = {"chat_id": chat_id, "caption": "leaderboard.txt"}
+        r = requests.post(url, data=data, files=files, timeout=20)
+        r.raise_for_status()
 
 
 def emit_fail(reason_code: str, summary: str) -> None:
@@ -170,18 +195,219 @@ def emit_fail(reason_code: str, summary: str) -> None:
         pass
 
 
-def send_file_to_telegram(path: Path) -> None:
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    chat_id = os.getenv("TELEGRAM_CMD_CHAT_ID") or os.getenv("TELEGRAM_LOG_CHAT_ID")
-    if not token or not chat_id:
-        raise RuntimeError("Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CMD_CHAT_ID")
+def collect_rows() -> tuple[list[Row], dict]:
+    runs = load_json(RUN_INDEX, [])
+    rows: list[Row] = []
 
-    url = f"https://api.telegram.org/bot{token}/sendDocument"
-    with path.open("rb") as f:
-        files = {"document": (path.name, f, "text/plain")}
-        data = {"chat_id": chat_id, "caption": "leaderboard.txt"}
-        r = requests.post(url, data=data, files=files, timeout=20)
-        r.raise_for_status()
+    # Build previous-PF chain by strategy key.
+    pf_history: dict[str, list[tuple[datetime, float]]] = defaultdict(list)
+    tmp = []
+    for r in runs:
+        created = parse_dt(r.get("created_at"))
+        pf = as_float(r.get("profit_factor"))
+        sp = str(r.get("strategy_spec_path") or "")
+        variant = str(r.get("variant_name") or "")
+        strategy_name, strategy_key = extract_strategy_name(sp, variant)
+        tmp.append((r, created, pf, strategy_name, strategy_key))
+        if created and pf is not None:
+            pf_history[strategy_key].append((created, pf))
+
+    for k in pf_history:
+        pf_history[k].sort(key=lambda x: x[0])
+
+    for r, created, pf, strategy_name, strategy_key in tmp:
+        if created is None or pf is None:
+            continue
+        ds = r.get("datasets_tested") or []
+        if not ds:
+            continue
+        d = ds[0] if isinstance(ds, list) else ds
+        asset = str(d.get("symbol") or "").upper().strip()
+        tf = str(d.get("timeframe") or "").lower().strip()
+        if not asset or not tf:
+            continue
+
+        bt = str((r.get("pointers") or {}).get("backtest_result") or "")
+        wr, dd_pct, pnl_pct, tc = metrics_from_backtest(bt, r)
+        if tc is None or tc <= 0:
+            continue
+
+        prev_pf = None
+        hist = pf_history.get(strategy_key, [])
+        for dt, p in hist:
+            if dt < created:
+                prev_pf = p
+            else:
+                break
+
+        rows.append(
+            Row(
+                created_at=created,
+                asset=asset,
+                tf=tf,
+                strategy=short_strategy(strategy_name, 18),
+                strategy_key=strategy_key,
+                pf=pf,
+                wr_pct=wr,
+                tc=tc,
+                dd_pct=dd_pct,
+                pnl_pct=pnl_pct,
+                trend=pf_trend(prev_pf, pf),
+            )
+        )
+
+    # 24h activity
+    cycles = 0
+    backtests = 0
+    new_specs = set()
+    errors = 0
+
+    for row in rows:
+        if row.created_at >= SINCE_24H:
+            backtests += 1
+
+    for r in runs:
+        created = parse_dt(r.get("created_at"))
+        if created and created >= SINCE_24H:
+            sp = str(r.get("strategy_spec_path") or "")
+            if sp:
+                new_specs.add(sp)
+
+    if BATCH_ROOT.exists():
+        for bf in BATCH_ROOT.rglob("*.batch_backtest.json"):
+            j = load_json(bf, {})
+            created = parse_dt(j.get("created_at"))
+            if not created or created < SINCE_24H:
+                continue
+            cycles += 1
+            summary = j.get("summary") or {}
+            errors += int(as_int(summary.get("failed_runs")) or 0)
+
+    meta = {
+        "cycles": cycles,
+        "backtests": backtests,
+        "new_specs": len(new_specs),
+        "errors": errors,
+    }
+    return rows, meta
+
+
+def milestones(rows: list[Row]) -> list[str]:
+    out: list[str] = []
+
+    by_strategy = defaultdict(list)
+    for r in sorted(rows, key=lambda x: x.created_at):
+        by_strategy[r.strategy_key].append(r)
+
+    first_cross = []
+    best_records = []
+    for sk, arr in by_strategy.items():
+        first = next((x for x in arr if x.pf >= 1.0), None)
+        if first and first.created_at >= SINCE_24H:
+            first_cross.append(f"{short_strategy(sk,16)} PF {first.pf:.2f}")
+
+        best_so_far = -10**9
+        for x in arr:
+            if x.pf > best_so_far:
+                if x.created_at >= SINCE_24H and best_so_far > -10**8:
+                    best_records.append(f"{short_strategy(sk,16)} PF {x.pf:.2f}")
+                best_so_far = x.pf
+
+    if first_cross:
+        out.append("• First PF≥1.0: " + ", ".join(first_cross[:3]))
+    if best_records:
+        out.append("• New PF records: " + ", ".join(best_records[:3]))
+
+    promoted = []
+    if PROMO_ROOT.exists():
+        for p in PROMO_ROOT.rglob("*.promotion_run.json"):
+            j = load_json(p, {})
+            created = parse_dt(j.get("created_at"))
+            if not created or created < SINCE_24H:
+                continue
+            if str(j.get("status") or "").upper() == "OK":
+                sp = str(j.get("strategy_spec_artifact_path") or "")
+                promoted.append(short_strategy(Path(sp).stem or "promotion", 16))
+    if promoted:
+        out.append("• Promotions/near-gate: " + ", ".join(promoted[:3]))
+
+    if not out:
+        out.append("• None in last 24h")
+    return out
+
+
+def attention(meta: dict) -> list[str]:
+    msgs = []
+    if meta.get("errors", 0) >= 5:
+        msgs.append(f"• Repeated batch errors detected ({meta['errors']} failed runs/24h)")
+    if meta.get("backtests", 0) == 0:
+        msgs.append("• Starvation warning: no backtests in last 24h")
+    if meta.get("cycles", 0) == 0:
+        msgs.append("• Stall warning: no batch cycles in last 24h")
+    if not msgs:
+        msgs.append("• None — system healthy")
+    return msgs
+
+
+def fmt_num(v: float | None, digits: int = 1, signed: bool = False) -> str:
+    if v is None:
+        return "-"
+    if signed:
+        return f"{v:+.{digits}f}"
+    return f"{v:.{digits}f}"
+
+
+def render_top(rows: list[Row], asset: str) -> list[str]:
+    header = [
+        ("🏆 TOP 5 BTC (by PF)" if asset == "BTC" else "🔵 TOP 5 ETH (by PF)"),
+        "# TF Strategy            PF   WR%   TC  DD%   P&L%  △",
+    ]
+
+    pool = [r for r in rows if r.asset == asset]
+    ranked = sorted(pool, key=lambda x: (x.pf, x.wr_pct or -999, x.pnl_pct or -999), reverse=True)
+
+    uniq = []
+    seen = set()
+    for r in ranked:
+        key = (r.tf, r.strategy_key, round(r.pf, 4), round(r.wr_pct or -999, 2), r.tc)
+        if key in seen:
+            continue
+        seen.add(key)
+        uniq.append(r)
+        if len(uniq) >= 5:
+            break
+
+    lines = []
+    for i, r in enumerate(uniq, 1):
+        lines.append(
+            f"{i:<1} {r.tf:<2} {r.strategy:<18} {r.pf:>4.2f} {fmt_num(r.wr_pct,1):>5} {r.tc:>4} {fmt_num(r.dd_pct,1):>5} {fmt_num(r.pnl_pct,1,True):>6} {r.trend:>3}"
+        )
+
+    if not lines:
+        lines.append("- no backtested rows")
+
+    return header + lines
+
+
+def build_report_text(rows: list[Row], meta: dict) -> str:
+    now_local = datetime.now(AEST)
+    title = f"📊 DAILY BRIEF — {now_local.strftime('%Y-%m-%d')} 5:30 AM AEST"
+
+    lines = [title, ""]
+    lines.extend(render_top(rows, "BTC"))
+    lines.append("")
+    lines.extend(render_top(rows, "ETH"))
+    lines.append("")
+    lines.append("⚡ 24H ACTIVITY")
+    lines.append(f"Cycles: {meta['cycles']} | Backtests: {meta['backtests']} | New specs: {meta['new_specs']} | Errors: {meta['errors']}")
+    lines.append("")
+    lines.append("🎯 MILESTONES")
+    lines.extend(milestones(rows))
+    lines.append("")
+    lines.append("⚠️ ATTENTION")
+    lines.extend(attention(meta))
+    lines.append("")
+    return "\n".join(lines)
 
 
 def main() -> int:
@@ -189,130 +415,31 @@ def main() -> int:
     parser.add_argument("--send-telegram", action="store_true")
     args = parser.parse_args()
 
-    runs = load_json(RUN_INDEX)
+    rows, meta = collect_rows()
+    text = build_report_text(rows, meta)
 
-    grouped: dict[str, dict[str, list[tuple]]] = defaultdict(lambda: defaultdict(list))
-    tested_assets: set[str] = set()
-
-    for r in runs:
-        ds_list = r.get("datasets_tested") or []
-        if not ds_list:
-            continue
-        ds = ds_list[0] if isinstance(ds_list, list) else ds_list
-        asset = str(ds.get("symbol", "")).upper().strip()
-        tf = str(ds.get("timeframe", "")).lower().strip()
-        if not asset or not tf:
-            continue
-        tested_assets.add(asset)
-
-        net = as_float(r.get("net_profit"))
-        pf = as_float(r.get("profit_factor"))
-        tc = as_int(r.get("trades"))
-        bt = str((r.get("pointers") or {}).get("backtest_result") or "")
-        wr, dd = extract_wr_dd(bt)
-
-        if net is None:
-            continue
-        pnl = (net / 10000.0) * 100.0
-
-        if not valid_metrics(pnl, pf, wr, tc, dd):
-            continue
-
-        grouped[asset][tf].append((pnl, pf, wr, tc, dd))
-
-    selected_by_asset: dict[str, list[tuple[str, str, str, str, str, str, str]]] = defaultdict(list)
-
-    for asset in sorted(grouped.keys(), key=asset_sort_key):
-        tf_rows = grouped[asset]
-        for tf in sorted(tf_rows.keys(), key=tf_sort_key):
-            rows = sorted(tf_rows[tf], key=lambda x: (x[0], x[1]), reverse=True)
-            unique = []
-            seen = set()
-            for row in rows:
-                key = (round(row[0], 1), round(row[1], 2), int(round(row[2])), row[3], round(row[4], 1))
-                if key in seen:
-                    continue
-                seen.add(key)
-                unique.append(row)
-                if len(unique) >= 3:
-                    break
-
-            for pnl, pf, wr, tc, dd in unique:
-                selected_by_asset[asset].append((
-                    "",
-                    tf,
-                    f"{pnl:+.1f}",
-                    f"{pf:.2f}",
-                    f"{int(round(wr))}%",
-                    str(tc),
-                    f"{dd:.1f}%",
-                ))
-
-    ranked_rows_by_asset: dict[str, list[tuple[str, str, str, str, str, str, str]]] = defaultdict(list)
-    for asset, rows in selected_by_asset.items():
-        for i, row in enumerate(rows, 1):
-            ranked_rows_by_asset[asset].append((str(i), row[1], row[2], row[3], row[4], row[5], row[6]))
-
-    all_rows = [row for rows in ranked_rows_by_asset.values() for row in rows]
-
-    lines: list[str] = []
-    assets_included = 0
-    rows_included = 0
-
-    if all_rows:
-        rank_w, tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w = compute_widths(all_rows)
-        header = format_header(rank_w, tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w)
-        divider = "━" * len(header)
-
-        for asset in sorted(ranked_rows_by_asset.keys(), key=asset_sort_key):
-            asset_rows = ranked_rows_by_asset.get(asset, [])
-            if not asset_rows:
-                continue
-            assets_included += 1
-            lines.append(f"{ASSET_EMOJI.get(asset, '⚪')} {asset}")
-            lines.append(header)
-            lines.append(divider)
-            for row in asset_rows:
-                lines.append(format_row(row, rank_w, tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w))
-            lines.append("")
-            rows_included += len(asset_rows)
-    else:
-        rank_w, tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w = compute_widths([("#", "TF", "P&L", "PF", "WR", "TC", "DD")])
-        header = format_header(rank_w, tf_w, pnl_w, pf_w, wr_w, tc_w, dd_w)
-        divider = "━" * len(header)
-        for asset in sorted(tested_assets, key=asset_sort_key):
-            lines.append(f"{ASSET_EMOJI.get(asset, '⚪')} {asset}")
-            lines.append(header)
-            lines.append(divider)
-            lines.append("")
-
-    text = "\n".join(lines).rstrip() + "\n"
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(text, encoding="utf-8")
 
-    placeholders_found = bool(PLACEHOLDER_RE.search(text))
-    if placeholders_found:
+    if "<pre>" in text.lower():
         emit_fail("LEADERBOARD_PLACEHOLDER_DETECTED", "Placeholder token found in leaderboard.txt")
-        print(json.dumps({
-            "ok": False,
-            "reason_code": "LEADERBOARD_PLACEHOLDER_DETECTED",
-            "assets_included": assets_included,
-            "rows_included": rows_included,
-            "placeholders_found": True,
-            "path": str(OUT_PATH).replace("\\", "/"),
-        }))
+        print(json.dumps({"ok": False, "reason_code": "LEADERBOARD_PLACEHOLDER_DETECTED", "path": str(OUT_PATH).replace("\\", "/")}))
         return 2
 
     if args.send_telegram:
         send_file_to_telegram(OUT_PATH)
 
-    print(json.dumps({
-        "ok": True,
-        "assets_included": assets_included,
-        "rows_included": rows_included,
-        "placeholders_found": False,
-        "path": str(OUT_PATH).replace("\\", "/"),
-    }))
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "path": str(OUT_PATH).replace("\\", "/"),
+                "rows_considered": len(rows),
+                "cycles_24h": meta["cycles"],
+                "backtests_24h": meta["backtests"],
+            }
+        )
+    )
     return 0
 
 

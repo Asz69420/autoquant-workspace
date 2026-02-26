@@ -1164,7 +1164,7 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
 
-  if ($intentAction -eq 'show_leaderboard' -or $m -like 'leaderboard*') {
+  if ($intentAction -eq 'show_leaderboard' -or $m -like 'leaderboard*' -or $m -eq 'report') {
     $writerOut = (python scripts/pipeline/write_leaderboard_txt.py --send-telegram) -join "`n"
     $writerObj = $null
     try { $writerObj = $writerOut | ConvertFrom-Json } catch { $writerObj = $null }
@@ -1180,7 +1180,7 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
 
-  if ($intentAction -eq 'show_report' -or $m -eq 'report' -or $m -eq 'status report' -or $m -eq 'lab report' -or $m -eq 'top candidates') {
+  if ($intentAction -eq 'show_report' -or $m -eq 'status report' -or $m -eq 'lab report' -or $m -eq 'top candidates') {
     $topPath = 'artifacts/library/TOP_CANDIDATES.json'
     $lessonPath = 'artifacts/library/LESSONS_INDEX.json'
     $autoPath = 'data/state/autopilot_summary.json'
