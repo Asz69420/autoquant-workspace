@@ -552,9 +552,30 @@ try {
             continue
           }
 
-          $an = Run-Py @('scripts/pipeline/run_analyser.py','--research-card-path',$b.research_card_path,'--linkmap-path',$lm) | ConvertFrom-Json
-          Run-Py @('scripts/pipeline/verify_pipeline_stage2.py','--thesis',$an.thesis_path) | Out-Null
-          $sp = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$an.thesis_path) | ConvertFrom-Json
+          $anRaw = Run-Py @('scripts/pipeline/run_analyser.py','--research-card-path',$b.research_card_path,'--linkmap-path',$lm)
+          $an = $anRaw | ConvertFrom-Json
+          $thesisPath = [string]$an.thesis_path
+          if ([string]::IsNullOrWhiteSpace($thesisPath)) { $thesisPath = [string]$an.thesis_artifact_path }
+          if ([string]::IsNullOrWhiteSpace($thesisPath)) { $thesisPath = [string]$an.thesis }
+
+          if ([string]::IsNullOrWhiteSpace($thesisPath)) {
+            Emit-Summary 'SPEC_EMIT_BLOCKED' 'empty thesis path from analyser' 'WARN' 'Strategist'
+            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'WARN' 'Promotion'
+            Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'EMPTY_THESIS_PATH_FROM_ANALYSER' -incrementAttempt $false
+            $promotionEmitted = $true
+            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: blocked promotion)' 'WARN' 'Backtester'
+            $batchEmitted = $true
+            Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'OK' 'Refinement'
+            $refineEmitted = $true
+            $bundlesProcessed += 1
+            $bundleSlotsUsed += 1
+            continue
+          }
+
+          Run-Py @('scripts/pipeline/verify_pipeline_stage2.py','--thesis',$thesisPath) | Out-Null
+          $specEmitArgs = @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$thesisPath)
+          Emit-Summary 'SPEC_EMIT_DIAG' ('SPEC_EMIT_DIAG cmd=python ' + ($specEmitArgs -join ' ')) 'INFO' 'Strategist'
+          $sp = Run-Py $specEmitArgs | ConvertFrom-Json
           $variantCount = 0
           if ($sp.variants) { $variantCount = [int]$sp.variants }
 
