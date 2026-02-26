@@ -308,7 +308,7 @@ function Set-BundleState([string]$bundlePath, [string]$status, [string]$lastErro
       $trimmed = ([string]$lastError).Substring(0, [Math]::Min(240, ([string]$lastError).Length))
       $b | Add-Member -NotePropertyName last_error -NotePropertyValue $trimmed -Force
     }
-    ($b | ConvertTo-Json -Depth 10) | Set-Content -LiteralPath $bundlePath -Encoding utf8NoBOM
+    ($b | ConvertTo-Json -Depth 10) | Set-Content -LiteralPath $bundlePath -Encoding utf8
   } catch {}
 }
 
@@ -344,8 +344,6 @@ function Handle-FastCommand([string]$cmd) {
 }
 
 $CycleRunId = 'autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-# TEMP debug override: force one known NEW bundle through autopilot path for diagnostics.
-$ForceBundlePath = 'artifacts/bundles/20260226/recombine-20260226112032-862a54c2.bundle.json'
 
 function Emit-Summary($reasonCode, $summary, $statusWord = 'INFO', $agent = 'oQ') {
   if ($DryRun) { return }
@@ -491,7 +489,7 @@ try {
         }
         return ([string]$_ -replace '\\','/')
       })
-      ($bundleIndexOut | ConvertTo-Json -Depth 3) | Set-Content -LiteralPath $bundleIndexPath -Encoding utf8NoBOM
+      ($bundleIndexOut | ConvertTo-Json -Depth 3) | Set-Content -LiteralPath $bundleIndexPath -Encoding utf8
       $bundlePaths = @($bundleIndexOut)
     }
   } catch {
@@ -530,10 +528,6 @@ try {
       }
     }
 
-    if (-not [string]::IsNullOrWhiteSpace($ForceBundlePath) -and (Test-Path -LiteralPath $ForceBundlePath)) {
-      $bundlePaths = @($ForceBundlePath) + @($bundlePaths | Where-Object { [string]$_ -ne [string]$ForceBundlePath })
-    }
-
     $newCandidates = @()
     foreach ($cand in @($bundlePaths)) {
       try {
@@ -545,7 +539,7 @@ try {
       } catch {}
     }
     $selected = if (@($bundlePaths).Count -gt 0) { [string]$bundlePaths[0] } else { '' }
-    Emit-Summary 'BUNDLE_SELECT_DIAG' ('Bundle select: new_count=' + [string]@($newCandidates).Count + ' selected=' + $selected + ' forced=' + [string]$ForceBundlePath + ' new_paths=' + ((@($newCandidates) -join ';'))) 'INFO' 'Autopilot'
+    Emit-Summary 'BUNDLE_SELECT_DIAG' ('Bundle select: new_count=' + [string]@($newCandidates).Count + ' selected=' + $selected + ' new_paths=' + ((@($newCandidates) -join ';'))) 'INFO' 'Autopilot'
 
     Emit-Summary 'BUNDLE_SCAN_DIAG' ('Bundle scan: index_exists=' + (Test-Path $bundleIndexPath) + ' paths=' + [string]@($bundlePaths).Count) 'INFO' 'Autopilot'
     $bundleSlotsUsed = 0
@@ -709,6 +703,9 @@ try {
             Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'OK' 'Promotion'
           }
           $promotionEmitted = $true
+          $bundlesProcessed += 1
+          if ($promoStatus -ne 'BLOCKED') { $promotionsProcessed += 1 }
+          $bundleSlotsUsed += 1
 
           $batch = $null
           if ($promoStatus -eq 'BLOCKED') {
@@ -756,6 +753,7 @@ try {
               $batchEmitted = $true
             }
           }
+
 
           $promoId = [IO.Path]::GetFileNameWithoutExtension($sp.strategy_spec_path)
           $promoPath = "artifacts/promotions/" + (Get-Date -Format 'yyyyMMdd') + "/promo_" + $promoId + ".promotion_run.json"
@@ -805,9 +803,6 @@ try {
             Set-BundleState -bundlePath $bp -status 'DONE' -lastError '' -incrementAttempt $false
           }
         }
-        $bundlesProcessed += 1
-        $promotionsProcessed += 1
-        $bundleSlotsUsed += 1
       } catch {
         $errorsCount += 1
         $errMsg = ''
@@ -1251,3 +1246,4 @@ Write-Output ($summary | ConvertTo-Json -Depth 5)
 
 # Explicit exit for scheduled task success reporting
 exit 0
+

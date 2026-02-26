@@ -731,7 +731,7 @@ function Invoke-ManualVideoIngest {
     $added += 1
   }
 
-  ($bundleIndex | ConvertTo-Json -Depth 6) | Set-Content -Path $bundleIndexPath -Encoding utf8NoBOM
+  ($bundleIndex | ConvertTo-Json -Depth 6) | Set-Content -Path $bundleIndexPath -Encoding utf8
   Write-Output ("Ingested " + $added + " videos (concepts=" + $conceptUrls.Count + ", indicators=" + $indicatorUrls.Count + "). Say 'run lab now' to process.")
 }
 
@@ -1408,4 +1408,5 @@ $jobId = [string]$enqueue.Job.job_id
 $pos = [int]$enqueue.Position
 Emit-LogEvent -RunId ($runId + '-enqueued') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'BUILD_ENQUEUED' -Summary ('Build enqueued: ' + $jobId + ' position=' + $pos) -Inputs @($buildQuestion) -Outputs @($jobId,('position=' + $pos))
 Write-Output ("Queued. Position: " + $pos + ". I will start it after the current build finishes.")
+
 
