@@ -142,4 +142,20 @@ python run_backtest.py --config artifacts/backtests/backtest--a1b2c3d4e5f6/confi
 
 ---
 
+## Scheduling (Clock-Aligned, No Overlap)
+
+Task Scheduler cadence (Australia/Brisbane):
+
+- `\AutoQuant-autopilot` → every **2 hours on the hour** (`00:00, 02:00, 04:00, ...`)
+- `\AutoQuant-youtube-watch` → every **2 hours at +10 minutes** (`00:10, 02:10, 04:10, ...`)
+- `\AutoQuant-tv-catalog` → every **12 hours** at `01:00` and `13:00`
+- `\AutoQuant-keeper-30m` → every **30 minutes** aligned to `:00` and `:30`
+- `\AutoQuant-tg_reporter` → existing cadence retained
+
+Collision rules:
+
+- Keep **single-instance / no-overlap** (`MultipleInstances=IgnoreNew`) on automation tasks.
+- Keep unattended execution model (S4U/background) and highest-privilege posture as configured.
+- Keep task working directory and command action unchanged unless explicitly re-approved.
+
 See also: `docs/RUNBOOKS/01-adding-indicators.md`, `docs/RUNBOOKS/02-running-backtest.md`, `docs/SCHEMA-sqlite.md`
