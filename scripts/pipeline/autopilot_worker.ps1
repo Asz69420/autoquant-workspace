@@ -10,6 +10,9 @@
 
 $ErrorActionPreference = 'Stop'
 
+$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location -LiteralPath $RepoRoot
+
 function Run-Py($pyArgs) {
   if ($DryRun) { return '' }
 
@@ -22,6 +25,7 @@ function Run-Py($pyArgs) {
     $escaped += ('"' + $s + '"')
   }
   $pinfo.Arguments = ($escaped -join ' ')
+  $pinfo.WorkingDirectory = $RepoRoot
   $pinfo.RedirectStandardOutput = $true
   $pinfo.RedirectStandardError = $true
   $pinfo.UseShellExecute = $false
@@ -45,6 +49,20 @@ function Run-Py($pyArgs) {
   return ([string]$stdout).Trim()
 }
 
+function Test-AutopilotProcessRunning([int]$ExcludePid = 0) {
+  try {
+    $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
+      ($_.Name -match 'powershell') -and (
+        ($_.CommandLine -match 'autopilot_worker\.ps1') -or
+        ($_.CommandLine -match 'run_autopilot_task\.ps1')
+      ) -and ($_.ProcessId -ne $ExcludePid)
+    }
+    return (@($procs).Count -gt 0)
+  } catch {
+    return $false
+  }
+}
+
 function Ensure-Lock($name) {
   $lockDir = 'data/state/locks'
   if (-not (Test-Path $lockDir)) { New-Item -ItemType Directory -Path $lockDir | Out-Null }
@@ -63,8 +81,12 @@ function Ensure-Lock($name) {
       } catch {}
     }
     if ($isStale) {
-      Remove-Item -LiteralPath $lockPath -Force -ErrorAction SilentlyContinue
-      Emit-Summary 'STALE_LOCK_CLEARED' ("Cleared stale lock: $lockPath age>=" + $staleMinutes + 'm') 'WARN' 'Autopilot'
+      if (-not (Test-AutopilotProcessRunning -ExcludePid $PID)) {
+        Remove-Item -LiteralPath $lockPath -Force -ErrorAction SilentlyContinue
+        Emit-Summary 'STALE_LOCK_CLEARED' ("Cleared stale lock: $lockPath age>=" + $staleMinutes + 'm and no autopilot process') 'WARN' 'Autopilot'
+      } else {
+        Emit-Summary 'STALE_LOCK_PRESERVED' ("Lock is stale but autopilot process appears active: $lockPath") 'INFO' 'Autopilot'
+      }
     }
   }
   if (Test-Path $lockPath) { throw "Lock exists: $lockPath" }
