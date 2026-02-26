@@ -514,3 +514,6 @@ if (-not $DryRun) {
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)
+
+# Explicit exit for scheduled task success reporting
+exit 0
