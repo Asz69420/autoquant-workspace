@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import time
 import urllib.request
 import urllib.error
@@ -82,12 +83,16 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
                 return text
 
             # Fallback to subprocess if HTTP fails
+            kwargs = dict(text=True, capture_output=True, timeout=timeout)
+            if sys.platform == 'win32':
+                kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW
+
             if len(full_prompt) < 30000:
                 cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--message', full_prompt, '--json']
-                p = subprocess.run(cmd, text=True, capture_output=True, timeout=timeout)
+                p = subprocess.run(cmd, **kwargs)
             else:
                 cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--json']
-                p = subprocess.run(cmd, input=full_prompt, text=True, capture_output=True, timeout=timeout)
+                p = subprocess.run(cmd, input=full_prompt, **kwargs)
 
             if p.returncode != 0:
                 err = (p.stderr or '').strip()

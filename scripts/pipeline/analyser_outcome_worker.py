@@ -577,7 +577,8 @@ def main() -> int:
     ap.add_argument('--batch-artifact', default='')
     ap.add_argument('--refinement-artifact', default='')
     ap.add_argument('--disable-doctrine', action='store_true')
-    ap.add_argument('--no-llm', action='store_true')
+    ap.add_argument('--no-llm', dest='no_llm', action='store_true', default=True)
+    ap.add_argument('--use-llm', dest='no_llm', action='store_false')
     args = ap.parse_args()
 
     batch_path = Path(args.batch_artifact) if args.batch_artifact else latest_file('artifacts/batches/**/batch_*.batch_backtest.json')
