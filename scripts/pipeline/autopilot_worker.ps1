@@ -438,6 +438,10 @@ try {
     }
   }
 
+  if (-not $DryRun) {
+    Emit-Summary 'BACKFILL_DIAG' ('Entered backfill block checkpoint: batchExecuted=' + [string]$batchExecuted + ' bundlesProcessed=' + [string]$bundlesProcessed + ' batchEmitted=' + [string]$batchEmitted) 'OK' 'Autopilot'
+  }
+
   if (-not $DryRun -and $batchExecuted -eq 0) {
     try {
       $specIndexPath = 'artifacts/strategy_specs/INDEX.json'
@@ -546,7 +550,9 @@ try {
             }
           }
         } catch {
-          Emit-Summary 'BATCH_BACKTEST_SUMMARY' ('Batch(backfill): runs=0 executed=0 skipped=0 (error) spec=' + [IO.Path]::GetFileName([string]$spPath)) 'FAIL' 'Backtester'
+          $bfErr = 'backfill_error'
+          try { $bfErr = [string]$_.Exception.Message } catch {}
+          Emit-Summary 'BATCH_BACKTEST_SUMMARY' ('Batch(backfill): runs=0 executed=0 skipped=0 (error) spec=' + [IO.Path]::GetFileName([string]$spPath) + ' detail=' + $bfErr) 'FAIL' 'Backtester'
           $batchEmitted = $true
         }
       }
@@ -659,6 +665,11 @@ try {
 }
 catch {
   $errorsCount += 1
+  if (-not $DryRun) {
+    $errText = 'UNKNOWN_AUTOPILOT_ERROR'
+    try { $errText = [string]$_.Exception.Message } catch {}
+    Emit-Summary 'AUTOPILOT_EXCEPTION' ('Autopilot try-block exception: ' + $errText) 'FAIL' 'Autopilot'
+  }
 }
 finally {
   if (-not $DryRun) {
