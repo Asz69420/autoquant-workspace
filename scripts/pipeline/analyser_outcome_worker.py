@@ -637,7 +637,7 @@ def main() -> int:
         outcome_history = load_family_outcome_history(strategy_family, limit=5)
         system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
         _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(system_prompt) + len(user_prompt)}')
-        raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='reader', timeout=120)
+        raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='main', timeout=120)
         use_llm = False
         llm_result: dict = {}
         if raw:

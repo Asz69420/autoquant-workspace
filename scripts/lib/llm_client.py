@@ -31,7 +31,7 @@ def _log_call(agent: str, prompt_len: int, response_len: int, latency_ms: int, s
         f.write(json.dumps(row, ensure_ascii=False) + '\n')
 
 
-def llm_complete(prompt: str, system: str = '', agent: str = 'reader', timeout: int = 120) -> str | None:
+def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: int = 120) -> str | None:
     """Call LLM through OpenClaw runtime. Returns text or None."""
     full_prompt = prompt
     if system:
@@ -44,10 +44,16 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'reader', timeout: 
         try:
             if len(full_prompt) < 30000:
                 cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--message', full_prompt, '--json']
-                p = subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=timeout)
+                p = subprocess.run(cmd, text=True, capture_output=True, timeout=timeout)
             else:
                 cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--json']
-                p = subprocess.run(cmd, input=full_prompt, text=True, capture_output=True, check=True, timeout=timeout)
+                p = subprocess.run(cmd, input=full_prompt, text=True, capture_output=True, timeout=timeout)
+
+            if p.returncode != 0:
+                err = (p.stderr or '').strip()
+                out = (p.stdout or '').strip()
+                error_detail = f"returncode={p.returncode}; stderr={err}; stdout={out}"
+                raise RuntimeError(error_detail[:2000])
 
             obj = json.loads(p.stdout)
             text = obj['result']['payloads'][0]['text']
@@ -56,7 +62,7 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'reader', timeout: 
             return text
         except Exception as e:
             latency_ms = int((time.time() - t0) * 1000)
-            last_err = str(e)[:500]
+            last_err = str(e)[:2000]
             _log_call(agent, len(full_prompt), 0, latency_ms, False, last_err)
             if attempt == 0:
                 time.sleep(5)
