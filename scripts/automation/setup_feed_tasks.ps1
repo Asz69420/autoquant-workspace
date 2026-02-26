@@ -1,23 +1,39 @@
 param(
-  [int]$YouTubeHours = 2,
+  [int]$YouTubeHours = 24,
   [int]$TVHours = 12,
-  [int]$AutopilotHours = 2
+  [int]$AutopilotMinutes = 15,
+  [switch]$YouTubeDaily = $true,
+  [string]$YouTubeDailyAt = '08:10'
 )
 
 $ErrorActionPreference = 'Stop'
 $wd = (Get-Location).Path
 
-function Register-LoopTask($taskName, $scriptArgs, $hours) {
-  $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument ("-ExecutionPolicy Bypass -Command \"cd '$wd'; $scriptArgs\"")
+function Register-LoopTask($taskName, $scriptArgs, [TimeSpan]$interval) {
+  $arg = '-ExecutionPolicy Bypass -Command "cd ''' + $wd + '''; ' + $scriptArgs + '"'
+  $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $arg
   $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1)
-  $trigger.RepetitionInterval = (New-TimeSpan -Hours $hours)
+  $trigger.RepetitionInterval = $interval
   $trigger.RepetitionDuration = ([TimeSpan]::MaxValue)
   $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew
   Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Force | Out-Null
 }
 
-Register-LoopTask '\AutoQuant-youtube-watch' 'python scripts/pipeline/youtube_watch_worker.py' $YouTubeHours
-Register-LoopTask '\AutoQuant-tv-catalog' 'python scripts/pipeline/tv_catalog_worker.py' $TVHours
-Register-LoopTask '\AutoQuant-autopilot' 'powershell -ExecutionPolicy Bypass -File scripts/pipeline/autopilot_worker.ps1 -RunYouTubeWatcher -RunTVCatalogWorker -MaxBundlesPerRun 1 -MaxRefinementsPerRun 1' $AutopilotHours
+function Register-DailyTask($taskName, $scriptArgs, [string]$timeAt) {
+  $arg = '-ExecutionPolicy Bypass -Command "cd ''' + $wd + '''; ' + $scriptArgs + '"'
+  $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $arg
+  $trigger = New-ScheduledTaskTrigger -Daily -At $timeAt
+  $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew
+  Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Force | Out-Null
+}
 
-Write-Output ('Tasks ensured: AutoQuant-youtube-watch/' + $YouTubeHours + 'h, AutoQuant-tv-catalog/' + $TVHours + 'h, AutoQuant-autopilot/' + $AutopilotHours + 'h')
+if ($YouTubeDaily) {
+  Register-DailyTask '\AutoQuant-youtube-watch' 'python scripts/pipeline/youtube_watch_worker.py' $YouTubeDailyAt
+} else {
+  Register-LoopTask '\AutoQuant-youtube-watch' 'python scripts/pipeline/youtube_watch_worker.py' (New-TimeSpan -Hours $YouTubeHours)
+}
+Register-LoopTask '\AutoQuant-tv-catalog' 'python scripts/pipeline/tv_catalog_worker.py' (New-TimeSpan -Hours $TVHours)
+Register-LoopTask '\AutoQuant-autopilot' 'powershell -ExecutionPolicy Bypass -File scripts/pipeline/autopilot_worker.ps1 -RunYouTubeWatcher -RunTVCatalogWorker -MaxBundlesPerRun 1 -MaxRefinementsPerRun 1' (New-TimeSpan -Minutes $AutopilotMinutes)
+
+$ytMode = if ($YouTubeDaily) { ('daily@' + $YouTubeDailyAt) } else { ($YouTubeHours.ToString() + 'h') }
+Write-Output ('Tasks ensured: AutoQuant-youtube-watch/' + $ytMode + ', AutoQuant-tv-catalog/' + $TVHours + 'h, AutoQuant-autopilot/' + $AutopilotMinutes + 'm')
