@@ -435,6 +435,26 @@ def _thesis_keywords(thesis: dict) -> set[str]:
     return _tokenize(' '.join(chunks))
 
 
+def _spec_keywords(spec: dict) -> set[str]:
+    chunks: list[str] = []
+    for k in ('id', 'source_thesis_path', 'generation_origin'):
+        v = spec.get(k)
+        if isinstance(v, str):
+            chunks.append(v)
+    for v in spec.get('variants', []) or []:
+        if not isinstance(v, dict):
+            continue
+        for k in ('name', 'description'):
+            vv = v.get(k)
+            if isinstance(vv, str):
+                chunks.append(vv)
+        for k in ('entry_long', 'entry_short', 'filters', 'exit_rules', 'risk_rules'):
+            arr = v.get(k) or []
+            if isinstance(arr, list):
+                chunks.extend(str(x) for x in arr if x)
+    return _tokenize(' '.join(chunks))
+
+
 def _load_library_candidates(limit: int = 10) -> list[dict]:
     idx = ROOT / 'artifacts' / 'library' / 'INDICATOR_INDEX.json'
     if not idx.exists():
@@ -448,15 +468,14 @@ def _load_library_candidates(limit: int = 10) -> list[dict]:
     return [r for r in rows[: max(10, limit * 5)] if isinstance(r, dict)]
 
 
-def _pick_library_augmented_variant(thesis: dict, variants: list[dict], max_candidates: int = 10) -> dict | None:
+def _pick_library_augmented_variant_for_keywords(keywords: set[str], variants: list[dict], max_candidates: int = 10) -> dict | None:
     if not variants:
         return None
     lib_rows = _load_library_candidates(limit=max_candidates)
     if not lib_rows:
         return None
 
-    kw = _thesis_keywords(thesis)
-    if not kw:
+    if not keywords:
         return None
 
     scored: list[tuple[int, dict, list[str]]] = []
@@ -470,7 +489,7 @@ def _pick_library_augmented_variant(thesis: dict, variants: list[dict], max_cand
             ' '.join(str(x) for x in (row.get('keywords') or []) if x),
         ]
         toks = _tokenize(' '.join(text_parts))
-        overlap = sorted(list(kw.intersection(toks)))
+        overlap = sorted(list(keywords.intersection(toks)))
         if overlap:
             scored.append((len(overlap), row, overlap))
 
@@ -488,58 +507,113 @@ def _pick_library_augmented_variant(thesis: dict, variants: list[dict], max_cand
 
     base = copy.deepcopy(variants[0])
     base['name'] = 'library_augmented'
-    base['description'] = 'Library-augmented variant selected by thesis↔indicator keyword overlap.'
+    base['description'] = 'Library-augmented variant selected by keyword overlap.'
     base['origin'] = 'LIBRARY_AUGMENTED'
     base['indicator_refs'] = refs
     base['filters'] = unique((base.get('filters') or []) + ['Library augmented: indicator candidates attached from INDICATOR_INDEX keyword overlap.'], 10)
     return base
 
 
+def _pick_library_augmented_variant(thesis: dict, variants: list[dict], max_candidates: int = 10) -> dict | None:
+    return _pick_library_augmented_variant_for_keywords(_thesis_keywords(thesis), variants, max_candidates=max_candidates)
+
+
+def _directives_from_outcome_notes(path: str) -> list[dict]:
+    if not path:
+        return []
+    p = Path(path)
+    if not p.exists():
+        return []
+    try:
+        obj = json.loads(p.read_text(encoding='utf-8'))
+    except Exception:
+        return []
+    out: list[dict] = []
+    for d in (obj.get('directives') or [])[:5]:
+        if isinstance(d, dict) and d.get('id') and d.get('type'):
+            out.append(d)
+    return out
+
+
 def main() -> int:
     _set_reasoning_effort_for_strategist()
 
     ap = argparse.ArgumentParser()
-    ap.add_argument('--thesis-path', required=True)
+    ap.add_argument('--mode', choices=['thesis', 'directive-only'], default='thesis')
+    ap.add_argument('--thesis-path', default='')
+    ap.add_argument('--source-spec', default='')
+    ap.add_argument('--outcome-notes', default='')
     ap.add_argument('--output-root', default='artifacts/strategy_specs')
     ap.add_argument('--generation-origin', default='')
     ap.add_argument('--trigger-outcome-note', default='')
     ap.add_argument('--trigger-backfill-spec', default='')
     args = ap.parse_args()
 
-    thesis = jload(args.thesis_path)
-    candidate_signals = thesis.get('candidate_signals', []) if isinstance(thesis, dict) else []
+    thesis: dict = {}
+    source_spec: dict = {}
+    variants: list[dict] = []
+    source_thesis_path = ''
 
-    if candidate_signals:
-        baseline = build_baseline(thesis)
-        variants = [
-            baseline,
-            variant_perturbation(baseline),
-            variant_remove_component(baseline),
-            variant_threshold_mutation(baseline),
-        ][:5]
-    else:
-        if not _indicator_evaluable(thesis):
-            print(json.dumps({
-                'status': 'BLOCKED',
-                'reason_code': 'INDICATOR_NOT_EVALUABLE',
-                'suggestion': 'Indicator cannot be evaluated from available thesis/card data.',
-                'variants': 0,
-                'strategy_spec_path': '',
-            }))
+    if args.mode == 'directive-only':
+        if not args.source_spec or not args.outcome_notes:
+            print(json.dumps({'status': 'BLOCKED', 'reason_code': 'DIRECTIVE_ONLY_INPUT_MISSING', 'variants': 0, 'strategy_spec_path': ''}))
             return 0
-        variants = _fallback_templates(thesis)
+        source_spec = jload(args.source_spec)
+        source_variants = [v for v in (source_spec.get('variants') or []) if isinstance(v, dict)]
+        if not source_variants:
+            print(json.dumps({'status': 'BLOCKED', 'reason_code': 'SOURCE_SPEC_NO_VARIANTS', 'variants': 0, 'strategy_spec_path': ''}))
+            return 0
+        directives = _directives_from_outcome_notes(args.outcome_notes)
+        if directives:
+            variants = _directive_variants(source_variants[0], directives)
+        else:
+            variants = [copy.deepcopy(source_variants[0])]
+            variants[0]['name'] = 'directive_fallback_retest'
+            variants[0]['description'] = 'Fallback retest variant when directives are unavailable.'
+        variants = _apply_outcome_guidance(variants, limit=5)
+        kw = _spec_keywords(source_spec)
+        lib_aug = _pick_library_augmented_variant_for_keywords(kw, variants, max_candidates=10)
+        if lib_aug is not None and len(variants) < 5:
+            variants = variants + [lib_aug]
+    else:
+        if not args.thesis_path:
+            print(json.dumps({'status': 'BLOCKED', 'reason_code': 'THESIS_PATH_REQUIRED', 'variants': 0, 'strategy_spec_path': ''}))
+            return 0
+        thesis = jload(args.thesis_path)
+        source_thesis_path = args.thesis_path.replace('\\', '/')
+        candidate_signals = thesis.get('candidate_signals', []) if isinstance(thesis, dict) else []
 
-    strategy_family = str(thesis.get('strategy_family') or thesis.get('id') or '')
-    template = str(thesis.get('template') or '')
-    directives = _collect_v2_directives(limit_notes=5, strategy_family=strategy_family, template=template)
-    if directives:
-        variants = _directive_variants(variants[0], directives)
+        if candidate_signals:
+            baseline = build_baseline(thesis)
+            variants = [
+                baseline,
+                variant_perturbation(baseline),
+                variant_remove_component(baseline),
+                variant_threshold_mutation(baseline),
+            ][:5]
+        else:
+            if not _indicator_evaluable(thesis):
+                print(json.dumps({
+                    'status': 'BLOCKED',
+                    'reason_code': 'INDICATOR_NOT_EVALUABLE',
+                    'suggestion': 'Indicator cannot be evaluated from available thesis/card data.',
+                    'variants': 0,
+                    'strategy_spec_path': '',
+                }))
+                return 0
+            variants = _fallback_templates(thesis)
 
-    variants = _apply_outcome_guidance(variants, limit=5)
+        strategy_family = str(thesis.get('strategy_family') or thesis.get('id') or '')
+        template = str(thesis.get('template') or '')
+        directives = _collect_v2_directives(limit_notes=5, strategy_family=strategy_family, template=template)
+        if directives:
+            variants = _directive_variants(variants[0], directives)
 
-    lib_aug = _pick_library_augmented_variant(thesis, variants, max_candidates=10)
-    if lib_aug is not None and len(variants) < 5:
-        variants = variants + [lib_aug]
+        variants = _apply_outcome_guidance(variants, limit=5)
+
+        lib_aug = _pick_library_augmented_variant(thesis, variants, max_candidates=10)
+        if lib_aug is not None and len(variants) < 5:
+            variants = variants + [lib_aug]
 
     if len(variants) == 0:
         print(json.dumps({
@@ -551,14 +625,19 @@ def main() -> int:
         }))
         return 0
 
-    sid = f"strategy-spec-{datetime.now().strftime('%Y%m%d')}-{thesis.get('id','thesis')[-12:]}"
+    id_suffix = (source_spec.get('id', 'spec') if args.mode == 'directive-only' else thesis.get('id', 'thesis'))[-12:]
+    sid = f"strategy-spec-{datetime.now().strftime('%Y%m%d')}-{id_suffix}"
     spec = {
         'schema_version': '1.1',
         'id': sid,
         'created_at': now_iso(),
-        'source_thesis_path': args.thesis_path.replace('\\', '/'),
         'variants': variants,
     }
+    if args.mode == 'directive-only':
+        spec['source_spec_path'] = args.source_spec.replace('\\', '/')
+        spec['source_outcome_notes_path'] = args.outcome_notes.replace('\\', '/')
+    elif source_thesis_path:
+        spec['source_thesis_path'] = source_thesis_path
 
     generation_origin = str(args.generation_origin or '').strip()
     if generation_origin:
@@ -580,7 +659,7 @@ def main() -> int:
     out_path.write_text(payload, encoding='utf-8')
 
     update_index(Path(args.output_root) / 'INDEX.json', str(out_path).replace('\\', '/'))
-    print(json.dumps({'status':'OK','reason_code':None,'strategy_spec_path': str(out_path).replace('\\', '/'), 'variants': len(variants), 'baseline_entry_long': variants[0]['entry_long'][:1]}))
+    print(json.dumps({'status':'OK','reason_code':None,'strategy_spec_path': str(out_path).replace('\\', '/'), 'variants': len(variants), 'mode': args.mode}))
     return 0
 
 

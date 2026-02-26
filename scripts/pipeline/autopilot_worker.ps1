@@ -135,45 +135,62 @@ function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [strin
 }
 
 function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string]$outcomeNotePath) {
-  if ([string]::IsNullOrWhiteSpace($backfillSpecPath) -or -not (Test-Path -LiteralPath $backfillSpecPath)) { return '' }
-  if ([string]::IsNullOrWhiteSpace($outcomeNotePath) -or -not (Test-Path -LiteralPath $outcomeNotePath)) { return '' }
+  if ([string]::IsNullOrWhiteSpace($backfillSpecPath) -or -not (Test-Path -LiteralPath $backfillSpecPath)) {
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: invalid backfill spec path=' + [string]$backfillSpecPath) 'FAIL' 'Strategist'
+    return ''
+  }
+  if ([string]::IsNullOrWhiteSpace($outcomeNotePath) -or -not (Test-Path -LiteralPath $outcomeNotePath)) {
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: invalid outcome note path=' + [string]$outcomeNotePath) 'FAIL' 'Strategist'
+    return ''
+  }
 
+  $outObj = $null
   try {
     $outObj = Get-Content -LiteralPath $outcomeNotePath -Raw | ConvertFrom-Json
-  } catch { return '' }
+  } catch {
+    $msg = [string]$_.Exception.Message
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: outcome parse error detail=' + $msg) 'FAIL' 'Strategist'
+    return ''
+  }
 
   $verdict = [string]$outObj.verdict
-  if (($verdict -ne 'REJECT') -and ($verdict -ne 'REVISE')) { return '' }
+  if (($verdict -ne 'REJECT') -and ($verdict -ne 'REVISE')) {
+    Emit-Summary 'DIRECTIVE_GEN_DIAG' ('DIRECTIVE_GEN_DIAG verdict=' + $verdict + ' thesis_path=null emission_attempted=false') 'INFO' 'Strategist'
+    return ''
+  }
 
   $hasDirectives = $false
-  try { if ($outObj.directives -and @($outObj.directives).Count -gt 0) { $hasDirectives = $true } } catch {}
-  if (-not $hasDirectives) { return '' }
-
-  $thesisPath = ''
   try {
-    $specObj = Get-Content -LiteralPath $backfillSpecPath -Raw | ConvertFrom-Json
-    $thesisPath = [string]$specObj.source_thesis_path
-  } catch { $thesisPath = '' }
-
-  if ([string]::IsNullOrWhiteSpace($thesisPath)) { return '' }
-  if (-not (Test-Path -LiteralPath $thesisPath)) {
-    try {
-      $resolved = Join-Path (Get-Location) $thesisPath
-      if (Test-Path -LiteralPath $resolved) { $thesisPath = $resolved }
-    } catch {}
+    if ($outObj.directives -and @($outObj.directives).Count -gt 0) { $hasDirectives = $true }
+  } catch {
+    $msg = [string]$_.Exception.Message
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: directive read error detail=' + $msg) 'FAIL' 'Strategist'
+    return ''
   }
-  if (-not (Test-Path -LiteralPath $thesisPath)) { return '' }
+  if (-not $hasDirectives) {
+    Emit-Summary 'DIRECTIVE_GEN_DIAG' ('DIRECTIVE_GEN_DIAG verdict=' + $verdict + ' thesis_path=null emission_attempted=false') 'INFO' 'Strategist'
+    return ''
+  }
+
+  Emit-Summary 'DIRECTIVE_GEN_DIAG' ('DIRECTIVE_GEN_DIAG verdict=' + $verdict + ' thesis_path=null emission_attempted=true') 'INFO' 'Strategist'
 
   try {
-    $emitRaw = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$thesisPath,'--generation-origin','directive-generated-from-backfill','--trigger-outcome-note',$outcomeNotePath,'--trigger-backfill-spec',$backfillSpecPath)
-    if ([string]::IsNullOrWhiteSpace([string]$emitRaw)) { return '' }
+    $emitRaw = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--mode','directive-only','--source-spec',$backfillSpecPath,'--outcome-notes',$outcomeNotePath,'--generation-origin','directive-generated-from-backfill','--trigger-outcome-note',$outcomeNotePath,'--trigger-backfill-spec',$backfillSpecPath)
+    if ([string]::IsNullOrWhiteSpace([string]$emitRaw)) {
+      Emit-Summary 'DIRECTIVE_GEN_FAIL' 'Directive generation fail: empty strategist output' 'FAIL' 'Strategist'
+      return ''
+    }
     $emitObj = $emitRaw | ConvertFrom-Json
     $generatedSpecPath = [string]$emitObj.strategy_spec_path
     if (-not [string]::IsNullOrWhiteSpace($generatedSpecPath)) {
       Emit-Summary 'DIRECTIVE_BACKFILL_GENERATION' ('Directive generation from backfill: verdict=' + $verdict + ' directives=' + @($outObj.directives).Count + ' generated_spec=' + [IO.Path]::GetFileName([string]$generatedSpecPath) + ' deferred_to_next_cycle=true') 'OK' 'Strategist'
       return $generatedSpecPath
     }
-  } catch {}
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: strategist returned no strategy_spec_path raw=' + [string]$emitRaw) 'FAIL' 'Strategist'
+  } catch {
+    $msg = [string]$_.Exception.Message
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: emission error detail=' + $msg) 'FAIL' 'Strategist'
+  }
 
   return ''
 }
