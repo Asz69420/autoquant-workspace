@@ -64,7 +64,7 @@ function Get-RecentBatchArtifactPath([datetime]$sinceUtc) {
 function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [string]$refinementArtifactPath = '') {
   if ([string]::IsNullOrWhiteSpace($batchArtifactPath)) {
     Emit-Summary 'OUTCOME_NOTES_MISSING' ('Outcome worker skipped: empty batch artifact path for run_id=' + $runId) 'WARN' 'Analyser'
-    return
+    return ''
   }
 
   $batchPathNorm = [string]$batchArtifactPath
@@ -101,7 +101,7 @@ function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [strin
     $oe = 'outcome_worker_error'
     try { $oe = [string]$_.Exception.Message } catch {}
     Emit-Summary 'OUTCOME_WORKER_FAIL' ('Outcome worker failed: run_id=' + $runId + ' batch=' + $batchPathNorm + ' refinement=' + $refPathNorm + ' detail=' + $oe) 'FAIL' 'Analyser'
-    return
+    return ''
   }
 
   $checked = @()
@@ -123,7 +123,59 @@ function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [strin
   if (-not $found) {
     $checkedStr = if (@($checked).Count -gt 0) { (@($checked) -join '; ') } else { 'none' }
     Emit-Summary 'OUTCOME_NOTES_MISSING' ('Outcome worker invoked but notes missing: run_id=' + $runId + ' batch=' + $batchPathNorm + ' checked=' + $checkedStr) 'WARN' 'Analyser'
+    return ''
   }
+
+  foreach ($cp in $checked) {
+    if (-not [string]::IsNullOrWhiteSpace([string]$cp) -and (Test-Path -LiteralPath ([string]$cp))) {
+      return [string]$cp
+    }
+  }
+  return ''
+}
+
+function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string]$outcomeNotePath) {
+  if ([string]::IsNullOrWhiteSpace($backfillSpecPath) -or -not (Test-Path -LiteralPath $backfillSpecPath)) { return '' }
+  if ([string]::IsNullOrWhiteSpace($outcomeNotePath) -or -not (Test-Path -LiteralPath $outcomeNotePath)) { return '' }
+
+  try {
+    $outObj = Get-Content -LiteralPath $outcomeNotePath -Raw | ConvertFrom-Json
+  } catch { return '' }
+
+  $verdict = [string]$outObj.verdict
+  if (($verdict -ne 'REJECT') -and ($verdict -ne 'REVISE')) { return '' }
+
+  $hasDirectives = $false
+  try { if ($outObj.directives -and @($outObj.directives).Count -gt 0) { $hasDirectives = $true } } catch {}
+  if (-not $hasDirectives) { return '' }
+
+  $thesisPath = ''
+  try {
+    $specObj = Get-Content -LiteralPath $backfillSpecPath -Raw | ConvertFrom-Json
+    $thesisPath = [string]$specObj.source_thesis_path
+  } catch { $thesisPath = '' }
+
+  if ([string]::IsNullOrWhiteSpace($thesisPath)) { return '' }
+  if (-not (Test-Path -LiteralPath $thesisPath)) {
+    try {
+      $resolved = Join-Path (Get-Location) $thesisPath
+      if (Test-Path -LiteralPath $resolved) { $thesisPath = $resolved }
+    } catch {}
+  }
+  if (-not (Test-Path -LiteralPath $thesisPath)) { return '' }
+
+  try {
+    $emitRaw = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$thesisPath,'--generation-origin','directive-generated-from-backfill','--trigger-outcome-note',$outcomeNotePath,'--trigger-backfill-spec',$backfillSpecPath)
+    if ([string]::IsNullOrWhiteSpace([string]$emitRaw)) { return '' }
+    $emitObj = $emitRaw | ConvertFrom-Json
+    $generatedSpecPath = [string]$emitObj.strategy_spec_path
+    if (-not [string]::IsNullOrWhiteSpace($generatedSpecPath)) {
+      Emit-Summary 'DIRECTIVE_BACKFILL_GENERATION' ('Directive generation from backfill: verdict=' + $verdict + ' directives=' + @($outObj.directives).Count + ' generated_spec=' + [IO.Path]::GetFileName([string]$generatedSpecPath) + ' deferred_to_next_cycle=true') 'OK' 'Strategist'
+      return $generatedSpecPath
+    }
+  } catch {}
+
+  return ''
 }
 
 function Set-BundleState([string]$bundlePath, [string]$status, [string]$lastError = '', [bool]$incrementAttempt = $false) {
@@ -221,6 +273,7 @@ $refineDelta = 'n/a'
 $directiveNotesSeen = 0
 $directiveVariantsEmitted = 0
 $explorationVariantsEmitted = 0
+$directiveBackfillSpecsGenerated = 0
 $libraryLessons = 0
 $libraryRunCount = 0
 $candidatesIngested = 0
@@ -741,7 +794,14 @@ try {
 
   if (-not $DryRun -and @($backfillOutcomeQueue).Count -gt 0) {
     foreach ($oq in @($backfillOutcomeQueue | Select-Object -First 3)) {
-      Invoke-OutcomeWorker ($CycleRunId + '-backfill-' + [IO.Path]::GetFileNameWithoutExtension([string]$oq.spec)) ([string]$oq.batch) ([string]$oq.refinement)
+      $backfillRunId = ($CycleRunId + '-backfill-' + [IO.Path]::GetFileNameWithoutExtension([string]$oq.spec))
+      $outcomePath = Invoke-OutcomeWorker $backfillRunId ([string]$oq.batch) ([string]$oq.refinement)
+      if (-not [string]::IsNullOrWhiteSpace([string]$outcomePath)) {
+        $generatedPath = Invoke-DirectiveDrivenSpecGeneration ([string]$oq.spec) ([string]$outcomePath)
+        if (-not [string]::IsNullOrWhiteSpace([string]$generatedPath)) {
+          $directiveBackfillSpecsGenerated += 1
+        }
+      }
     }
   }
 
@@ -884,6 +944,7 @@ $summary = [ordered]@{
   candidates_passing_gate = $candidatesPassingGate
   directive_notes_seen = [int]$directiveNotesSeen
   directive_variants_emitted = [int]$directiveVariantsEmitted
+  directive_backfill_specs_generated = [int]$directiveBackfillSpecsGenerated
   active_library_size = $activeLibrarySize
   new_indicators_added = $newIndicatorsAdded
   skipped_indicators_dedup = $skippedIndicatorsDedup
@@ -957,7 +1018,7 @@ if (-not $DryRun) {
   }
 
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)

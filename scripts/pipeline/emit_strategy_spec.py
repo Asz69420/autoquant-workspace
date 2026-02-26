@@ -501,6 +501,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--thesis-path', required=True)
     ap.add_argument('--output-root', default='artifacts/strategy_specs')
+    ap.add_argument('--generation-origin', default='')
+    ap.add_argument('--trigger-outcome-note', default='')
+    ap.add_argument('--trigger-backfill-spec', default='')
     args = ap.parse_args()
 
     thesis = jload(args.thesis_path)
@@ -556,6 +559,16 @@ def main() -> int:
         'source_thesis_path': args.thesis_path.replace('\\', '/'),
         'variants': variants,
     }
+
+    generation_origin = str(args.generation_origin or '').strip()
+    if generation_origin:
+        spec['generation_origin'] = generation_origin
+    trigger_outcome_note = str(args.trigger_outcome_note or '').strip()
+    if trigger_outcome_note:
+        spec['trigger_outcome_note'] = trigger_outcome_note.replace('\\', '/')
+    trigger_backfill_spec = str(args.trigger_backfill_spec or '').strip()
+    if trigger_backfill_spec:
+        spec['trigger_backfill_spec'] = trigger_backfill_spec.replace('\\', '/')
 
     payload = json.dumps(spec, ensure_ascii=False, indent=2)
     if len(payload.encode('utf-8')) > MAX_JSON_BYTES:
