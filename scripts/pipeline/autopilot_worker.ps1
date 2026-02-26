@@ -75,7 +75,12 @@ function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [strin
     if (-not [string]::IsNullOrWhiteSpace($refPathNorm) -and (Test-Path -LiteralPath $refPathNorm)) {
       $outcArgs += @('--refinement-artifact',$refPathNorm)
     }
-    $outcomeRaw = Run-Py $outcArgs
+    $outcomeRaw = & python @outcArgs 2>&1
+    $outcomeExit = $LASTEXITCODE
+    if ($outcomeExit -ne 0) {
+      $errText = if (-not [string]::IsNullOrWhiteSpace([string]$outcomeRaw)) { ([string]$outcomeRaw).Trim() } else { 'nonzero exit without output' }
+      throw ("outcome worker exit=" + $outcomeExit + " output=" + $errText)
+    }
     if (-not [string]::IsNullOrWhiteSpace([string]$outcomeRaw)) {
       $outcomeLines = @($outcomeRaw -split "`r?`n")
       foreach ($ol in $outcomeLines) {
