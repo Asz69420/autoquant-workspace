@@ -28,12 +28,15 @@ AGENT_EMOJI = {
     "oq": "🤖",
     "Logger": "🧾",
     "Reader": "🔗",
+    "YT": "🔗",
     "Grabber": "🧲",
-    "TV Catalog": "📤",
-    "Promotion": "🧠",
+    "TV Catalog": "📥",
+    "Promotion": "🧬",
     "Backtester": "📈",
     "Refinement": "🔁",
     "Librarian": "📚",
+    "Analyser": "🧠",
+    "Lab": "🧪",
     "Strategist": "🧠",
     "Keeper": "🗃️",
     "Firewall": "🛡️",
@@ -100,29 +103,23 @@ def main():
             event = json.loads(raw)
 
         agent = _as_str(event["agent"])
-        model_id = _as_str(event["model_id"])
-        model_label = to_model_label(model_id)
+        model_id = _as_str(event.get("model_id"), "system")
+        model_label = to_model_label(model_id if model_id else "system")
         status_word = _as_str(event["status_word"])
         status_emoji = _normalize_status_emoji(event.get("status_emoji"), status_word)
         reason_code = _as_str(event.get("reason_code"), "")
         summary = _as_str(event["summary"])
-        ts_local = _as_str(event.get("ts_local"), "")
-        ts_iso = _as_str(event.get("ts_iso"), "")
 
-        display_agent = 'Lab' if _as_str(reason_code) == 'AUTOPILOT_SUMMARY' else agent
-        agent_display = f"{AGENT_EMOJI.get(display_agent, AGENT_EMOJI.get(agent, ''))} {display_agent}".strip()
+        display_agent = 'Lab' if reason_code == 'AUTOPILOT_SUMMARY' else agent
+        agent_emoji = AGENT_EMOJI.get(display_agent, AGENT_EMOJI.get(agent, "🤖"))
+        agent_display = f"{agent_emoji} {display_agent}".strip()
 
-        show_reason = bool(reason_code) and reason_code.upper() != "EXPERIMENT"
-        status_text = f"{status_emoji} {status_word}"
+        header = f"{agent_display} | {model_label} | {status_emoji} {status_word}"
+        reason_line = f"({reason_code})" if reason_code else "(UNKNOWN)"
+        summary_line = summary if summary else "(no summary)"
 
-        header = f"{agent_display} | {status_text}"
-        if show_reason:
-            detail = f"({reason_code}) — {summary}"
-        else:
-            detail = summary
-
-        # Strict fixed layout (2 lines): header, reason+summary (reason on line 2)
-        body = "\n".join([header, detail])
+        # Strict fixed layout (3 lines): header, reason_code, summary
+        body = "\n".join([header, reason_line, summary_line])
         telegram_msg = f"```\n{body}\n```"
 
         print(telegram_msg)
