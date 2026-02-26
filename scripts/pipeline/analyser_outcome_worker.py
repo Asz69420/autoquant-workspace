@@ -336,36 +336,106 @@ def _maybe_trigger_doctrine_synthesis() -> None:
     insights.replace(archived)
 
 
+def compress_spec(spec: dict) -> str:
+    if not isinstance(spec, dict):
+        return 'name=unknown; asset=unknown; timeframe=unknown; indicators=unknown; entry=unknown; exit=unknown; risk=unknown'
+    variants = spec.get('variants') or []
+    v = variants[0] if isinstance(variants, list) and variants and isinstance(variants[0], dict) else {}
+    name = str(spec.get('id') or v.get('name') or 'unknown')
+    family = str(spec.get('strategy_family') or name)
+
+    indicator_terms = ['ema', 'sma', 't3', 'kama', 'alma', 'rsi', 'macd', 'stochastic', 'cci', 'williams', 'qqe', 'vortex', 'stc', 'obv', 'vwap', 'atr', 'bollinger', 'donchian', 'adx', 'stiffness', 'supertrend', 'ichimoku']
+    txt = ' '.join(
+        [str(v.get('description') or '')] +
+        [str(x) for k in ('entry_long', 'entry_short', 'filters', 'exit_rules', 'risk_rules') for x in (v.get(k) or [])]
+    ).lower()
+    indicators = [t for t in indicator_terms if t in txt]
+    indicators = list(dict.fromkeys(indicators))[:8]
+
+    params = []
+    for p in (v.get('parameters') or [])[:6]:
+        if isinstance(p, dict) and p.get('name') is not None:
+            params.append(f"{p.get('name')}={p.get('default')}")
+
+    entry_summary = '; '.join([str(x) for x in (v.get('entry_long') or [])[:2]])[:220]
+    exit_summary = '; '.join([str(x) for x in (v.get('exit_rules') or [])[:2]])[:220]
+    riskp = v.get('risk_policy') if isinstance(v.get('risk_policy'), dict) else {}
+    risk_summary = f"stop={riskp.get('stop_type')}:{riskp.get('stop_atr_mult')}, tp={riskp.get('tp_type')}:{riskp.get('tp_atr_mult')}, risk_pct={riskp.get('risk_per_trade_pct')}"
+
+    out = (
+        f"name={name}; family={family}; asset=unknown; timeframe=unknown; "
+        f"indicators={','.join(indicators) or 'none'}; params={','.join(params) or 'none'}; "
+        f"entry={entry_summary or 'n/a'}; exit={exit_summary or 'n/a'}; risk={risk_summary}"
+    )
+    return out[:800]
+
+
+def select_relevant_doctrine(doctrine: str, indicators: list[str]) -> str:
+    lines = [ln.strip() for ln in str(doctrine or '').splitlines() if ln.strip().startswith('- [')]
+    if not lines:
+        return (doctrine or '')[:1000]
+    inds = [str(x).lower() for x in (indicators or [])]
+
+    def score(line: str) -> int:
+        low = line.lower()
+        s = 0
+        if any(i and i in low for i in inds):
+            s += 3
+        if any(k in low for k in ['regime', 'risk gating', 'drawdown', 'session gate']):
+            s += 2
+        return s
+
+    ranked = sorted(lines, key=lambda x: score(x), reverse=True)
+    chosen = ranked[:5] if ranked else lines[:5]
+    txt = '\n'.join(chosen)
+    return txt[:1000]
+
+
 def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: str, outcome_history: list[dict]) -> tuple[str, str]:
-    system = ('You are the Analyser agent in an algorithmic trading system. Your job is to examine backtest results, understand WHY a strategy performed the way it did, and generate specific actionable directives for improvement. You think like an experienced quant trader. Respond ONLY with valid JSON, no markdown, no explanation outside the JSON.')
+    system = 'Quant analyser. Return JSON only: verdict, reasoning, directives, regime_recommendation, confidence, doctrine_update.'
     res = (backtest_result or {}).get('results', {}) if isinstance(backtest_result, dict) else {}
     inputs = (backtest_result or {}).get('inputs', {}) if isinstance(backtest_result, dict) else {}
     regime_pf = res.get('regime_pf') or {}
     regime_wr = res.get('regime_wr') or {}
     regime_breakdown = res.get('regime_breakdown') or {}
-    history_view = []
+
+    spec_summary = compress_spec(strategy_spec)
+    indicators = re.findall(r'indicators=([^;]+)', spec_summary)
+    indicator_list = [x.strip() for x in (indicators[0].split(',') if indicators else []) if x.strip() and x.strip() != 'none']
+    doctrine_text = select_relevant_doctrine(doctrine, indicator_list)
+
+    hist_rows = []
     for h in (outcome_history or [])[:5]:
-        history_view.append({'verdict': h.get('verdict'), 'directives': h.get('directives', [])[:3], 'reasoning': h.get('llm_reasoning') or h.get('failure_reasons') or h.get('next_experiments', [])})
-    doctrine_text = (doctrine or '')[:2000]
-    user = (
-        '## Strategy Under Review\n' + f"{json.dumps(strategy_spec or {}, indent=2)}\n\n" +
-        '## Backtest Results\n' +
-        f"- Profit Factor: {float(res.get('profit_factor', 0.0) or 0.0):.6f}\n" +
-        f"- Win Rate: {float(res.get('win_rate', 0.0) or 0.0) * 100:.2f}%\n" +
-        f"- Max Drawdown: {float(res.get('max_drawdown', 0.0) or 0.0) * 100:.2f}%\n" +
-        f"- Total Trades: {int(res.get('total_trades', 0) or 0)}\n" +
-        f"- Timeframe: {inputs.get('variant') or inputs.get('dataset_meta') or 'unknown'}\n" +
-        f"- Asset: {inputs.get('dataset_csv') or 'unknown'}\n\n" +
-        '## Regime Performance\n' +
-        f"- Trending: PF {float(regime_pf.get('trending', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('trending', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('trending_trades', 0) or 0)}\n" +
-        f"- Ranging: PF {float(regime_pf.get('ranging', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('ranging_trades', 0) or 0)}\n" +
-        f"- Transitional: PF {float(regime_pf.get('transitional', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('transitional', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('transitional_trades', 0) or 0)}\n" +
-        f"- Dominant regime in data: {res.get('dominant_regime', 'unknown')}\n\n" +
-        '## Trading Doctrine (accumulated knowledge)\n' + f"{doctrine_text}\n\n" +
-        '## Recent Outcome History for this family\n' + f"{json.dumps(history_view, indent=2)}\n\n" +
-        '## Your Task\nRespond with this exact JSON structure:\n{\n  "verdict": "ACCEPT" or "REJECT",\n  "reasoning": "2-3 sentences explaining WHY. Reference regime performance, indicator behaviour, doctrine principles.",\n  "directives": [{"type": "one of: ROLE_SWAP, THRESHOLD_SWEEP, PARAM_SWEEP, ENTRY_TIGHTEN, ENTRY_RELAX, EXIT_CHANGE, GATE_ADJUST, TEMPLATE_SWITCH", "params": {"specific parameter changes, not vague"}, "reasoning": "why this should help"}],\n  "regime_recommendation": {"add_filter": true/false, "allowed_regimes": ["trending"] or ["ranging"] or both},\n  "confidence": "low" or "medium" or "high",\n  "doctrine_update": "If you discovered a new trading principle or confirmed/contradicted an existing doctrine principle based on this analysis, state it as one concise sentence. If nothing new was learned, set to null."\n}\n\nRules:\n- ACCEPT only if PF > 1.0 AND trades > 50\n- Generate 1-3 directives, never more\n- directive type must be one of the listed types exactly\n- Be specific in params, not vague suggestions\n'
+        verdict = str(h.get('verdict') or '')
+        dtypes = [str(d.get('type') or '') for d in (h.get('directives') or [])[:3] if isinstance(d, dict)]
+        reason = ''
+        if h.get('llm_reasoning'):
+            reason = str(h.get('llm_reasoning'))
+        elif h.get('failure_reasons'):
+            fr = h.get('failure_reasons') or []
+            reason = str((fr[0] or {}).get('short') if fr and isinstance(fr[0], dict) else '')
+        hist_rows.append(f"{verdict}: {reason[:80]} | directives={','.join(dtypes)[:80]}")
+    history_compact = '\n'.join(hist_rows)[:500]
+
+    contract = (
+        '{"verdict":"ACCEPT|REJECT","reasoning":"...","directives":[{"type":"ROLE_SWAP|THRESHOLD_SWEEP|PARAM_SWEEP|ENTRY_TIGHTEN|ENTRY_RELAX|EXIT_CHANGE|GATE_ADJUST|TEMPLATE_SWITCH","params":{},"reasoning":"..."}],'
+        '"regime_recommendation":{"add_filter":true|false,"allowed_regimes":["trending"|"ranging"|"transitional"]},"confidence":"low|medium|high","doctrine_update":"string|null"}'
     )
-    return system, user
+
+    user = (
+        'Strategy Summary\n' + spec_summary + '\n\n'
+        'Backtest Results\n'
+        f"PF={float(res.get('profit_factor', 0.0) or 0.0):.4f}; WR={float(res.get('win_rate', 0.0) or 0.0) * 100:.2f}%; DD={float(res.get('max_drawdown', 0.0) or 0.0) * 100:.2f}%; Trades={int(res.get('total_trades', 0) or 0)}; TF={inputs.get('variant') or inputs.get('dataset_meta') or 'unknown'}; Asset={inputs.get('dataset_csv') or 'unknown'}\n\n"
+        'Regime\n'
+        f"trend(PF={float(regime_pf.get('trending', 0.0) or 0.0):.4f},WR={float(regime_wr.get('trending', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('trending_trades', 0) or 0)}); "
+        f"range(PF={float(regime_pf.get('ranging', 0.0) or 0.0):.4f},WR={float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('ranging_trades', 0) or 0)}); "
+        f"trans(PF={float(regime_pf.get('transitional', 0.0) or 0.0):.4f},WR={float(regime_wr.get('transitional', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('transitional_trades', 0) or 0)}); dom={res.get('dominant_regime', 'unknown')}\n\n"
+        'Doctrine (top 5 relevant)\n' + doctrine_text + '\n\n'
+        'Recent Outcomes\n' + history_compact + '\n\n'
+        'Rules: ACCEPT only if PF>1.0 and Trades>50. Generate 1-3 directives, valid types only, specific params.\n'
+        'Return JSON exactly:\n' + contract
+    )
+    return system[:200], user[:8000]
 
 
 def _directive_history_stats(notes: list[dict]) -> dict[str, dict]:
@@ -566,6 +636,7 @@ def main() -> int:
         doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig') if DOCTRINE_PATH.exists() else ''
         outcome_history = load_family_outcome_history(strategy_family, limit=5)
         system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
+        _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(system_prompt) + len(user_prompt)}')
         raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='reader', timeout=120)
         use_llm = False
         llm_result: dict = {}
