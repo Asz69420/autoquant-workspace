@@ -5,6 +5,7 @@ import argparse
 import copy
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -408,6 +409,92 @@ def _apply_outcome_guidance(variants: list[dict], limit: int = 5) -> list[dict]:
     return out
 
 
+def _tokenize(text: str) -> set[str]:
+    if not text:
+        return set()
+    toks = set(re.findall(r'[a-z0-9_]{3,}', text.lower()))
+    stop = {'with', 'from', 'that', 'this', 'have', 'into', 'only', 'when', 'then', 'long', 'short', 'risk', 'rule', 'rules', 'data', 'signal', 'signals'}
+    return {t for t in toks if t not in stop}
+
+
+def _thesis_keywords(thesis: dict) -> set[str]:
+    chunks: list[str] = []
+    for k in ('id', 'strategy_family', 'template', 'thesis', 'thesis_text', 'summary'):
+        v = thesis.get(k)
+        if isinstance(v, str):
+            chunks.append(v)
+    for k in ('constraints', 'required_data', 'thesis_bullets', 'tags'):
+        arr = thesis.get(k) or []
+        if isinstance(arr, list):
+            chunks.extend(str(x) for x in arr if x)
+    for s in thesis.get('candidate_signals', []) or []:
+        if isinstance(s, dict):
+            chunks.extend(str(s.get(k, '')) for k in ('name', 'description', 'signal', 'indicator'))
+        elif s:
+            chunks.append(str(s))
+    return _tokenize(' '.join(chunks))
+
+
+def _load_library_candidates(limit: int = 10) -> list[dict]:
+    idx = ROOT / 'artifacts' / 'library' / 'INDICATOR_INDEX.json'
+    if not idx.exists():
+        return []
+    try:
+        rows = json.loads(idx.read_text(encoding='utf-8'))
+    except Exception:
+        return []
+    if not isinstance(rows, list):
+        return []
+    return [r for r in rows[: max(10, limit * 5)] if isinstance(r, dict)]
+
+
+def _pick_library_augmented_variant(thesis: dict, variants: list[dict], max_candidates: int = 10) -> dict | None:
+    if not variants:
+        return None
+    lib_rows = _load_library_candidates(limit=max_candidates)
+    if not lib_rows:
+        return None
+
+    kw = _thesis_keywords(thesis)
+    if not kw:
+        return None
+
+    scored: list[tuple[int, dict, list[str]]] = []
+    for row in lib_rows:
+        text_parts = [
+            str(row.get('name') or ''),
+            str(row.get('tv_key') or ''),
+            str(row.get('author') or ''),
+            str(row.get('script_id') or ''),
+            ' '.join(str(x) for x in (row.get('tags') or []) if x),
+            ' '.join(str(x) for x in (row.get('keywords') or []) if x),
+        ]
+        toks = _tokenize(' '.join(text_parts))
+        overlap = sorted(list(kw.intersection(toks)))
+        if overlap:
+            scored.append((len(overlap), row, overlap))
+
+    if not scored:
+        return None
+
+    scored.sort(key=lambda x: (-x[0], str(x[1].get('name') or '').lower()))
+    top = scored[:max_candidates]
+    refs = unique([
+        str(item[1].get('indicator_record_path') or item[1].get('script_id') or item[1].get('tv_key') or item[1].get('name') or '')
+        for item in top
+    ], max_candidates)
+    if not refs:
+        return None
+
+    base = copy.deepcopy(variants[0])
+    base['name'] = 'library_augmented'
+    base['description'] = 'Library-augmented variant selected by thesis↔indicator keyword overlap.'
+    base['origin'] = 'LIBRARY_AUGMENTED'
+    base['indicator_refs'] = refs
+    base['filters'] = unique((base.get('filters') or []) + ['Library augmented: indicator candidates attached from INDICATOR_INDEX keyword overlap.'], 10)
+    return base
+
+
 def main() -> int:
     _set_reasoning_effort_for_strategist()
 
@@ -446,6 +533,10 @@ def main() -> int:
         variants = _directive_variants(variants[0], directives)
 
     variants = _apply_outcome_guidance(variants, limit=5)
+
+    lib_aug = _pick_library_augmented_variant(thesis, variants, max_candidates=10)
+    if lib_aug is not None and len(variants) < 5:
+        variants = variants + [lib_aug]
 
     if len(variants) == 0:
         print(json.dumps({

@@ -24,6 +24,37 @@ function Ensure-Lock($name) {
   return $lockPath
 }
 
+function Test-ValidJsonPath([object]$candidatePath) {
+  if ($null -eq $candidatePath) { return $false }
+  $p = [string]$candidatePath
+  if ([string]::IsNullOrWhiteSpace($p)) { return $false }
+  return (Test-Path -LiteralPath $p)
+}
+
+function Get-JsonPathFailDetail([string]$context, [object]$candidatePath) {
+  $p = if ($null -eq $candidatePath) { '' } else { [string]$candidatePath }
+  if ([string]::IsNullOrWhiteSpace($p)) {
+    return ($context + ': missing batch_artifact_path in runner output')
+  }
+  if (-not (Test-Path -LiteralPath $p)) {
+    return ($context + ': batch artifact path not found -> ' + $p)
+  }
+  return ($context + ': unknown json path error')
+}
+
+function Get-RecentBatchArtifactPath([datetime]$sinceUtc) {
+  try {
+    $root = 'artifacts/batches'
+    if (-not (Test-Path -LiteralPath $root)) { return '' }
+    $cand = Get-ChildItem -Path $root -Recurse -Filter '*.batch_backtest.json' -File -ErrorAction SilentlyContinue |
+      Where-Object { $_.LastWriteTimeUtc -ge $sinceUtc } |
+      Sort-Object LastWriteTimeUtc -Descending |
+      Select-Object -First 1
+    if ($cand) { return [string]$cand.FullName }
+  } catch {}
+  return ''
+}
+
 function Set-BundleState([string]$bundlePath, [string]$status, [string]$lastError = '', [bool]$incrementAttempt = $false) {
   if (-not (Test-Path -LiteralPath $bundlePath)) { return }
   try {
@@ -349,9 +380,19 @@ try {
             $batchEmitted = $true
           } else {
             try {
+              $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
               $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all') | ConvertFrom-Json
-              $bdoc = Get-Content $batch.batch_artifact_path -Raw | ConvertFrom-Json
-              $latestBatchArtifactPath = [string]$batch.batch_artifact_path
+              $batchArtifactPath = [string]$batch.batch_artifact_path
+              if (-not (Test-ValidJsonPath $batchArtifactPath)) {
+                $fallbackPath = Get-RecentBatchArtifactPath $batchStartUtc
+                if (Test-ValidJsonPath $fallbackPath) {
+                  $batchArtifactPath = $fallbackPath
+                } else {
+                  throw (Get-JsonPathFailDetail 'promotion batch' $batch.batch_artifact_path)
+                }
+              }
+              $bdoc = Get-Content -LiteralPath $batchArtifactPath -Raw | ConvertFrom-Json
+              $latestBatchArtifactPath = [string]$batchArtifactPath
               $batchRuns += [int]$bdoc.summary.total_runs
               $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $batchSkipped += [int]$bdoc.summary.failed_runs
@@ -364,7 +405,9 @@ try {
               Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail) $bStatus 'Backtester'
               $batchEmitted = $true
             } catch {
-              Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: batch error)' 'FAIL' 'Backtester'
+              $batchErr = 'batch_error'
+              try { $batchErr = [string]$_.Exception.Message } catch {}
+              Emit-Summary 'BATCH_BACKTEST_SUMMARY' ('Batch: runs=0 executed=0 skipped=0 (error) detail=' + $batchErr) 'FAIL' 'Backtester'
               $batchEmitted = $true
             }
           }
@@ -381,7 +424,7 @@ try {
             input_linkmap_path = $lm
             thesis_artifact_path = $an.thesis_path
             strategy_spec_artifact_path = $sp.strategy_spec_path
-            batch_backtest_artifact_path = $(if ($null -ne $batch) { $batch.batch_artifact_path } else { '' })
+            batch_backtest_artifact_path = $(if ($null -ne $batchArtifactPath -and -not [string]::IsNullOrWhiteSpace([string]$batchArtifactPath)) { $batchArtifactPath } elseif ($null -ne $batch) { $batch.batch_artifact_path } else { '' })
             experiment_plan_artifact_path = $(if ($null -ne $batch) { $batch.experiment_plan_path } else { '' })
           }
           New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($promoPath)) | Out-Null
@@ -496,9 +539,19 @@ try {
         $backfillTried += 1
         $batch = $null
         try {
+          $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
           $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$spPath,'--variant','all') | ConvertFrom-Json
-          $bdoc = Get-Content $batch.batch_artifact_path -Raw | ConvertFrom-Json
-          $latestBatchArtifactPath = [string]$batch.batch_artifact_path
+          $batchArtifactPath = [string]$batch.batch_artifact_path
+          if (-not (Test-ValidJsonPath $batchArtifactPath)) {
+            $fallbackPath = Get-RecentBatchArtifactPath $batchStartUtc
+            if (Test-ValidJsonPath $fallbackPath) {
+              $batchArtifactPath = $fallbackPath
+            } else {
+              throw (Get-JsonPathFailDetail ('backfill spec=' + [IO.Path]::GetFileName([string]$spPath)) $batch.batch_artifact_path)
+            }
+          }
+          $bdoc = Get-Content -LiteralPath $batchArtifactPath -Raw | ConvertFrom-Json
+          $latestBatchArtifactPath = [string]$batchArtifactPath
           $batchRuns += [int]$bdoc.summary.total_runs
           $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
           $batchSkipped += [int]$bdoc.summary.failed_runs
@@ -525,7 +578,7 @@ try {
                 input_linkmap_path = ''
                 thesis_artifact_path = ''
                 strategy_spec_artifact_path = $spPath
-                batch_backtest_artifact_path = $batch.batch_artifact_path
+                batch_backtest_artifact_path = $batchArtifactPath
                 experiment_plan_artifact_path = $(if ($batch.experiment_plan_path) { $batch.experiment_plan_path } else { '' })
               }
               New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($promoPath)) | Out-Null
