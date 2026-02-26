@@ -137,8 +137,8 @@ def main() -> int:
     ap.add_argument('--refinement-artifact', default='')
     args = ap.parse_args()
 
-    batch_path = Path(args.batch_artifact) if args.batch_artifact else latest_file('artifacts/backtests/**/batch-*.json')
-    ref_path = Path(args.refinement_artifact) if args.refinement_artifact else latest_file('artifacts/refinements/**/*.json')
+    batch_path = Path(args.batch_artifact) if args.batch_artifact else latest_file('artifacts/batches/**/batch_*.batch_backtest.json')
+    ref_path = Path(args.refinement_artifact) if args.refinement_artifact else latest_file('artifacts/refinement/**/*.refinement_cycle.json')
     lessons_path = ROOT / 'artifacts' / 'library' / 'LESSONS_INDEX.json'
 
     batch = _j(batch_path, {}) if batch_path else {}

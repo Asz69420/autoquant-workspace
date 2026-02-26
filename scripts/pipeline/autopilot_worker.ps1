@@ -101,6 +101,9 @@ function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [strin
 
   $checked = @()
   if (-not [string]::IsNullOrWhiteSpace($outcomePathFromWorker)) { $checked += $outcomePathFromWorker }
+  $todayDir = Join-Path 'artifacts/outcomes' (Get-Date -Format 'yyyyMMdd')
+  $expectedPath = Join-Path $todayDir ('outcome_notes_' + $runId + '.json')
+  $checked += $expectedPath
   $fallbackPattern = ('outcome_notes_' + $runId + '*.json')
   try {
     $fallback = Get-ChildItem -Path 'artifacts/outcomes' -Recurse -Filter $fallbackPattern -File -ErrorAction SilentlyContinue | Select-Object -First 1
