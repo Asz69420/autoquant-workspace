@@ -10,9 +10,39 @@
 
 $ErrorActionPreference = 'Stop'
 
-function Run-Py($args) {
+function Run-Py($pyArgs) {
   if ($DryRun) { return '' }
-  return (python @args)
+
+  $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+  $pinfo.FileName = 'python'
+  $escaped = @()
+  foreach ($a in @($pyArgs)) {
+    $s = [string]$a
+    $s = $s.Replace('"', '\"')
+    $escaped += ('"' + $s + '"')
+  }
+  $pinfo.Arguments = ($escaped -join ' ')
+  $pinfo.RedirectStandardOutput = $true
+  $pinfo.RedirectStandardError = $true
+  $pinfo.UseShellExecute = $false
+  $pinfo.CreateNoWindow = $true
+  try {
+    $pinfo.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+    $pinfo.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+  } catch {}
+
+  $p = New-Object System.Diagnostics.Process
+  $p.StartInfo = $pinfo
+  $p.Start() | Out-Null
+  $stdout = $p.StandardOutput.ReadToEnd()
+  $stderr = $p.StandardError.ReadToEnd()
+  $p.WaitForExit()
+
+  if ($p.ExitCode -ne 0) {
+    throw ("Python exit " + $p.ExitCode + ": " + $stderr)
+  }
+
+  return ([string]$stdout).Trim()
 }
 
 function Ensure-Lock($name) {
