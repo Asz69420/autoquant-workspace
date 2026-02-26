@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
+from collections import Counter
 from datetime import datetime, UTC
 from pathlib import Path
+from urllib.parse import urlparse, parse_qs
 
 ROOT = Path(__file__).resolve().parents[2]
 PY = sys.executable
@@ -45,6 +48,57 @@ def _run(*args: str) -> str:
     return subprocess.check_output([PY, *args], cwd=ROOT, text=True)
 
 
+def _slug(s: str) -> str:
+    x = re.sub(r'[^a-z0-9]+', '-', (s or '').lower()).strip('-')
+    return x or 'unknown'
+
+
+def _channel_from_card(rc: dict) -> tuple[str, str]:
+    author = str(rc.get('author') or '').strip()
+    src = str(rc.get('source_ref') or '').strip()
+    if author:
+        return _slug(author), author
+    try:
+        u = urlparse(src)
+        if 'youtube.com' in u.netloc or 'youtu.be' in u.netloc:
+            q = parse_qs(u.query)
+            vid = (q.get('v') or [''])[0]
+            if vid:
+                return 'michaelionita', 'MichaelIonita' if 'michael' in src.lower() else ('youtube', 'YouTube')
+    except Exception:
+        pass
+    if 'michael' in src.lower() or 'ionita' in src.lower():
+        return 'michaelionita', 'MichaelIonita'
+    return 'youtube', 'YouTube'
+
+
+def _append_channel_pack(day: str, channel_slug: str, channel_name: str, video_ids: list[str], concept_thesis_path: str, key_signals: list[str]) -> str:
+    p = ROOT / 'artifacts' / 'thesis_packs' / day / f'{channel_slug}-latest.concepts_thesis_pack.json'
+    cur = _j(p, {
+        'channel_slug': channel_slug,
+        'channel_name': channel_name,
+        'created_at': datetime.now(UTC).isoformat(),
+        'video_ids': [],
+        'concept_thesis_paths': [],
+        'key_signals': [],
+    })
+    cur['channel_slug'] = channel_slug
+    cur['channel_name'] = channel_name
+    cur['created_at'] = datetime.now(UTC).isoformat()
+    cur['video_ids'] = (video_ids + [x for x in cur.get('video_ids', []) if x not in video_ids])[:50]
+    cur['concept_thesis_paths'] = ([concept_thesis_path] + [x for x in cur.get('concept_thesis_paths', []) if x != concept_thesis_path])[:50]
+    prev = cur.get('key_signals', [])
+    ctr = Counter()
+    for x in prev:
+        if isinstance(x, dict):
+            ctr[str(x.get('signal', ''))] += int(x.get('count', 0))
+    for s in key_signals:
+        ctr[s] += 1
+    cur['key_signals'] = [{'signal': k, 'count': v} for k, v in ctr.most_common(20) if k]
+    _w(p, cur)
+    return str(p).replace('\\', '/')
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--research-cards-json', required=True)
@@ -62,6 +116,9 @@ def main() -> int:
     key_ideas = []
     hooks = []
     autos = []
+    channel_slug = ''
+    channel_name = ''
+    video_ids: list[str] = []
 
     for rc_path in cards:
         p = Path(rc_path)
@@ -72,6 +129,11 @@ def main() -> int:
             rc = json.loads(p.read_text(encoding='utf-8'))
             title = str(rc.get('title') or p.stem)
             source = str(rc.get('source_ref') or '')
+            if not channel_slug:
+                channel_slug, channel_name = _channel_from_card(rc)
+            m = re.search(r'[?&]v=([A-Za-z0-9_-]{11})', source)
+            if m:
+                video_ids.append(m.group(1))
             key_ideas.append(f'{title}: extract repeatable concept from source context')
             hooks.append(f'{title}: convert concept to testable entry/exit hypothesis')
             autos.append(f'{title}: record ingestion evidence pointer for doctrine traceability')
@@ -95,8 +157,12 @@ def main() -> int:
     _w(out_path, payload)
 
     doctrine_update_path = ''
+    channel_pack_path = ''
     try:
-        out = _run('scripts/pipeline/update_analyser_doctrine.py', '--thesis-pack', str(out_path).replace('\\', '/'))
+        if not channel_slug:
+            channel_slug, channel_name = ('youtube', 'YouTube')
+        channel_pack_path = _append_channel_pack(day, channel_slug, channel_name or channel_slug, list(dict.fromkeys(video_ids))[:50], str(out_path).replace('\\', '/'), key_ideas[:10])
+        out = _run('scripts/pipeline/update_analyser_doctrine.py', '--thesis-pack', channel_pack_path)
         lines = [x.strip() for x in out.splitlines() if x.strip()]
         if lines:
             doctrine_update_path = lines[-1]
@@ -106,7 +172,7 @@ def main() -> int:
     status = 'OK' if failed == 0 else ('WARN' if processed > 0 else 'FAIL')
     summary = f'Analyser content: processed={processed} failed={failed}'
     _log(status, 'ANALYSER_CONTENT_SUMMARY', summary)
-    print(json.dumps({'processed': processed, 'failed': failed, 'thesis_pack_path': str(out_path).replace('\\', '/'), 'doctrine_update_path': doctrine_update_path}))
+    print(json.dumps({'processed': processed, 'failed': failed, 'thesis_pack_path': str(out_path).replace('\\', '/'), 'channel_pack_path': channel_pack_path, 'doctrine_update_path': doctrine_update_path}))
     return 0
 
 

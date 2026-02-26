@@ -474,8 +474,16 @@ function Build-TopicQueryResponse {
   $tokens = @($topicLower -split '[^a-z0-9]+' | Where-Object { $_.Length -ge 3 })
   if ($tokens.Count -eq 0) { $tokens = @($topicLower) }
 
+  $preferMichael = ($topicLower -match '(^|\s)(michael|ionita)(\s|$)' -or $topicLower -like '*from michael*')
+  $orderedSources = @($SourcePaths)
+  if ($preferMichael) {
+    $michael = @($orderedSources | Where-Object { $_.ToLowerInvariant().Contains('michaelionita') -or $_.ToLowerInvariant().Contains('michael') })
+    $rest = @($orderedSources | Where-Object { -not ($_.ToLowerInvariant().Contains('michaelionita') -or $_.ToLowerInvariant().Contains('michael')) })
+    $orderedSources = @($michael + $rest)
+  }
+
   $matches = New-Object System.Collections.Generic.List[string]
-  foreach ($src in $SourcePaths) {
+  foreach ($src in $orderedSources) {
     if (-not ($src -like 'artifacts/thesis_packs/*')) { continue }
     if (-not (Test-Path $src)) { continue }
     try {
