@@ -30,6 +30,7 @@ MAX_WIDTH = 42
 
 # Locked alignment format (header uses the exact same format string)
 FMT = "{arrow:<1} {name:<12} {pf:>4} {wr:>4} {tc:>3} {dd:>4} {pnl:>5}"
+MIN_TRADES = 50
 
 ALIAS = {
     "adx": "ADX",
@@ -125,10 +126,21 @@ def build_name(spec_path: str, variant: str) -> tuple[str, str]:
 
     cleaned = "".join(ch if ch.isalnum() or ch in " _-" else " " for ch in raw)
     toks = [t for t in cleaned.replace("-", " ").replace("_", " ").split() if t]
+    lo_toks = [t.lower() for t in toks]
+
+    # Prefer descriptive aliases over generic/person names.
+    if "baseline" in lo_toks and "exploit" in lo_toks:
+        name = "Base_Exploit"
+        return name, name.lower()
+    if "multi" in lo_toks and "timeframe" in lo_toks:
+        name = "MTF_Trend"
+        return name, name.lower()
+
     picks = []
+    banned = {"soheil", "baseline", "multi", "timeframe"}
     for t in toks:
         lo = t.lower()
-        if lo in STOP or lo.isdigit():
+        if lo in STOP or lo.isdigit() or lo in banned:
             continue
         picks.append(ALIAS.get(lo, t[:6].title()))
         if len(picks) >= 2:
@@ -141,6 +153,9 @@ def build_name(spec_path: str, variant: str) -> tuple[str, str]:
         m = re.findall(r"[0-9a-fA-F]{4,}", stem)
         token = (m[-1][:4] if m else ("".join(ch for ch in stem if ch.isalnum())[-4:] or "Spec"))
         name = f"{token}_Spec"[:12]
+
+    if "soheil" in name.lower():
+        name = "MTF_Alpha"
 
     key = name.lower()
     return name, key
@@ -161,27 +176,26 @@ def metrics(backtest_path: str, run: dict):
     bj = jload(Path(backtest_path), {}) if backtest_path and Path(backtest_path).exists() else {}
     res = bj.get("results") or {}
 
-    wr = pct(fnum(res.get("win_rate")))
+    wr = pct(fnum(res.get("win_rate") or run.get("win_rate")))
     tc = inum(res.get("total_trades") or res.get("trades") or run.get("trades"))
-    dd = pct(fnum(res.get("max_drawdown_pct")))
-    pnl = pct(fnum(res.get("net_profit_pct")))
+    dd = pct(fnum(res.get("max_drawdown_pct") or run.get("max_drawdown_pct")))
+    pnl = pct(fnum(res.get("net_profit_pct") or run.get("net_profit_pct")))
 
     # Fallback when max_drawdown_pct is missing: derive from absolute max_drawdown and inferred start equity.
     if dd is None:
-        dd_abs = fnum(res.get("max_drawdown") or res.get("max_dd") or res.get("drawdown"))
-        net_abs = fnum(res.get("net_profit"))
-        net_pct_raw = fnum(res.get("net_profit_pct"))
+        dd_abs = fnum(res.get("max_drawdown") or res.get("max_dd") or res.get("drawdown") or run.get("max_drawdown"))
+        net_abs = fnum(res.get("net_profit") or run.get("net_profit"))
+        net_pct_raw = fnum(res.get("net_profit_pct") or run.get("net_profit_pct"))
         if dd_abs is not None and net_abs is not None and net_pct_raw not in (None, 0):
             net_frac = net_pct_raw if abs(net_pct_raw) <= 1 else (net_pct_raw / 100.0)
             if net_frac:
                 start_equity = net_abs / net_frac
                 if start_equity:
                     dd = (dd_abs / abs(start_equity)) * 100.0
+        elif dd_abs is not None:
+            # Last-resort assumption when only absolute drawdown is available.
+            dd = (dd_abs / 10000.0) * 100.0
 
-    if wr is None:
-        wr = pct(fnum(run.get("win_rate")))
-    if tc is None:
-        tc = inum(run.get("trades"))
     if pnl is None:
         net = fnum(run.get("net_profit"))
         pnl = (net / 10000.0) * 100.0 if net is not None else None
@@ -215,7 +229,7 @@ def collect_rows():
 
         bt = str((r.get("pointers") or {}).get("backtest_result") or "")
         wr, tc, dd, pnl = metrics(bt, r)
-        if tc is None or tc <= 0:
+        if tc is None or tc < MIN_TRADES:
             continue
 
         staged.append((created, asset, tf, name, key, pf, wr, tc, dd, pnl))
