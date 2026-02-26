@@ -19,6 +19,24 @@ function Ensure-Lock($name) {
   $lockDir = 'data/state/locks'
   if (-not (Test-Path $lockDir)) { New-Item -ItemType Directory -Path $lockDir | Out-Null }
   $lockPath = Join-Path $lockDir ($name + '.lock')
+  $staleMinutes = 10
+  if (Test-Path $lockPath) {
+    $isStale = $false
+    try {
+      $raw = [string](Get-Content -Path $lockPath -Raw -ErrorAction Stop)
+      $ts = [DateTime]::Parse($raw).ToUniversalTime()
+      if (([DateTime]::UtcNow - $ts).TotalMinutes -ge $staleMinutes) { $isStale = $true }
+    } catch {
+      try {
+        $item = Get-Item -LiteralPath $lockPath -ErrorAction Stop
+        if (([DateTime]::UtcNow - $item.LastWriteTimeUtc).TotalMinutes -ge $staleMinutes) { $isStale = $true }
+      } catch {}
+    }
+    if ($isStale) {
+      Remove-Item -LiteralPath $lockPath -Force -ErrorAction SilentlyContinue
+      Emit-Summary 'STALE_LOCK_CLEARED' ("Cleared stale lock: $lockPath age>=" + $staleMinutes + 'm') 'WARN' 'Autopilot'
+    }
+  }
   if (Test-Path $lockPath) { throw "Lock exists: $lockPath" }
   Set-Content -Path $lockPath -Value ([DateTime]::UtcNow.ToString('o')) -Encoding utf8
   return $lockPath
@@ -181,6 +199,9 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
     $emitRaw = & python @emitArgs 2>&1
     $emitExit = $LASTEXITCODE
     $emitOut = [string]$emitRaw
+    $emitBytesB64 = ''
+    try { $emitBytesB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($emitOut)) } catch { $emitBytesB64 = '' }
+    Emit-Summary 'DIRECTIVE_GEN_RAW' ('DIRECTIVE_GEN_RAW exit=' + $emitExit + ' len=' + $emitOut.Length + ' stdout_stderr=' + $emitOut + ' bytes_b64=' + $emitBytesB64) 'INFO' 'Strategist'
     if ($emitExit -ne 0) {
       Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: nonzero exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
       return ''
