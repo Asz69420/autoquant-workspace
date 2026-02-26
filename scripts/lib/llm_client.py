@@ -20,11 +20,12 @@ OPENCLAW_CLI = shutil.which('openclaw') or os.environ.get('OPENCLAW_CLI_PATH') o
 GATEWAY_URL = 'http://127.0.0.1:18789'
 
 
-def _log_call(agent: str, prompt_len: int, response_len: int, latency_ms: int, success: bool, error: str | None):
+def _log_call(agent: str, prompt_len: int, response_len: int, latency_ms: int, success: bool, error: str | None, source: str = 'openclaw'):
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     row = {
         'timestamp': datetime.now(UTC).isoformat(),
         'agent': agent,
+        'source': source,
         'prompt_length_chars': int(prompt_len),
         'response_length_chars': int(response_len),
         'latency_ms': int(latency_ms),
@@ -64,25 +65,58 @@ def _call_gateway_http(prompt: str, system: str, agent: str, timeout: int) -> st
     return None
 
 
+def llm_complete_direct(prompt: str, system: str = '', model: str = 'openai/gpt-4.1', timeout: int = 120) -> str | None:
+    api_key = os.environ.get('OPENROUTER_API_KEY', '')
+    base_url = os.environ.get('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1')
+    if not api_key:
+        return None
+
+    messages = []
+    if system:
+        messages.append({'role': 'system', 'content': system})
+    messages.append({'role': 'user', 'content': prompt})
+
+    body = json.dumps({
+        'model': model,
+        'messages': messages,
+        'temperature': 0.3,
+    }).encode('utf-8')
+
+    req = urllib.request.Request(
+        f'{base_url}/chat/completions',
+        data=body,
+        headers={
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+        },
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            data = json.loads(resp.read())
+            return data['choices'][0]['message']['content']
+    except Exception:
+        return None
+
+
 def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: int = 120) -> str | None:
-    """Call LLM through OpenClaw runtime. Returns text or None."""
+    """Call LLM through OpenClaw runtime first, then direct OpenRouter fallback."""
     full_prompt = prompt
     if system:
         full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
 
     last_err: str | None = None
 
+    # Try OpenClaw (HTTP + CLI)
     for attempt in range(2):
         t0 = time.time()
         try:
-            # Try HTTP API first (preferred)
             text = _call_gateway_http(prompt, system, agent, timeout)
             if text:
                 latency_ms = int((time.time() - t0) * 1000)
-                _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None)
+                _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None, source='openclaw')
                 return text
 
-            # Fallback to subprocess if HTTP fails
             kwargs = dict(text=True, capture_output=True, timeout=timeout)
             if sys.platform == 'win32':
                 kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW
@@ -103,15 +137,24 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
             obj = json.loads(p.stdout)
             text = obj['result']['payloads'][0]['text']
             latency_ms = int((time.time() - t0) * 1000)
-            _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None)
+            _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None, source='openclaw')
             return text
         except Exception as e:
             latency_ms = int((time.time() - t0) * 1000)
             last_err = str(e)[:2000]
-            _log_call(agent, len(full_prompt), 0, latency_ms, False, last_err)
+            _log_call(agent, len(full_prompt), 0, latency_ms, False, last_err, source='openclaw')
             if attempt == 0:
                 time.sleep(5)
 
+    # Fallback to direct OpenRouter API
+    t1 = time.time()
+    direct = llm_complete_direct(prompt, system, timeout=timeout)
+    if direct:
+        latency_ms = int((time.time() - t1) * 1000)
+        _log_call(agent, len(full_prompt), len(str(direct or '')), latency_ms, True, None, source='openrouter')
+        return direct
+
+    _log_call(agent, len(full_prompt), 0, int((time.time() - t1) * 1000), False, last_err or 'openrouter_fallback_failed', source='openrouter')
     return None
 
 
