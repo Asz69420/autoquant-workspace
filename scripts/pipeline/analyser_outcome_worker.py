@@ -352,7 +352,8 @@ def main() -> int:
     out_path.write_text(json.dumps(payload, indent=2), encoding='utf-8')
 
     summary_line = f'ANALYSER_OUTCOME_SUMMARY — processed=1 verdict={verdict} directives={len(directives[:5])}'
-    _log('OK' if verdict == 'ACCEPT' else 'WARN', 'ANALYSER_OUTCOME_SUMMARY', summary_line)
+    # REJECT is a valid learning outcome, not an execution failure.
+    _log('OK', 'ANALYSER_OUTCOME_SUMMARY', summary_line)
     print(summary_line)
     print(json.dumps({'processed': 1, 'verdict': verdict, 'directives': len(directives[:5]), 'outcome_notes_path': str(out_path).replace('\\', '/')}))
     return 0

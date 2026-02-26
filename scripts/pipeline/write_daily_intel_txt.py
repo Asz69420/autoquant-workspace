@@ -343,7 +343,7 @@ def collect_rows():
                 if not t or t < SINCE_24H:
                     continue
                 sw = str(obj.get("status_word") or "").upper()
-                if sw not in ("FAIL", "WARN"):
+                if sw != "FAIL":
                     continue
                 rc = str(obj.get("reason_code") or obj.get("action") or "UNKNOWN")
                 buckets[rc] += 1
