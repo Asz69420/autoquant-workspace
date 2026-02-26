@@ -344,6 +344,8 @@ function Handle-FastCommand([string]$cmd) {
 }
 
 $CycleRunId = 'autopilot-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+# TEMP debug override: force one known NEW bundle through autopilot path for diagnostics.
+$ForceBundlePath = 'artifacts/bundles/20260226/recombine-20260226112032-862a54c2.bundle.json'
 
 function Emit-Summary($reasonCode, $summary, $statusWord = 'INFO', $agent = 'oQ') {
   if ($DryRun) { return }
@@ -528,6 +530,23 @@ try {
       }
     }
 
+    if (-not [string]::IsNullOrWhiteSpace($ForceBundlePath) -and (Test-Path -LiteralPath $ForceBundlePath)) {
+      $bundlePaths = @($ForceBundlePath) + @($bundlePaths | Where-Object { [string]$_ -ne [string]$ForceBundlePath })
+    }
+
+    $newCandidates = @()
+    foreach ($cand in @($bundlePaths)) {
+      try {
+        if (-not (Test-Path -LiteralPath $cand)) { continue }
+        $cb = Get-Content -LiteralPath $cand -Raw | ConvertFrom-Json
+        $cs = [string]$cb.status
+        if ([string]::IsNullOrWhiteSpace($cs)) { $cs = 'NEW' }
+        if ($cs -eq 'NEW') { $newCandidates += [string]$cand }
+      } catch {}
+    }
+    $selected = if (@($bundlePaths).Count -gt 0) { [string]$bundlePaths[0] } else { '' }
+    Emit-Summary 'BUNDLE_SELECT_DIAG' ('Bundle select: new_count=' + [string]@($newCandidates).Count + ' selected=' + $selected + ' forced=' + [string]$ForceBundlePath + ' new_paths=' + ((@($newCandidates) -join ';'))) 'INFO' 'Autopilot'
+
     Emit-Summary 'BUNDLE_SCAN_DIAG' ('Bundle scan: index_exists=' + (Test-Path $bundleIndexPath) + ' paths=' + [string]@($bundlePaths).Count) 'INFO' 'Autopilot'
     $bundleSlotsUsed = 0
     $consecutiveBundleReadFails = 0
@@ -563,6 +582,7 @@ try {
         if ($bundleStatus -ne 'NEW') { continue }
         $newBundlesSeen += 1
         $processableNewBundles += 1
+        Emit-Summary 'BUNDLE_PROCESS_START' ('Bundle process start: path=' + [string]$bp + ' status=' + $bundleStatus) 'INFO' 'Autopilot'
 
         if (-not $DryRun) {
           Set-BundleState -bundlePath $bp -status 'IN_PROGRESS' -lastError '' -incrementAttempt $true
@@ -626,6 +646,7 @@ try {
             if ([string]::IsNullOrWhiteSpace($thesisPath)) { $thesisPath = [string]$an.thesis }
 
             if ([string]::IsNullOrWhiteSpace($thesisPath)) {
+              Emit-Summary 'BUNDLE_THESIS_RESULT' ('Bundle thesis result: path=' + [string]$bp + ' thesis_path=<empty>') 'FAIL' 'Analyser'
               Emit-Summary 'THESIS_GEN_FAIL' ('THESIS_GEN_FAIL stage=run_analyser reason=EMPTY_THESIS_PATH stdout=' + [string]$anRaw) 'FAIL' 'Analyser'
               Emit-Summary 'SPEC_EMIT_BLOCKED' 'empty thesis path from analyser' 'WARN' 'Strategist'
               Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'WARN' 'Promotion'
@@ -642,6 +663,7 @@ try {
           } catch {
             $thesisErr = 'run_analyser_error'
             try { $thesisErr = [string]$_.Exception.Message } catch {}
+            Emit-Summary 'BUNDLE_THESIS_RESULT' ('Bundle thesis result: path=' + [string]$bp + ' thesis_path=<error> detail=' + $thesisErr) 'FAIL' 'Analyser'
             Emit-Summary 'THESIS_GEN_FAIL' ('THESIS_GEN_FAIL stage=run_analyser detail=' + $thesisErr + ' research_card=' + [string]$b.research_card_path + ' linkmap=' + [string]$lm) 'FAIL' 'Analyser'
             Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError ('THESIS_GEN_FAIL: ' + $thesisErr) -incrementAttempt $false
             Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=BLOCKED spec=SKIPPED variants=0 status=BLOCKED reason=THESIS_GEN_FAIL' 'FAIL' 'Promotion'
@@ -655,12 +677,14 @@ try {
             continue
           }
 
+          Emit-Summary 'BUNDLE_THESIS_RESULT' ('Bundle thesis result: path=' + [string]$bp + ' thesis_path=' + [string]$thesisPath) 'OK' 'Analyser'
           Run-Py @('scripts/pipeline/verify_pipeline_stage2.py','--thesis',$thesisPath) | Out-Null
           $specEmitArgs = @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$thesisPath)
           Emit-Summary 'SPEC_EMIT_DIAG' ('SPEC_EMIT_DIAG cmd=python ' + ($specEmitArgs -join ' ')) 'INFO' 'Strategist'
           $sp = Run-Py $specEmitArgs | ConvertFrom-Json
           $variantCount = 0
           if ($sp.variants) { $variantCount = [int]$sp.variants }
+          Emit-Summary 'BUNDLE_SPEC_RESULT' ('Bundle spec result: path=' + [string]$bp + ' spec_status=' + [string]$sp.status + ' variants=' + [string]$variantCount + ' spec_path=' + [string]$sp.strategy_spec_path) 'INFO' 'Strategist'
 
           try {
             if ($sp.strategy_spec_path -and (Test-Path -LiteralPath $sp.strategy_spec_path)) {
