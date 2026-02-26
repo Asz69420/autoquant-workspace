@@ -113,6 +113,9 @@ $tooLargeSkippedCount = 0
 $refineVariants = 0
 $refineExplore = 0
 $refineDelta = 'n/a'
+$directiveNotesSeen = 0
+$directiveVariantsEmitted = 0
+$explorationVariantsEmitted = 0
 $libraryLessons = 0
 $libraryRunCount = 0
 $candidatesIngested = 0
@@ -188,6 +191,14 @@ try {
     if (Test-Path $prevCountersPath) {
       $prevCounters = Get-Content $prevCountersPath -Raw | ConvertFrom-Json
       if ($null -ne $prevCounters.starvation_cycles) { $starvationCyclesPrev = [int]$prevCounters.starvation_cycles }
+    }
+  } catch {}
+
+  try {
+    $outcomesRoot = 'artifacts/outcomes'
+    if (Test-Path $outcomesRoot) {
+      $latestOutcomeNote = Get-ChildItem -Path $outcomesRoot -Recurse -Filter 'outcome_notes_*.json' -File -ErrorAction SilentlyContinue | Select-Object -First 1
+      if ($latestOutcomeNote) { $directiveNotesSeen = 1 }
     }
   } catch {}
 
@@ -304,6 +315,19 @@ try {
           $sp = Run-Py @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$an.thesis_path) | ConvertFrom-Json
           $variantCount = 0
           if ($sp.variants) { $variantCount = [int]$sp.variants }
+
+          try {
+            if ($sp.strategy_spec_path -and (Test-Path -LiteralPath $sp.strategy_spec_path)) {
+              $specObj = Get-Content -LiteralPath $sp.strategy_spec_path -Raw | ConvertFrom-Json
+              $specVariants = @($specObj.variants)
+              $directiveBatch = @($specVariants | Where-Object { [string]$_.origin -eq 'DIRECTIVE' }).Count
+              $explorationBatch = @($specVariants | Where-Object { [string]$_.name -like 'directive_exploration*' }).Count
+              if ($directiveBatch -gt 0) { $directiveNotesSeen = 1 }
+              $directiveVariantsEmitted += [int]$directiveBatch
+              $explorationVariantsEmitted += [int]$explorationBatch
+            }
+          } catch {}
+
           $promoStatus = 'OK'
           if ($sp.status -and [string]$sp.status -eq 'BLOCKED') { $promoStatus = 'BLOCKED' }
           if ($variantCount -eq 0) { $promoStatus = 'BLOCKED' }
@@ -545,6 +569,21 @@ finally {
 
 $candidatesIngested = $bundlesProcessed
 
+if ([int]$directiveVariantsEmitted -eq 0) {
+  try {
+    $latestSpec = Get-ChildItem -Path 'artifacts/strategy_specs' -Recurse -Filter '*.strategy_spec.json' -File -ErrorAction SilentlyContinue |
+      Sort-Object LastWriteTime -Descending |
+      Select-Object -First 1
+    if ($latestSpec) {
+      $latestSpecObj = Get-Content -LiteralPath $latestSpec.FullName -Raw | ConvertFrom-Json
+      $latestVariants = @($latestSpecObj.variants)
+      $directiveVariantsEmitted = @($latestVariants | Where-Object { [string]$_.origin -eq 'DIRECTIVE' }).Count
+      $explorationVariantsEmitted = @($latestVariants | Where-Object { [string]$_.name -like 'directive_exploration*' }).Count
+      if ($directiveVariantsEmitted -gt 0) { $directiveNotesSeen = 1 }
+    }
+  } catch {}
+}
+
 $summary = [ordered]@{
   event = 'LAB_SUMMARY'
   created_at = [DateTime]::UtcNow.ToString('o')
@@ -555,6 +594,8 @@ $summary = [ordered]@{
   candidates_ingested = $candidatesIngested
   candidates_reaching_refinement = $candidatesReachingRefinement
   candidates_passing_gate = $candidatesPassingGate
+  directive_notes_seen = [int]$directiveNotesSeen
+  directive_variants_emitted = [int]$directiveVariantsEmitted
   active_library_size = $activeLibrarySize
   new_indicators_added = $newIndicatorsAdded
   skipped_indicators_dedup = $skippedIndicatorsDedup
@@ -588,6 +629,23 @@ $counters.updated_at = [DateTime]::UtcNow.ToString('o')
 $summary.starvation_cycles = [int]$counters.starvation_cycles
 $summary.drought_cycles = [int]$counters.drought_cycles
 
+$labCountersPath = Join-Path $stateDir 'lab_counters.json'
+$labCounters = [ordered]@{ directive_loop_stall_cycles = 0; updated_at = [DateTime]::UtcNow.ToString('o') }
+if (Test-Path $labCountersPath) {
+  try {
+    $labPrev = Get-Content $labCountersPath -Raw | ConvertFrom-Json
+    if ($null -ne $labPrev.directive_loop_stall_cycles) { $labCounters.directive_loop_stall_cycles = [int]$labPrev.directive_loop_stall_cycles }
+  } catch {}
+}
+if (([int]$directiveNotesSeen -eq 0) -or ([int]$directiveVariantsEmitted -eq 0)) {
+  $labCounters.directive_loop_stall_cycles = [int]$labCounters.directive_loop_stall_cycles + 1
+} else {
+  $labCounters.directive_loop_stall_cycles = 0
+}
+$labCounters.updated_at = [DateTime]::UtcNow.ToString('o')
+($labCounters | ConvertTo-Json -Depth 5) | Set-Content -Path $labCountersPath -Encoding utf8
+$summary.directive_loop_stall_cycles = [int]$labCounters.directive_loop_stall_cycles
+
 ($summary | ConvertTo-Json -Depth 5) | Set-Content -Path 'data/state/autopilot_summary.json' -Encoding utf8
 
 if (-not $DryRun) {
@@ -598,8 +656,15 @@ if (-not $DryRun) {
     Emit-Summary 'LAB_DROUGHT_WARN' ("Autopilot drought: drought_cycles=" + $counters.drought_cycles + " candidates_passing_gate=" + $candidatesPassingGate) 'WARN' 'oQ'
   }
 
+  $directiveLoopStatus = if (([int]$directiveNotesSeen -eq 1) -and ([int]$directiveVariantsEmitted -gt 0)) { 'OK' } else { 'WARN' }
+  Emit-Summary 'DIRECTIVE_LOOP_SUMMARY' ("Directive loop: notes=" + [int]$directiveNotesSeen + " directive_variants=" + [int]$directiveVariantsEmitted + " exploration_variants=" + [int]$explorationVariantsEmitted) $directiveLoopStatus 'oQ'
+
+  if ([int]$labCounters.directive_loop_stall_cycles -ge 12) {
+    Emit-Summary 'DIRECTIVE_LOOP_STALL_WARN' 'Directive loop stalled: 12 cycles without directive variants' 'WARN' 'oQ'
+  }
+
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)
