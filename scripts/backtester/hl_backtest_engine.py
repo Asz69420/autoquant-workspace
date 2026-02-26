@@ -5,7 +5,81 @@ import argparse, csv, hashlib, json, subprocess, sys, uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pandas as pd
+
+try:
+    import pandas_ta as pta
+except Exception:
+    pta = None
+
 ROOT = Path(__file__).resolve().parents[2]
+
+
+INDICATOR_REGISTRY: dict[str, dict] = {
+    'EMA': {'engine': 'pandas_ta', 'columns': ['EMA_9', 'EMA_21', 'EMA_50', 'EMA_200']},
+    'SMA': {'engine': 'pandas_ta', 'columns': ['SMA_20', 'SMA_50', 'SMA_200']},
+    'RSI': {'engine': 'pandas_ta', 'columns': ['RSI_14']},
+    'ATR': {'engine': 'pandas_ta', 'columns': ['ATR_14']},
+    'MACD': {'engine': 'pandas_ta', 'columns': ['MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9']},
+    'Bollinger Bands': {'engine': 'pandas_ta', 'columns': ['BBL_20_2.0', 'BBM_20_2.0', 'BBU_20_2.0']},
+    'Stochastic': {'engine': 'pandas_ta', 'columns': ['STOCHk_14_3_3', 'STOCHd_14_3_3']},
+    'ADX': {'engine': 'pandas_ta', 'columns': ['ADX_14']},
+    'CCI': {'engine': 'pandas_ta', 'columns': ['CCI_20_0.015']},
+    'Williams %R': {'engine': 'pandas_ta', 'columns': ['WILLR_14']},
+    'OBV': {'engine': 'pandas_ta', 'columns': ['OBV']},
+    'VWAP': {'engine': 'pandas_ta', 'columns': ['VWAP_D']},
+    'Ichimoku': {'engine': 'pandas_ta', 'columns': ['ISA_9', 'ISB_26', 'ITS_9', 'IKS_26']},
+    'Supertrend': {'engine': 'pandas_ta', 'columns': ['SUPERT_7_3.0', 'SUPERTd_7_3.0']},
+    'Donchian Channels': {'engine': 'pandas_ta', 'columns': ['DCL_20_20', 'DCM_20_20', 'DCU_20_20']},
+}
+
+
+def build_indicator_frame(df: pd.DataFrame) -> pd.DataFrame:
+    out = df.copy()
+    if pta is None:
+        return out
+    v = out['volume'] if 'volume' in out.columns else pd.Series(1.0, index=out.index)
+    try:
+        out['EMA_9'] = pta.ema(out['close'], length=9)
+        out['EMA_21'] = pta.ema(out['close'], length=21)
+        out['EMA_50'] = pta.ema(out['close'], length=50)
+        out['EMA_200'] = pta.ema(out['close'], length=200)
+        out['SMA_20'] = pta.sma(out['close'], length=20)
+        out['SMA_50'] = pta.sma(out['close'], length=50)
+        out['SMA_200'] = pta.sma(out['close'], length=200)
+        out['RSI_14'] = pta.rsi(out['close'], length=14)
+        out['ATR_14'] = pta.atr(out['high'], out['low'], out['close'], length=14)
+        m = pta.macd(out['close'], fast=12, slow=26, signal=9)
+        if m is not None:
+            out = out.join(m)
+        bb = pta.bbands(out['close'], length=20, std=2.0)
+        if bb is not None:
+            out = out.join(bb)
+        st = pta.stoch(out['high'], out['low'], out['close'], k=14, d=3, smooth_k=3)
+        if st is not None:
+            out = out.join(st)
+        adx = pta.adx(out['high'], out['low'], out['close'], length=14)
+        if adx is not None:
+            out = out.join(adx)
+        out['CCI_20_0.015'] = pta.cci(out['high'], out['low'], out['close'], length=20)
+        out['WILLR_14'] = pta.willr(out['high'], out['low'], out['close'], length=14)
+        out['OBV'] = pta.obv(out['close'], v)
+        try:
+            out['VWAP_D'] = pta.vwap(out['high'], out['low'], out['close'], v)
+        except Exception:
+            out['VWAP_D'] = pd.NA
+        ich = pta.ichimoku(out['high'], out['low'], out['close'])
+        if isinstance(ich, tuple) and len(ich) > 0 and ich[0] is not None:
+            out = out.join(ich[0])
+        sup = pta.supertrend(out['high'], out['low'], out['close'], length=7, multiplier=3.0)
+        if sup is not None:
+            out = out.join(sup)
+        dc = pta.donchian(out['high'], out['low'], lower_length=20, upper_length=20)
+        if dc is not None:
+            out = out.join(dc)
+    except Exception:
+        return out
+    return out
 
 
 def parse_rules(lines: list[str]) -> dict[str, float]:
@@ -104,8 +178,11 @@ def main() -> int:
 
     rows = list(csv.DictReader(csv_path.open('r', encoding='utf-8-sig', newline='')))
     bars = [{
-        'time': r['time'], 'open': float(r['open']), 'high': float(r['high']), 'low': float(r['low']), 'close': float(r['close'])
+        'time': r['time'], 'open': float(r['open']), 'high': float(r['high']), 'low': float(r['low']), 'close': float(r['close']), 'volume': float(r.get('volume', 1.0) or 1.0)
     } for r in rows]
+
+    df = pd.DataFrame(bars)
+    ind_df = build_indicator_frame(df)
 
     # indicators
     ema9 = ema21 = ema50 = ema200 = None
@@ -142,7 +219,7 @@ def main() -> int:
         trs.append(tr)
         if len(trs) > atr_period:
             trs.pop(0)
-        atr = sum(trs) / len(trs)
+        atr_fallback = sum(trs) / len(trs)
 
         prev_ema9, prev_ema21, prev_ema50 = ema9, ema21, ema50
         ema9 = ema(ema9, b['close'], 9)
@@ -151,6 +228,28 @@ def main() -> int:
         ema200 = ema(ema200, b['close'], ema_trend)
 
         rsi, avg_gain, avg_loss = rsi_step(prev_close, b['close'], avg_gain, avg_loss, rsi_period)
+
+        # Prefer pandas-ta indicators when present; fallback to legacy custom calculations.
+        try:
+            rowi = ind_df.iloc[i]
+            for nm, var in [('EMA_9', 'ema9'), ('EMA_21', 'ema21'), ('EMA_50', 'ema50'), ('EMA_200', 'ema200')]:
+                val = rowi.get(nm)
+                if pd.notna(val):
+                    if var == 'ema9':
+                        ema9 = float(val)
+                    elif var == 'ema21':
+                        ema21 = float(val)
+                    elif var == 'ema50':
+                        ema50 = float(val)
+                    elif var == 'ema200':
+                        ema200 = float(val)
+            rv = rowi.get('RSI_14')
+            if pd.notna(rv):
+                rsi = float(rv)
+            av = rowi.get('ATR_14')
+            atr = float(av) if pd.notna(av) else atr_fallback
+        except Exception:
+            atr = atr_fallback
 
         if is_trendpullback:
             ema50_up = prev_ema50 is not None and ema50 > prev_ema50
@@ -255,6 +354,7 @@ def main() -> int:
         'inputs': {'dataset_meta': args.dataset_meta, 'dataset_csv': str(csv_path), 'strategy_spec': args.strategy_spec, 'variant': args.variant},
         'fee_model_hash': fee_model_hash,
         'settings': {'entry_fill_rule': entry_fill, 'tie_break': tie_break, 'fee_mode': fee_mode, 'fee_bps': fee_bps, 'slippage_bps': slippage_bps, 'cost_config_path': str(cost_config_path), 'fee_model_hash': fee_model_hash},
+        'indicator_registry': INDICATOR_REGISTRY,
         'results': {
             'net_profit': round(net, 8),
             'net_profit_pct': round((net / args.initial_capital), 8) if args.initial_capital else None,
