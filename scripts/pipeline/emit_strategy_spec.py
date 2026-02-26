@@ -292,6 +292,39 @@ def _fallback_templates(thesis: dict) -> list[dict]:
     ][:3]
 
 
+def _latest_outcome_guidance(limit: int = 5) -> list[str]:
+    out_root = ROOT / 'artifacts' / 'outcomes'
+    files = sorted(out_root.glob('**/outcome_notes_*.json'), key=lambda p: p.stat().st_mtime, reverse=True)
+    notes: list[str] = []
+    for p in files[: max(1, limit)]:
+        try:
+            obj = json.loads(p.read_text(encoding='utf-8'))
+            for h in (obj.get('next_hypotheses') or [])[:2]:
+                hs = str(h).strip()
+                if hs:
+                    notes.append(f'Outcome-guided hypothesis: {hs}')
+            for f in (obj.get('what_failed') or [])[:1]:
+                fs = str(f).strip()
+                if fs:
+                    notes.append(f'Avoid prior failure pattern: {fs}')
+        except Exception:
+            continue
+    return unique(notes, 10)
+
+
+def _apply_outcome_guidance(variants: list[dict], limit: int = 5) -> list[dict]:
+    guidance = _latest_outcome_guidance(limit=limit)
+    if not guidance:
+        return variants
+    out: list[dict] = []
+    for v in variants:
+        nv = copy.deepcopy(v)
+        nv['risk_rules'] = unique((nv.get('risk_rules') or []) + guidance[:3], 10)
+        nv['filters'] = unique((nv.get('filters') or []) + guidance[:2], 10)
+        out.append(nv)
+    return out
+
+
 def main() -> int:
     _set_reasoning_effort_for_strategist()
 
@@ -322,6 +355,8 @@ def main() -> int:
             }))
             return 0
         variants = _fallback_templates(thesis)
+
+    variants = _apply_outcome_guidance(variants, limit=5)
 
     if len(variants) == 0:
         print(json.dumps({

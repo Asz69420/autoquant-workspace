@@ -171,6 +171,7 @@ def main() -> int:
     dedup = 0
     failed = 0
     new_total = 0
+    concept_cards = []
     for ch in state.get('channels', []):
         if ch.get('enabled', True) is False:
             continue
@@ -206,8 +207,14 @@ def main() -> int:
                 rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'transcript', '--raw-text', txt, '--title', item['title'], '--author', ch.get('name', 'youtube'))
                 _log('YT_VIDEO_INGESTED', 'YT_VIDEO_INGESTED', f"video_id={vid}", 'INFO', outputs=[rc['research_card_path']])
             except Exception:
-                failed += 1
-                continue
+                # fallback ingest so content-loop can still learn when transcript endpoint is rate-limited
+                try:
+                    raw = f"Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v={vid} title={item['title']}"
+                    rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'youtube_url', '--raw-text', raw, '--title', item['title'], '--author', ch.get('name', 'youtube'))
+                    _log('YT_VIDEO_INGESTED_FALLBACK', 'YT_VIDEO_INGESTED_FALLBACK', f"video_id={vid}", 'WARN', outputs=[rc['research_card_path']])
+                except Exception:
+                    failed += 1
+                    continue
 
             linked = _resolve_existing_indicators(rc['research_card_path'], ind_idx)
 
@@ -230,6 +237,8 @@ def main() -> int:
             bundles = [str(bpath).replace('\\', '/')] + [x for x in bundles if x != str(bpath).replace('\\', '/')]
             seen_videos.add(vid)
             created.append(str(bpath).replace('\\', '/'))
+            if str(ch.get('mode', '')).upper() == 'CONCEPTS':
+                concept_cards.append(str(rc['research_card_path']).replace('\\', '/'))
             processed += 1
 
         if latest:
@@ -239,6 +248,12 @@ def main() -> int:
     _w(BUNDLE_INDEX, bundles[:500])
     state['seen_video_ids'] = list(seen_videos)[-1000:]
     _w(STATE_PATH, state)
+
+    if concept_cards:
+        try:
+            _run('scripts/pipeline/analyser_content_worker.py', '--research-cards-json', json.dumps(concept_cards), '--max-items', '2')
+        except Exception:
+            pass
     y_status = 'OK'
     if failed > 0 and processed == 0 and new_total > 0:
         y_status = 'FAIL'

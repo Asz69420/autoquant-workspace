@@ -129,6 +129,8 @@ $recombineIndicator = ''
 $recombineTemplate = ''
 $recombineEmitted = $false
 $starvationCyclesPrev = 0
+$latestBatchArtifactPath = ''
+$latestRefinementArtifactPath = ''
 
 if (Handle-FastCommand $FastCommand) {
   exit 0
@@ -325,6 +327,7 @@ try {
             try {
               $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all') | ConvertFrom-Json
               $bdoc = Get-Content $batch.batch_artifact_path -Raw | ConvertFrom-Json
+              $latestBatchArtifactPath = [string]$batch.batch_artifact_path
               $batchRuns += [int]$bdoc.summary.total_runs
               $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $batchSkipped += [int]$bdoc.summary.failed_runs
@@ -366,6 +369,7 @@ try {
           } elseif ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
             $refinementsRun += 1
+            if ($ref.refinement_cycle_path) { $latestRefinementArtifactPath = [string]$ref.refinement_cycle_path }
             $candidatesReachingRefinement += 1
             try {
               $rdoc = Get-Content $ref.refinement_cycle_path -Raw | ConvertFrom-Json
@@ -487,6 +491,17 @@ try {
       }
       Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: run fail)' 'WARN' 'Librarian'
       $libraryEmitted = $true
+    }
+
+    if (($batchExecuted -gt 0 -or $refinementsRun -gt 0)) {
+      try {
+        $outcArgs = @('scripts/pipeline/analyser_outcome_worker.py','--run-id',$runId)
+        if (-not [string]::IsNullOrWhiteSpace($latestBatchArtifactPath)) { $outcArgs += @('--batch-artifact',$latestBatchArtifactPath) }
+        if (-not [string]::IsNullOrWhiteSpace($latestRefinementArtifactPath)) { $outcArgs += @('--refinement-artifact',$latestRefinementArtifactPath) }
+        Run-Py $outcArgs | Out-Null
+      } catch {
+        Emit-Summary 'ANALYSER_OUTCOME_SUMMARY' 'Analyser outcome: processed=1 status=WARN' 'WARN' 'Analyser'
+      }
     }
   }
 
