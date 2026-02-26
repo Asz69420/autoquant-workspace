@@ -131,6 +131,20 @@ def _resolve_existing_indicators(rc_path: str, ind_idx: list[dict]) -> list[str]
     return out
 
 
+def _research_card_has_sufficient_content(rc_path: str) -> bool:
+    try:
+        card = _j(Path(rc_path), {})
+    except Exception:
+        return False
+
+    indicators = card.get('indicators_mentioned', []) if isinstance(card.get('indicators_mentioned', []), list) else []
+    strategy_components = card.get('strategy_components', []) if isinstance(card.get('strategy_components', []), list) else []
+    extracted_rules_raw = card.get('extracted_rules', []) if isinstance(card.get('extracted_rules', []), list) else []
+    extracted_rules = [str(x).strip() for x in extracted_rules_raw if str(x).strip() and str(x).strip().lower() != 'not specified in content.']
+
+    return bool(indicators or strategy_components or extracted_rules)
+
+
 def _append_usage_note(linkmap_path: str, *, channel_name: str, channel_url: str, video_id: str):
     try:
         lm_path = Path(linkmap_path)
@@ -300,6 +314,11 @@ def main() -> int:
                 except Exception:
                     failed += 1
                     continue
+
+            if not _research_card_has_sufficient_content(rc['research_card_path']):
+                _log('RESEARCH_CARD_REJECTED', 'insufficient_content', f"video_id={vid} reason=insufficient_content", 'WARN', outputs=[rc['research_card_path']])
+                seen_videos.add(vid)
+                continue
 
             linked = _resolve_existing_indicators(rc['research_card_path'], ind_idx)
 

@@ -438,6 +438,121 @@ try {
     }
   }
 
+  if (-not $DryRun -and $batchExecuted -eq 0) {
+    try {
+      $specIndexPath = 'artifacts/strategy_specs/INDEX.json'
+      $runIndexPath = 'artifacts/library/RUN_INDEX.json'
+      $specCandidates = @()
+      if (Test-Path $specIndexPath) {
+        $specRaw = Get-Content $specIndexPath -Raw | ConvertFrom-Json
+        if ($specRaw -is [System.Array]) { $specCandidates = $specRaw } elseif ($null -ne $specRaw) { $specCandidates = @($specRaw) }
+      }
+
+      $runRows = @()
+      if (Test-Path $runIndexPath) {
+        $runRaw = Get-Content $runIndexPath -Raw | ConvertFrom-Json
+        if ($runRaw -is [System.Array]) { $runRows = $runRaw } elseif ($null -ne $runRaw) { $runRows = @($runRaw) }
+      }
+
+      $completedKeys = @{}
+      foreach ($rr in $runRows) {
+        try {
+          $sp = [string]$rr.strategy_spec_path
+          $vn = [string]$rr.variant_name
+          if (-not [string]::IsNullOrWhiteSpace($sp) -and -not [string]::IsNullOrWhiteSpace($vn)) {
+            $spNorm = $sp.Replace('\\','/').ToLowerInvariant()
+            $completedKeys[($spNorm + '|' + $vn)] = $true
+          }
+        } catch {}
+      }
+
+      $backfillTried = 0
+      foreach ($spPath in $specCandidates) {
+        if ($backfillTried -ge 3) { break }
+        if ([string]::IsNullOrWhiteSpace([string]$spPath)) { continue }
+        if (-not (Test-Path -LiteralPath $spPath)) { continue }
+
+        $specObj = $null
+        try { $specObj = Get-Content -LiteralPath $spPath -Raw | ConvertFrom-Json } catch { continue }
+        $variants = @($specObj.variants)
+        if ($variants.Count -eq 0) { continue }
+
+        $spNorm = ([string]$spPath).Replace('\\','/').ToLowerInvariant()
+        $allCovered = $true
+        foreach ($vv in $variants) {
+          $vn = [string]$vv.name
+          if ([string]::IsNullOrWhiteSpace($vn)) { continue }
+          if (-not $completedKeys.ContainsKey($spNorm + '|' + $vn)) {
+            $allCovered = $false
+            break
+          }
+        }
+        if ($allCovered) { continue }
+
+        $backfillTried += 1
+        $batch = $null
+        try {
+          $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$spPath,'--variant','all') | ConvertFrom-Json
+          $bdoc = Get-Content $batch.batch_artifact_path -Raw | ConvertFrom-Json
+          $latestBatchArtifactPath = [string]$batch.batch_artifact_path
+          $batchRuns += [int]$bdoc.summary.total_runs
+          $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
+          $batchSkipped += [int]$bdoc.summary.failed_runs
+          foreach ($rr in $bdoc.runs) {
+            if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 }
+            if ($rr.gate_pass -eq $true) { $candidatesPassingGate += 1 }
+          }
+          $execCount = ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
+          $bStatus = if ($execCount -le 0) { 'WARN' } else { 'OK' }
+          Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch(backfill): runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail + " spec=" + [IO.Path]::GetFileName([string]$spPath)) $bStatus 'Backtester'
+          $batchEmitted = $true
+
+          if ($execCount -gt 0 -and $MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
+            try {
+              $promoId = [IO.Path]::GetFileNameWithoutExtension([string]$spPath)
+              $promoPath = "artifacts/promotions/" + (Get-Date -Format 'yyyyMMdd') + "/promo_backfill_" + $promoId + ".promotion_run.json"
+              $promoObj = [ordered]@{
+                schema_version = '1.0'
+                id = "promo_backfill_" + $promoId
+                created_at = [DateTime]::UtcNow.ToString('o')
+                status = 'OK'
+                reason_code = $null
+                suggestion = $null
+                input_linkmap_path = ''
+                thesis_artifact_path = ''
+                strategy_spec_artifact_path = $spPath
+                batch_backtest_artifact_path = $batch.batch_artifact_path
+                experiment_plan_artifact_path = $(if ($batch.experiment_plan_path) { $batch.experiment_plan_path } else { '' })
+              }
+              New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($promoPath)) | Out-Null
+              ($promoObj | ConvertTo-Json -Depth 8) | Set-Content -Path $promoPath -Encoding utf8
+
+              $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
+              $refinementsRun += 1
+              if ($ref.refinement_cycle_path) { $latestRefinementArtifactPath = [string]$ref.refinement_cycle_path }
+              $candidatesReachingRefinement += 1
+              try {
+                $rdoc = Get-Content $ref.refinement_cycle_path -Raw | ConvertFrom-Json
+                $refineVariants = [int]$rdoc.winner.summary.total_runs
+                $refineExplore = [int]$rdoc.explore_variants_used_total
+                $refineDelta = [string]$rdoc.best_score_delta
+                $rStatus = if ([string]$rdoc.final_recommendation -eq 'NO_IMPROVEMENT') { 'WARN' } else { 'OK' }
+                Emit-Summary 'REFINEMENT_SUMMARY' ("Refine(backfill): iters=" + $rdoc.iterations_used + " variants=" + $refineVariants + " explore=" + $refineExplore + " delta=" + $refineDelta + " status=" + $rdoc.final_recommendation + " spec=" + [IO.Path]::GetFileName([string]$spPath)) $rStatus 'Refinement'
+                $refineEmitted = $true
+              } catch {}
+            } catch {
+              Emit-Summary 'REFINEMENT_SUMMARY' ('Refine(backfill): iters=0 variants=0 explore=0 delta=n/a status=SKIPPED spec=' + [IO.Path]::GetFileName([string]$spPath)) 'WARN' 'Refinement'
+              $refineEmitted = $true
+            }
+          }
+        } catch {
+          Emit-Summary 'BATCH_BACKTEST_SUMMARY' ('Batch(backfill): runs=0 executed=0 skipped=0 (error) spec=' + [IO.Path]::GetFileName([string]$spPath)) 'FAIL' 'Backtester'
+          $batchEmitted = $true
+        }
+      }
+    } catch {}
+  }
+
   if (-not $batchEmitted -and -not $DryRun) {
     Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'OK' 'Backtester'
     $batchEmitted = $true
