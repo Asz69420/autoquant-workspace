@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import subprocess
+import tempfile
 import time
 from datetime import datetime, UTC
 from pathlib import Path
@@ -37,13 +38,25 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'reader', timeout: 
     if system:
         full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
 
-    cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--message', full_prompt, '--json']
     last_err: str | None = None
 
     for attempt in range(2):
         t0 = time.time()
+        tmp_path = ''
         try:
-            p = subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=timeout)
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False, encoding='utf-8') as f:
+                f.write(full_prompt)
+                tmp_path = f.name
+
+            # 1) stdin path (no --message) to avoid Windows argv length limits
+            cmd_stdin = [OPENCLAW_CLI, 'agent', '--agent', agent, '--json']
+            try:
+                p = subprocess.run(cmd_stdin, input=full_prompt, text=True, capture_output=True, check=True, timeout=timeout)
+            except Exception:
+                # 2) @file reference fallback via --message
+                cmd_atfile = [OPENCLAW_CLI, 'agent', '--agent', agent, '--message', f'@{tmp_path}', '--json']
+                p = subprocess.run(cmd_atfile, text=True, capture_output=True, check=True, timeout=timeout)
+
             obj = json.loads(p.stdout)
             text = obj['result']['payloads'][0]['text']
             latency_ms = int((time.time() - t0) * 1000)
@@ -55,6 +68,12 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'reader', timeout: 
             _log_call(agent, len(full_prompt), 0, latency_ms, False, last_err)
             if attempt == 0:
                 time.sleep(5)
+        finally:
+            if tmp_path:
+                try:
+                    Path(tmp_path).unlink(missing_ok=True)
+                except Exception:
+                    pass
 
     return None
 
