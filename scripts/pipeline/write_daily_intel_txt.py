@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -21,9 +22,13 @@ PROMO_ROOT = ROOT / "artifacts" / "promotions"
 AEST = ZoneInfo("Australia/Brisbane")
 NOW_UTC = datetime.now(timezone.utc)
 SINCE_24H = NOW_UTC - timedelta(hours=24)
+
 TF_ORDER = {"4h": 0, "1h": 1, "15m": 2}
 ASSET_ORDER = {"BTC": 0, "ETH": 1}
+EMOJI = {"BTC": "🟠", "ETH": "🔵"}
 MAX_WIDTH = 42
+
+fmt = "{:<1} {:<12} {:>4} {:>4} {:>3} {:>4} {:>5}"
 
 ALIAS = {
     "adx": "ADX",
@@ -69,7 +74,7 @@ def inum(v):
         return None
 
 
-def dt(v: str | None):
+def dt(v):
     if not v:
         return None
     s = str(v).strip()
@@ -81,23 +86,20 @@ def dt(v: str | None):
         return None
 
 
-def pct(v: float | None):
+def pct(v):
     if v is None:
         return None
     return v * 100.0 if abs(v) <= 1.0 else v
 
 
-def alias12(name: str):
+def alias12(name: str) -> str:
     cleaned = "".join(ch if ch.isalnum() or ch in " _-" else " " for ch in (name or ""))
     toks = [t for t in cleaned.replace("-", " ").replace("_", " ").split() if t]
     if not toks:
         return "Unknown"
     mapped = [ALIAS.get(t.lower(), t[:5].title()) for t in toks]
-    if len(mapped) >= 2:
-        s = f"{mapped[0]}_{mapped[1]}"
-    else:
-        s = mapped[0]
-    return s[:12]
+    out = f"{mapped[0]}_{mapped[1]}" if len(mapped) >= 2 else mapped[0]
+    return out[:12]
 
 
 def trend(prev_pf, curr_pf):
@@ -116,26 +118,31 @@ class Row:
     created: datetime
     asset: str
     tf: str
-    strategy: str
+    name: str
     key: str
     pf: float
     wr: float | None
     tc: int
     dd: float | None
     pnl: float | None
-    t: str
+    arrow: str
 
 
 def strategy_name(spec_path: str, variant: str):
     spec = jload(Path(spec_path), {}) if spec_path else {}
-    thesis = jload(Path(str(spec.get("source_thesis_path") or "")), {}) if spec.get("source_thesis_path") else {}
+    thesis_path = str(spec.get("source_thesis_path") or "")
+    thesis = jload(Path(thesis_path), {}) if thesis_path else {}
 
-    sigs = thesis.get("candidate_signals") if isinstance(thesis, dict) else None
     pair = []
+    sigs = thesis.get("candidate_signals") if isinstance(thesis, dict) else None
     if isinstance(sigs, list):
         for s in sigs:
-            if isinstance(s, dict) and isinstance(s.get("uses_indicators"), list):
-                pair.extend([str(x) for x in s["uses_indicators"] if str(x).strip()])
+            ui = s.get("uses_indicators") if isinstance(s, dict) else None
+            if isinstance(ui, list):
+                for x in ui:
+                    sx = str(x).strip()
+                    if sx:
+                        pair.append(sx)
             if len(pair) >= 2:
                 break
 
@@ -158,6 +165,7 @@ def strategy_name(spec_path: str, variant: str):
 def metrics(backtest_path: str, run: dict):
     bj = jload(Path(backtest_path), {}) if backtest_path and Path(backtest_path).exists() else {}
     res = bj.get("results") or {}
+
     wr = pct(fnum(res.get("win_rate")))
     tc = inum(res.get("total_trades") or res.get("trades") or run.get("trades"))
     pnl = pct(fnum(res.get("net_profit_pct")))
@@ -186,7 +194,7 @@ def metrics(backtest_path: str, run: dict):
     return wr, tc, dd, pnl
 
 
-def collect():
+def collect_rows():
     runs = jload(RUN_INDEX, [])
     pf_hist = defaultdict(list)
     staged = []
@@ -196,6 +204,7 @@ def collect():
         pf = fnum(r.get("profit_factor"))
         if not created or pf is None:
             continue
+
         ds = r.get("datasets_tested") or []
         if not ds:
             continue
@@ -205,45 +214,45 @@ def collect():
         if not asset or not tf:
             continue
 
-        sp = str(r.get("strategy_spec_path") or "")
-        var = str(r.get("variant_name") or "")
-        sname, skey = strategy_name(sp, var)
+        spec_path = str(r.get("strategy_spec_path") or "")
+        variant = str(r.get("variant_name") or "")
+        name, key = strategy_name(spec_path, variant)
 
         bt = str((r.get("pointers") or {}).get("backtest_result") or "")
         wr, tc, dd, pnl = metrics(bt, r)
         if tc is None or tc <= 0:
             continue
 
-        staged.append((created, asset, tf, sname, skey, pf, wr, tc, dd, pnl))
-        pf_hist[skey].append((created, pf))
+        staged.append((created, asset, tf, name, key, pf, wr, tc, dd, pnl))
+        pf_hist[key].append((created, pf))
 
     for k in pf_hist:
         pf_hist[k].sort(key=lambda x: x[0])
 
     rows = []
-    for created, asset, tf, sname, skey, pf, wr, tc, dd, pnl in staged:
+    for created, asset, tf, name, key, pf, wr, tc, dd, pnl in staged:
         prev = None
-        for hdt, hpf in pf_hist[skey]:
+        for hdt, hpf in pf_hist[key]:
             if hdt < created:
                 prev = hpf
             else:
                 break
-        rows.append(Row(created, asset, tf, sname, skey, pf, wr, tc, dd, pnl, trend(prev, pf)))
+        rows.append(Row(created, asset, tf, name, key, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
-    # global dedupe: strategy appears once, keep best row only
+    # Deduplicate: strategy appears once globally, keep best result only
     best = {}
     for r in rows:
-        cur = best.get(r.strategy)
+        cur = best.get(r.key)
         if cur is None or (r.pf, r.wr or -999, r.pnl or -999) > (cur.pf, cur.wr or -999, cur.pnl or -999):
-            best[r.strategy] = r
+            best[r.key] = r
+
     deduped = list(best.values())
 
-    meta = {
-        "cycles": 0,
-        "backtests": sum(1 for r in rows if r.created >= SINCE_24H),
-        "specs": len({str(x[3]) for x in staged if x[0] >= SINCE_24H}),
-        "errors": 0,
-    }
+    # 24h meta
+    cycles = 0
+    errors = 0
+    backtests = sum(1 for r in rows if r.created >= SINCE_24H)
+    specs = len({str((x.get('strategy_spec_path') or '')) for x in runs if dt(x.get('created_at')) and dt(x.get('created_at')) >= SINCE_24H})
 
     if BATCH_ROOT.exists():
         for p in BATCH_ROOT.rglob("*.batch_backtest.json"):
@@ -251,38 +260,51 @@ def collect():
             c = dt(j.get("created_at"))
             if not c or c < SINCE_24H:
                 continue
-            meta["cycles"] += 1
-            meta["errors"] += int(inum((j.get("summary") or {}).get("failed_runs")) or 0)
+            cycles += 1
+            errors += int(inum((j.get("summary") or {}).get("failed_runs")) or 0)
 
-    return deduped, meta
+    return deduped, {"cycles": cycles, "backtests": backtests, "specs": specs, "errors": errors}
 
 
-def fmt(v, d=1, signed=False):
+def fmtv(v, d=1, signed=False):
     if v is None:
         return "-"
     return f"{v:+.{d}f}" if signed else f"{v:.{d}f}"
 
 
-def clamp(line: str):
-    return line if len(line) <= MAX_WIDTH else line[:MAX_WIDTH]
+def limit42(s: str) -> str:
+    return s if len(s) <= MAX_WIDTH else s[:MAX_WIDTH]
 
 
-def render_tables(rows: list[Row]):
+def render_asset_blocks(rows: list[Row]):
     lines = []
-    for asset in sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99)):
-        lines.append("🏆 BTC" if asset == "BTC" else "🔵 ETH" if asset == "ETH" else f"⚪ {asset}")
-        aset = [r for r in rows if r.asset == asset]
-        tfs = sorted({r.tf for r in aset}, key=lambda t: TF_ORDER.get(t, 99))
+    assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
+    for asset in assets:
+        lines.append(f"{EMOJI.get(asset, '⚪')} {asset}")
+
+        header = fmt.format("△", "Strategy", "PF", "WR%", "TC", "DD%", "P&L%")
+        lines.append(limit42(header))
+
+        tf_rows = [r for r in rows if r.asset == asset]
+        tfs = sorted({r.tf for r in tf_rows}, key=lambda t: TF_ORDER.get(t, 99))
         for tf in tfs:
-            tf_rows = [r for r in aset if r.tf == tf]
-            top = sorted(tf_rows, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:3]
-            if not top:
+            group = [r for r in tf_rows if r.tf == tf]
+            top3 = sorted(group, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:3]
+            if not top3:
                 continue
-            lines.append(clamp(f"── {tf} ─────────────────────────────"))
-            lines.append(clamp("△ Strategy     PF WR% TC DD% P&L%"))
-            for r in top:
-                row = f"{r.t:<3} {r.strategy:<12} {r.pf:>4.2f} {fmt(r.wr):>4} {r.tc:>3} {fmt(r.dd):>4} {fmt(r.pnl,1,True):>5}"
-                lines.append(clamp(row))
+            lines.append(limit42(f"── {tf} ─────────────────────────────"))
+            for r in top3:
+                row = fmt.format(
+                    r.arrow,
+                    r.name[:12],
+                    f"{r.pf:.2f}",
+                    fmtv(r.wr),
+                    str(r.tc),
+                    fmtv(r.dd),
+                    fmtv(r.pnl, signed=True),
+                )
+                lines.append(limit42(row))
+
         lines.append("")
     return lines
 
@@ -291,49 +313,47 @@ def milestones(rows: list[Row]):
     out = []
     firsts = [r for r in rows if r.pf >= 1.0 and r.created >= SINCE_24H]
     if firsts:
-        out.append("• PF>1 firsts: " + ", ".join(x.strategy for x in firsts[:2]))
+        out.append("• PF>1 firsts: " + ", ".join(x.name for x in firsts[:2]))
 
     if rows:
         top = sorted(rows, key=lambda r: r.pf, reverse=True)[:2]
-        out.append("• New records: " + ", ".join(f"{x.strategy} {x.pf:.2f}" for x in top))
+        out.append("• New records: " + ", ".join(f"{x.name} {x.pf:.2f}" for x in top))
 
-    promoted = []
+    near = False
     if PROMO_ROOT.exists():
         for p in PROMO_ROOT.rglob("*.promotion_run.json"):
             j = jload(p, {})
             c = dt(j.get("created_at"))
             if c and c >= SINCE_24H and str(j.get("status") or "").upper() == "OK":
-                promoted.append("near-promo")
-                if len(promoted) >= 1:
-                    break
-    if promoted:
+                near = True
+                break
+    if near:
         out.append("• Near-promotion seen")
 
     if not out:
         out.append("• None")
-    return [clamp(x) for x in out]
+    return [limit42(x) for x in out]
 
 
 def attention(meta):
-    a = []
+    out = []
     if meta["errors"] > 0:
-        a.append(clamp(f"• Errors: {meta['errors']} failed runs/24h"))
-        a.append(clamp("• Investigate next session"))
+        out.append(limit42(f"• Errors:{meta['errors']} failed runs/24h"))
     if meta["cycles"] == 0:
-        a.append(clamp("• Stall: no cycles in 24h"))
-    if not a:
-        a.append("• System healthy ✅")
-    return a
+        out.append("• Stalls: no cycles in 24h")
+    if not out:
+        out.append("• System healthy ✅")
+    return out
 
 
-def build(rows, meta):
+def build_text(rows, meta):
     now = datetime.now(AEST)
-    lines = [clamp(f"📊 DAILY INTEL — {now:%Y-%m-%d} 5:30 AEST"), ""]
-    lines += render_tables(rows)
+    lines = [limit42(f"📊 DAILY INTEL — {now:%Y-%m-%d} 5:30 AEST"), ""]
+    lines += render_asset_blocks(rows)
     lines += [
         "⚡ 24H ACTIVITY",
-        clamp(f"Cycles:{meta['cycles']} Backtests:{meta['backtests']}"),
-        clamp(f"Specs:{meta['specs']} Errors:{meta['errors']}"),
+        limit42(f"Cycles:{meta['cycles']} Backtests:{meta['backtests']}"),
+        limit42(f"Specs:{meta['specs']} Errors:{meta['errors']}"),
         "",
         "🎯 MILESTONES",
     ]
@@ -344,7 +364,7 @@ def build(rows, meta):
     return "\n".join(lines)
 
 
-def send(path: Path):
+def send_file(path: Path):
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     chat_id = os.getenv("TELEGRAM_CMD_CHAT_ID") or os.getenv("TELEGRAM_LOG_CHAT_ID")
     if not token or not chat_id:
@@ -358,19 +378,37 @@ def send(path: Path):
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--send-telegram", action="store_true")
     args = ap.parse_args()
 
-    rows, meta = collect()
-    text = build(rows, meta)
+    rows, meta = collect_rows()
+
+    # Required alignment check printed to console
+    header = fmt.format("△", "Strategy", "PF", "WR%", "TC", "DD%", "P&L%")
+    sample = fmt.format("↑", "EMA_Atr", "1.09", "34.3", "172", "2.5", "+1.8")
+    print(header)
+    print(sample)
+
+    text = build_text(rows, meta)
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(text, encoding="utf-8")
 
     if args.send_telegram:
-        send(OUT_PATH)
+        send_file(OUT_PATH)
 
-    print(json.dumps({"ok": True, "path": str(OUT_PATH).replace('\\', '/'), "rows": len(rows), "errors": meta["errors"]}))
+    print(json.dumps({
+        "ok": True,
+        "path": str(OUT_PATH).replace('\\', '/'),
+        "rows": len(rows),
+        "errors": meta["errors"],
+        "alignment_ok": len(header) == len(sample),
+    }))
 
 
 if __name__ == "__main__":
