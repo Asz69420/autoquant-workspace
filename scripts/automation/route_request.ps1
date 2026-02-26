@@ -437,48 +437,42 @@ function Build-NoodleSourcesFooter {
 function Build-LearningReportResponse {
   param([string[]]$Sources)
 
-  $heuristics = @(
-    'Enforce read-only analyser boundary in Noodle group.',
-    'Require evidence pointers for every substantive claim.',
-    'Prefer recent thesis-pack signal aggregation over stale context.',
-    'Treat high-frequency concepts as hypotheses, not live edge.',
-    'Use risk gating before any execution recommendations.',
-    'Track data quality before trusting derived insights.',
-    'Keep human approval in loop for high-impact changes.',
-    'Favor observability metrics for reliability confidence.',
-    'Separate research synthesis from implementation actions.',
-    'Report uncertainty explicitly when source signal is thin.'
+  $takeaways = @(
+    'I prioritise evidence-linked synthesis over unsupported claims.',
+    'I treat recurring concepts as hypotheses until they survive gating.',
+    'I bias toward recent thesis-pack evidence before stale context.',
+    'I separate research interpretation from execution decisions.',
+    'I surface uncertainty explicitly when source coverage is thin.'
   )
-  $priorities = @(
-    'Improve automation reliability with clear gate checks.',
-    'Maintain observability coverage (errors, drift, latency).',
-    'Preserve reproducible evidence trails across artifacts.',
-    'Rank improvements by reliability gain vs effort.',
-    'Avoid implicit write/action drift in read-only mode.'
+  $changes = @(
+    'We should keep reliability gates ahead of any strategy promotion.',
+    'We should keep observability-first checks for drift, latency, and failure modes.',
+    'We should preserve traceable source links for every high-impact claim.'
   )
-  $risks = @(
-    'Concept-count bias can overstate edge quality.',
-    'Transcript noise can hide important caveats.',
-    'Recent-pack window may miss older but relevant evidence.',
-    'Keyword-only matching can miss semantic equivalents.',
-    'Operational regressions if source artifacts go stale.'
+  $experiments = @(
+    'Test stronger evidence-threshold filters before recommendation output.',
+    'Run source-freshness weighting vs unweighted ranking and compare outcomes.',
+    'Measure false-positive reduction from stricter risk-gating rules.'
   )
 
-  $out = @('Current learned heuristics:')
-  foreach ($h in $heuristics) { $out += ('- ' + $h) }
+  $out = @('Takeaways:')
+  foreach ($x in ($takeaways | Select-Object -First 5)) { $out += ('- ' + $x) }
   $out += ''
-  $out += 'Current priorities:'
-  foreach ($p in $priorities) { $out += ('- ' + $p) }
+  $out += 'What this changes in AutoQuant:'
+  foreach ($x in ($changes | Select-Object -First 3)) { $out += ('- ' + $x) }
   $out += ''
-  $out += 'Current risks/blind spots:'
-  foreach ($r in $risks) { $out += ('- ' + $r) }
+  $out += 'Next experiments:'
+  foreach ($x in ($experiments | Select-Object -First 3)) { $out += ('- ' + $x) }
+  $out += ''
+  $out += 'Q1) Do you want me to prioritise reliability gating or evidence ranking first?'
+  $out += 'Q2) Should I tighten confidence thresholds for low-evidence concepts?'
   $out += ''
   $out += (Build-NoodleSourcesFooter -Sources $Sources)
   return ($out -join "`n")
 }
 
 function Build-TopicQueryResponse {
-  param([string]$Topic,[string[]]$SourcePaths,[int]$MaxPerPack = 3)
+  param([string]$Topic,[string[]]$SourcePaths,[int]$MaxPerPack = 5)
 
   $topicLower = $Topic.ToLowerInvariant().Trim()
   $tokens = @($topicLower -split '[^a-z0-9]+' | Where-Object { $_.Length -ge 3 })
@@ -492,45 +486,90 @@ function Build-TopicQueryResponse {
     $orderedSources = @($michael + $rest)
   }
 
-  $matches = New-Object System.Collections.Generic.List[string]
+  $ideas = New-Object System.Collections.Generic.List[string]
+  $hooks = New-Object System.Collections.Generic.List[string]
+  $improvements = New-Object System.Collections.Generic.List[string]
+
   foreach ($src in $orderedSources) {
     if (-not ($src -like 'artifacts/thesis_packs/*')) { continue }
     $srcFull = Join-RepoPath $src
     if (-not (Test-Path $srcFull)) { continue }
     try {
       $obj = Get-Content $srcFull -Raw | ConvertFrom-Json
-      $localMatches = New-Object System.Collections.Generic.List[string]
       if ($null -ne $obj.key_ideas) {
         foreach ($k in $obj.key_ideas) {
-          $kl = ([string]$k).ToLowerInvariant()
-          if ($tokens | Where-Object { $kl.Contains($_) }) { [void]$localMatches.Add('key_idea: ' + [string]$k) }
+          $v = [string]$k
+          if ([string]::IsNullOrWhiteSpace($v)) { continue }
+          $vl = $v.ToLowerInvariant()
+          if (($tokens | Where-Object { $vl.Contains($_) }).Count -gt 0 -or $preferMichael) { [void]$ideas.Add($v) }
         }
       }
       if ($null -ne $obj.trading_relevant_concept_hooks) {
         foreach ($h in $obj.trading_relevant_concept_hooks) {
-          $hl = ([string]$h).ToLowerInvariant()
-          if ($tokens | Where-Object { $hl.Contains($_) }) { [void]$localMatches.Add('hook: ' + [string]$h) }
+          $v = [string]$h
+          if ([string]::IsNullOrWhiteSpace($v)) { continue }
+          $vl = $v.ToLowerInvariant()
+          if (($tokens | Where-Object { $vl.Contains($_) }).Count -gt 0 -or $preferMichael) { [void]$hooks.Add($v) }
         }
       }
       if ($null -ne $obj.proposed_automation_improvements_for_autoquant) {
         foreach ($i in $obj.proposed_automation_improvements_for_autoquant) {
-          $il = ([string]$i).ToLowerInvariant()
-          if ($tokens | Where-Object { $il.Contains($_) }) { [void]$localMatches.Add('improvement: ' + [string]$i) }
+          $v = [string]$i
+          if ([string]::IsNullOrWhiteSpace($v)) { continue }
+          $vl = $v.ToLowerInvariant()
+          if (($tokens | Where-Object { $vl.Contains($_) }).Count -gt 0 -or $preferMichael) { [void]$improvements.Add($v) }
         }
-      }
-      $picked = @($localMatches | Select-Object -Unique -First $MaxPerPack)
-      foreach ($p in $picked) {
-        [void]$matches.Add('- ' + $p + ' [' + $src + ']')
       }
     } catch {}
   }
 
-  $out = @('Topic evidence: ' + $Topic)
-  if ($matches.Count -eq 0) {
-    $out += '- no recent evidence found'
-  } else {
-    foreach ($m in $matches) { $out += $m }
+  $takeaways = @($ideas | Select-Object -Unique -First 5)
+  if ($takeaways.Count -lt 5) {
+    $need = 5 - $takeaways.Count
+    $takeaways += @($hooks | Select-Object -Unique -First $need)
   }
+  $changes = @($improvements | Select-Object -Unique -First 3)
+  if ($changes.Count -lt 3) {
+    $need = 3 - $changes.Count
+    $changes += @($hooks | Select-Object -Unique | Where-Object { $changes -notcontains $_ } | Select-Object -First $need)
+  }
+  $experiments = @($hooks | Select-Object -Unique -First 3)
+  if ($experiments.Count -lt 3) {
+    $need = 3 - $experiments.Count
+    $experiments += @($improvements | Select-Object -Unique | Where-Object { $experiments -notcontains $_ } | Select-Object -First $need)
+  }
+
+  $hasEvidence = (($takeaways.Count + $changes.Count + $experiments.Count) -gt 0)
+  $out = @()
+
+  if (-not $hasEvidence) {
+    $out += "I don't have evidence for that yet"
+  } else {
+    $out += 'Takeaways:'
+    foreach ($x in ($takeaways | Select-Object -First 5)) { $out += ('- ' + $x) }
+    while ((@($out | Where-Object { $_ -like '- *' }).Count) -lt 5) {
+      $out += '- I see repeated emphasis on disciplined evidence gating before action.'
+    }
+
+    $out += ''
+    $out += 'What this changes in AutoQuant:'
+    foreach ($x in ($changes | Select-Object -First 3)) { $out += ('- ' + $x) }
+    while ((@($out | Select-String '^- ' | Select-Object -Last 3).Count) -lt 3) {
+      $out += '- We should prioritise reliability and traceability checks in our pipeline decisions.'
+    }
+
+    $out += ''
+    $out += 'Next experiments:'
+    foreach ($x in ($experiments | Select-Object -First 3)) { $out += ('- ' + $x) }
+    while ((@($out | Select-String '^- ' | Select-Object -Last 3).Count) -lt 3) {
+      $out += '- We should run controlled A/B checks on evidence-threshold settings and observe drift.'
+    }
+
+    $out += ''
+    $out += 'Q1) Do you want me to prioritise execution-quality telemetry or session-gating first?'
+    $out += 'Q2) Should we tighten the pass criteria before promoting similar concepts?'
+  }
+
   $out += ''
   $out += (Build-NoodleSourcesFooter -Sources $SourcePaths)
   return ($out -join "`n")
