@@ -114,6 +114,18 @@ def limit42(s: str) -> str:
 def normalize_name(raw: str, fallback_token: str) -> str:
     txt = "".join(ch if ch.isalnum() or ch in " _-" else " " for ch in (raw or ""))
     toks = [t for t in txt.replace("-", " ").replace("_", " ").split() if t]
+    lo_toks = [t.lower() for t in toks]
+
+    # Preferred compact aliases requested by user.
+    if "adx" in lo_toks and "supertrend" in lo_toks:
+        return "ADX_Suprtrnd"
+    if "bollinger" in lo_toks and ("mean" in lo_toks or "reversion" in lo_toks):
+        return "BB_MeanRev"
+    if "gaussian" in lo_toks and "pullback" in lo_toks:
+        return "Gauss_Pull"
+    if "ichimoku" in lo_toks and "cci" in lo_toks:
+        return "Ichimoku_CCI"
+
     picked = []
     for t in toks:
         lo = t.lower()
@@ -304,36 +316,19 @@ def render_asset_blocks(rows: list[Row]):
     assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
 
     for asset in assets:
-        lines.append(f"{EMOJI.get(asset, '⚪')} {asset}")
+        asset_rows = [r for r in rows if r.asset == asset]
+        if not asset_rows:
+            continue
 
-        header = fmt.format("△", "Strategy", "PF", "WR%", "TC", "DD%", "P&L%")
-        lines.append(limit42(header))
-        width = len(header)
+        lines.append(f"{EMOJI.get(asset, '⚪')} TOP 5 {asset} (by PF)")
+        header = "# △ TF Strategy   PF  WR%  TC  DD%  P&L%"
+        lines.append(header)
+        lines.append("─" * len(header))
 
-        tf_rows = [r for r in rows if r.asset == asset]
-        tfs = sorted({r.tf for r in tf_rows}, key=lambda t: TF_ORDER.get(t, 99))
-
-        for tf in tfs:
-            group = [r for r in tf_rows if r.tf == tf]
-            top3 = sorted(group, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:3]
-            if not top3:
-                continue
-
-            # Spec separator style: "── <tf> ─────"
-            prefix = f"── {tf} "
-            lines.append(limit42(prefix + ("─" * max(0, width - len(prefix)))))
-
-            for r in top3:
-                row = fmt.format(
-                    r.arrow,
-                    r.name[:12],
-                    f"{r.pf:.2f}",
-                    fmtv(r.wr),
-                    str(r.tc),
-                    fmtv(r.dd),
-                    fmtv(r.pnl, signed=True),
-                )
-                lines.append(limit42(row))
+        top5 = sorted(asset_rows, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:5]
+        for i, r in enumerate(top5, start=1):
+            row = f"{i} {r.arrow} {r.tf:<2} {r.name[:10]:<10} {r.pf:>4.2f} {fmtv(r.wr):>4} {str(r.tc):>3} {fmtv(r.dd):>4} {fmtv(r.pnl, signed=True):>5}"
+            lines.append(limit42(row))
 
         lines.append("")
 
@@ -372,6 +367,7 @@ def attention(meta):
         out.append(limit42(f"• Errors:{meta['errors']} failed runs/24h"))
         if meta.get("top_error"):
             out.append(limit42(f"• Top:{meta['top_error']} x{meta['top_error_count']}"))
+        out.append(limit42("• Note: investigate errors next session"))
     if meta["cycles"] == 0:
         out.append("• Stalls: no cycles in 24h")
     if not out:
@@ -381,11 +377,12 @@ def attention(meta):
 
 def build_text(rows, meta):
     now = datetime.now(AEST)
-    lines = [limit42(f"📊 DAILY INTEL — {now:%Y-%m-%d} 5:30 AEST"), ""]
+    lines = [limit42(f"📊 DAILY BRIEF — {now:%Y-%m-%d} 5:30 AEST"), ""]
     lines += render_asset_blocks(rows)
     lines += [
         "⚡ 24H ACTIVITY",
-        limit42(f"Cycles:{meta['cycles']} Backtests:{meta['backtests']} Specs:{meta['specs']} Errors:{meta['errors']}"),
+        limit42(f"Cycles:{meta['cycles']} Backtests:{meta['backtests']}"),
+        limit42(f"Specs:{meta['specs']} Errors:{meta['errors']}"),
         "",
         "🎯 MILESTONES",
     ]
