@@ -16,6 +16,18 @@ TF_RE = re.compile(r"\b(1m|3m|5m|15m|30m|45m|1h|2h|4h|1d|1w|1mo|daily|weekly|mon
 ASSET_RE = re.compile(r"\b(BTC|ETH|SOL|XRP|EURUSD|GBPUSD|SPX|NASDAQ|AAPL|TSLA|GOLD|XAUUSD)\b", re.I)
 TS_PREFIX_RE = re.compile(r"^\s*(?P<ts>\d{1,2}:\d{2}(?::\d{2})?)\s*[-–—|]?\s*(?P<text>.+)$")
 
+INDICATOR_PATTERNS = [
+    (re.compile(r"\bema\b", re.I), "EMA"),
+    (re.compile(r"\bsma\b", re.I), "SMA"),
+    (re.compile(r"\brsi\b", re.I), "RSI"),
+    (re.compile(r"\bmacd\b", re.I), "MACD"),
+    (re.compile(r"\batr\b", re.I), "ATR"),
+    (re.compile(r"\bvwap\b", re.I), "VWAP"),
+    (re.compile(r"\bbollinger\b|\bbb\b", re.I), "Bollinger Bands"),
+    (re.compile(r"\bstoch(?:astic)?\b", re.I), "Stochastic"),
+    (re.compile(r"\badx\b", re.I), "ADX"),
+]
+
 FLUFF_PATTERNS = [
     r"\bsubscrib\w*\b",
     r"\blike (the )?video\b",
@@ -165,6 +177,21 @@ def extract_indicator_hints(raw: str) -> tuple[list[str], list[dict]]:
             break
 
     return names[:20], hints[:10]
+
+
+def extract_indicator_mentions_from_texts(texts: list[str], base: list[str] | None = None, max_items: int = 20) -> list[str]:
+    out = list(base or [])
+    seen = {str(x).lower() for x in out}
+    blob = "\n".join(str(x) for x in texts if x)
+    for pat, label in INDICATOR_PATTERNS:
+        if pat.search(blob):
+            k = label.lower()
+            if k not in seen:
+                out.append(label)
+                seen.add(k)
+        if len(out) >= max_items:
+            break
+    return out[:max_items]
 
 
 def extract_rules(sentences: list[str], limit: int = 20) -> list[str]:
@@ -338,6 +365,10 @@ def main() -> int:
 
     parameters_set = extract_parameters(raw_trunc, 20)
     explicit_conditions, strategy_components, risk_management_notes = extract_conditions_and_components(sentences)
+    indicator_context_texts = []
+    indicator_context_texts.extend(rules)
+    indicator_context_texts.extend([c.get('description', '') for c in (strategy_components or []) if isinstance(c, dict)])
+    indicators = extract_indicator_mentions_from_texts(indicator_context_texts, base=indicators, max_items=20)
 
     timeframes = list(dict.fromkeys([m.group(1).lower() for m in TF_RE.finditer(raw_trunc)]))[:20]
     assets = list(dict.fromkeys([m.group(1).upper() for m in ASSET_RE.finditer(raw_trunc)]))[:20]

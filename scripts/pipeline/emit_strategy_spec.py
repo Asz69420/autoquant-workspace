@@ -196,14 +196,30 @@ def _indicator_evaluable(thesis: dict) -> bool:
     if thesis.get('required_data'):
         return True
 
-    # Soft signal: mention of indicator usage in hypotheses or bullets
+    # Accept research-card style evidence as evaluable input.
+    if thesis.get('indicators_mentioned'):
+        return True
+    if thesis.get('strategy_components'):
+        return True
+    rules = thesis.get('extracted_rules') or []
+    if isinstance(rules, list):
+        actionable = [str(r).strip() for r in rules if str(r).strip() and str(r).strip().lower() != 'not specified in content.']
+        if actionable:
+            return True
+
+    # Soft signal: mention of indicator usage in hypotheses/bullets/rules/components.
     text_pool = []
     text_pool.extend(thesis.get('thesis_bullets', []) or [])
+    text_pool.extend(thesis.get('indicators_mentioned', []) or [])
+    text_pool.extend(rules)
+    for c in thesis.get('strategy_components', []) or []:
+        if isinstance(c, dict):
+            text_pool.extend([c.get('type', ''), c.get('description', '')])
     for h in thesis.get('hypotheses', []) or []:
         if isinstance(h, dict):
             text_pool.extend([h.get('statement', ''), h.get('rationale', '')])
     blob = ' '.join(str(x).lower() for x in text_pool if x)
-    return any(k in blob for k in ['indicator', 'signal', 'trend', 'regime', 'confirmation', 'ohlcv'])
+    return any(k in blob for k in ['indicator', 'signal', 'trend', 'regime', 'confirmation', 'ohlcv', 'entry', 'exit', 'rsi', 'macd', 'ema', 'atr'])
 
 
 def _fallback_templates(thesis: dict) -> list[dict]:
