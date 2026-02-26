@@ -990,7 +990,7 @@ if ($route -eq 'FAST_PATH') {
   }
 
   if ($m -eq 'run lab now' -or $m -eq 'run autopilot now') {
-    $lab = (powershell -ExecutionPolicy Bypass -File scripts/pipeline/autopilot_worker.ps1 -MaxBundlesPerRun 1) -join "`n"
+    $lab = (powershell -ExecutionPolicy Bypass -File scripts/pipeline/autopilot_worker.ps1 -MaxBundlesPerRun 3) -join "`n"
     $labObj = $null
     try { $labObj = $lab | ConvertFrom-Json } catch { $labObj = $null }
     if ($null -ne $labObj) {

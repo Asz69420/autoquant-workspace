@@ -1,7 +1,7 @@
 ﻿param(
   [switch]$DryRun,
   [int]$MaxRefinementsPerRun = 1,
-  [int]$MaxBundlesPerRun = 1,
+  [int]$MaxBundlesPerRun = 3,
   [switch]$RunYouTubeWatcher,
   [switch]$RunTVCatalogWorker,
   [switch]$ForceRecombine,
@@ -475,12 +475,34 @@ try {
   } catch {}
 
   $bundleIndexPath = 'artifacts/bundles/INDEX.json'
-  if (Test-Path $bundleIndexPath) {
+  $bundlePaths = @()
+  try {
+    $allBundleFiles = Get-ChildItem -Path 'artifacts/bundles' -Recurse -Filter '*.bundle.json' -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTimeUtc -Descending
+    $bundlePaths = @($allBundleFiles | ForEach-Object { [string]$_.FullName })
+    if (-not $DryRun) {
+      if (-not (Test-Path -LiteralPath 'artifacts/bundles')) { New-Item -ItemType Directory -Path 'artifacts/bundles' -Force | Out-Null }
+      $rootPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\\..'))
+      $bundleIndexOut = @($bundlePaths | ForEach-Object {
+        $full = [IO.Path]::GetFullPath([string]$_)
+        if ($full.StartsWith($rootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+          return (($full.Substring($rootPath.Length)).TrimStart('\\','/') -replace '\\','/')
+        }
+        return ([string]$_ -replace '\\','/')
+      })
+      ($bundleIndexOut | ConvertTo-Json -Depth 3) | Set-Content -LiteralPath $bundleIndexPath -Encoding utf8
+      $bundlePaths = @($bundleIndexOut)
+    }
+  } catch {
     $bundlePaths = @()
-    try {
-      $tmpBundlePaths = Get-Content $bundleIndexPath -Raw | ConvertFrom-Json
-      if ($tmpBundlePaths -is [System.Array]) { $bundlePaths = $tmpBundlePaths } elseif ($null -ne $tmpBundlePaths) { $bundlePaths = @($tmpBundlePaths) } else { $bundlePaths = @() }
-    } catch { $bundlePaths = @() }
+  }
+
+  if (Test-Path $bundleIndexPath) {
+    if ($bundlePaths.Count -eq 0) {
+      try {
+        $tmpBundlePaths = Get-Content $bundleIndexPath -Raw | ConvertFrom-Json
+        if ($tmpBundlePaths -is [System.Array]) { $bundlePaths = $tmpBundlePaths } elseif ($null -ne $tmpBundlePaths) { $bundlePaths = @($tmpBundlePaths) } else { $bundlePaths = @() }
+      } catch { $bundlePaths = @() }
+    }
 
     if (-not $DryRun -and (($bundlePaths.Count -eq 0 -and $starvationCyclesPrev -ge 12) -or $ForceRecombine)) {
       try {

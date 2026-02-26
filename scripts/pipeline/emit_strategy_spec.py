@@ -15,6 +15,11 @@ MAX_JSON_BYTES = 60 * 1024
 MAX_INDEX = 200
 ROOT = Path(__file__).resolve().parents[2]
 
+EXECUTABLE_INDICATORS = [
+    'EMA', 'SMA', 'RSI', 'ATR', 'MACD', 'Bollinger Bands', 'Stochastic',
+    'ADX', 'CCI', 'Williams %R', 'OBV', 'VWAP', 'Ichimoku', 'Supertrend', 'Donchian Channels'
+]
+
 
 def _set_reasoning_effort_for_strategist() -> None:
     model_id = (os.getenv('OPENCLAW_MODEL_ID') or 'openai-codex/gpt-5.3-codex').strip()
@@ -118,6 +123,7 @@ def build_baseline(thesis: dict) -> dict:
     filters = unique([
         'No repaint sources only.',
         'Bar-close execution only.',
+        'Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.',
     ] + constraints, 10)
 
     exit_rules = unique([
@@ -234,6 +240,7 @@ def _fallback_templates(thesis: dict) -> list[dict]:
         'No repaint sources only.',
         'Bar-close execution only.',
         f'Indicator evaluable: {indicator_hint}',
+        'Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.',
     ] + constraints + ([f'Data required: {req[0]}'] if req else []), 10)
 
     common_exit = unique([
@@ -743,6 +750,7 @@ def main() -> int:
         'id': sid,
         'created_at': now_iso(),
         'variants': variants,
+        'backtester_executable_indicators': EXECUTABLE_INDICATORS,
     }
     if args.mode == 'directive-only':
         spec['source_spec_path'] = args.source_spec.replace('\\', '/')

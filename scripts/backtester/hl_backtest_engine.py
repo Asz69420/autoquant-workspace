@@ -5,10 +5,13 @@ import argparse, csv, hashlib, json, subprocess, sys, uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+import contextlib
+import io
 import pandas as pd
 
 try:
-    import pandas_ta as pta
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+        import pandas_ta as pta
 except Exception:
     pta = None
 
@@ -40,7 +43,8 @@ def build_indicator_frame(df: pd.DataFrame) -> pd.DataFrame:
         return out
     v = out['volume'] if 'volume' in out.columns else pd.Series(1.0, index=out.index)
     try:
-        out['EMA_9'] = pta.ema(out['close'], length=9)
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            out['EMA_9'] = pta.ema(out['close'], length=9)
         out['EMA_21'] = pta.ema(out['close'], length=21)
         out['EMA_50'] = pta.ema(out['close'], length=50)
         out['EMA_200'] = pta.ema(out['close'], length=200)
@@ -64,10 +68,8 @@ def build_indicator_frame(df: pd.DataFrame) -> pd.DataFrame:
         out['CCI_20_0.015'] = pta.cci(out['high'], out['low'], out['close'], length=20)
         out['WILLR_14'] = pta.willr(out['high'], out['low'], out['close'], length=14)
         out['OBV'] = pta.obv(out['close'], v)
-        try:
-            out['VWAP_D'] = pta.vwap(out['high'], out['low'], out['close'], v)
-        except Exception:
-            out['VWAP_D'] = pd.NA
+        # Dataset bars are not guaranteed DatetimeIndex; keep VWAP placeholder unless pre-indexed upstream.
+        out['VWAP_D'] = pd.NA
         ich = pta.ichimoku(out['high'], out['low'], out['close'])
         if isinstance(ich, tuple) and len(ich) > 0 and ich[0] is not None:
             out = out.join(ich[0])

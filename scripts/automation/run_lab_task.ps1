@@ -1,6 +1,6 @@
 param(
   [string]$WorkerScriptPath = 'scripts/pipeline/autopilot_worker.ps1',
-  [string[]]$WorkerArgs = @('-RunYouTubeWatcher','-RunTVCatalogWorker','-MaxBundlesPerRun','1','-MaxRefinementsPerRun','1')
+  [string[]]$WorkerArgs = @('-RunYouTubeWatcher','-RunTVCatalogWorker','-MaxBundlesPerRun','3','-MaxRefinementsPerRun','1')
 )
 
 $ErrorActionPreference = 'Stop'
