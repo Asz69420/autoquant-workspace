@@ -15,8 +15,15 @@ $IntentRegistryPath = 'config/intent_registry.json'
 $ClarifierStatePath = 'data/state/clarifier_state.json'
 $ClarifierTtlSec = 600
 $UserMdPath = 'USER.md'
+$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+Set-Location $RepoRoot
 
 . "$PSScriptRoot/build_queue_lib.ps1"
+
+function Join-RepoPath {
+  param([string]$RelPath)
+  return (Join-Path $RepoRoot $RelPath)
+}
 
 function Get-IdempotencyKey {
   if (-not [string]::IsNullOrWhiteSpace($UpdateId)) { return ('tg:update:' + $UpdateId) }
@@ -356,7 +363,7 @@ function Get-NoodleRetrievalConfig {
     recent_doctrine_updates_n = 10
     recent_insights_n = 10
   }
-  $cfgPath = 'data/state/noodle_retrieval.json'
+  $cfgPath = Join-RepoPath 'data/state/noodle_retrieval.json'
   if (-not (Test-Path $cfgPath)) { return $defaults }
   try {
     $raw = Get-Content $cfgPath -Raw
@@ -386,7 +393,7 @@ function Get-RecentFilesByPattern {
 function Convert-ToWorkspaceRelativePath {
   param([string]$FullPath)
   try {
-    $base = (Resolve-Path '.').Path
+    $base = $RepoRoot
     $full = (Resolve-Path $FullPath).Path
     if ($full.StartsWith($base, [System.StringComparison]::OrdinalIgnoreCase)) {
       return ($full.Substring($base.Length).TrimStart('\\','/')).Replace('\\','/')
@@ -401,13 +408,16 @@ function Get-NoodleSources {
   param([object]$Config)
   $sources = New-Object System.Collections.Generic.List[string]
 
-  $doctrine = 'docs/DOCTRINE/analyser-doctrine.md'
-  if (Test-Path $doctrine) { [void]$sources.Add($doctrine) }
+  $doctrine = Join-RepoPath 'docs/DOCTRINE/analyser-doctrine.md'
+  if (Test-Path $doctrine) { [void]$sources.Add((Convert-ToWorkspaceRelativePath -FullPath $doctrine)) }
 
-  $packs = Get-RecentFilesByPattern -Root 'artifacts/thesis_packs' -Filter '*.json' -MaxN ([int]$Config.recent_thesis_packs_n)
+  $packs = Get-RecentFilesByPattern -Root (Join-RepoPath 'artifacts/thesis_packs') -Filter '*.json' -MaxN ([int]$Config.recent_thesis_packs_n)
   foreach ($p in $packs) { [void]$sources.Add((Convert-ToWorkspaceRelativePath -FullPath $p)) }
 
-  $updates = Get-RecentFilesByPattern -Root 'artifacts/doctrine_updates' -Filter '*.json' -MaxN ([int]$Config.recent_doctrine_updates_n)
+  $michaelLatest = Join-RepoPath 'artifacts/thesis_packs/20260226/michaelionita-latest.concepts_thesis_pack.json'
+  if (Test-Path $michaelLatest) { [void]$sources.Add((Convert-ToWorkspaceRelativePath -FullPath $michaelLatest)) }
+
+  $updates = Get-RecentFilesByPattern -Root (Join-RepoPath 'artifacts/doctrine_updates') -Filter '*.json' -MaxN ([int]$Config.recent_doctrine_updates_n)
   foreach ($u in $updates) { [void]$sources.Add((Convert-ToWorkspaceRelativePath -FullPath $u)) }
 
   return @($sources | Select-Object -Unique)
@@ -485,9 +495,10 @@ function Build-TopicQueryResponse {
   $matches = New-Object System.Collections.Generic.List[string]
   foreach ($src in $orderedSources) {
     if (-not ($src -like 'artifacts/thesis_packs/*')) { continue }
-    if (-not (Test-Path $src)) { continue }
+    $srcFull = Join-RepoPath $src
+    if (-not (Test-Path $srcFull)) { continue }
     try {
-      $obj = Get-Content $src -Raw | ConvertFrom-Json
+      $obj = Get-Content $srcFull -Raw | ConvertFrom-Json
       $localMatches = New-Object System.Collections.Generic.List[string]
       if ($null -ne $obj.key_ideas) {
         foreach ($k in $obj.key_ideas) {
@@ -525,6 +536,15 @@ function Build-TopicQueryResponse {
   return ($out -join "`n")
 }
 
+function Emit-NoodleRetrievalDebug {
+  param([object]$Config,[string[]]$Sources)
+
+  $packFiles = @($Sources | Where-Object { $_.ToLowerInvariant().Contains('thesis_packs') } | ForEach-Object { [System.IO.Path]::GetFileName([string]$_) } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+  $michaelFound = ($packFiles | Where-Object { $_ -eq 'michaelionita-latest.concepts_thesis_pack.json' }).Count -gt 0
+  $cfgJson = ($Config | ConvertTo-Json -Compress)
+  Emit-LogEvent -RunId ('noodle-retrieval-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'NOODLE_RETRIEVAL_DEBUG' -Summary ('NOODLE retrieval debug: cwd=' + (Get-Location).Path + '; resolved_repo_root=' + $RepoRoot + '; noodle_retrieval=' + $cfgJson + '; thesis_packs_scanned=' + ($packFiles -join ',') + '; michael_pack_found=' + $michaelFound + '; sources_used_count=' + $Sources.Count) -Inputs @('thesis_packs_scanned=' + ($packFiles -join ',')) -Outputs @(('michael_pack_found=' + $michaelFound),('sources_used_count=' + $Sources.Count))
+}
+
 function Try-HandleNoodleLearningQueries {
   param([string]$InputLower,[object]$Config,[string]$ChatId)
 
@@ -538,13 +558,15 @@ function Try-HandleNoodleLearningQueries {
   )
   foreach ($t in $learningTriggers) {
     if ($InputLower -like ('*' + $t + '*')) {
+      Emit-NoodleRetrievalDebug -Config $Config -Sources $sources
       Send-NoodleReply -ChatId $ChatId -ReplyText (Build-LearningReportResponse -Sources $sources)
       return $true
     }
   }
 
-  if ($InputLower -match 'what\s+did\s+you\s+learn\s+about\s+(.+)$') {
+  if ($InputLower -match 'what\s+did\s+you\s+learn\s+(?:about|from)\s+(.+)$') {
     $topic = $matches[1].Trim(' .?!')
+    Emit-NoodleRetrievalDebug -Config $Config -Sources $sources
     Send-NoodleReply -ChatId $ChatId -ReplyText (Build-TopicQueryResponse -Topic $topic -SourcePaths $sources)
     return $true
   }
@@ -697,7 +719,7 @@ function Invoke-NoodleReadonly {
   }
 
   # Always load doctrine for Noodle read-only retrieval baseline.
-  $doctrinePath = 'docs/DOCTRINE/analyser-doctrine.md'
+  $doctrinePath = Join-RepoPath 'docs/DOCTRINE/analyser-doctrine.md'
   $doctrineLoaded = $false
   if (Test-Path $doctrinePath) {
     try {
@@ -713,7 +735,7 @@ function Invoke-NoodleReadonly {
     return
   }
 
-  $packPath = 'artifacts/thesis_packs/20260226/michaelionita-last10.automation_thesis_pack.json'
+  $packPath = Join-RepoPath 'artifacts/thesis_packs/20260226/michaelionita-last10.automation_thesis_pack.json'
   if (($InputLower -like '*michael*') -and ($InputLower -like '*last*10*') -and (Test-Path $packPath)) {
     try {
       $pack = Get-Content $packPath -Raw | ConvertFrom-Json
@@ -739,8 +761,8 @@ function Invoke-NoodleReadonly {
     }
   }
 
-  if ($InputLower -like '*doctrine*' -and (Test-Path 'docs/DOCTRINE/analyser-doctrine.md')) {
-    $lines = Get-Content 'docs/DOCTRINE/analyser-doctrine.md' | Where-Object { $_ -match '^- \[' } | Select-Object -First 6
+  if ($InputLower -like '*doctrine*' -and (Test-Path (Join-RepoPath 'docs/DOCTRINE/analyser-doctrine.md'))) {
+    $lines = Get-Content (Join-RepoPath 'docs/DOCTRINE/analyser-doctrine.md') | Where-Object { $_ -match '^- \[' } | Select-Object -First 6
     $parts = @('Noodle doctrine skim (read-only):')
     foreach ($l in $lines) {
       $clean = ($l -replace '^- \[[^\]]+\]\s*','').Trim()
