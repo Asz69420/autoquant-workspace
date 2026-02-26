@@ -10,6 +10,11 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+ROOT_DIR = Path(__file__).resolve().parents[2]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+from scripts.lib import llm_client
+
 ROOT = Path(__file__).resolve().parents[2]
 PY = sys.executable
 DIRECTIVE_TYPES = {
@@ -84,7 +89,6 @@ def _load_doctrine_principles(path: Path = DOCTRINE_PATH) -> DoctrinePrinciples:
             macd_confirmation_over_entry = True
             refs.append({'id': did, 'theme': 'macd_confirmation_over_entry', 'text': text[:220]})
 
-    # keep deterministic + compact
     dedup = []
     seen = set()
     for r in refs:
@@ -165,7 +169,6 @@ def _apply_doctrine_influence(base_directives: list[dict], doctrine: DoctrinePri
         })
         refs_used.extend([r for r in doctrine.refs if r.get('theme') == 'risk_gating'][:2])
 
-    # Dedup same directive type+params while preserving order
     out = []
     seen = set()
     for d in directives:
@@ -183,16 +186,7 @@ def _extract_metrics(batch: dict) -> tuple[float, float, int, dict, str, str]:
     summary = batch.get('summary') or {}
     best = runs[0] if runs else {}
     if runs:
-        # deterministic: choose run with highest PF then lowest DD then highest trades
-        best = sorted(
-            runs,
-            key=lambda r: (
-                float(r.get('profit_factor', 0.0) or 0.0),
-                -float(r.get('max_drawdown', 1.0) or 1.0),
-                int(r.get('trades', 0) or 0),
-            ),
-            reverse=True,
-        )[0]
+        best = sorted(runs, key=lambda r: (float(r.get('profit_factor', 0.0) or 0.0), -float(r.get('max_drawdown', 1.0) or 1.0), int(r.get('trades', 0) or 0)), reverse=True)[0]
     pf = float(best.get('profit_factor', summary.get('profit_factor', 0.0)) or 0.0)
     dd = float(best.get('max_drawdown', summary.get('max_drawdown', 1.0)) or 1.0)
     trades = int(best.get('trades', summary.get('trades', 0)) or 0)
@@ -203,7 +197,6 @@ def _extract_metrics(batch: dict) -> tuple[float, float, int, dict, str, str]:
 
 
 def _classify_verdict(pf_after_costs: float, max_drawdown: float, trades: int) -> str:
-    # deterministic hard gates
     if trades < 20 or pf_after_costs < 1.0 or max_drawdown > 0.30:
         return 'REJECT'
     if pf_after_costs < 1.2 or max_drawdown > 0.20:
@@ -212,18 +205,7 @@ def _classify_verdict(pf_after_costs: float, max_drawdown: float, trades: int) -
 
 
 def _extract_regime_context(best_run: dict) -> dict:
-    out = {
-        'available': False,
-        'regime_breakdown': {},
-        'regime_pf': {},
-        'regime_wr': {},
-        'dominant_regime': '',
-        'good_regimes': [],
-        'bad_regimes': [],
-        'all_good': False,
-        'all_bad': False,
-        'single_good': False,
-    }
+    out = {'available': False, 'regime_breakdown': {}, 'regime_pf': {}, 'regime_wr': {}, 'dominant_regime': '', 'good_regimes': [], 'bad_regimes': [], 'all_good': False, 'all_bad': False, 'single_good': False}
     bp = str(best_run.get('backtest_result_path') or '')
     if not bp:
         return out
@@ -231,35 +213,20 @@ def _extract_regime_context(best_run: dict) -> dict:
     res = bobj.get('results') if isinstance(bobj, dict) else {}
     if not isinstance(res, dict):
         return out
-
     regime_pf = res.get('regime_pf') or {}
     regime_wr = res.get('regime_wr') or {}
     regime_breakdown = res.get('regime_breakdown') or {}
     dominant = str(res.get('dominant_regime') or '')
     if not isinstance(regime_pf, dict) or not regime_pf:
         return out
-
-    good = []
-    bad = []
+    good, bad = [], []
     for rg in ('trending', 'ranging', 'transitional'):
         pf = float(regime_pf.get(rg, 0.0) or 0.0)
         if pf >= 1.05:
             good.append(rg)
         elif pf < 0.95:
             bad.append(rg)
-
-    out.update({
-        'available': True,
-        'regime_breakdown': regime_breakdown,
-        'regime_pf': {k: float(v or 0.0) for k, v in regime_pf.items()},
-        'regime_wr': {k: float(v or 0.0) for k, v in regime_wr.items()},
-        'dominant_regime': dominant,
-        'good_regimes': good,
-        'bad_regimes': bad,
-        'all_good': (len(good) >= 3),
-        'all_bad': (len(bad) >= 3),
-        'single_good': (len(good) == 1 and len(bad) >= 1),
-    })
+    out.update({'available': True, 'regime_breakdown': regime_breakdown, 'regime_pf': {k: float(v or 0.0) for k, v in regime_pf.items()}, 'regime_wr': {k: float(v or 0.0) for k, v in regime_wr.items()}, 'dominant_regime': dominant, 'good_regimes': good, 'bad_regimes': bad, 'all_good': (len(good) >= 3), 'all_bad': (len(bad) >= 3), 'single_good': (len(good) == 1 and len(bad) >= 1)})
     return out
 
 
@@ -309,20 +276,6 @@ def _load_recent_family_notes(strategy_family: str, limit: int = 5) -> list[dict
     return notes[:max(0, limit)]
 
 
-def openclaw_completion(prompt: str, system: str = '', agent: str = 'reader') -> str | None:
-    """Call LLM through OpenClaw runtime. Returns text or None on failure."""
-    full_prompt = prompt
-    if system:
-        full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
-    cmd = ['openclaw', 'agent', '--agent', agent, '--message', full_prompt, '--json']
-    try:
-        p = subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=120)
-        obj = json.loads(p.stdout)
-        return obj['result']['payloads'][0]['text']
-    except Exception:
-        return None
-
-
 def load_strategy_spec(backtest_result: dict) -> dict:
     if not isinstance(backtest_result, dict):
         return {}
@@ -335,7 +288,6 @@ def load_strategy_spec(backtest_result: dict) -> dict:
         rp = ROOT / spec_path
         if rp.exists():
             return _j(rp, {})
-
     spec_id = str(backtest_result.get('spec_id') or '')
     if spec_id:
         for p in ROOT.glob('artifacts/strategy_specs/**/*.strategy_spec.json'):
@@ -348,76 +300,75 @@ def load_family_outcome_history(family_name: str, limit: int = 5) -> list[dict]:
     return _load_recent_family_notes(family_name, limit=limit)
 
 
-def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: str, outcome_history: list[dict]) -> tuple[str, str]:
-    system = (
-        'You are the Analyser agent in an algorithmic trading system. Your job is to examine backtest results, '
-        'understand WHY a strategy performed the way it did, and generate specific actionable directives for improvement. '
-        'You think like an experienced quant trader. Respond ONLY with valid JSON, no markdown, no explanation outside the JSON.'
-    )
+def _append_doctrine_insight(family: str, insight: str, source_backtest: str, confidence: str) -> bool:
+    if not insight:
+        return False
+    p = ROOT / 'artifacts' / 'doctrine_updates' / 'analyser_insights.ndjson'
+    p.parent.mkdir(parents=True, exist_ok=True)
+    row = {'timestamp': datetime.now(UTC).isoformat(), 'family': family, 'insight': insight.strip(), 'source_backtest': source_backtest, 'confidence': confidence or ''}
+    with open(p, 'a', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(row, ensure_ascii=False) + '\n')
+    return True
 
+
+def _maybe_trigger_doctrine_synthesis() -> None:
+    insights = ROOT / 'artifacts' / 'doctrine_updates' / 'analyser_insights.ndjson'
+    if not insights.exists():
+        return
+    with open(insights, 'r', encoding='utf-8') as f:
+        lines = [ln for ln in f.read().splitlines() if ln.strip()]
+    count = len(lines)
+    updates = sorted((ROOT / 'artifacts' / 'doctrine_updates').glob('**/*.doctrine_update.json'), key=lambda x: x.stat().st_mtime, reverse=True)
+    hours_since_last = 999999.0
+    if updates:
+        last = datetime.fromtimestamp(updates[0].stat().st_mtime, tz=UTC)
+        hours_since_last = (datetime.now(UTC) - last).total_seconds() / 3600.0
+    should_trigger = (count >= 50) or (count >= 10 and hours_since_last > 24.0)
+    if not should_trigger:
+        return
+    cmd = [PY, 'scripts/pipeline/update_analyser_doctrine.py', '--insights-file', 'artifacts/doctrine_updates/analyser_insights.ndjson']
+    p = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
+    if p.returncode != 0:
+        _log('WARN', 'DOCTRINE_SYNTHESIS_TODO', 'TODO: update_analyser_doctrine.py --insights-file not wired yet; auto-trigger skipped')
+        return
+    ts = datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')
+    archived = insights.with_name(f'analyser_insights_{ts}.ndjson')
+    insights.replace(archived)
+
+
+def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: str, outcome_history: list[dict]) -> tuple[str, str]:
+    system = ('You are the Analyser agent in an algorithmic trading system. Your job is to examine backtest results, understand WHY a strategy performed the way it did, and generate specific actionable directives for improvement. You think like an experienced quant trader. Respond ONLY with valid JSON, no markdown, no explanation outside the JSON.')
     res = (backtest_result or {}).get('results', {}) if isinstance(backtest_result, dict) else {}
     inputs = (backtest_result or {}).get('inputs', {}) if isinstance(backtest_result, dict) else {}
     regime_pf = res.get('regime_pf') or {}
     regime_wr = res.get('regime_wr') or {}
     regime_breakdown = res.get('regime_breakdown') or {}
-
     history_view = []
     for h in (outcome_history or [])[:5]:
-        history_view.append({
-            'verdict': h.get('verdict'),
-            'directives': h.get('directives', [])[:3],
-            'reasoning': h.get('llm_reasoning') or h.get('failure_reasons') or h.get('next_experiments', []),
-        })
-
+        history_view.append({'verdict': h.get('verdict'), 'directives': h.get('directives', [])[:3], 'reasoning': h.get('llm_reasoning') or h.get('failure_reasons') or h.get('next_experiments', [])})
     doctrine_text = (doctrine or '')[:2000]
     user = (
-        '## Strategy Under Review\n'
-        f"{json.dumps(strategy_spec or {}, indent=2)}\n\n"
-        '## Backtest Results\n'
-        f"- Profit Factor: {float(res.get('profit_factor', 0.0) or 0.0):.6f}\n"
-        f"- Win Rate: {float(res.get('win_rate', 0.0) or 0.0) * 100:.2f}%\n"
-        f"- Max Drawdown: {float(res.get('max_drawdown', 0.0) or 0.0) * 100:.2f}%\n"
-        f"- Total Trades: {int(res.get('total_trades', 0) or 0)}\n"
-        f"- Timeframe: {inputs.get('variant') or inputs.get('dataset_meta') or 'unknown'}\n"
-        f"- Asset: {inputs.get('dataset_csv') or 'unknown'}\n\n"
-        '## Regime Performance\n'
-        f"- Trending: PF {float(regime_pf.get('trending', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('trending', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('trending_trades', 0) or 0)}\n"
-        f"- Ranging: PF {float(regime_pf.get('ranging', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('ranging_trades', 0) or 0)}\n"
-        f"- Transitional: PF {float(regime_pf.get('transitional', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('transitional', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('transitional_trades', 0) or 0)}\n"
-        f"- Dominant regime in data: {res.get('dominant_regime', 'unknown')}\n\n"
-        '## Trading Doctrine (accumulated knowledge)\n'
-        f"{doctrine_text}\n\n"
-        '## Recent Outcome History for this family\n'
-        f"{json.dumps(history_view, indent=2)}\n\n"
-        '## Your Task\n'
-        'Respond with this exact JSON structure:\n'
-        '{\n'
-        '  "verdict": "ACCEPT" or "REJECT",\n'
-        '  "reasoning": "2-3 sentences explaining WHY. Reference regime performance, indicator behaviour, doctrine principles.",\n'
-        '  "directives": [\n'
-        '    {\n'
-        '      "type": "one of: ROLE_SWAP, THRESHOLD_SWEEP, PARAM_SWEEP, ENTRY_TIGHTEN, ENTRY_RELAX, EXIT_CHANGE, GATE_ADJUST, TEMPLATE_SWITCH",\n'
-        '      "params": {"specific parameter changes, not vague"},\n'
-        '      "reasoning": "why this should help"\n'
-        '    }\n'
-        '  ],\n'
-        '  "regime_recommendation": {\n'
-        '    "add_filter": true/false,\n'
-        '    "allowed_regimes": ["trending"] or ["ranging"] or both\n'
-        '  },\n'
-        '  "confidence": "low" or "medium" or "high"\n'
-        '}\n\n'
-        'Rules:\n'
-        '- ACCEPT only if PF > 1.0 AND trades > 50\n'
-        '- Generate 1-3 directives, never more\n'
-        '- directive type must be one of the listed types exactly\n'
-        '- Be specific in params, not vague suggestions\n'
+        '## Strategy Under Review\n' + f"{json.dumps(strategy_spec or {}, indent=2)}\n\n" +
+        '## Backtest Results\n' +
+        f"- Profit Factor: {float(res.get('profit_factor', 0.0) or 0.0):.6f}\n" +
+        f"- Win Rate: {float(res.get('win_rate', 0.0) or 0.0) * 100:.2f}%\n" +
+        f"- Max Drawdown: {float(res.get('max_drawdown', 0.0) or 0.0) * 100:.2f}%\n" +
+        f"- Total Trades: {int(res.get('total_trades', 0) or 0)}\n" +
+        f"- Timeframe: {inputs.get('variant') or inputs.get('dataset_meta') or 'unknown'}\n" +
+        f"- Asset: {inputs.get('dataset_csv') or 'unknown'}\n\n" +
+        '## Regime Performance\n' +
+        f"- Trending: PF {float(regime_pf.get('trending', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('trending', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('trending_trades', 0) or 0)}\n" +
+        f"- Ranging: PF {float(regime_pf.get('ranging', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('ranging_trades', 0) or 0)}\n" +
+        f"- Transitional: PF {float(regime_pf.get('transitional', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('transitional', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('transitional_trades', 0) or 0)}\n" +
+        f"- Dominant regime in data: {res.get('dominant_regime', 'unknown')}\n\n" +
+        '## Trading Doctrine (accumulated knowledge)\n' + f"{doctrine_text}\n\n" +
+        '## Recent Outcome History for this family\n' + f"{json.dumps(history_view, indent=2)}\n\n" +
+        '## Your Task\nRespond with this exact JSON structure:\n{\n  "verdict": "ACCEPT" or "REJECT",\n  "reasoning": "2-3 sentences explaining WHY. Reference regime performance, indicator behaviour, doctrine principles.",\n  "directives": [{"type": "one of: ROLE_SWAP, THRESHOLD_SWEEP, PARAM_SWEEP, ENTRY_TIGHTEN, ENTRY_RELAX, EXIT_CHANGE, GATE_ADJUST, TEMPLATE_SWITCH", "params": {"specific parameter changes, not vague"}, "reasoning": "why this should help"}],\n  "regime_recommendation": {"add_filter": true/false, "allowed_regimes": ["trending"] or ["ranging"] or both},\n  "confidence": "low" or "medium" or "high",\n  "doctrine_update": "If you discovered a new trading principle or confirmed/contradicted an existing doctrine principle based on this analysis, state it as one concise sentence. If nothing new was learned, set to null."\n}\n\nRules:\n- ACCEPT only if PF > 1.0 AND trades > 50\n- Generate 1-3 directives, never more\n- directive type must be one of the listed types exactly\n- Be specific in params, not vague suggestions\n'
     )
     return system, user
 
 
 def _directive_history_stats(notes: list[dict]) -> dict[str, dict]:
-    # Interpret directives in note[i] as interventions that influenced note[i-1] (newer)
     if not notes:
         return {}
     chronological = list(reversed(notes))
@@ -507,22 +458,13 @@ def _apply_history_to_directives(base_directives: list[dict], history_stats: dic
             adjusted.append(_amplify_directive(d))
         else:
             adjusted.append(d)
-
-    # Prioritize untried directive types for this family.
     adjusted.sort(key=lambda d: 0 if str(d.get('type') or '') not in history_stats else 1)
-
     out: list[dict] = []
     for i, d in enumerate(adjusted, start=1):
         dt = str(d.get('type') or '')
         if dt not in DIRECTIVE_TYPES:
             continue
-        clean = {
-            'id': f'd{i}',
-            'type': dt,
-            'params': d.get('params') or {},
-            'rationale': str(d.get('rationale') or ''),
-            'priority': int(d.get('priority', i)),
-        }
+        clean = {'id': f'd{i}', 'type': dt, 'params': d.get('params') or {}, 'rationale': str(d.get('rationale') or ''), 'priority': int(d.get('priority', i))}
         if clean not in out:
             out.append(clean)
         if len(out) >= 5:
@@ -536,26 +478,18 @@ def _directives_from_failures(failures: list[dict], verdict: str) -> list[dict]:
     for f in failures:
         code = f['code']
         if code == 'LOW_TRADE_COUNT':
-            directives.append({'id': f'd{idx}', 'type': 'ENTRY_RELAX', 'params': {'confidence_threshold_delta': -0.05}, 'rationale': 'Increase participation to clear minimum trade gate.', 'priority': 1})
-            idx += 1
-            directives.append({'id': f'd{idx}', 'type': 'THRESHOLD_SWEEP', 'params': {'parameter': 'confidence_threshold', 'range': [0.5, 0.7], 'step': 0.05}, 'rationale': 'Sweep entry threshold to recover trade frequency.', 'priority': 2})
-            idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'ENTRY_RELAX', 'params': {'confidence_threshold_delta': -0.05}, 'rationale': 'Increase participation to clear minimum trade gate.', 'priority': 1}); idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'THRESHOLD_SWEEP', 'params': {'parameter': 'confidence_threshold', 'range': [0.5, 0.7], 'step': 0.05}, 'rationale': 'Sweep entry threshold to recover trade frequency.', 'priority': 2}); idx += 1
         elif code == 'HIGH_DRAWDOWN':
-            directives.append({'id': f'd{idx}', 'type': 'ENTRY_TIGHTEN', 'params': {'confidence_threshold_delta': 0.05}, 'rationale': 'Tighten entry quality to reduce adverse excursions.', 'priority': 1})
-            idx += 1
-            directives.append({'id': f'd{idx}', 'type': 'EXIT_CHANGE', 'params': {'stop_atr_mult': 1.2, 'tp_atr_mult': 1.8}, 'rationale': 'Adjust exits to cap drawdown.', 'priority': 2})
-            idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'ENTRY_TIGHTEN', 'params': {'confidence_threshold_delta': 0.05}, 'rationale': 'Tighten entry quality to reduce adverse excursions.', 'priority': 1}); idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'EXIT_CHANGE', 'params': {'stop_atr_mult': 1.2, 'tp_atr_mult': 1.8}, 'rationale': 'Adjust exits to cap drawdown.', 'priority': 2}); idx += 1
         elif code == 'PF_BELOW_1':
-            directives.append({'id': f'd{idx}', 'type': 'PARAM_SWEEP', 'params': {'parameter': 'risk_r', 'range': [0.5, 1.5], 'step': 0.25}, 'rationale': 'Re-balance payoff profile to improve PF.', 'priority': 1})
-            idx += 1
-            directives.append({'id': f'd{idx}', 'type': 'ROLE_SWAP', 'params': {'swap': 'entry<->confirmation'}, 'rationale': 'Test alternate component role assignment for better edge.', 'priority': 3})
-            idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'PARAM_SWEEP', 'params': {'parameter': 'risk_r', 'range': [0.5, 1.5], 'step': 0.25}, 'rationale': 'Re-balance payoff profile to improve PF.', 'priority': 1}); idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'ROLE_SWAP', 'params': {'swap': 'entry<->confirmation'}, 'rationale': 'Test alternate component role assignment for better edge.', 'priority': 3}); idx += 1
         elif code == 'NO_IMPROVEMENT':
-            directives.append({'id': f'd{idx}', 'type': 'TEMPLATE_SWITCH', 'params': {'target': 'FALLBACK_TEMPLATE_CONFIRMATION'}, 'rationale': 'Switch template when local refinement stalls.', 'priority': 2})
-            idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'TEMPLATE_SWITCH', 'params': {'target': 'FALLBACK_TEMPLATE_CONFIRMATION'}, 'rationale': 'Switch template when local refinement stalls.', 'priority': 2}); idx += 1
         elif code == 'MARGIN_RISK':
-            directives.append({'id': f'd{idx}', 'type': 'GATE_ADJUST', 'params': {'min_trades_required': 25}, 'rationale': 'Raise reliability gate under acceptable baseline.', 'priority': 3})
-            idx += 1
+            directives.append({'id': f'd{idx}', 'type': 'GATE_ADJUST', 'params': {'min_trades_required': 25}, 'rationale': 'Raise reliability gate under acceptable baseline.', 'priority': 3}); idx += 1
     if verdict == 'REJECT' and len(directives) < 2:
         directives.append({'id': f'd{idx}', 'type': 'GATE_ADJUST', 'params': {'max_drawdown_cap': 0.25}, 'rationale': 'Enforce stricter DD cap before promotion.', 'priority': 1})
     out = []
@@ -579,7 +513,6 @@ def main() -> int:
     batch_path = Path(args.batch_artifact) if args.batch_artifact else latest_file('artifacts/batches/**/batch_*.batch_backtest.json')
     ref_path = Path(args.refinement_artifact) if args.refinement_artifact else latest_file('artifacts/refinement/**/*.refinement_cycle.json')
     lessons_path = ROOT / 'artifacts' / 'library' / 'LESSONS_INDEX.json'
-
     batch = _j(batch_path, {}) if batch_path else {}
     refinement = _j(ref_path, {}) if ref_path else {}
     _ = _j(lessons_path, [])
@@ -599,38 +532,17 @@ def main() -> int:
 
     failures = _failure_reasons(pf, dd, trades, str(evidence), refinement)
     base_directives = _directives_from_failures(failures, verdict)
-
-    # Regime-aware overrides: avoid throwing away conditionally profitable strategies.
     if regime_ctx.get('single_good'):
-        good_regime = str((regime_ctx.get('good_regimes') or [''])[0])
-        verdict = 'REVISE'
-        base_directives = [{
-            'id': 'd_regime_filter_only',
-            'type': 'GATE_ADJUST',
-            'params': {'require_regime_filter': True, 'allowed_regime': good_regime},
-            'rationale': f"Regime-aware: strategy shows edge mainly in {good_regime}; restrict trading to that regime.",
-            'priority': 1,
-        }] + [d for d in base_directives if d.get('type') != 'GATE_ADJUST']
+        good_regime = str((regime_ctx.get('good_regimes') or [''])[0]); verdict = 'REVISE'
+        base_directives = [{'id': 'd_regime_filter_only', 'type': 'GATE_ADJUST', 'params': {'require_regime_filter': True, 'allowed_regime': good_regime}, 'rationale': f"Regime-aware: strategy shows edge mainly in {good_regime}; restrict trading to that regime.", 'priority': 1}] + [d for d in base_directives if d.get('type') != 'GATE_ADJUST']
     elif regime_ctx.get('all_bad'):
         verdict = 'REJECT'
-        base_directives = [{
-            'id': 'd_regime_pivot',
-            'type': 'TEMPLATE_SWITCH',
-            'params': {'target': 'FALLBACK_TEMPLATE_TREND', 'reason': 'all_regimes_underperform'},
-            'rationale': 'Regime-aware: underperforms across all regimes; pivot to fundamentally different structure.',
-            'priority': 1,
-        }] + base_directives
+        base_directives = [{'id': 'd_regime_pivot', 'type': 'TEMPLATE_SWITCH', 'params': {'target': 'FALLBACK_TEMPLATE_TREND', 'reason': 'all_regimes_underperform'}, 'rationale': 'Regime-aware: underperforms across all regimes; pivot to fundamentally different structure.', 'priority': 1}] + base_directives
     elif regime_ctx.get('all_good'):
         verdict = 'ACCEPT'
-        base_directives = [{
-            'id': 'd_regime_refine',
-            'type': 'PARAM_SWEEP',
-            'params': {'parameter': 'risk_r', 'range': [0.75, 1.75], 'step': 0.25, 'reason': 'all_regimes_strong'},
-            'rationale': 'Regime-aware: robust across regimes; prioritise refinement over structural changes.',
-            'priority': 1,
-        }] + base_directives
-    variant_ctx = _load_strategy_variant_context(batch, best_run)
+        base_directives = [{'id': 'd_regime_refine', 'type': 'PARAM_SWEEP', 'params': {'parameter': 'risk_r', 'range': [0.75, 1.75], 'step': 0.25, 'reason': 'all_regimes_strong'}, 'rationale': 'Regime-aware: robust across regimes; prioritise refinement over structural changes.', 'priority': 1}] + base_directives
 
+    variant_ctx = _load_strategy_variant_context(batch, best_run)
     doctrine_refs: list[dict] = []
     doctrine = DoctrinePrinciples(False, False, False, [])
     doctrine_directives = list(base_directives)
@@ -646,32 +558,23 @@ def main() -> int:
     llm_reasoning = None
     llm_confidence = None
     regime_recommendation = None
+    doctrine_update = None
 
     if not args.no_llm:
         bt_obj = _j(Path(str(best_run.get('backtest_result_path') or '')), {}) if best_run.get('backtest_result_path') else {}
         strategy_spec_obj = load_strategy_spec(bt_obj)
-        doctrine_text = ''
-        if DOCTRINE_PATH.exists():
-            try:
-                doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig')
-            except Exception:
-                doctrine_text = ''
+        doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig') if DOCTRINE_PATH.exists() else ''
         outcome_history = load_family_outcome_history(strategy_family, limit=5)
         system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
-        raw = openclaw_completion(user_prompt, system=system_prompt, agent='reader')
+        raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='reader', timeout=120)
         use_llm = False
         llm_result: dict = {}
         if raw:
-            cleaned = raw.strip()
-            if cleaned.startswith('```'):
-                cleaned = re.sub(r'^```json?\s*', '', cleaned)
-                cleaned = re.sub(r'\s*```$', '', cleaned)
-            try:
-                llm_result = json.loads(cleaned)
+            parsed = llm_client.parse_llm_json(raw)
+            if isinstance(parsed, dict):
+                llm_result = parsed
                 if all(k in llm_result for k in ['verdict', 'reasoning', 'directives', 'confidence']):
                     use_llm = True
-            except json.JSONDecodeError:
-                use_llm = False
 
         if use_llm:
             v = str(llm_result.get('verdict', '')).upper()
@@ -685,95 +588,49 @@ def main() -> int:
                 dt = str(d.get('type') or '')
                 if dt not in DIRECTIVE_TYPES:
                     continue
-                safe_dirs.append({
-                    'id': f'd{i}',
-                    'type': dt,
-                    'params': d.get('params') if isinstance(d.get('params'), dict) else {},
-                    'rationale': str(d.get('reasoning') or d.get('rationale') or ''),
-                    'priority': i,
-                })
+                safe_dirs.append({'id': f'd{i}', 'type': dt, 'params': d.get('params') if isinstance(d.get('params'), dict) else {}, 'rationale': str(d.get('reasoning') or d.get('rationale') or ''), 'priority': i})
             if safe_dirs:
                 directives = safe_dirs
             analysis_source = 'llm'
             llm_reasoning = str(llm_result.get('reasoning') or '')
             llm_confidence = str(llm_result.get('confidence') or '')
             regime_recommendation = llm_result.get('regime_recommendation') if isinstance(llm_result.get('regime_recommendation'), dict) else None
+            doctrine_update = llm_result.get('doctrine_update')
+            if doctrine_update is not None:
+                doctrine_update = str(doctrine_update).strip() if str(doctrine_update).strip().lower() != 'null' else None
+            if doctrine_update:
+                _append_doctrine_insight(strategy_family, doctrine_update, str(best_run.get('backtest_result_path') or ''), llm_confidence or '')
+                _maybe_trigger_doctrine_synthesis()
             _log('INFO', 'LLM_PATH', f'Outcome analysis used LLM for strategy_family={strategy_family}')
         else:
             _log('WARN', 'LLM_FALLBACK', 'LLM call failed, using rules')
     else:
         _log('INFO', 'RULES_PATH', f'Outcome analysis used rules-only for strategy_family={strategy_family}')
 
-    next_experiments = [
-        f"Apply {d['type']} with params={json.dumps(d['params'], sort_keys=True)}"
-        for d in directives[:5]
-    ]
+    next_experiments = [f"Apply {d['type']} with params={json.dumps(d['params'], sort_keys=True)}" for d in directives[:5]]
 
     day = datetime.now(UTC).strftime('%Y%m%d')
     out_dir = ROOT / 'artifacts' / 'outcomes' / day
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f'outcome_notes_{args.run_id}.json'
     payload = {
-        'schema_version': '2.0',
-        'id': f'outcome-notes-{args.run_id}',
-        'run_id': args.run_id,
-        'created_at': datetime.now(UTC).isoformat(),
-        'verdict': verdict,
-        'strategy_family': strategy_family,
-        'template': template,
-        'metrics': {
-            'profit_factor_after_costs': pf,
-            'max_drawdown': dd,
-            'trades': trades,
-            'regime_breakdown': regime_ctx.get('regime_breakdown', {}),
-            'regime_pf': regime_ctx.get('regime_pf', {}),
-            'regime_wr': regime_ctx.get('regime_wr', {}),
-            'dominant_regime': regime_ctx.get('dominant_regime', ''),
-        },
-        'regime_analysis': {
-            'available': bool(regime_ctx.get('available')),
-            'good_regimes': regime_ctx.get('good_regimes', []),
-            'bad_regimes': regime_ctx.get('bad_regimes', []),
-            'all_good': bool(regime_ctx.get('all_good')),
-            'all_bad': bool(regime_ctx.get('all_bad')),
-            'single_good': bool(regime_ctx.get('single_good')),
-        },
-        'failure_reasons': failures[:5],
-        'directives': directives[:5],
-        'analysis_source': analysis_source,
-        'doctrine_refs': doctrine_refs[:10],
-        'directive_history': {
-            'notes_considered': len(recent_notes),
-            'history_window': [
-                {
-                    'id': str(n.get('id') or ''),
-                    'created_at': str(n.get('created_at') or ''),
-                    'verdict': str(n.get('verdict') or ''),
-                    'profit_factor_after_costs': _extract_pf_from_note(n),
-                    'directive_types': [str(d.get('type') or '') for d in (n.get('directives') or [])[:5]],
-                }
-                for n in recent_notes
-            ],
-            'directive_type_stats': history_stats,
-            'doctrine_enabled': (not args.disable_doctrine),
-            'doctrine_principles': {
-                'regime_required': doctrine.regime_required,
-                'risk_gating': doctrine.risk_gating,
-                'macd_confirmation_over_entry': doctrine.macd_confirmation_over_entry,
-            },
-        },
-        'next_experiments': next_experiments[:5],
-        'sources_used': sources_used[:10],
+        'schema_version': '2.0', 'id': f'outcome-notes-{args.run_id}', 'run_id': args.run_id, 'created_at': datetime.now(UTC).isoformat(),
+        'verdict': verdict, 'strategy_family': strategy_family, 'template': template,
+        'metrics': {'profit_factor_after_costs': pf, 'max_drawdown': dd, 'trades': trades, 'regime_breakdown': regime_ctx.get('regime_breakdown', {}), 'regime_pf': regime_ctx.get('regime_pf', {}), 'regime_wr': regime_ctx.get('regime_wr', {}), 'dominant_regime': regime_ctx.get('dominant_regime', '')},
+        'regime_analysis': {'available': bool(regime_ctx.get('available')), 'good_regimes': regime_ctx.get('good_regimes', []), 'bad_regimes': regime_ctx.get('bad_regimes', []), 'all_good': bool(regime_ctx.get('all_good')), 'all_bad': bool(regime_ctx.get('all_bad')), 'single_good': bool(regime_ctx.get('single_good'))},
+        'failure_reasons': failures[:5], 'directives': directives[:5], 'analysis_source': analysis_source, 'doctrine_refs': doctrine_refs[:10],
+        'directive_history': {'notes_considered': len(recent_notes), 'history_window': [{'id': str(n.get('id') or ''), 'created_at': str(n.get('created_at') or ''), 'verdict': str(n.get('verdict') or ''), 'profit_factor_after_costs': _extract_pf_from_note(n), 'directive_types': [str(d.get('type') or '') for d in (n.get('directives') or [])[:5]]} for n in recent_notes], 'directive_type_stats': history_stats, 'doctrine_enabled': (not args.disable_doctrine), 'doctrine_principles': {'regime_required': doctrine.regime_required, 'risk_gating': doctrine.risk_gating, 'macd_confirmation_over_entry': doctrine.macd_confirmation_over_entry}},
+        'next_experiments': next_experiments[:5], 'sources_used': sources_used[:10],
     }
     if analysis_source == 'llm':
         payload['llm_reasoning'] = llm_reasoning
         payload['llm_confidence'] = llm_confidence
         payload['regime_recommendation'] = regime_recommendation
+        if doctrine_update:
+            payload['doctrine_update'] = doctrine_update
 
     out_path.write_text(json.dumps(payload, indent=2), encoding='utf-8')
-
     summary_line = f'ANALYSER_OUTCOME_SUMMARY — processed=1 verdict={verdict} directives={len(directives[:5])}'
-    # REJECT is a valid learning outcome, not an execution failure.
     _log('OK', 'ANALYSER_OUTCOME_SUMMARY', summary_line)
     print(summary_line)
     print(json.dumps({'processed': 1, 'verdict': verdict, 'directives': len(directives[:5]), 'outcome_notes_path': str(out_path).replace('\\', '/')}))
