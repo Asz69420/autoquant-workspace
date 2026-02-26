@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -15,9 +16,8 @@ import requests
 ROOT = Path(__file__).resolve().parents[2]
 RUN_INDEX = ROOT / "artifacts" / "library" / "RUN_INDEX.json"
 OUT_PATH = ROOT / "artifacts" / "reports" / "daily_intel.txt"
-BATCH_ROOT = ROOT / "artifacts" / "batches"
-PROMO_ROOT = ROOT / "artifacts" / "promotions"
 ACTIONS_LOG = ROOT / "data" / "logs" / "actions.ndjson"
+PROMO_ROOT = ROOT / "artifacts" / "promotions"
 
 AEST = ZoneInfo("Australia/Brisbane")
 NOW_UTC = datetime.now(timezone.utc)
@@ -28,10 +28,10 @@ ASSET_ORDER = {"BTC": 0, "ETH": 1}
 EMOJI = {"BTC": "🟠", "ETH": "🔵"}
 MAX_WIDTH = 42
 
-# Required exact format string from spec.
-fmt = "{:<1} {:<12} {:>4} {:>4} {:>3} {:>4} {:>5}"
+# Locked alignment format (header uses the exact same format string)
+FMT = "{arrow:<1} {name:<12} {pf:>4} {wr:>4} {tc:>3} {dd:>4} {pnl:>5}"
 
-ABBR = {
+ALIAS = {
     "adx": "ADX",
     "supertrend": "Suprtrnd",
     "bollinger": "BB",
@@ -39,15 +39,13 @@ ABBR = {
     "reversion": "Rev",
     "gaussian": "Gauss",
     "pullback": "Pull",
-    "session": "Sess",
-    "trend": "Trend",
-    "breakout": "Brkout",
+    "ichimoku": "Ichimoku",
+    "cci": "CCI",
     "ema": "EMA",
     "sma": "SMA",
     "rsi": "RSI",
-    "atr": "Atr",
+    "atr": "ATR",
     "macd": "MACD",
-    "ichimoku": "Ichi",
 }
 STOP = {"strategy", "thesis", "spec", "variant", "entry", "exit", "generated", "model"}
 
@@ -58,6 +56,7 @@ class Row:
     asset: str
     tf: str
     name: str
+    key: str
     pf: float
     wr: float | None
     tc: int
@@ -75,6 +74,18 @@ def jload(path: Path, default):
         return default
 
 
+def to_dt(v):
+    if not v:
+        return None
+    s = str(v).strip()
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    try:
+        return datetime.fromisoformat(s).astimezone(timezone.utc)
+    except Exception:
+        return None
+
+
 def fnum(v):
     try:
         return float(v)
@@ -89,18 +100,6 @@ def inum(v):
         return None
 
 
-def dt(v):
-    if not v:
-        return None
-    s = str(v).strip()
-    if s.endswith("Z"):
-        s = s[:-1] + "+00:00"
-    try:
-        return datetime.fromisoformat(s).astimezone(timezone.utc)
-    except Exception:
-        return None
-
-
 def pct(v):
     if v is None:
         return None
@@ -111,83 +110,45 @@ def limit42(s: str) -> str:
     return s if len(s) <= MAX_WIDTH else s[:MAX_WIDTH]
 
 
-def normalize_name(raw: str, fallback_token: str) -> str:
-    txt = "".join(ch if ch.isalnum() or ch in " _-" else " " for ch in (raw or ""))
-    toks = [t for t in txt.replace("-", " ").replace("_", " ").split() if t]
-    lo_toks = [t.lower() for t in toks]
-
-    # Preferred compact aliases requested by user.
-    if "adx" in lo_toks and "supertrend" in lo_toks:
-        return "ADX_Suprtrnd"
-    if "bollinger" in lo_toks and ("mean" in lo_toks or "reversion" in lo_toks):
-        return "BB_MeanRev"
-    if "gaussian" in lo_toks and "pullback" in lo_toks:
-        return "Gauss_Pull"
-    if "ichimoku" in lo_toks and "cci" in lo_toks:
-        return "Ichimoku_CCI"
-
-    picked = []
-    for t in toks:
-        lo = t.lower()
-        if lo in STOP or lo.isdigit():
-            continue
-        mapped = ABBR.get(lo)
-        if mapped:
-            picked.append(mapped)
-        elif len(lo) >= 3:
-            picked.append(t[:6].title())
-        if len(picked) >= 2:
-            break
-
-    if not picked:
-        return f"{fallback_token}_Spec"[:12]
-    if len(picked) == 1:
-        return picked[0][:12]
-    return f"{picked[0]}_{picked[1]}"[:12]
-
-
-def strategy_name(spec_path: str, variant: str) -> str:
+def build_name(spec_path: str, variant: str) -> tuple[str, str]:
     spec = jload(Path(spec_path), {}) if spec_path else {}
     thesis_path = str(spec.get("source_thesis_path") or "")
     thesis = jload(Path(thesis_path), {}) if thesis_path else {}
 
-    # Spec says meaningful names from strategy family / thesis naming.
-    base = (
-        str(thesis.get("strategy_family") or "").strip()
-        or str(spec.get("strategy_family") or "").strip()
-        or str(thesis.get("title") or "").strip()
+    raw = (
+        str(thesis.get("title") or "").strip()
         or str(spec.get("description") or "").strip()
+        or str(spec.get("strategy_family") or "").strip()
+        or str(thesis.get("strategy_family") or "").strip()
         or str(variant or "").strip()
     )
 
-    stem = Path(spec_path).stem if spec_path else "spec"
-    token = "".join(ch for ch in stem if ch.isalnum())[-4:] or "Spec"
-    return normalize_name(base, token)
+    cleaned = "".join(ch if ch.isalnum() or ch in " _-" else " " for ch in raw)
+    toks = [t for t in cleaned.replace("-", " ").replace("_", " ").split() if t]
+    picks = []
+    for t in toks:
+        lo = t.lower()
+        if lo in STOP or lo.isdigit():
+            continue
+        picks.append(ALIAS.get(lo, t[:6].title()))
+        if len(picks) >= 2:
+            break
+
+    if picks:
+        name = (picks[0] if len(picks) == 1 else f"{picks[0]}_{picks[1]}")[:12]
+    else:
+        stem = Path(spec_path).stem if spec_path else "spec"
+        m = re.findall(r"[0-9a-fA-F]{4,}", stem)
+        token = (m[-1][:4] if m else ("".join(ch for ch in stem if ch.isalnum())[-4:] or "Spec"))
+        name = f"{token}_Spec"[:12]
+
+    key = name.lower()
+    return name, key
 
 
-def metrics(backtest_path: str, run: dict):
-    bj = jload(Path(backtest_path), {}) if backtest_path and Path(backtest_path).exists() else {}
-    res = bj.get("results") or {}
-
-    wr = pct(fnum(res.get("win_rate")))
-    tc = inum(res.get("total_trades") or res.get("trades") or run.get("trades"))
-    pnl = pct(fnum(res.get("net_profit_pct")))
-    dd = pct(fnum(res.get("max_drawdown_pct")))
-
-    if wr is None:
-        wr = pct(fnum(run.get("win_rate")))
-    if tc is None:
-        tc = inum(run.get("trades"))
-    if pnl is None:
-        net = fnum(run.get("net_profit"))
-        pnl = ((net / 10000.0) * 100.0) if net is not None else None
-
-    return wr, tc, dd, pnl
-
-
-def trend(prev_pf, curr_pf):
+def trend(prev_pf: float | None, curr_pf: float) -> str:
     if prev_pf is None:
-        return "→"
+        return "○"
     d = curr_pf - prev_pf
     if d > 0.02:
         return "↑"
@@ -196,13 +157,33 @@ def trend(prev_pf, curr_pf):
     return "→"
 
 
+def metrics(backtest_path: str, run: dict):
+    bj = jload(Path(backtest_path), {}) if backtest_path and Path(backtest_path).exists() else {}
+    res = bj.get("results") or {}
+
+    wr = pct(fnum(res.get("win_rate")))
+    tc = inum(res.get("total_trades") or res.get("trades") or run.get("trades"))
+    dd = pct(fnum(res.get("max_drawdown_pct")))
+    pnl = pct(fnum(res.get("net_profit_pct")))
+
+    if wr is None:
+        wr = pct(fnum(run.get("win_rate")))
+    if tc is None:
+        tc = inum(run.get("trades"))
+    if pnl is None:
+        net = fnum(run.get("net_profit"))
+        pnl = (net / 10000.0) * 100.0 if net is not None else None
+
+    return wr, tc, dd, pnl
+
+
 def collect_rows():
     runs = jload(RUN_INDEX, [])
-    by_name_hist = defaultdict(list)
-    raw = []
+    staged = []
+    hist = defaultdict(list)
 
     for r in runs:
-        created = dt(r.get("created_at"))
+        created = to_dt(r.get("created_at"))
         pf = fnum(r.get("profit_factor"))
         if not created or pf is None:
             continue
@@ -213,68 +194,105 @@ def collect_rows():
         d = ds[0] if isinstance(ds, list) else ds
         asset = str(d.get("symbol") or "").upper().strip()
         tf = str(d.get("timeframe") or "").lower().strip()
-        if asset not in {"BTC", "ETH"} or not tf:
+        if asset not in {"BTC", "ETH"} or tf not in TF_ORDER:
             continue
 
         spec_path = str(r.get("strategy_spec_path") or "")
         variant = str(r.get("variant_name") or "")
-        name = strategy_name(spec_path, variant)
+        name, key = build_name(spec_path, variant)
 
         bt = str((r.get("pointers") or {}).get("backtest_result") or "")
         wr, tc, dd, pnl = metrics(bt, r)
         if tc is None or tc <= 0:
             continue
 
-        raw.append((created, asset, tf, name, pf, wr, tc, dd, pnl))
-        by_name_hist[(asset, tf, name)].append((created, pf))
+        staged.append((created, asset, tf, name, key, pf, wr, tc, dd, pnl))
+        hist[(asset, tf, key)].append((created, pf))
 
-    for k in by_name_hist:
-        by_name_hist[k].sort(key=lambda x: x[0])
+    for k in hist:
+        hist[k].sort(key=lambda x: x[0])
 
-    rows = []
-    for created, asset, tf, name, pf, wr, tc, dd, pnl in raw:
+    rows: list[Row] = []
+    for created, asset, tf, name, key, pf, wr, tc, dd, pnl in staged:
         prev = None
-        for hdt, hpf in by_name_hist[(asset, tf, name)]:
+        for hdt, hpf in hist[(asset, tf, key)]:
             if hdt < created:
                 prev = hpf
             else:
                 break
-        rows.append(Row(created, asset, tf, name, pf, wr, tc, dd, pnl, trend(prev, pf)))
+        rows.append(Row(created, asset, tf, name, key, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
-    # Dedup #1: each strategy once per asset/timeframe (best PF, then WR/PnL).
-    best_by_strategy = {}
+    # Dedup 1: each strategy once (best) per asset/timeframe.
+    best = {}
     for r in rows:
-        key = (r.asset, r.tf, r.name)
-        cur = best_by_strategy.get(key)
+        k = (r.asset, r.tf, r.key)
+        cur = best.get(k)
         if cur is None or (r.pf, r.wr or -999, r.pnl or -999) > (cur.pf, cur.wr or -999, cur.pnl or -999):
-            best_by_strategy[key] = r
-    rows = list(best_by_strategy.values())
+            best[k] = r
+    rows = list(best.values())
 
-    # Dedup #2: remove identical result duplicates (same stats/signature).
+    # Dedup 2: collapse repeated identical results.
     uniq = {}
     for r in rows:
         sig = (r.asset, r.tf, round(r.pf, 2), round(r.wr or 0.0, 1), int(r.tc), round(r.dd or 0.0, 1), round(r.pnl or 0.0, 1))
-        cur = uniq.get(sig)
-        if cur is None or len(r.name) > len(cur.name):
+        if sig not in uniq:
             uniq[sig] = r
     rows = list(uniq.values())
 
-    # Meta
-    cycles = 0
-    errors = 0
-    backtests = sum(1 for r in raw if r[0] >= SINCE_24H)
-    specs = len({str((x.get('strategy_spec_path') or '')) for x in runs if dt(x.get('created_at')) and dt(x.get('created_at')) >= SINCE_24H})
+    return rows
 
-    if BATCH_ROOT.exists():
-        for p in BATCH_ROOT.rglob("*.batch_backtest.json"):
-            j = jload(p, {})
-            c = dt(j.get("created_at"))
-            if not c or c < SINCE_24H:
+
+def format_v(v, d=1, signed=False):
+    if v is None:
+        return "-"
+    return f"{v:+.{d}f}" if signed else f"{v:.{d}f}"
+
+
+def render_tables(rows: list[Row]) -> list[str]:
+    lines: list[str] = []
+    assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
+
+    header = FMT.format(arrow="△", name="Strategy", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
+    width = min(MAX_WIDTH, len(header))
+
+    for asset in assets:
+        lines.append(f"{EMOJI.get(asset, '⚪')} {asset}")
+        lines.append(limit42(header))
+
+        a_rows = [r for r in rows if r.asset == asset]
+        for tf in sorted({r.tf for r in a_rows}, key=lambda x: TF_ORDER.get(x, 99)):
+            t_rows = [r for r in a_rows if r.tf == tf]
+            top3 = sorted(t_rows, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:3]
+            if not top3:
                 continue
-            cycles += 1
-            errors += int(inum((j.get("summary") or {}).get("failed_runs")) or 0)
 
-    buckets = defaultdict(int)
+            prefix = f"○── {tf} "
+            lines.append(limit42(prefix + "─" * max(0, width - len(prefix))))
+
+            for r in top3:
+                row = FMT.format(
+                    arrow=r.arrow,
+                    name=r.name[:12],
+                    pf=f"{r.pf:.2f}",
+                    wr=format_v(r.wr),
+                    tc=str(r.tc),
+                    dd=format_v(r.dd),
+                    pnl=format_v(r.pnl, signed=True),
+                )
+                lines.append(limit42(row))
+
+        lines.append("")
+
+    return lines
+
+
+def collect_activity(rows: list[Row]) -> dict:
+    backtests = sum(1 for r in rows if r.created >= SINCE_24H)
+
+    runs = jload(RUN_INDEX, [])
+    specs = len({str(r.get("strategy_spec_path") or "") for r in runs if (to_dt(r.get("created_at")) or NOW_UTC) >= SINCE_24H})
+
+    fail_buckets = defaultdict(int)
     if ACTIONS_LOG.exists():
         for line in ACTIONS_LOG.read_text(encoding="utf-8-sig", errors="ignore").splitlines():
             if not line.strip().startswith("{"):
@@ -283,60 +301,40 @@ def collect_rows():
                 obj = json.loads(line)
             except Exception:
                 continue
-            t = dt(obj.get("ts_iso") or obj.get("created_at"))
+            t = to_dt(obj.get("ts_iso") or obj.get("created_at"))
             if not t or t < SINCE_24H:
                 continue
             if str(obj.get("status_word") or "").upper() != "FAIL":
                 continue
             rc = str(obj.get("reason_code") or obj.get("action") or "UNKNOWN")
-            buckets[rc] += 1
+            fail_buckets[rc] += 1
 
+    fail_total = sum(fail_buckets.values())
     top_error, top_count = ("", 0)
-    if buckets:
-        top_error, top_count = sorted(buckets.items(), key=lambda kv: kv[1], reverse=True)[0]
+    if fail_buckets:
+        top_error, top_count = sorted(fail_buckets.items(), key=lambda kv: kv[1], reverse=True)[0]
 
-    return rows, {
+    # Activity cycles via promotion runs within 24h (best available signal).
+    cycles = 0
+    if PROMO_ROOT.exists():
+        for p in PROMO_ROOT.rglob("*.promotion_run.json"):
+            j = jload(p, {})
+            t = to_dt(j.get("created_at"))
+            if t and t >= SINCE_24H:
+                cycles += 1
+
+    return {
         "cycles": cycles,
         "backtests": backtests,
         "specs": specs,
-        "errors": errors,
+        "fail_total": fail_total,
         "top_error": top_error,
-        "top_error_count": top_count,
+        "top_count": top_count,
     }
 
 
-def fmtv(v, d=1, signed=False):
-    if v is None:
-        return "-"
-    return f"{v:+.{d}f}" if signed else f"{v:.{d}f}"
-
-
-def render_asset_blocks(rows: list[Row]):
-    lines = []
-    assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
-
-    for asset in assets:
-        asset_rows = [r for r in rows if r.asset == asset]
-        if not asset_rows:
-            continue
-
-        lines.append(f"{EMOJI.get(asset, '⚪')} TOP 5 {asset} (by PF)")
-        header = "# △ TF Strategy   PF  WR%  TC  DD%  P&L%"
-        lines.append(header)
-        lines.append("─" * len(header))
-
-        top5 = sorted(asset_rows, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:5]
-        for i, r in enumerate(top5, start=1):
-            row = f"{i} {r.arrow} {r.tf:<2} {r.name[:10]:<10} {r.pf:>4.2f} {fmtv(r.wr):>4} {str(r.tc):>3} {fmtv(r.dd):>4} {fmtv(r.pnl, signed=True):>5}"
-            lines.append(limit42(row))
-
-        lines.append("")
-
-    return lines
-
-
-def milestones(rows: list[Row]):
-    out = []
+def milestones(rows: list[Row]) -> list[str]:
+    out: list[str] = []
     firsts = [r for r in rows if r.pf >= 1.0 and r.created >= SINCE_24H]
     if firsts:
         out.append("• PF>1 firsts: " + ", ".join(x.name for x in firsts[:2]))
@@ -349,8 +347,8 @@ def milestones(rows: list[Row]):
     if PROMO_ROOT.exists():
         for p in PROMO_ROOT.rglob("*.promotion_run.json"):
             j = jload(p, {})
-            c = dt(j.get("created_at"))
-            if c and c >= SINCE_24H and str(j.get("status") or "").upper() == "OK":
+            t = to_dt(j.get("created_at"))
+            if t and t >= SINCE_24H and str(j.get("status") or "").upper() == "OK":
                 near = True
                 break
     if near:
@@ -361,28 +359,23 @@ def milestones(rows: list[Row]):
     return [limit42(x) for x in out]
 
 
-def attention(meta):
-    out = []
-    if meta["errors"] > 0:
-        out.append(limit42(f"• Errors:{meta['errors']} failed runs/24h"))
-        if meta.get("top_error"):
-            out.append(limit42(f"• Top:{meta['top_error']} x{meta['top_error_count']}"))
-        out.append(limit42("• Note: investigate errors next session"))
-    if meta["cycles"] == 0:
-        out.append("• Stalls: no cycles in 24h")
-    if not out:
-        out.append("• System healthy ✅")
+def attention(meta: dict) -> list[str]:
+    if meta["fail_total"] <= 0:
+        return ["• System healthy ✅"]
+    out = [limit42(f"• FAIL errors:{meta['fail_total']}/24h")]
+    if meta["top_error"]:
+        out.append(limit42(f"• Top:{meta['top_error']} x{meta['top_count']}"))
     return out
 
 
-def build_text(rows, meta):
+def build_text(rows: list[Row], meta: dict) -> str:
     now = datetime.now(AEST)
-    lines = [limit42(f"📊 DAILY BRIEF — {now:%Y-%m-%d} 5:30 AEST"), ""]
-    lines += render_asset_blocks(rows)
+    lines = [limit42(f"📊 DAILY INTEL — {now:%Y-%m-%d} 5:30 AEST"), ""]
+    lines += render_tables(rows)
+
     lines += [
         "⚡ 24H ACTIVITY",
-        limit42(f"Cycles:{meta['cycles']} Backtests:{meta['backtests']}"),
-        limit42(f"Specs:{meta['specs']} Errors:{meta['errors']}"),
+        limit42(f"Cycles:{meta['cycles']} Backtests:{meta['backtests']} Specs:{meta['specs']} Errors:{meta['fail_total']}"),
         "",
         "🎯 MILESTONES",
     ]
@@ -418,11 +411,12 @@ def main():
     ap.add_argument("--send-telegram", action="store_true")
     args = ap.parse_args()
 
-    rows, meta = collect_rows()
+    rows = collect_rows()
+    meta = collect_activity(rows)
 
-    # Required alignment proof: print header + sample row before writing file.
-    header = fmt.format("△", "Strategy", "PF", "WR%", "TC", "DD%", "P&L%")
-    sample = fmt.format("↑", "EMA_Atr", "1.09", "34.3", "172", "2.5", "+1.8")
+    # Required alignment printout before write.
+    header = FMT.format(arrow="△", name="Strategy", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
+    sample = FMT.format(arrow="↑", name="ADX_Suprtrnd", pf="1.09", wr="34.3", tc="172", dd="2.5", pnl="+1.8")
     print(header)
     print(sample)
 
@@ -437,7 +431,7 @@ def main():
         "ok": True,
         "path": str(OUT_PATH).replace("\\", "/"),
         "rows": len(rows),
-        "errors": meta["errors"],
+        "fail_errors": meta["fail_total"],
         "alignment_ok": len(header) == len(sample),
     }))
 
