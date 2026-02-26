@@ -1,4 +1,4 @@
-param(
+﻿param(
   [switch]$DryRun,
   [int]$MaxRefinementsPerRun = 1,
   [int]$MaxBundlesPerRun = 1,
@@ -81,7 +81,7 @@ function Emit-Summary($reasonCode, $summary, $statusWord = 'INFO', $agent = 'oQ'
   if ($DryRun) { return }
   try {
     $emoji = if ($statusWord -eq 'OK') { 'OK' } elseif ($statusWord -eq 'WARN') { 'WARN' } elseif ($statusWord -eq 'FAIL') { 'FAIL' } else { 'INFO' }
-    $rid = if ($reasonCode -eq 'AUTOPILOT_SUMMARY') { $CycleRunId } else { $CycleRunId + '-' + $reasonCode }
+    $rid = if ($reasonCode -eq 'LAB_SUMMARY') { $CycleRunId } else { $CycleRunId + '-' + $reasonCode }
     python scripts/log_event.py --run-id $rid --agent $agent --model-id openai-codex/gpt-5.3-codex --action $reasonCode --status-word $statusWord --status-emoji $emoji --reason-code $reasonCode --summary $summary 2>$null | Out-Null
   } catch {}
 }
@@ -534,7 +534,7 @@ finally {
 $candidatesIngested = $bundlesProcessed
 
 $summary = [ordered]@{
-  event = 'AUTOPILOT_SUMMARY'
+  event = 'LAB_SUMMARY'
   created_at = [DateTime]::UtcNow.ToString('o')
   bundles_processed = $bundlesProcessed
   promotions_processed = $promotionsProcessed
@@ -580,14 +580,14 @@ $summary.drought_cycles = [int]$counters.drought_cycles
 
 if (-not $DryRun) {
   if ([int]$counters.starvation_cycles -ge 12) {
-    Emit-Summary 'AUTOPILOT_STARVATION_WARN' ("Autopilot starvation: starvation_cycles=" + $counters.starvation_cycles + " candidates_reaching_refinement=" + $candidatesReachingRefinement) 'WARN' 'oQ'
+    Emit-Summary 'LAB_STARVATION_WARN' ("Autopilot starvation: starvation_cycles=" + $counters.starvation_cycles + " candidates_reaching_refinement=" + $candidatesReachingRefinement) 'WARN' 'oQ'
   }
   if ([int]$counters.drought_cycles -ge 30) {
-    Emit-Summary 'AUTOPILOT_DROUGHT_WARN' ("Autopilot drought: drought_cycles=" + $counters.drought_cycles + " candidates_passing_gate=" + $candidatesPassingGate) 'WARN' 'oQ'
+    Emit-Summary 'LAB_DROUGHT_WARN' ("Autopilot drought: drought_cycles=" + $counters.drought_cycles + " candidates_passing_gate=" + $candidatesPassingGate) 'WARN' 'oQ'
   }
 
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'AUTOPILOT_SUMMARY' ("Autopilot: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)

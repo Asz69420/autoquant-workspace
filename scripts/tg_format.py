@@ -110,7 +110,7 @@ def main():
         reason_code = _as_str(event.get("reason_code"), "")
         summary = _as_str(event["summary"])
 
-        display_agent = 'Lab' if reason_code == 'AUTOPILOT_SUMMARY' else agent
+        display_agent = 'Lab' if reason_code.startswith('LAB_') else agent
         agent_emoji = AGENT_EMOJI.get(display_agent, AGENT_EMOJI.get(agent, "🤖"))
         agent_display = f"{agent_emoji} {display_agent}".strip()
 

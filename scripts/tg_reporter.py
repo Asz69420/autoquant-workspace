@@ -48,7 +48,7 @@ INFO_TELEGRAM_ALLOWLIST = {
     "REFINEMENT_SUMMARY",
     "LIBRARIAN_SUMMARY",
     "RECOMBINE_SUMMARY",
-    "AUTOPILOT_SUMMARY",
+    "LAB_SUMMARY",
 }
 
 INFO_TELEGRAM_SUPPRESS = {
@@ -284,11 +284,11 @@ def send_event_to_telegram(event):
                 notify_cmd.extend(["--reason-code", reason_code])
         else:
             status_word = str(event.get("status_word") or "").upper()
-            if reason_code.startswith("AUTOPILOT_STAGE_"):
+            if reason_code.startswith("LAB_STAGE_"):
                 return None
             if status_word == "INFO" and reason_code in INFO_TELEGRAM_SUPPRESS:
                 return None
-            if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST and reason_code != "LEADERBOARD":
+            if status_word == "INFO" and reason_code not in INFO_TELEGRAM_ALLOWLIST and not reason_code.startswith("LAB_") and reason_code != "LEADERBOARD":
                 return None
 
             if reason_code == "LEADERBOARD" and event.get("rendered_text"):
