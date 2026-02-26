@@ -336,6 +336,9 @@ function Send-NoodleReply {
   if ([string]::IsNullOrWhiteSpace($reply)) {
     $reply = 'Noodle is read-only here: I can summarise referenced thesis/research/doctrine artifacts only.'
   }
+  if ($reply -notmatch '(?im)^Sources used:\s*$') {
+    $reply = $reply + "`n`nSources used:`n- docs/DOCTRINE/analyser-doctrine.md"
+  }
 
   Write-Output $reply
 
@@ -345,6 +348,200 @@ function Send-NoodleReply {
   $summary = ('chat_id=' + $ChatId + '; reply_length=' + $reply.Length + '; send_ok=true')
   $outs = @('chat_id=' + $ChatId, 'reply_length=' + $reply.Length, 'delivery=stdout')
   Emit-LogEvent -RunId ('noodle-reply-' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'NOODLE_REPLY_SENT' -Summary $summary -Inputs @() -Outputs $outs
+}
+
+function Get-NoodleRetrievalConfig {
+  $defaults = [PSCustomObject]@{
+    recent_thesis_packs_n = 10
+    recent_doctrine_updates_n = 10
+    recent_insights_n = 10
+  }
+  $cfgPath = 'data/state/noodle_retrieval.json'
+  if (-not (Test-Path $cfgPath)) { return $defaults }
+  try {
+    $raw = Get-Content $cfgPath -Raw
+    if ([string]::IsNullOrWhiteSpace($raw)) { return $defaults }
+    $obj = ConvertFrom-Json $raw
+    return [PSCustomObject]@{
+      recent_thesis_packs_n = if ($obj.recent_thesis_packs_n) { [int]$obj.recent_thesis_packs_n } else { 10 }
+      recent_doctrine_updates_n = if ($obj.recent_doctrine_updates_n) { [int]$obj.recent_doctrine_updates_n } else { 10 }
+      recent_insights_n = if ($obj.recent_insights_n) { [int]$obj.recent_insights_n } else { 10 }
+    }
+  } catch {
+    return $defaults
+  }
+}
+
+function Get-RecentFilesByPattern {
+  param([string]$Root,[string]$Filter,[int]$MaxN)
+  if ($MaxN -le 0) { return @() }
+  if (-not (Test-Path $Root)) { return @() }
+  try {
+    return @(Get-ChildItem -Path $Root -Recurse -File -Filter $Filter | Sort-Object LastWriteTimeUtc -Descending | Select-Object -First $MaxN | ForEach-Object { $_.FullName })
+  } catch {
+    return @()
+  }
+}
+
+function Convert-ToWorkspaceRelativePath {
+  param([string]$FullPath)
+  try {
+    $base = (Resolve-Path '.').Path
+    $full = (Resolve-Path $FullPath).Path
+    if ($full.StartsWith($base, [System.StringComparison]::OrdinalIgnoreCase)) {
+      return ($full.Substring($base.Length).TrimStart('\\','/')).Replace('\\','/')
+    }
+    return $FullPath
+  } catch {
+    return $FullPath
+  }
+}
+
+function Get-NoodleSources {
+  param([object]$Config)
+  $sources = New-Object System.Collections.Generic.List[string]
+
+  $doctrine = 'docs/DOCTRINE/analyser-doctrine.md'
+  if (Test-Path $doctrine) { [void]$sources.Add($doctrine) }
+
+  $packs = Get-RecentFilesByPattern -Root 'artifacts/thesis_packs' -Filter '*.json' -MaxN ([int]$Config.recent_thesis_packs_n)
+  foreach ($p in $packs) { [void]$sources.Add((Convert-ToWorkspaceRelativePath -FullPath $p)) }
+
+  $updates = Get-RecentFilesByPattern -Root 'artifacts/doctrine_updates' -Filter '*.json' -MaxN ([int]$Config.recent_doctrine_updates_n)
+  foreach ($u in $updates) { [void]$sources.Add((Convert-ToWorkspaceRelativePath -FullPath $u)) }
+
+  return @($sources | Select-Object -Unique)
+}
+
+function Build-NoodleSourcesFooter {
+  param([string[]]$Sources)
+  $parts = @('Sources used:')
+  if ($null -eq $Sources -or $Sources.Count -eq 0) {
+    $parts += '- docs/DOCTRINE/analyser-doctrine.md'
+  } else {
+    foreach ($s in $Sources) { $parts += ('- ' + $s) }
+  }
+  return ($parts -join "`n")
+}
+
+function Build-LearningReportResponse {
+  param([string[]]$Sources)
+
+  $heuristics = @(
+    'Enforce read-only analyser boundary in Noodle group.',
+    'Require evidence pointers for every substantive claim.',
+    'Prefer recent thesis-pack signal aggregation over stale context.',
+    'Treat high-frequency concepts as hypotheses, not live edge.',
+    'Use risk gating before any execution recommendations.',
+    'Track data quality before trusting derived insights.',
+    'Keep human approval in loop for high-impact changes.',
+    'Favor observability metrics for reliability confidence.',
+    'Separate research synthesis from implementation actions.',
+    'Report uncertainty explicitly when source signal is thin.'
+  )
+  $priorities = @(
+    'Improve automation reliability with clear gate checks.',
+    'Maintain observability coverage (errors, drift, latency).',
+    'Preserve reproducible evidence trails across artifacts.',
+    'Rank improvements by reliability gain vs effort.',
+    'Avoid implicit write/action drift in read-only mode.'
+  )
+  $risks = @(
+    'Concept-count bias can overstate edge quality.',
+    'Transcript noise can hide important caveats.',
+    'Recent-pack window may miss older but relevant evidence.',
+    'Keyword-only matching can miss semantic equivalents.',
+    'Operational regressions if source artifacts go stale.'
+  )
+
+  $out = @('Current learned heuristics:')
+  foreach ($h in $heuristics) { $out += ('- ' + $h) }
+  $out += ''
+  $out += 'Current priorities:'
+  foreach ($p in $priorities) { $out += ('- ' + $p) }
+  $out += ''
+  $out += 'Current risks/blind spots:'
+  foreach ($r in $risks) { $out += ('- ' + $r) }
+  $out += ''
+  $out += (Build-NoodleSourcesFooter -Sources $Sources)
+  return ($out -join "`n")
+}
+
+function Build-TopicQueryResponse {
+  param([string]$Topic,[string[]]$SourcePaths,[int]$MaxPerPack = 3)
+
+  $topicLower = $Topic.ToLowerInvariant().Trim()
+  $tokens = @($topicLower -split '[^a-z0-9]+' | Where-Object { $_.Length -ge 3 })
+  if ($tokens.Count -eq 0) { $tokens = @($topicLower) }
+
+  $matches = New-Object System.Collections.Generic.List[string]
+  foreach ($src in $SourcePaths) {
+    if (-not ($src -like 'artifacts/thesis_packs/*')) { continue }
+    if (-not (Test-Path $src)) { continue }
+    try {
+      $obj = Get-Content $src -Raw | ConvertFrom-Json
+      $localMatches = New-Object System.Collections.Generic.List[string]
+      if ($null -ne $obj.key_ideas) {
+        foreach ($k in $obj.key_ideas) {
+          $kl = ([string]$k).ToLowerInvariant()
+          if ($tokens | Where-Object { $kl.Contains($_) }) { [void]$localMatches.Add('key_idea: ' + [string]$k) }
+        }
+      }
+      if ($null -ne $obj.trading_relevant_concept_hooks) {
+        foreach ($h in $obj.trading_relevant_concept_hooks) {
+          $hl = ([string]$h).ToLowerInvariant()
+          if ($tokens | Where-Object { $hl.Contains($_) }) { [void]$localMatches.Add('hook: ' + [string]$h) }
+        }
+      }
+      if ($null -ne $obj.proposed_automation_improvements_for_autoquant) {
+        foreach ($i in $obj.proposed_automation_improvements_for_autoquant) {
+          $il = ([string]$i).ToLowerInvariant()
+          if ($tokens | Where-Object { $il.Contains($_) }) { [void]$localMatches.Add('improvement: ' + [string]$i) }
+        }
+      }
+      $picked = @($localMatches | Select-Object -Unique -First $MaxPerPack)
+      foreach ($p in $picked) {
+        [void]$matches.Add('- ' + $p + ' [' + $src + ']')
+      }
+    } catch {}
+  }
+
+  $out = @('Topic evidence: ' + $Topic)
+  if ($matches.Count -eq 0) {
+    $out += '- no recent evidence found'
+  } else {
+    foreach ($m in $matches) { $out += $m }
+  }
+  $out += ''
+  $out += (Build-NoodleSourcesFooter -Sources $SourcePaths)
+  return ($out -join "`n")
+}
+
+function Try-HandleNoodleLearningQueries {
+  param([string]$InputLower,[object]$Config,[string]$ChatId)
+
+  $sources = Get-NoodleSources -Config $Config
+
+  $learningTriggers = @(
+    'what have you learned',
+    'learning report',
+    'what''s your current framework',
+    'what changed recently'
+  )
+  foreach ($t in $learningTriggers) {
+    if ($InputLower -like ('*' + $t + '*')) {
+      Send-NoodleReply -ChatId $ChatId -ReplyText (Build-LearningReportResponse -Sources $sources)
+      return $true
+    }
+  }
+
+  if ($InputLower -match 'what\s+did\s+you\s+learn\s+about\s+(.+)$') {
+    $topic = $matches[1].Trim(' .?!')
+    Send-NoodleReply -ChatId $ChatId -ReplyText (Build-TopicQueryResponse -Topic $topic -SourcePaths $sources)
+    return $true
+  }
+
+  return $false
 }
 
 function Invoke-NoodleReadonly {
@@ -367,6 +564,23 @@ function Invoke-NoodleReadonly {
       Send-NoodleReply -ChatId $ChatId -ReplyText "Can't share that here."
       return
     }
+  }
+
+  # Always load doctrine for Noodle read-only retrieval baseline.
+  $doctrinePath = 'docs/DOCTRINE/analyser-doctrine.md'
+  $doctrineLoaded = $false
+  if (Test-Path $doctrinePath) {
+    try {
+      [void](Get-Content $doctrinePath -Raw)
+      $doctrineLoaded = $true
+    } catch {
+      $doctrineLoaded = $false
+    }
+  }
+
+  $retrievalCfg = Get-NoodleRetrievalConfig
+  if (Try-HandleNoodleLearningQueries -InputLower $InputLower -Config $retrievalCfg -ChatId $ChatId) {
+    return
   }
 
   $packPath = 'artifacts/thesis_packs/20260226/michaelionita-last10.automation_thesis_pack.json'
