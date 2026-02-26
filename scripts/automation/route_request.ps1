@@ -731,7 +731,7 @@ function Invoke-ManualVideoIngest {
     $added += 1
   }
 
-  ($bundleIndex | ConvertTo-Json -Depth 6) | Set-Content -Path $bundleIndexPath -Encoding utf8
+  ($bundleIndex | ConvertTo-Json -Depth 6) | Set-Content -Path $bundleIndexPath -Encoding utf8NoBOM
   Write-Output ("Ingested " + $added + " videos (concepts=" + $conceptUrls.Count + ", indicators=" + $indicatorUrls.Count + "). Say 'run lab now' to process.")
 }
 

@@ -31,7 +31,8 @@ def _j(path: Path, default):
 
 def _w(path: Path, obj):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(obj, indent=2), encoding='utf-8')
+    with open(path, 'w', encoding='utf-8', newline='') as f:
+        json.dump(obj, f, indent=2)
 
 
 def _log(action: str, reason: str, summary: str, status: str = 'INFO', outputs: list[str] | None = None):

@@ -308,7 +308,7 @@ function Set-BundleState([string]$bundlePath, [string]$status, [string]$lastErro
       $trimmed = ([string]$lastError).Substring(0, [Math]::Min(240, ([string]$lastError).Length))
       $b | Add-Member -NotePropertyName last_error -NotePropertyValue $trimmed -Force
     }
-    ($b | ConvertTo-Json -Depth 10) | Set-Content -LiteralPath $bundlePath -Encoding utf8
+    ($b | ConvertTo-Json -Depth 10) | Set-Content -LiteralPath $bundlePath -Encoding utf8NoBOM
   } catch {}
 }
 
@@ -489,7 +489,7 @@ try {
         }
         return ([string]$_ -replace '\\','/')
       })
-      ($bundleIndexOut | ConvertTo-Json -Depth 3) | Set-Content -LiteralPath $bundleIndexPath -Encoding utf8
+      ($bundleIndexOut | ConvertTo-Json -Depth 3) | Set-Content -LiteralPath $bundleIndexPath -Encoding utf8NoBOM
       $bundlePaths = @($bundleIndexOut)
     }
   } catch {
