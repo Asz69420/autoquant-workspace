@@ -118,7 +118,7 @@ $libraryRunCount = 0
 $candidatesIngested = 0
 $candidatesReachingRefinement = 0
 $candidatesPassingGate = 0
-$activeLibrarySize = 0
+$activeLibrarySize = '?'
 $insightNew = 0
 $insightProcessed = 0
 $insightFailed = 0
@@ -222,14 +222,39 @@ try {
     }
 
     $bundleSlotsUsed = 0
+    $consecutiveBundleReadFails = 0
+    $maxConsecutiveBundleReadFails = 3
+    $maxConsecutiveReadFailHit = $false
+    $newBundlesSeen = 0
+    $processableNewBundles = 0
     foreach ($bp in $bundlePaths) {
       if ($bundleSlotsUsed -ge $MaxBundlesPerRun) { break }
       if (-not (Test-Path -LiteralPath $bp)) { continue }
+
+      $b = $null
+      $bundleFile = [IO.Path]::GetFileName([string]$bp)
       try {
         $b = Get-Content -LiteralPath $bp -Raw | ConvertFrom-Json
+        $consecutiveBundleReadFails = 0
+      } catch {
+        if (-not $DryRun) {
+          Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'BUNDLE_READ_FAIL' -incrementAttempt $false
+          Emit-Summary 'BUNDLE_READ_FAIL' ("Bundle read fail: " + $bundleFile) 'WARN' 'oQ'
+        }
+        $consecutiveBundleReadFails += 1
+        if ($consecutiveBundleReadFails -ge $maxConsecutiveBundleReadFails) {
+          $maxConsecutiveReadFailHit = $true
+          break
+        }
+        continue
+      }
+
+      try {
         $bundleStatus = [string]$b.status
         if ([string]::IsNullOrWhiteSpace($bundleStatus)) { $bundleStatus = 'NEW' }
         if ($bundleStatus -ne 'NEW') { continue }
+        $newBundlesSeen += 1
+        $processableNewBundles += 1
 
         if (-not $DryRun) {
           Set-BundleState -bundlePath $bp -status 'IN_PROGRESS' -lastError '' -incrementAttempt $true
@@ -370,6 +395,19 @@ try {
         Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError $errMsg -incrementAttempt $false
       }
     }
+
+    if (-not $DryRun) {
+      if ($maxConsecutiveReadFailHit) {
+        $errorsCount += 1
+        Emit-Summary 'BUNDLE_READ_FAIL_CAP' ("Bundle read fail cap hit: consecutive=" + $consecutiveBundleReadFails + " max=" + $maxConsecutiveBundleReadFails) 'FAIL' 'oQ'
+      } elseif ($newBundlesSeen -gt 0 -and $processableNewBundles -eq 0) {
+        $errorsCount += 1
+        Emit-Summary 'NO_PROCESSABLE_NEW_BUNDLE' 'No processable NEW bundle found in scan window.' 'FAIL' 'oQ'
+      } elseif ($bundlesProcessed -eq 0 -and $consecutiveBundleReadFails -gt 0) {
+        $errorsCount += 1
+        Emit-Summary 'NO_PROCESSABLE_NEW_BUNDLE' 'No processable NEW bundle found; only unreadable bundle(s) encountered.' 'FAIL' 'oQ'
+      }
+    }
   }
 
   if (-not $batchEmitted -and -not $DryRun) {
@@ -391,38 +429,62 @@ try {
       $topCountActual = $null
       $runCountActual = $null
       $lessCountActual = $null
-      $readOk = $true
 
       try {
-        if (-not (Test-Path $topPath)) { throw 'TOP_CANDIDATES missing' }
-        $topObj = Get-Content $topPath -Raw | ConvertFrom-Json
-        $topCountActual = @($topObj).Count
-      } catch { $readOk = $false }
+        if (Test-Path $topPath) {
+          $topObj = Get-Content $topPath -Raw | ConvertFrom-Json
+          $topCountActual = @($topObj).Count
+        }
+      } catch {}
 
+      $runReadOk = $true
       try {
         if (-not (Test-Path $runPath)) { throw 'RUN_INDEX missing' }
         $runObj = Get-Content $runPath -Raw | ConvertFrom-Json
         $runCountActual = @($runObj).Count
-      } catch { $readOk = $false }
+      } catch {
+        $runReadOk = $false
+      }
 
       try {
-        if (-not (Test-Path $lessPath)) { throw 'LESSONS_INDEX missing' }
-        $lessObj = Get-Content $lessPath -Raw | ConvertFrom-Json
-        $lessCountActual = @($lessObj).Count
-      } catch { $readOk = $false }
+        if (Test-Path $lessPath) {
+          $lessObj = Get-Content $lessPath -Raw | ConvertFrom-Json
+          $lessCountActual = @($lessObj).Count
+        }
+      } catch {}
 
-      if ($readOk) {
+      if ($runReadOk) {
         $libraryRunCount = [int]$runCountActual
-        $libraryLessons = [int]$lessCountActual
-        $activeLibrarySize = ([int]$topCountActual + [int]$runCountActual + [int]$lessCountActual)
-        Emit-Summary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topCountActual + " run=" + $runCountActual + " lessons=" + $lessCountActual + " new=" + $newIndicatorsAdded + " archived=0") 'OK' 'Librarian'
+        $libraryLessons = if ($null -eq $lessCountActual) { 0 } else { [int]$lessCountActual }
+        $activeLibrarySize = [int]$runCountActual
+        $topOut = if ($null -eq $topCountActual) { '?' } else { [string]$topCountActual }
+        $lessOut = if ($null -eq $lessCountActual) { '?' } else { [string]$lessCountActual }
+        Emit-Summary 'LIBRARIAN_SUMMARY' ("Library: top=" + $topOut + " run=" + $runCountActual + " lessons=" + $lessOut + " new=" + $newIndicatorsAdded + " archived=0") 'OK' 'Librarian'
         $libraryEmitted = $true
       } else {
+        $activeLibrarySize = '?'
+        Emit-Summary 'LIBRARY_READ_FAIL' 'Library read failed: RUN_INDEX unavailable/unparseable; active_library_size=?' 'WARN' 'Librarian'
         Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: read fail)' 'WARN' 'Librarian'
         $libraryEmitted = $true
       }
     } catch {
-      $errorsCount += 1
+      $runPath = 'artifacts/library/RUN_INDEX.json'
+      $runCountActual = $null
+      $runReadOk = $true
+      try {
+        if (-not (Test-Path $runPath)) { throw 'RUN_INDEX missing' }
+        $runObj = Get-Content $runPath -Raw | ConvertFrom-Json
+        $runCountActual = @($runObj).Count
+      } catch {
+        $runReadOk = $false
+      }
+
+      if ($runReadOk) {
+        $activeLibrarySize = [int]$runCountActual
+      } else {
+        $activeLibrarySize = '?'
+        Emit-Summary 'LIBRARY_READ_FAIL' 'Library read failed: RUN_INDEX unavailable/unparseable; active_library_size=?' 'WARN' 'Librarian'
+      }
       Emit-Summary 'LIBRARIAN_SUMMARY_READ_FAIL' 'Library: top=? run=? lessons=? new=? archived=? (skipped: run fail)' 'WARN' 'Librarian'
       $libraryEmitted = $true
     }
