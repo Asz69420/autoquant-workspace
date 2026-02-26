@@ -21,7 +21,7 @@ DIVIDER = '─' * MAX_WIDTH
 def load_json(path: Path):
     if not path.exists():
         return []
-    return json.loads(path.read_text(encoding='utf-8'))
+    return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
 def backtest_metrics(backtest_path: str) -> tuple[float | None, float | None]:
@@ -31,7 +31,7 @@ def backtest_metrics(backtest_path: str) -> tuple[float | None, float | None]:
     if not p.exists():
         return None, None
     try:
-        j = json.loads(p.read_text(encoding='utf-8'))
+        j = json.loads(p.read_text(encoding='utf-8-sig'))
         results = j.get('results', {})
 
         wr = results.get('win_rate')

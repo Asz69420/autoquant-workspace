@@ -44,7 +44,7 @@ def _artifact_evidence(paths: list[str]) -> list[str]:
         continue
       try:
         if pp.suffix == ".json":
-          j = json.loads(pp.read_text(encoding="utf-8"))
+          j = json.loads(pp.read_text(encoding="utf-8-sig"))
           if isinstance(j, dict):
             if "summary" in j and isinstance(j["summary"], dict):
               s = j["summary"]

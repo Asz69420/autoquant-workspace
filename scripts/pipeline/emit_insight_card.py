@@ -67,7 +67,7 @@ def validate_with_schema(card: dict) -> None:
         validate_lightweight(card)
         return
 
-    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8-sig"))
     jsonschema.validate(card, schema)
 
 
@@ -75,7 +75,7 @@ def update_index(index_path: Path, pointer: str) -> int:
     items: list[str] = []
     if index_path.exists():
         try:
-            raw = json.loads(index_path.read_text(encoding="utf-8"))
+            raw = json.loads(index_path.read_text(encoding="utf-8-sig"))
             if isinstance(raw, list):
                 items = [str(x) for x in raw]
         except Exception:

@@ -58,12 +58,12 @@ def main() -> int:
     tpath = Path(args.thesis)
     must(tpath.exists(), 'thesis missing')
     must(tpath.stat().st_size <= MAX_THESIS_JSON, 'Thesis JSON exceeds 50KB')
-    thesis = json.loads(tpath.read_text(encoding='utf-8'))
+    thesis = json.loads(tpath.read_text(encoding='utf-8-sig'))
     check_schema_like(thesis)
 
     idx = Path(args.index)
     if idx.exists():
-        arr = json.loads(idx.read_text(encoding='utf-8'))
+        arr = json.loads(idx.read_text(encoding='utf-8-sig'))
         must(isinstance(arr, list), 'INDEX must be list')
         must(len(arr) <= MAX_INDEX, 'INDEX exceeds 200')
 

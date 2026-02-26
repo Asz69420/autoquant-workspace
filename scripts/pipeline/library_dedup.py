@@ -10,7 +10,7 @@ def is_duplicate(sha256_inputs: str, run_index_path: Path) -> bool:
     if not run_index_path.exists():
         return False
     try:
-        arr = json.loads(run_index_path.read_text(encoding='utf-8'))
+        arr = json.loads(run_index_path.read_text(encoding='utf-8-sig'))
     except Exception:
         return False
     seen = {str(x.get('sha256_inputs', '')) for x in arr if isinstance(x, dict)}

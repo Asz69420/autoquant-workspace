@@ -31,7 +31,7 @@ def _run(cmd: list[str], extra_env: dict[str, str] | None = None) -> str:
 
 
 def _load(path: str | Path) -> dict:
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def _abs(path: str | None) -> str | None:

@@ -56,14 +56,14 @@ def sha256_file(path: Path) -> str:
 
 
 def jload(path: str) -> dict:
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def update_index(path: Path, pointer: str) -> None:
     items = []
     if path.exists():
         try:
-            items = json.loads(path.read_text(encoding='utf-8'))
+            items = json.loads(path.read_text(encoding='utf-8-sig'))
         except Exception:
             items = []
     if pointer in items:
@@ -87,7 +87,7 @@ def non_empty(lines: list[str], limit: int, max_len: int) -> list[str]:
 def load_doctrine_guidance(path: Path) -> dict[str, list[str]]:
     if not path.exists():
         return {'strategy': [], 'automation': []}
-    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = path.read_text(encoding='utf-8-sig').splitlines()
     section = None
     out = {'strategy': [], 'automation': []}
     bullet_re = re.compile(r'^- \[[^\]]+\]\s+(.*)$')
@@ -187,7 +187,7 @@ def main() -> int:
     for p in rc_paths + ir_paths + lm_paths:
         pp = Path(p)
         if pp.exists():
-            obj = json.loads(pp.read_text(encoding='utf-8'))
+            obj = json.loads(pp.read_text(encoding='utf-8-sig'))
             in_hashes.append(obj.get('sha256', sha256_file(pp)))
     sha256_inputs = hashlib.sha256('|'.join(in_hashes).encode('utf-8')).hexdigest()
 

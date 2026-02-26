@@ -47,7 +47,7 @@ def main() -> int:
     if args.research_card:
         rc_path = Path(args.research_card)
         check_size(rc_path, MAX_RC_JSON, "ResearchCard JSON")
-        rc = json.loads(rc_path.read_text(encoding="utf-8"))
+        rc = json.loads(rc_path.read_text(encoding="utf-8-sig"))
         must(rc.get("sha256"), "ResearchCard sha256 missing")
         rp = rc.get("raw_pointer")
         if rp:
@@ -89,7 +89,7 @@ def main() -> int:
     if args.indicator_record:
         ir_path = Path(args.indicator_record)
         check_size(ir_path, MAX_IR_JSON, "IndicatorRecord JSON")
-        ir = json.loads(ir_path.read_text(encoding="utf-8"))
+        ir = json.loads(ir_path.read_text(encoding="utf-8-sig"))
         must(ir.get("sha256"), "IndicatorRecord sha256 missing")
         sp = ir.get("source_pointer")
         if sp:
@@ -97,13 +97,13 @@ def main() -> int:
 
     for idx in [Path(args.research_index), Path(args.indicator_index)]:
         if idx.exists():
-            entries = json.loads(idx.read_text(encoding="utf-8"))
+            entries = json.loads(idx.read_text(encoding="utf-8-sig"))
             must(isinstance(entries, list), f"Index not a list: {idx}")
             must(len(entries) <= MAX_INDEX, f"Index exceeds {MAX_INDEX}: {idx}")
 
     if args.linkmap:
         lm_path = Path(args.linkmap)
-        lm = json.loads(lm_path.read_text(encoding="utf-8"))
+        lm = json.loads(lm_path.read_text(encoding="utf-8-sig"))
         must(Path(lm["research_card_path"]).exists(), "linkmap research_card_path missing")
         for p in lm.get("indicator_record_paths", []):
             must(Path(p).exists(), f"linkmap indicator missing: {p}")

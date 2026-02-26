@@ -23,7 +23,7 @@ def run(cmd: list[str], extra_env: dict[str, str] | None = None) -> str:
 
 def read_json(path: Path, default):
     try:
-        return json.loads(path.read_text(encoding='utf-8'))
+        return json.loads(path.read_text(encoding='utf-8-sig'))
     except Exception:
         return default
 

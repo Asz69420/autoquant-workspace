@@ -38,7 +38,7 @@ def _j(path: Path, default):
     if not path.exists():
         return default
     try:
-        return json.loads(path.read_text(encoding='utf-8'))
+        return json.loads(path.read_text(encoding='utf-8-sig'))
     except Exception:
         return default
 
@@ -132,7 +132,7 @@ def main() -> int:
         if all_ir:
             irp = all_ir[0]
             try:
-                irj = json.loads(irp.read_text(encoding='utf-8'))
+                irj = json.loads(irp.read_text(encoding='utf-8-sig'))
             except Exception:
                 irj = {}
             indicator = {

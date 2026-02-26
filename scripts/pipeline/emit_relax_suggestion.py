@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def _load_json(path: str) -> dict:
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def _parse_rule_map(rules: list[str]) -> dict[str, float]:

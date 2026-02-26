@@ -14,7 +14,7 @@ PY = sys.executable
 
 
 def _j(path: Path):
-    return json.loads(path.read_text(encoding='utf-8'))
+    return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
 def _write(path: Path, data):

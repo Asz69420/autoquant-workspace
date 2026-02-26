@@ -15,7 +15,7 @@ def main() -> int:
     args = ap.parse_args()
 
     rc_path = Path(args.research_card_path)
-    card = json.loads(rc_path.read_text(encoding="utf-8"))
+    card = json.loads(rc_path.read_text(encoding="utf-8-sig"))
     hints = card.get("tv_search_hints", [])
     indicator_paths = json.loads(args.indicator_record_paths)
 

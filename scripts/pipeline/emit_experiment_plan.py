@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 def _load_json(path: str | Path) -> dict:
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def _dedupe_keep_order(items: list[str], limit: int) -> list[str]:

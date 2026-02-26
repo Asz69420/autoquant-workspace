@@ -19,7 +19,7 @@ def _j(path: Path, default):
     if not path.exists():
         return default
     try:
-        return json.loads(path.read_text(encoding='utf-8'))
+        return json.loads(path.read_text(encoding='utf-8-sig'))
     except Exception:
         return default
 
@@ -126,7 +126,7 @@ def main() -> int:
             failed += 1
             continue
         try:
-            rc = json.loads(p.read_text(encoding='utf-8'))
+            rc = json.loads(p.read_text(encoding='utf-8-sig'))
             title = str(rc.get('title') or p.stem)
             source = str(rc.get('source_ref') or '')
             if not channel_slug:

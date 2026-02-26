@@ -326,7 +326,7 @@ def update_index(index_path: Path, pointer: str) -> None:
     index = []
     if index_path.exists():
         try:
-            index = json.loads(index_path.read_text(encoding="utf-8"))
+            index = json.loads(index_path.read_text(encoding="utf-8-sig"))
         except Exception:
             index = []
     if pointer in index:

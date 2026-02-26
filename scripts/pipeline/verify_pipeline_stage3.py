@@ -24,7 +24,7 @@ def main() -> int:
     must(p.exists(), 'strategy spec missing')
     must(p.stat().st_size <= MAX_JSON, 'strategy spec exceeds 60KB')
 
-    d = json.loads(p.read_text(encoding='utf-8'))
+    d = json.loads(p.read_text(encoding='utf-8-sig'))
     must(d.get('schema_version') == '1.0', 'schema_version must be 1.0')
     variants = d.get('variants', [])
     must(1 <= len(variants) <= 5, 'variants must be 1..5')
@@ -50,7 +50,7 @@ def main() -> int:
 
     idx = Path(args.index)
     if idx.exists():
-        arr = json.loads(idx.read_text(encoding='utf-8'))
+        arr = json.loads(idx.read_text(encoding='utf-8-sig'))
         must(isinstance(arr, list), 'index must be list')
         must(len(arr) <= MAX_INDEX, 'index exceeds 200')
 

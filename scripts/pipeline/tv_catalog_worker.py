@@ -21,7 +21,7 @@ def _j(path: Path, default):
     if not path.exists():
         return default
     try:
-        return json.loads(path.read_text(encoding='utf-8'))
+        return json.loads(path.read_text(encoding='utf-8-sig'))
     except Exception:
         return default
 
@@ -107,7 +107,7 @@ def _emit_bundle(rc_path: str, ir_paths: list[str], key: str):
 
 def _ir_meta(ir_path: str) -> dict:
     try:
-        return json.loads(Path(ir_path).read_text(encoding='utf-8'))
+        return json.loads(Path(ir_path).read_text(encoding='utf-8-sig'))
     except Exception:
         return {}
 

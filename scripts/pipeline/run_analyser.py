@@ -19,7 +19,7 @@ def main() -> int:
     if args.linkmap_path:
         lp = Path(args.linkmap_path)
         if lp.exists():
-            lm = json.loads(lp.read_text(encoding='utf-8'))
+            lm = json.loads(lp.read_text(encoding='utf-8-sig'))
             indicator_paths = lm.get('indicator_record_paths', [])[:10]
             link_paths = [args.linkmap_path]
 

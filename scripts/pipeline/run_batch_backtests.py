@@ -14,7 +14,7 @@ PY = sys.executable
 
 
 def _load_json(path: str | Path) -> dict:
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def _days_between(start: str, end: str) -> int:
@@ -52,7 +52,7 @@ def _resolve_datasets(arg: str) -> list[str]:
     if p.exists():
         if p.suffix == '.json' and str(p).endswith('.meta.json'):
             return [str(p)]
-        loaded = json.loads(p.read_text(encoding='utf-8'))
+        loaded = json.loads(p.read_text(encoding='utf-8-sig'))
         if isinstance(loaded, list) and loaded:
             return [str(x) for x in loaded]
         raise ValueError('--datasets file must be a non-empty JSON array of meta paths, or a single *.meta.json path')

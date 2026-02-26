@@ -35,7 +35,7 @@ SEP = "  "
 def load_json(path: Path):
     if not path.exists():
         return []
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def as_float(v):
@@ -57,7 +57,7 @@ def extract_wr_dd(backtest_path: str) -> tuple[float | None, float | None]:
     if not backtest_path or not p.exists():
         return None, None
     try:
-        j = json.loads(p.read_text(encoding="utf-8"))
+        j = json.loads(p.read_text(encoding="utf-8-sig"))
         results = j.get("results", {})
         wr = as_float(results.get("win_rate"))
         dd = as_float(results.get("max_drawdown"))

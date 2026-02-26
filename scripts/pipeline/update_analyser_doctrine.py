@@ -51,7 +51,7 @@ def jaccard(a: str, b: str) -> float:
 def parse_doctrine(path: Path) -> List[Bullet]:
     if not path.exists():
         return []
-    lines = path.read_text(encoding='utf-8').splitlines()
+    lines = path.read_text(encoding='utf-8-sig').splitlines()
     current = None
     out: List[Bullet] = []
     for line in lines:
@@ -91,7 +91,7 @@ def render_doctrine(path: Path, bullets: List[Bullet]) -> str:
 
 
 def load_thesis(path: Path) -> dict:
-    return json.loads(path.read_text(encoding='utf-8'))
+    return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
 def collect_deltas(thesis: dict, date_prefix: str, start_idx: int) -> List[Bullet]:

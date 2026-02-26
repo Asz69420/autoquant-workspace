@@ -53,14 +53,14 @@ def now_iso() -> str:
 
 
 def jload(path: str) -> dict:
-    return json.loads(Path(path).read_text(encoding='utf-8'))
+    return json.loads(Path(path).read_text(encoding='utf-8-sig'))
 
 
 def update_index(index_path: Path, pointer: str) -> None:
     items = []
     if index_path.exists():
         try:
-            items = json.loads(index_path.read_text(encoding='utf-8'))
+            items = json.loads(index_path.read_text(encoding='utf-8-sig'))
         except Exception:
             items = []
     if pointer in items:
@@ -322,7 +322,7 @@ def _latest_outcome_guidance(limit: int = 5) -> list[str]:
     notes: list[str] = []
     for p in files[: max(1, limit)]:
         try:
-            obj = json.loads(p.read_text(encoding='utf-8'))
+            obj = json.loads(p.read_text(encoding='utf-8-sig'))
             if str(obj.get('schema_version')) == '2.0':
                 for h in (obj.get('next_experiments') or [])[:2]:
                     hs = str(h).strip()
@@ -352,7 +352,7 @@ def _collect_v2_directives(limit_notes: int = 5, strategy_family: str = '', temp
     directives: list[dict] = []
     for p in files[: max(1, limit_notes)]:
         try:
-            obj = json.loads(p.read_text(encoding='utf-8'))
+            obj = json.loads(p.read_text(encoding='utf-8-sig'))
         except Exception:
             continue
         if str(obj.get('schema_version')) != '2.0':
@@ -578,7 +578,7 @@ def _load_library_candidates(limit: int = 10) -> list[dict]:
     if not idx.exists():
         return []
     try:
-        rows = json.loads(idx.read_text(encoding='utf-8'))
+        rows = json.loads(idx.read_text(encoding='utf-8-sig'))
     except Exception:
         return []
     if not isinstance(rows, list):
@@ -643,7 +643,7 @@ def _directives_from_outcome_notes(path: str) -> list[dict]:
     if not p.exists():
         return []
     try:
-        obj = json.loads(p.read_text(encoding='utf-8'))
+        obj = json.loads(p.read_text(encoding='utf-8-sig'))
     except Exception:
         return []
     out: list[dict] = []
