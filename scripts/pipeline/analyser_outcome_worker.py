@@ -309,6 +309,113 @@ def _load_recent_family_notes(strategy_family: str, limit: int = 5) -> list[dict
     return notes[:max(0, limit)]
 
 
+def openclaw_completion(prompt: str, system: str = '', agent: str = 'reader') -> str | None:
+    """Call LLM through OpenClaw runtime. Returns text or None on failure."""
+    full_prompt = prompt
+    if system:
+        full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
+    cmd = ['openclaw', 'agent', '--agent', agent, '--message', full_prompt, '--json']
+    try:
+        p = subprocess.run(cmd, text=True, capture_output=True, check=True, timeout=120)
+        obj = json.loads(p.stdout)
+        return obj['result']['payloads'][0]['text']
+    except Exception:
+        return None
+
+
+def load_strategy_spec(backtest_result: dict) -> dict:
+    if not isinstance(backtest_result, dict):
+        return {}
+    inputs = backtest_result.get('inputs') or {}
+    spec_path = str(inputs.get('strategy_spec') or backtest_result.get('strategy_spec_path') or '')
+    if spec_path:
+        p = Path(spec_path)
+        if p.exists():
+            return _j(p, {})
+        rp = ROOT / spec_path
+        if rp.exists():
+            return _j(rp, {})
+
+    spec_id = str(backtest_result.get('spec_id') or '')
+    if spec_id:
+        for p in ROOT.glob('artifacts/strategy_specs/**/*.strategy_spec.json'):
+            if spec_id in p.name:
+                return _j(p, {})
+    return {}
+
+
+def load_family_outcome_history(family_name: str, limit: int = 5) -> list[dict]:
+    return _load_recent_family_notes(family_name, limit=limit)
+
+
+def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: str, outcome_history: list[dict]) -> tuple[str, str]:
+    system = (
+        'You are the Analyser agent in an algorithmic trading system. Your job is to examine backtest results, '
+        'understand WHY a strategy performed the way it did, and generate specific actionable directives for improvement. '
+        'You think like an experienced quant trader. Respond ONLY with valid JSON, no markdown, no explanation outside the JSON.'
+    )
+
+    res = (backtest_result or {}).get('results', {}) if isinstance(backtest_result, dict) else {}
+    inputs = (backtest_result or {}).get('inputs', {}) if isinstance(backtest_result, dict) else {}
+    regime_pf = res.get('regime_pf') or {}
+    regime_wr = res.get('regime_wr') or {}
+    regime_breakdown = res.get('regime_breakdown') or {}
+
+    history_view = []
+    for h in (outcome_history or [])[:5]:
+        history_view.append({
+            'verdict': h.get('verdict'),
+            'directives': h.get('directives', [])[:3],
+            'reasoning': h.get('llm_reasoning') or h.get('failure_reasons') or h.get('next_experiments', []),
+        })
+
+    doctrine_text = (doctrine or '')[:2000]
+    user = (
+        '## Strategy Under Review\n'
+        f"{json.dumps(strategy_spec or {}, indent=2)}\n\n"
+        '## Backtest Results\n'
+        f"- Profit Factor: {float(res.get('profit_factor', 0.0) or 0.0):.6f}\n"
+        f"- Win Rate: {float(res.get('win_rate', 0.0) or 0.0) * 100:.2f}%\n"
+        f"- Max Drawdown: {float(res.get('max_drawdown', 0.0) or 0.0) * 100:.2f}%\n"
+        f"- Total Trades: {int(res.get('total_trades', 0) or 0)}\n"
+        f"- Timeframe: {inputs.get('variant') or inputs.get('dataset_meta') or 'unknown'}\n"
+        f"- Asset: {inputs.get('dataset_csv') or 'unknown'}\n\n"
+        '## Regime Performance\n'
+        f"- Trending: PF {float(regime_pf.get('trending', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('trending', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('trending_trades', 0) or 0)}\n"
+        f"- Ranging: PF {float(regime_pf.get('ranging', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('ranging_trades', 0) or 0)}\n"
+        f"- Transitional: PF {float(regime_pf.get('transitional', 0.0) or 0.0):.6f}, WR {float(regime_wr.get('transitional', 0.0) or 0.0) * 100:.2f}%, Trades {int(regime_breakdown.get('transitional_trades', 0) or 0)}\n"
+        f"- Dominant regime in data: {res.get('dominant_regime', 'unknown')}\n\n"
+        '## Trading Doctrine (accumulated knowledge)\n'
+        f"{doctrine_text}\n\n"
+        '## Recent Outcome History for this family\n'
+        f"{json.dumps(history_view, indent=2)}\n\n"
+        '## Your Task\n'
+        'Respond with this exact JSON structure:\n'
+        '{\n'
+        '  "verdict": "ACCEPT" or "REJECT",\n'
+        '  "reasoning": "2-3 sentences explaining WHY. Reference regime performance, indicator behaviour, doctrine principles.",\n'
+        '  "directives": [\n'
+        '    {\n'
+        '      "type": "one of: ROLE_SWAP, THRESHOLD_SWEEP, PARAM_SWEEP, ENTRY_TIGHTEN, ENTRY_RELAX, EXIT_CHANGE, GATE_ADJUST, TEMPLATE_SWITCH",\n'
+        '      "params": {"specific parameter changes, not vague"},\n'
+        '      "reasoning": "why this should help"\n'
+        '    }\n'
+        '  ],\n'
+        '  "regime_recommendation": {\n'
+        '    "add_filter": true/false,\n'
+        '    "allowed_regimes": ["trending"] or ["ranging"] or both\n'
+        '  },\n'
+        '  "confidence": "low" or "medium" or "high"\n'
+        '}\n\n'
+        'Rules:\n'
+        '- ACCEPT only if PF > 1.0 AND trades > 50\n'
+        '- Generate 1-3 directives, never more\n'
+        '- directive type must be one of the listed types exactly\n'
+        '- Be specific in params, not vague suggestions\n'
+    )
+    return system, user
+
+
 def _directive_history_stats(notes: list[dict]) -> dict[str, dict]:
     # Interpret directives in note[i] as interventions that influenced note[i-1] (newer)
     if not notes:
@@ -466,6 +573,7 @@ def main() -> int:
     ap.add_argument('--batch-artifact', default='')
     ap.add_argument('--refinement-artifact', default='')
     ap.add_argument('--disable-doctrine', action='store_true')
+    ap.add_argument('--no-llm', action='store_true')
     args = ap.parse_args()
 
     batch_path = Path(args.batch_artifact) if args.batch_artifact else latest_file('artifacts/batches/**/batch_*.batch_backtest.json')
@@ -534,6 +642,68 @@ def main() -> int:
     history_stats = _directive_history_stats(recent_notes)
     directives = _apply_history_to_directives(doctrine_directives, history_stats)
 
+    analysis_source = 'rules'
+    llm_reasoning = None
+    llm_confidence = None
+    regime_recommendation = None
+
+    if not args.no_llm:
+        bt_obj = _j(Path(str(best_run.get('backtest_result_path') or '')), {}) if best_run.get('backtest_result_path') else {}
+        strategy_spec_obj = load_strategy_spec(bt_obj)
+        doctrine_text = ''
+        if DOCTRINE_PATH.exists():
+            try:
+                doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig')
+            except Exception:
+                doctrine_text = ''
+        outcome_history = load_family_outcome_history(strategy_family, limit=5)
+        system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
+        raw = openclaw_completion(user_prompt, system=system_prompt, agent='reader')
+        use_llm = False
+        llm_result: dict = {}
+        if raw:
+            cleaned = raw.strip()
+            if cleaned.startswith('```'):
+                cleaned = re.sub(r'^```json?\s*', '', cleaned)
+                cleaned = re.sub(r'\s*```$', '', cleaned)
+            try:
+                llm_result = json.loads(cleaned)
+                if all(k in llm_result for k in ['verdict', 'reasoning', 'directives', 'confidence']):
+                    use_llm = True
+            except json.JSONDecodeError:
+                use_llm = False
+
+        if use_llm:
+            v = str(llm_result.get('verdict', '')).upper()
+            if v in {'ACCEPT', 'REJECT', 'REVISE'}:
+                verdict = v
+            llm_dirs = llm_result.get('directives', []) if isinstance(llm_result.get('directives'), list) else []
+            safe_dirs = []
+            for i, d in enumerate(llm_dirs[:3], start=1):
+                if not isinstance(d, dict):
+                    continue
+                dt = str(d.get('type') or '')
+                if dt not in DIRECTIVE_TYPES:
+                    continue
+                safe_dirs.append({
+                    'id': f'd{i}',
+                    'type': dt,
+                    'params': d.get('params') if isinstance(d.get('params'), dict) else {},
+                    'rationale': str(d.get('reasoning') or d.get('rationale') or ''),
+                    'priority': i,
+                })
+            if safe_dirs:
+                directives = safe_dirs
+            analysis_source = 'llm'
+            llm_reasoning = str(llm_result.get('reasoning') or '')
+            llm_confidence = str(llm_result.get('confidence') or '')
+            regime_recommendation = llm_result.get('regime_recommendation') if isinstance(llm_result.get('regime_recommendation'), dict) else None
+            _log('INFO', 'LLM_PATH', f'Outcome analysis used LLM for strategy_family={strategy_family}')
+        else:
+            _log('WARN', 'LLM_FALLBACK', 'LLM call failed, using rules')
+    else:
+        _log('INFO', 'RULES_PATH', f'Outcome analysis used rules-only for strategy_family={strategy_family}')
+
     next_experiments = [
         f"Apply {d['type']} with params={json.dumps(d['params'], sort_keys=True)}"
         for d in directives[:5]
@@ -570,6 +740,7 @@ def main() -> int:
         },
         'failure_reasons': failures[:5],
         'directives': directives[:5],
+        'analysis_source': analysis_source,
         'doctrine_refs': doctrine_refs[:10],
         'directive_history': {
             'notes_considered': len(recent_notes),
@@ -594,6 +765,11 @@ def main() -> int:
         'next_experiments': next_experiments[:5],
         'sources_used': sources_used[:10],
     }
+    if analysis_source == 'llm':
+        payload['llm_reasoning'] = llm_reasoning
+        payload['llm_confidence'] = llm_confidence
+        payload['regime_recommendation'] = regime_recommendation
+
     out_path.write_text(json.dumps(payload, indent=2), encoding='utf-8')
 
     summary_line = f'ANALYSER_OUTCOME_SUMMARY — processed=1 verdict={verdict} directives={len(directives[:5])}'
