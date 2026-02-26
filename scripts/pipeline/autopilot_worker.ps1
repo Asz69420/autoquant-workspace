@@ -485,7 +485,7 @@ try {
       $bundleIndexOut = @($bundlePaths | ForEach-Object {
         $full = [IO.Path]::GetFullPath([string]$_)
         if ($full.StartsWith($rootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
-          return (($full.Substring($rootPath.Length)).TrimStart('\\','/') -replace '\\','/')
+          return (($full.Substring($rootPath.Length)).TrimStart('\','/') -replace '\\','/')
         }
         return ([string]$_ -replace '\\','/')
       })
@@ -528,6 +528,7 @@ try {
       }
     }
 
+    Emit-Summary 'BUNDLE_SCAN_DIAG' ('Bundle scan: index_exists=' + (Test-Path $bundleIndexPath) + ' paths=' + [string]@($bundlePaths).Count) 'INFO' 'Autopilot'
     $bundleSlotsUsed = 0
     $consecutiveBundleReadFails = 0
     $maxConsecutiveBundleReadFails = 3
@@ -604,20 +605,50 @@ try {
             continue
           }
 
-          $anRaw = Run-Py @('scripts/pipeline/run_analyser.py','--research-card-path',$b.research_card_path,'--linkmap-path',$lm)
-          $an = $anRaw | ConvertFrom-Json
-          $thesisPath = [string]$an.thesis_path
-          if ([string]::IsNullOrWhiteSpace($thesisPath)) { $thesisPath = [string]$an.thesis_artifact_path }
-          if ([string]::IsNullOrWhiteSpace($thesisPath)) { $thesisPath = [string]$an.thesis }
+          $an = $null
+          $anRaw = ''
+          $thesisPath = ''
+          try {
+            $anArgs = @('scripts/pipeline/run_analyser.py','--research-card-path',$b.research_card_path)
+            if (-not [string]::IsNullOrWhiteSpace([string]$lm)) { $anArgs += @('--linkmap-path',$lm) }
+            $anRaw = Run-Py $anArgs
+            try {
+              $an = $anRaw | ConvertFrom-Json
+            } catch {
+              $parseMsg = 'unknown_parse_error'
+              try { $parseMsg = [string]$_.Exception.Message } catch {}
+              Emit-Summary 'THESIS_GEN_FAIL' ('THESIS_GEN_FAIL stage=run_analyser parse=json detail=' + $parseMsg + ' stdout=' + [string]$anRaw) 'FAIL' 'Analyser'
+              throw
+            }
 
-          if ([string]::IsNullOrWhiteSpace($thesisPath)) {
-            Emit-Summary 'SPEC_EMIT_BLOCKED' 'empty thesis path from analyser' 'WARN' 'Strategist'
-            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'WARN' 'Promotion'
-            Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'EMPTY_THESIS_PATH_FROM_ANALYSER' -incrementAttempt $false
+            $thesisPath = [string]$an.thesis_path
+            if ([string]::IsNullOrWhiteSpace($thesisPath)) { $thesisPath = [string]$an.thesis_artifact_path }
+            if ([string]::IsNullOrWhiteSpace($thesisPath)) { $thesisPath = [string]$an.thesis }
+
+            if ([string]::IsNullOrWhiteSpace($thesisPath)) {
+              Emit-Summary 'THESIS_GEN_FAIL' ('THESIS_GEN_FAIL stage=run_analyser reason=EMPTY_THESIS_PATH stdout=' + [string]$anRaw) 'FAIL' 'Analyser'
+              Emit-Summary 'SPEC_EMIT_BLOCKED' 'empty thesis path from analyser' 'WARN' 'Strategist'
+              Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'WARN' 'Promotion'
+              Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'EMPTY_THESIS_PATH_FROM_ANALYSER' -incrementAttempt $false
+              $promotionEmitted = $true
+              Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: blocked promotion)' 'WARN' 'Backtester'
+              $batchEmitted = $true
+              Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'OK' 'Refinement'
+              $refineEmitted = $true
+              $bundlesProcessed += 1
+              $bundleSlotsUsed += 1
+              continue
+            }
+          } catch {
+            $thesisErr = 'run_analyser_error'
+            try { $thesisErr = [string]$_.Exception.Message } catch {}
+            Emit-Summary 'THESIS_GEN_FAIL' ('THESIS_GEN_FAIL stage=run_analyser detail=' + $thesisErr + ' research_card=' + [string]$b.research_card_path + ' linkmap=' + [string]$lm) 'FAIL' 'Analyser'
+            Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError ('THESIS_GEN_FAIL: ' + $thesisErr) -incrementAttempt $false
+            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=BLOCKED spec=SKIPPED variants=0 status=BLOCKED reason=THESIS_GEN_FAIL' 'FAIL' 'Promotion'
             $promotionEmitted = $true
-            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: blocked promotion)' 'WARN' 'Backtester'
+            Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: thesis generation failed)' 'WARN' 'Backtester'
             $batchEmitted = $true
-            Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'OK' 'Refinement'
+            Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED (THESIS_GEN_FAIL)' 'WARN' 'Refinement'
             $refineEmitted = $true
             $bundlesProcessed += 1
             $bundleSlotsUsed += 1
