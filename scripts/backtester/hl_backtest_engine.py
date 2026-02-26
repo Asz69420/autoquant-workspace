@@ -140,6 +140,22 @@ def _min_trades_required(meta: dict, gates: dict) -> int:
     return int(gates.get('min_trades', {}).get('2y', {}).get(timeframe, 0))
 
 
+def _classify_regime_from_adx(adx_value: float | None) -> str:
+    if adx_value is None:
+        return 'transitional'
+    if adx_value > 25.0:
+        return 'trending'
+    if adx_value < 20.0:
+        return 'ranging'
+    return 'transitional'
+
+
+def _safe_pf(wins: float, losses_abs: float) -> float:
+    if losses_abs > 0.0:
+        return wins / losses_abs
+    return 999.0 if wins > 0.0 else 0.0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--dataset-meta', required=True)
@@ -209,6 +225,7 @@ def main() -> int:
     trades = []
     pos = None
     total_fees_paid = 0.0
+    adx_series: list[float | None] = []
     total_slippage_cost_est = 0.0
     signals_seen_long = 0
     signals_seen_short = 0
@@ -232,6 +249,7 @@ def main() -> int:
         rsi, avg_gain, avg_loss = rsi_step(prev_close, b['close'], avg_gain, avg_loss, rsi_period)
 
         # Prefer pandas-ta indicators when present; fallback to legacy custom calculations.
+        adx_val = None
         try:
             rowi = ind_df.iloc[i]
             for nm, var in [('EMA_9', 'ema9'), ('EMA_21', 'ema21'), ('EMA_50', 'ema50'), ('EMA_200', 'ema200')]:
@@ -250,8 +268,13 @@ def main() -> int:
                 rsi = float(rv)
             av = rowi.get('ATR_14')
             atr = float(av) if pd.notna(av) else atr_fallback
+            adx_raw = rowi.get('ADX_14')
+            if pd.notna(adx_raw):
+                adx_val = float(adx_raw)
         except Exception:
             atr = atr_fallback
+            adx_val = None
+        adx_series.append(adx_val)
 
         if is_trendpullback:
             ema50_up = prev_ema50 is not None and ema50 > prev_ema50
@@ -281,7 +304,7 @@ def main() -> int:
             fees = (pos['entry_price'] * qty + exit_px * qty) * (fee_bps / 10_000.0)
             total_fees_paid += fees
             pnl = gross - fees
-            trades.append({'entry_time': pos['entry_time'], 'entry_price': round(pos['entry_price'], 8), 'exit_time': b['time'], 'exit_price': round(exit_px, 8), 'side': pos['side'], 'qty': qty, 'pnl': round(pnl, 8), 'reason': reason, 'bars_held': max(1, i - pos['entry_idx'] + 1)})
+            trades.append({'entry_time': pos['entry_time'], 'entry_price': round(pos['entry_price'], 8), 'exit_time': b['time'], 'exit_price': round(exit_px, 8), 'side': pos['side'], 'qty': qty, 'pnl': round(pnl, 8), 'reason': reason, 'bars_held': max(1, i - pos['entry_idx'] + 1), 'entry_regime': pos.get('entry_regime', 'transitional'), 'entry_adx': (round(float(pos['entry_adx']), 8) if pos.get('entry_adx') is not None else None)})
             exits_taken += 1
             pos = None
 
@@ -291,7 +314,8 @@ def main() -> int:
                 eside = 'sell' if short_sig else 'buy'
                 ep, eslip = apply_fill(b['close'], eside, slippage_bps)
                 total_slippage_cost_est += eslip
-                pos = {'side': 'short' if short_sig else 'long', 'entry_price': ep, 'entry_time': b['time'], 'entry_idx': i}
+                regime = _classify_regime_from_adx(adx_series[i] if i < len(adx_series) else None)
+                pos = {'side': 'short' if short_sig else 'long', 'entry_price': ep, 'entry_time': b['time'], 'entry_idx': i, 'entry_regime': regime, 'entry_adx': (adx_series[i] if i < len(adx_series) else None)}
                 entries_taken += 1
                 prev_close = b['close']
                 continue
@@ -315,7 +339,8 @@ def main() -> int:
             eside = 'buy' if long_sig else 'sell'
             ep, eslip = apply_fill(raw_ep, eside, slippage_bps)
             total_slippage_cost_est += eslip
-            pos = {'side': 'long' if long_sig else 'short', 'entry_price': ep, 'entry_time': et, 'entry_idx': i}
+            regime = _classify_regime_from_adx(adx_series[i] if i < len(adx_series) else None)
+            pos = {'side': 'long' if long_sig else 'short', 'entry_price': ep, 'entry_time': et, 'entry_idx': i, 'entry_regime': regime, 'entry_adx': (adx_series[i] if i < len(adx_series) else None)}
             entries_taken += 1
 
         prev_close = b['close']
@@ -328,6 +353,24 @@ def main() -> int:
         eq += p
         peak = max(peak, eq)
         maxdd = max(maxdd, peak - eq)
+
+    regime_counts = {'trending': 0, 'ranging': 0, 'transitional': 0}
+    regime_wins = {'trending': 0.0, 'ranging': 0.0, 'transitional': 0.0}
+    regime_losses_abs = {'trending': 0.0, 'ranging': 0.0, 'transitional': 0.0}
+    regime_trade_counts = {'trending': 0, 'ranging': 0, 'transitional': 0}
+    regime_win_counts = {'trending': 0, 'ranging': 0, 'transitional': 0}
+    for t in trades:
+        rg = str(t.get('entry_regime') or 'transitional').lower()
+        if rg not in regime_counts:
+            rg = 'transitional'
+        regime_counts[rg] += 1
+        regime_trade_counts[rg] += 1
+        pnl = float(t.get('pnl', 0.0) or 0.0)
+        if pnl > 0:
+            regime_wins[rg] += pnl
+            regime_win_counts[rg] += 1
+        elif pnl < 0:
+            regime_losses_abs[rg] += abs(pnl)
 
     total = len(trades)
     net = sum(pnls)
@@ -367,7 +410,23 @@ def main() -> int:
             'total_fees_paid': round(total_fees_paid, 8),
             'total_slippage_cost_est': round(total_slippage_cost_est, 8),
             'start_ts': meta.get('start'),
-            'end_ts': meta.get('end')
+            'end_ts': meta.get('end'),
+            'regime_breakdown': {
+                'trending_trades': int(regime_counts['trending']),
+                'ranging_trades': int(regime_counts['ranging']),
+                'transitional_trades': int(regime_counts['transitional']),
+            },
+            'regime_pf': {
+                'trending': round(_safe_pf(regime_wins['trending'], regime_losses_abs['trending']), 8),
+                'ranging': round(_safe_pf(regime_wins['ranging'], regime_losses_abs['ranging']), 8),
+                'transitional': round(_safe_pf(regime_wins['transitional'], regime_losses_abs['transitional']), 8),
+            },
+            'regime_wr': {
+                'trending': round((regime_win_counts['trending'] / regime_trade_counts['trending']) if regime_trade_counts['trending'] else 0.0, 8),
+                'ranging': round((regime_win_counts['ranging'] / regime_trade_counts['ranging']) if regime_trade_counts['ranging'] else 0.0, 8),
+                'transitional': round((regime_win_counts['transitional'] / regime_trade_counts['transitional']) if regime_trade_counts['transitional'] else 0.0, 8),
+            },
+            'dominant_regime': max(regime_counts, key=lambda k: regime_counts[k]) if total else 'transitional'
         },
         'coverage': coverage,
         'gate': {

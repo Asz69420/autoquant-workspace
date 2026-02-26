@@ -211,6 +211,58 @@ def _classify_verdict(pf_after_costs: float, max_drawdown: float, trades: int) -
     return 'ACCEPT'
 
 
+def _extract_regime_context(best_run: dict) -> dict:
+    out = {
+        'available': False,
+        'regime_breakdown': {},
+        'regime_pf': {},
+        'regime_wr': {},
+        'dominant_regime': '',
+        'good_regimes': [],
+        'bad_regimes': [],
+        'all_good': False,
+        'all_bad': False,
+        'single_good': False,
+    }
+    bp = str(best_run.get('backtest_result_path') or '')
+    if not bp:
+        return out
+    bobj = _j(Path(bp), {})
+    res = bobj.get('results') if isinstance(bobj, dict) else {}
+    if not isinstance(res, dict):
+        return out
+
+    regime_pf = res.get('regime_pf') or {}
+    regime_wr = res.get('regime_wr') or {}
+    regime_breakdown = res.get('regime_breakdown') or {}
+    dominant = str(res.get('dominant_regime') or '')
+    if not isinstance(regime_pf, dict) or not regime_pf:
+        return out
+
+    good = []
+    bad = []
+    for rg in ('trending', 'ranging', 'transitional'):
+        pf = float(regime_pf.get(rg, 0.0) or 0.0)
+        if pf >= 1.05:
+            good.append(rg)
+        elif pf < 0.95:
+            bad.append(rg)
+
+    out.update({
+        'available': True,
+        'regime_breakdown': regime_breakdown,
+        'regime_pf': {k: float(v or 0.0) for k, v in regime_pf.items()},
+        'regime_wr': {k: float(v or 0.0) for k, v in regime_wr.items()},
+        'dominant_regime': dominant,
+        'good_regimes': good,
+        'bad_regimes': bad,
+        'all_good': (len(good) >= 3),
+        'all_bad': (len(bad) >= 3),
+        'single_good': (len(good) == 1 and len(bad) >= 1),
+    })
+    return out
+
+
 def _failure_reasons(pf: float, dd: float, trades: int, evidence: str, refinement: dict) -> list[dict]:
     out: list[dict] = []
     if trades < 20:
@@ -435,9 +487,40 @@ def main() -> int:
     pf, dd, trades, best_run, strategy_family, template = _extract_metrics(batch)
     verdict = _classify_verdict(pf, dd, trades)
     evidence = (best_run.get('backtest_result_path') or (sources_used[0] if sources_used else 'artifacts/backtests/unknown'))
+    regime_ctx = _extract_regime_context(best_run)
 
     failures = _failure_reasons(pf, dd, trades, str(evidence), refinement)
     base_directives = _directives_from_failures(failures, verdict)
+
+    # Regime-aware overrides: avoid throwing away conditionally profitable strategies.
+    if regime_ctx.get('single_good'):
+        good_regime = str((regime_ctx.get('good_regimes') or [''])[0])
+        verdict = 'REVISE'
+        base_directives = [{
+            'id': 'd_regime_filter_only',
+            'type': 'GATE_ADJUST',
+            'params': {'require_regime_filter': True, 'allowed_regime': good_regime},
+            'rationale': f"Regime-aware: strategy shows edge mainly in {good_regime}; restrict trading to that regime.",
+            'priority': 1,
+        }] + [d for d in base_directives if d.get('type') != 'GATE_ADJUST']
+    elif regime_ctx.get('all_bad'):
+        verdict = 'REJECT'
+        base_directives = [{
+            'id': 'd_regime_pivot',
+            'type': 'TEMPLATE_SWITCH',
+            'params': {'target': 'FALLBACK_TEMPLATE_TREND', 'reason': 'all_regimes_underperform'},
+            'rationale': 'Regime-aware: underperforms across all regimes; pivot to fundamentally different structure.',
+            'priority': 1,
+        }] + base_directives
+    elif regime_ctx.get('all_good'):
+        verdict = 'ACCEPT'
+        base_directives = [{
+            'id': 'd_regime_refine',
+            'type': 'PARAM_SWEEP',
+            'params': {'parameter': 'risk_r', 'range': [0.75, 1.75], 'step': 0.25, 'reason': 'all_regimes_strong'},
+            'rationale': 'Regime-aware: robust across regimes; prioritise refinement over structural changes.',
+            'priority': 1,
+        }] + base_directives
     variant_ctx = _load_strategy_variant_context(batch, best_run)
 
     doctrine_refs: list[dict] = []
@@ -472,6 +555,18 @@ def main() -> int:
             'profit_factor_after_costs': pf,
             'max_drawdown': dd,
             'trades': trades,
+            'regime_breakdown': regime_ctx.get('regime_breakdown', {}),
+            'regime_pf': regime_ctx.get('regime_pf', {}),
+            'regime_wr': regime_ctx.get('regime_wr', {}),
+            'dominant_regime': regime_ctx.get('dominant_regime', ''),
+        },
+        'regime_analysis': {
+            'available': bool(regime_ctx.get('available')),
+            'good_regimes': regime_ctx.get('good_regimes', []),
+            'bad_regimes': regime_ctx.get('bad_regimes', []),
+            'all_good': bool(regime_ctx.get('all_good')),
+            'all_bad': bool(regime_ctx.get('all_bad')),
+            'single_good': bool(regime_ctx.get('single_good')),
         },
         'failure_reasons': failures[:5],
         'directives': directives[:5],
