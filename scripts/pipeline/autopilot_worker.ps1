@@ -138,6 +138,7 @@ $batchRuns = 0
 $batchExecuted = 0
 $batchSkipped = 0
 $batchGateFail = 0
+$countedBatchArtifacts = @{}
 $batchEmitted = $false
 $promotionEmitted = $false
 $refineEmitted = $false
@@ -405,13 +406,16 @@ try {
               $batchRuns += [int]$bdoc.summary.total_runs
               $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $batchSkipped += [int]$bdoc.summary.failed_runs
-              foreach ($rr in $bdoc.runs) {
-                if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 }
-                if ($rr.gate_pass -eq $true) { $candidatesPassingGate += 1 }
+              $batchGateFailThis = @($bdoc.runs | Where-Object { [string]$_.skip_reason -eq 'FEASIBILITY_FAIL' }).Count
+              $gatePassThis = @($bdoc.runs | Where-Object { $_.gate_pass -eq $true }).Count
+              if (-not $countedBatchArtifacts.ContainsKey([string]$batchArtifactPath)) {
+                $countedBatchArtifacts[[string]$batchArtifactPath] = $true
+                $batchGateFail += [int]$batchGateFailThis
+                $candidatesPassingGate += [int]$gatePassThis
               }
               $execCount = ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $bStatus = if ($execCount -le 0) { 'WARN' } else { 'OK' }
-              Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail) $bStatus 'Backtester'
+              Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFailThis + " gate_pass=" + $gatePassThis) $bStatus 'Backtester'
               $batchEmitted = $true
             } catch {
               $batchErr = 'batch_error'
@@ -444,11 +448,15 @@ try {
             $refineEmitted = $true
           } elseif ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
-            $refinementsRun += 1
-            if ($ref.refinement_cycle_path) { $latestRefinementArtifactPath = [string]$ref.refinement_cycle_path }
-            $candidatesReachingRefinement += 1
+            $refPath = [string]$ref.refinement_cycle_path
+            if (-not [string]::IsNullOrWhiteSpace($refPath) -and (Test-Path -LiteralPath $refPath)) {
+              $refinementsRun += 1
+              $latestRefinementArtifactPath = $refPath
+              $candidatesReachingRefinement += 1
+            }
             try {
-              $rdoc = Get-Content $ref.refinement_cycle_path -Raw | ConvertFrom-Json
+              if (-not (Test-Path -LiteralPath $refPath)) { throw 'REFINEMENT_ARTIFACT_MISSING' }
+              $rdoc = Get-Content -LiteralPath $refPath -Raw | ConvertFrom-Json
               $refineVariants = [int]$rdoc.winner.summary.total_runs
               $refineExplore = [int]$rdoc.explore_variants_used_total
               $refineDelta = [string]$rdoc.best_score_delta
@@ -567,13 +575,16 @@ try {
           $batchRuns += [int]$bdoc.summary.total_runs
           $batchExecuted += ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
           $batchSkipped += [int]$bdoc.summary.failed_runs
-          foreach ($rr in $bdoc.runs) {
-            if ($rr.skip_reason -eq 'FEASIBILITY_FAIL') { $batchGateFail += 1 }
-            if ($rr.gate_pass -eq $true) { $candidatesPassingGate += 1 }
+          $batchGateFailThis = @($bdoc.runs | Where-Object { [string]$_.skip_reason -eq 'FEASIBILITY_FAIL' }).Count
+          $gatePassThis = @($bdoc.runs | Where-Object { $_.gate_pass -eq $true }).Count
+          if (-not $countedBatchArtifacts.ContainsKey([string]$batchArtifactPath)) {
+            $countedBatchArtifacts[[string]$batchArtifactPath] = $true
+            $batchGateFail += [int]$batchGateFailThis
+            $candidatesPassingGate += [int]$gatePassThis
           }
           $execCount = ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
           $bStatus = if ($execCount -le 0) { 'WARN' } else { 'OK' }
-          Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch(backfill): runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFail + " spec=" + [IO.Path]::GetFileName([string]$spPath)) $bStatus 'Backtester'
+          Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch(backfill): runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFailThis + " gate_pass=" + $gatePassThis + " spec=" + [IO.Path]::GetFileName([string]$spPath)) $bStatus 'Backtester'
           $batchEmitted = $true
 
           if ($execCount -gt 0 -and $MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
@@ -597,11 +608,15 @@ try {
               ($promoObj | ConvertTo-Json -Depth 8) | Set-Content -Path $promoPath -Encoding utf8
 
               $ref = Run-Py @('scripts/pipeline/run_refinement_loop.py','--promotion-run',$promoPath,'--max-iters','1') | ConvertFrom-Json
-              $refinementsRun += 1
-              if ($ref.refinement_cycle_path) { $latestRefinementArtifactPath = [string]$ref.refinement_cycle_path }
-              $candidatesReachingRefinement += 1
+              $refPath = [string]$ref.refinement_cycle_path
+              if (-not [string]::IsNullOrWhiteSpace($refPath) -and (Test-Path -LiteralPath $refPath)) {
+                $refinementsRun += 1
+                $latestRefinementArtifactPath = $refPath
+                $candidatesReachingRefinement += 1
+              }
               try {
-                $rdoc = Get-Content $ref.refinement_cycle_path -Raw | ConvertFrom-Json
+                if (-not (Test-Path -LiteralPath $refPath)) { throw 'REFINEMENT_ARTIFACT_MISSING' }
+                $rdoc = Get-Content -LiteralPath $refPath -Raw | ConvertFrom-Json
                 $refineVariants = [int]$rdoc.winner.summary.total_runs
                 $refineExplore = [int]$rdoc.explore_variants_used_total
                 $refineDelta = [string]$rdoc.best_score_delta
