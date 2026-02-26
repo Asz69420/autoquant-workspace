@@ -62,11 +62,18 @@ function Get-RecentBatchArtifactPath([datetime]$sinceUtc) {
 }
 
 function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [string]$refinementArtifactPath = '') {
-  if ([string]::IsNullOrWhiteSpace($batchArtifactPath)) { return }
+  if ([string]::IsNullOrWhiteSpace($batchArtifactPath)) {
+    Emit-Summary 'OUTCOME_NOTES_MISSING' ('Outcome worker skipped: empty batch artifact path for run_id=' + $runId) 'WARN' 'Analyser'
+    return
+  }
+
+  $batchPathNorm = [string]$batchArtifactPath
+  $refPathNorm = [string]$refinementArtifactPath
+  $outcomePathFromWorker = ''
   try {
-    $outcArgs = @('scripts/pipeline/analyser_outcome_worker.py','--run-id',$runId,'--batch-artifact',$batchArtifactPath)
-    if (-not [string]::IsNullOrWhiteSpace($refinementArtifactPath) -and (Test-Path -LiteralPath $refinementArtifactPath)) {
-      $outcArgs += @('--refinement-artifact',$refinementArtifactPath)
+    $outcArgs = @('scripts/pipeline/analyser_outcome_worker.py','--run-id',$runId,'--batch-artifact',$batchPathNorm)
+    if (-not [string]::IsNullOrWhiteSpace($refPathNorm) -and (Test-Path -LiteralPath $refPathNorm)) {
+      $outcArgs += @('--refinement-artifact',$refPathNorm)
     }
     $outcomeRaw = Run-Py $outcArgs
     if (-not [string]::IsNullOrWhiteSpace([string]$outcomeRaw)) {
@@ -79,7 +86,8 @@ function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [strin
         try {
           $outcomeObj = $outcomeJsonLine | ConvertFrom-Json
           if ($outcomeObj.outcome_notes_path) {
-            Emit-InfoSummary 'OUTCOME_NOTES_PATH' ("Outcome notes v2: " + [string]$outcomeObj.outcome_notes_path) 'Analyser'
+            $outcomePathFromWorker = [string]$outcomeObj.outcome_notes_path
+            Emit-InfoSummary 'OUTCOME_NOTES_PATH' ("Outcome notes v2: " + $outcomePathFromWorker) 'Analyser'
           }
         } catch {}
       }
@@ -87,7 +95,26 @@ function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [strin
   } catch {
     $oe = 'outcome_worker_error'
     try { $oe = [string]$_.Exception.Message } catch {}
-    Emit-Summary 'ANALYSER_OUTCOME_SUMMARY' ("ANALYSER_OUTCOME_SUMMARY — processed=1 verdict=REVISE directives=1 detail=" + $oe) 'WARN' 'Analyser'
+    Emit-Summary 'OUTCOME_WORKER_FAIL' ('Outcome worker failed: run_id=' + $runId + ' batch=' + $batchPathNorm + ' refinement=' + $refPathNorm + ' detail=' + $oe) 'FAIL' 'Analyser'
+    return
+  }
+
+  $checked = @()
+  if (-not [string]::IsNullOrWhiteSpace($outcomePathFromWorker)) { $checked += $outcomePathFromWorker }
+  $fallbackPattern = ('outcome_notes_' + $runId + '*.json')
+  try {
+    $fallback = Get-ChildItem -Path 'artifacts/outcomes' -Recurse -Filter $fallbackPattern -File -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($fallback) { $checked += [string]$fallback.FullName }
+  } catch {}
+
+  $found = $false
+  foreach ($cp in $checked) {
+    if (-not [string]::IsNullOrWhiteSpace([string]$cp) -and (Test-Path -LiteralPath ([string]$cp))) { $found = $true; break }
+  }
+
+  if (-not $found) {
+    $checkedStr = if (@($checked).Count -gt 0) { (@($checked) -join '; ') } else { 'none' }
+    Emit-Summary 'OUTCOME_NOTES_MISSING' ('Outcome worker invoked but notes missing: run_id=' + $runId + ' batch=' + $batchPathNorm + ' checked=' + $checkedStr) 'WARN' 'Analyser'
   }
 }
 
