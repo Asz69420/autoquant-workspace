@@ -6,6 +6,7 @@ import json
 import re
 import subprocess
 import sys
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -14,6 +15,15 @@ PY = sys.executable
 DIRECTIVE_TYPES = {
     'ROLE_SWAP', 'THRESHOLD_SWEEP', 'PARAM_SWEEP', 'ENTRY_TIGHTEN', 'ENTRY_RELAX', 'EXIT_CHANGE', 'GATE_ADJUST', 'TEMPLATE_SWITCH'
 }
+DOCTRINE_PATH = ROOT / 'docs' / 'DOCTRINE' / 'analyser-doctrine.md'
+
+
+@dataclass
+class DoctrinePrinciples:
+    regime_required: bool
+    risk_gating: bool
+    macd_confirmation_over_entry: bool
+    refs: list[dict]
 
 
 def _j(path: Path, default):
@@ -43,6 +53,129 @@ def _log(status_word: str, reason: str, summary: str):
 def latest_file(pattern: str) -> Path | None:
     files = sorted(ROOT.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
     return files[0] if files else None
+
+
+def _load_doctrine_principles(path: Path = DOCTRINE_PATH) -> DoctrinePrinciples:
+    refs: list[dict] = []
+    regime_required = False
+    risk_gating = False
+    macd_confirmation_over_entry = False
+    if not path.exists():
+        return DoctrinePrinciples(False, False, False, refs)
+
+    for line in path.read_text(encoding='utf-8-sig').splitlines():
+        s = line.strip()
+        if not s.startswith('- ['):
+            continue
+        m = re.match(r'^- \[(?P<id>[^\]]+)\]\s+(?P<text>.+)$', s)
+        if not m:
+            continue
+        did = m.group('id')
+        text = m.group('text')
+        low = text.lower()
+
+        if ('regime assumptions' in low) or ('regime gate' in low) or ('session gating' in low):
+            regime_required = True
+            refs.append({'id': did, 'theme': 'regime_required', 'text': text[:220]})
+        if ('risk gating' in low) or ('risk limit enforcement' in low) or ('drawdown' in low):
+            risk_gating = True
+            refs.append({'id': did, 'theme': 'risk_gating', 'text': text[:220]})
+        if 'macd' in low and 'confirmation' in low and 'entry' in low:
+            macd_confirmation_over_entry = True
+            refs.append({'id': did, 'theme': 'macd_confirmation_over_entry', 'text': text[:220]})
+
+    # keep deterministic + compact
+    dedup = []
+    seen = set()
+    for r in refs:
+        k = (r.get('id'), r.get('theme'))
+        if k in seen:
+            continue
+        seen.add(k)
+        dedup.append(r)
+    return DoctrinePrinciples(regime_required, risk_gating, macd_confirmation_over_entry, dedup[:10])
+
+
+def _load_strategy_variant_context(batch: dict, best_run: dict) -> dict:
+    strategy_path = str(batch.get('strategy_spec_path') or '')
+    variant_name = str(best_run.get('variant_name') or batch.get('variant') or '')
+    spec = _j(Path(strategy_path), {}) if strategy_path else {}
+    variants = spec.get('variants') if isinstance(spec, dict) else []
+    selected = {}
+    if isinstance(variants, list):
+        for v in variants:
+            if isinstance(v, dict) and str(v.get('name') or '') == variant_name:
+                selected = v
+                break
+        if not selected and variants and isinstance(variants[0], dict):
+            selected = variants[0]
+    return {'strategy_path': strategy_path, 'variant_name': variant_name, 'variant': selected if isinstance(selected, dict) else {}}
+
+
+def _has_regime_filter(variant: dict) -> bool:
+    texts = []
+    for k in ('filters', 'entry_long', 'entry_short', 'risk_rules', 'description'):
+        v = variant.get(k)
+        if isinstance(v, list):
+            texts.extend([str(x) for x in v])
+        elif isinstance(v, str):
+            texts.append(v)
+    blob = ' '.join(texts).lower()
+    return any(x in blob for x in ('regime', 'session gate', 'risk-on', 'risk-off', 'volatility gate'))
+
+
+def _macd_used_as_entry(variant: dict) -> bool:
+    entry_blob = ' '.join(str(x) for x in (variant.get('entry_long') or []) + (variant.get('entry_short') or [])).lower()
+    filt_blob = ' '.join(str(x) for x in (variant.get('filters') or [])).lower()
+    return ('macd' in entry_blob) and ('confirmation' not in entry_blob or 'macd' not in filt_blob)
+
+
+def _apply_doctrine_influence(base_directives: list[dict], doctrine: DoctrinePrinciples, variant_ctx: dict, dd: float) -> tuple[list[dict], list[dict]]:
+    directives = list(base_directives)
+    refs_used: list[dict] = []
+    variant = variant_ctx.get('variant') or {}
+
+    if doctrine.regime_required and not _has_regime_filter(variant):
+        directives.insert(0, {
+            'id': 'd_doctrine_regime',
+            'type': 'GATE_ADJUST',
+            'params': {'require_regime_filter': True, 'regime_gate': 'trend_or_volatility'},
+            'rationale': 'Doctrine: regime assumptions/gating required; strategy lacks explicit regime filter.',
+            'priority': 1,
+        })
+        refs_used.extend([r for r in doctrine.refs if r.get('theme') == 'regime_required'][:2])
+
+    if doctrine.macd_confirmation_over_entry and _macd_used_as_entry(variant):
+        directives.insert(0, {
+            'id': 'd_doctrine_macd_role',
+            'type': 'ROLE_SWAP',
+            'params': {'swap': 'macd_entry->confirmation'},
+            'rationale': 'Doctrine: prefer MACD as confirmation over direct entry trigger.',
+            'priority': 1,
+        })
+        refs_used.extend([r for r in doctrine.refs if r.get('theme') == 'macd_confirmation_over_entry'][:2])
+
+    if doctrine.risk_gating and dd > 0.20:
+        directives.insert(0, {
+            'id': 'd_doctrine_risk_gate',
+            'type': 'GATE_ADJUST',
+            'params': {'max_drawdown_cap': 0.20, 'risk_gate_required': True},
+            'rationale': 'Doctrine: risk gating before complexity on drawdown-heavy strategies.',
+            'priority': 1,
+        })
+        refs_used.extend([r for r in doctrine.refs if r.get('theme') == 'risk_gating'][:2])
+
+    # Dedup same directive type+params while preserving order
+    out = []
+    seen = set()
+    for d in directives:
+        key = (str(d.get('type') or ''), json.dumps(d.get('params') or {}, sort_keys=True))
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(d)
+
+    return out[:5], refs_used[:10]
 
 
 def _extract_metrics(batch: dict) -> tuple[float, float, int, dict, str, str]:
@@ -280,6 +413,7 @@ def main() -> int:
     ap.add_argument('--run-id', required=True)
     ap.add_argument('--batch-artifact', default='')
     ap.add_argument('--refinement-artifact', default='')
+    ap.add_argument('--disable-doctrine', action='store_true')
     args = ap.parse_args()
 
     batch_path = Path(args.batch_artifact) if args.batch_artifact else latest_file('artifacts/batches/**/batch_*.batch_backtest.json')
@@ -304,9 +438,18 @@ def main() -> int:
 
     failures = _failure_reasons(pf, dd, trades, str(evidence), refinement)
     base_directives = _directives_from_failures(failures, verdict)
+    variant_ctx = _load_strategy_variant_context(batch, best_run)
+
+    doctrine_refs: list[dict] = []
+    doctrine = DoctrinePrinciples(False, False, False, [])
+    doctrine_directives = list(base_directives)
+    if not args.disable_doctrine:
+        doctrine = _load_doctrine_principles(DOCTRINE_PATH)
+        doctrine_directives, doctrine_refs = _apply_doctrine_influence(base_directives, doctrine, variant_ctx, dd)
+
     recent_notes = _load_recent_family_notes(strategy_family, limit=5)
     history_stats = _directive_history_stats(recent_notes)
-    directives = _apply_history_to_directives(base_directives, history_stats)
+    directives = _apply_history_to_directives(doctrine_directives, history_stats)
 
     next_experiments = [
         f"Apply {d['type']} with params={json.dumps(d['params'], sort_keys=True)}"
@@ -332,6 +475,7 @@ def main() -> int:
         },
         'failure_reasons': failures[:5],
         'directives': directives[:5],
+        'doctrine_refs': doctrine_refs[:10],
         'directive_history': {
             'notes_considered': len(recent_notes),
             'history_window': [
@@ -345,6 +489,12 @@ def main() -> int:
                 for n in recent_notes
             ],
             'directive_type_stats': history_stats,
+            'doctrine_enabled': (not args.disable_doctrine),
+            'doctrine_principles': {
+                'regime_required': doctrine.regime_required,
+                'risk_gating': doctrine.risk_gating,
+                'macd_confirmation_over_entry': doctrine.macd_confirmation_over_entry,
+            },
         },
         'next_experiments': next_experiments[:5],
         'sources_used': sources_used[:10],
