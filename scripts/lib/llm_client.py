@@ -7,6 +7,8 @@ import re
 import shutil
 import subprocess
 import time
+import urllib.request
+import urllib.error
 from datetime import datetime, UTC
 from pathlib import Path
 
@@ -14,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LOG_PATH = ROOT / 'data' / 'logs' / 'llm_calls.ndjson'
 DEFAULT_OPENCLAW_CLI = r'C:\Users\Clamps\AppData\Roaming\npm\openclaw.cmd'
 OPENCLAW_CLI = shutil.which('openclaw') or os.environ.get('OPENCLAW_CLI_PATH') or (DEFAULT_OPENCLAW_CLI if Path(DEFAULT_OPENCLAW_CLI).exists() else 'openclaw')
+GATEWAY_URL = 'http://127.0.0.1:18789'
 
 
 def _log_call(agent: str, prompt_len: int, response_len: int, latency_ms: int, success: bool, error: str | None):
@@ -31,6 +34,35 @@ def _log_call(agent: str, prompt_len: int, response_len: int, latency_ms: int, s
         f.write(json.dumps(row, ensure_ascii=False) + '\n')
 
 
+def _call_gateway_http(prompt: str, system: str, agent: str, timeout: int) -> str | None:
+    """Try calling Gateway via HTTP API instead of subprocess."""
+    try:
+        full_prompt = prompt
+        if system:
+            full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
+
+        req_body = json.dumps({
+            'agent': agent,
+            'message': full_prompt,
+            'json': True
+        }).encode('utf-8')
+
+        req = urllib.request.Request(
+            f'{GATEWAY_URL}/api/agent',
+            data=req_body,
+            headers={'Content-Type': 'application/json'},
+            method='POST'
+        )
+
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            if result.get('result') and result['result'].get('payloads'):
+                return result['result']['payloads'][0].get('text')
+    except Exception:
+        pass
+    return None
+
+
 def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: int = 120) -> str | None:
     """Call LLM through OpenClaw runtime. Returns text or None."""
     full_prompt = prompt
@@ -42,6 +74,14 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
     for attempt in range(2):
         t0 = time.time()
         try:
+            # Try HTTP API first (preferred)
+            text = _call_gateway_http(prompt, system, agent, timeout)
+            if text:
+                latency_ms = int((time.time() - t0) * 1000)
+                _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None)
+                return text
+
+            # Fallback to subprocess if HTTP fails
             if len(full_prompt) < 30000:
                 cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--message', full_prompt, '--json']
                 p = subprocess.run(cmd, text=True, capture_output=True, timeout=timeout)
