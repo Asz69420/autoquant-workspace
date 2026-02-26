@@ -225,6 +225,43 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
   return ''
 }
 
+function Resolve-SpecFamilyKey([string]$specPath, [hashtable]$cache) {
+  if ([string]::IsNullOrWhiteSpace($specPath)) { return 'unknown' }
+  $norm = $specPath.Replace('\\','/').ToLowerInvariant()
+  if ($cache.ContainsKey($norm)) { return [string]$cache[$norm] }
+
+  $resolved = $specPath
+  if (-not (Test-Path -LiteralPath $resolved)) {
+    try {
+      $candidate = Join-Path (Get-Location) $specPath
+      if (Test-Path -LiteralPath $candidate) { $resolved = $candidate }
+    } catch {}
+  }
+  if (-not (Test-Path -LiteralPath $resolved)) {
+    $cache[$norm] = 'unknown'
+    return 'unknown'
+  }
+
+  try {
+    $obj = Get-Content -LiteralPath $resolved -Raw | ConvertFrom-Json
+    $th = [string]$obj.source_thesis_path
+    if (-not [string]::IsNullOrWhiteSpace($th)) {
+      $fam = [IO.Path]::GetFileNameWithoutExtension([IO.Path]::GetFileNameWithoutExtension($th))
+      if (-not [string]::IsNullOrWhiteSpace($fam)) { $cache[$norm] = $fam; return $fam }
+    }
+    $src = [string]$obj.source_spec_path
+    if (-not [string]::IsNullOrWhiteSpace($src)) {
+      $fam = Resolve-SpecFamilyKey $src $cache
+      if (-not [string]::IsNullOrWhiteSpace($fam)) { $cache[$norm] = $fam; return $fam }
+    }
+    $sid = [string]$obj.id
+    if (-not [string]::IsNullOrWhiteSpace($sid)) { $cache[$norm] = $sid; return $sid }
+  } catch {}
+
+  $cache[$norm] = 'unknown'
+  return 'unknown'
+}
+
 function Set-BundleState([string]$bundlePath, [string]$status, [string]$lastError = '', [bool]$incrementAttempt = $false) {
   if (-not (Test-Path -LiteralPath $bundlePath)) { return }
   try {
@@ -697,6 +734,8 @@ try {
       }
 
       $completedKeys = @{}
+      $familyCache = @{}
+      $familyBestPf = @{}
       foreach ($rr in $runRows) {
         try {
           $sp = [string]$rr.strategy_spec_path
@@ -704,6 +743,15 @@ try {
           if (-not [string]::IsNullOrWhiteSpace($sp) -and -not [string]::IsNullOrWhiteSpace($vn)) {
             $spNorm = $sp.Replace('\\','/').ToLowerInvariant()
             $completedKeys[($spNorm + '|' + $vn)] = $true
+          }
+
+          $pf = 0.0
+          try { $pf = [double]$rr.profit_factor } catch { $pf = 0.0 }
+          if (-not [string]::IsNullOrWhiteSpace($sp)) {
+            $fam = Resolve-SpecFamilyKey $sp $familyCache
+            if (-not $familyBestPf.ContainsKey($fam) -or $pf -gt [double]$familyBestPf[$fam]) {
+              $familyBestPf[$fam] = [double]$pf
+            }
           }
         } catch {}
       }
@@ -714,10 +762,13 @@ try {
         if (-not (Test-Path -LiteralPath $spPathCand)) { continue }
         try {
           $fi = Get-Item -LiteralPath $spPathCand -ErrorAction Stop
-          $orderedSpecCandidates += [pscustomobject]@{ path = [string]$spPathCand; mtime = $fi.LastWriteTimeUtc }
+          $fam = Resolve-SpecFamilyKey ([string]$spPathCand) $familyCache
+          $famBest = -1.0
+          if ($familyBestPf.ContainsKey($fam)) { $famBest = [double]$familyBestPf[$fam] }
+          $orderedSpecCandidates += [pscustomobject]@{ path = [string]$spPathCand; family = [string]$fam; family_best_pf = [double]$famBest; mtime = $fi.LastWriteTimeUtc }
         } catch {}
       }
-      $orderedSpecCandidates = @($orderedSpecCandidates | Sort-Object mtime -Descending)
+      $orderedSpecCandidates = @($orderedSpecCandidates | Sort-Object @{Expression='family_best_pf';Descending=$true}, @{Expression='mtime';Descending=$true})
 
       $backfillTried = 0
       foreach ($specEntry in $orderedSpecCandidates) {
