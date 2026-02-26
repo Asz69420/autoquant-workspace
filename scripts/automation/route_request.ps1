@@ -625,6 +625,20 @@ function Invoke-ManualVideoIngest {
       ('Manual concept ingest from YouTube URL. source_ref=' + $u + ' video_id=' + $vid)
     }
 
+    $resolverRaw = (python scripts/pipeline/transcript_resolver.py --video-id $vid --url $u) -join "`n"
+    $resolver = $null
+    try { $resolver = $resolverRaw | ConvertFrom-Json } catch { $resolver = $null }
+    if ($null -ne $resolver -and $resolver.ok -eq $true -and -not [string]::IsNullOrWhiteSpace([string]$resolver.text)) {
+      $txt = [string]$resolver.text
+      if ([string]$resolver.quality -eq 'caption') {
+        $srcType = if ($kind -eq 'indicator') { 'transcript_indicator' } else { 'transcript' }
+      } elseif ([string]$resolver.quality -eq 'auto_caption') {
+        $srcType = if ($kind -eq 'indicator') { 'auto_transcript_indicator' } else { 'auto_transcript' }
+      } elseif ([string]$resolver.quality -eq 'asr') {
+        $srcType = if ($kind -eq 'indicator') { 'asr_transcript_indicator' } else { 'asr_transcript' }
+      }
+    }
+
     $rcRaw = (python scripts/pipeline/emit_research_card.py --source-ref $u --source-type $srcType --raw-text $txt --title $vid --author 'manual-youtube') -join "`n"
     $rc = $rcRaw | ConvertFrom-Json
     $lmRaw = (python scripts/pipeline/link_research_indicators.py --research-card-path $rc.research_card_path --indicator-record-paths '[]') -join "`n"
@@ -634,6 +648,8 @@ function Invoke-ManualVideoIngest {
     $bdir = Join-Path 'artifacts/bundles' $day
     if (-not (Test-Path $bdir)) { New-Item -ItemType Directory -Path $bdir | Out-Null }
     $bpath = (Join-Path $bdir ($vid + '.bundle.json')).Replace('\\','/')
+    $transcriptError = 'TRANSCRIPT_UNAVAILABLE_AT_INGEST'
+    if ($null -ne $resolver -and $resolver.ok -eq $true) { $transcriptError = '' }
     $bundle = [ordered]@{
       id = ('bundle_' + $vid)
       created_at = [DateTime]::UtcNow.ToString('o')
@@ -644,7 +660,9 @@ function Invoke-ManualVideoIngest {
       indicator_record_paths = @()
       status = 'NEW'
       attempts = 0
-      last_error = 'TRANSCRIPT_UNAVAILABLE_AT_INGEST'
+      transcript_method = $(if ($null -ne $resolver) { [string]$resolver.method } else { 'none' })
+      transcript_quality = $(if ($null -ne $resolver) { [string]$resolver.quality } else { 'none' })
+      last_error = $transcriptError
     }
     ($bundle | ConvertTo-Json -Depth 8) | Set-Content -Path $bpath -Encoding utf8
 

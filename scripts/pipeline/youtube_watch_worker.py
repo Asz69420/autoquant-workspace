@@ -145,11 +145,12 @@ def _append_usage_note(linkmap_path: str, *, channel_name: str, channel_url: str
         pass
 
 
-def _transcript(video_id: str) -> str:
-    from youtube_transcript_api import YouTubeTranscriptApi
-    api = YouTubeTranscriptApi()
-    t = api.fetch(video_id, languages=['en'])
-    return '\n'.join([x.text for x in t])
+def _transcript(video_id: str, title: str = '') -> dict:
+    url = f'https://www.youtube.com/watch?v={video_id}'
+    out = _run('scripts/pipeline/transcript_resolver.py', '--video-id', video_id, '--url', url)
+    if out.get('ok'):
+        return out
+    raise RuntimeError('; '.join(out.get('errors', []) or ['TRANSCRIPT_RESOLVE_FAILED']))
 
 
 def _extract_hints(text: str):
@@ -203,13 +204,15 @@ def main() -> int:
                 dedup += 1
                 continue
             try:
-                txt = _transcript(vid)
-                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'transcript', '--raw-text', txt, '--title', item['title'], '--author', ch.get('name', 'youtube'))
-                _log('YT_VIDEO_INGESTED', 'YT_VIDEO_INGESTED', f"video_id={vid}", 'INFO', outputs=[rc['research_card_path']])
-            except Exception:
+                tr = _transcript(vid, item['title'])
+                txt = tr.get('text', '')
+                source_type = 'transcript' if tr.get('quality') == 'caption' else ('auto_transcript' if tr.get('quality') == 'auto_caption' else 'asr_transcript')
+                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', source_type, '--raw-text', txt, '--title', item['title'], '--author', ch.get('name', 'youtube'))
+                _log('YT_VIDEO_INGESTED', 'YT_VIDEO_INGESTED', f"video_id={vid} method={tr.get('method','unknown')} quality={tr.get('quality','unknown')}", 'INFO', outputs=[rc['research_card_path']])
+            except Exception as e:
                 # fallback ingest so content-loop can still learn when transcript endpoint is rate-limited
                 try:
-                    raw = f"Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v={vid} title={item['title']}"
+                    raw = f"Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v={vid} title={item['title']} reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail={str(e)[:280]}"
                     rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'youtube_url', '--raw-text', raw, '--title', item['title'], '--author', ch.get('name', 'youtube'))
                     _log('YT_VIDEO_INGESTED_FALLBACK', 'YT_VIDEO_INGESTED_FALLBACK', f"video_id={vid}", 'WARN', outputs=[rc['research_card_path']])
                 except Exception:
