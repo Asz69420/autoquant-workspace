@@ -61,6 +61,36 @@ function Get-RecentBatchArtifactPath([datetime]$sinceUtc) {
   return ''
 }
 
+function Invoke-OutcomeWorker([string]$runId, [string]$batchArtifactPath, [string]$refinementArtifactPath = '') {
+  if ([string]::IsNullOrWhiteSpace($batchArtifactPath)) { return }
+  try {
+    $outcArgs = @('scripts/pipeline/analyser_outcome_worker.py','--run-id',$runId,'--batch-artifact',$batchArtifactPath)
+    if (-not [string]::IsNullOrWhiteSpace($refinementArtifactPath) -and (Test-Path -LiteralPath $refinementArtifactPath)) {
+      $outcArgs += @('--refinement-artifact',$refinementArtifactPath)
+    }
+    $outcomeRaw = Run-Py $outcArgs
+    if (-not [string]::IsNullOrWhiteSpace([string]$outcomeRaw)) {
+      $outcomeLines = @($outcomeRaw -split "`r?`n")
+      foreach ($ol in $outcomeLines) {
+        if ($ol -like 'ANALYSER_OUTCOME_SUMMARY*') { Emit-Summary 'ANALYSER_OUTCOME_SUMMARY' $ol 'OK' 'Analyser' }
+      }
+      $outcomeJsonLine = $outcomeLines | Where-Object { $_ -match '^\{' } | Select-Object -Last 1
+      if ($outcomeJsonLine) {
+        try {
+          $outcomeObj = $outcomeJsonLine | ConvertFrom-Json
+          if ($outcomeObj.outcome_notes_path) {
+            Emit-InfoSummary 'OUTCOME_NOTES_PATH' ("Outcome notes v2: " + [string]$outcomeObj.outcome_notes_path) 'Analyser'
+          }
+        } catch {}
+      }
+    }
+  } catch {
+    $oe = 'outcome_worker_error'
+    try { $oe = [string]$_.Exception.Message } catch {}
+    Emit-Summary 'ANALYSER_OUTCOME_SUMMARY' ("ANALYSER_OUTCOME_SUMMARY — processed=1 verdict=REVISE directives=1 detail=" + $oe) 'WARN' 'Analyser'
+  }
+}
+
 function Set-BundleState([string]$bundlePath, [string]$status, [string]$lastError = '', [bool]$incrementAttempt = $false) {
   if (-not (Test-Path -LiteralPath $bundlePath)) { return }
   try {
@@ -139,6 +169,8 @@ $batchExecuted = 0
 $batchSkipped = 0
 $batchGateFail = 0
 $countedBatchArtifacts = @{}
+$usedBackfillSpecs = @()
+$backfillOutcomeQueue = @()
 $batchEmitted = $false
 $promotionEmitted = $false
 $refineEmitted = $false
@@ -518,6 +550,17 @@ try {
         if ($runRaw -is [System.Array]) { $runRows = $runRaw } elseif ($null -ne $runRaw) { $runRows = @($runRaw) }
       }
 
+      $recentBackfillSpecs = @()
+      $labCountersPathRead = Join-Path 'data/state' 'lab_counters.json'
+      if (Test-Path $labCountersPathRead) {
+        try {
+          $labStateRead = Get-Content $labCountersPathRead -Raw | ConvertFrom-Json
+          if ($labStateRead.recent_backfill_specs) {
+            $recentBackfillSpecs = @($labStateRead.recent_backfill_specs | ForEach-Object { [string]$_ })
+          }
+        } catch {}
+      }
+
       $completedKeys = @{}
       foreach ($rr in $runRows) {
         try {
@@ -530,11 +573,22 @@ try {
         } catch {}
       }
 
+      $orderedSpecCandidates = @()
+      foreach ($spPathCand in $specCandidates) {
+        if ([string]::IsNullOrWhiteSpace([string]$spPathCand)) { continue }
+        if (-not (Test-Path -LiteralPath $spPathCand)) { continue }
+        try {
+          $fi = Get-Item -LiteralPath $spPathCand -ErrorAction Stop
+          $orderedSpecCandidates += [pscustomobject]@{ path = [string]$spPathCand; mtime = $fi.LastWriteTimeUtc }
+        } catch {}
+      }
+      $orderedSpecCandidates = @($orderedSpecCandidates | Sort-Object mtime -Descending)
+
       $backfillTried = 0
-      foreach ($spPath in $specCandidates) {
+      foreach ($specEntry in $orderedSpecCandidates) {
         if ($backfillTried -ge 3) { break }
-        if ([string]::IsNullOrWhiteSpace([string]$spPath)) { continue }
-        if (-not (Test-Path -LiteralPath $spPath)) { continue }
+        $spPath = [string]$specEntry.path
+        if ($recentBackfillSpecs -contains $spPath) { continue }
 
         $specObj = $null
         try { $specObj = Get-Content -LiteralPath $spPath -Raw | ConvertFrom-Json } catch { continue }
@@ -554,6 +608,7 @@ try {
         if ($allCovered) { continue }
 
         $backfillTried += 1
+        $usedBackfillSpecs += $spPath
         $batch = $null
         try {
           $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
@@ -587,6 +642,7 @@ try {
           Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch(backfill): runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFailThis + " gate_pass=" + $gatePassThis + " spec=" + [IO.Path]::GetFileName([string]$spPath)) $bStatus 'Backtester'
           $batchEmitted = $true
 
+          $backfillRefPath = ''
           if ($execCount -gt 0 -and $MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             try {
               $promoId = [IO.Path]::GetFileNameWithoutExtension([string]$spPath)
@@ -612,6 +668,7 @@ try {
               if (-not [string]::IsNullOrWhiteSpace($refPath) -and (Test-Path -LiteralPath $refPath)) {
                 $refinementsRun += 1
                 $latestRefinementArtifactPath = $refPath
+                $backfillRefPath = $refPath
                 $candidatesReachingRefinement += 1
               }
               try {
@@ -629,6 +686,9 @@ try {
               $refineEmitted = $true
             }
           }
+          if ($execCount -gt 0) {
+            $backfillOutcomeQueue += [pscustomobject]@{ spec = [string]$spPath; batch = [string]$batchArtifactPath; refinement = [string]$backfillRefPath }
+          }
         } catch {
           $bfErr = 'backfill_error'
           try { $bfErr = [string]$_.Exception.Message } catch {}
@@ -642,6 +702,12 @@ try {
   if (-not $batchEmitted -and -not $DryRun) {
     Emit-Summary 'BATCH_BACKTEST_SUMMARY' 'Batch: runs=0 executed=0 skipped=0 (skipped: no variants)' 'OK' 'Backtester'
     $batchEmitted = $true
+  }
+
+  if (-not $DryRun -and @($backfillOutcomeQueue).Count -gt 0) {
+    foreach ($oq in @($backfillOutcomeQueue | Select-Object -First 3)) {
+      Invoke-OutcomeWorker ($CycleRunId + '-backfill-' + [IO.Path]::GetFileNameWithoutExtension([string]$oq.spec)) ([string]$oq.batch) ([string]$oq.refinement)
+    }
   }
 
   if (-not $DryRun) {
@@ -718,27 +784,8 @@ try {
       $libraryEmitted = $true
     }
 
-    if (($batchExecuted -gt 0 -or $refinementsRun -gt 0)) {
-      try {
-        $outcArgs = @('scripts/pipeline/analyser_outcome_worker.py','--run-id',$CycleRunId)
-        if (-not [string]::IsNullOrWhiteSpace($latestBatchArtifactPath)) { $outcArgs += @('--batch-artifact',$latestBatchArtifactPath) }
-        if (-not [string]::IsNullOrWhiteSpace($latestRefinementArtifactPath)) { $outcArgs += @('--refinement-artifact',$latestRefinementArtifactPath) }
-        $outcomeRaw = Run-Py $outcArgs
-        if ($outcomeRaw) {
-          $outcomeLines = @($outcomeRaw -split "`r?`n")
-          $outcomeJsonLine = $outcomeLines | Where-Object { $_ -match '^\{' } | Select-Object -Last 1
-          if ($outcomeJsonLine) {
-            try {
-              $outcomeObj = $outcomeJsonLine | ConvertFrom-Json
-              if ($outcomeObj.outcome_notes_path) {
-                Emit-InfoSummary 'OUTCOME_NOTES_PATH' ("Outcome notes v2: " + [string]$outcomeObj.outcome_notes_path) 'Analyser'
-              }
-            } catch {}
-          }
-        }
-      } catch {
-        Emit-Summary 'ANALYSER_OUTCOME_SUMMARY' 'ANALYSER_OUTCOME_SUMMARY — processed=1 verdict=REVISE directives=1' 'WARN' 'Analyser'
-      }
+    if (($bundlesProcessed -gt 0) -and ($batchExecuted -gt 0 -or $refinementsRun -gt 0)) {
+      Invoke-OutcomeWorker $CycleRunId $latestBatchArtifactPath $latestRefinementArtifactPath
     }
   }
 
@@ -836,17 +883,22 @@ $summary.starvation_cycles = [int]$counters.starvation_cycles
 $summary.drought_cycles = [int]$counters.drought_cycles
 
 $labCountersPath = Join-Path $stateDir 'lab_counters.json'
-$labCounters = [ordered]@{ directive_loop_stall_cycles = 0; updated_at = [DateTime]::UtcNow.ToString('o') }
+$labCounters = [ordered]@{ directive_loop_stall_cycles = 0; recent_backfill_specs = @(); updated_at = [DateTime]::UtcNow.ToString('o') }
 if (Test-Path $labCountersPath) {
   try {
     $labPrev = Get-Content $labCountersPath -Raw | ConvertFrom-Json
     if ($null -ne $labPrev.directive_loop_stall_cycles) { $labCounters.directive_loop_stall_cycles = [int]$labPrev.directive_loop_stall_cycles }
+    if ($null -ne $labPrev.recent_backfill_specs) { $labCounters.recent_backfill_specs = @($labPrev.recent_backfill_specs | ForEach-Object { [string]$_ }) }
   } catch {}
 }
 if (([int]$directiveNotesSeen -eq 0) -or ([int]$directiveVariantsEmitted -eq 0)) {
   $labCounters.directive_loop_stall_cycles = [int]$labCounters.directive_loop_stall_cycles + 1
 } else {
   $labCounters.directive_loop_stall_cycles = 0
+}
+if (@($usedBackfillSpecs).Count -gt 0) {
+  $combinedRecent = @($usedBackfillSpecs + @($labCounters.recent_backfill_specs))
+  $labCounters.recent_backfill_specs = @($combinedRecent | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) } | Select-Object -Unique | Select-Object -First 10)
 }
 $labCounters.updated_at = [DateTime]::UtcNow.ToString('o')
 ($labCounters | ConvertTo-Json -Depth 5) | Set-Content -Path $labCountersPath -Encoding utf8
