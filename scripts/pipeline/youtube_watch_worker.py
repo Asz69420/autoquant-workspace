@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import random
 import re
 from datetime import datetime, UTC
 from pathlib import Path
@@ -16,7 +17,11 @@ PY = sys.executable
 STATE_PATH = ROOT / 'data' / 'state' / 'youtube_watchlist.json'
 BUNDLE_INDEX = ROOT / 'artifacts' / 'bundles' / 'INDEX.json'
 INDICATOR_INDEX = ROOT / 'artifacts' / 'library' / 'INDICATOR_INDEX.json'
+RETRY_QUEUE_PATH = ROOT / 'data' / 'state' / 'youtube_retry_queue.json'
 MAX_NEW = 2
+MAX_RETRY_ATTEMPTS = 5
+BACKOFF_BASE_SECONDS = [15 * 60, 30 * 60, 60 * 60, 2 * 60 * 60, 4 * 60 * 60]
+JITTER_MAX_SECONDS = 10 * 60
 
 
 def _j(path: Path, default):
@@ -148,7 +153,7 @@ def _append_usage_note(linkmap_path: str, *, channel_name: str, channel_url: str
 def _transcript(video_id: str, title: str = '') -> dict:
     url = f'https://www.youtube.com/watch?v={video_id}'
     out = _run('scripts/pipeline/transcript_resolver.py', '--video-id', video_id, '--url', url)
-    if out.get('ok'):
+    if out.get('ok') or str(out.get('status', '')).upper() == 'RETRY_LATER':
         return out
     raise RuntimeError('; '.join(out.get('errors', []) or ['TRANSCRIPT_RESOLVE_FAILED']))
 
@@ -159,11 +164,80 @@ def _extract_hints(text: str):
     return list(hints)[:2]
 
 
+def _iso_to_dt(v: str | None) -> datetime | None:
+    if not v:
+        return None
+    try:
+        return datetime.fromisoformat(v.replace('Z', '+00:00'))
+    except Exception:
+        return None
+
+
+def _load_retry_queue() -> dict[str, dict]:
+    rows = _j(RETRY_QUEUE_PATH, [])
+    out: dict[str, dict] = {}
+    if isinstance(rows, list):
+        for r in rows:
+            if isinstance(r, dict) and r.get('video_id'):
+                out[str(r['video_id'])] = dict(r)
+    return out
+
+
+def _save_retry_queue(q: dict[str, dict]):
+    _w(RETRY_QUEUE_PATH, list(q.values()))
+
+
+def _retry_allowed_now(q: dict[str, dict], video_id: str) -> bool:
+    row = q.get(video_id)
+    if not row:
+        return True
+    if str(row.get('status', '')).upper() == 'FAILED':
+        return False
+    dt = _iso_to_dt(str(row.get('next_retry_at', '') or ''))
+    if dt is None:
+        return True
+    return datetime.now(UTC) >= dt
+
+
+def _queue_retry(q: dict[str, dict], video_id: str, err: str, retry_after_hint: int | None = None) -> dict:
+    now = datetime.now(UTC)
+    prev = q.get(video_id, {})
+    attempts = int(prev.get('attempts', 0)) + 1
+    status = 'QUEUED'
+    if attempts > MAX_RETRY_ATTEMPTS:
+        attempts = MAX_RETRY_ATTEMPTS
+        status = 'FAILED'
+        next_retry_at = None
+        retry_after = 0
+        last_error = 'YOUTUBE_RATE_LIMIT_PERSISTENT'
+    else:
+        base = BACKOFF_BASE_SECONDS[attempts - 1]
+        jitter = int(retry_after_hint or 0)
+        if jitter <= 0:
+            jitter = random.randint(0, JITTER_MAX_SECONDS)
+        else:
+            jitter = min(max(0, jitter), JITTER_MAX_SECONDS)
+        retry_after = base + jitter
+        next_retry_at = (now.timestamp() + retry_after)
+        last_error = err[:280]
+
+    row = {
+        'video_id': video_id,
+        'attempts': attempts,
+        'status': status,
+        'next_retry_at': (datetime.fromtimestamp(next_retry_at, tz=UTC).isoformat() if next_retry_at else ''),
+        'last_error': last_error,
+    }
+    q[video_id] = row
+    return row
+
+
 def main() -> int:
     state = _j(STATE_PATH, {'channels': [], 'seen_video_ids': [], 'max_new_videos_per_run': 2})
     bundles = _j(BUNDLE_INDEX, [])
     ind_idx = _j(INDICATOR_INDEX, [])
     max_new = max(1, int(state.get('max_new_videos_per_run', MAX_NEW)))
+    retry_queue = _load_retry_queue()
 
     created = []
     seen_videos = set(state.get('seen_video_ids', []))
@@ -203,14 +277,22 @@ def main() -> int:
             if vid in seen_videos:
                 dedup += 1
                 continue
+            if not _retry_allowed_now(retry_queue, vid):
+                continue
             try:
                 tr = _transcript(vid, item['title'])
+                if str(tr.get('status', 'OK')).upper() == 'RETRY_LATER':
+                    row = _queue_retry(retry_queue, vid, 'YOUTUBE_RATE_LIMIT', int(tr.get('retry_after_seconds') or 0))
+                    _log('YT_TRANSCRIPT_RETRY', 'YT_TRANSCRIPT_RETRY', f"video_id={vid} attempts={row.get('attempts')} next_retry_at={row.get('next_retry_at')} status={row.get('status')}", 'WARN')
+                    continue
                 txt = tr.get('text', '')
                 source_type = 'transcript' if tr.get('quality') == 'caption' else ('auto_transcript' if tr.get('quality') == 'auto_caption' else 'asr_transcript')
                 rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', source_type, '--raw-text', txt, '--title', item['title'], '--author', ch.get('name', 'youtube'))
                 _log('YT_VIDEO_INGESTED', 'YT_VIDEO_INGESTED', f"video_id={vid} method={tr.get('method','unknown')} quality={tr.get('quality','unknown')}", 'INFO', outputs=[rc['research_card_path']])
+                if vid in retry_queue:
+                    del retry_queue[vid]
             except Exception as e:
-                # fallback ingest so content-loop can still learn when transcript endpoint is rate-limited
+                # fallback ingest so content-loop can still learn when transcript endpoint is unavailable for non-rate-limit reasons
                 try:
                     raw = f"Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v={vid} title={item['title']} reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail={str(e)[:280]}"
                     rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', f'https://www.youtube.com/watch?v={vid}', '--source-type', 'youtube_url', '--raw-text', raw, '--title', item['title'], '--author', ch.get('name', 'youtube'))
@@ -251,6 +333,7 @@ def main() -> int:
     _w(BUNDLE_INDEX, bundles[:500])
     state['seen_video_ids'] = list(seen_videos)[-1000:]
     _w(STATE_PATH, state)
+    _save_retry_queue(retry_queue)
 
     if concept_cards:
         try:

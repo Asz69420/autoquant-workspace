@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import random
 import re
 import subprocess
 import tempfile
@@ -155,26 +157,74 @@ def via_asr(url: str) -> dict:
         return {"ok": True, "method": "asr_whisper", "quality": "asr", "text": text}
 
 
+def _is_rate_limited(err: str) -> bool:
+    s = (err or "").lower()
+    needles = [
+        "ipblocked",
+        "requestblocked",
+        "http error 429",
+        "too many requests",
+        "rate limit",
+        "youtube is blocking requests from your ip",
+    ]
+    return any(n in s for n in needles)
+
+
+def _rate_limit_result(errors: list[str], retry_after_seconds: int | None = None) -> dict:
+    if retry_after_seconds is None:
+        retry_after_seconds = 900 + random.randint(0, 600)
+    return {
+        "ok": False,
+        "status": "RETRY_LATER",
+        "error_code": "YOUTUBE_RATE_LIMIT",
+        "retry_after_seconds": int(retry_after_seconds),
+        "method": "none",
+        "quality": "none",
+        "text": "",
+        "errors": errors,
+    }
+
+
 def resolve(video_id: str, url: str, enable_asr: bool = False) -> dict:
+    if os.getenv("TRANSCRIPT_RESOLVER_FORCE_429", "").strip() in {"1", "true", "TRUE"}:
+        return _rate_limit_result(["forced:HTTPError:HTTP Error 429: Too Many Requests"], retry_after_seconds=900)
+
     errors = []
+    rate_limited = False
+
     for fn in (via_youtube_transcript_api,):
         try:
-            return fn(video_id)
+            out = fn(video_id)
+            out.setdefault("status", "OK")
+            return out
         except Exception as e:
-            errors.append(f"youtube_transcript_api:{type(e).__name__}:{e}")
+            err = f"youtube_transcript_api:{type(e).__name__}:{e}"
+            errors.append(err)
+            if _is_rate_limited(err):
+                rate_limited = True
 
     try:
-        return via_ytdlp(url)
+        out = via_ytdlp(url)
+        out.setdefault("status", "OK")
+        return out
     except Exception as e:
-        errors.append(f"yt_dlp_subtitles:{type(e).__name__}:{e}")
+        err = f"yt_dlp_subtitles:{type(e).__name__}:{e}"
+        errors.append(err)
+        if _is_rate_limited(err):
+            rate_limited = True
+
+    if rate_limited:
+        return _rate_limit_result(errors)
 
     if enable_asr:
         try:
-            return via_asr(url)
+            out = via_asr(url)
+            out.setdefault("status", "OK")
+            return out
         except Exception as e:
             errors.append(f"asr_whisper:{type(e).__name__}:{e}")
 
-    return {"ok": False, "method": "none", "quality": "none", "text": "", "errors": errors}
+    return {"ok": False, "status": "FAILED", "method": "none", "quality": "none", "text": "", "errors": errors}
 
 
 def main() -> int:
