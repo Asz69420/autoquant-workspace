@@ -166,6 +166,18 @@ def metrics(backtest_path: str, run: dict):
     dd = pct(fnum(res.get("max_drawdown_pct")))
     pnl = pct(fnum(res.get("net_profit_pct")))
 
+    # Fallback when max_drawdown_pct is missing: derive from absolute max_drawdown and inferred start equity.
+    if dd is None:
+        dd_abs = fnum(res.get("max_drawdown") or res.get("max_dd") or res.get("drawdown"))
+        net_abs = fnum(res.get("net_profit"))
+        net_pct_raw = fnum(res.get("net_profit_pct"))
+        if dd_abs is not None and net_abs is not None and net_pct_raw not in (None, 0):
+            net_frac = net_pct_raw if abs(net_pct_raw) <= 1 else (net_pct_raw / 100.0)
+            if net_frac:
+                start_equity = net_abs / net_frac
+                if start_equity:
+                    dd = (dd_abs / abs(start_equity)) * 100.0
+
     if wr is None:
         wr = pct(fnum(run.get("win_rate")))
     if tc is None:
