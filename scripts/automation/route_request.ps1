@@ -544,6 +544,110 @@ function Try-HandleNoodleLearningQueries {
   return $false
 }
 
+function Get-UrlsFromText {
+  param([string]$Text)
+  if ([string]::IsNullOrWhiteSpace($Text)) { return @() }
+  $ms = [regex]::Matches($Text, 'https?://[^\s]+')
+  $out = @()
+  foreach ($m in $ms) {
+    $u = ([string]$m.Value).Trim().TrimEnd('.',',',')',']','"','''')
+    if (-not [string]::IsNullOrWhiteSpace($u)) { $out += $u }
+  }
+  return @($out | Select-Object -Unique)
+}
+
+function Invoke-ManualVideoIngest {
+  param([string]$Message,[string]$Mode)
+
+  $urls = Get-UrlsFromText -Text $Message
+  if ($urls.Count -eq 0) {
+    Write-Output "No URLs found. Use: ingest concepts <urls> | ingest indicators <urls> | ingest videos concept:<url> indicator:<url>"
+    return
+  }
+
+  $conceptUrls = @()
+  $indicatorUrls = @()
+
+  if ($Mode -eq 'concepts') {
+    $conceptUrls = $urls
+  } elseif ($Mode -eq 'indicators') {
+    $indicatorUrls = $urls
+  } else {
+    foreach ($u in $urls) {
+      $li = $Message.ToLowerInvariant()
+      if ($li -match ('indicator:' + [regex]::Escape($u.ToLowerInvariant()))) {
+        $indicatorUrls += $u
+      } elseif ($li -match ('concept:' + [regex]::Escape($u.ToLowerInvariant()))) {
+        $conceptUrls += $u
+      } else {
+        $conceptUrls += $u
+      }
+    }
+  }
+
+  $bundleIndexPath = 'artifacts/bundles/INDEX.json'
+  $bundleIndex = @()
+  if (Test-Path $bundleIndexPath) {
+    try {
+      $tmp = Get-Content $bundleIndexPath -Raw | ConvertFrom-Json
+      if ($tmp -is [System.Array]) { $bundleIndex = @($tmp) } elseif ($null -ne $tmp) { $bundleIndex = @($tmp) }
+    } catch { $bundleIndex = @() }
+  }
+
+  $all = @()
+  foreach ($u in $conceptUrls) { $all += [PSCustomObject]@{ url=$u; kind='concept' } }
+  foreach ($u in $indicatorUrls) { $all += [PSCustomObject]@{ url=$u; kind='indicator' } }
+
+  $added = 0
+  foreach ($item in $all) {
+    $u = [string]$item.url
+    $kind = [string]$item.kind
+    $vid = ''
+    try {
+      $uri = [Uri]$u
+      $q = [System.Web.HttpUtility]::ParseQueryString($uri.Query)
+      $vid = [string]$q['v']
+    } catch {}
+    if ([string]::IsNullOrWhiteSpace($vid)) { continue }
+
+    $srcType = if ($kind -eq 'indicator') { 'youtube_indicator_url' } else { 'youtube_url' }
+    $txt = if ($kind -eq 'indicator') {
+      ('Manual indicator ingest from YouTube URL. source_ref=' + $u + ' video_id=' + $vid)
+    } else {
+      ('Manual concept ingest from YouTube URL. source_ref=' + $u + ' video_id=' + $vid)
+    }
+
+    $rcRaw = (python scripts/pipeline/emit_research_card.py --source-ref $u --source-type $srcType --raw-text $txt --title $vid --author 'manual-youtube') -join "`n"
+    $rc = $rcRaw | ConvertFrom-Json
+    $lmRaw = (python scripts/pipeline/link_research_indicators.py --research-card-path $rc.research_card_path --indicator-record-paths '[]') -join "`n"
+    $lm = $lmRaw | ConvertFrom-Json
+
+    $day = (Get-Date).ToUniversalTime().ToString('yyyyMMdd')
+    $bdir = Join-Path 'artifacts/bundles' $day
+    if (-not (Test-Path $bdir)) { New-Item -ItemType Directory -Path $bdir | Out-Null }
+    $bpath = (Join-Path $bdir ($vid + '.bundle.json')).Replace('\\','/')
+    $bundle = [ordered]@{
+      id = ('bundle_' + $vid)
+      created_at = [DateTime]::UtcNow.ToString('o')
+      source = $(if ($kind -eq 'indicator') { 'youtube_manual_indicator' } else { 'youtube_manual' })
+      source_ref = $u
+      research_card_path = [string]$rc.research_card_path
+      linkmap_path = [string]$lm.linkmap_path
+      indicator_record_paths = @()
+      status = 'NEW'
+      attempts = 0
+      last_error = 'TRANSCRIPT_UNAVAILABLE_AT_INGEST'
+    }
+    ($bundle | ConvertTo-Json -Depth 8) | Set-Content -Path $bpath -Encoding utf8
+
+    if ($bundleIndex -notcontains $bpath) { $bundleIndex = @($bpath) + @($bundleIndex) }
+    $added += 1
+  }
+
+  ($bundleIndex | ConvertTo-Json -Depth 6) | Set-Content -Path $bundleIndexPath -Encoding utf8
+  Write-Output ("Ingested " + $added + " videos (concepts=" + $conceptUrls.Count + ", indicators=" + $indicatorUrls.Count + "). Say 'run lab now' to process.")
+}
+
 function Invoke-NoodleReadonly {
   param([string]$InputMessage,[string]$InputLower,[string]$ChatId)
 
@@ -668,6 +772,16 @@ if ($m -match '^retry\s+insight\s+.+$') {
   $rule = 'explicit_retry_insight'
   $intentAction = 'retry_insight'
 }
+if ($m -match '^ingest\s+(concepts|indicators|videos)\b') {
+  $route = 'FAST_PATH'
+  $rule = 'manual_video_ingest'
+  $intentAction = 'manual_video_ingest'
+}
+if ($m -eq 'run lab now' -or $m -eq 'lab status' -or $m -eq 'lab report' -or $m -eq 'run autopilot now') {
+  $route = 'FAST_PATH'
+  $rule = 'lab_command_surface'
+  $intentAction = 'lab_surface'
+}
 if ($m -match '^(idea|insight|concept)\s*$') {
   $route = 'FAST_PATH'
   $rule = 'explicit_empty_insight_keyword'
@@ -758,6 +872,57 @@ Emit-LogEvent -RunId $runId -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode
 if ($route -eq 'FAST_PATH') {
   if ($intentAction -eq 'clarifier_explain') {
     Write-Output "Got it - I will explain only. Tell me what you want explained."
+    exit 0
+  }
+
+  if ($m -match '^ingest\s+concepts\b') {
+    Invoke-ManualVideoIngest -Message $Message -Mode 'concepts'
+    exit 0
+  }
+  if ($m -match '^ingest\s+indicators\b') {
+    Invoke-ManualVideoIngest -Message $Message -Mode 'indicators'
+    exit 0
+  }
+  if ($m -match '^ingest\s+videos\b') {
+    Invoke-ManualVideoIngest -Message $Message -Mode 'mixed'
+    exit 0
+  }
+
+  if ($m -eq 'run lab now' -or $m -eq 'run autopilot now') {
+    $lab = (powershell -ExecutionPolicy Bypass -File scripts/pipeline/autopilot_worker.ps1 -MaxBundlesPerRun 1) -join "`n"
+    $labObj = $null
+    try { $labObj = $lab | ConvertFrom-Json } catch { $labObj = $null }
+    if ($null -ne $labObj) {
+      Write-Output ("Lab run complete: bundles=" + [string]$labObj.bundles_processed + ", promotions=" + [string]$labObj.promotions_processed + ", refinements=" + [string]$labObj.refinements_run + ", errors=" + [string]$labObj.errors_count)
+    } else {
+      Write-Output 'Lab run complete.'
+    }
+    exit 0
+  }
+
+  if ($m -eq 'lab status') {
+    $autoPath = 'data/state/autopilot_summary.json'
+    $auto = $null
+    if (Test-Path $autoPath) { try { $auto = Get-Content $autoPath -Raw | ConvertFrom-Json } catch { $auto = $null } }
+    $bundleNewCount = 0
+    $bundleIndexPath = 'artifacts/bundles/INDEX.json'
+    if (Test-Path $bundleIndexPath) {
+      try {
+        $bundlePaths = @(Get-Content $bundleIndexPath -Raw | ConvertFrom-Json)
+        foreach ($bp in $bundlePaths) {
+          if (-not (Test-Path -LiteralPath $bp)) { continue }
+          try {
+            $b = Get-Content -LiteralPath $bp -Raw | ConvertFrom-Json
+            if ($b.status -eq 'NEW') { $bundleNewCount += 1 }
+          } catch {}
+        }
+      } catch {}
+    }
+    if ($null -eq $auto) {
+      Write-Output ("Lab status: no recent summary. bundles_new=" + $bundleNewCount)
+    } else {
+      Write-Output ("Lab status: bundles=" + [string]$auto.bundles_processed + ", promotions=" + [string]$auto.promotions_processed + ", refinements=" + [string]$auto.refinements_run + ", errors=" + [string]$auto.errors_count + ", bundles_new=" + $bundleNewCount)
+    }
     exit 0
   }
 

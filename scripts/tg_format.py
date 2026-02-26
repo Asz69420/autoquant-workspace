@@ -109,7 +109,8 @@ def main():
         ts_local = _as_str(event.get("ts_local"), "")
         ts_iso = _as_str(event.get("ts_iso"), "")
 
-        agent_display = f"{AGENT_EMOJI.get(agent, '')} {agent}".strip()
+        display_agent = 'Lab' if _as_str(reason_code) == 'AUTOPILOT_SUMMARY' else agent
+        agent_display = f"{AGENT_EMOJI.get(display_agent, AGENT_EMOJI.get(agent, ''))} {display_agent}".strip()
 
         show_reason = bool(reason_code) and reason_code.upper() != "EXPERIMENT"
         status_text = f"{status_emoji} {status_word}"
