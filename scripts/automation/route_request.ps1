@@ -738,6 +738,20 @@ function Invoke-ManualVideoIngest {
 function Invoke-NoodleReadonly {
   param([string]$InputMessage,[string]$InputLower,[string]$ChatId)
 
+  if ($InputLower -match '^\s*noodle\s+reset\s*$') {
+    try {
+      $stateDir = Join-RepoPath 'data/state'
+      if (Test-Path $stateDir) {
+        $keep = @('noodle_retrieval.json','noodle_aliases.json')
+        Get-ChildItem -Path $stateDir -File -Filter 'noodle_*.json' -ErrorAction SilentlyContinue |
+          Where-Object { $keep -notcontains $_.Name } |
+          Remove-Item -Force -ErrorAction SilentlyContinue
+      }
+    } catch {}
+    Send-NoodleReply -ChatId $ChatId -ReplyText 'Noodle reset. (Read-only; no knowledge deleted.)'
+    return
+  }
+
   $blockedWrite = @('idea','insight','concept:','save','record','update doctrine','run','build','apply')
   foreach ($kw in $blockedWrite) {
     if ($InputLower -like ('*' + $kw + '*')) {
