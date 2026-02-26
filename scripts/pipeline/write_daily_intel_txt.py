@@ -7,6 +7,7 @@ import os
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -141,6 +142,7 @@ class Row:
     tf: str
     name: str
     key: str
+    spec_path: str
     pf: float
     wr: float | None
     tc: int
@@ -154,35 +156,40 @@ def strategy_name(spec_path: str, variant: str):
     thesis_path = str(spec.get("source_thesis_path") or "")
     thesis = jload(Path(thesis_path), {}) if thesis_path else {}
 
-    # Prefer explicit strategy family/title from spec/thesis (not variant/spec filename).
+    # Primary: thesis title or spec description.
     base = (
-        str(spec.get("strategy_family") or "").strip()
-        or str(thesis.get("strategy_family") or "").strip()
-        or str(thesis.get("title") or "").strip()
+        str(thesis.get("title") or "").strip()
+        or str(spec.get("description") or "").strip()
     )
 
-    # Fallback to indicator pair only if family/title missing.
+    # Secondary: strategy family from spec/thesis.
     if not base:
-        pair = []
-        sigs = thesis.get("candidate_signals") if isinstance(thesis, dict) else None
-        if isinstance(sigs, list):
-            for s in sigs:
-                ui = s.get("uses_indicators") if isinstance(s, dict) else None
-                if isinstance(ui, list):
-                    for x in ui:
-                        sx = str(x).strip()
-                        if sx:
-                            pair.append(sx)
-                if len(pair) >= 2:
-                    break
-        if len(pair) >= 2:
-            base = f"{pair[0]} {pair[1]}"
+        base = (
+            str(spec.get("strategy_family") or "").strip()
+            or str(thesis.get("strategy_family") or "").strip()
+        )
 
+    # Fallback: spec stem token (e.g. b9d7_Spec).
     if not base:
-        base = str(variant or "strategy").strip()
+        stem = Path(spec_path).stem if spec_path else "spec"
+        tail = stem[-12:] if len(stem) > 12 else stem
+        tail = ''.join(ch for ch in tail if ch.isalnum())
+        token = (tail[:4] if len(tail) >= 4 else tail) or "Spec"
+        base = f"{token}_Spec"
 
     short = alias12(base)
-    return short, short.lower()
+    # Guard against non-meaningful generic names.
+    if short.lower() in {"strat", "trat", "unknown"} or short.lower().startswith("strat"):
+        stem = Path(spec_path).stem if spec_path else "spec"
+        m = re.findall(r"[0-9a-fA-F]{4,}", stem)
+        token = (m[-1][:4] if m else (''.join(ch for ch in stem if ch.isalnum())[-4:] or "Spec"))
+        short = f"{token}_Spec"[:12]
+    return short, short.lower(), {
+        "primary_field": "thesis.title|spec.description",
+        "secondary_field": "spec.strategy_family|thesis.strategy_family",
+        "fallback_field": "spec filename stem",
+        "resolved_base": base,
+    }
 
 
 def metrics(backtest_path: str, run: dict):
@@ -239,28 +246,28 @@ def collect_rows():
 
         spec_path = str(r.get("strategy_spec_path") or "")
         variant = str(r.get("variant_name") or "")
-        name, key = strategy_name(spec_path, variant)
+        name, key, _name_debug = strategy_name(spec_path, variant)
 
         bt = str((r.get("pointers") or {}).get("backtest_result") or "")
         wr, tc, dd, pnl = metrics(bt, r)
         if tc is None or tc <= 0:
             continue
 
-        staged.append((created, asset, tf, name, key, pf, wr, tc, dd, pnl))
+        staged.append((created, asset, tf, name, key, spec_path, pf, wr, tc, dd, pnl))
         pf_hist[key].append((created, pf))
 
     for k in pf_hist:
         pf_hist[k].sort(key=lambda x: x[0])
 
     rows = []
-    for created, asset, tf, name, key, pf, wr, tc, dd, pnl in staged:
+    for created, asset, tf, name, key, spec_path, pf, wr, tc, dd, pnl in staged:
         prev = None
         for hdt, hpf in pf_hist[key]:
             if hdt < created:
                 prev = hpf
             else:
                 break
-        rows.append(Row(created, asset, tf, name, key, pf, wr, tc, dd, pnl, trend(prev, pf)))
+        rows.append(Row(created, asset, tf, name, key, spec_path, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
     # Deduplicate repeated identical backtest rows (same metrics in same asset/timeframe).
     deduped = []
@@ -279,6 +286,31 @@ def collect_rows():
             continue
         seen_results.add(sig)
         deduped.append(r)
+
+    # Keep best row per strategy per asset/timeframe.
+    by_strategy = {}
+    for r in deduped:
+        k = (r.asset, r.tf, r.key)
+        cur = by_strategy.get(k)
+        if cur is None or (r.pf, r.wr or -999, r.pnl or -999) > (cur.pf, cur.wr or -999, cur.pnl or -999):
+            by_strategy[k] = r
+    deduped = list(by_strategy.values())
+
+    # Ensure row names are unique and meaningful when collisions happen.
+    name_counts = defaultdict(int)
+    for r in deduped:
+        name_counts[(r.asset, r.tf, r.name)] += 1
+    if any(v > 1 for v in name_counts.values()):
+        for r in deduped:
+            if name_counts[(r.asset, r.tf, r.name)] <= 1:
+                continue
+            stem = Path(r.spec_path).stem if r.spec_path else "spec"
+            m = re.findall(r"[0-9a-fA-F]{4,}", stem)
+            if m:
+                tail = m[-1][:4]
+            else:
+                tail = (''.join(ch for ch in stem if ch.isalnum())[-4:] or "Spec")
+            r.name = (r.name[:7] + "_" + tail)[:12]
 
     # 24h meta
     cycles = 0
@@ -341,6 +373,7 @@ def render_asset_blocks(rows: list[Row]):
 
         header = fmt.format("△", "Strategy", "PF", "WR%", "TC", "DD%", "P&L%")
         lines.append(limit42(header))
+        row_width = len(header)
 
         tf_rows = [r for r in rows if r.asset == asset]
         tfs = sorted({r.tf for r in tf_rows}, key=lambda t: TF_ORDER.get(t, 99))
@@ -349,7 +382,9 @@ def render_asset_blocks(rows: list[Row]):
             top3 = sorted(group, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:3]
             if not top3:
                 continue
-            lines.append(limit42(f"── {tf} ─────────────────────────────"))
+            prefix = f"○── {tf} "
+            sep = prefix + ("─" * max(0, row_width - len(prefix)))
+            lines.append(limit42(sep))
             for r in top3:
                 row = fmt.format(
                     r.arrow,
@@ -467,6 +502,7 @@ def main():
         "rows": len(rows),
         "errors": meta["errors"],
         "alignment_ok": len(header) == len(sample),
+        "name_source_fields": "primary=thesis.title|spec.description; secondary=spec.strategy_family|thesis.strategy_family; fallback=spec filename stem",
     }))
 
 
