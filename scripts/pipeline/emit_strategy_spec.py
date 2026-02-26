@@ -346,7 +346,39 @@ def _collect_v2_directives(limit_notes: int = 5, strategy_family: str = '', temp
     return directives[:5]
 
 
-def _apply_directive(base: dict, directive: dict, idx: int) -> dict:
+def _replace_conf_threshold_in_rules(rules: list[str], old_val: float, new_val: float) -> list[str]:
+    out: list[str] = []
+    for r in rules or []:
+        s = str(r)
+        s = re.sub(r'(confidence\s*(?:>=|>|<=|<)\s*)(\d+(?:\.\d+)?)', lambda m: m.group(1) + f"{new_val:.2f}", s, flags=re.IGNORECASE)
+        s = re.sub(r'(confidence threshold\s*)(\d+(?:\.\d+)?)', lambda m: m.group(1) + f"{new_val:.2f}", s, flags=re.IGNORECASE)
+        out.append(s)
+    return out
+
+
+def _get_param(v: dict, name: str) -> dict | None:
+    for p in (v.get('parameters') or []):
+        if isinstance(p, dict) and str(p.get('name')) == name:
+            return p
+    return None
+
+
+def _set_param(v: dict, name: str, value: float, pmin: float | None = None, pmax: float | None = None, step: float | None = None) -> None:
+    p = _get_param(v, name)
+    if p is None:
+        p = {'name': name, 'default': float(value)}
+        if pmin is not None:
+            p['min'] = float(pmin)
+        if pmax is not None:
+            p['max'] = float(pmax)
+        if step is not None:
+            p['step'] = float(step)
+        v.setdefault('parameters', []).append(p)
+    else:
+        p['default'] = float(value)
+
+
+def _apply_directive(base: dict, directive: dict, idx: int, magnitude: float = 1.0) -> dict:
     v = copy.deepcopy(base)
     d_type = str(directive.get('type') or '')
     params = directive.get('params') or {}
@@ -355,25 +387,83 @@ def _apply_directive(base: dict, directive: dict, idx: int) -> dict:
     v['origin'] = 'DIRECTIVE'
     v['directive_refs'] = [str(directive.get('id'))]
 
-    if d_type in {'THRESHOLD_SWEEP', 'PARAM_SWEEP'}:
-        for p in v.get('parameters', []):
-            if p.get('name') == 'confidence_threshold' and isinstance(p.get('default'), (int, float)):
-                p['default'] = max(p.get('min', 0.45), min(p.get('max', 0.9), round(float(p['default']) + 0.05, 2)))
-    elif d_type == 'ENTRY_TIGHTEN':
-        v['filters'] = unique((v.get('filters') or []) + ['Directive: tighter entry gating enabled.'], 10)
+    if d_type in {'THRESHOLD_SWEEP', 'PARAM_SWEEP', 'ENTRY_TIGHTEN'}:
+        cp = _get_param(v, 'confidence_threshold')
+        old_default = float(cp.get('default', 0.6)) if cp else 0.6
+        base_delta = float(params.get('confidence_threshold_delta', 0.05))
+        delta = abs(base_delta) * float(magnitude)
+        new_default = old_default + delta
+        if cp:
+            cmin = float(cp.get('min', 0.45))
+            cmax = float(cp.get('max', 0.95))
+        else:
+            cmin, cmax = 0.45, 0.95
+        new_default = max(cmin, min(cmax, round(new_default, 2)))
+        _set_param(v, 'confidence_threshold', new_default, pmin=cmin, pmax=cmax, step=0.01)
+        v['entry_long'] = _replace_conf_threshold_in_rules(v.get('entry_long') or [], old_default, new_default)
+        v['entry_short'] = _replace_conf_threshold_in_rules(v.get('entry_short') or [], old_default, new_default)
+
+        mv = _get_param(v, 'min_volume')
+        if mv is not None:
+            _set_param(v, 'min_volume', round(float(mv.get('default', 0)) * (1.0 + 0.1 * magnitude), 4), pmin=float(mv.get('min', 0.0)), pmax=float(mv.get('max', 1e12)), step=float(mv.get('step', 1.0)))
+        ma = _get_param(v, 'min_atr')
+        if ma is not None:
+            _set_param(v, 'min_atr', round(float(ma.get('default', 0)) * (1.0 + 0.1 * magnitude), 6), pmin=float(ma.get('min', 0.0)), pmax=float(ma.get('max', 1e9)), step=float(ma.get('step', 0.0001)))
+
     elif d_type == 'ENTRY_RELAX':
-        for p in v.get('parameters', []):
-            if p.get('name') == 'confidence_threshold' and isinstance(p.get('default'), (int, float)):
-                p['default'] = max(p.get('min', 0.45), round(float(p['default']) - 0.05, 2))
+        cp = _get_param(v, 'confidence_threshold')
+        old_default = float(cp.get('default', 0.6)) if cp else 0.6
+        delta = abs(float(params.get('confidence_threshold_delta', 0.05))) * float(magnitude)
+        new_default = old_default - delta
+        if cp:
+            cmin = float(cp.get('min', 0.45))
+            cmax = float(cp.get('max', 0.95))
+        else:
+            cmin, cmax = 0.45, 0.95
+        new_default = max(cmin, min(cmax, round(new_default, 2)))
+        _set_param(v, 'confidence_threshold', new_default, pmin=cmin, pmax=cmax, step=0.01)
+        v['entry_long'] = _replace_conf_threshold_in_rules(v.get('entry_long') or [], old_default, new_default)
+        v['entry_short'] = _replace_conf_threshold_in_rules(v.get('entry_short') or [], old_default, new_default)
+
     elif d_type == 'EXIT_CHANGE':
-        v['exit_rules'] = unique((v.get('exit_rules') or []) + ['Directive: revised stop/take-profit profile.'], 10)
+        stop = float(params.get('stop_atr_mult', v.get('risk_policy', {}).get('stop_atr_mult', 1.5)))
+        tp = float(params.get('tp_atr_mult', v.get('risk_policy', {}).get('tp_atr_mult', 2.0)))
+        stop *= float(magnitude)
+        tp *= float(magnitude)
+        rp = copy.deepcopy(v.get('risk_policy') or {})
+        rp['stop_type'] = rp.get('stop_type', 'atr')
+        rp['tp_type'] = rp.get('tp_type', 'atr')
+        rp['stop_atr_mult'] = round(stop, 4)
+        rp['tp_atr_mult'] = round(tp, 4)
+        v['risk_policy'] = rp
+        _set_param(v, 'stop_atr_mult', round(stop, 4), pmin=0.1, pmax=20.0, step=0.1)
+        _set_param(v, 'tp_atr_mult', round(tp, 4), pmin=0.1, pmax=40.0, step=0.1)
+
     elif d_type == 'GATE_ADJUST':
-        v['risk_rules'] = unique((v.get('risk_rules') or []) + [f"Directive gate adjust: {json.dumps(params, sort_keys=True)}"], 10)
+        rp = copy.deepcopy(v.get('risk_policy') or {})
+        for k, val in params.items():
+            if isinstance(val, (int, float, bool)):
+                rp[str(k)] = val
+        v['risk_policy'] = rp
+
     elif d_type == 'ROLE_SWAP':
-        v['entry_long'] = unique((v.get('entry_long') or []) + ['Directive: swapped confirmation and entry role mapping.'], 10)
+        entries = list(v.get('entry_long') or [])
+        filts = list(v.get('filters') or [])
+        if entries and filts:
+            e0 = entries.pop(0)
+            f0 = filts.pop(0)
+            entries.insert(0, str(f0))
+            filts.insert(0, str(e0))
+            v['entry_long'] = entries
+            v['filters'] = filts
+
     elif d_type == 'TEMPLATE_SWITCH':
         target = str(params.get('target') or 'alternate_template')
         v['description'] = f"Directive template switch toward {target}."
+        long_rules = list(v.get('entry_long') or [])
+        short_rules = list(v.get('entry_short') or [])
+        if long_rules and short_rules:
+            v['entry_long'], v['entry_short'] = short_rules, long_rules
 
     return v
 
@@ -384,14 +474,19 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     chosen = directives[:3]
     out: list[dict] = []
     for i, d in enumerate(chosen[:2], start=1):
-        out.append(_apply_directive(seed, d, i))
+        out.append(_apply_directive(seed, d, i, magnitude=1.0))
 
     explore = copy.deepcopy(seed)
     explore['name'] = 'directive_exploration'
     explore['description'] = 'Exploration variant generated from directive context.'
     explore['origin'] = 'EXPLORATION'
     explore['directive_refs'] = [str(d.get('id')) for d in chosen]
-    explore['filters'] = unique((explore.get('filters') or []) + ['Directive exploration: combine moderate entry + exit changes.'], 10)
+    for j, d in enumerate(chosen[:2], start=1):
+        explore = _apply_directive(explore, d, j, magnitude=0.5)
+    explore['name'] = 'directive_exploration'
+    explore['description'] = 'Exploration variant generated from directive context.'
+    explore['origin'] = 'EXPLORATION'
+    explore['directive_refs'] = [str(d.get('id')) for d in chosen]
     out.append(explore)
     return out[:3]
 
