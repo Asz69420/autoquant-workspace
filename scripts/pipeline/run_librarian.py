@@ -68,6 +68,9 @@ def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | No
 
 def _score(e: dict, initial_capital: float = 10000.0) -> float:
     pf = float(e.get('profit_factor', 0.0))
+    # Guard sentinel/outlier PF from distorting ranking.
+    if pf > 10.0:
+        pf = 0.0
     dd_ratio = float(e.get('max_drawdown', 0.0)) / initial_capital
     trades = int(e.get('trades', 0))
     trade_penalty = 0.0 if trades >= 30 else (30 - trades) / 30.0
@@ -166,8 +169,42 @@ def main() -> int:
                 seen_sha.add(e['sha256_inputs'])
             new_entries.append(e)
 
-    combined = sorted([_ensure_fee_model_hash(x) for x in (existing_runs + new_entries)], key=lambda x: x.get('created_at', ''), reverse=True)
-    combined = _cap(combined, 500)
+    combined_all = sorted([_ensure_fee_model_hash(x) for x in (existing_runs + new_entries)], key=lambda x: x.get('created_at', ''), reverse=True)
+
+    # Preserve real winners permanently in index: 1.0 < PF <= 10.0.
+    pinned = []
+    remainder = []
+    seen_ptr = set()
+
+    for e in combined_all:
+        ptr = str(e.get('pointers', {}).get('backtest_result') or '')
+        if ptr and ptr in seen_ptr:
+            continue
+        if ptr:
+            seen_ptr.add(ptr)
+
+        try:
+            pf = float(e.get('profit_factor', 0.0))
+        except Exception:
+            pf = 0.0
+
+        # Drop invalid/sentinel outliers from RUN_INDEX.
+        if pf > 10.0:
+            continue
+
+        if 1.0 < pf <= 10.0:
+            pinned.append(e)
+        else:
+            remainder.append(e)
+
+    pinned = sorted(pinned, key=lambda x: x.get('created_at', ''), reverse=True)
+    remainder = sorted(remainder, key=lambda x: x.get('created_at', ''), reverse=True)
+
+    if len(pinned) >= 500:
+        combined = pinned[:500]
+    else:
+        combined = pinned + remainder[: (500 - len(pinned))]
+
     _write(run_idx_p, combined)
 
     top_pool = [e for e in combined if e.get('status') != 'DUPLICATE']
