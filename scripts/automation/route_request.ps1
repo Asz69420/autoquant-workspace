@@ -1164,19 +1164,19 @@ if ($route -eq 'FAST_PATH') {
     exit 0
   }
 
-  if ($intentAction -eq 'show_leaderboard' -or $m -like 'leaderboard*' -or $m -eq 'report') {
-    $writerOut = (python scripts/pipeline/write_leaderboard_txt.py --send-telegram) -join "`n"
+  if ($intentAction -eq 'show_leaderboard' -or $m -like 'leaderboard*' -or $m -eq 'report' -or $m -eq 'intel' -or $m -eq 'brief') {
+    $writerOut = (python scripts/pipeline/write_daily_intel_txt.py --send-telegram) -join "`n"
     $writerObj = $null
     try { $writerObj = $writerOut | ConvertFrom-Json } catch { $writerObj = $null }
 
     if ($null -eq $writerObj -or -not $writerObj.ok) {
       Emit-LogEvent -RunId ($runId + '-leaderboard-fail') -StatusWord 'FAIL' -StatusEmoji '❌' -ReasonCode 'LEADERBOARD_PLACEHOLDER_DETECTED' -Summary 'leaderboard.txt generation failed; blocked send' -Inputs @($Message) -Outputs @('blocked')
-      Write-Output 'leaderboard.txt'
+      Write-Output 'daily_intel.txt'
       exit 2
     }
 
-    Emit-LogEvent -RunId ($runId + '-leaderboard') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'LEADERBOARD' -Summary 'Generated and sent leaderboard.txt' -Inputs @($Message) -Outputs @(('assets=' + [string]$writerObj.assets_included),('rows=' + [string]$writerObj.rows_included),('placeholders=' + [string]$writerObj.placeholders_found))
-    Write-Output 'leaderboard.txt'
+    Emit-LogEvent -RunId ($runId + '-leaderboard') -StatusWord 'INFO' -StatusEmoji 'ℹ️' -ReasonCode 'LEADERBOARD' -Summary 'Generated and sent daily_intel.txt' -Inputs @($Message) -Outputs @(('rows=' + [string]$writerObj.rows),('errors=' + [string]$writerObj.errors))
+    Write-Output 'daily_intel.txt'
     exit 0
   }
 
