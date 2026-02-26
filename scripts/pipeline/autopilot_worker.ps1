@@ -259,8 +259,15 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
       return ''
     }
     if ([string]::IsNullOrWhiteSpace($emitOut)) {
-      Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: empty strategist output exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
-      return ''
+      Emit-Summary 'DIRECTIVE_GEN_RETRY' 'Directive generation: empty strategist output on first attempt; retrying after 2s' 'WARN' 'Strategist'
+      Start-Sleep -Seconds 2
+      $emitRaw = & python @emitArgs 2>&1
+      $emitExit = $LASTEXITCODE
+      $emitOut = [string]$emitRaw
+      if ($emitExit -ne 0 -or [string]::IsNullOrWhiteSpace($emitOut)) {
+        Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: empty strategist output after retry exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
+        return ''
+      }
     }
     $emitObj = $emitOut | ConvertFrom-Json
     $generatedSpecPath = [string]$emitObj.strategy_spec_path
@@ -739,7 +746,11 @@ try {
           } else {
             try {
               $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
-              $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all') | ConvertFrom-Json
+              $batchRaw = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all')
+              if ([string]::IsNullOrWhiteSpace([string]$batchRaw)) {
+                throw 'promotion batch: empty runner output'
+              }
+              $batch = $batchRaw | ConvertFrom-Json
               $batchArtifactPath = [string]$batch.batch_artifact_path
               if (-not (Test-ValidJsonPath $batchArtifactPath)) {
                 $fallbackPath = Get-RecentBatchArtifactPath $batchStartUtc
@@ -943,7 +954,11 @@ try {
         $batch = $null
         try {
           $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
-          $batch = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$spPath,'--variant','all') | ConvertFrom-Json
+          $batchRaw = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$spPath,'--variant','all')
+          if ([string]::IsNullOrWhiteSpace([string]$batchRaw)) {
+            throw ('backfill spec=' + [IO.Path]::GetFileName([string]$spPath) + ': empty runner output')
+          }
+          $batch = $batchRaw | ConvertFrom-Json
           $batchArtifactPath = [string]$batch.batch_artifact_path
           if (-not (Test-ValidJsonPath $batchArtifactPath)) {
             $fallbackPath = Get-RecentBatchArtifactPath $batchStartUtc
