@@ -18,6 +18,7 @@ RUN_INDEX = ROOT / "artifacts" / "library" / "RUN_INDEX.json"
 OUT_PATH = ROOT / "artifacts" / "reports" / "daily_intel.txt"
 BATCH_ROOT = ROOT / "artifacts" / "batches"
 PROMO_ROOT = ROOT / "artifacts" / "promotions"
+ACTIONS_LOG = ROOT / "data" / "logs" / "actions.ndjson"
 
 AEST = ZoneInfo("Australia/Brisbane")
 NOW_UTC = datetime.now(timezone.utc)
@@ -97,8 +98,28 @@ def alias12(name: str) -> str:
     toks = [t for t in cleaned.replace("-", " ").replace("_", " ").split() if t]
     if not toks:
         return "Unknown"
-    mapped = [ALIAS.get(t.lower(), t[:5].title()) for t in toks]
-    out = f"{mapped[0]}_{mapped[1]}" if len(mapped) >= 2 else mapped[0]
+
+    stop = {"strategy", "thesis", "spec", "variant", "directive", "entry", "exit", "generated"}
+    picked = []
+    for t in toks:
+        lo = t.lower()
+        if lo in stop:
+            continue
+        if lo.isdigit():
+            continue
+        if lo.startswith("strategy") and any(ch.isdigit() for ch in lo):
+            continue
+        mapped = ALIAS.get(lo)
+        if mapped:
+            picked.append(mapped)
+        elif len(lo) >= 3:
+            picked.append(t[:5].title())
+        if len(picked) >= 2:
+            break
+
+    if not picked:
+        picked = ["Strat"]
+    out = f"{picked[0]}_{picked[1]}" if len(picked) >= 2 else picked[0]
     return out[:12]
 
 
@@ -133,30 +154,32 @@ def strategy_name(spec_path: str, variant: str):
     thesis_path = str(spec.get("source_thesis_path") or "")
     thesis = jload(Path(thesis_path), {}) if thesis_path else {}
 
-    pair = []
-    sigs = thesis.get("candidate_signals") if isinstance(thesis, dict) else None
-    if isinstance(sigs, list):
-        for s in sigs:
-            ui = s.get("uses_indicators") if isinstance(s, dict) else None
-            if isinstance(ui, list):
-                for x in ui:
-                    sx = str(x).strip()
-                    if sx:
-                        pair.append(sx)
-            if len(pair) >= 2:
-                break
+    # Prefer explicit strategy family/title from spec/thesis (not variant/spec filename).
+    base = (
+        str(spec.get("strategy_family") or "").strip()
+        or str(thesis.get("strategy_family") or "").strip()
+        or str(thesis.get("title") or "").strip()
+    )
 
-    base = ""
-    if len(pair) >= 2:
-        base = f"{pair[0]} {pair[1]}"
+    # Fallback to indicator pair only if family/title missing.
     if not base:
-        base = (
-            str(thesis.get("strategy_family") or "").strip()
-            or str(thesis.get("title") or "").strip()
-            or str(spec.get("strategy_family") or "").strip()
-            or variant
-            or Path(spec_path).stem
-        )
+        pair = []
+        sigs = thesis.get("candidate_signals") if isinstance(thesis, dict) else None
+        if isinstance(sigs, list):
+            for s in sigs:
+                ui = s.get("uses_indicators") if isinstance(s, dict) else None
+                if isinstance(ui, list):
+                    for x in ui:
+                        sx = str(x).strip()
+                        if sx:
+                            pair.append(sx)
+                if len(pair) >= 2:
+                    break
+        if len(pair) >= 2:
+            base = f"{pair[0]} {pair[1]}"
+
+    if not base:
+        base = str(variant or "strategy").strip()
 
     short = alias12(base)
     return short, short.lower()
@@ -239,14 +262,23 @@ def collect_rows():
                 break
         rows.append(Row(created, asset, tf, name, key, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
-    # Deduplicate: strategy appears once globally, keep best result only
-    best = {}
-    for r in rows:
-        cur = best.get(r.key)
-        if cur is None or (r.pf, r.wr or -999, r.pnl or -999) > (cur.pf, cur.wr or -999, cur.pnl or -999):
-            best[r.key] = r
-
-    deduped = list(best.values())
+    # Deduplicate repeated identical backtest rows (same metrics in same asset/timeframe).
+    deduped = []
+    seen_results = set()
+    for r in sorted(rows, key=lambda x: (x.asset, x.tf, -(x.pf or -999), -(x.wr or -999), -(x.pnl or -999))):
+        sig = (
+            r.asset,
+            r.tf,
+            round(r.pf or 0.0, 4),
+            round(r.wr or 0.0, 2),
+            int(r.tc or 0),
+            round(r.dd or 0.0, 2),
+            round(r.pnl or 0.0, 2),
+        )
+        if sig in seen_results:
+            continue
+        seen_results.add(sig)
+        deduped.append(r)
 
     # 24h meta
     cycles = 0
@@ -263,7 +295,32 @@ def collect_rows():
             cycles += 1
             errors += int(inum((j.get("summary") or {}).get("failed_runs")) or 0)
 
-    return deduped, {"cycles": cycles, "backtests": backtests, "specs": specs, "errors": errors}
+    top_error = ""
+    top_error_count = 0
+    if ACTIONS_LOG.exists():
+        buckets = defaultdict(int)
+        try:
+            for line in ACTIONS_LOG.read_text(encoding="utf-8-sig", errors="ignore").splitlines():
+                if not line.strip().startswith("{"):
+                    continue
+                try:
+                    obj = json.loads(line)
+                except Exception:
+                    continue
+                t = dt(obj.get("ts_iso") or obj.get("created_at"))
+                if not t or t < SINCE_24H:
+                    continue
+                sw = str(obj.get("status_word") or "").upper()
+                if sw not in ("FAIL", "WARN"):
+                    continue
+                rc = str(obj.get("reason_code") or obj.get("action") or "UNKNOWN")
+                buckets[rc] += 1
+            if buckets:
+                top_error, top_error_count = sorted(buckets.items(), key=lambda kv: kv[1], reverse=True)[0]
+        except Exception:
+            pass
+
+    return deduped, {"cycles": cycles, "backtests": backtests, "specs": specs, "errors": errors, "top_error": top_error, "top_error_count": top_error_count}
 
 
 def fmtv(v, d=1, signed=False):
@@ -339,6 +396,8 @@ def attention(meta):
     out = []
     if meta["errors"] > 0:
         out.append(limit42(f"• Errors:{meta['errors']} failed runs/24h"))
+        if meta.get("top_error"):
+            out.append(limit42(f"• Top:{meta['top_error']} x{meta.get('top_error_count',0)}"))
     if meta["cycles"] == 0:
         out.append("• Stalls: no cycles in 24h")
     if not out:
