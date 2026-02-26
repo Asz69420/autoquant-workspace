@@ -249,6 +249,19 @@ find data/logs/outbox/ -mtime +1 -type f
 - Generator: `scripts/pipeline/write_leaderboard_txt.py`
 - Telegram command: `leaderboard` (regenerates and sends the file as a document attachment)
 
+## Scheduling
+
+- `\AutoQuant-autopilot` — **Lab (research loop)**: every hour on the hour (`00:00, 01:00, ... 23:00`)
+- `\AutoQuant-youtube-watch` — **Harvester (ingestion loop)**: twice per day at `08:10` and `20:10` (AEST)
+- `\AutoQuant-tv-catalog` — **Harvester (ingestion loop)**: once per day at `09:00` (AEST)
+- `\AutoQuant-keeper-30m` — unchanged (`:00` / `:30`)
+- `\AutoQuant-tg_reporter` — daemon cadence unchanged
+
+Collision rules:
+- Single-instance/no-overlap (`MultipleInstances=IgnoreNew`)
+- Unattended S4U execution with highest privileges retained
+- Working directory and action command unchanged unless explicitly approved
+
 ## Running tg_reporter (Daemon vs Manual)
 
 ### When to Use Daemon
