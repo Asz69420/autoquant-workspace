@@ -7,10 +7,34 @@ import os
 import random
 import re
 import subprocess
+import sys
 import tempfile
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.request import urlopen
 from xml.etree import ElementTree as ET
+
+ROOT = Path(__file__).resolve().parents[2]
+PY = sys.executable
+
+
+def _log(action: str, reason: str, summary: str, status: str = 'INFO') -> None:
+    try:
+        cmd = [
+            PY,
+            'scripts/log_event.py',
+            '--run-id', f"asr-{int(datetime.now(UTC).timestamp())}",
+            '--agent', 'Reader',
+            '--model-id', 'openai-codex/gpt-5.3-codex',
+            '--action', action,
+            '--status-word', status,
+            '--status-emoji', ('▶️' if status == 'START' else ('✅' if status == 'OK' else ('❌' if status == 'FAIL' else 'ℹ️'))),
+            '--reason-code', reason,
+            '--summary', summary,
+        ]
+        subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
+    except Exception:
+        pass
 
 
 def _clean_text(s: str) -> str:
@@ -116,44 +140,49 @@ def via_ytdlp(url: str) -> dict:
 
 
 def via_asr(url: str) -> dict:
+    _log('ASR_TRANSCRIBE_START', 'ASR_TRANSCRIBE_START', f'ASR start url={url}', 'START')
     try:
         import yt_dlp  # noqa: F401
-    except Exception:
+    except Exception as e:
+        _log('ASR_TRANSCRIBE_FAIL', 'ASR_TRANSCRIBE_FAIL', f'ASR fail: yt-dlp missing detail={e}', 'FAIL')
         raise RuntimeError("yt-dlp missing for audio download")
 
     try:
         from faster_whisper import WhisperModel
-    except Exception:
+    except Exception as e:
+        _log('ASR_TRANSCRIBE_FAIL', 'ASR_TRANSCRIBE_FAIL', f'ASR fail: faster-whisper missing detail={e}', 'FAIL')
         raise RuntimeError("faster-whisper not installed")
 
     with tempfile.TemporaryDirectory(prefix="ytasr_") as td:
         out = Path(td) / "audio"
         cmd = [
-            "python",
+            PY,
             "-m",
             "yt_dlp",
             "-f",
             "bestaudio/best",
-            "--extract-audio",
-            "--audio-format",
-            "mp3",
             "-o",
             str(out) + ".%(ext)s",
             url,
         ]
         cp = subprocess.run(cmd, capture_output=True, text=True)
         if cp.returncode != 0:
-            raise RuntimeError((cp.stderr or cp.stdout or "yt-dlp audio download failed").strip()[:500])
+            msg = (cp.stderr or cp.stdout or "yt-dlp audio download failed").strip()[:500]
+            _log('ASR_TRANSCRIBE_FAIL', 'ASR_TRANSCRIBE_FAIL', f'ASR fail: audio download detail={msg}', 'FAIL')
+            raise RuntimeError(msg)
 
         files = list(Path(td).glob("audio.*"))
         if not files:
+            _log('ASR_TRANSCRIBE_FAIL', 'ASR_TRANSCRIBE_FAIL', 'ASR fail: audio file not produced', 'FAIL')
             raise RuntimeError("audio file not produced")
 
         model = WhisperModel("small", device="cpu", compute_type="int8")
         segments, _info = model.transcribe(str(files[0]), language="en")
         text = _clean_text(" ".join([seg.text for seg in segments]))
         if not text:
+            _log('ASR_TRANSCRIBE_FAIL', 'ASR_TRANSCRIBE_FAIL', 'ASR fail: empty transcript', 'FAIL')
             raise RuntimeError("ASR produced empty transcript")
+        _log('ASR_TRANSCRIBE_OK', 'ASR_TRANSCRIBE_OK', f'ASR ok chars={len(text)}', 'OK')
         return {"ok": True, "method": "asr_whisper", "quality": "asr", "text": text}
 
 
@@ -185,7 +214,7 @@ def _rate_limit_result(errors: list[str], retry_after_seconds: int | None = None
     }
 
 
-def resolve(video_id: str, url: str, enable_asr: bool = False) -> dict:
+def resolve(video_id: str, url: str, enable_asr: bool = True) -> dict:
     if os.getenv("TRANSCRIPT_RESOLVER_FORCE_429", "").strip() in {"1", "true", "TRUE"}:
         return _rate_limit_result(["forced:HTTPError:HTTP Error 429: Too Many Requests"], retry_after_seconds=900)
 
@@ -213,9 +242,6 @@ def resolve(video_id: str, url: str, enable_asr: bool = False) -> dict:
         if _is_rate_limited(err):
             rate_limited = True
 
-    if rate_limited:
-        return _rate_limit_result(errors)
-
     if enable_asr:
         try:
             out = via_asr(url)
@@ -224,6 +250,9 @@ def resolve(video_id: str, url: str, enable_asr: bool = False) -> dict:
         except Exception as e:
             errors.append(f"asr_whisper:{type(e).__name__}:{e}")
 
+    if rate_limited:
+        return _rate_limit_result(errors)
+
     return {"ok": False, "status": "FAILED", "method": "none", "quality": "none", "text": "", "errors": errors}
 
 
@@ -231,9 +260,13 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Resolve YouTube transcript with layered fallback")
     ap.add_argument("--video-id", required=True)
     ap.add_argument("--url", required=True)
-    ap.add_argument("--enable-asr", action="store_true")
+    ap.add_argument("--enable-asr", action="store_true", help='Force-enable ASR (default on).')
+    ap.add_argument("--disable-asr", action="store_true", help='Disable ASR fallback.')
     args = ap.parse_args()
-    out = resolve(args.video_id, args.url, enable_asr=args.enable_asr)
+    enable_asr = False if args.disable_asr else True
+    if args.enable_asr:
+        enable_asr = True
+    out = resolve(args.video_id, args.url, enable_asr=enable_asr)
     print(json.dumps(out))
     return 0
 
