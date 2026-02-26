@@ -251,7 +251,7 @@ def main() -> int:
     state = _j(STATE_PATH, {'channels': [], 'seen_video_ids': [], 'max_new_videos_per_run': 2})
     bundles = _j(BUNDLE_INDEX, [])
     ind_idx = _j(INDICATOR_INDEX, [])
-    max_new = max(1, int(state.get('max_new_videos_per_run', MAX_NEW)))
+    max_new = max(1, int(state.get('max_new_videos_per_run', MAX_NEW)))  # retained for telemetry/back-compat
     retry_queue = _load_retry_queue()
 
     created = []
@@ -286,8 +286,6 @@ def main() -> int:
         new_total += new_count
         _log('YT_WATCH_CHECK', 'YT_WATCH_CHECK', f"channel={channel_id} new_count={new_count}", 'INFO')
         for item in unseen_since_marker:
-            if len(created) >= max_new:
-                break
             vid = item['video_id']
             if vid in seen_videos:
                 dedup += 1
