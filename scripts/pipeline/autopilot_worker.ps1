@@ -46,11 +46,17 @@ function Get-RecentBatchArtifactPath([datetime]$sinceUtc) {
   try {
     $root = 'artifacts/batches'
     if (-not (Test-Path -LiteralPath $root)) { return '' }
-    $cand = Get-ChildItem -Path $root -Recurse -Filter '*.batch_backtest.json' -File -ErrorAction SilentlyContinue |
-      Where-Object { $_.LastWriteTimeUtc -ge $sinceUtc } |
-      Sort-Object LastWriteTimeUtc -Descending |
-      Select-Object -First 1
-    if ($cand) { return [string]$cand.FullName }
+    $all = Get-ChildItem -Path $root -Recurse -Filter '*.batch_backtest.json' -File -ErrorAction SilentlyContinue |
+      Sort-Object LastWriteTimeUtc -Descending
+    if ($null -eq $all -or @($all).Count -eq 0) { return '' }
+    $cand = $null
+    if ($sinceUtc -ne [datetime]::MinValue) {
+      $cand = @($all | Where-Object { $_.LastWriteTimeUtc -ge $sinceUtc } | Select-Object -First 1)
+    }
+    if ($null -eq $cand -or @($cand).Count -eq 0) {
+      $cand = @($all | Select-Object -First 1)
+    }
+    if ($cand -and $cand[0]) { return [string]$cand[0].FullName }
   } catch {}
   return ''
 }
@@ -385,6 +391,9 @@ try {
               $batchArtifactPath = [string]$batch.batch_artifact_path
               if (-not (Test-ValidJsonPath $batchArtifactPath)) {
                 $fallbackPath = Get-RecentBatchArtifactPath $batchStartUtc
+                if (-not (Test-ValidJsonPath $fallbackPath)) {
+                  $fallbackPath = Get-RecentBatchArtifactPath ([datetime]::MinValue)
+                }
                 if (Test-ValidJsonPath $fallbackPath) {
                   $batchArtifactPath = $fallbackPath
                 } else {
@@ -544,6 +553,9 @@ try {
           $batchArtifactPath = [string]$batch.batch_artifact_path
           if (-not (Test-ValidJsonPath $batchArtifactPath)) {
             $fallbackPath = Get-RecentBatchArtifactPath $batchStartUtc
+            if (-not (Test-ValidJsonPath $fallbackPath)) {
+              $fallbackPath = Get-RecentBatchArtifactPath ([datetime]::MinValue)
+            }
             if (Test-ValidJsonPath $fallbackPath) {
               $batchArtifactPath = $fallbackPath
             } else {
