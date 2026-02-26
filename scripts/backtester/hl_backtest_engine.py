@@ -21,12 +21,20 @@ ROOT = Path(__file__).resolve().parents[2]
 INDICATOR_REGISTRY: dict[str, dict] = {
     'EMA': {'engine': 'pandas_ta', 'columns': ['EMA_9', 'EMA_21', 'EMA_50', 'EMA_200']},
     'SMA': {'engine': 'pandas_ta', 'columns': ['SMA_20', 'SMA_50', 'SMA_200']},
+    'T3': {'engine': 'pandas_ta', 'columns': ['T3_10_0.7']},
+    'KAMA': {'engine': 'pandas_ta', 'columns': ['KAMA_10_2_30']},
+    'ALMA': {'engine': 'pandas_ta', 'columns': ['ALMA_9_6.0_0.85']},
     'RSI': {'engine': 'pandas_ta', 'columns': ['RSI_14']},
+    'QQE': {'engine': 'pandas_ta', 'columns': ['QQE_14_5_4.236']},
     'ATR': {'engine': 'pandas_ta', 'columns': ['ATR_14']},
     'MACD': {'engine': 'pandas_ta', 'columns': ['MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9']},
+    'STC': {'engine': 'pandas_ta', 'columns': ['STC_10_12_26_0.5']},
     'Bollinger Bands': {'engine': 'pandas_ta', 'columns': ['BBL_20_2.0', 'BBM_20_2.0', 'BBU_20_2.0']},
     'Stochastic': {'engine': 'pandas_ta', 'columns': ['STOCHk_14_3_3', 'STOCHd_14_3_3']},
     'ADX': {'engine': 'pandas_ta', 'columns': ['ADX_14']},
+    'Choppiness Index': {'engine': 'pandas_ta', 'columns': ['CHOP_14_1_100']},
+    'Vortex': {'engine': 'pandas_ta', 'columns': ['VTXP_14', 'VTXM_14']},
+    'Stiffness': {'engine': 'pandas_ta', 'columns': ['STIFFNESS_20_3_100']},
     'CCI': {'engine': 'pandas_ta', 'columns': ['CCI_20_0.015']},
     'Williams %R': {'engine': 'pandas_ta', 'columns': ['WILLR_14']},
     'OBV': {'engine': 'pandas_ta', 'columns': ['OBV']},
@@ -42,45 +50,48 @@ def build_indicator_frame(df: pd.DataFrame) -> pd.DataFrame:
     if pta is None:
         return out
     v = out['volume'] if 'volume' in out.columns else pd.Series(1.0, index=out.index)
-    try:
-        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-            out['EMA_9'] = pta.ema(out['close'], length=9)
-        out['EMA_21'] = pta.ema(out['close'], length=21)
-        out['EMA_50'] = pta.ema(out['close'], length=50)
-        out['EMA_200'] = pta.ema(out['close'], length=200)
-        out['SMA_20'] = pta.sma(out['close'], length=20)
-        out['SMA_50'] = pta.sma(out['close'], length=50)
-        out['SMA_200'] = pta.sma(out['close'], length=200)
-        out['RSI_14'] = pta.rsi(out['close'], length=14)
-        out['ATR_14'] = pta.atr(out['high'], out['low'], out['close'], length=14)
-        m = pta.macd(out['close'], fast=12, slow=26, signal=9)
-        if m is not None:
-            out = out.join(m)
-        bb = pta.bbands(out['close'], length=20, std=2.0)
-        if bb is not None:
-            out = out.join(bb)
-        st = pta.stoch(out['high'], out['low'], out['close'], k=14, d=3, smooth_k=3)
-        if st is not None:
-            out = out.join(st)
-        adx = pta.adx(out['high'], out['low'], out['close'], length=14)
-        if adx is not None:
-            out = out.join(adx)
-        out['CCI_20_0.015'] = pta.cci(out['high'], out['low'], out['close'], length=20)
-        out['WILLR_14'] = pta.willr(out['high'], out['low'], out['close'], length=14)
-        out['OBV'] = pta.obv(out['close'], v)
-        # Dataset bars are not guaranteed DatetimeIndex; keep VWAP placeholder unless pre-indexed upstream.
-        out['VWAP_D'] = pd.NA
-        ich = pta.ichimoku(out['high'], out['low'], out['close'])
-        if isinstance(ich, tuple) and len(ich) > 0 and ich[0] is not None:
-            out = out.join(ich[0])
-        sup = pta.supertrend(out['high'], out['low'], out['close'], length=7, multiplier=3.0)
-        if sup is not None:
-            out = out.join(sup)
-        dc = pta.donchian(out['high'], out['low'], lower_length=20, upper_length=20)
-        if dc is not None:
-            out = out.join(dc)
-    except Exception:
-        return out
+
+    def _safe_apply(name: str, fn):
+        nonlocal out
+        try:
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                val = fn()
+            if isinstance(val, pd.Series):
+                out[name] = val
+            elif isinstance(val, pd.DataFrame) and not val.empty:
+                out = out.join(val)
+        except Exception as e:
+            print(f"WARN indicator_compute_failed={name} err={str(e)[:120]}", file=sys.stderr)
+
+    _safe_apply('EMA_9', lambda: pta.ema(out['close'], length=9))
+    _safe_apply('EMA_21', lambda: pta.ema(out['close'], length=21))
+    _safe_apply('EMA_50', lambda: pta.ema(out['close'], length=50))
+    _safe_apply('EMA_200', lambda: pta.ema(out['close'], length=200))
+    _safe_apply('SMA_20', lambda: pta.sma(out['close'], length=20))
+    _safe_apply('SMA_50', lambda: pta.sma(out['close'], length=50))
+    _safe_apply('SMA_200', lambda: pta.sma(out['close'], length=200))
+    _safe_apply('T3_10_0.7', lambda: pta.t3(out['close'], length=10, a=0.7))
+    _safe_apply('KAMA_10_2_30', lambda: pta.kama(out['close'], length=10, fast=2, slow=30))
+    _safe_apply('ALMA_9_6.0_0.85', lambda: pta.alma(out['close'], length=9, sigma=6.0, distribution_offset=0.85))
+    _safe_apply('RSI_14', lambda: pta.rsi(out['close'], length=14))
+    _safe_apply('ATR_14', lambda: pta.atr(out['high'], out['low'], out['close'], length=14))
+    _safe_apply('MACD', lambda: pta.macd(out['close'], fast=12, slow=26, signal=9))
+    _safe_apply('STC', lambda: pta.stc(out['close'], tclength=10, fast=12, slow=26, factor=0.5))
+    _safe_apply('QQE', lambda: pta.qqe(out['close'], length=14, smooth=5, factor=4.236))
+    _safe_apply('BBANDS', lambda: pta.bbands(out['close'], length=20, std=2.0))
+    _safe_apply('STOCH', lambda: pta.stoch(out['high'], out['low'], out['close'], k=14, d=3, smooth_k=3))
+    _safe_apply('ADX', lambda: pta.adx(out['high'], out['low'], out['close'], length=14))
+    _safe_apply('CHOP_14_1_100', lambda: pta.chop(out['high'], out['low'], out['close'], length=14, atr_length=1, scalar=100))
+    _safe_apply('VORTEX', lambda: pta.vortex(out['high'], out['low'], out['close'], length=14))
+    _safe_apply('STIFFNESS_20_3_100', lambda: pta.stiffness(out['close'], length=20, ma_length=3, stiff_length=100))
+    _safe_apply('CCI_20_0.015', lambda: pta.cci(out['high'], out['low'], out['close'], length=20))
+    _safe_apply('WILLR_14', lambda: pta.willr(out['high'], out['low'], out['close'], length=14))
+    _safe_apply('OBV', lambda: pta.obv(out['close'], v))
+
+    out['VWAP_D'] = pd.NA
+    _safe_apply('ICHIMOKU', lambda: pta.ichimoku(out['high'], out['low'], out['close'])[0] if isinstance(pta.ichimoku(out['high'], out['low'], out['close']), tuple) else None)
+    _safe_apply('SUPERTREND', lambda: pta.supertrend(out['high'], out['low'], out['close'], length=7, multiplier=3.0))
+    _safe_apply('DONCHIAN', lambda: pta.donchian(out['high'], out['low'], lower_length=20, upper_length=20))
     return out
 
 

@@ -15,10 +15,25 @@ MAX_JSON_BYTES = 60 * 1024
 MAX_INDEX = 200
 ROOT = Path(__file__).resolve().parents[2]
 
-EXECUTABLE_INDICATORS = [
-    'EMA', 'SMA', 'RSI', 'ATR', 'MACD', 'Bollinger Bands', 'Stochastic',
-    'ADX', 'CCI', 'Williams %R', 'OBV', 'VWAP', 'Ichimoku', 'Supertrend', 'Donchian Channels'
-]
+# Indicator Role Framework (from DaviddTech methodology)
+# Every strategy should use: 1 Baseline + 1-2 Confirmation + 1 Vol/Gate
+# Baseline: trend direction (which way is the market going?)
+# Confirmation: entry/exit timing (when to get in/out?)
+# Volume/Volatility: filter/gate (should we trade at all right now?)
+EXECUTABLE_INDICATORS = {
+    'EMA': 'ema', 'SMA': 'sma', 'T3': 't3', 'KAMA': 'kama', 'ALMA': 'alma',
+    'RSI': 'rsi', 'ATR': 'atr', 'MACD': 'macd', 'Bollinger Bands': 'bbands',
+    'Stochastic': 'stoch', 'ADX': 'adx', 'CCI': 'cci', 'Williams %R': 'willr',
+    'OBV': 'obv', 'VWAP': 'vwap', 'Ichimoku': 'ichimoku', 'Supertrend': 'supertrend',
+    'Donchian Channels': 'donchian', 'QQE': 'qqe', 'Choppiness Index': 'chop',
+    'Vortex': 'vortex', 'STC': 'stc', 'Stiffness': 'stiffness'
+}
+
+INDICATOR_ROLES = {
+    'baseline': ['ema', 'sma', 't3', 'kama', 'alma', 'hull_ma', 'supertrend', 'ichimoku'],
+    'confirmation': ['rsi', 'macd', 'stochastic', 'cci', 'williams_r', 'qqe', 'vortex', 'stc', 'choppiness_index'],
+    'volume_volatility': ['obv', 'vwap', 'atr', 'bollinger', 'donchian', 'adx', 'stiffness'],
+}
 
 
 def _set_reasoning_effort_for_strategist() -> None:
@@ -79,6 +94,73 @@ def unique(items: list[str], limit: int) -> list[str]:
         if len(out) >= limit:
             break
     return out
+
+
+def _canonical_indicator_token(s: str) -> str:
+    t = str(s or '').lower().replace('%', '').replace('&', 'and')
+    t = re.sub(r'[^a-z0-9]+', '_', t).strip('_')
+    aliases = {
+        'williams_r': 'williams_r', 'williams': 'williams_r', 'bollinger_bands': 'bollinger',
+        'donchian_channels': 'donchian', 'choppiness_index': 'choppiness_index',
+    }
+    return aliases.get(t, t)
+
+
+def _extract_indicator_tokens_from_variant(v: dict) -> set[str]:
+    text_parts = []
+    for k in ('name', 'description'):
+        text_parts.append(str(v.get(k) or ''))
+    for k in ('entry_long', 'entry_short', 'filters', 'exit_rules', 'risk_rules'):
+        text_parts.extend(str(x) for x in (v.get(k) or []))
+    blob = ' '.join(text_parts).lower()
+    known = [_canonical_indicator_token(x) for x in EXECUTABLE_INDICATORS.keys()]
+    out = {k for k in known if k and (k in blob or k.replace('_', ' ') in blob)}
+    return out
+
+
+def validate_indicator_roles(spec: dict) -> tuple[bool, str]:
+    variants = spec.get('variants') or []
+    if not variants:
+        return False, 'NO_VARIANTS'
+    for v in variants:
+        toks = _extract_indicator_tokens_from_variant(v)
+        counts = {r: sum(1 for t in toks if t in set(INDICATOR_ROLES[r])) for r in INDICATOR_ROLES}
+        if counts['baseline'] != 1:
+            return False, f"ROLE_BASELINE_INVALID:{counts['baseline']}"
+        if counts['confirmation'] < 1 or counts['confirmation'] > 2:
+            return False, f"ROLE_CONFIRMATION_INVALID:{counts['confirmation']}"
+        if counts['volume_volatility'] != 1:
+            return False, f"ROLE_VOL_INVALID:{counts['volume_volatility']}"
+        if any(c >= 3 for c in counts.values()):
+            return False, 'ROLE_OVERWEIGHT'
+    return True, 'OK'
+
+
+def _fix_variant_roles(v: dict) -> dict:
+    nv = copy.deepcopy(v)
+    role_defaults = {
+        'baseline': 'EMA', 'confirmation': 'RSI', 'volume_volatility': 'ATR'
+    }
+    for role, ind in role_defaults.items():
+        hint = f"RoleFramework[{role}]={ind}"
+        if hint not in (nv.get('filters') or []):
+            nv.setdefault('filters', []).append(hint)
+    return nv
+
+
+def _ensure_role_compliant_variants(variants: list[dict]) -> tuple[list[dict], bool]:
+    fixed = False
+    out = []
+    for v in variants:
+        tmp_spec = {'variants': [v]}
+        ok, _ = validate_indicator_roles(tmp_spec)
+        if ok:
+            out.append(v)
+            continue
+        nv = _fix_variant_roles(v)
+        out.append(nv)
+        fixed = True
+    return out, fixed
 
 
 def _with_structured_policies(variant: dict, *, stop_atr_mult: float, tp_atr_mult: float, entry_fill: str = 'bar_close', tie_break: str = 'worst_case', allow_reverse: bool = True, risk_pct: float = 1.0, note: str = '') -> dict:
@@ -745,12 +827,15 @@ def main() -> int:
 
     id_suffix = (source_spec.get('id', 'spec') if args.mode == 'directive-only' else thesis.get('id', 'thesis'))[-12:]
     sid = f"strategy-spec-{datetime.now().strftime('%Y%m%d')}-{id_suffix}"
+    variants, roles_fixed = _ensure_role_compliant_variants(variants)
     spec = {
         'schema_version': '1.1',
         'id': sid,
         'created_at': now_iso(),
         'variants': variants,
-        'backtester_executable_indicators': EXECUTABLE_INDICATORS,
+        'backtester_executable_indicators': list(EXECUTABLE_INDICATORS.keys()),
+        'backtester_executable_indicator_map': EXECUTABLE_INDICATORS,
+        'indicator_roles': INDICATOR_ROLES,
     }
     if args.mode == 'directive-only':
         spec['source_spec_path'] = args.source_spec.replace('\\', '/')
@@ -767,6 +852,12 @@ def main() -> int:
     trigger_backfill_spec = str(args.trigger_backfill_spec or '').strip()
     if trigger_backfill_spec:
         spec['trigger_backfill_spec'] = trigger_backfill_spec.replace('\\', '/')
+
+    ok_roles, role_reason = validate_indicator_roles(spec)
+    if not ok_roles:
+        print(f"WARN role_validation_after_fix={role_reason}", file=sys.stderr)
+    if roles_fixed:
+        print("WARN role_framework_fix_applied=1", file=sys.stderr)
 
     payload = json.dumps(spec, ensure_ascii=False, indent=2)
     if len(payload.encode('utf-8')) > MAX_JSON_BYTES:
