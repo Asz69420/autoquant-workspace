@@ -100,33 +100,20 @@ def llm_complete_direct(prompt: str, system: str = '', model: str = 'openai/gpt-
 
 
 def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: int = 120) -> str | None:
-    """Call LLM through OpenClaw runtime first, then direct OpenRouter fallback."""
+    """Call LLM through embedded OpenClaw runtime (--local), bypassing gateway."""
     full_prompt = prompt
     if system:
         full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
 
-    last_err: str | None = None
-
-    # Try OpenClaw (HTTP + CLI)
     for attempt in range(2):
         t0 = time.time()
         try:
-            text = _call_gateway_http(prompt, system, agent, timeout)
-            if text:
-                latency_ms = int((time.time() - t0) * 1000)
-                _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None, source='openclaw')
-                return text
-
             kwargs = dict(text=True, capture_output=True, timeout=timeout)
             if sys.platform == 'win32':
                 kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW
 
-            if len(full_prompt) < 30000:
-                cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--message', full_prompt, '--json']
-                p = subprocess.run(cmd, **kwargs)
-            else:
-                cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--json']
-                p = subprocess.run(cmd, input=full_prompt, **kwargs)
+            cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--local', '-m', full_prompt, '--json', '--timeout', str(timeout)]
+            p = subprocess.run(cmd, **kwargs)
 
             if p.returncode != 0:
                 err = (p.stderr or '').strip()
@@ -135,26 +122,21 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
                 raise RuntimeError(error_detail[:2000])
 
             obj = json.loads(p.stdout)
-            text = obj['result']['payloads'][0]['text']
+            payloads = obj.get('payloads') or obj.get('result', {}).get('payloads') or []
+            text = payloads[0].get('text') if payloads and isinstance(payloads[0], dict) else None
+            if not isinstance(text, str):
+                raise RuntimeError('missing text payload in openclaw agent response')
+
             latency_ms = int((time.time() - t0) * 1000)
-            _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None, source='openclaw')
+            _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None, source='openclaw-local')
             return text
         except Exception as e:
             latency_ms = int((time.time() - t0) * 1000)
             last_err = str(e)[:2000]
-            _log_call(agent, len(full_prompt), 0, latency_ms, False, last_err, source='openclaw')
+            _log_call(agent, len(full_prompt), 0, latency_ms, False, last_err, source='openclaw-local')
             if attempt == 0:
                 time.sleep(5)
 
-    # Fallback to direct OpenRouter API
-    t1 = time.time()
-    direct = llm_complete_direct(prompt, system, timeout=timeout)
-    if direct:
-        latency_ms = int((time.time() - t1) * 1000)
-        _log_call(agent, len(full_prompt), len(str(direct or '')), latency_ms, True, None, source='openrouter')
-        return direct
-
-    _log_call(agent, len(full_prompt), 0, int((time.time() - t1) * 1000), False, last_err or 'openrouter_fallback_failed', source='openrouter')
     return None
 
 
