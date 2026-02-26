@@ -495,12 +495,24 @@ try {
 
     if (($batchExecuted -gt 0 -or $refinementsRun -gt 0)) {
       try {
-        $outcArgs = @('scripts/pipeline/analyser_outcome_worker.py','--run-id',$runId)
+        $outcArgs = @('scripts/pipeline/analyser_outcome_worker.py','--run-id',$CycleRunId)
         if (-not [string]::IsNullOrWhiteSpace($latestBatchArtifactPath)) { $outcArgs += @('--batch-artifact',$latestBatchArtifactPath) }
         if (-not [string]::IsNullOrWhiteSpace($latestRefinementArtifactPath)) { $outcArgs += @('--refinement-artifact',$latestRefinementArtifactPath) }
-        Run-Py $outcArgs | Out-Null
+        $outcomeRaw = Run-Py $outcArgs
+        if ($outcomeRaw) {
+          $outcomeLines = @($outcomeRaw -split "`r?`n")
+          $outcomeJsonLine = $outcomeLines | Where-Object { $_ -match '^\{' } | Select-Object -Last 1
+          if ($outcomeJsonLine) {
+            try {
+              $outcomeObj = $outcomeJsonLine | ConvertFrom-Json
+              if ($outcomeObj.outcome_notes_path) {
+                Emit-InfoSummary 'OUTCOME_NOTES_PATH' ("Outcome notes v2: " + [string]$outcomeObj.outcome_notes_path) 'Analyser'
+              }
+            } catch {}
+          }
+        }
       } catch {
-        Emit-Summary 'ANALYSER_OUTCOME_SUMMARY' 'Analyser outcome: processed=1 status=WARN' 'WARN' 'Analyser'
+        Emit-Summary 'ANALYSER_OUTCOME_SUMMARY' 'ANALYSER_OUTCOME_SUMMARY — processed=1 verdict=REVISE directives=1' 'WARN' 'Analyser'
       }
     }
   }

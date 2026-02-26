@@ -299,17 +299,100 @@ def _latest_outcome_guidance(limit: int = 5) -> list[str]:
     for p in files[: max(1, limit)]:
         try:
             obj = json.loads(p.read_text(encoding='utf-8'))
-            for h in (obj.get('next_hypotheses') or [])[:2]:
-                hs = str(h).strip()
-                if hs:
-                    notes.append(f'Outcome-guided hypothesis: {hs}')
-            for f in (obj.get('what_failed') or [])[:1]:
-                fs = str(f).strip()
-                if fs:
-                    notes.append(f'Avoid prior failure pattern: {fs}')
+            if str(obj.get('schema_version')) == '2.0':
+                for h in (obj.get('next_experiments') or [])[:2]:
+                    hs = str(h).strip()
+                    if hs:
+                        notes.append(f'Outcome-guided experiment: {hs}')
+                for f in (obj.get('failure_reasons') or [])[:1]:
+                    fs = str((f or {}).get('short') or '').strip()
+                    if fs:
+                        notes.append(f'Avoid prior failure pattern: {fs}')
+            else:
+                for h in (obj.get('next_hypotheses') or [])[:2]:
+                    hs = str(h).strip()
+                    if hs:
+                        notes.append(f'Outcome-guided hypothesis: {hs}')
+                for f in (obj.get('what_failed') or [])[:1]:
+                    fs = str(f).strip()
+                    if fs:
+                        notes.append(f'Avoid prior failure pattern: {fs}')
         except Exception:
             continue
     return unique(notes, 10)
+
+
+def _collect_v2_directives(limit_notes: int = 5, strategy_family: str = '', template: str = '') -> list[dict]:
+    out_root = ROOT / 'artifacts' / 'outcomes'
+    files = sorted(out_root.glob('**/outcome_notes_*.json'), key=lambda p: p.stat().st_mtime, reverse=True)
+    directives: list[dict] = []
+    for p in files[: max(1, limit_notes)]:
+        try:
+            obj = json.loads(p.read_text(encoding='utf-8'))
+        except Exception:
+            continue
+        if str(obj.get('schema_version')) != '2.0':
+            continue
+        note_family = str(obj.get('strategy_family') or '')
+        note_template = str(obj.get('template') or '')
+        family_ok = (not strategy_family) or (strategy_family == note_family)
+        template_ok = (not template) or (template == note_template)
+        if not (family_ok or template_ok):
+            continue
+        for d in (obj.get('directives') or [])[:5]:
+            if isinstance(d, dict) and d.get('id') and d.get('type'):
+                directives.append(d)
+    return directives[:5]
+
+
+def _apply_directive(base: dict, directive: dict, idx: int) -> dict:
+    v = copy.deepcopy(base)
+    d_type = str(directive.get('type') or '')
+    params = directive.get('params') or {}
+    v['name'] = f"directive_variant_{idx}_{d_type.lower()}"
+    v['description'] = f"Directive-driven variant from {d_type}."
+    v['origin'] = 'DIRECTIVE'
+    v['directive_refs'] = [str(directive.get('id'))]
+
+    if d_type in {'THRESHOLD_SWEEP', 'PARAM_SWEEP'}:
+        for p in v.get('parameters', []):
+            if p.get('name') == 'confidence_threshold' and isinstance(p.get('default'), (int, float)):
+                p['default'] = max(p.get('min', 0.45), min(p.get('max', 0.9), round(float(p['default']) + 0.05, 2)))
+    elif d_type == 'ENTRY_TIGHTEN':
+        v['filters'] = unique((v.get('filters') or []) + ['Directive: tighter entry gating enabled.'], 10)
+    elif d_type == 'ENTRY_RELAX':
+        for p in v.get('parameters', []):
+            if p.get('name') == 'confidence_threshold' and isinstance(p.get('default'), (int, float)):
+                p['default'] = max(p.get('min', 0.45), round(float(p['default']) - 0.05, 2))
+    elif d_type == 'EXIT_CHANGE':
+        v['exit_rules'] = unique((v.get('exit_rules') or []) + ['Directive: revised stop/take-profit profile.'], 10)
+    elif d_type == 'GATE_ADJUST':
+        v['risk_rules'] = unique((v.get('risk_rules') or []) + [f"Directive gate adjust: {json.dumps(params, sort_keys=True)}"], 10)
+    elif d_type == 'ROLE_SWAP':
+        v['entry_long'] = unique((v.get('entry_long') or []) + ['Directive: swapped confirmation and entry role mapping.'], 10)
+    elif d_type == 'TEMPLATE_SWITCH':
+        target = str(params.get('target') or 'alternate_template')
+        v['description'] = f"Directive template switch toward {target}."
+
+    return v
+
+
+def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
+    if not directives:
+        return []
+    chosen = directives[:3]
+    out: list[dict] = []
+    for i, d in enumerate(chosen[:2], start=1):
+        out.append(_apply_directive(seed, d, i))
+
+    explore = copy.deepcopy(seed)
+    explore['name'] = 'directive_exploration'
+    explore['description'] = 'Exploration variant generated from directive context.'
+    explore['origin'] = 'EXPLORATION'
+    explore['directive_refs'] = [str(d.get('id')) for d in chosen]
+    explore['filters'] = unique((explore.get('filters') or []) + ['Directive exploration: combine moderate entry + exit changes.'], 10)
+    out.append(explore)
+    return out[:3]
 
 
 def _apply_outcome_guidance(variants: list[dict], limit: int = 5) -> list[dict]:
@@ -355,6 +438,12 @@ def main() -> int:
             }))
             return 0
         variants = _fallback_templates(thesis)
+
+    strategy_family = str(thesis.get('strategy_family') or thesis.get('id') or '')
+    template = str(thesis.get('template') or '')
+    directives = _collect_v2_directives(limit_notes=5, strategy_family=strategy_family, template=template)
+    if directives:
+        variants = _directive_variants(variants[0], directives)
 
     variants = _apply_outcome_guidance(variants, limit=5)
 

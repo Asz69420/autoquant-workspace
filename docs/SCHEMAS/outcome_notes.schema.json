@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw.local/schemas/outcome_notes.schema.json",
+  "title": "OutcomeNotes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "run_id",
+    "created_at",
+    "verdict",
+    "failure_reasons",
+    "directives",
+    "next_experiments",
+    "sources_used"
+  ],
+  "properties": {
+    "schema_version": { "const": "2.0" },
+    "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "run_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "verdict": { "type": "string", "enum": ["ACCEPT", "REVISE", "REJECT"] },
+    "strategy_family": { "type": "string", "maxLength": 120 },
+    "template": { "type": "string", "maxLength": 120 },
+    "failure_reasons": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "short", "evidence_pointer"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "short": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "evidence_pointer": { "type": "string", "minLength": 1, "maxLength": 1024 }
+        }
+      }
+    },
+    "directives": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "params", "rationale", "priority"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ROLE_SWAP",
+              "THRESHOLD_SWEEP",
+              "PARAM_SWEEP",
+              "ENTRY_TIGHTEN",
+              "ENTRY_RELAX",
+              "EXIT_CHANGE",
+              "GATE_ADJUST",
+              "TEMPLATE_SWITCH"
+            ]
+          },
+          "params": { "type": "object" },
+          "rationale": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "priority": { "type": "integer", "minimum": 1, "maximum": 5 }
+        }
+      }
+    },
+    "next_experiments": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "type": "string", "maxLength": 240 }
+    },
+    "sources_used": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "type": "string", "maxLength": 1024 }
+    }
+  }
+}
