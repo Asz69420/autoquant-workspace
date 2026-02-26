@@ -113,14 +113,15 @@ def main():
 
         show_reason = bool(reason_code) and reason_code.upper() != "EXPERIMENT"
         status_text = f"{status_emoji} {status_word}"
+
+        header = f"{agent_display} | {status_text}"
         if show_reason:
-            status_text = f"{status_text} ({reason_code})"
+            detail = f"({reason_code}) — {summary}"
+        else:
+            detail = summary
 
-        header = f"{agent_display} | {model_label} | {status_text}"
-        timestamp_line = _normalize_timestamp(ts_local, ts_iso)
-
-        # Strict fixed layout (3 lines): header, raw summary, timestamp
-        body = "\n".join([header, summary, timestamp_line])
+        # Strict fixed layout (2 lines): header, reason+summary (reason on line 2)
+        body = "\n".join([header, detail])
         telegram_msg = f"```\n{body}\n```"
 
         print(telegram_msg)
