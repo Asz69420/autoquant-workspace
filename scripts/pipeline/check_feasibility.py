@@ -137,7 +137,7 @@ def main() -> int:
     bars_required = min_bars
 
     required_fields_ok = isinstance(variant.get('risk_policy'), dict) and isinstance(variant.get('execution_policy'), dict)
-    timeframe_ok = tf in ('1h', '4h')
+    timeframe_ok = tf in ('15m', '1h', '4h')
     history_ok = bars_available >= bars_required
 
     parameter_ranges_ok = True

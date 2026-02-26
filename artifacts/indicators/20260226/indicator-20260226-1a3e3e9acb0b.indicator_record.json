@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-1a3e3e9acb0b",
+  "created_at": "2026-02-26T07:01:18.294991Z",
+  "tv_ref": "standard:rsi",
+  "url": "https://en.wikipedia.org/wiki/Technical_analysis",
+  "name": "RSI",
+  "author": "standard-library",
+  "version": "v1",
+  "component_type": "INDICATOR",
+  "indicator_type": "momentum",
+  "typical_usage": [
+    "entry",
+    "confirmation",
+    "exit"
+  ],
+  "common_timeframes": [
+    "15m",
+    "1h",
+    "4h"
+  ],
+  "standard_parameter_ranges": {
+    "period": [
+      7,
+      14,
+      21
+    ],
+    "overbought": [
+      70,
+      80
+    ],
+    "oversold": [
+      20,
+      30
+    ]
+  },
+  "key_inputs": [
+    "period",
+    "overbought",
+    "oversold"
+  ],
+  "signals_described": [
+    "overbought/oversold regime",
+    "divergence confirmation"
+  ],
+  "notes": [
+    "standard_baseline_indicator_library"
+  ],
+  "sha256": "60316be936ec70a4d5752d73c16a795bfbc95c03f1325de48762ab190fcda008",
+  "truncated": false
+}

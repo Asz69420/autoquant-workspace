@@ -1,17 +1,21 @@
 {
   "min_bars": {
+    "15m": 5000,
     "1h": 12000,
     "4h": 3000
   },
   "min_signals": {
+    "15m": 120,
     "1h": 50,
     "4h": 15
   },
   "min_fire_count_total": {
+    "15m": 80,
     "1h": 30,
     "4h": 10
   },
   "expected_hold_bars": {
+    "15m": 96,
     "1h": 48,
     "4h": 24
   }

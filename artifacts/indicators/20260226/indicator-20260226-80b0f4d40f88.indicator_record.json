@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-80b0f4d40f88",
+  "created_at": "2026-02-26T07:01:18.301475Z",
+  "tv_ref": "standard:atr",
+  "url": "https://en.wikipedia.org/wiki/Technical_analysis",
+  "name": "ATR",
+  "author": "standard-library",
+  "version": "v1",
+  "component_type": "INDICATOR",
+  "indicator_type": "volatility",
+  "typical_usage": [
+    "risk",
+    "exit",
+    "filter"
+  ],
+  "common_timeframes": [
+    "15m",
+    "1h",
+    "4h"
+  ],
+  "standard_parameter_ranges": {
+    "period": [
+      14,
+      21
+    ],
+    "stop_mult": [
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ]
+  },
+  "key_inputs": [
+    "period",
+    "stop_mult"
+  ],
+  "signals_described": [
+    "position sizing",
+    "stop distance"
+  ],
+  "notes": [
+    "standard_baseline_indicator_library"
+  ],
+  "sha256": "c2f91d9956ec15e8c8c6a0f9660a7f0338c0b634a37dae008df764da2d932530",
+  "truncated": false
+}

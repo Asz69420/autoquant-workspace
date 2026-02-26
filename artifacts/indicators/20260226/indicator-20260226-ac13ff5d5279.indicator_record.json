@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-ac13ff5d5279",
+  "created_at": "2026-02-26T07:01:18.305766Z",
+  "tv_ref": "standard:obv",
+  "url": "https://en.wikipedia.org/wiki/Technical_analysis",
+  "name": "OBV",
+  "author": "standard-library",
+  "version": "v1",
+  "component_type": "INDICATOR",
+  "indicator_type": "volume",
+  "typical_usage": [
+    "confirmation",
+    "divergence"
+  ],
+  "common_timeframes": [
+    "15m",
+    "1h",
+    "4h"
+  ],
+  "standard_parameter_ranges": {
+    "smoothing": [
+      5,
+      10,
+      20
+    ]
+  },
+  "key_inputs": [
+    "smoothing"
+  ],
+  "signals_described": [
+    "volume-flow divergence"
+  ],
+  "notes": [
+    "standard_baseline_indicator_library"
+  ],
+  "sha256": "a2c78038ada3c23b96058d6a0653312de11f84fe67f348388a9d7b924837ef27",
+  "truncated": false
+}

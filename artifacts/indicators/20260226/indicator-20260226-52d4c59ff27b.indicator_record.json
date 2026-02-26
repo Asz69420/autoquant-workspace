@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-52d4c59ff27b",
+  "created_at": "2026-02-26T07:01:18.301053Z",
+  "tv_ref": "standard:bollinger_bands",
+  "url": "https://en.wikipedia.org/wiki/Technical_analysis",
+  "name": "Bollinger Bands",
+  "author": "standard-library",
+  "version": "v1",
+  "component_type": "INDICATOR",
+  "indicator_type": "volatility",
+  "typical_usage": [
+    "entry",
+    "exit",
+    "filter"
+  ],
+  "common_timeframes": [
+    "15m",
+    "1h",
+    "4h"
+  ],
+  "standard_parameter_ranges": {
+    "period": [
+      20
+    ],
+    "std_dev": [
+      1.5,
+      2.0,
+      2.5
+    ]
+  },
+  "key_inputs": [
+    "period",
+    "std_dev"
+  ],
+  "signals_described": [
+    "volatility expansion/contraction"
+  ],
+  "notes": [
+    "standard_baseline_indicator_library"
+  ],
+  "sha256": "1dfe96f95a983b3564f7caf7dc08c72a227fa7db5e1e1bb98b9021fe3c5e8ccf",
+  "truncated": false
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-8d1da6505c4e",
+  "created_at": "2026-02-26T07:01:18.304916Z",
+  "tv_ref": "standard:vwap",
+  "url": "https://en.wikipedia.org/wiki/Technical_analysis",
+  "name": "VWAP",
+  "author": "standard-library",
+  "version": "v1",
+  "component_type": "INDICATOR",
+  "indicator_type": "volume",
+  "typical_usage": [
+    "entry",
+    "filter"
+  ],
+  "common_timeframes": [
+    "15m",
+    "1h"
+  ],
+  "standard_parameter_ranges": {
+    "anchor": [
+      "session",
+      "day",
+      "week"
+    ]
+  },
+  "key_inputs": [
+    "anchor"
+  ],
+  "signals_described": [
+    "price vs value zone"
+  ],
+  "notes": [
+    "standard_baseline_indicator_library"
+  ],
+  "sha256": "74f090945b402dadefd977cac9f87e1f79161add078fac9466e4a048b4bb2c4f",
+  "truncated": false
+}
