@@ -120,6 +120,8 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'analyser', timeout
             tmp.write(full_prompt)
             tmp.close()
             try:
+                debug_prompt_path = Path(__file__).parents[2] / 'data' / 'llm_last_prompt.txt'
+                debug_prompt_path.write_text(full_prompt[:3000], encoding='utf-8')
                 ps_cmd = (
                     f'$p = Get-Content -Raw -Encoding UTF8 -LiteralPath "{tmp.name}"; '
                     f'if (-not $p) {{ Write-Error "empty prompt from temp file"; exit 1 }}; '

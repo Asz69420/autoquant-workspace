@@ -391,8 +391,7 @@ def select_relevant_doctrine(doctrine: str, indicators: list[str]) -> str:
     return txt[:1000]
 
 
-def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: str, outcome_history: list[dict]) -> tuple[str, str]:
-    system = 'Quant analyser. Return JSON only: verdict, reasoning, directives, regime_recommendation, confidence, doctrine_update.'
+def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: str, outcome_history: list[dict]) -> str:
     obj = backtest_result if isinstance(backtest_result, dict) else {}
     res = obj.get('results', {}) if isinstance(obj.get('results'), dict) else {}
     inputs = obj.get('inputs', {}) if isinstance(obj.get('inputs'), dict) else {}
@@ -457,6 +456,9 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
     indicators = re.findall(r'indicators=([^;]+)', spec_summary)
     indicator_list = [x.strip() for x in (indicators[0].split(',') if indicators else []) if x.strip() and x.strip() != 'none']
     doctrine_text = select_relevant_doctrine(doctrine, indicator_list)
+    doctrine_lines = [ln for ln in doctrine_text.splitlines() if ln.strip().startswith('- [')]
+    doctrine_preview = doctrine_text[:200].replace('\n', ' ')
+    _log('INFO', 'DOCTRINE_PROMPT', f'principles_included={len(doctrine_lines)} doctrine_preview={doctrine_preview}')
 
     hist_rows = []
     for h in (outcome_history or [])[:5]:
@@ -489,7 +491,7 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
         'Rules: ACCEPT only if PF>1.0 and Trades>50. Generate 1-3 directives, valid types only, specific params.\n'
         'Return JSON exactly:\n' + contract
     )
-    return system[:200], user[:8000]
+    return user[:8000]
 
 
 def _normalize_llm_verdict(raw_verdict: object, pf: float) -> str:
@@ -774,15 +776,16 @@ def main() -> int:
     llm_confidence = None
     regime_recommendation = None
     doctrine_update = None
+    edge_assessment = None
 
     if not args.no_llm:
         bt_obj = _resolve_backtest_result_obj(best_run, batch)
         strategy_spec_obj = load_strategy_spec(bt_obj)
         doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig') if DOCTRINE_PATH.exists() else ''
         outcome_history = load_family_outcome_history(strategy_family, limit=5)
-        system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
-        _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(system_prompt) + len(user_prompt)}')
-        raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='analyser', timeout=120)
+        user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
+        _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(user_prompt)}')
+        raw = llm_client.llm_complete(user_prompt, agent='analyser', timeout=120)
         if raw:
             debug_path = ROOT / 'artifacts' / 'outcomes' / 'llm_debug.txt'
             debug_path.parent.mkdir(parents=True, exist_ok=True)
@@ -796,21 +799,27 @@ def main() -> int:
             parsed = llm_client.parse_llm_json(raw)
             if isinstance(parsed, dict):
                 llm_result = parsed
-                if any(k in llm_result for k in ['verdict', 'reasoning', 'directives', 'confidence', 'doctrine_update']):
+                if 'verdict' in llm_result and 'reasoning' in llm_result:
                     use_llm = True
 
         if use_llm:
             verdict = _normalize_llm_verdict(llm_result.get('verdict'), pf)
-            safe_dirs = _normalize_llm_directives(llm_result.get('directives'))
-            if safe_dirs:
-                directives = safe_dirs
+            safe_dirs = _normalize_llm_directives(llm_result.get('directives', []))
+            directives = safe_dirs if safe_dirs else []
             analysis_source = 'llm'
             llm_reasoning = _normalize_llm_reasoning(llm_result.get('reasoning'))
-            llm_confidence = _normalize_llm_confidence(llm_result.get('confidence'))
+            conf_raw = llm_result.get('confidence')
+            llm_confidence = 0.5 if conf_raw in (None, '') else _normalize_llm_confidence(conf_raw)
             regime_recommendation = llm_result.get('regime_recommendation') if isinstance(llm_result.get('regime_recommendation'), dict) else None
+            edge_assessment = llm_result.get('edge_assessment') if isinstance(llm_result.get('edge_assessment'), dict) else {}
             doctrine_update = _normalize_llm_doctrine_update(llm_result.get('doctrine_update'))
             if doctrine_update:
-                _append_doctrine_insight(strategy_family, doctrine_update, str(best_run.get('backtest_result_path') or ''), llm_confidence or '')
+                _append_doctrine_insight(strategy_family, doctrine_update, str(best_run.get('backtest_result_path') or ''), str(llm_confidence or ''))
+                doctrine_path = ROOT / 'docs' / 'DOCTRINE' / 'analyser-doctrine.md'
+                timestamp = datetime.utcnow().strftime('%Y%m%d-%H%M')
+                entry = f"\n- [{timestamp}|llm|conf:{llm_confidence}] {doctrine_update}\n"
+                with open(doctrine_path, 'a', encoding='utf-8') as f:
+                    f.write(entry)
                 _maybe_trigger_doctrine_synthesis()
             _log('INFO', 'LLM_PATH', f'Outcome analysis used LLM for strategy_family={strategy_family}')
         else:
@@ -837,6 +846,7 @@ def main() -> int:
         payload['llm_reasoning'] = llm_reasoning
         payload['llm_confidence'] = llm_confidence
         payload['regime_recommendation'] = regime_recommendation
+        payload['edge_assessment'] = edge_assessment if isinstance(edge_assessment, dict) else {}
         if doctrine_update:
             payload['doctrine_update'] = doctrine_update
 
