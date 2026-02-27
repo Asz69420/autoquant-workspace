@@ -395,103 +395,94 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
     obj = backtest_result if isinstance(backtest_result, dict) else {}
     res = obj.get('results', {}) if isinstance(obj.get('results'), dict) else {}
     inputs = obj.get('inputs', {}) if isinstance(obj.get('inputs'), dict) else {}
-    regime_pf = res.get('regime_pf') or {}
-    regime_wr = res.get('regime_wr') or {}
-    regime_breakdown = res.get('regime_breakdown') or {}
+
+    def _f(v, default=0.0):
+        try:
+            return float(v)
+        except Exception:
+            return float(default)
+
+    def _i(v, default=0):
+        try:
+            return int(v)
+        except Exception:
+            return int(default)
 
     dataset_csv = str(inputs.get('dataset_csv') or '')
     dataset_meta = str(inputs.get('dataset_meta') or '')
-    strategy_spec_path = str(inputs.get('strategy_spec') or '')
-    variant_name = str(inputs.get('variant') or '')
 
-    if (not strategy_spec or not isinstance(strategy_spec, dict)) and strategy_spec_path:
-        ssp = Path(strategy_spec_path)
-        if ssp.exists():
-            strategy_spec = _j(ssp, {})
-        else:
-            strategy_spec = _j(ROOT / strategy_spec_path, {})
-        if (not strategy_spec or not isinstance(strategy_spec, dict)):
-            stem = Path(strategy_spec_path).name
-            for cand in ROOT.glob(f'artifacts/strategy_specs/**/{stem}'):
-                strategy_spec = _j(cand, {})
-                if strategy_spec:
-                    break
+    def _extract_asset_tf() -> tuple[str, str]:
+        asset = str(obj.get('symbol') or obj.get('pair') or obj.get('asset') or inputs.get('symbol') or inputs.get('pair') or '').strip()
+        tf = str(obj.get('timeframe') or obj.get('tf') or inputs.get('timeframe') or inputs.get('tf') or '').strip()
+        if asset and tf:
+            return asset.upper(), tf
 
-    asset = str(obj.get('symbol') or obj.get('pair') or obj.get('asset') or inputs.get('symbol') or inputs.get('pair') or '')
-    timeframe = str(obj.get('timeframe') or obj.get('tf') or inputs.get('timeframe') or inputs.get('tf') or '')
-    if not asset or not timeframe:
-        blobs = [dataset_csv, dataset_meta]
+        blobs = [dataset_csv, dataset_meta, str(obj.get('id') or ''), str(obj.get('backtest_id') or '')]
         for blob in blobs:
             if not blob:
                 continue
-            m = re.search(r'_([A-Z]{2,10})_(\d+[mhd])\.csv$', Path(blob).name)
+            norm = blob.replace('\\', '/')
+            m = re.search(r'/([A-Z]{2,12})/(\d+[mhdw])/', norm, flags=re.IGNORECASE)
             if m:
                 asset = asset or m.group(1)
-                timeframe = timeframe or m.group(2)
+                tf = tf or m.group(2)
                 break
-            m2 = re.search(r'[\\/]([A-Z]{2,10})[\\/](\d+[mhd])[\\/]', blob)
+            m2 = re.search(r'_([A-Z]{2,12})_(\d+[mhdw])(?:\.csv|\.meta\.json)?$', Path(norm).name, flags=re.IGNORECASE)
             if m2:
                 asset = asset or m2.group(1)
-                timeframe = timeframe or m2.group(2)
+                tf = tf or m2.group(2)
                 break
 
-    pf = float(res.get('profit_factor', 0.0) or 0.0)
-    wr = float(res.get('win_rate', 0.0) or 0.0)
-    trades = int(res.get('total_trades', 0) or 0)
-    dd_pct_raw = res.get('max_drawdown_pct')
-    dd_abs = float(res.get('max_drawdown', 0.0) or 0.0)
-    if isinstance(dd_pct_raw, (int, float)):
-        dd_pct = float(dd_pct_raw)
-        dd_pct = dd_pct * 100.0 if dd_pct <= 1.0 else dd_pct
-        dd_field = f"DD={dd_pct:.2f}%"
-    else:
-        dd_field = f"DD_abs={dd_abs:.2f}"
+        return (asset.upper() if asset else 'unknown', tf or 'unknown')
 
-    spec_summary = compress_spec(strategy_spec)
-    strategy_name = str((strategy_spec or {}).get('id') or (strategy_spec or {}).get('strategy_family') or '')
-    if not strategy_name and strategy_spec_path:
-        strategy_name = Path(strategy_spec_path).name.replace('.strategy_spec.json', '')
-    if not strategy_name:
-        strategy_name = 'unknown'
-    indicators = re.findall(r'indicators=([^;]+)', spec_summary)
-    indicator_list = [x.strip() for x in (indicators[0].split(',') if indicators else []) if x.strip() and x.strip() != 'none']
-    doctrine_text = select_relevant_doctrine(doctrine, indicator_list)
-    doctrine_lines = [ln for ln in doctrine_text.splitlines() if ln.strip().startswith('- [')]
-    doctrine_preview = doctrine_text[:200].replace('\n', ' ')
-    _log('INFO', 'DOCTRINE_PROMPT', f'principles_included={len(doctrine_lines)} doctrine_preview={doctrine_preview}')
+    asset, timeframe = _extract_asset_tf()
+
+    pf = _f(res.get('profit_factor', res.get('pf', 0.0)))
+    wr = _f(res.get('win_rate', res.get('wr', 0.0)))
+    trades = _i(res.get('total_trades', res.get('trades', 0)))
+    dd_abs = _f(res.get('max_drawdown', res.get('drawdown_abs', 0.0)))
+
+    regime_pf = res.get('regime_pf') if isinstance(res.get('regime_pf'), dict) else {}
+    regime_wr = res.get('regime_wr') if isinstance(res.get('regime_wr'), dict) else {}
+    regime_breakdown = res.get('regime_breakdown') if isinstance(res.get('regime_breakdown'), dict) else {}
+
+    def _regime_chunk(name: str) -> str:
+        rpf = _f(regime_pf.get(name, 0.0))
+        rwr = _f(regime_wr.get(name, 0.0))
+        rn = _i(regime_breakdown.get(f'{name}_trades', regime_breakdown.get(name, 0)))
+        return f"{name}(PF={rpf:.2f},WR={rwr * 100:.1f}%,N={rn})"
+
+    strategy_spec_path = str(inputs.get('strategy_spec') or '')
+    strategy_name = str((strategy_spec or {}).get('id') or (strategy_spec or {}).get('strategy_family') or Path(strategy_spec_path).stem or 'unknown')
+    variant_name = str(inputs.get('variant') or 'unknown')
+
+    doctrine_text = select_relevant_doctrine(doctrine, [])
+    doctrine_lines = [ln for ln in doctrine_text.splitlines() if ln.strip().startswith('- [')][:5]
+    doctrine_compact = ' | '.join(doctrine_lines)[:800]
 
     hist_rows = []
     for h in (outcome_history or [])[:5]:
-        verdict = str(h.get('verdict') or '')
-        dtypes = [str(d.get('type') or '') for d in (h.get('directives') or [])[:3] if isinstance(d, dict)]
-        reason = ''
-        if h.get('llm_reasoning'):
-            reason = str(h.get('llm_reasoning'))
-        elif h.get('failure_reasons'):
-            fr = h.get('failure_reasons') or []
-            reason = str((fr[0] or {}).get('short') if fr and isinstance(fr[0], dict) else '')
-        hist_rows.append(f"{verdict}: {reason[:80]} | directives={','.join(dtypes)[:80]}")
-    history_compact = '\n'.join(hist_rows)[:500]
+        hv = str(h.get('verdict') or '')
+        hm = h.get('metrics') or {}
+        hist_rows.append(f"{hv}(PF={_f(hm.get('profit_factor_after_costs', 0.0)):.2f},DD={_f(hm.get('max_drawdown', 0.0)):.0f},T={_i(hm.get('trades', 0))})")
+    history_compact = ' '.join(hist_rows)[:400]
 
     contract = (
-        '{"verdict":"ACCEPT|REJECT","reasoning":"...","directives":[{"type":"ROLE_SWAP|THRESHOLD_SWEEP|PARAM_SWEEP|ENTRY_TIGHTEN|ENTRY_RELAX|EXIT_CHANGE|GATE_ADJUST|TEMPLATE_SWITCH","params":{},"reasoning":"..."}],'
-        '"regime_recommendation":{"add_filter":true|false,"allowed_regimes":["trending"|"ranging"|"transitional"]},"confidence":"low|medium|high","doctrine_update":"string|null"}'
+        '{"verdict":"ACCEPT|REVISE|REJECT","reasoning":"...","confidence":0.0,'
+        '"directives":[{"type":"ROLE_SWAP|THRESHOLD_SWEEP|PARAM_SWEEP|ENTRY_TIGHTEN|ENTRY_RELAX|EXIT_CHANGE|GATE_ADJUST|TEMPLATE_SWITCH","params":{},"reasoning":"..."}],'
+        '"edge_assessment":{"regime_dependence":"high|medium|low","stability_score":0.0,"failure_mode":"..."},'
+        '"regime_recommendation":{"add_filter":true|false,"allowed_regimes":["trending"|"ranging"|"transitional"]},"doctrine_update":"string|null"}'
     )
 
-    user = (
-        'Strategy Summary\n' + spec_summary + '\n\n'
-        'Backtest Results\n'
-        f"Strategy={strategy_name}; Variant={variant_name or 'unknown'}; Asset={asset or 'unknown'}; TF={timeframe or 'unknown'}; PF={pf:.4f}; WR={wr * 100:.2f}%; {dd_field}; Trades={trades}\n\n"
-        'Regime\n'
-        f"trend(PF={float(regime_pf.get('trending', 0.0) or 0.0):.4f},WR={float(regime_wr.get('trending', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('trending_trades', 0) or 0)}); "
-        f"range(PF={float(regime_pf.get('ranging', 0.0) or 0.0):.4f},WR={float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('ranging_trades', 0) or 0)}); "
-        f"trans(PF={float(regime_pf.get('transitional', 0.0) or 0.0):.4f},WR={float(regime_wr.get('transitional', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('transitional_trades', 0) or 0)}); dom={res.get('dominant_regime', 'unknown')}\n\n"
-        'Doctrine (top 5 relevant)\n' + doctrine_text + '\n\n'
-        'Recent Outcomes\n' + history_compact + '\n\n'
-        'Rules: ACCEPT only if PF>1.0 and Trades>50. Generate 1-3 directives, valid types only, specific params.\n'
-        'Return JSON exactly:\n' + contract
+    prompt = (
+        f"Strategy={strategy_name} Variant={variant_name} Asset={asset} TF={timeframe} PF={pf:.4f} WR={wr * 100:.2f}% DD_abs={dd_abs:.2f} Trades={trades}\n"
+        f"Regime: {_regime_chunk('trending')} {_regime_chunk('ranging')} {_regime_chunk('transitional')} Dominant={res.get('dominant_regime', 'unknown')}\n"
+        f"RecentOutcomes: {history_compact or 'none'}\n"
+        f"DoctrineTop: {doctrine_compact or 'none'}\n"
+        f"Return schema: {contract}\n"
+        "Respond with a single raw JSON object. No markdown. No code fences."
     )
-    return user[:8000]
+    return prompt[:8000]
 
 
 def extract_json(raw_text: str) -> dict | None:
