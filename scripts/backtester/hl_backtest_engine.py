@@ -9,6 +9,8 @@ import contextlib
 import io
 import pandas as pd
 
+from signal_templates import resolve_template, get_signals
+
 try:
     with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
         import pandas_ta as pta
@@ -184,12 +186,19 @@ def main() -> int:
     csv_path = Path(args.dataset_meta.replace('.meta.json', '.csv'))
     spec = json.loads(Path(args.strategy_spec).read_text(encoding='utf-8'))
     variant = next(v for v in spec['variants'] if v['name'] == args.variant)
+    template_name = resolve_template(variant)
+    variant_params = {}
+    for p in variant.get('parameters', []):
+        if isinstance(p, dict) and 'name' in p and 'default' in p:
+            variant_params[p['name']] = p['default']
+    rules = parse_rules(variant.get('risk_rules', []))
+    for k, v in rules.items():
+        variant_params[k] = v
     if not isinstance(variant.get('risk_policy'), dict) or not isinstance(variant.get('execution_policy'), dict):
         raise SystemExit('reason_code=STRATEGYSPEC_MISSING_RISK_POLICY')
 
     risk_policy = variant['risk_policy']
     execution_policy = variant['execution_policy']
-    rules = parse_rules(variant.get('risk_rules', []))
     cost_config_path = ROOT / args.cost_config
     costs = json.loads(cost_config_path.read_text(encoding='utf-8'))
     fee_model_hash = hashlib.sha256(cost_config_path.read_bytes()).hexdigest()
@@ -226,12 +235,7 @@ def main() -> int:
     tie_break = str(execution_policy.get('tie_break', 'worst_case'))
     allow_reverse = bool(execution_policy.get('allow_reverse', True))
 
-    is_trendpullback = 'trendpullback' in args.variant.lower()
-    ema_trend = int(rules.get('ema_trend', 200))
-    ema_slope = int(rules.get('ema_slope', 50))
     rsi_period = int(rules.get('rsi_period', 14))
-    rsi_long_max = float(rules.get('rsi_long_max', 40))
-    rsi_short_min = float(rules.get('rsi_short_min', 60))
 
     trades = []
     pos = None
@@ -254,8 +258,8 @@ def main() -> int:
         prev_ema9, prev_ema21, prev_ema50 = ema9, ema21, ema50
         ema9 = ema(ema9, b['close'], 9)
         ema21 = ema(ema21, b['close'], 21)
-        ema50 = ema(ema50, b['close'], ema_slope)
-        ema200 = ema(ema200, b['close'], ema_trend)
+        ema50 = ema(ema50, b['close'], 50)
+        ema200 = ema(ema200, b['close'], 200)
 
         rsi, avg_gain, avg_loss = rsi_step(prev_close, b['close'], avg_gain, avg_loss, rsi_period)
 
@@ -287,14 +291,7 @@ def main() -> int:
             adx_val = None
         adx_series.append(adx_val)
 
-        if is_trendpullback:
-            ema50_up = prev_ema50 is not None and ema50 > prev_ema50
-            ema50_dn = prev_ema50 is not None and ema50 < prev_ema50
-            long_sig = (ema200 is not None and b['close'] > ema200 and ema50_up and rsi is not None and rsi < rsi_long_max)
-            short_sig = (ema200 is not None and b['close'] < ema200 and ema50_dn and rsi is not None and rsi > rsi_short_min)
-        else:
-            long_sig = prev_ema9 is not None and prev_ema21 is not None and prev_ema9 <= prev_ema21 and ema9 > ema21
-            short_sig = prev_ema9 is not None and prev_ema21 is not None and prev_ema9 >= prev_ema21 and ema9 < ema21
+        long_sig, short_sig = get_signals(template_name, ind_df, i, variant_params)
 
         if long_sig:
             signals_seen_long += 1
