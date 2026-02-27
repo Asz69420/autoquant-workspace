@@ -438,6 +438,96 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
     return system[:200], user[:8000]
 
 
+def _normalize_llm_verdict(raw_verdict: object, pf: float) -> str:
+    txt = str(raw_verdict or '').strip().upper()
+    if pf < 1.0:
+        return 'REJECT'
+    if 'ACCEPT' in txt:
+        return 'ACCEPT'
+    if 'REVISE' in txt:
+        return 'REVISE'
+    if 'REJECT' in txt:
+        return 'REJECT'
+    return 'REJECT'
+
+
+def _normalize_llm_reasoning(raw_reasoning: object) -> str:
+    if isinstance(raw_reasoning, list):
+        return ' '.join(str(x).strip() for x in raw_reasoning if str(x).strip())
+    return str(raw_reasoning or '').strip()
+
+
+def _normalize_llm_doctrine_update(raw_doctrine_update: object) -> str | None:
+    if isinstance(raw_doctrine_update, list):
+        s = ' '.join(str(x).strip() for x in raw_doctrine_update if str(x).strip()).strip()
+        return s or None
+    s = str(raw_doctrine_update or '').strip()
+    if not s or s.lower() == 'null':
+        return None
+    return s
+
+
+def _normalize_llm_confidence(raw_confidence: object) -> str:
+    if isinstance(raw_confidence, (int, float)):
+        x = float(raw_confidence)
+        if x < 0.3:
+            return 'low'
+        if x <= 0.7:
+            return 'medium'
+        return 'high'
+    return str(raw_confidence or '').strip()
+
+
+def _normalize_llm_directives(raw_directives: object) -> list[dict]:
+    if not isinstance(raw_directives, list):
+        return []
+    safe_dirs: list[dict] = []
+    for i, d in enumerate(raw_directives[:3], start=1):
+        if isinstance(d, str):
+            safe_dirs.append({'id': f'd{i}', 'type': 'TEMPLATE_SWITCH', 'params': {}, 'rationale': d.strip(), 'priority': i})
+            continue
+        if not isinstance(d, dict):
+            continue
+        dt = str(d.get('type') or '').strip()
+        if dt not in DIRECTIVE_TYPES:
+            continue
+        safe_dirs.append({'id': f'd{i}', 'type': dt, 'params': d.get('params') if isinstance(d.get('params'), dict) else {}, 'rationale': str(d.get('reasoning') or d.get('rationale') or ''), 'priority': i})
+    return safe_dirs
+
+
+def _resolve_backtest_result_obj(best_run: dict, batch: dict) -> dict:
+    candidate_paths: list[Path] = []
+    bp = str(best_run.get('backtest_result_path') or '')
+    if bp:
+        p = Path(bp)
+        candidate_paths.append(p)
+        candidate_paths.append(ROOT / bp)
+
+    runs = batch.get('runs') or []
+    for r in runs[:5] if isinstance(runs, list) else []:
+        rp = str((r or {}).get('backtest_result_path') or '')
+        if not rp:
+            continue
+        candidate_paths.append(Path(rp))
+        candidate_paths.append(ROOT / rp)
+
+    latest_bt = latest_file('artifacts/backtests/**/*.backtest_result.json')
+    if latest_bt:
+        candidate_paths.append(latest_bt)
+
+    seen: set[str] = set()
+    for p in candidate_paths:
+        key = str(p)
+        if key in seen:
+            continue
+        seen.add(key)
+        if p.exists():
+            obj = _j(p, {})
+            if isinstance(obj, dict) and isinstance(obj.get('results'), dict):
+                return obj
+    return {}
+
+
 def _directive_history_stats(notes: list[dict]) -> dict[str, dict]:
     if not notes:
         return {}
@@ -632,44 +722,40 @@ def main() -> int:
     doctrine_update = None
 
     if not args.no_llm:
-        bt_obj = _j(Path(str(best_run.get('backtest_result_path') or '')), {}) if best_run.get('backtest_result_path') else {}
+        bt_obj = _resolve_backtest_result_obj(best_run, batch)
         strategy_spec_obj = load_strategy_spec(bt_obj)
         doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig') if DOCTRINE_PATH.exists() else ''
         outcome_history = load_family_outcome_history(strategy_family, limit=5)
         system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
+        print(f"[DEBUG] Prompt user first 500 chars: {user_prompt[:500]}")
         _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(system_prompt) + len(user_prompt)}')
         raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='main', timeout=120)
+        if raw:
+            debug_path = ROOT / 'artifacts' / 'outcomes' / 'llm_debug.txt'
+            debug_path.parent.mkdir(parents=True, exist_ok=True)
+            debug_path.write_text(raw, encoding='utf-8')
+            print(f"[DEBUG] LLM raw response written to {debug_path}")
+            print(f"[DEBUG] First 500 chars: {raw[:500]}")
+
         use_llm = False
         llm_result: dict = {}
         if raw:
             parsed = llm_client.parse_llm_json(raw)
             if isinstance(parsed, dict):
                 llm_result = parsed
-                if all(k in llm_result for k in ['verdict', 'reasoning', 'directives', 'confidence']):
+                if any(k in llm_result for k in ['verdict', 'reasoning', 'directives', 'confidence', 'doctrine_update']):
                     use_llm = True
 
         if use_llm:
-            v = str(llm_result.get('verdict', '')).upper()
-            if v in {'ACCEPT', 'REJECT', 'REVISE'}:
-                verdict = v
-            llm_dirs = llm_result.get('directives', []) if isinstance(llm_result.get('directives'), list) else []
-            safe_dirs = []
-            for i, d in enumerate(llm_dirs[:3], start=1):
-                if not isinstance(d, dict):
-                    continue
-                dt = str(d.get('type') or '')
-                if dt not in DIRECTIVE_TYPES:
-                    continue
-                safe_dirs.append({'id': f'd{i}', 'type': dt, 'params': d.get('params') if isinstance(d.get('params'), dict) else {}, 'rationale': str(d.get('reasoning') or d.get('rationale') or ''), 'priority': i})
+            verdict = _normalize_llm_verdict(llm_result.get('verdict'), pf)
+            safe_dirs = _normalize_llm_directives(llm_result.get('directives'))
             if safe_dirs:
                 directives = safe_dirs
             analysis_source = 'llm'
-            llm_reasoning = str(llm_result.get('reasoning') or '')
-            llm_confidence = str(llm_result.get('confidence') or '')
+            llm_reasoning = _normalize_llm_reasoning(llm_result.get('reasoning'))
+            llm_confidence = _normalize_llm_confidence(llm_result.get('confidence'))
             regime_recommendation = llm_result.get('regime_recommendation') if isinstance(llm_result.get('regime_recommendation'), dict) else None
-            doctrine_update = llm_result.get('doctrine_update')
-            if doctrine_update is not None:
-                doctrine_update = str(doctrine_update).strip() if str(doctrine_update).strip().lower() != 'null' else None
+            doctrine_update = _normalize_llm_doctrine_update(llm_result.get('doctrine_update'))
             if doctrine_update:
                 _append_doctrine_insight(strategy_family, doctrine_update, str(best_run.get('backtest_result_path') or ''), llm_confidence or '')
                 _maybe_trigger_doctrine_synthesis()
