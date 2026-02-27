@@ -727,6 +727,8 @@ def main() -> int:
         doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig') if DOCTRINE_PATH.exists() else ''
         outcome_history = load_family_outcome_history(strategy_family, limit=5)
         system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
+        print(f"[DEBUG PROMPT] {user_prompt[:300]}")
+        print(f"[DEBUG SYSTEM] {system_prompt[:200]}")
         print(f"[DEBUG] Prompt user first 500 chars: {user_prompt[:500]}")
         _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(system_prompt) + len(user_prompt)}')
         raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='analyser', timeout=120)
