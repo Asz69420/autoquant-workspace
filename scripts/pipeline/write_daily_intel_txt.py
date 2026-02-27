@@ -394,6 +394,30 @@ def attention(meta: dict) -> list[str]:
     return out
 
 
+def _read_advisory_suggestions() -> list[str]:
+    """Pull the Suggestions For Asz section from Quandalf's advisory."""
+    advisory_path = Path(__file__).resolve().parents[2] / "docs" / "claude-reports" / "STRATEGY_ADVISORY.md"
+    if not advisory_path.exists():
+        return ["(no advisory available)"]
+    try:
+        text = advisory_path.read_text(encoding="utf-8")
+        lines_out = []
+        in_section = False
+        for line in text.split("\n"):
+            if "suggestions for asz" in line.lower():
+                in_section = True
+                continue
+            if in_section and line.startswith("#"):
+                break
+            if in_section and line.strip():
+                clean = line.strip().lstrip("- ").lstrip("* ")
+                if clean:
+                    lines_out.append(f" {clean}")
+        return lines_out[:5] if lines_out else ["(no suggestions in latest advisory)"]
+    except Exception:
+        return ["(advisory read error)"]
+
+
 def build_text(rows: list[Row], meta: dict) -> str:
     now = datetime.now(AEST)
     lines = [limit42(f"📊 DAILY INTEL — {now:%Y-%m-%d} 5:30 AEST"), ""]
@@ -408,6 +432,8 @@ def build_text(rows: list[Row], meta: dict) -> str:
     lines += milestones(rows)
     lines += ["", "⚠️ ATTENTION"]
     lines += attention(meta)
+    lines += ["", "🧙 QUANDALF SUGGESTS"]
+    lines += _read_advisory_suggestions()
     lines.append("")
     return "\n".join(lines)
 
