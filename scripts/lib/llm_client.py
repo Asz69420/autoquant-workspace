@@ -112,7 +112,9 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
             if sys.platform == 'win32':
                 kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW
 
-            cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--local', '--session-id', 'analyser-brain', '-m', full_prompt, '--json', '--timeout', str(timeout)]
+            # Flatten for CLI compatibility (newlines break Windows args)
+            cli_prompt = full_prompt.replace('\n', ' ').replace('\r', ' ')
+            cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--local', '--session-id', 'analyser-brain', '-m', cli_prompt, '--json', '--timeout', str(timeout)]
             p = subprocess.run(cmd, **kwargs)
 
             if p.returncode != 0:
