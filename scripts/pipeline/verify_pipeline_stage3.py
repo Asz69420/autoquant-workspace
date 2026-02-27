@@ -27,12 +27,12 @@ def main() -> int:
     d = json.loads(p.read_text(encoding='utf-8-sig'))
     must(d.get('schema_version') in ('1.0', '1.1'), 'schema_version must be 1.0 or 1.1')
     variants = d.get('variants', [])
-    must(1 <= len(variants) <= 5, 'variants must be 1..5')
+    must(1 <= len(variants) <= 10, 'variants must be 1..10')
 
     has_long = False
     has_short = False
     for v in variants:
-        for k, cap in [('entry_long', 10), ('entry_short', 10), ('filters', 10), ('exit_rules', 10), ('risk_rules', 10), ('constraints', 10)]:
+        for k, cap in [('entry_long', 20), ('entry_short', 20), ('filters', 20), ('exit_rules', 20), ('risk_rules', 20), ('constraints', 20)]:
             arr = v.get(k, [])
             must(isinstance(arr, list), f'{k} must be list')
             must(len(arr) <= cap, f'{k} exceeds cap')

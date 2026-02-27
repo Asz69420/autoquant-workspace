@@ -12,7 +12,7 @@
     "source_thesis_path": { "type": "string", "minLength": 1, "maxLength": 1024 },
     "variants": {
       "type": "array",
-      "maxItems": 5,
+      "maxItems": 10,
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -29,11 +29,11 @@
         "properties": {
           "name": { "type": "string", "minLength": 1, "maxLength": 80 },
           "description": { "type": "string", "minLength": 1, "maxLength": 200 },
-          "entry_long": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
-          "entry_short": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
-          "filters": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
-          "exit_rules": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
-          "risk_rules": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 240 } },
+          "entry_long": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 240 } },
+          "entry_short": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 240 } },
+          "filters": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 240 } },
+          "exit_rules": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 240 } },
+          "risk_rules": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 240 } },
           "risk_policy": {
             "type": "object",
             "additionalProperties": false,
@@ -96,7 +96,7 @@
               }
             }
           },
-          "constraints": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 200 } }
+          "constraints": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 200 } }
         }
       }
     }
