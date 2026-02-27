@@ -619,6 +619,7 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     family_hash = _div_hl.sha256(str(seed.get('name', '')).encode()).hexdigest()
     all_templates = list(TEMPLATE_COMBOS.keys())
     pick_idx = int(family_hash[:8], 16) % len(all_templates)
+    diversity['filters'] = [f for f in (diversity.get('filters') or []) if 'RoleFramework' not in str(f)]
     diversity_directive = {'id': 'd_diversity', 'type': 'TEMPLATE_SWITCH', 'params': {'target': all_templates[pick_idx]}}
     diversity = _apply_directive(diversity, diversity_directive, len(out) + 1, magnitude=1.0)
     diversity['name'] = 'template_diversity'
