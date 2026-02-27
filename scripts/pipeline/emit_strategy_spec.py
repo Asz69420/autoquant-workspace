@@ -687,12 +687,37 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     diversity = copy.deepcopy(seed)
     family_hash = _div_hl.sha256(str(seed.get('name', '')).encode()).hexdigest()
     all_templates = list(TEMPLATE_COMBOS.keys())
-    pick_idx = int(family_hash[:8], 16) % len(all_templates)
+    # Read advisory to avoid failing templates
+    advisory = _read_advisory_directives()
+    avoid = set(advisory.get("avoid_templates", []))
+    prefer = list(advisory.get("prefer_templates", []))
+
+    # Remove current template and avoided templates from candidates
+    current_filters = [str(f) for f in seed.get('filters', []) if 'RoleFramework' in str(f)]
+    current_key = next((k for k, combo in TEMPLATE_COMBOS.items() if any(combo['confirmation'] in f for f in current_filters)), '')
+    candidates = [t for t in all_templates if t != current_key and t not in avoid]
+    if not candidates:
+        candidates = [t for t in all_templates if t != current_key]
+
+    # Prefer advisory-recommended templates, otherwise rotate by cycle count
+    if prefer:
+        preferred_available = [t for t in prefer if t in candidates]
+        if preferred_available:
+            # Rotate through preferred templates using timestamp to avoid repetition
+            cycle_idx = int(datetime.now().strftime('%H')) // 2
+            pick = preferred_available[cycle_idx % len(preferred_available)]
+        else:
+            cycle_idx = int(datetime.now().strftime('%H%M'))
+            pick = candidates[cycle_idx % len(candidates)]
+    else:
+        cycle_idx = int(datetime.now().strftime('%H%M'))
+        pick = candidates[cycle_idx % len(candidates)]
+
     diversity['filters'] = [f for f in (diversity.get('filters') or []) if 'RoleFramework' not in str(f)]
-    diversity_directive = {'id': 'd_diversity', 'type': 'TEMPLATE_SWITCH', 'params': {'target': all_templates[pick_idx]}}
+    diversity_directive = {'id': 'd_diversity', 'type': 'TEMPLATE_SWITCH', 'params': {'target': pick}}
     diversity = _apply_directive(diversity, diversity_directive, len(out) + 1, magnitude=1.0)
     diversity['name'] = 'template_diversity'
-    diversity['description'] = f"Forced template diversity: {all_templates[pick_idx]}"
+    diversity['description'] = f"Forced template diversity: {pick}"
     diversity['origin'] = 'DIVERSITY'
     out.append(diversity)
     return out[:4]
