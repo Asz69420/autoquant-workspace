@@ -494,6 +494,45 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
     return user[:8000]
 
 
+def extract_json(raw_text: str) -> dict | None:
+    """Extract JSON object from potentially wrapped response."""
+    if not raw_text or not raw_text.strip():
+        return None
+    text = raw_text.strip()
+    text = re.sub(r'^```(?:json)?\s*\n?', '', text)
+    text = re.sub(r'\n?```\s*$', '', text)
+    text = text.strip()
+    start = text.find('{')
+    if start == -1:
+        return None
+    depth = 0
+    end = start
+    for i in range(start, len(text)):
+        if text[i] == '{':
+            depth += 1
+        elif text[i] == '}':
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+    json_str = text[start:end + 1]
+    json_str = json_str.replace('\u00e2\u0080\u0094', '—')
+    json_str = json_str.replace('\u00e2\u0080\u0093', '–')
+    return json.loads(json_str)
+
+
+def _log_llm_parse_failure(raw_response: str, error: str) -> None:
+    p = ROOT / 'data' / 'llm_parse_failures.ndjson'
+    p.parent.mkdir(parents=True, exist_ok=True)
+    row = {
+        'timestamp': datetime.now(UTC).isoformat(),
+        'error': str(error)[:500],
+        'raw_first_500': str(raw_response or '')[:500],
+    }
+    with open(p, 'a', encoding='utf-8', newline='\n') as f:
+        f.write(json.dumps(row, ensure_ascii=False) + '\n')
+
+
 def _normalize_llm_verdict(raw_verdict: object, pf: float) -> str:
     txt = str(raw_verdict or '').strip().upper()
     if pf < 1.0:
@@ -796,11 +835,21 @@ def main() -> int:
         use_llm = False
         llm_result: dict = {}
         if raw:
-            parsed = llm_client.parse_llm_json(raw)
-            if isinstance(parsed, dict):
-                llm_result = parsed
-                if 'verdict' in llm_result and 'reasoning' in llm_result:
-                    use_llm = True
+            try:
+                parsed = extract_json(raw)
+                if isinstance(parsed, dict):
+                    llm_result = parsed
+                    if 'verdict' in llm_result and 'reasoning' in llm_result:
+                        use_llm = True
+                else:
+                    msg = 'extract_json returned None'
+                    print(f"[LLM] JSON extraction failed: {msg}")
+                    print(f"[LLM] Raw response (first 300): {raw[:300]}")
+                    _log_llm_parse_failure(raw, msg)
+            except (json.JSONDecodeError, Exception) as e:
+                print(f"[LLM] JSON extraction failed: {e}")
+                print(f"[LLM] Raw response (first 300): {raw[:300]}")
+                _log_llm_parse_failure(raw, str(e))
 
         if use_llm:
             verdict = _normalize_llm_verdict(llm_result.get('verdict'), pf)
