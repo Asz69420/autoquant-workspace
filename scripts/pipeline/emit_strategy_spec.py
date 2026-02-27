@@ -48,6 +48,73 @@ TEMPLATE_COMBOS = {
 }
 
 
+def _read_advisory_directives() -> dict:
+    """Read Claude's strategy advisory for pipeline guidance."""
+    advisory_path = ROOT / "docs" / "claude-reports" / "STRATEGY_ADVISORY.md"
+    if not advisory_path.exists():
+        return {}
+    try:
+        text = advisory_path.read_text(encoding="utf-8")
+        result = {}
+
+        if "BLACKLIST" in text.upper() or "STOP ITERATING" in text.upper() or "FAILING PATTERN" in text.upper():
+            # Extract template names mentioned in failing patterns section
+            failing = []
+            in_failing = False
+            for line in text.split("\n"):
+                if "failing pattern" in line.lower() or "stop iterating" in line.lower():
+                    in_failing = True
+                    continue
+                if in_failing and line.startswith("#"):
+                    in_failing = False
+                if in_failing and any(t in line.lower() for t in TEMPLATE_COMBOS):
+                    for t in TEMPLATE_COMBOS:
+                        if t in line.lower():
+                            failing.append(t)
+            result["avoid_templates"] = list(set(failing))
+
+        if "PROMISING" in text.upper() or "EXPLORE" in text.upper():
+            promising = []
+            in_promising = False
+            for line in text.split("\n"):
+                if "promising" in line.lower() or "explore" in line.lower():
+                    in_promising = True
+                    continue
+                if in_promising and line.startswith("#"):
+                    in_promising = False
+                if in_promising and any(t in line.lower() for t in TEMPLATE_COMBOS):
+                    for t in TEMPLATE_COMBOS:
+                        if t in line.lower():
+                            promising.append(t)
+            result["prefer_templates"] = list(set(promising))
+
+        result["advisory_read"] = True
+        return result
+    except Exception:
+        return {}
+
+
+def _deduplicate_variants(variants: list[dict]) -> list[dict]:
+    """Remove variants that produce identical signal logic."""
+    if not variants:
+        return variants
+    seen_sigs = []
+    unique_variants = []
+    for v in variants:
+        # Build a signature from the actual signal rules
+        sig_parts = []
+        for key in ('entry_long', 'entry_short', 'filters', 'exit_rules', 'risk_rules'):
+            rules = v.get(key, [])
+            sig_parts.append(json.dumps(sorted(str(r) for r in rules) if isinstance(rules, list) else [str(rules)]))
+        sig = '|'.join(sig_parts)
+        if sig not in seen_sigs:
+            seen_sigs.append(sig)
+            unique_variants.append(v)
+        else:
+            print(f"DEDUP_VARIANT_REMOVED name={v.get('name', '?')} (identical signal logic)", file=sys.stderr)
+    return unique_variants
+
+
 def _set_reasoning_effort_for_strategist() -> None:
     model_id = (os.getenv('OPENCLAW_MODEL_ID') or 'openai-codex/gpt-5.3-codex').strip()
     effort = 'default'
@@ -917,12 +984,24 @@ def main() -> int:
     sid = f"strategy-spec-{datetime.now().strftime('%Y%m%d')}-{id_suffix}"
     if args.mode == 'directive-only':
         sid = f"{sid}-{uuid.uuid4().hex[:8]}"
+    # --- Advisory integration + deduplication ---
+    advisory = _read_advisory_directives()
+    if advisory.get("advisory_read"):
+        spec_meta_advisory = {
+            "avoid_templates": advisory.get("avoid_templates", []),
+            "prefer_templates": advisory.get("prefer_templates", []),
+        }
+        print(f"ADVISORY_READ avoid={advisory.get('avoid_templates', [])} prefer={advisory.get('prefer_templates', [])}", file=sys.stderr)
+    else:
+        spec_meta_advisory = {}
+    variants = _deduplicate_variants(variants)
     variants, roles_fixed = _ensure_role_compliant_variants(variants)
     spec = {
         'schema_version': '1.1',
         'id': sid,
         'created_at': now_iso(),
         'variants': variants,
+        'advisory_context': spec_meta_advisory if spec_meta_advisory else None,
         'backtester_executable_indicators': list(EXECUTABLE_INDICATORS.keys()),
         'backtester_executable_indicator_map': EXECUTABLE_INDICATORS,
         'indicator_roles': INDICATOR_ROLES,
