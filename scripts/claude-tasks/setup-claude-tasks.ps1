@@ -2,7 +2,9 @@ $ErrorActionPreference = "Stop"
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
 $TASKS_DIR = "$ROOT\scripts\claude-tasks"
 
-$pwshPath = (Get-Command pwsh -ErrorAction SilentlyContinue)?.Source
+$pwshPath = $null
+$pwshCmd = Get-Command pwsh -ErrorAction SilentlyContinue
+if ($pwshCmd) { $pwshPath = $pwshCmd.Source }
 if (-not $pwshPath) { $pwshPath = (Get-Command powershell).Source }
 
 Write-Host "Setting up Claude Code scheduled tasks..." -ForegroundColor Cyan
