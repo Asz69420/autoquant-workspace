@@ -35,6 +35,16 @@ INDICATOR_ROLES = {
     'volume_volatility': ['obv', 'vwap', 'atr', 'bollinger', 'donchian', 'adx', 'stiffness'],
 }
 
+TEMPLATE_COMBOS = {
+    'ema_crossover': {'baseline': 'EMA', 'confirmation': 'EMA', 'volume_volatility': 'ATR'},
+    'rsi_pullback': {'baseline': 'EMA', 'confirmation': 'RSI', 'volume_volatility': 'ATR'},
+    'macd_confirmation': {'baseline': 'EMA', 'confirmation': 'MACD', 'volume_volatility': 'ATR'},
+    'supertrend_follow': {'baseline': 'Supertrend', 'confirmation': 'ADX', 'volume_volatility': 'ATR'},
+    'bollinger_breakout': {'baseline': 'Bollinger Bands', 'confirmation': 'RSI', 'volume_volatility': 'ATR'},
+    'stochastic_reversal': {'baseline': 'EMA', 'confirmation': 'Stochastic', 'volume_volatility': 'ATR'},
+    'ema_rsi_atr': {'baseline': 'EMA', 'confirmation': 'RSI', 'volume_volatility': 'ATR'},
+}
+
 
 def _set_reasoning_effort_for_strategist() -> None:
     model_id = (os.getenv('OPENCLAW_MODEL_ID') or 'openai-codex/gpt-5.3-codex').strip()
@@ -564,15 +574,6 @@ def _apply_directive(base: dict, directive: dict, idx: int, magnitude: float = 1
 
     elif d_type == 'TEMPLATE_SWITCH':
         target = str(params.get('target') or '').strip().lower()
-        TEMPLATE_COMBOS = {
-            'ema_crossover': {'baseline': 'EMA', 'confirmation': 'EMA', 'volume_volatility': 'ATR'},
-            'rsi_pullback': {'baseline': 'EMA', 'confirmation': 'RSI', 'volume_volatility': 'ATR'},
-            'macd_confirmation': {'baseline': 'EMA', 'confirmation': 'MACD', 'volume_volatility': 'ATR'},
-            'supertrend_follow': {'baseline': 'Supertrend', 'confirmation': 'ADX', 'volume_volatility': 'ATR'},
-            'bollinger_breakout': {'baseline': 'Bollinger Bands', 'confirmation': 'RSI', 'volume_volatility': 'ATR'},
-            'stochastic_reversal': {'baseline': 'EMA', 'confirmation': 'Stochastic', 'volume_volatility': 'ATR'},
-            'ema_rsi_atr': {'baseline': 'EMA', 'confirmation': 'RSI', 'volume_volatility': 'ATR'},
-        }
         if target not in TEMPLATE_COMBOS:
             current_filters = [str(f) for f in v.get('filters', []) if 'RoleFramework' in str(f)]
             current_key = next((k for k, combo in TEMPLATE_COMBOS.items() if any(combo['confirmation'] in f for f in current_filters)), 'ema_rsi_atr')
@@ -616,7 +617,7 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     import hashlib as _div_hl
     diversity = copy.deepcopy(seed)
     family_hash = _div_hl.sha256(str(seed.get('name', '')).encode()).hexdigest()
-    all_templates = list(TEMPLATE_COMBOS.keys()) if 'TEMPLATE_COMBOS' not in dir() else ['ema_crossover', 'rsi_pullback', 'macd_confirmation', 'supertrend_follow', 'bollinger_breakout', 'stochastic_reversal', 'ema_rsi_atr']
+    all_templates = list(TEMPLATE_COMBOS.keys())
     pick_idx = int(family_hash[:8], 16) % len(all_templates)
     diversity_directive = {'id': 'd_diversity', 'type': 'TEMPLATE_SWITCH', 'params': {'target': all_templates[pick_idx]}}
     diversity = _apply_directive(diversity, diversity_directive, len(out) + 1, magnitude=1.0)
