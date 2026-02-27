@@ -15,8 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LOG_PATH = ROOT / 'data' / 'logs' / 'llm_calls.ndjson'
-DEFAULT_OPENCLAW_CLI = r'C:\Users\Clamps\AppData\Roaming\npm\openclaw.cmd'
-OPENCLAW_CLI = shutil.which('openclaw') or os.environ.get('OPENCLAW_CLI_PATH') or (DEFAULT_OPENCLAW_CLI if Path(DEFAULT_OPENCLAW_CLI).exists() else 'openclaw')
+OPENCLAW_CLI = shutil.which("openclaw") or r"C:\Users\Clamps\AppData\Roaming\npm\openclaw.cmd"
 GATEWAY_URL = 'http://127.0.0.1:18789'
 
 
