@@ -190,6 +190,9 @@ def _extract_metrics(batch: dict) -> tuple[float, float, int, dict, str, str]:
     pf = float(best.get('profit_factor', summary.get('profit_factor', 0.0)) or 0.0)
     dd = float(best.get('max_drawdown', summary.get('max_drawdown', 1.0)) or 1.0)
     trades = int(best.get('trades', summary.get('trades', 0)) or 0)
+    # Normalize drawdown: engine outputs absolute dollars, verdicts expect fraction of $10K base
+    if dd > 1.0:
+        dd = dd / 10000.0
     strategy_path = str(batch.get('strategy_spec_path') or '')
     strategy_family = Path(strategy_path).stem if strategy_path else 'unknown_strategy'
     template = str(best.get('variant_name') or batch.get('variant') or 'unknown_template')
