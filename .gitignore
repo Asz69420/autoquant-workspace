@@ -87,3 +87,4 @@ data/state/build_queue.lock
 # !docs/
 # !schemas/
 # !.gitignore
+scripts/claude-bridge/.env
