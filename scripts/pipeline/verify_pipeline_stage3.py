@@ -25,7 +25,7 @@ def main() -> int:
     must(p.stat().st_size <= MAX_JSON, 'strategy spec exceeds 60KB')
 
     d = json.loads(p.read_text(encoding='utf-8-sig'))
-    must(d.get('schema_version') == '1.0', 'schema_version must be 1.0')
+    must(d.get('schema_version') in ('1.0', '1.1'), 'schema_version must be 1.0 or 1.1')
     variants = d.get('variants', [])
     must(1 <= len(variants) <= 5, 'variants must be 1..5')
 
