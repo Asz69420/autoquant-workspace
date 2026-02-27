@@ -121,7 +121,8 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'analyser', timeout
             tmp.close()
             try:
                 ps_cmd = (
-                    f'$p = Get-Content -Raw "{tmp.name}"; '
+                    f'$p = Get-Content -Raw -Encoding UTF8 -LiteralPath "{tmp.name}"; '
+                    f'if (-not $p) {{ Write-Error "empty prompt from temp file"; exit 1 }}; '
                     f'& "{OPENCLAW_CLI}" agent --agent {agent} --local '
                     f'-m $p --json --timeout {timeout}'
                 )
@@ -141,11 +142,23 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'analyser', timeout
                 error_detail = f"returncode={p.returncode}; stderr={err}; stdout={out}"
                 raise RuntimeError(error_detail[:2000])
 
-            obj = json.loads(p.stdout)
-            payloads = obj.get('payloads') or obj.get('result', {}).get('payloads') or []
-            text = payloads[0].get('text') if payloads and isinstance(payloads[0], dict) else None
+            text: str | None = None
+            try:
+                obj = json.loads(p.stdout)
+                payloads = obj.get('payloads') or obj.get('result', {}).get('payloads') or []
+                if payloads and isinstance(payloads[0], dict):
+                    candidate = payloads[0].get('text')
+                    if isinstance(candidate, str):
+                        text = candidate
+            except (json.JSONDecodeError, KeyError, IndexError, TypeError):
+                pass
+
             if not isinstance(text, str):
-                raise RuntimeError('missing text payload in openclaw agent response')
+                raw = (p.stdout or '').strip()
+                if raw:
+                    text = raw
+                else:
+                    raise RuntimeError('empty response from openclaw agent')
 
             latency_ms = int((time.time() - t0) * 1000)
             _log_call(agent, len(full_prompt), len(str(text or '')), latency_ms, True, None, source='openclaw-local')
