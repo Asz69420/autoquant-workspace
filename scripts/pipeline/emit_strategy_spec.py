@@ -735,6 +735,22 @@ def _directives_from_outcome_notes(path: str) -> list[dict]:
     return out
 
 
+def _latest_llm_outcome_note() -> tuple[str, dict]:
+    out_root = ROOT / 'artifacts' / 'outcomes'
+    files = sorted(out_root.glob('**/outcome_notes_*.json'), key=lambda p: p.stat().st_mtime, reverse=True)
+    for p in files:
+        try:
+            obj = json.loads(p.read_text(encoding='utf-8-sig'))
+        except Exception:
+            continue
+        if str(obj.get('schema_version') or '') != '2.0':
+            continue
+        if str(obj.get('analysis_source') or '').lower() != 'llm':
+            continue
+        return str(p).replace('\\', '/'), obj
+    return '', {}
+
+
 def main() -> int:
     _set_reasoning_effort_for_strategist()
 
@@ -753,6 +769,9 @@ def main() -> int:
     source_spec: dict = {}
     variants: list[dict] = []
     source_thesis_path = ''
+    consumed_outcome_path = ''
+    consumed_outcome_verdict = ''
+    consumed_directives: list[dict] = []
 
     if args.mode == 'directive-only':
         if not args.source_spec or not args.outcome_notes:
@@ -764,6 +783,12 @@ def main() -> int:
             print(json.dumps({'status': 'BLOCKED', 'reason_code': 'SOURCE_SPEC_NO_VARIANTS', 'variants': 0, 'strategy_spec_path': ''}))
             return 0
         directives = _directives_from_outcome_notes(args.outcome_notes)
+        consumed_outcome_path = args.outcome_notes.replace('\\', '/')
+        try:
+            consumed_outcome_verdict = str(jload(args.outcome_notes).get('verdict') or '').upper()
+        except Exception:
+            consumed_outcome_verdict = ''
+        consumed_directives = directives[:5]
         if directives:
             variants = _directive_variants(source_variants[0], directives)
         else:
@@ -805,9 +830,37 @@ def main() -> int:
 
         strategy_family = str(thesis.get('strategy_family') or thesis.get('id') or '')
         template = str(thesis.get('template') or '')
-        directives = _collect_v2_directives(limit_notes=5, strategy_family=strategy_family, template=template)
-        if directives:
-            variants = _directive_variants(variants[0], directives)
+
+        llm_path, llm_note = _latest_llm_outcome_note()
+        llm_verdict = str(llm_note.get('verdict') or '').upper()
+        llm_directives = [d for d in (llm_note.get('directives') or []) if isinstance(d, dict) and d.get('id') and d.get('type')]
+
+        if llm_path:
+            consumed_outcome_path = llm_path
+            consumed_outcome_verdict = llm_verdict
+            consumed_directives = llm_directives[:5]
+            consumed_tags = ','.join([str(d.get('type')) for d in consumed_directives])
+            print(f"STRATEGIST_DIRECTIVES_CONSUMED source={llm_path} verdict={llm_verdict} directives={consumed_tags}", file=sys.stderr)
+
+        if llm_verdict == 'ACCEPT':
+            print(json.dumps({
+                'status': 'PROMOTE',
+                'reason_code': 'ACCEPT_PROMOTE_NO_REGEN',
+                'strategy_spec_path': '',
+                'variants': 0,
+                'mode': args.mode,
+                'consumed_outcome_notes_path': consumed_outcome_path,
+                'consumed_outcome_verdict': consumed_outcome_verdict,
+            }))
+            return 0
+
+        if llm_verdict in {'REVISE', 'REJECT'} and llm_directives:
+            variants = _directive_variants(variants[0], llm_directives)
+        else:
+            directives = _collect_v2_directives(limit_notes=5, strategy_family=strategy_family, template=template)
+            if directives:
+                variants = _directive_variants(variants[0], directives)
+                consumed_directives = directives[:5]
 
         variants = _apply_outcome_guidance(variants, limit=5)
 
@@ -840,8 +893,23 @@ def main() -> int:
     if args.mode == 'directive-only':
         spec['source_spec_path'] = args.source_spec.replace('\\', '/')
         spec['source_outcome_notes_path'] = args.outcome_notes.replace('\\', '/')
+        spec['consumed_outcome_notes_path'] = args.outcome_notes.replace('\\', '/')
     elif source_thesis_path:
         spec['source_thesis_path'] = source_thesis_path
+
+    if consumed_outcome_path:
+        spec['consumed_outcome_notes_path'] = consumed_outcome_path
+    if consumed_outcome_verdict:
+        spec['consumed_outcome_verdict'] = consumed_outcome_verdict
+    if consumed_directives:
+        spec['consumed_directives'] = [
+            {
+                'id': str(d.get('id')),
+                'type': str(d.get('type')),
+                'params': d.get('params', {}),
+            }
+            for d in consumed_directives
+        ]
 
     generation_origin = str(args.generation_origin or '').strip()
     if generation_origin:

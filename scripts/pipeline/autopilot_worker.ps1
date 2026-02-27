@@ -435,6 +435,7 @@ $recombineEmitted = $false
 $starvationCyclesPrev = 0
 $latestBatchArtifactPath = ''
 $latestRefinementArtifactPath = ''
+$latestStrategySpecPath = ''
 
 if (Handle-FastCommand $FastCommand) {
   exit 0
@@ -705,6 +706,7 @@ try {
           $specEmitArgs = @('scripts/pipeline/emit_strategy_spec.py','--thesis-path',$thesisPath)
           Emit-Summary 'SPEC_EMIT_DIAG' ('SPEC_EMIT_DIAG cmd=python ' + ($specEmitArgs -join ' ')) 'INFO' 'Strategist'
           $sp = Run-Py $specEmitArgs | ConvertFrom-Json
+          if ($sp.strategy_spec_path) { $latestStrategySpecPath = [string]$sp.strategy_spec_path }
           $variantCount = 0
           if ($sp.variants) { $variantCount = [int]$sp.variants }
           Emit-Summary 'BUNDLE_SPEC_RESULT' ('Bundle spec result: path=' + [string]$bp + ' spec_status=' + [string]$sp.status + ' variants=' + [string]$variantCount + ' spec_path=' + [string]$sp.strategy_spec_path) 'INFO' 'Strategist'
@@ -951,6 +953,7 @@ try {
 
         $backfillTried += 1
         $usedBackfillSpecs += $spPath
+        $latestStrategySpecPath = [string]$spPath
         $batch = $null
         try {
           $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
@@ -1138,7 +1141,13 @@ try {
     }
 
     if (($bundlesProcessed -gt 0) -and ($batchExecuted -gt 0 -or $refinementsRun -gt 0)) {
-      Invoke-OutcomeWorker $CycleRunId $latestBatchArtifactPath $latestRefinementArtifactPath
+      $mainOutcomePath = Invoke-OutcomeWorker $CycleRunId $latestBatchArtifactPath $latestRefinementArtifactPath
+      if (-not [string]::IsNullOrWhiteSpace([string]$mainOutcomePath) -and -not [string]::IsNullOrWhiteSpace([string]$latestStrategySpecPath)) {
+        $generatedPathMain = Invoke-DirectiveDrivenSpecGeneration ([string]$latestStrategySpecPath) ([string]$mainOutcomePath)
+        if (-not [string]::IsNullOrWhiteSpace([string]$generatedPathMain)) {
+          $directiveBackfillSpecsGenerated += 1
+        }
+      }
     }
   }
 
