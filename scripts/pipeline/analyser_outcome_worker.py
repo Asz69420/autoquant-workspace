@@ -766,6 +766,17 @@ def main() -> int:
     batch = _j(batch_path, {}) if batch_path else {}
     refinement = _j(ref_path, {}) if ref_path else {}
     _ = _j(lessons_path, [])
+    # Dedup guard: skip if this exact batch was already analyzed
+    import hashlib as _hl
+    batch_hash = _hl.sha256(json.dumps(batch, sort_keys=True).encode()).hexdigest()[:16] if batch else 'empty'
+    recent_outcomes = sorted(ROOT.glob('artifacts/outcomes/**/*.json'), key=lambda p: p.stat().st_mtime, reverse=True)[:10]
+    for ro in recent_outcomes:
+        ro_obj = _j(ro, {})
+        if str(ro_obj.get('_batch_hash', '')) == batch_hash and str(ro_obj.get('run_id', '')) != args.run_id:
+            summary = f'SKIPPED — batch_hash={batch_hash} already analyzed in {ro.name}'
+            _log('WARN', 'STALE_BATCH_SKIP', summary)
+            print(json.dumps({'processed': 0, 'verdict': 'SKIP', 'reason': 'STALE_BATCH', 'prior_outcome': str(ro)}))
+            return 0
 
     sources_used: list[str] = []
     if batch_path and batch_path.exists():
@@ -883,7 +894,7 @@ def main() -> int:
         'regime_analysis': {'available': bool(regime_ctx.get('available')), 'good_regimes': regime_ctx.get('good_regimes', []), 'bad_regimes': regime_ctx.get('bad_regimes', []), 'all_good': bool(regime_ctx.get('all_good')), 'all_bad': bool(regime_ctx.get('all_bad')), 'single_good': bool(regime_ctx.get('single_good'))},
         'failure_reasons': failures[:5], 'directives': directives[:5], 'analysis_source': analysis_source, 'doctrine_refs': doctrine_refs[:10],
         'directive_history': {'notes_considered': len(recent_notes), 'history_window': [{'id': str(n.get('id') or ''), 'created_at': str(n.get('created_at') or ''), 'verdict': str(n.get('verdict') or ''), 'profit_factor_after_costs': _extract_pf_from_note(n), 'directive_types': [str(d.get('type') or '') for d in (n.get('directives') or [])[:5]]} for n in recent_notes], 'directive_type_stats': history_stats, 'doctrine_enabled': (not args.disable_doctrine), 'doctrine_principles': {'regime_required': doctrine.regime_required, 'risk_gating': doctrine.risk_gating, 'macd_confirmation_over_entry': doctrine.macd_confirmation_over_entry}},
-        'next_experiments': next_experiments[:5], 'sources_used': sources_used[:10],
+        'next_experiments': next_experiments[:5], 'sources_used': sources_used[:10], '_batch_hash': batch_hash,
     }
     if analysis_source == 'llm':
         payload['llm_reasoning'] = llm_reasoning
