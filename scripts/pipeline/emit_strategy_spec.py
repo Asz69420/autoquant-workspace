@@ -220,10 +220,10 @@ def _fix_variant_roles(v: dict) -> dict:
     role_defaults = {
         'baseline': 'EMA', 'confirmation': 'RSI', 'volume_volatility': 'ATR'
     }
+    # Strip ALL existing RoleFramework filters first, then add correct ones
+    nv['filters'] = [f for f in (nv.get('filters') or []) if 'RoleFramework' not in str(f)]
     for role, ind in role_defaults.items():
-        hint = f"RoleFramework[{role}]={ind}"
-        if hint not in (nv.get('filters') or []):
-            nv.setdefault('filters', []).append(hint)
+        nv['filters'].append(f"RoleFramework[{role}]={ind}")
     return nv
 
 
