@@ -870,7 +870,7 @@ def main() -> int:
             if doctrine_update:
                 _append_doctrine_insight(strategy_family, doctrine_update, str(best_run.get('backtest_result_path') or ''), str(llm_confidence or ''))
                 doctrine_path = ROOT / 'docs' / 'DOCTRINE' / 'analyser-doctrine.md'
-                timestamp = datetime.utcnow().strftime('%Y%m%d-%H%M')
+                timestamp = datetime.now(UTC).strftime('%Y%m%d-%H%M')
                 entry = f"\n- [{timestamp}|llm|conf:{llm_confidence}] {doctrine_update}\n"
                 with open(doctrine_path, 'a', encoding='utf-8') as f:
                     f.write(entry)
