@@ -729,7 +729,7 @@ def main() -> int:
         system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
         print(f"[DEBUG] Prompt user first 500 chars: {user_prompt[:500]}")
         _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(system_prompt) + len(user_prompt)}')
-        raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='main', timeout=120)
+        raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='analyser', timeout=120)
         if raw:
             debug_path = ROOT / 'artifacts' / 'outcomes' / 'llm_debug.txt'
             debug_path.parent.mkdir(parents=True, exist_ok=True)
