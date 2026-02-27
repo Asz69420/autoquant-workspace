@@ -393,13 +393,38 @@ def select_relevant_doctrine(doctrine: str, indicators: list[str]) -> str:
 
 def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: str, outcome_history: list[dict]) -> tuple[str, str]:
     system = 'Quant analyser. Return JSON only: verdict, reasoning, directives, regime_recommendation, confidence, doctrine_update.'
-    res = (backtest_result or {}).get('results', {}) if isinstance(backtest_result, dict) else {}
-    inputs = (backtest_result or {}).get('inputs', {}) if isinstance(backtest_result, dict) else {}
+    obj = backtest_result if isinstance(backtest_result, dict) else {}
+    res = obj.get('results', {}) if isinstance(obj.get('results'), dict) else {}
+    inputs = obj.get('inputs', {}) if isinstance(obj.get('inputs'), dict) else {}
     regime_pf = res.get('regime_pf') or {}
     regime_wr = res.get('regime_wr') or {}
     regime_breakdown = res.get('regime_breakdown') or {}
 
+    dataset_meta = str(inputs.get('dataset_meta') or '')
+    dataset_csv = str(inputs.get('dataset_csv') or '')
+    meta_blob = f"{dataset_meta} {dataset_csv}"
+    asset = str(obj.get('symbol') or obj.get('pair') or obj.get('asset') or inputs.get('symbol') or inputs.get('pair') or '')
+    timeframe = str(obj.get('timeframe') or obj.get('tf') or inputs.get('timeframe') or inputs.get('tf') or '')
+    if not asset or not timeframe:
+        m = re.search(r'([A-Z]{2,12})[_-](1m|3m|5m|15m|30m|1h|2h|4h|6h|8h|12h|1d|1w)', meta_blob)
+        if m:
+            asset = asset or m.group(1)
+            timeframe = timeframe or m.group(2)
+
+    pf = float(res.get('profit_factor', 0.0) or 0.0)
+    wr = float(res.get('win_rate', 0.0) or 0.0)
+    trades = int(res.get('total_trades', 0) or 0)
+    dd_pct_raw = res.get('max_drawdown_pct')
+    dd_abs = float(res.get('max_drawdown', 0.0) or 0.0)
+    if isinstance(dd_pct_raw, (int, float)):
+        dd_pct = float(dd_pct_raw)
+        dd_pct = dd_pct * 100.0 if dd_pct <= 1.0 else dd_pct
+        dd_field = f"DD={dd_pct:.2f}%"
+    else:
+        dd_field = f"DD_abs={dd_abs:.2f}"
+
     spec_summary = compress_spec(strategy_spec)
+    strategy_name = str((strategy_spec or {}).get('id') or (strategy_spec or {}).get('strategy_family') or 'unknown')
     indicators = re.findall(r'indicators=([^;]+)', spec_summary)
     indicator_list = [x.strip() for x in (indicators[0].split(',') if indicators else []) if x.strip() and x.strip() != 'none']
     doctrine_text = select_relevant_doctrine(doctrine, indicator_list)
@@ -425,7 +450,7 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
     user = (
         'Strategy Summary\n' + spec_summary + '\n\n'
         'Backtest Results\n'
-        f"PF={float(res.get('profit_factor', 0.0) or 0.0):.4f}; WR={float(res.get('win_rate', 0.0) or 0.0) * 100:.2f}%; DD={float(res.get('max_drawdown', 0.0) or 0.0) * 100:.2f}%; Trades={int(res.get('total_trades', 0) or 0)}; TF={inputs.get('variant') or inputs.get('dataset_meta') or 'unknown'}; Asset={inputs.get('dataset_csv') or 'unknown'}\n\n"
+        f"Strategy={strategy_name}; Asset={asset or 'unknown'}; TF={timeframe or 'unknown'}; PF={pf:.4f}; WR={wr * 100:.2f}%; {dd_field}; Trades={trades}\n\n"
         'Regime\n'
         f"trend(PF={float(regime_pf.get('trending', 0.0) or 0.0):.4f},WR={float(regime_wr.get('trending', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('trending_trades', 0) or 0)}); "
         f"range(PF={float(regime_pf.get('ranging', 0.0) or 0.0):.4f},WR={float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('ranging_trades', 0) or 0)}); "
