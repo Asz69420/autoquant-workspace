@@ -99,7 +99,7 @@ def llm_complete_direct(prompt: str, system: str = '', model: str = 'openai/gpt-
         return None
 
 
-def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: int = 120) -> str | None:
+def llm_complete(prompt: str, system: str = '', agent: str = 'analyser', timeout: int = 120) -> str | None:
     """Call LLM through embedded OpenClaw runtime (--local), bypassing gateway."""
     if system:
         full_prompt = f"{system}\n\n{prompt}"
@@ -123,7 +123,7 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
                 ps_cmd = (
                     f'$p = Get-Content -Raw "{tmp.name}"; '
                     f'& "{OPENCLAW_CLI}" agent --agent {agent} --local '
-                    f'--session-id analyser-brain -m $p --json --timeout {timeout}'
+                    f'-m $p --json --timeout {timeout}'
                 )
                 cmd = ['powershell', '-NoProfile', '-Command', ps_cmd]
                 p = subprocess.run(cmd, **kwargs)
