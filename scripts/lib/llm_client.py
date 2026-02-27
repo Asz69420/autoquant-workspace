@@ -100,9 +100,10 @@ def llm_complete_direct(prompt: str, system: str = '', model: str = 'openai/gpt-
 
 def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: int = 120) -> str | None:
     """Call LLM through embedded OpenClaw runtime (--local), bypassing gateway."""
-    full_prompt = prompt
     if system:
-        full_prompt = f"[SYSTEM]\n{system}\n[/SYSTEM]\n\n{prompt}"
+        full_prompt = f"{system}\n\n{prompt}"
+    else:
+        full_prompt = prompt
 
     for attempt in range(2):
         t0 = time.time()
