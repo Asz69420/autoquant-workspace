@@ -8,6 +8,8 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -913,6 +915,8 @@ def main() -> int:
 
     id_suffix = (source_spec.get('id', 'spec') if args.mode == 'directive-only' else thesis.get('id', 'thesis'))[-12:]
     sid = f"strategy-spec-{datetime.now().strftime('%Y%m%d')}-{id_suffix}"
+    if args.mode == 'directive-only':
+        sid = f"{sid}-{uuid.uuid4().hex[:8]}"
     variants, roles_fixed = _ensure_role_compliant_variants(variants)
     spec = {
         'schema_version': '1.1',
@@ -960,14 +964,31 @@ def main() -> int:
     if roles_fixed:
         print("WARN role_framework_fix_applied=1", file=sys.stderr)
 
-    payload = json.dumps(spec, ensure_ascii=False, indent=2)
+    payload = json.dumps(spec, ensure_ascii=False, separators=(',', ':'))
     if len(payload.encode('utf-8')) > MAX_JSON_BYTES:
         raise SystemExit('StrategySpec JSON exceeds 60KB')
 
     out_dir = Path(args.output_root) / datetime.now().strftime('%Y%m%d')
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / f"{sid}.strategy_spec.json"
-    out_path.write_text(payload, encoding='utf-8')
+
+    tmp = tempfile.NamedTemporaryFile(mode='w', suffix='.tmp', dir=str(out_path.parent), delete=False, encoding='utf-8')
+    try:
+        tmp.write(payload)
+        tmp.flush()
+        os.fsync(tmp.fileno())
+        tmp.close()
+        os.replace(tmp.name, str(out_path))
+    except Exception:
+        try:
+            tmp.close()
+        except Exception:
+            pass
+        try:
+            os.unlink(tmp.name)
+        except Exception:
+            pass
+        raise
 
     update_index(Path(args.output_root) / 'INDEX.json', str(out_path).replace('\\', '/'))
     print(json.dumps({'status':'OK','reason_code':None,'strategy_spec_path': str(out_path).replace('\\', '/'), 'variants': len(variants), 'mode': args.mode}))
