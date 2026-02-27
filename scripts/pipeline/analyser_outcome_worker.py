@@ -400,16 +400,41 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
     regime_wr = res.get('regime_wr') or {}
     regime_breakdown = res.get('regime_breakdown') or {}
 
-    dataset_meta = str(inputs.get('dataset_meta') or '')
     dataset_csv = str(inputs.get('dataset_csv') or '')
-    meta_blob = f"{dataset_meta} {dataset_csv}"
+    dataset_meta = str(inputs.get('dataset_meta') or '')
+    strategy_spec_path = str(inputs.get('strategy_spec') or '')
+    variant_name = str(inputs.get('variant') or '')
+
+    if (not strategy_spec or not isinstance(strategy_spec, dict)) and strategy_spec_path:
+        ssp = Path(strategy_spec_path)
+        if ssp.exists():
+            strategy_spec = _j(ssp, {})
+        else:
+            strategy_spec = _j(ROOT / strategy_spec_path, {})
+        if (not strategy_spec or not isinstance(strategy_spec, dict)):
+            stem = Path(strategy_spec_path).name
+            for cand in ROOT.glob(f'artifacts/strategy_specs/**/{stem}'):
+                strategy_spec = _j(cand, {})
+                if strategy_spec:
+                    break
+
     asset = str(obj.get('symbol') or obj.get('pair') or obj.get('asset') or inputs.get('symbol') or inputs.get('pair') or '')
     timeframe = str(obj.get('timeframe') or obj.get('tf') or inputs.get('timeframe') or inputs.get('tf') or '')
     if not asset or not timeframe:
-        m = re.search(r'([A-Z]{2,12})[_-](1m|3m|5m|15m|30m|1h|2h|4h|6h|8h|12h|1d|1w)', meta_blob)
-        if m:
-            asset = asset or m.group(1)
-            timeframe = timeframe or m.group(2)
+        blobs = [dataset_csv, dataset_meta]
+        for blob in blobs:
+            if not blob:
+                continue
+            m = re.search(r'_([A-Z]{2,10})_(\d+[mhd])\.csv$', Path(blob).name)
+            if m:
+                asset = asset or m.group(1)
+                timeframe = timeframe or m.group(2)
+                break
+            m2 = re.search(r'[\\/]([A-Z]{2,10})[\\/](\d+[mhd])[\\/]', blob)
+            if m2:
+                asset = asset or m2.group(1)
+                timeframe = timeframe or m2.group(2)
+                break
 
     pf = float(res.get('profit_factor', 0.0) or 0.0)
     wr = float(res.get('win_rate', 0.0) or 0.0)
@@ -424,7 +449,11 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
         dd_field = f"DD_abs={dd_abs:.2f}"
 
     spec_summary = compress_spec(strategy_spec)
-    strategy_name = str((strategy_spec or {}).get('id') or (strategy_spec or {}).get('strategy_family') or 'unknown')
+    strategy_name = str((strategy_spec or {}).get('id') or (strategy_spec or {}).get('strategy_family') or '')
+    if not strategy_name and strategy_spec_path:
+        strategy_name = Path(strategy_spec_path).name.replace('.strategy_spec.json', '')
+    if not strategy_name:
+        strategy_name = 'unknown'
     indicators = re.findall(r'indicators=([^;]+)', spec_summary)
     indicator_list = [x.strip() for x in (indicators[0].split(',') if indicators else []) if x.strip() and x.strip() != 'none']
     doctrine_text = select_relevant_doctrine(doctrine, indicator_list)
@@ -450,7 +479,7 @@ def build_analyser_prompt(backtest_result: dict, strategy_spec: dict, doctrine: 
     user = (
         'Strategy Summary\n' + spec_summary + '\n\n'
         'Backtest Results\n'
-        f"Strategy={strategy_name}; Asset={asset or 'unknown'}; TF={timeframe or 'unknown'}; PF={pf:.4f}; WR={wr * 100:.2f}%; {dd_field}; Trades={trades}\n\n"
+        f"Strategy={strategy_name}; Variant={variant_name or 'unknown'}; Asset={asset or 'unknown'}; TF={timeframe or 'unknown'}; PF={pf:.4f}; WR={wr * 100:.2f}%; {dd_field}; Trades={trades}\n\n"
         'Regime\n'
         f"trend(PF={float(regime_pf.get('trending', 0.0) or 0.0):.4f},WR={float(regime_wr.get('trending', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('trending_trades', 0) or 0)}); "
         f"range(PF={float(regime_pf.get('ranging', 0.0) or 0.0):.4f},WR={float(regime_wr.get('ranging', 0.0) or 0.0) * 100:.1f}%,N={int(regime_breakdown.get('ranging_trades', 0) or 0)}); "
@@ -752,9 +781,6 @@ def main() -> int:
         doctrine_text = DOCTRINE_PATH.read_text(encoding='utf-8-sig') if DOCTRINE_PATH.exists() else ''
         outcome_history = load_family_outcome_history(strategy_family, limit=5)
         system_prompt, user_prompt = build_analyser_prompt(bt_obj, strategy_spec_obj, doctrine_text, outcome_history)
-        print(f"[DEBUG PROMPT] {user_prompt[:300]}")
-        print(f"[DEBUG SYSTEM] {system_prompt[:200]}")
-        print(f"[DEBUG] Prompt user first 500 chars: {user_prompt[:500]}")
         _log('INFO', 'LLM_PROMPT_SIZE', f'prompt_length_chars={len(system_prompt) + len(user_prompt)}')
         raw = llm_client.llm_complete(user_prompt, system=system_prompt, agent='analyser', timeout=120)
         if raw:
