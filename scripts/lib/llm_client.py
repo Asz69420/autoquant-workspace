@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import time
+import tempfile
 import urllib.request
 import urllib.error
 from datetime import datetime, UTC
@@ -112,10 +113,25 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
             if sys.platform == 'win32':
                 kwargs['creationflags'] = subprocess.CREATE_NO_WINDOW
 
-            # Flatten for CLI compatibility (newlines break Windows args)
-            cli_prompt = full_prompt.replace('\n', ' ').replace('\r', ' ')
-            cmd = [OPENCLAW_CLI, 'agent', '--agent', agent, '--local', '--session-id', 'analyser-brain', '-m', cli_prompt, '--json', '--timeout', str(timeout)]
-            p = subprocess.run(cmd, **kwargs)
+            tmp = tempfile.NamedTemporaryFile(
+                mode='w', suffix='.txt', delete=False, encoding='utf-8',
+                dir=str(Path(__file__).parents[2] / 'data')
+            )
+            tmp.write(full_prompt)
+            tmp.close()
+            try:
+                ps_cmd = (
+                    f'$p = Get-Content -Raw "{tmp.name}"; '
+                    f'& "{OPENCLAW_CLI}" agent --agent {agent} --local '
+                    f'--session-id analyser-brain -m $p --json --timeout {timeout}'
+                )
+                cmd = ['powershell', '-NoProfile', '-Command', ps_cmd]
+                p = subprocess.run(cmd, **kwargs)
+            finally:
+                try:
+                    os.unlink(tmp.name)
+                except Exception:
+                    pass
 
             if p.returncode != 0:
                 err = (p.stderr or '').strip()
