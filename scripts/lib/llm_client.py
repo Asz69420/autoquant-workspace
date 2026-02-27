@@ -127,6 +127,8 @@ def llm_complete(prompt: str, system: str = '', agent: str = 'main', timeout: in
                 )
                 cmd = ['powershell', '-NoProfile', '-Command', ps_cmd]
                 p = subprocess.run(cmd, **kwargs)
+                debug_out = Path(__file__).parents[2] / 'data' / 'llm_raw_output.txt'
+                debug_out.write_text(f"rc={p.returncode}\nSTDOUT:\n{p.stdout}\nSTDERR:\n{p.stderr}", encoding='utf-8')
             finally:
                 try:
                     os.unlink(tmp.name)
