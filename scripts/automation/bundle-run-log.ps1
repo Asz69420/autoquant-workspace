@@ -7,18 +7,35 @@ $ErrorActionPreference = 'Stop'
 $OutputEncoding = [Console]::OutputEncoding
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
-$envFile = Join-Path $ROOT 'scripts\claude-bridge\.env'
+$bridgeEnvFile = Join-Path $ROOT 'scripts\claude-bridge\.env'
+$rootEnvFile = Join-Path $ROOT '.env'
 $actionsLog = Join-Path $ROOT 'data\logs\actions.ndjson'
 $logsDir = Join-Path $ROOT 'data\logs'
+$stateDir = Join-Path $ROOT 'data\state'
 $lastMsgPath = Join-Path $logsDir 'bundle-run-log.last.txt'
 $payloadPath = Join-Path $logsDir 'bundle-run-log.payload.json'
+$lastRunPath = Join-Path $stateDir 'bundle-last-run.txt'
 $cutoffUtc = (Get-Date).ToUniversalTime().AddMinutes(-15)
+$nowUtc = (Get-Date).ToUniversalTime()
 $ts = Get-Date -Format 'h:mm tt'
 $utf8Bom = New-Object System.Text.UTF8Encoding($true)
 
-if (-not (Test-Path -LiteralPath $envFile)) { exit 0 }
 if (-not (Test-Path -LiteralPath $actionsLog)) { exit 0 }
 if (-not (Test-Path -LiteralPath $logsDir)) { New-Item -ItemType Directory -Force -Path $logsDir | Out-Null }
+if (-not (Test-Path -LiteralPath $stateDir)) { New-Item -ItemType Directory -Force -Path $stateDir | Out-Null }
+
+# Dedup guard: skip if last send was <10 minutes ago
+if (Test-Path -LiteralPath $lastRunPath) {
+  try {
+    $rawLast = (Get-Content -LiteralPath $lastRunPath -Raw -ErrorAction Stop).Trim()
+    if (-not [string]::IsNullOrWhiteSpace($rawLast)) {
+      $lastSentUtc = ([DateTimeOffset]::Parse($rawLast)).UtcDateTime
+      if (($nowUtc - $lastSentUtc).TotalMinutes -lt 10) {
+        exit 0
+      }
+    }
+  } catch {}
+}
 
 function Get-EventTime([object]$ev) {
   try {
@@ -169,6 +186,29 @@ function Condense-Summary([string]$summary) {
   return $plain
 }
 
+function Test-AgentNoop([string]$bestStatus, [string]$summaryText, [array]$eventsForAgent) {
+  $st = ([string]$bestStatus).ToUpperInvariant()
+  if ($st -in @('WARN','FAIL','BLOCKED')) { return $false }
+  if (@($eventsForAgent | Where-Object { Test-ProducedEvent $_ }).Count -gt 0) { return $false }
+
+  $raw = ((@($eventsForAgent | ForEach-Object { [string]$_.summary }) -join ' ')).Trim()
+  if ($raw -match '(?i)\bSKIPPED\b') { return $true }
+  if ($summaryText -match '(?i)\bno variants\b') { return $true }
+
+  $matches = [regex]::Matches([string]$summaryText, '=(-?\d+(?:\.\d+)?)')
+  if ($matches.Count -gt 0) {
+    $nonZero = $false
+    foreach ($m in $matches) {
+      try {
+        if ([double]$m.Groups[1].Value -ne 0) { $nonZero = $true; break }
+      } catch {}
+    }
+    if (-not $nonZero) { return $true }
+  }
+
+  return $false
+}
+
 $events = @()
 Get-Content -LiteralPath $actionsLog -Encoding UTF8 -ErrorAction SilentlyContinue | ForEach-Object {
   $line = [string]$_
@@ -225,6 +265,7 @@ $lines.Add(("{0} oQ | codex 5.3 | {1} {2}" -f $EMOJI_BOT, $overallStatus, $ts))
 $warnCount = 0
 $failCount = 0
 $blockedCount = 0
+$visibleAgentCount = 0
 
 foreach ($g in $grouped) {
   $agent = [string]$g.Name
@@ -243,9 +284,7 @@ foreach ($g in $grouped) {
       $bestStatus = $st
     }
 
-    if ($st -eq 'WARN') { $warnCount++ }
-    elseif ($st -eq 'FAIL') { $failCount++ }
-    elseif ($st -eq 'BLOCKED') { $blockedCount++ }
+    # counts are computed after noop-filtering
   }
 
   if (([string]$bestStatus -eq 'OK') -and (@($eventsForAgent | Where-Object { Test-ProducedEvent $_ }).Count -gt 0)) {
@@ -264,10 +303,21 @@ foreach ($g in $grouped) {
     $summaryText = (($uniq | Select-Object -First 3) -join '; ')
   }
 
+  if (Test-AgentNoop -bestStatus $bestStatus -summaryText $summaryText -eventsForAgent $eventsForAgent) {
+    continue
+  }
+
+  if ($bestStatus -eq 'WARN') { $warnCount++ }
+  elseif ($bestStatus -eq 'FAIL') { $failCount++ }
+  elseif ($bestStatus -eq 'BLOCKED') { $blockedCount++ }
+
   $agentEmoji = Get-AgentEmoji $agent
   $statusEmoji = Get-StatusEmoji $bestStatus
   $lines.Add(("{0} {1} | {2} {3}" -f $agentEmoji, $agent, $statusEmoji, $summaryText))
+  $visibleAgentCount++
 }
+
+if ($visibleAgentCount -eq 0) { exit 0 }
 
 if ($failCount -gt 0 -or $blockedCount -gt 0 -or $warnCount -gt 0) {
   if ($failCount -gt 0) { $lines.Add(("{0} failures={1}" -f (Get-StatusEmoji 'FAIL'), $failCount)) }
@@ -289,11 +339,20 @@ if ($message.Length -gt $maxLen) {
 # Persist latest rendered message (UTF-8 with BOM)
 [System.IO.File]::WriteAllText($lastMsgPath, $message, $utf8Bom)
 
-$token = $null
-$chatId = $null
-Get-Content -LiteralPath $envFile -Encoding UTF8 | ForEach-Object {
-  if ($_ -match '^CLAUDE_BRIDGE_BOT_TOKEN=(.*)$') { $token = $matches[1].Trim() }
-  if ($_ -match '^CLAUDE_BRIDGE_USER_ID=(.*)$') { $chatId = $matches[1].Trim() }
+$token = if ($env:TELEGRAM_BOT_TOKEN) { [string]$env:TELEGRAM_BOT_TOKEN } else { $null }
+$chatId = if ($env:TELEGRAM_LOG_CHAT_ID) { [string]$env:TELEGRAM_LOG_CHAT_ID } else { $null }
+
+if (Test-Path -LiteralPath $rootEnvFile) {
+  Get-Content -LiteralPath $rootEnvFile -Encoding UTF8 | ForEach-Object {
+    if (-not $token -and ($_ -match '^TELEGRAM_BOT_TOKEN=(.*)$')) { $token = $matches[1].Trim() }
+    if (-not $chatId -and ($_ -match '^TELEGRAM_LOG_CHAT_ID=(.*)$')) { $chatId = $matches[1].Trim() }
+  }
+}
+
+if (-not $token -and (Test-Path -LiteralPath $bridgeEnvFile)) {
+  Get-Content -LiteralPath $bridgeEnvFile -Encoding UTF8 | ForEach-Object {
+    if ($_ -match '^CLAUDE_BRIDGE_BOT_TOKEN=(.*)$') { $token = $matches[1].Trim() }
+  }
 }
 
 if (-not $token -or -not $chatId) { exit 0 }
@@ -305,6 +364,9 @@ $body = @{ chat_id = $chatId; text = $html; parse_mode = 'HTML' } | ConvertTo-Js
 # Persist payload (UTF-8 with BOM) and read explicitly as UTF-8 for API call
 [System.IO.File]::WriteAllText($payloadPath, $body, $utf8Bom)
 $bodyUtf8 = Get-Content -LiteralPath $payloadPath -Encoding UTF8 -Raw
+
+# Mark send time for 10-minute dedup guard
+[System.IO.File]::WriteAllText($lastRunPath, $nowUtc.ToString('o'), $utf8Bom)
 
 try {
   Invoke-RestMethod -Uri ("https://api.telegram.org/bot$token/sendMessage") -Method Post -Body $bodyUtf8 -ContentType 'application/json; charset=utf-8' | Out-Null
