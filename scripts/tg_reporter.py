@@ -15,7 +15,6 @@ SPOOL_DIR = Path("data/logs/spool")  # Legacy; read-only for backward compat
 ACTIONS_LOG = Path("data/logs/actions.ndjson")
 ERRORS_LOG = Path("data/logs/errors.ndjson")
 LOCK_FILE = Path("data/logs/tg_reporter.lock")
-AUTOPILOT_LOCK = Path("data/state/locks/autopilot_worker.lock")
 
 # Anti-spam dedup: (run_id, status_word, ts_iso) → last send time (in-memory only per cycle)
 last_sent = {}
@@ -252,11 +251,6 @@ def _keeper_telegram_message(event: dict) -> str:
     return _escape_md_v2(f"Keeper: {status_word}")
 
 
-def _is_autopilot_event(event: dict) -> bool:
-    run_id = str(event.get("run_id") or "")
-    return run_id.startswith("autopilot-")
-
-
 def send_event_to_telegram(event):
     """Format and send an ActionEvent to Telegram. Returns True on success."""
     try:
@@ -266,8 +260,6 @@ def send_event_to_telegram(event):
         if event.get("debug", False):
             return None
         if event_type.endswith("_DEBUG") or reason_code.endswith("_DEBUG"):
-            return None
-        if AUTOPILOT_LOCK.exists() and _is_autopilot_event(event):
             return None
 
         notify_cmd = None
