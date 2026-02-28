@@ -120,9 +120,22 @@ foreach ($e in $mainEvents) {
 
   if ($sum -match 'stall.*?(\d+)\s*cycle' -and $stall -eq 0) { $stall = [int]$matches[1] }
   if ($stat -in @("WARN", "FAIL", "BLOCKED")) {
-    $reason = if ($e.reason_code) { $e.reason_code } else { "unknown" }
-    $wKey = "$($e.agent): $reason"
-    if ($wKey -notmatch "STALL|STARVATION") { $warnings += $wKey }
+    $reasonCode = if ($e.reason_code) { ([string]$e.reason_code).ToUpper() } else { "UNKNOWN" }
+    $reasonLabel = switch ($reasonCode) {
+      "DIRECTIVE_LOOP_SUMMARY" { "No new strategy variants this cycle" }
+      "DIRECTIVE_GEN_FAIL" { "Strategy generation failure" }
+      "REFINEMENT_SUMMARY" { "Refinement step warning" }
+      "BATCH_BACKTEST_SUMMARY" { "Backtest stage warning" }
+      "LAB_SUMMARY" { "Pipeline stage warning" }
+      default {
+        $txt = ($reasonCode -replace '_', ' ').ToLowerInvariant()
+        if ($txt.Length -gt 0) { $txt.Substring(0,1).ToUpper() + $txt.Substring(1) } else { "General warning" }
+      }
+    }
+
+    $agentName = if ($e.agent) { [string]$e.agent } else { "Pipeline" }
+    $wKey = "${agentName}: $reasonLabel"
+    if ($reasonCode -notmatch "STALL|STARVATION") { $warnings += $wKey }
   }
 }
 
@@ -154,9 +167,9 @@ $lines += "Library : $librarySize strats | $libLessons lessons"
 
 if ($hasErrors -or $hasWarnings) {
   $lines += ("-" * 33)
-  if ($stall -gt 5) { $lines += "⚠️ Stall: $stall cycles no variants" }
-  if ($starvation -gt 10) { $lines += "⚠️ Starvation: $starvation cycles" }
-  if ($errors -gt 0) { $lines += "❌ Errors: $errors" }
+  if ($stall -gt 5) { $lines += "⚠️ No new variants for $stall cycles" }
+  if ($starvation -gt 10) { $lines += "⚠️ Input starvation for $starvation cycles" }
+  if ($errors -gt 0) { $lines += "❌ Pipeline errors: $errors" }
 
   $uniqueWarnings = @{}
   foreach ($w in $warnings) {
