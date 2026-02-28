@@ -32,6 +32,8 @@ from telegram.ext import (
     Application,
     CommandHandler,
     ContextTypes,
+    MessageHandler,
+    filters,
 )
 
 # ---------------------------------------------------------------------------
@@ -376,6 +378,32 @@ async def _shutdown(app: Application) -> None:
     await app.shutdown()
 
 
+async def handle_plain_dm(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle plain text in DMs as read-only /cli queries."""
+    if update.effective_chat is None or update.effective_chat.type != "private":
+        return
+    if not authorized(update):
+        return await deny(update)
+    if update.message is None or not update.message.text:
+        return
+
+    query = update.message.text.strip()
+    if not query:
+        return
+
+    threat = is_dangerous(query)
+    if threat:
+        log_command(USER_ID, "/cli(dm)", query, f"BLOCKED:{threat}", False)
+        await update.message.reply_text(f"🚫 Blocked — matched safety filter: `{threat}`")
+        return
+
+    await update.message.reply_text("🔍 Querying Claude (read-only)…")
+    loop = asyncio.get_running_loop()
+    output = await loop.run_in_executor(None, run_claude, query, "Read,Glob,Grep")
+    log_command(USER_ID, "/cli(dm)", query, output, True)
+    await update.message.reply_text(truncate(output))
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -392,6 +420,7 @@ def main() -> None:
     app.add_handler(CommandHandler("run", cmd_run))
     app.add_handler(CommandHandler("status", cmd_status))
     app.add_handler(CommandHandler("stop", cmd_stop))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_plain_dm))
 
     logger.info("Bot is polling…")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
