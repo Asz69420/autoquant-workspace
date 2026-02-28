@@ -2,21 +2,24 @@
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
 Set-Location $ROOT
 
-$envFile = "$ROOT\scripts\claude-bridge\.env"
-if (-not (Test-Path $envFile)) { Write-Host "No .env"; exit 1 }
-
+# Read gateway bot token and log channel from workspace .env
+$wsEnv = "$ROOT\.env"
+if (-not (Test-Path $wsEnv)) { Write-Host "No workspace .env"; exit 1 }
 $token = $null
-Get-Content $envFile | ForEach-Object {
-  if ($_ -match '^CLAUDE_BRIDGE_BOT_TOKEN=(.*)$') { $token = $matches[1].Trim() }
+$logChannel = $null
+Get-Content $wsEnv | ForEach-Object {
+  if ($_ -match '^TELEGRAM_BOT_TOKEN=(.*)$') { $token = $matches[1].Trim() }
+  if ($_ -match '^TELEGRAM_LOG_CHAT_ID=(.*)$') { $logChannel = $matches[1].Trim() }
 }
-if (-not $token) { Write-Host "Missing token"; exit 1 }
+if (-not $token) { Write-Host "Missing bot token"; exit 1 }
+if (-not $logChannel) { Write-Host "Missing log channel ID"; exit 1 }
 
-$LOG_CHANNEL = "-1003841245720"
+$LOG_CHANNEL = $logChannel
 
 # Read last 120 min of actions (testing)
 $logPath = "$ROOT\data\logs\actions.ndjson"
 if (-not (Test-Path $logPath)) { Write-Host "No action log"; exit 0 }
-$cutoff = (Get-Date).AddMinutes(-120).ToUniversalTime()
+$cutoff = (Get-Date).AddMinutes(-16).ToUniversalTime()
 $events = @()
 foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail 300)) {
   try {
@@ -31,7 +34,8 @@ if ($events.Count -eq 0) { Write-Host "No events in window"; exit 0 }
 
 # Determine primary agent for banner
 $agents = @($events | ForEach-Object { $_.agent } | Where-Object { $_ } | Sort-Object -Unique)
-$hasQuandalf = $agents | Where-Object { $_ -match "claude" }
+$quandalfAgents = @("claude-advisor", "claude-researcher", "claude-iterator")
+$hasQuandalf = $agents | Where-Object { $_ -in $quandalfAgents }
 $primaryAgent = if ($hasQuandalf) { "quandalf" } else { "frodex" }
 
 # Find banner (check multiple extensions)
@@ -50,7 +54,13 @@ foreach ($e in $events) {
   if ($s -eq "FAIL") { $failCount++ }
   if ($s -eq "WARN") { $warnCount++ }
 }
-$overallEmoji = if ($failCount -gt 0) { "X" } elseif ($warnCount -gt 0) { "/!\\" } else { "OK" }
+$overallStatus = if ($failCount -gt 0) { "FAIL" } elseif ($warnCount -gt 0) { "WARN" } else { "OK" }
+$overallEmoji = switch ($overallStatus) {
+  "OK" { [char]::ConvertFromUtf32(0x2705) }
+  "WARN" { [char]::ConvertFromUtf32(0x26A0) }
+  "FAIL" { [char]::ConvertFromUtf32(0x274C) }
+  default { [char]::ConvertFromUtf32(0x2705) }
+}
 $ts = Get-Date -Format "h:mm tt"
 
 $lines = @()
@@ -127,11 +137,17 @@ foreach ($g in $grouped) {
   # Skip agents with no useful info and OK status
   if ($info.Count -eq 0 -and $bestStatus -eq "OK") { continue }
 
+  # Remove zero-value metrics (noise)
+  $info = @($info | Where-Object { $_ -notmatch ':0$' })
+
+  # Skip if only zeros remained and status is OK
+  if ($info.Count -eq 0 -and $bestStatus -eq "OK") { continue }
+
   # Status prefix
   $prefix = switch ($bestStatus) {
-    "FAIL" { "X" }
-    "WARN" { "/!\\" }
-    default { "+" }
+    "FAIL" { [char]::ConvertFromUtf32(0x274C) }
+    "WARN" { [char]::ConvertFromUtf32(0x26A0) }
+    default { [char]::ConvertFromUtf32(0x2705) }
   }
 
   $infoStr = if ($info.Count -gt 0) { $info -join " | " } else { "-" }
@@ -145,14 +161,22 @@ $failEvents = @($events | Where-Object {
 })
 if ($failEvents.Count -gt 0) {
   $lines += ""
-  foreach ($fe in ($failEvents | Select-Object -First 5)) {
+  $seenReasons = @{}
+  foreach ($fe in $failEvents) {
     $reason = if ($fe.reason_code) {
       $fe.reason_code
     } else {
       $sum = if ($fe.summary) { $fe.summary } else { "unknown" }
       $sum.Substring(0, [Math]::Min(50, $sum.Length))
     }
-    $lines += "/!\\ $($fe.agent): $reason"
+    $key = "$($fe.agent):$reason"
+    if (-not $seenReasons.ContainsKey($key)) { $seenReasons[$key] = 0 }
+    $seenReasons[$key]++
+  }
+  foreach ($sr in ($seenReasons.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 3)) {
+    $warnEmoji = [char]::ConvertFromUtf32(0x26A0)
+    $countSuffix = if ($sr.Value -gt 1) { " (x$($sr.Value))" } else { "" }
+    $lines += "$warnEmoji $($sr.Key)$countSuffix"
   }
 }
 
