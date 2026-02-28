@@ -35,6 +35,9 @@ Get-Content -LiteralPath $actionsLog -ErrorAction SilentlyContinue | ForEach-Obj
     if ($null -eq $evTime) { return }
     if ($evTime -lt $cutoffUtc) { return }
 
+    $runId = [string]$ev.run_id
+    if (-not $runId.StartsWith('autopilot-')) { return }
+
     $events += $ev
   } catch {}
 }
