@@ -4,8 +4,7 @@
 param(
   [Parameter(Mandatory=$true)]
   [ValidateSet("pre-backtest", "post-backtest", "health")]
-  [string]$Mode,
-  [switch]$SuppressNotify
+  [string]$Mode
 )
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
@@ -131,10 +130,8 @@ if ($violations.Count -gt 0) {
   New-Item -ItemType Directory -Force -Path $logDir | Out-Null
   $report | Out-File "$logDir\balrog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log" -Encoding UTF8
 
-  # DM Asz (optional)
-  if (-not $SuppressNotify) {
-    powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $report
-  }
+  # DM Asz
+  powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $report
 
   Write-Output $report
   exit 1
