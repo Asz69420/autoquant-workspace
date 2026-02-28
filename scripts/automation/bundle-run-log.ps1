@@ -60,7 +60,7 @@ $EMOJI_KEEPER = E 0x1F5C3
 $EMOJI_FIREWALL = E 0x1F6E1
 $EMOJI_READER = E 0x1F517
 $EMOJI_OK = E 0x2705
-$EMOJI_WARN = E 0x26A0
+$EMOJI_WARN = (E 0x26A0) + (E 0xFE0F)
 $EMOJI_FAIL = E 0x274C
 $EMOJI_BLOCKED = E 0x26D4
 $EMOJI_INFO = E 0x2139
@@ -147,37 +147,54 @@ function Condense-Summary([string]$summary) {
 
   $parts = New-Object System.Collections.Generic.List[string]
 
-  $lib = Get-RegexValue $s 'active_library_size\s*=\s*(\d+)'
-  if (-not $lib) { $lib = Get-RegexValue $s '\blib\s*=\s*(\d+)' }
-  if ($lib) { $parts.Add("lib=$lib") }
-
-  $starv = Get-RegexValue $s 'starvation(?:_cycles)?\s*=\s*(\d+)'
-  if ($starv) { $parts.Add("starvation=$starv") }
-
-  $drought = Get-RegexValue $s 'drought(?:_cycles)?\s*=\s*(\d+)'
-  if ($drought) { $parts.Add("drought=$drought") }
-
-  $runs = Get-RegexValue $s '\bruns\s*=\s*(\d+)'
-  if ($runs) { $parts.Add("runs=$runs") }
-
-  $fetched = Get-RegexValue $s '\bfetched\s*=\s*(\d+)'
-  if ($fetched) { $parts.Add("fetched=$fetched") }
-
-  $failed = Get-RegexValue $s '\bfailed\s*=\s*(\d+)'
-  if ($failed) { $parts.Add("failed=$failed") }
-
-  $variants = Get-RegexValue $s '\bvariants\s*=\s*(\d+)'
-  if ($variants) { $parts.Add("variants=$variants") }
-
-  if ($s -match '(?i)no variants') { $parts.Add('no variants') }
-  if ($s -match '(?i)directive loop stalled') {
-    $stall = Get-RegexValue $s '(\d+)\s*cycles?'
-    if ($stall) { $parts.Add("directive-stall=$stall") } else { $parts.Add('directive stalled') }
+  function Add-NonZeroPart([System.Collections.Generic.List[string]]$bucket, [string]$k, [string]$v) {
+    if ([string]::IsNullOrWhiteSpace($v)) { return }
+    try {
+      if ([double]$v -eq 0) { return }
+    } catch {}
+    $bucket.Add("$k=$v")
   }
 
-  if ($parts.Count -gt 0) {
-    $uniq = @($parts | Select-Object -Unique)
-    return (($uniq | Select-Object -First 4) -join ' ')
+  # Preferred compact keys
+  Add-NonZeroPart $parts 'lib' (Get-RegexValue $s 'active_library_size\s*=\s*(\d+)')
+  if (-not ($parts -join ' ') -or ($parts -join ' ') -notmatch 'lib=') {
+    Add-NonZeroPart $parts 'lib' (Get-RegexValue $s '\blib\s*=\s*(\d+)')
+  }
+
+  Add-NonZeroPart $parts 'starvation' (Get-RegexValue $s 'starvation(?:_cycles)?\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'stall' (Get-RegexValue $s 'directive_loop_stall(?:_cycles)?\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'notes' (Get-RegexValue $s 'directive_notes_seen\s*=\s*(\d+)')
+  if (-not (($parts -join ' ') -match 'notes=')) {
+    Add-NonZeroPart $parts 'notes' (Get-RegexValue $s '\bnotes\s*=\s*(\d+)')
+  }
+
+  # Agent-general compact fields
+  Add-NonZeroPart $parts 'runs' (Get-RegexValue $s '\bruns\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'fetched' (Get-RegexValue $s '\bfetched\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'failed' (Get-RegexValue $s '\bfailed\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'variants' (Get-RegexValue $s '\bvariants\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'top' (Get-RegexValue $s '\btop\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'run' (Get-RegexValue $s '\brun\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'lessons' (Get-RegexValue $s '\blessons\s*=\s*(\d+)')
+  Add-NonZeroPart $parts 'new' (Get-RegexValue $s '\bnew\s*=\s*(\d+)')
+
+  # Phrase-based stall fallback (e.g. "Directive loop stalled: 12 cycles")
+  if (-not (($parts -join ' ') -match 'stall=')) {
+    if ($s -match '(?i)directive loop stalled') {
+      $stall = Get-RegexValue $s '(\d+)\s*cycles?'
+      Add-NonZeroPart $parts 'stall' $stall
+    }
+  }
+
+  # Remove duplicates while keeping order
+  $ordered = New-Object System.Collections.Generic.List[string]
+  $seen = New-Object 'System.Collections.Generic.HashSet[string]'
+  foreach ($p in $parts) {
+    if ($seen.Add($p)) { $ordered.Add($p) }
+  }
+
+  if ($ordered.Count -gt 0) {
+    return ((@($ordered) | Select-Object -First 4) -join ' ')
   }
 
   # Fallback: keep first sentence-ish chunk compact
@@ -301,6 +318,19 @@ foreach ($g in $grouped) {
   if ($condensed.Count -gt 0) {
     $uniq = @($condensed | Select-Object -Unique)
     $summaryText = (($uniq | Select-Object -First 3) -join '; ')
+  }
+
+  if ($agent -eq 'oQ') {
+    $joined = ((@($eventsForAgent | ForEach-Object { [string]$_.summary }) -join ' ')).Trim()
+    $oqParts = New-Object System.Collections.Generic.List[string]
+    $vStarv = Get-RegexValue $joined 'starvation(?:_cycles)?\s*=\s*(\d+)'
+    $vStall = Get-RegexValue $joined 'directive_loop_stall(?:_cycles)?\s*=\s*(\d+)'
+    if (-not $vStall -and $joined -match '(?i)directive loop stalled') { $vStall = Get-RegexValue $joined '(\d+)\s*cycles?' }
+    $vNotes = Get-RegexValue $joined 'directive_notes_seen\s*=\s*(\d+)'
+    if ($vStarv) { try { if ([int]$vStarv -ne 0) { $oqParts.Add("starvation=$vStarv") } } catch {} }
+    if ($vStall) { try { if ([int]$vStall -ne 0) { $oqParts.Add("stall=$vStall") } } catch {} }
+    if ($vNotes) { try { if ([int]$vNotes -ne 0) { $oqParts.Add("notes=$vNotes") } } catch {} }
+    if ($oqParts.Count -gt 0) { $summaryText = (@($oqParts) -join ' ') }
   }
 
   if (Test-AgentNoop -bestStatus $bestStatus -summaryText $summaryText -eventsForAgent $eventsForAgent) {
