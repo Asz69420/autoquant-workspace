@@ -314,6 +314,23 @@ def send_event_to_telegram(event):
                 if reason_code:
                     notify_cmd.extend(["--reason-code", reason_code])
 
+        # Suppress individual reporter messages to TELEGRAM_LOG_CHAT_ID.
+        # Only bundled cycle summaries should post there.
+        log_chat_id = str(os.getenv("TELEGRAM_LOG_CHAT_ID") or "").strip()
+        target_chat_id = None
+        if "--chat-id" in notify_cmd:
+            try:
+                ci = notify_cmd.index("--chat-id")
+                if ci + 1 < len(notify_cmd):
+                    target_chat_id = str(notify_cmd[ci + 1]).strip()
+            except Exception:
+                target_chat_id = None
+
+        if target_chat_id is None:
+            return None
+        if log_chat_id and target_chat_id == log_chat_id:
+            return None
+
         send_result = subprocess.run(notify_cmd, capture_output=True, text=True)
 
         return send_result.returncode == 0

@@ -131,9 +131,9 @@ $hasErrors = $errors -gt 0
 $hasWarnings = ($stall -gt 5) -or ($starvation -gt 10) -or ($warnings.Count -gt 0)
 $statusTag = if ($hasErrors) { "FAIL" } elseif ($hasWarnings) { "WARN" } else { "OK" }
 $statusIcon = switch ($statusTag) {
-  "OK" { "[OK]" }
-  "WARN" { "[!!]" }
-  "FAIL" { "[XX]" }
+  "OK" { "✅" }
+  "WARN" { "⚠️" }
+  "FAIL" { "❌" }
 }
 
 $ts = Get-Date -Format "h:mm tt"
@@ -154,9 +154,9 @@ $lines += "Library : $librarySize strats | $libLessons lessons"
 
 if ($hasErrors -or $hasWarnings) {
   $lines += ("-" * 34)
-  if ($stall -gt 5) { $lines += "[!!] Stall: $stall cycles no variants" }
-  if ($starvation -gt 10) { $lines += "[!!] Starvation: $starvation cycles" }
-  if ($errors -gt 0) { $lines += "[XX] Errors: $errors" }
+  if ($stall -gt 5) { $lines += "⚠️ Stall: $stall cycles no variants" }
+  if ($starvation -gt 10) { $lines += "⚠️ Starvation: $starvation cycles" }
+  if ($errors -gt 0) { $lines += "❌ Errors: $errors" }
 
   $uniqueWarnings = @{}
   foreach ($w in $warnings) {
@@ -167,7 +167,7 @@ if ($hasErrors -or $hasWarnings) {
   $topWarnings = @($uniqueWarnings.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 3)
   foreach ($tw in $topWarnings) {
     $suffix = if ($tw.Value -gt 1) { " x$($tw.Value)" } else { "" }
-    $lines += "[!!] $($tw.Key)$suffix"
+    $lines += "⚠️ $($tw.Key)$suffix"
   }
 }
 
