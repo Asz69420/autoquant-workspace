@@ -36,7 +36,7 @@ if (-not (Test-Path $bannerPath)) { $bannerPath = $null }
 $ts = Get-Date -Format "h:mm tt"
 $statusCounts = @{ OK = 0; WARN = 0; FAIL = 0; BLOCKED = 0 }
 foreach ($e in $events) {
-$s = ($e.status_word ?? "OK").ToUpper()
+$s = $(if ($e.status_word) { $e.status_word } else { "OK" }).ToUpper()
 if ($statusCounts.ContainsKey($s)) { $statusCounts[$s]++ }
 }
 $overallStatus = if ($statusCounts.FAIL -gt 0) { "FAIL" } elseif ($statusCounts.BLOCKED -gt 0) { "BLOCKED" } elseif ($statusCounts.WARN -gt 0) { "WARN" } else { "OK" }
@@ -56,7 +56,7 @@ $agent = $g.Name
 $agentEvents = $g.Group
 $bestStatus = "OK"
 foreach ($ae in $agentEvents) {
-$s = ($ae.status_word ?? "OK").ToUpper()
+$s = $(if ($ae.status_word) { $ae.status_word } else { "OK" }).ToUpper()
 if ($s -eq "FAIL") { $bestStatus = "FAIL" } elseif ($s -eq "WARN" -and $bestStatus -ne "FAIL") { $bestStatus = "WARN" }
 }
 $agentEmoji = switch ($bestStatus) {
@@ -95,9 +95,9 @@ $lines += "$agentEmoji $agent - $metricsStr"
 # Error summary
 if ($statusCounts.FAIL -gt 0 -or $statusCounts.WARN -gt 0) {
 $lines += ""
-$failEvents = @($events | Where-Object { ($_.status_word ?? "").ToUpper() -in @("FAIL", "WARN") })
+$failEvents = @($events | Where-Object { $(if ($_.status_word) { $_.status_word } else { "" }).ToUpper() -in @("FAIL", "WARN") })
 foreach ($fe in ($failEvents | Select-Object -First 3)) {
-$reason = if ($fe.reason_code) { $fe.reason_code } else { ($fe.summary ?? "unknown").Substring(0, [Math]::Min(60, ($fe.summary ?? "unknown").Length)) }
+$reason = if ($fe.reason_code) { $fe.reason_code } else { $(if ($fe.summary) { $fe.summary } else { "unknown" }).Substring(0, [Math]::Min(60, $(if ($fe.summary) { $fe.summary } else { "unknown" }).Length)) }
 $lines += " $(([char]0x26A0)) $($fe.agent): $reason"
 }
 }
