@@ -468,6 +468,17 @@ def build_text(rows: list[Row], meta: dict) -> str:
     lines += attention(meta)
     lines += ["", "⚡ ERRORS (24h)"]
     lines += _read_error_summary()
+    # Balrog violations
+    balrog_dir = Path(__file__).resolve().parents[2] / "data" / "logs" / "balrog"
+    if balrog_dir.exists():
+        balrog_logs = sorted(balrog_dir.glob("*.log"), key=lambda p: p.stat().st_mtime, reverse=True)[:5]
+        violation_count = 0
+        for bl in balrog_logs:
+            violation_count += bl.read_text(encoding="utf-8").count("❌")
+        if violation_count > 0:
+            lines.append(f" 🔥 Balrog: {violation_count} violations in last 5 checks")
+        else:
+            lines.append(" 🔥 Balrog: all clear")
     lines += ["", "🧙 QUANDALF SUGGESTS"]
     lines += _read_advisory_suggestions()
     lines.append("")

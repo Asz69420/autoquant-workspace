@@ -748,7 +748,14 @@ try {
           } else {
             try {
               $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
+              # Balrog pre-backtest gate
+              $balrogResult = powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
+              if ($LASTEXITCODE -ne 0) {
+                Write-Output "BALROG BLOCKED: Pre-backtest gate failed"
+              }
               $batchRaw = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all')
+              # Balrog post-backtest verification
+              powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "post-backtest"
               if ([string]::IsNullOrWhiteSpace([string]$batchRaw)) {
                 throw 'promotion batch: empty runner output'
               }
@@ -957,7 +964,14 @@ try {
         $batch = $null
         try {
           $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
+          # Balrog pre-backtest gate
+          $balrogResult = powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Output "BALROG BLOCKED: Pre-backtest gate failed"
+          }
           $batchRaw = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$spPath,'--variant','all')
+          # Balrog post-backtest verification
+          powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "post-backtest"
           if ([string]::IsNullOrWhiteSpace([string]$batchRaw)) {
             throw ('backfill spec=' + [IO.Path]::GetFileName([string]$spPath) + ': empty runner output')
           }
