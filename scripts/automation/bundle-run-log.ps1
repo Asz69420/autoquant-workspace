@@ -1,4 +1,4 @@
-# Bundled Run Log — one photo+caption per pipeline cycle to LOG CHANNEL
+﻿# Bundled Run Log — one photo+caption per pipeline cycle to LOG CHANNEL
 # Reads last 16 min of actions.ndjson, extracts metrics, sends clean summary
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
