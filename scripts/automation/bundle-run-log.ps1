@@ -6,25 +6,31 @@ $ErrorActionPreference = 'Stop'
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
 $envFile = Join-Path $ROOT 'scripts\claude-bridge\.env'
-$outbox = Join-Path $ROOT 'data\logs\outbox'
-$cutoff = (Get-Date).AddMinutes(-15)
+$actionsLog = Join-Path $ROOT 'data\logs\actions.ndjson'
+$cutoffUtc = (Get-Date).ToUniversalTime().AddMinutes(-15)
 $ts = Get-Date -Format 'h:mm tt'
 
 if (-not (Test-Path -LiteralPath $envFile)) { exit 0 }
-if (-not (Test-Path -LiteralPath $outbox)) { exit 0 }
+if (-not (Test-Path -LiteralPath $actionsLog)) { exit 0 }
 
 $events = @()
-Get-ChildItem -Path (Join-Path $outbox '*.json') -File -ErrorAction SilentlyContinue |
-  Where-Object { $_.LastWriteTime -ge $cutoff } |
-  ForEach-Object {
+Get-Content -LiteralPath $actionsLog -ErrorAction SilentlyContinue | ForEach-Object {
+  $line = [string]$_
+  if ([string]::IsNullOrWhiteSpace($line)) { return }
+  try {
+    $ev = $line | ConvertFrom-Json
+    if ($null -eq $ev) { return }
+
+    $evTime = $null
     try {
-      $ev = Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json
-      if ($null -ne $ev) {
-        $ev | Add-Member -NotePropertyName '__file_time' -NotePropertyValue $_.LastWriteTime -Force
-        $events += $ev
-      }
+      if ($ev.ts_iso) { $evTime = ([DateTimeOffset]::Parse([string]$ev.ts_iso)).UtcDateTime }
     } catch {}
-  }
+    if ($null -eq $evTime) { return }
+    if ($evTime -lt $cutoffUtc) { return }
+
+    $events += $ev
+  } catch {}
+}
 
 if ($events.Count -eq 0) { exit 0 }
 
@@ -140,9 +146,10 @@ if (-not $token -or -not $chatId) { exit 0 }
 Add-Type -AssemblyName System.Web
 $html = '<pre>' + [System.Web.HttpUtility]::HtmlEncode($message) + '</pre>'
 $body = @{ chat_id = $chatId; text = $html; parse_mode = 'HTML' } | ConvertTo-Json -Compress
+$bodyUtf8 = [System.Text.Encoding]::UTF8.GetBytes($body)
 
 try {
-  Invoke-RestMethod -Uri ("https://api.telegram.org/bot$token/sendMessage") -Method Post -Body $body -ContentType 'application/json' | Out-Null
+  Invoke-RestMethod -Uri ("https://api.telegram.org/bot$token/sendMessage") -Method Post -Body $bodyUtf8 -ContentType 'application/json; charset=utf-8' | Out-Null
 } catch {
   Write-Host "Send failed: $_"
 }
