@@ -394,6 +394,40 @@ def attention(meta: dict) -> list[str]:
     return out
 
 
+def _read_error_summary() -> list[str]:
+    """Read last 24h errors from action log."""
+    import time
+    log_path = Path(__file__).resolve().parents[2] / "data" / "logs" / "actions.ndjson"
+    if not log_path.exists():
+        return ["(no action log found)"]
+    try:
+        cutoff = time.time() - 86400
+        errors = {}
+        for line in log_path.read_text(encoding="utf-8").strip().split("\n"):
+            if not line.strip():
+                continue
+            try:
+                entry = json.loads(line)
+                ts = entry.get("ts", 0)
+                if isinstance(ts, str):
+                    from datetime import datetime as _dt
+                    ts = _dt.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
+                if ts < cutoff:
+                    continue
+                status = str(entry.get("status_word", "")).upper()
+                if status in ("FAIL", "ERROR", "BLOCKED"):
+                    reason = entry.get("reason_code") or entry.get("summary", "unknown")[:40]
+                    errors[reason] = errors.get(reason, 0) + 1
+            except Exception:
+                continue
+        if not errors:
+            return [" No errors in last 24h"]
+        sorted_errors = sorted(errors.items(), key=lambda x: -x[1])[:5]
+        return [f" {reason}: {count}x" for reason, count in sorted_errors]
+    except Exception:
+        return ["(error reading log)"]
+
+
 def _read_advisory_suggestions() -> list[str]:
     """Pull the Suggestions For Asz section from Quandalf's advisory."""
     advisory_path = Path(__file__).resolve().parents[2] / "docs" / "claude-reports" / "STRATEGY_ADVISORY.md"
@@ -432,6 +466,8 @@ def build_text(rows: list[Row], meta: dict) -> str:
     lines += milestones(rows)
     lines += ["", "⚠️ ATTENTION"]
     lines += attention(meta)
+    lines += ["", "⚡ ERRORS (24h)"]
+    lines += _read_error_summary()
     lines += ["", "🧙 QUANDALF SUGGESTS"]
     lines += _read_advisory_suggestions()
     lines.append("")

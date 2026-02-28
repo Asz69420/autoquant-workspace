@@ -136,10 +136,28 @@ def _write_spec(template: dict, thesis_path: str, variants: list[dict]) -> str:
 
 
 def _score_batch_summary(summary: dict, complexity: dict) -> float:
-    base_score = float(summary.get('profit_factor', 0.0)) - (float(summary.get('max_drawdown', 0.0)) / 10000.0)
+    pf = float(summary.get('profit_factor', 0.0))
+    dd_pct = float(summary.get('max_drawdown_pct', 0.0))
+    total_trades = int(summary.get('total_trades', 0))
+
+    # Base: profit factor (capped at 5 to prevent overfit outliers)
+    pf_score = min(pf, 5.0)
+
+    # Drawdown penalty: lower is better, scale 0-1
+    dd_penalty = min(dd_pct / 50.0, 1.0)  # 50% DD = max penalty
+
+    # Trade count factor: penalize < 30 trades (low confidence)
+    trade_factor = min(total_trades / 30.0, 1.0)
+
+    # Complexity penalty (keep existing logic)
     complexity_pen = 0.05 * max(0, int(complexity.get('indicator_count', 0)) - 2) + 0.03 * max(0, int(complexity.get('condition_count', 0)) - 8) + 0.02 * max(0, int(complexity.get('parameter_count', 0)) - 6)
-    gate_pen = 1000.0 if int(summary.get('failed_runs', 0)) > 0 else 0.0
-    return base_score - complexity_pen - gate_pen
+
+    # Gate penalty: failed runs still kill score but not as extreme
+    gate_pen = 5.0 if int(summary.get('failed_runs', 0)) > 0 else 0.0
+
+    # Composite: PF weighted by trade confidence, minus drawdown and complexity
+    score = (pf_score * trade_factor) - dd_penalty - complexity_pen - gate_pen
+    return round(score, 6)
 
 
 def _latest_meta(symbol: str, tf: str) -> Path:

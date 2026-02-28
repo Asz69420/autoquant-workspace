@@ -312,7 +312,7 @@ def main() -> int:
             fees = (pos['entry_price'] * qty + exit_px * qty) * (fee_bps / 10_000.0)
             total_fees_paid += fees
             pnl = gross - fees
-            trades.append({'entry_time': pos['entry_time'], 'entry_price': round(pos['entry_price'], 8), 'exit_time': b['time'], 'exit_price': round(exit_px, 8), 'side': pos['side'], 'qty': qty, 'pnl': round(pnl, 8), 'reason': reason, 'bars_held': max(1, i - pos['entry_idx'] + 1), 'entry_regime': pos.get('entry_regime', 'transitional'), 'entry_adx': (round(float(pos['entry_adx']), 8) if pos.get('entry_adx') is not None else None)})
+            trades.append({'entry_time': pos['entry_time'], 'entry_price': round(pos['entry_price'], 8), 'exit_time': b['time'], 'exit_price': round(exit_px, 8), 'side': pos['side'], 'qty': qty, 'pnl': round(pnl, 8), 'pnl_pct': round((pnl / pos['entry_price']) * 100, 4), 'reason': reason, 'bars_held': max(1, i - pos['entry_idx'] + 1), 'entry_regime': pos.get('entry_regime', 'transitional'), 'entry_adx': (round(float(pos['entry_adx']), 8) if pos.get('entry_adx') is not None else None)})
             exits_taken += 1
             pos = None
 
@@ -415,6 +415,9 @@ def main() -> int:
             'win_rate': round((len(wins) / total), 8) if total else 0.0,
             'profit_factor': round((sum(wins) / abs(sum(losses))) if losses else (999.0 if wins else 0.0), 8),
             'max_drawdown': round(maxdd, 8),
+            'max_drawdown_pct': round((maxdd / peak * 100) if peak > 0 else 0.0, 4),
+            'total_return_pct': round((eq / abs(trades[0]['entry_price']) * 100) if trades and trades[0]['entry_price'] != 0 else 0.0, 4),
+            'avg_trade_pnl_pct': round((sum(t['pnl'] / t['entry_price'] * 100 for t in trades) / len(trades)) if trades else 0.0, 4),
             'total_fees_paid': round(total_fees_paid, 8),
             'total_slippage_cost_est': round(total_slippage_cost_est, 8),
             'start_ts': meta.get('start'),
