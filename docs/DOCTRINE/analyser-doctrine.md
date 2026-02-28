@@ -38,5 +38,3 @@
 - [20260226-24|conf:0.75] Prioritize system improvement candidate: Session gating checklist before enabling any strategy execution module
 - [20260226-25|conf:0.75] Prioritize system improvement candidate: Agent quality gate requiring evidence links for each proposed change
 - [20260226-30|conf:0.75] Prioritize system improvement candidate: qbyQ8322m-M: record ingestion evidence pointer for doctrine traceability
-
-- [20260227-0343|llm|conf:high] If PF is ~1.00 on large samples (>300 trades), prioritize drawdown compression and trade-quality reduction before any further complexity changes.
