@@ -60,15 +60,4 @@ claude -p "$prompt" --allowedTools "Read,Write,Glob,Grep" 2>&1 | Tee-Object -App
 # Auto-promote any new specs to pipeline
 powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\promote-claude-specs.ps1" 2>&1 | Tee-Object -Append -FilePath $logFile
 
-# Check if Deep Iteration Log has new content and DM Asz
-$iterLog = "$ROOT\docs\claude-reports\DEEP_ITERATION_LOG.md"
-if (Test-Path $iterLog) {
-  $content = Get-Content $iterLog -Raw -ErrorAction SilentlyContinue
-  if ($content -and $content.Length -gt 50) {
-    # Grab first 500 chars as summary for DM
-    $summary = $content.Substring(0, [Math]::Min(500, $content.Length)) -replace '[#*`]', ''
-    powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message "🧙 Deep Iterator Run:`n$summary"
-  }
-}
-
 Write-Output "[$timestamp] Deep Iterator complete." | Tee-Object -Append -FilePath $logFile

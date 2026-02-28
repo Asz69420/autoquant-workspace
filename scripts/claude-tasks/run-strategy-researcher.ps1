@@ -53,15 +53,4 @@ python scripts/log_event.py --agent "claude-advisor" --action "strategy_research
 Write-Output "[$timestamp] Starting Strategy Researcher..." | Tee-Object -FilePath $logFile -Append
 claude -p $prompt --allowedTools "Read,Write,Bash(python scripts/log_event.py*)" 2>&1 | Tee-Object -FilePath $logFile -Append
 
-# DM Asz with suggestions if advisory has new content
-$advisory = "$ROOT\docs\claude-reports\STRATEGY_ADVISORY.md"
-if (Test-Path $advisory) {
-  $content = Get-Content $advisory -Raw -ErrorAction SilentlyContinue
-  $sugStart = $content.IndexOf("Suggestions For Asz")
-  if ($sugStart -gt 0) {
-    $suggestions = $content.Substring($sugStart, [Math]::Min(500, $content.Length - $sugStart)) -replace '[#*`]', ''
-    powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message "🧙 Researcher Update:`n$suggestions"
-  }
-}
-
 Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
