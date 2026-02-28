@@ -141,7 +141,7 @@ $agentLabel = if ($hasQuandalf) { "Quandalf" } else { "Frodex" }
 
 $lines = @()
 $lines += "$statusIcon $agentLabel Pipeline $ts"
-$lines += ("-" * 34)
+$lines += ("-" * 33)
 $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
 $lines += "Ingested : $ingested specs"
 if ($btExecuted -gt 0) { $lines += "Backtested: $btExecuted runs" } else { $lines += "Backtested: 0 (no variants)" }
@@ -149,11 +149,11 @@ $lines += "Variants : $dirVariants new + $dirExplore explore"
 $lines += "Refined : $refined iterations"
 $lines += "Promoted : $promoted strategies"
 if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
-$lines += ("-" * 34)
+$lines += ("-" * 33)
 $lines += "Library : $librarySize strats | $libLessons lessons"
 
 if ($hasErrors -or $hasWarnings) {
-  $lines += ("-" * 34)
+  $lines += ("-" * 33)
   if ($stall -gt 5) { $lines += "⚠️ Stall: $stall cycles no variants" }
   if ($starvation -gt 10) { $lines += "⚠️ Starvation: $starvation cycles" }
   if ($errors -gt 0) { $lines += "❌ Errors: $errors" }
