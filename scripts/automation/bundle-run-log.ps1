@@ -67,117 +67,133 @@ $lines = @()
 $lines += "$overallEmoji Pipeline Cycle - $ts"
 $lines += ""
 
-# Group by agent, extract REAL numbers
-$grouped = $events | Group-Object agent | Sort-Object Name
-foreach ($g in $grouped) {
-  $agent = $g.Name
-  $agentEvents = $g.Group
-  $combined = ($agentEvents | ForEach-Object { $_.summary } | Where-Object { $_ }) -join " "
-  $actions = @($agentEvents | ForEach-Object { $_.action } | Where-Object { $_ } | Sort-Object -Unique)
+# Filter out Logger/audit noise and INFO-only diagnostics
+$mainEvents = @($events | Where-Object {
+  $a = if ($_.agent) { $_.agent } else { "" }
+  $act = if ($_.action) { $_.action } else { "" }
+  ($a -ne "Logger") -and ($act -notmatch "AUDIT|DIAG")
+})
+if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events"; exit 0 }
 
-  # Determine agent status
-  $bestStatus = "OK"
-  foreach ($ae in $agentEvents) {
-    $s = if ($ae.status_word) { $ae.status_word.ToUpper() } else { "OK" }
-    if ($s -eq "FAIL") { $bestStatus = "FAIL" }
-    elseif ($s -eq "WARN" -and $bestStatus -ne "FAIL") { $bestStatus = "WARN" }
+# Extract key metrics from SUMMARY events
+$grabbed = 0; $grabFailed = 0
+$btRuns = 0; $btExecuted = 0; $btSkipped = 0
+$promoted = 0; $promoBundles = 0
+$refined = 0; $refExplored = 0
+$librarySize = 0; $libNew = 0; $libLessons = 0
+$dirNotes = 0; $dirVariants = 0; $dirExplore = 0
+$ingested = 0; $errors = 0
+$insightNew = 0
+$warnings = @()
+$stall = 0; $starvation = 0
+
+foreach ($e in $mainEvents) {
+  $sum = if ($e.summary) { $e.summary } else { "" }
+  $act = if ($e.action) { $e.action } else { "" }
+  $stat = if ($e.status_word) { $e.status_word.ToUpper() } else { "OK" }
+
+  switch ($act) {
+    "GRABBER_SUMMARY" {
+      if ($sum -match 'fetched=(\d+)') { $grabbed = [int]$matches[1] }
+      if ($sum -match 'failed=(\d+)') { $grabFailed = [int]$matches[1] }
+    }
+    "BATCH_BACKTEST_SUMMARY" {
+      if ($sum -match 'runs=(\d+)') { $btRuns = [int]$matches[1] }
+      if ($sum -match 'executed=(\d+)') { $btExecuted = [int]$matches[1] }
+      if ($sum -match 'skipped=(\d+)') { $btSkipped = [int]$matches[1] }
+    }
+    "LIBRARIAN_SUMMARY" {
+      if ($sum -match 'run=(\d+)') { $librarySize = [int]$matches[1] }
+      if ($sum -match 'new=(\d+)') { $libNew = [int]$matches[1] }
+      if ($sum -match 'lessons=(\d+)') { $libLessons = [int]$matches[1] }
+    }
+    "PROMOTION_SUMMARY" {
+      if ($sum -match 'bundles=(\d+)') { $promoBundles = [int]$matches[1] }
+      if ($sum -match 'variants=(\d+)') { $promoted = [int]$matches[1] }
+    }
+    "REFINEMENT_SUMMARY" {
+      if ($sum -match 'iters=(\d+)') { $refined = [int]$matches[1] }
+      if ($sum -match 'explore=(\d+)') { $refExplored = [int]$matches[1] }
+    }
+    "DIRECTIVE_LOOP_SUMMARY" {
+      if ($sum -match 'notes=(\d+)') { $dirNotes = [int]$matches[1] }
+      if ($sum -match 'directive_variants=(\d+)') { $dirVariants = [int]$matches[1] }
+      if ($sum -match 'exploration_variants=(\d+)') { $dirExplore = [int]$matches[1] }
+    }
+    "LAB_SUMMARY" {
+      if ($sum -match 'ingested=(\d+)') { $ingested = [int]$matches[1] }
+      if ($sum -match 'errors=(\d+)') { $errors = [int]$matches[1] }
+    }
+    "INSIGHT_SUMMARY" {
+      if ($sum -match 'new_processed=(\d+)') { $insightNew = [int]$matches[1] }
+    }
   }
 
-  # Extract meaningful metrics from summary text
-  $info = @()
+  # Track stall/starvation from any event
+  if ($sum -match 'stall.*?(\d+)\s*cycle') { $stall = [int]$matches[1] }
+  if ($sum -match 'starvation[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
 
-  # Grabber
-  if ($combined -match 'ingested[:\s=]+(\d+)') { $info += "ingested:$($matches[1])" }
-
-  # Backtester
-  if ($combined -match 'bundles[:\s=]+(\d+)') { $info += "backtested:$($matches[1])" }
-  if ($combined -match 'passing_gate[:\s=]+(\d+)') { $info += "passed:$($matches[1])" }
-
-  # Promotion
-  if ($combined -match 'promotions[:\s=]+(\d+)') { $info += "promoted:$($matches[1])" }
-
-  # Refinement
-  if ($combined -match 'refinements[:\s=]+(\d+)') { $info += "refined:$($matches[1])" }
-  if ($combined -match 'reached_refinement[:\s=]+(\d+)') { $info += "reached:$($matches[1])" }
-
-  # Strategist / directives
-  if ($combined -match 'directive_variants[:\s=]+(\d+)') { $info += "variants:$($matches[1])" }
-  if ($combined -match 'exploration_variants[:\s=]+(\d+)') {
-    $ev = $matches[1]
-    if ([int]$ev -gt 0) { $info += "explored:$ev" }
+  # Collect warnings
+  if ($stat -in @("WARN", "FAIL", "BLOCKED")) {
+    $reason = if ($e.reason_code) { $e.reason_code } else { "unknown" }
+    $warnings += "$($e.agent): $reason"
   }
-
-  # Library
-  if ($combined -match 'active_library_size[:\s=]+(\d+)') { $info += "library:$($matches[1])" }
-
-  # Librarian
-  if ($combined -match 'top[:\s=]+(\d+)') { $info += "top:$($matches[1])" }
-  if ($combined -match 'run[:\s=]+(\d+)') { $info += "run:$($matches[1])" }
-  if ($combined -match 'lessons[:\s=]+(\d+)') { $info += "lessons:$($matches[1])" }
-
-  # Errors
-  if ($combined -match 'errors[:\s=]+(\d+)') {
-    $errN = [int]$matches[1]
-    if ($errN -gt 0) { $info += "ERRORS:$errN" }
-  }
-
-  # Stall warnings
-  if ($combined -match 'stall.*?(\d+)\s*cycles') {
-    $info += "stall:$($matches[1])cyc"
-  } elseif ($combined -match 'stall[:\s=]+(\d+)') {
-    $info += "stall:$($matches[1])"
-  }
-
-  # Starvation
-  if ($combined -match 'starvation[:\s=]+(\d+)') {
-    $starv = [int]$matches[1]
-    if ($starv -gt 0) { $info += "starving:$starv" }
-  }
-
-  # Skip agents with no useful info and OK status
-  if ($info.Count -eq 0 -and $bestStatus -eq "OK") { continue }
-
-  # Remove zero-value metrics (noise)
-  $info = @($info | Where-Object { $_ -notmatch ':0$' })
-
-  # Skip if only zeros remained and status is OK
-  if ($info.Count -eq 0 -and $bestStatus -eq "OK") { continue }
-
-  # Status prefix
-  $prefix = switch ($bestStatus) {
-    "FAIL" { [char]::ConvertFromUtf32(0x274C) }
-    "WARN" { [char]::ConvertFromUtf32(0x26A0) }
-    default { [char]::ConvertFromUtf32(0x2705) }
-  }
-
-  $infoStr = if ($info.Count -gt 0) { $info -join " | " } else { "-" }
-  $lines += "$prefix $agent : $infoStr"
 }
 
-# Warnings/errors detail at bottom
-$failEvents = @($events | Where-Object {
-  $s = if ($_.status_word) { $_.status_word.ToUpper() } else { "OK" }
-  $s -in @("FAIL", "WARN", "BLOCKED")
-})
-if ($failEvents.Count -gt 0) {
-  $lines += ""
-  $seenReasons = @{}
-  foreach ($fe in $failEvents) {
-    $reason = if ($fe.reason_code) {
-      $fe.reason_code
-    } else {
-      $sum = if ($fe.summary) { $fe.summary } else { "unknown" }
-      $sum.Substring(0, [Math]::Min(50, $sum.Length))
-    }
-    $key = "$($fe.agent):$reason"
-    if (-not $seenReasons.ContainsKey($key)) { $seenReasons[$key] = 0 }
-    $seenReasons[$key]++
+# Build clean message
+$warnEmoji = [char]::ConvertFromUtf32(0x26A0)
+$okEmoji = [char]::ConvertFromUtf32(0x2705)
+$failEmoji = [char]::ConvertFromUtf32(0x274C)
+$hasProblems = ($errors -gt 0) -or ($stall -gt 5) -or ($starvation -gt 10) -or ($warnings.Count -gt 0)
+$headerEmoji = if ($errors -gt 0) { $failEmoji } elseif ($hasProblems) { $warnEmoji } else { $okEmoji }
+$ts = Get-Date -Format "h:mm tt"
+
+$lines = @()
+$lines += "$headerEmoji Frodex Pipeline $ts"
+$lines += ""
+
+# Only show lines with something to report
+if ($grabbed -gt 0 -or $grabFailed -gt 0) {
+  $grabLine = "Videos grabbed: $grabbed"
+  if ($grabFailed -gt 0) { $grabLine += " ($grabFailed failed)" }
+  $lines += $grabLine
+}
+if ($ingested -gt 0) { $lines += "Specs ingested: $ingested" }
+if ($btExecuted -gt 0 -or $btRuns -gt 0) {
+  $lines += "Backtested: $btExecuted runs"
+} elseif ($btSkipped -gt 0) {
+  $lines += "Backtests: skipped (no variants)"
+}
+if ($refined -gt 0) { $lines += "Refined: $refined iterations" }
+if ($promoted -gt 0) { $lines += "Promoted: $promoted strategies" }
+if ($dirVariants -gt 0 -or $dirExplore -gt 0) { $lines += "New variants: $dirVariants directive + $dirExplore exploration" }
+if ($libNew -gt 0) { $lines += "Library: $librarySize (+$libNew new)" }
+if ($insightNew -gt 0) { $lines += "Insights: $insightNew processed" }
+
+# Always show problems
+if ($stall -gt 5) { $lines += "$warnEmoji Directive stall: $stall cycles" }
+if ($starvation -gt 10) { $lines += "$warnEmoji Starvation: $starvation cycles" }
+if ($errors -gt 0) { $lines += "$failEmoji Errors: $errors" }
+
+# Deduplicated warnings
+if ($warnings.Count -gt 0) {
+  $uniqueWarnings = @{}
+  foreach ($w in $warnings) {
+    $cur = if ($uniqueWarnings.ContainsKey($w)) { $uniqueWarnings[$w] } else { 0 }
+    $uniqueWarnings[$w] = $cur + 1
   }
-  foreach ($sr in ($seenReasons.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 3)) {
-    $warnEmoji = [char]::ConvertFromUtf32(0x26A0)
-    $countSuffix = if ($sr.Value -gt 1) { " (x$($sr.Value))" } else { "" }
-    $lines += "$warnEmoji $($sr.Key)$countSuffix"
+
+  # Only show if not already covered by stall/starvation
+  $filteredWarnings = @($uniqueWarnings.GetEnumerator() | Where-Object { $_.Key -notmatch "STALL|STARVATION" } | Sort-Object Value -Descending | Select-Object -First 3)
+  foreach ($fw in $filteredWarnings) {
+    $countSuffix = if ($fw.Value -gt 1) { " (x$($fw.Value))" } else { "" }
+    $lines += "$warnEmoji $($fw.Key)$countSuffix"
   }
+}
+
+# If nothing happened at all
+if ($lines.Count -le 2) {
+  $lines += "Idle cycle - nothing to process"
 }
 
 $caption = ($lines -join "`n").TrimEnd()
