@@ -152,7 +152,7 @@ function Condense-Summary([string]$summary) {
     try {
       if ([double]$v -eq 0) { return }
     } catch {}
-    $bucket.Add("$k=$v")
+    $bucket.Add("${k}:$v")
   }
 
   # Preferred compact keys
@@ -212,7 +212,7 @@ function Test-AgentNoop([string]$bestStatus, [string]$summaryText, [array]$event
   if ($raw -match '(?i)\bSKIPPED\b') { return $true }
   if ($summaryText -match '(?i)\bno variants\b') { return $true }
 
-  $matches = [regex]::Matches([string]$summaryText, '=(-?\d+(?:\.\d+)?)')
+  $matches = [regex]::Matches([string]$summaryText, '[:=](-?\d+(?:\.\d+)?)')
   if ($matches.Count -gt 0) {
     $nonZero = $false
     foreach ($m in $matches) {
@@ -277,7 +277,7 @@ if ($QuietMode -and ($overallStatus -notin @('WARN','FAIL','BLOCKED','PRODUCED')
 
 $grouped = @($mainEvents | Group-Object agent | Sort-Object Name)
 $lines = New-Object System.Collections.Generic.List[string]
-$lines.Add(("{0} oQ | codex 5.3 | {1} {2}" -f $EMOJI_BOT, $overallStatus, $ts))
+$lines.Add(("{0} oQ - codex 5.3 - {1} {2}" -f $EMOJI_BOT, $overallStatus, $ts))
 
 $warnCount = 0
 $failCount = 0
@@ -327,9 +327,9 @@ foreach ($g in $grouped) {
     $vStall = Get-RegexValue $joined 'directive_loop_stall(?:_cycles)?\s*=\s*(\d+)'
     if (-not $vStall -and $joined -match '(?i)directive loop stalled') { $vStall = Get-RegexValue $joined '(\d+)\s*cycles?' }
     $vNotes = Get-RegexValue $joined 'directive_notes_seen\s*=\s*(\d+)'
-    if ($vStarv) { try { if ([int]$vStarv -ne 0) { $oqParts.Add("starvation=$vStarv") } } catch {} }
-    if ($vStall) { try { if ([int]$vStall -ne 0) { $oqParts.Add("stall=$vStall") } } catch {} }
-    if ($vNotes) { try { if ([int]$vNotes -ne 0) { $oqParts.Add("notes=$vNotes") } } catch {} }
+    if ($vStarv) { try { if ([int]$vStarv -ne 0) { $oqParts.Add("starvation:$vStarv") } } catch {} }
+    if ($vStall) { try { if ([int]$vStall -ne 0) { $oqParts.Add("stall:$vStall") } } catch {} }
+    if ($vNotes) { try { if ([int]$vNotes -ne 0) { $oqParts.Add("notes:$vNotes") } } catch {} }
     if ($oqParts.Count -gt 0) { $summaryText = (@($oqParts) -join ' ') }
   }
 
@@ -343,16 +343,16 @@ foreach ($g in $grouped) {
 
   $agentEmoji = Get-AgentEmoji $agent
   $statusEmoji = Get-StatusEmoji $bestStatus
-  $lines.Add(("{0} {1} | {2} {3}" -f $agentEmoji, $agent, $statusEmoji, $summaryText))
+  $lines.Add(("{0} {1} - {2} {3}" -f $agentEmoji, $agent, $statusEmoji, $summaryText))
   $visibleAgentCount++
 }
 
 if ($visibleAgentCount -eq 0) { exit 0 }
 
 if ($failCount -gt 0 -or $blockedCount -gt 0 -or $warnCount -gt 0) {
-  if ($failCount -gt 0) { $lines.Add(("{0} failures={1}" -f (Get-StatusEmoji 'FAIL'), $failCount)) }
-  if ($blockedCount -gt 0) { $lines.Add(("{0} blocked={1}" -f (Get-StatusEmoji 'BLOCKED'), $blockedCount)) }
-  if ($warnCount -gt 0) { $lines.Add(("{0} warnings={1}" -f (Get-StatusEmoji 'WARN'), $warnCount)) }
+  if ($failCount -gt 0) { $lines.Add(("{0} failures: {1}" -f (Get-StatusEmoji 'FAIL'), $failCount)) }
+  if ($blockedCount -gt 0) { $lines.Add(("{0} blocked: {1}" -f (Get-StatusEmoji 'BLOCKED'), $blockedCount)) }
+  if ($warnCount -gt 0) { $lines.Add(("{0} warnings: {1}" -f (Get-StatusEmoji 'WARN'), $warnCount)) }
 }
 
 $message = ($lines -join "`n").TrimEnd()

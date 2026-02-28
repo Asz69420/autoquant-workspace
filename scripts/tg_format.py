@@ -55,6 +55,7 @@ def to_model_label(model_id: str) -> str:
     known = {
         "openai-codex/gpt-5.3-codex": "codex 5.3",
         "opencode/claude-opus-4-6": "opus 4.6",
+        "claude-opus-4-6": "opus 4.6",
         "anthropic/claude-sonnet-4-6": "sonnet 4.6",
         "anthropic/claude-haiku-4-5-20251001": "haiku 4.5",
     }
