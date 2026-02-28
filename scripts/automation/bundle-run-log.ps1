@@ -387,9 +387,7 @@ if (-not $token -and (Test-Path -LiteralPath $bridgeEnvFile)) {
 
 if (-not $token -or -not $chatId) { exit 0 }
 
-Add-Type -AssemblyName System.Web
-$html = '<pre>' + [System.Web.HttpUtility]::HtmlEncode($message) + '</pre>'
-$body = @{ chat_id = $chatId; text = $html; parse_mode = 'HTML' } | ConvertTo-Json -Compress
+$body = @{ chat_id = $chatId; text = $message } | ConvertTo-Json -Compress
 
 # Persist payload (UTF-8 with BOM) and read explicitly as UTF-8 for API call
 [System.IO.File]::WriteAllText($payloadPath, $body, $utf8Bom)
