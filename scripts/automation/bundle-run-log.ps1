@@ -163,16 +163,25 @@ $statusIcon = switch ($statusTag) {
 $ts = Get-Date -Format "h:mm tt"
 $agentLabel = if ($mode -eq 'quandalf') { "Quandalf" } else { "Frodex" }
 
-# Model label for header (abbrev)
-$modelLabel = 'n/a'
+# Model label for header (abbrev, no spaces: GPT5.3 / OPUS4.6)
+$modelLabel = 'N/A'
 $modelBuckets = @($mainEvents | ForEach-Object { [string]$_.model_id } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) -and $_ -ne 'system' } | Group-Object | Sort-Object Count -Descending)
 if ($modelBuckets.Count -gt 0) {
   $modelRaw = [string]$modelBuckets[0].Name
-  if ($modelRaw -match '(?i)gpt-5\.3') { $modelLabel = 'GPT 5.3' }
-  elseif ($modelRaw -match '(?i)opus[-_ ]?4[-_ ]?6') { $modelLabel = 'Opus 4.6' }
+
+  if ($modelRaw -match '(?i)gpt[-_ ]?5\.3') { $modelLabel = 'GPT5.3' }
+  elseif ($modelRaw -match '(?i)opus[-_ ]?4\.6|opus[-_ ]?4[-_ ]?6') { $modelLabel = 'OPUS4.6' }
+  elseif ($modelRaw -match '(?i)sonnet[-_ ]?4\.5|sonnet[-_ ]?4[-_ ]?5') { $modelLabel = 'SONNET4.5' }
+  elseif ($modelRaw -match '(?i)haiku[-_ ]?3\.5|haiku[-_ ]?3[-_ ]?5') { $modelLabel = 'HAIKU3.5' }
   else {
-    $modelLabel = $modelRaw
-    if ($modelLabel.Length -gt 14) { $modelLabel = $modelLabel.Substring(0, 14) }
+    # Generic formatter for any model id: provider/model-name-version -> MODELNAMEVERSION
+    $tail = if ($modelRaw -match '/') { ($modelRaw -split '/')[-1] } else { $modelRaw }
+    $tail = $tail -replace '(?i)-codex', ''
+    $tail = $tail.ToUpperInvariant()
+    $tail = $tail -replace '[ _]', ''
+    $tail = $tail -replace '-', ''
+    if ($tail.Length -gt 14) { $tail = $tail.Substring(0, 14) }
+    if (-not [string]::IsNullOrWhiteSpace($tail)) { $modelLabel = $tail }
   }
 }
 
