@@ -216,16 +216,11 @@ if ($bannerPath) {
     Invoke-RestMethod -Uri $uri -Method Post -Body $fullBody -ContentType "multipart/form-data; boundary=$boundary" | Out-Null
     Write-Host "Bundle sent to log channel with banner"
   } catch {
-    Write-Host "Photo failed: $_ - fallback to text"
-    try { Send-TextMessage $token $logChannel $caption } catch { Write-Host "Text also failed: $_" }
+    Write-Host "Photo failed: $_"
+    Write-Host "Skipped text fallback (images-only mode)"
   }
 } else {
-  try {
-    Send-TextMessage $token $logChannel $caption
-    Write-Host "Bundle sent as text (no banner)"
-  } catch {
-    Write-Host "Send failed: $_"
-  }
+  Write-Host "No banner available; skipped send (images-only mode)"
 }
 
 $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8

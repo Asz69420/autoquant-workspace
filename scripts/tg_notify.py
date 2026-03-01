@@ -132,6 +132,15 @@ def _append_send_audit(parse_mode: str, text_value: str) -> None:
         return
 
 
+def _env_bool(name: str, default: bool = False) -> bool:
+    raw = str(os.getenv(name, "")).strip().lower()
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
 def send_telegram_message(
     message: str,
     chat_id: str | None = None,
@@ -153,6 +162,12 @@ def send_telegram_message(
     msg_trim = (message or '').strip()
     if not effective_parse_mode and msg_trim.startswith('<pre>') and msg_trim.endswith('</pre>'):
         effective_parse_mode = 'HTML'
+
+    # Optional hard gate: suppress text-only sends to log channel (image/bundle-only mode).
+    # Reversible via env: TG_LOG_TEXT_ENABLED=1
+    log_text_enabled = _env_bool("TG_LOG_TEXT_ENABLED", default=False)
+    if str(target_chat_id) == str(log_chat_id) and not log_text_enabled:
+        return True
 
     # Log channel: keep existing content, but render monospace via HTML <pre> wrapper only.
     if str(target_chat_id) == str(log_chat_id):
