@@ -178,7 +178,7 @@ if ($modelBuckets.Count -gt 0) {
 
 $lines = @()
 $lines += "$statusIcon $agentLabel $modelLabel $ts"
-$lines += "○──activity────────────────────────"
+$lines += "○───activity──────────────────────"
 
 if ($mode -eq 'quandalf') {
   # Strict action-mode metrics only (no inferred/regex-derived counts)
@@ -263,7 +263,7 @@ $noteText = ($noteText -replace '\s+', ' ').Trim()
 if ($noteText.Length -gt 170) { $noteText = $noteText.Substring(0, 167) + '...' }
 if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
 
-$lines += "○──note────────────────────────────"
+$lines += "○───note──────────────────────────"
 $lines += $noteText
 
 $messageBody = ($lines -join "`n").TrimEnd()
