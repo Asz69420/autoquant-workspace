@@ -14,6 +14,9 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 4. Big generated outputs belong in `artifacts/` or `data/` (not Git-tracked).
 5. Follow schema contracts in `schemas/` when creating specs.
 6. Auto-commit policy applies after approved writes: add only approved files, conventional commit, show `git log -1`.
+7. Do not claim to “remember” policy/process changes; if persistence is required, codify it in repo files and commit.
+8. Treat memory as retrieval support only; committed repo policy is the enforcement source of truth.
+9. When a behavior change is agreed upon, the commit must land in the same conversation. Do not defer "I'll do it next time" — either commit it now or flag it as unresolved.
 
 ## Routing & Execution Defaults
 - Prefer decisive action with minimal blocking questions (max 2–3 when truly blocking).
