@@ -40,6 +40,12 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 - If capability is missing, doicitly asspawn; report blocked due to capability mismatch and choose a direct execution path (or ask for a capable runner).
 - Never delegate write/commit tasks to read-only agents.
 
+## Sub-Agent Logging Gate (Must Enforce)
+- A delegated/sub-agent task is not complete until a matching `SUBAGENT_*` lifecycle entry exists in `data/logs/actions.ndjson`.
+- Never report DONE/complete before this gate passes.
+- If lifecycle entry is missing, status must be `BLOCKED`, backfill must be executed immediately, and the task remains unresolved until verified.
+- This gate applies to every spawned sub-agent run without exception.
+
 ## Memory Boundary
 - `MEMORY.md` is now a compact index only.
 - For prior decisions/history/todos/preferences: use `memory_search` first, then targeted reads.
