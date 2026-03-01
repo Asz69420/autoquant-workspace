@@ -168,26 +168,20 @@ $lines += "$statusIcon $agentLabel Pipeline $ts"
 $lines += ("-" * 33)
 
 if ($mode -eq 'quandalf') {
-  $totalEvents = @($mainEvents).Count
-  $generatorEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)generator') -or ([string]$_.action -match '(?i)GENERATOR|STRATEGY') }).Count
-  $researchEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)research') -or ([string]$_.action -match '(?i)RESEARCH') }).Count
-  $doctrineEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)doctrine') -or ([string]$_.action -match '(?i)DOCTRINE') }).Count
-  $auditorEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)audit') -or ([string]$_.action -match '(?i)AUDIT') }).Count
-  $claudeSpecs = 0
-  foreach ($e in $mainEvents) {
-    $sum = if ($e.summary) { [string]$e.summary } else { '' }
-    if ($sum -match 'specs?=(\d+)') { $claudeSpecs += [int]$matches[1]; continue }
-    if ($sum -match 'promoted\s+(\d+)\s+spec') { $claudeSpecs += [int]$matches[1]; continue }
-    if ($sum -match 'variants=(\d+)') { $claudeSpecs += [int]$matches[1]; continue }
-  }
+  # Strict action-mode metrics only (no inferred/regex-derived counts)
+  $strategyGenerateCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
+  $strategyResearchCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
+  $doctrineSynthesisCount = @($mainEvents | Where-Object { [string]$_.action -eq 'doctrine_synthesis' }).Count
+  $backtestAuditCount = @($mainEvents | Where-Object { [string]$_.action -eq 'backtest_audit' }).Count
+  $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
 
-  $lines += "Generated : $claudeSpecs specs"
-  $lines += "Researched: $researchEvents runs"
-  $lines += "Doctrine : $doctrineEvents updates"
-  $lines += "Audited : $auditorEvents checks"
-  $lines += "Promoted : $promoted specs"
+  $lines += "Generated : $strategyGenerateCount runs"
+  $lines += "Researched: $strategyResearchCount runs"
+  $lines += "Doctrine : $doctrineSynthesisCount runs"
+  $lines += "Audited : $backtestAuditCount runs"
+  $lines += "Total    : $totalStrictRuns runs"
   $lines += ("-" * 33)
-  $lines += "Activity : $totalEvents events | Gen $generatorEvents"
+  $lines += "Window   : $effectiveWindow min"
 } else {
   $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
   $lines += "Ingested : $ingested specs"
@@ -217,7 +211,7 @@ if ($warnings.Count -gt 0) {
 }
 
 $lines += ("-" * 33)
-$lines += "Status : $statusTag (warnings=$($warnings.Count), errors=$errors)"
+$lines += "Status : $statusIcon $statusTag (warnings=$($warnings.Count), errors=$errors)"
 if ($errors -gt 0) {
   $lines += "Note   : Pipeline errors detected ($errors)"
 } elseif ($stall -gt 5) {
