@@ -1,107 +1,128 @@
-# Strategy Advisory — 2026-02-28 (Update 6)
+# Strategy Advisory — 2026-03-02 (Update 8)
 
 **Author:** claude-advisor | **Mode:** STRATEGY_RESEARCHER
-**Data window:** 30 outcome notes (20260227–28), 10 backtest results (20260228), 48 strategy specs (20260228), 772 backtest files total, doctrine as of 20260228
-**Prior advisory:** 2026-02-28 (Update 5)
+**Data window:** 30 outcome notes (20260301), 60 backtest results (20260302), 37 strategy specs (20260302), 3 new claude-specs, doctrine as of 20260228
+**Prior advisory:** 2026-03-01 (Update 7)
+
+---
+
+## Machine Directives
+
+```json
+[
+  {"action": "BLACKLIST_TEMPLATE", "target": "stochastic_reversal", "reason": "0 trades in 8+ cycles, bug line 179"},
+  {"action": "BLACKLIST_TEMPLATE", "target": "bollinger_breakout", "reason": "0 trades in 5+ cycles, structural impossibility on 4h"},
+  {"action": "EXCLUDE_ASSET", "target": "BTC", "reason": "DD 306-1501% across all templates, 8 cycles flagged"},
+  {"action": "BLACKLIST_DIRECTIVE", "target": "GATE_ADJUST", "reason": "0% success in 40+ applications, 9 cycles"},
+  {"action": "BLACKLIST_DIRECTIVE", "target": "ENTRY_TIGHTEN", "reason": "0% success, confidence_threshold not consumed"},
+  {"action": "BLACKLIST_DIRECTIVE", "target": "ENTRY_RELAX", "reason": "0% success, confidence_threshold not consumed"},
+  {"action": "BLACKLIST_DIRECTIVE", "target": "THRESHOLD_SWEEP", "reason": "0% success, confidence_threshold not consumed"},
+  {"action": "BLACKLIST_DIRECTIVE", "target": "EXIT_CHANGE", "reason": "0% profitability in 9+ tests, refine spec still uses 1.33:1 R:R"},
+  {"action": "BLACKLIST_VARIANT", "target": "directive_exploration", "reason": "PF 0.64-0.88, DD up to 1501%, 9 cycles"},
+  {"action": "BLACKLIST_VARIANT", "target": "directive_variant_1_exit_change", "reason": "0% profitability in 9+ tests"},
+  {"action": "BLACKLIST_VARIANT", "target": "directive_variant_1_gate_adjust", "reason": "PF 1.001 at best, noise trading"},
+  {"action": "BLACKLIST_VARIANT", "target": "directive_variant_1_threshold_sweep", "reason": "0% improvement"},
+  {"action": "PREFER_TEMPLATE", "target": "macd_confirmation", "priority": 1},
+  {"action": "PREFER_TEMPLATE", "target": "supertrend_follow", "priority": 2},
+  {"action": "PREFER_TEMPLATE", "target": "rsi_pullback", "priority": 3},
+  {"action": "PREFER_TEMPLATE", "target": "ema_rsi_atr", "priority": 4},
+  {"action": "STOP_FLOOR", "target": "stop_atr_mult", "minimum": 1.5},
+  {"action": "RR_FLOOR", "target": "reward_risk_ratio", "minimum": 5.0, "reason": "All ACCEPTs use 6:1+ R:R, sub-4:1 is noise trading"},
+  {"action": "DISABLE_REFINEMENT", "reason": "0% improvement rate across 4+ cycles, architecture mismatch"},
+  {"action": "PRIORITIZE_CLAUDE_SPECS", "reason": "Claude specs = 100% of all-time ACCEPTs, pipeline specs = 0%"}
+]
+```
 
 ---
 
 ## Executive Summary
 
-**Three viable strategy families now confirmed.** RSI Pullback Safe Moderate has been promoted to ACCEPT (PF=1.21, DD=9.2%, 38 trades), joining MACD Wide Exit (PF=1.347, 189 trades) and Supertrend Relaxed (PF=1.264, 85 trades). The system's strategic portfolio has tripled from one to three accepted/near-accepted strategies — all Claude-generated specs, zero pipeline-generated accepts. However, the pipeline's structural deficits persist unchanged: 100% refinement stall, ~80% compute waste, dead templates still consuming slots, and 9 of 10 prior advisory directives remain unactioned after 6 cycles. With 772 backtest files generated today but only ~20% producing unique non-negative results, the system is spending 5x the compute necessary for its actual discovery rate.
+**The pipeline is trapped in a parameter convergence loop.** 60 new backtests from 20260302 yielded a best PF of 1.033 — identical to the 30 outcome notes from 20260301 that all shared the exact same metrics (PF=1.033, DD=28.5%, 389 trades). Different strategy specs are resolving to the same backtester parameters, producing identical results across dozens of runs. Meanwhile, the MACD 7:1 tail harvester (PF=1.712, DD=7.5%, 161 trades — the system's best-ever result from Update 7) has NOT been forward-tested, and the R:R frontier specs (8:1 through 12:1) remain unbacktested. The pipeline continues generating directive_exploration variants (PF=0.64-0.88, DD up to 1501%) and BTC specs despite 8 cycles of exclusion directives. Three new Claude specs extend the extreme-R:R thesis to EMA/RSI/ATR, Supertrend regime-partitioned 1h, and RSI pullback templates — all awaiting backtesting. Every ACCEPT in the system's history comes from Claude-generated specs; the pipeline's independent spec generation has a 0% ACCEPT rate.
 
 ---
 
 ## Failing Patterns — Stop Iterating on These
 
-### 1. `directive_exploration` variant (CRITICAL — 7TH ADVISORY)
-- **Evidence (20260228):** Catastrophic across all symbols/TFs. ETH/4h PF=0.884, ETH/1h PF=0.754, BTC/4h PF=0.818 with -$93K net loss.
-- **Root cause:** 0.5x/0.75x ATR stops get chopped out before moves develop. Negative PF in ALL regimes on ALL symbols.
-- **Status:** Still generated by `_directive_variants()`. 7th consecutive advisory flagging this.
-- **Recommendation:** **REMOVE from `_directive_variants()`.** This variant has never produced PF > 1.0 in any cycle.
+### 1. Parameter convergence trap — ALL PIPELINE SPECS (NEW — CRITICAL)
+- **Evidence (20260302):** 60 backtests, 11+ files share identical metrics (PF=1.033, 389 trades, DD=28.5%). Another cluster: PF=1.001, 406 trades (BTC/4h). Another: PF=0.998, 415 trades (ETH/1h). Three metric fingerprints account for ~80% of all results.
+- **Root cause:** Pipeline's `_directive_variants()` and `template_diversity` mechanisms generate specs with different rule text that resolve to the same numeric backtester parameters. The spec-level diversity is illusory.
+- **Impact:** ~40% of the 60 backtests are byte-identical duplicates. Combined with dead templates and failing directives, useful throughput is ~10% of compute.
+- **Recommendation:** Hash resolved template parameters (not spec-level rules) before backtesting. Dedup at the numeric parameter level.
 
-### 2. Variant deduplication failure (CRITICAL — 7TH ADVISORY)
-- **Evidence (20260227):** 20 of 20 pipeline outcomes collapsed to 2 unique metric fingerprints.
-- **Evidence (20260228):** `library_augmented` and `threshold_sweep` variants produce identical results (PF=1.033, 389 trades) despite different confidence thresholds — confirming confidence_threshold is not consumed by backtester.
-- **Impact:** At 772 backtest files today, if 50% are duplicates, ~386 compute slots wasted.
-- **Recommendation:** Hash resolved template parameters post-resolution, not spec-level rule strings.
+### 2. `directive_exploration` variant (CRITICAL — 9TH ADVISORY)
+- **Evidence (20260302):** PF=0.884 (ETH/4h, 766 trades, DD=334%), PF=0.818 (BTC/4h, 843 trades, DD=1501%), PF=0.754 (ETH/1h, 891 trades). Still generated by `_directive_variants()` line 673-681.
+- **Status:** 9th consecutive advisory flagging. DD=1501% is a new system worst.
+- **Recommendation:** **REMOVE from `_directive_variants()`.** Has never produced PF > 1.0 in any test, any asset, any timeframe.
 
-### 3. `stochastic_reversal` template — DEAD (6TH ADVISORY)
-- **Evidence (20260228):** Claude spec `stoch_wide_zones_ranging` — 0 trades even with K<35/K>65 widened zones. template_diversity variants — 0 trades across all symbol/TF combos.
-- **Root cause (confirmed 4x):** Line 179 of signal_templates.py: `k_now < os` requires K BELOW oversold at the exact crossover moment. Structurally impossible.
-- **Recommendation:** **REMOVE from TEMPLATE_COMBOS.** Fix to `k_prev < os` if template is to be revived.
+### 3. BTC as test asset — CATASTROPHIC (8TH ADVISORY)
+- **Evidence (20260302):** BTC/4h: PF=1.001 (406 trades, DD=217%), PF=0.818 (843 trades, DD=1501%), PF=0.644 (165 trades, WR=34%). Refine spec `ee162da7` explicitly targets BTC/1h with 1.33:1 R:R.
+- **New worst:** DD=1501% on BTC/4h (directive_exploration). Previous worst was 934%.
+- **Recommendation:** **HARD-CODE BTC exclusion** in spec generation AND refine pipeline.
 
-### 4. `bollinger_breakout` template — DEAD (3RD ADVISORY)
-- **Evidence (20260228):** `bollinger_volume_confirmed_breakout` and `bollinger_low_volume_breakout` — both 0 trades.
-- **Root cause:** Close > BBU_20_2.0 is an extremely rare event on 4h crypto. 6 total 0-trade results across 3 advisory cycles.
-- **Recommendation:** **REMOVE from spec generation** until template is revised (e.g., Bollinger squeeze + expansion approach instead of raw breakout).
+### 4. `stochastic_reversal` template — DEAD (8TH ADVISORY)
+- **Evidence:** Zero trades in every test across 8 cycles. Bug at line 179: `k_now < os` structurally impossible.
+- **Recommendation:** **REMOVE from TEMPLATE_COMBOS.**
 
-### 5. GATE_ADJUST directive — NON-FUNCTIONAL (7TH ADVISORY)
-- **Evidence:** Prescribed in ALL 30+ outcome notes reviewed. Success rate: **0%**. avg_delta_pf = 0.0 every time.
-- **Root cause:** Modifies risk_rules text but backtester reads numeric parameters only.
-- **Recommendation:** **BLACKLIST.** 7 cycles, zero improvement, zero exceptions.
+### 5. `bollinger_breakout` template — DEAD (5TH ADVISORY)
+- **Evidence:** Zero trades in every test. Close > BBU_20_2.0 too rare on crypto.
+- **Recommendation:** **REMOVE from TEMPLATE_COMBOS.**
 
-### 6. ENTRY_TIGHTEN / ENTRY_RELAX — BOTH DEAD (6TH ADVISORY)
-- **Evidence:** 0% improvement rate. confidence_threshold_delta adjustments have no effect — backtester ignores confidence_threshold (confirmed).
-- **Recommendation:** Blacklist both until confidence_threshold propagation is fixed.
+### 6. ALL directive variants — UNIVERSALLY FAILING (9TH ADVISORY)
+- **Evidence (20260302):** `directive_variant_1_gate_adjust` = PF=1.001 (BTC, noise), `directive_variant_1_exit_change` = PF=1.033 (noise), `directive_variant_1_threshold_sweep` = identical to gate_adjust. Not one directive variant has ever produced PF > 1.05.
+- **Root cause:** Directives modify rule text but don't propagate to backtester numeric parameters.
+- **Recommendation:** Blacklist ALL directive variant types. The entire directive-to-variant architecture is non-functional.
 
-### 7. BTC as test asset — STRUCTURAL LOSS GENERATOR (6TH ADVISORY)
-- **Evidence (20260228):** BTC/4h directive_variant_1_exit_change_role_entry: PF=0.624, DD=$81,177, net loss -$70,338.
-- **Evidence:** BTC variants continue appearing despite 5 advisory cycles calling for exclusion.
-- **Recommendation:** **HARD-CODE BTC exclusion** in spec generation logic.
+### 7. Refinement engine — CONFIRMED DEAD (4TH ADVISORY)
+- **Evidence (20260302):** Refine spec `ee162da7` generates BTC/1h with 1.33:1 R:R — the exact opposite of what works (ETH, 6:1+ R:R). NO_IMPROVEMENT in 100% of outcomes for 4 consecutive cycles.
+- **Recommendation:** Disable entirely. Replace with Claude-spec iteration.
 
-### 8. `directive_variant_1_exit_change` family — UNIVERSALLY FAILING (NEW)
-- **Evidence (20260228 backtests):** 6 exit_change exploit variants tested. PF range: 0.624–0.998. NONE profitable.
-  - exploit_1: PF=0.804, -$1,302
-  - exploit_2: PF=0.965, -$250
-  - exploit_4: PF=0.921, -$551
-  - role_entry: PF=0.624, -$70,338
-  - base: PF=0.998, essentially flat at -$19
-- **Root cause:** Directive-driven exit modifications produce random walks around breakeven. Unlike Claude's hypothesis-driven fee-killer exits (which work because they're paired with quality signals), directive exits modify parameters blindly.
-- **Recommendation:** Stop generating exit_change variants via directives. Exit structure should come from spec-level hypothesis design, not automated perturbation.
+### 8. Low R:R strategies — STRUCTURAL LOSS GENERATORS (UPGRADED)
+- **Evidence (20260302):** Every result with R:R < 4:1 produces PF < 1.05. Refine spec uses 1.33-1.5:1 R:R. Pipeline directive variants use 1.5-2.0:1 R:R. ALL below breakeven after fees.
+- **Evidence (cumulative):** ALL ACCEPTs use 6:1+ R:R. ALL sub-4:1 R:R strategies fail.
+- **Recommendation:** **ENFORCE R:R floor of 5:1.** Do not generate specs with TP/SL < 5.0.
 
-### 9. Refinement engine universally stalling (2ND ADVISORY)
-- **Evidence:** NO_IMPROVEMENT in 100% of latest outcomes (16/16 on 20260228, continuing from Update 5).
-- **Root cause:** Refinement applies small perturbations to parameters that the backtester either ignores or that collapse to identical signals. Cannot discover structural changes like wider R:R or relaxed ADX gates.
-- **Recommendation:** Replace refinement step with Claude-spec iteration loop.
+### 9. RSI deep dip (RSI<30) — ZERO TRADES (2ND ADVISORY)
+- **Evidence:** Conditions structurally contradictory (deep oversold + confirmed uptrend). Keep RSI≤40 minimum.
+
+### 10. Variant deduplication failure (CRITICAL — 9TH ADVISORY)
+- **Evidence (20260302):** 11+ files with identical PF=1.033/389 trades. ~40% of batch is duplicate compute.
+- **Recommendation:** Hash resolved parameters, dedup before submitting to backtester.
 
 ---
 
 ## Promising Directions — Explore More
 
-### 1. MACD templates — TOP PRIORITY (ACCEPT CONFIRMED + STABLE LEADS)
-- **`macd_wide_exit_fee_killer`** (claude-c9e5f3a4): **PF=1.347, DD=6.2%, 189 trades — ACCEPT.** System's best result. Stable across 3 review cycles.
-- **`macd_ranging_exploiter`** (claude-md47f2a1): **PF=1.193, DD=4.7%, 194 trades — REVISE.** Strong secondary lead with excellent trade count.
-- **`macd_maximum_ride_trending`** (claude-mc28a4b5): **PF=1.143, DD=10.8%, 160 trades — REVISE.** Third MACD variant above PF=1.1.
-- **Regime insight:** MACD shines in ranging (PF=1.87 for ranging-exploiter). Transitional regime is the PF killer (0.82). The `macd_no_transitional_composite` variant (ADX<20 OR >28, excluding choppy zone) is the highest-value untested concept.
-- **Action:** Prioritize backtesting the 6–9 untested MACD variants from mc28a4b5 and md12f7a3 specs. Test the extreme R:R variants (TP=10.0x, R:R=5:1) for tail-heavy distribution viability.
+### 1. MACD 7:1 Tail Harvester — FORWARD TEST OVERDUE (HIGHEST PRIORITY)
+- **Status:** PF=1.712, DD=7.5%, 161 trades, all regimes profitable. Validated in Update 7. NO forward test started.
+- **R:R frontier:** Specs mc9x2k7d (8:1 through 12:1) and mc4h9x2t (4h variants) exist but remain unbacktested. The R:R-PF curve was still climbing at 7:1 — the cliff location is unknown.
+- **Action:** Begin paper trading MACD 7:1 on ETH-PERP immediately. Simultaneously backtest 8:1, 9:1, 10:1 variants.
 
-### 2. Supertrend templates — HIGH PRIORITY (RELAXATION VALIDATED)
-- **`supertrend_relaxed_volume_boost`** (claude-st4bk7e2): **PF=1.264, DD=10.9%, 85 trades — REVISE.** Breakthrough: ADX 25→15 increased trades from 16→85 while preserving PF>1.2.
-- **`supertrend_strong_trend`**: **PF=1.540, DD=$227, 18 trades.** Excellent PF but still below trade-count gate.
-- **`supertrend_conservative_high_adx`**: **PF=1.589, DD=3.0%, 16 trades.** Best DD in the entire system.
-- **Key insight:** ADX 15 relaxation works. Stop ≥ 1.5x ATR is mandatory — stops below 1.5x produce DD blowouts (st28c3d4 at 181% DD with 1.0x stop).
-- **Action:** Focus remaining supertrend variants on ADX {15, 18, 20} x stop {1.5, 2.0, 2.5} x TP {3.0, 3.5, 4.0}. The 9 untested variants from st28c3d4/st4bk7e2/4a2e7f01 should be backtested this cycle.
+### 2. EMA/RSI/ATR Extreme R:R — NEW CLAUDE SPEC (claude-er8v3m6k)
+- **Hypothesis:** EMA/RSI/ATR achieved PF=1.201 at 4:1 R:R with DD=69%. Extreme R:R (7:1, 9:1) should amplify edge as proven with MACD.
+- **Variants:** `ema_rsi_atr_tail_runner_7to1` (4h), `ema_rsi_atr_tight_momentum_9to1` (4h, tight RSI 45-65), `ema_rsi_atr_1h_vol_runner_6to1` (1h).
+- **Key test:** Does ema_rsi_atr signal quality support tail harvesting? If PF < 1.0 at 7:1, signal quality is insufficient. If PF > 1.2, we have a 4th viable template family.
+- **Action:** Prioritize backtesting er8v3m6k. Results will determine if EMA/RSI/ATR joins the portfolio.
 
-### 3. RSI Pullback — NEWLY ACCEPTED (FRAGILE)
-- **`rsi_pullback_safe_moderate`** (claude-rp39d8e1): **PF=1.21, DD=9.2%, 38 trades — ACCEPT.** New addition to the viable portfolio.
-- **Caution:** 38 trades is above the 20-trade gate but remains an overfit risk. Needs validation on a second timeframe or asset.
-- **`rsi_fast_trend_balanced`**: **PF=1.99, DD=1.6%, 10 trades — REJECT.** Textbook overfit: incredible PF on barely any trades.
-- **Action:** Test the rsi_pullback_safe_moderate on ETH/1h to check if the edge persists on a different timeframe. If PF > 1.0 with 30+ trades on 1h, the strategy is genuinely viable. Also test with stop ≥ 2.0x ATR to see if DD compresses further.
+### 3. Supertrend Regime-Partitioned 1h — NEW CLAUDE SPEC (claude-st5k2r8w)
+- **Hypothesis:** Supertrend produces two structurally uncorrelated strategies: ADX>5 (ranging, PF=1.61 on 4h) and ADX>25 (trending, PF=1.42 on 4h, 22 trades). Moving to 1h should clear the 30-trade gate for ADX>25.
+- **Variants:** `supertrend_1h_strong_trend_7to1` (ADX>25), `supertrend_1h_ranging_harvest_6to1` (ADX>5), `supertrend_1h_moderate_trend_8to1` (ADX>15).
+- **Key test:** Does 1h noise degrade Supertrend signal quality? 4h ADX>5 = PF=1.22 ACCEPT. If 1h ADX>5 < 1.1, stick to 4h.
+- **Action:** Backtest st5k2r8w. The regime-partitioned portfolio concept depends on these results.
 
-### 4. Fee drag reduction via wider R:R — VALIDATED (CONVERGENT ACROSS 3 TEMPLATES)
-- **MACD ACCEPT:** 1.0x stop / 3.5x TP → PF=1.347
-- **Supertrend relaxed:** Wide exits → PF=1.264
-- **RSI pullback safe:** 2.0x stop / 4.0x TP → PF=1.21
-- **EMA crossover ultra-wide FAILED:** PF=0.891 — fee-killer doesn't work with low-quality signals.
-- **Conclusion:** Wide R:R works only with high-quality signals (MACD histogram zero-cross, supertrend flip, RSI pullback in confirmed trend). This is now a validated universal principle across 3 templates.
+### 4. RSI Pullback Tail Harvesting — NEW CLAUDE SPEC (claude-rp3w7k9d)
+- **Hypothesis:** RSI pullback (PF=1.21, 38 trades at 4:1) is uniquely suited to tail harvesting — pullbacks into strong trends produce multi-ATR continuation legs.
+- **Variants:** `rsi_pullback_1h_tail_harvest_7to1` (1h, RSI≤40), `rsi_pullback_4h_relaxed_entry_8to1` (4h, RSI≤45), `rsi_pullback_1h_moderate_rr_5to1` (1h, 5:1 control).
+- **Key test:** Does RSI pullback's PF-R:R curve climb like MACD's? If PF at 7:1 > PF at 4:1, pullback signals produce genuine tail continuations. If not, the 4:1 was the ceiling.
+- **Action:** Backtest rp3w7k9d. If PF > 1.3 at 7:1 with 50+ trades, RSI pullback becomes the portfolio's trend-only specialist.
 
-### 5. Regime gating — HIGHEST UNTAPPED POTENTIAL
-- **Transitional regime is universally toxic:** PF=0.595–0.919 across ALL templates.
-- **Trending regime is strongest:** PF=1.05–1.54 for viable strategies.
-- **Ranging shows mixed but exploitable edge:** MACD ranging PF=1.87 (!) but library_augmented ranging PF=0.98.
-- **Untested concept:** Hard transitional-regime circuit breaker. Estimated PF improvement: +0.03–0.08 across all templates. This is the easiest win remaining.
-- **Action:** Implement post-signal transitional filter (ADX 20–28 exclusion zone) as a system-wide gate.
+### 5. MACD Time-Capped Exit — ITERATE
+- **Status:** PF=1.209, DD=9.5%, 174 trades (12-bar cap, 4:1 R:R). Transitional PF=0.76 suggests cap needs to be more aggressive.
+- **Action:** Test 6-bar and 8-bar caps at 7:1 R:R. Combining time caps with extreme R:R is untested.
+
+### 6. Multi-Strategy Portfolio — ARCHITECTURE NEEDED
+- **Concept:** MACD tail 7:1 (all regimes, primary) + Supertrend ADX>25 (trending supplement) + Supertrend ADX>5 (ranging supplement). Uncorrelated signals = smoother equity curve.
+- **Blocker:** No portfolio backtesting infrastructure exists. Individual strategy results must be combined manually.
+- **Action:** This is Smaug's foundational architecture. Start designing portfolio-level position sizing and signal aggregation.
 
 ---
 
@@ -109,45 +130,43 @@
 
 | Template | Last Tested | Trades | Avg PF | Best PF | Status | Recommendation |
 |---|---|---|---|---|---|---|
-| `macd_confirmation` | **20260228** | 160–194 | **1.23** | **1.347** | **ACCEPTED** | **ITERATE — top priority, untested sweep variants** |
-| `supertrend_follow` | **20260228** | 16–85 | **1.47** | **2.019** | **NEAR-ACCEPT** | **ITERATE — relaxation validated at 85 trades** |
-| `rsi_pullback` | **20260228** | 0–51 | **0.80** | **1.21** | **NEWLY ACCEPTED** | **VALIDATE — test on ETH/1h, fragile at 38 trades** |
-| `ema_crossover` | **20260228** | 183–389 | 0.99 | 1.073 | **MARGINAL** | DD blowouts (3.96), wide-exit failure. Deprioritize |
-| `ema_rsi_atr` | 20260228 | 226–389 | 0.97 | 1.033 | **STAGNANT** | Superseded by MACD. Deprioritize |
-| `stochastic_reversal` | 20260228 | **0** | 0.000 | 0.000 | **DEAD** | **REMOVE — 6th advisory, template bug line 179** |
-| `bollinger_breakout` | 20260228 | **0** | 0.000 | 0.000 | **DEAD** | **REMOVE — 3rd advisory, 6 total 0-trade results** |
+| `macd_confirmation` | **20260301** | 161-174 | **1.46** | **1.712** | **ACCEPTED (BEST EVER)** | **FORWARD TEST — map R:R frontier to 12:1** |
+| `supertrend_follow` | **20260301** | 22-99 | **1.32** | **1.417** | **ACCEPTED (2 variants)** | **ITERATE — 1h regime-partitioned (st5k2r8w)** |
+| `rsi_pullback` | **20260301** | 0-38 | **0.61** | **1.21** | **FRAGILE ACCEPT** | **ITERATE — tail harvest 7:1 (rp3w7k9d)** |
+| `ema_rsi_atr` | **20260302** | 126-389 | **1.02** | **1.201** | **REVIVING** | **ITERATE — extreme R:R (er8v3m6k)** |
+| `ema_crossover` | 20260302 | 389 | 1.03 | 1.073 | **NOISE** | Deprioritize — superseded by MACD |
+| `stochastic_reversal` | 20260302 | **0** | 0.000 | 0.000 | **DEAD** | **REMOVE — 8th advisory, bug line 179** |
+| `bollinger_breakout` | 20260302 | **0** | 0.000 | 0.000 | **DEAD** | **REMOVE — 5th advisory** |
 
-**Portfolio status: 3 of 7 templates viable** (macd, supertrend, rsi_pullback). 2 are marginal (ema_crossover, ema_rsi_atr). 2 are dead (stochastic, bollinger).
+**Portfolio status: 4 of 7 templates viable** (macd, supertrend, rsi_pullback, ema_rsi_atr reviving). 1 noise (ema_crossover). 2 dead (stochastic, bollinger).
 
 ---
 
 ## Regime Insights
 
-### Regime performance matrix (latest data, all sources)
+### Regime performance matrix (cumulative best, through 20260302)
 
-| Strategy / Symbol/TF | Trending PF | Ranging PF | Transitional PF | Best Regime | Worst Regime |
+| Strategy / Variant | Trending PF | Ranging PF | Transitional PF | Best Regime | Worst Regime |
 |---|---|---|---|---|---|
-| MACD wide exit (ETH/4h) | ~1.40 | ~1.87* | ~0.82* | **Ranging** | Transitional |
-| Supertrend relaxed (ETH/4h) | ~1.30 | N/A (trend only) | ~1.10 | Trending | Transitional |
-| RSI pullback safe (ETH/4h) | ~1.25* | N/A (trend only) | N/A | Trending | N/A |
-| library_augmented (ETH/4h) | 1.054 | 0.982 | 1.048 | Trending | Ranging |
-| library_augmented (ETH/1h) | 1.009 | 1.115 | 0.858 | Ranging | Transitional |
-| library_augmented (BTC/4h) | 0.990 | 1.127 | 0.919 | Ranging | Transitional |
-| directive_exploration (ETH/1h) | 0.803 | 0.813 | 0.595 | Ranging | Transitional |
-| directive_exploration (BTC/4h) | 0.840 | 0.695 | 0.883 | Transitional | Ranging |
-| supertrend_strong_trend (ETH/1h) | **1.540** | N/A | N/A | Trending | N/A |
-
-*Estimated from overall PF and regime distribution.
+| **MACD 1h tail 7:1** (ACCEPT) | **1.677** | **2.062** | **1.308** | **Ranging** | Transitional |
+| MACD time-capped 12bar | 1.040 | 1.725 | 0.764 | Ranging | Transitional |
+| **Supertrend ADX5 6:1** (ACCEPT) | 0.753 | **1.611** | 1.376 | **Ranging** | Trending |
+| Supertrend strong trend 7:1 | **1.417** | N/A | N/A | Trending | N/A |
+| ema_rsi_atr wide_runner 4h | ~1.20 | ~1.55 | ~0.74 | Ranging | Transitional |
+| Pipeline directive_variant | 1.054 | 0.982 | 1.048 | Trending | Ranging |
+| Pipeline 20260302 (all) | ~1.03 | ~1.03 | ~1.03 | **None** | **All** |
 
 ### Key regime findings
 
-1. **Transitional regime is universally toxic.** PF=0.595–0.919 across all tested variants. A hard transitional filter (ADX 20–28 exclusion) would improve every strategy. This is the single highest-ROI improvement available.
+1. **Parameter convergence destroys regime differentiation.** The 20260302 pipeline results show PF ~1.03 uniformly across all regimes (trending 1.054, ranging 0.982, transitional 1.048). When specs converge to the same parameters, regime-specific edge disappears.
 
-2. **Ranging edge is template-dependent.** MACD thrives in ranging (PF=1.87) due to mean-reversion signal nature. Trend-following templates (Supertrend, RSI pullback) should NOT be used in ranging.
+2. **Extreme R:R is the regime differentiator.** MACD 7:1 produces PF=2.06 in ranging vs PF=1.31 in transitional — a 0.75 PF spread. Pipeline's 2:1 R:R produces PF=1.05 trending vs PF=0.98 ranging — a 0.07 spread. Extreme R:R amplifies regime-specific signal quality that tight R:R masks.
 
-3. **Trending regime is the universal safety net.** Every template that isn't structurally broken achieves PF > 1.0 in trending. Trending-only deployment is the lowest-risk path to profitability.
+3. **Ranging remains the dominant profit regime.** MACD 7:1 (PF=2.06), Supertrend ADX5 (PF=1.61), ema_rsi_atr (PF=1.55) — all show ranging as strongest. The system's edge is momentum mean-reversion within established ranges, not trend following.
 
-4. **Dual-regime portfolio thesis:** Run MACD in ranging + Supertrend in trending. If their signals are uncorrelated, combined portfolio could target PF>1.3 with DD<8%.
+4. **Transitional regime is solvable but only with extreme R:R.** MACD 7:1 = PF=1.31 transitional. Everything else < 1.0 transitional. The thesis from Update 7 holds: it was tight R:R that failed in transitional, not the regime itself.
+
+5. **Regime-partitioned portfolio remains viable.** The 20260302 Claude spec st5k2r8w tests this directly on 1h. Pending backtest results.
 
 ---
 
@@ -157,113 +176,107 @@
 
 | # | Directive | Rationale | Status |
 |---|---|---|---|
-| 1 | **BACKTEST_REMAINING_CLAUDE_SPECS** | 25 of 39 claude specs remain untested. Claude specs have PF>1.1 at 35.7% rate vs pipeline 0%. Every untested spec is a missed potential winner. | **PRIORITY 1** |
-| 2 | **KILL_EXPLORATION_VARIANT** | -$93K on BTC, negative PF in ALL regimes, 7 cycles flagged. | IGNORED x6 |
-| 3 | **FIX_VARIANT_DEDUP** | ~50% compute waste at 772 backtests/day = ~386 wasted slots. | IGNORED x6 |
-| 4 | **KILL_EXIT_CHANGE_DIRECTIVES** | 6 exit_change variants tested, ALL unprofitable (PF 0.624–0.998). | **NEW** |
+| 1 | **FORWARD_TEST_MACD_7TO1** | PF=1.712, DD=7.5%, 161 trades, all regimes profitable. 2nd cycle requesting. Paper trade NOW. | **IGNORED x1** |
+| 2 | **BACKTEST_CLAUDE_SPECS_FIRST** | er8v3m6k, st5k2r8w, rp3w7k9d await results. Pipeline specs produce 0% ACCEPTs. | **NEW** |
+| 3 | **FIX_PARAMETER_CONVERGENCE** | 40% duplicate results. Hash resolved numeric params before backtesting. | **NEW — CRITICAL** |
+| 4 | **KILL_EXPLORATION_VARIANT** | PF=0.64-0.88, DD=1501%. 9th cycle. | IGNORED x8 |
+| 5 | **ENFORCE_RR_FLOOR_5TO1** | ALL ACCEPTs use 6:1+. ALL sub-4:1 fail. Stop generating low-R:R specs. | **NEW** |
 
 ### Priority 2: HIGH (act within 2 cycles)
 
 | # | Directive | Rationale |
 |---|---|---|
-| 5 | **REMOVE_STOCHASTIC_FROM_COMBOS** | 6th cycle flagging. 0 trades in every test. Bug confirmed line 179. |
-| 6 | **REMOVE_BOLLINGER_FROM_COMBOS** | 3rd cycle flagging. 6 total 0-trade results. |
-| 7 | **HARD_EXCLUDE_BTC** | BTC variants still leaking through. Hard-code ETH-only. |
-| 8 | **BLACKLIST_GATE_ADJUST** | 36+ prescriptions, 0% success rate. |
-| 9 | **BLACKLIST_ENTRY_TIGHTEN_RELAX** | 0% improvement. confidence_threshold not consumed. |
-| 10 | **VALIDATE_RSI_PULLBACK_ON_1H** | New ACCEPT at 38 trades is fragile. Need cross-timeframe validation. |
+| 6 | **REMOVE_STOCHASTIC_FROM_COMBOS** | 8th cycle. 0 trades. Bug confirmed. |
+| 7 | **REMOVE_BOLLINGER_FROM_COMBOS** | 5th cycle. 0 trades. |
+| 8 | **HARD_EXCLUDE_BTC** | DD=1501% new worst. Pipeline AND refine specs still targeting BTC. |
+| 9 | **BLACKLIST_ALL_DIRECTIVE_VARIANTS** | gate_adjust, exit_change, threshold_sweep — all 0% success, all still generated. |
+| 10 | **TEST_MACD_8TO1_THROUGH_12TO1** | R:R frontier specs exist (mc9x2k7d, mc4h9x2t). Cliff location unknown. |
 
 ### Priority 3: MEDIUM (act within 5 cycles)
 
 | # | Directive | Rationale |
 |---|---|---|
-| 11 | **IMPLEMENT_TRANSITIONAL_FILTER** | PF=0.595–0.919 in transitional across ALL templates. Easiest system-wide PF boost. |
-| 12 | **PROMOTE_MACD_TO_FORWARD_TEST** | PF=1.347 ACCEPT with 189 trades. Paper trade on live ETH/4h for 2–4 weeks. |
-| 13 | **PROMOTE_SUPERTREND_RELAXED_TO_FORWARD_TEST** | PF=1.264 with 85 trades. Pair with MACD for portfolio diversification test. |
-| 14 | **REPLACE_REFINEMENT_WITH_CLAUDE_ITERATION** | 0% refinement improvement rate. Claude specs produce 35.7% PF>1.1 rate. |
-| 15 | **ADD_SUPERTREND_STOP_FLOOR** | Stop < 1.5x ATR → DD blowouts (181%). Hard floor in spec generation. |
-| 16 | **FIX_CONFIDENCE_THRESHOLD** | Confirmed not consumed by backtester. Renders THRESHOLD_SWEEP variants useless. |
+| 11 | **DISABLE_REFINEMENT_STEP** | 0% improvement across 4+ cycles. Refine spec generates BTC with 1.33:1 R:R. |
+| 12 | **FORWARD_TEST_SUPERTREND_ADX5** | PF=1.22, 99 trades, ACCEPT. Second strategy for portfolio. |
+| 13 | **BUILD_PORTFOLIO_BACKTESTER** | No infrastructure for multi-strategy simulation. Needed for Smaug. |
+| 14 | **TEST_TIME_CAPPED_EXITS_WITH_EXTREME_RR** | Time caps + 7:1 R:R untested. |
+| 15 | **IMPLEMENT_MACHINE_DIRECTIVES_PARSER** | JSON block exists in advisory. ~100 LOC change to enforce. |
 
 ---
 
 ## Doctrine Gaps
 
-### 1. Advisory directive enforcement — CRITICAL SYSTEMIC FAILURE (7TH CYCLE)
-9 of 10 directives from Updates 1–5 remain unactioned. The advisory-to-pipeline feedback loop reads the advisory for template preferences but does not enforce blacklists, hard excludes, or template removals. Proof: directive_exploration still generated (7th advisory), stochastic still included (6th advisory), BTC still tested (6th advisory), GATE_ADJUST still prescribed (7th advisory). The advisory is read but not obeyed. **Proposed fix:** Machine-parseable directive block at the top of this file, consumed by `_read_advisory_directives()`.
+### 1. Advisory directive enforcement — CRITICAL SYSTEMIC FAILURE (9TH CYCLE)
+12 of 20+ directives from Updates 1-7 remain unactioned. The `_read_advisory_directives()` function (emit_strategy_spec.py:51) cannot parse the Machine Directives JSON block. The directive→enforcement gap is the single largest source of compute waste. The JSON block format has been stable for 2 updates — parsing it would instantly enforce 10+ stalled directives.
 
-### 2. Refinement engine effectiveness — CONFIRMED DEAD (2ND CYCLE)
-NO_IMPROVEMENT in 100% of all outcomes tested across 2 full cycles. No evidence that refinement has EVER produced a positive delta_pf in the system's history. The refinement approach (small parameter perturbations on rule text) is structurally incompatible with how the backtester resolves templates. This is not a tuning problem — it's an architecture mismatch.
+### 2. Parameter convergence — NEW CRITICAL FINDING
+The pipeline's spec-level diversity is illusory. Different rule text resolves to the same numeric backtester parameters. This explains why 30 outcome notes in 20260301 had byte-identical metrics, and why 40% of 20260302 backtests are duplicates. The deduplication must happen AFTER template resolution, not at the spec level. This is an architectural issue, not a tuning issue.
 
-### 3. Post-resolution deduplication missing (7TH CYCLE)
-Still hashing spec-level rule strings instead of resolved template parameters. 50% compute waste rate sustained.
+### 3. Refinement engine — CONFIRMED DEAD (4TH CYCLE)
+Refine spec `ee162da7` targets BTC/1h with 1.33:1 R:R — violating 3 advisory directives simultaneously (BTC exclusion, R:R floor, refinement disable). The refinement engine operates in a separate feedback loop that doesn't read advisory directives at all.
 
-### 4. Directive effectiveness circuit-breaker ABSENT (7TH CYCLE)
-GATE_ADJUST: 36+ tries, 0% success. ENTRY_TIGHTEN/RELAX: 10+ tries, 0% success. EXIT_CHANGE: 6 variants, 0% success. No auto-blacklist mechanism. The system prescribes directives that have never worked and has no way to learn from this.
+### 4. Claude spec throughput bottleneck — NEW
+Claude specs produce 100% of ACCEPTs but represent only ~8-30% of batch volume. The pipeline generates 70-90% of specs with 0% ACCEPT rate. Inverting this ratio — making Claude specs the primary source and pipeline specs the supplement — would dramatically improve throughput.
 
-### 5. Dead template circuit-breaker ABSENT (2ND CYCLE)
-stochastic_reversal: 0 trades in 6+ consecutive cycles. bollinger_breakout: 0 trades in 3+ cycles. No auto-removal mechanism.
+### 5. R:R discipline gap — NEW
+The doctrine emphasizes risk gating but says nothing about reward-risk minimums. All evidence shows PF > 1.1 requires R:R > 5:1 in this fee environment (4.5 bps taker + 1 bps slippage). The doctrine should be updated with: "Minimum reward:risk ratio of 5:1 for all new strategy specs."
 
-### 6. Compute waste audit (UPDATED)
-Current waste breakdown at 772 backtests/day:
-- Variant deduplication failure: ~50% (~386 wasted slots)
-- Dead templates (stochastic + bollinger): ~10% (~77 wasted slots)
-- BTC leakage: ~5% (~39 wasted slots)
-- directive_exploration: ~10% (~77 wasted slots)
-- Refinement step: ~5% (~39 wasted slots)
-**Total estimated compute waste: ~80%. Effective throughput: ~154 useful backtests per 772 runs.**
+### 6. Compute waste audit (UPDATED — WORSENED)
+Current waste at 60 backtests/day (20260302):
+- Parameter convergence duplicates: ~40% (~24 wasted)
+- Pipeline directive variants (exploration, exit_change, threshold_sweep, gate_adjust): ~25% (~15 wasted)
+- Dead templates via template_diversity: ~10% (~6 wasted)
+- BTC leakage: ~8% (~5 wasted)
+- Refinement step: ~5% (~3 wasted)
+**Total estimated compute waste: ~88%. Effective throughput: ~7 useful specs per 60 backtested.**
 
-### 7. Research card pipeline dead (4TH CYCLE)
-Only 1 test fixture in `artifacts/research_cards/`. No real research cards flowing into strategy generation. The librarian indexes TradingView indicators (58 in INDICATOR_INDEX.json including interesting entries like "ADX Dynamic Zone Inside the SuperTrend" and "Trend Velocity Channel") but none feed into strategy templates. The librarian→spec pipeline is disconnected.
+### 7. Research card pipeline dead (6TH CYCLE)
+Still only 1 test fixture. INDICATOR_INDEX has 58 indicators but zero feed into strategy templates.
 
-### 8. Claude spec stop-floor missing (2ND CYCLE)
-Two Claude specs used 1.0x ATR stops and suffered catastrophic DD (181% and 185%). Proposed rule: All specs must use stop_atr_mult ≥ 1.5.
+### 8. Forward-testing infrastructure absent (2ND CYCLE)
+MACD 7:1 has been validated by backtesting for 2 cycles. No paper trading infrastructure exists. No connection to HyperLiquid API for live data validation. This is the critical gap between "validated strategy" and "revenue."
 
 ---
 
 ## Suggestions For Asz
 
-### 1. Forward-test the winning trio as a paper-trade portfolio
-The system now has THREE viable strategies with distinct signal mechanisms: MACD histogram zero-cross (PF=1.347, 189 trades), Supertrend direction flip (PF=1.264, 85 trades), and RSI pullback in confirmed trend (PF=1.21, 38 trades). These target different market conditions — MACD excels in ranging, Supertrend in trending, RSI pullback in trend continuation. Running all three as a paper-trade basket on live ETH/4h for 2–4 weeks would answer the critical question: do these edges persist out-of-sample, and are their signals sufficiently uncorrelated for portfolio diversification? If even one survives paper trading with PF > 1.1, the system has found a deployable edge. This is the highest-impact action available — no amount of additional backtesting can replace live validation.
+### 1. The pipeline is eating itself — parameter convergence must be fixed before anything else matters
+Today's data reveals a deeper problem than previously understood. It's not just that the pipeline generates bad specs — it's that ALL pipeline specs resolve to the SAME backtester parameters regardless of input. 30 outcome notes with identical metrics. 11+ duplicate backtests in a single batch. The spec-level diversity (different entry rules, different directives) is completely illusory because template resolution flattens everything to the same numeric parameters. Until post-resolution deduplication is implemented, every pipeline cycle will burn 88% of its compute producing identical results. This is a ~30-minute code change: hash the resolved `(template_name, indicator_params, stop_mult, tp_mult, timeframe, asset)` tuple and skip if already queued. It would immediately increase useful throughput 5-8x.
 
-### 2. Implement a machine-readable directive block to unblock the feedback loop
-The #1 systemic failure is that advisory directives are written in prose but never enforced. After 7 cycles, 9 of 10 directives are ignored because `_read_advisory_directives()` cannot parse them. A simple fix: add a `## Machine Directives` section at the top of this advisory with JSON-structured commands like `{"action": "BLACKLIST_TEMPLATE", "target": "stochastic_reversal"}` and `{"action": "EXCLUDE_ASSET", "target": "BTC"}`. Update `_read_advisory_directives()` to parse this block and enforce it. This is ~50 lines of code but would instantly unblock 6 stalled directives and stop the system from wasting compute on known-dead paths. Without this fix, every advisory cycle will continue to flag the same issues with zero enforcement.
+### 2. Flip the spec generation ratio — Claude specs should be primary, pipeline specs should be supplementary
+Every single ACCEPT in the system's history comes from a Claude-generated spec. Pipeline-generated specs have a 0% all-time ACCEPT rate. Yet the pipeline generates 70-90% of each batch. The fix: run Claude spec generation first (via the advisory-to-spec promotion), then fill remaining batch capacity with pipeline specs only if they pass the Machine Directives filters AND post-resolution dedup. This means upgrading `promote-claude-specs.ps1` to run before `emit_strategy_spec.py`, and teaching the pipeline to respect Claude spec priority. The 3 new Claude specs (er8v3m6k, st5k2r8w, rp3w7k9d) test 9 variants across 3 template families — these should be the FIRST things backtested in the next cycle, not buried under 50+ duplicate pipeline specs.
 
-### 3. Cut the pipeline in half — kill everything that's proven non-functional
-The system runs 772 backtests/day but ~80% produce waste. A radical but justified pruning: (a) remove stochastic and bollinger templates, (b) hard-exclude BTC, (c) remove directive_exploration, (d) remove exit_change directive variants, (e) blacklist GATE_ADJUST/ENTRY_TIGHTEN/ENTRY_RELAX, (f) disable refinement step. Combined, this would reduce compute ~5x while losing zero productive output. The freed capacity could run more Claude-spec variants — the only channel that has produced ACCEPT results. This isn't optimization; it's triage. The pipeline is running a marathon but 80% of its steps are in place.
+### 3. Build the bridge from backtesting to revenue — forward-testing is 8 advisory cycles overdue
+The MACD 7:1 tail harvester achieved PF=1.712 with 161 trades and all-regime profitability. This is a genuinely strong quantitative result. But it's been sitting in a JSON file for 2 advisory cycles with no path to market. What's needed: (a) a paper trading module that reads OHLCV from HyperLiquid's REST API, computes MACD histogram, and generates simulated orders at the spec's entry/exit rules; (b) a 2-week paper trading period tracking fills, slippage, and funding rate impact; (c) a go/no-go decision framework comparing paper PF to backtest PF (if paper PF > 0.7x backtest PF, the strategy survives live microstructure). This is Smaug's MVP. Without it, the system will continue producing advisory updates about strategies it never trades.
 
 ---
 
 ## Appendix: Data Summary
 
-| Metric | Value | Change from Update 5 |
+| Metric | Value | Change from Update 7 |
 |---|---|---|
-| Outcome notes reviewed | 30 (20260227–28) | -6 (narrower window) |
-| Outcome verdict distribution | 15 REJECT / 13 REVISE / **2 ACCEPT** | **+1 ACCEPT (RSI pullback)** |
-| Backtest results reviewed | 10 (20260228) | Same |
-| Total backtest files today | **772** | **NEW metric** |
-| Best PF observed | **1.347** (macd_wide_exit_fee_killer, ETH/4h) | No change |
-| Second best PF (viable) | **1.264** (supertrend_relaxed_volume_boost, 85 trades) | No change |
-| Third best PF (viable) | **1.21** (rsi_pullback_safe_moderate, 38 trades) | **NEW ACCEPT** |
-| Worst PF observed | 0.000 (stochastic + bollinger, 0 trades) | No change |
-| Worst active PF | 0.624 (directive_exit_change_role_entry BTC/4h) | Worsened |
-| Unique templates tested | **7 of 7** (full coverage) | No change |
-| Claude-generated specs total | **48** in strategy_specs (16+ files) | +9 new |
-| Claude specs backtested | **14 of 39** (36%) | No change |
-| Claude specs remaining untested | **25** | No change |
-| Claude spec ACCEPT rate | **14.3%** (2 of 14) | **+7.2%** (RSI pullback promoted) |
-| Claude PF > 1.1 rate | **35.7%** (5 of 14) | No change |
-| Pipeline spec ACCEPT rate | **0%** (0 of ~40+) | No change |
-| Zero-trade templates | 2 persistent (stochastic, bollinger) | -1 (rsi_deep_pullback was param issue) |
-| Directive success rate (GATE_ADJUST) | 0/36+ = **0%** | No change |
-| Exit_change directive success rate | 0/6 = **0%** | **NEW metric** |
-| Compute waste rate (pipeline) | **~80%** | No change |
-| Effective backtests per day | **~154 of 772** | **NEW metric** |
-| Prior advisory directives actioned | **1 of 10** | **No change (stalled)** |
-| Refinement engine improvement rate | **0%** (0 of 16+ latest) | No change |
+| Outcome notes reviewed | 30 (20260301) | -6 (smaller window) |
+| Outcome verdict distribution | **30 REVISE (100%)** | **All REVISE — no ACCEPTs in outcome loop** |
+| Backtest results reviewed (new) | **60** (20260302) | **+50 (new batch)** |
+| Best PF observed (new cycle) | **1.033** (pipeline max) | **-0.679 from Update 7 best** |
+| Best PF observed (all-time) | **1.712** (MACD 7:1, Update 7) | No change |
+| Total strategy specs today | **37** (3 claude + 1 refine + 33 pipeline) | -71 (smaller batch) |
+| Claude-generated specs | **3** (er8v3m6k, st5k2r8w, rp3w7k9d) | Testing 3 new template families |
+| Duplicate backtest results | **~24 of 60 (40%)** | **NEW worst — parameter convergence** |
+| BTC worst DD (new) | **1501%** (directive_exploration BTC/4h) | **+567% from Update 7 worst** |
+| Pipeline spec ACCEPT rate (all time) | **0%** | No change |
+| Claude spec ACCEPT rate (all time) | **~20%** | No change |
+| Zero-trade templates | 2 (stochastic, bollinger) | -1 (rsi_deep_dip not retested) |
+| Directive success rate (all directives) | **0%** | No change |
+| Compute waste rate | **~88%** | **+8% (parameter convergence)** |
+| Prior advisory directives actioned | **~0 of 20** | **Worsened** |
+| Refinement engine improvement rate | **0%** | No change (4th cycle) |
 | Research cards available | 1 (test fixture only) | No change |
-| Strategies with PF > 1.1 & trades > 30 | **5** (MACD x3, Supertrend x1, RSI x1) | **+1 (RSI pullback)** |
-| Strategies ACCEPT-worthy (PF>1.1, DD<15%, trades>30) | **3** | **NEW metric** |
+| Strategies ACCEPT-worthy (all time) | **4** (MACD 7:1, MACD wide, Supertrend ADX5, RSI pullback) | No change |
+| All-regime profitable strategies | **1** (MACD 7:1 tail harvester) | No change |
+| Forward tests initiated | **0** | **No change (2nd cycle requesting)** |
+| New Claude specs awaiting backtest | **3** (9 variants total) | **NEW** |
 
 ---
 
-*Next review scheduled: 2026-03-01. The system has reached a critical inflection point: three viable strategies exist but zero have been forward-tested. The #1 priority is promoting the MACD/Supertrend/RSI trio to paper trading. The #2 priority is implementing machine-readable directives to break the 7-cycle enforcement deadlock. The #3 priority is pruning the 80% compute waste — the pipeline is spending 618 of 772 daily backtests on paths known to fail.*
+*Next review scheduled: 2026-03-03. The system's #1 problem is no longer strategy discovery — it's execution. MACD 7:1 is validated. Three new Claude specs are queued. The pipeline's 88% waste rate and 0% ACCEPT rate make it the primary obstacle to progress. Fix parameter convergence dedup (~30 min code change), prioritize Claude specs in the batch queue, and begin paper trading MACD 7:1 on HyperLiquid. Every cycle that passes without forward-testing is a cycle wasted.*
