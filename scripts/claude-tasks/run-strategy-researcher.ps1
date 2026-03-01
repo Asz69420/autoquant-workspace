@@ -53,14 +53,43 @@ python scripts/log_event.py --agent "claude-advisor" --action "strategy_research
 Write-Output "[$timestamp] Starting Strategy Researcher..." | Tee-Object -FilePath $logFile -Append
 claude -p $prompt --allowedTools "Read,Write,Bash(python scripts/log_event.py*)" 2>&1 | Tee-Object -FilePath $logFile -Append
 
-# DM Asz with suggestions if advisory has new content
+function Convert-ToOperatorNote([string]$rawText, [int]$maxChars = 420) {
+  if ([string]::IsNullOrWhiteSpace($rawText)) { return "" }
+  $t = $rawText -replace '(?m)^\s{0,3}#{1,6}\s*', ''
+  $t = $t -replace '[*_`>\[\]\|]', ' '
+  $t = $t -replace '\s+', ' '
+  $t = $t.Trim()
+  if ($t.Length -eq 0) { return "" }
+
+  $sentences = @($t -split '(?<=[\.!\?])\s+') | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+  if ($sentences.Count -eq 0) { $sentences = @($t) }
+
+  $picked = @()
+  foreach ($s in $sentences) {
+    $candidate = $s.Trim()
+    if ($candidate.Length -lt 20) { continue }
+    $picked += $candidate
+    if ($picked.Count -ge 3) { break }
+  }
+  if ($picked.Count -eq 0) { $picked = @($sentences[0].Trim()) }
+
+  $msg = ($picked -join ' ')
+  if ($msg.Length -gt $maxChars) { $msg = $msg.Substring(0, $maxChars - 3) + '...' }
+  return $msg
+}
+
+# DM Asz with concise natural-language suggestions if advisory has new content
 $advisory = "$ROOT\docs\claude-reports\STRATEGY_ADVISORY.md"
 if (Test-Path $advisory) {
   $content = Get-Content $advisory -Raw -ErrorAction SilentlyContinue
   $sugStart = $content.IndexOf("Suggestions For Asz")
   if ($sugStart -gt 0) {
-    $suggestions = $content.Substring($sugStart, [Math]::Min(500, $content.Length - $sugStart)) -replace '[#*`]', ''
-    powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message "🧙 Researcher Update:`n$suggestions"
+    $section = $content.Substring($sugStart, [Math]::Min(1600, $content.Length - $sugStart))
+    $note = Convert-ToOperatorNote $section
+    if (-not [string]::IsNullOrWhiteSpace($note)) {
+      $msg = "🧙 Researcher note: $note"
+      powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
+    }
   }
 }
 
