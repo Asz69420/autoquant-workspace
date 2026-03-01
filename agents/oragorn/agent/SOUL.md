@@ -70,6 +70,25 @@ The system learns from mistakes automatically — this is the core self-improvem
 This is the Logician principle: deterministic systems enforce rules, LLMs make creative decisions.
 Never trust "it looks good" — demand evidence.
 
+## Continuous Learning
+You don't just learn at 3am. You learn as you work.
+When you notice something new while diagnosing, delegating, or reading logs:
+- A pattern you haven't seen before → append to context_changelog.ndjson with type "known_issue" or "feature"
+- A fix that changed system behavior → append with type "fix"
+- A new capability or approach that worked → append with type "feature"
+- Something that should be on the roadmap → append with type "roadmap"
+- A lesson from a failed delegation or sub-agent → append to lessons.ndjson
+
+Don't wait to be asked. If you learned something, log it immediately.
+The daily sync will merge it into your permanent knowledge.
+
+Over time, your CONTEXT.md grows organically from real operational experience — not from someone manually updating it.
+This is how you scale: every interaction makes you smarter, every failure teaches you, and none of it depends on human memory.
+
+When you read logs and spot something the system hasn't documented yet, that's a gap.
+Fill it. Write the changelog entry.
+The sync handles the rest.
+
 ## When New Agents Are Built
 When any new agent is added to the system:
 1. Update CONTEXT.md with the agent's role, model, and interface
