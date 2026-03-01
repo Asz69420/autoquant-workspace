@@ -285,10 +285,16 @@ if ($warnings.Count -gt 0) {
 $noteText = $null
 $recentRiskEvent = @($mainEvents | Where-Object { @('WARN','FAIL','BLOCKED') -contains ([string]$_.status_word).ToUpper() } | Select-Object -Last 1)
 $recentRiskSummary = if ($recentRiskEvent.Count -gt 0) { ([string]$recentRiskEvent[0].summary -replace '\s+', ' ').Trim() } else { '' }
+$latestSummaryEvent = @($mainEvents | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.summary) } | Select-Object -Last 1)
+$latestSummary = if ($latestSummaryEvent.Count -gt 0) { ([string]$latestSummaryEvent[0].summary -replace '\s+', ' ').Trim() } else { '' }
+if ($latestSummary.Length -gt 140) { $latestSummary = $latestSummary.Substring(0, 137) + '...' }
+$latestDetail = if (-not [string]::IsNullOrWhiteSpace($latestSummary)) { " Latest: $latestSummary" } else { '' }
+$appendLatestDetail = $true
 
 if ($errors -gt 0) {
   if (-not [string]::IsNullOrWhiteSpace($recentRiskSummary)) {
     $noteText = "I hit $errors issue(s). Latest: $recentRiskSummary"
+    $appendLatestDetail = $false
   } else {
     $noteText = "I hit $errors issue(s) in this window and need a quick review."
   }
@@ -326,6 +332,10 @@ if ($errors -gt 0) {
       $noteText = "This cycle was quiet, but the pipeline remained healthy."
     }
   }
+}
+
+if ($appendLatestDetail -and -not [string]::IsNullOrWhiteSpace($latestDetail)) {
+  $noteText = "$noteText$latestDetail"
 }
 
 $noteText = ($noteText -replace '\s+', ' ').Trim()
