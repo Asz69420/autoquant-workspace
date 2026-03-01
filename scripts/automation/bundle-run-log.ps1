@@ -166,15 +166,37 @@ $agentLabel = if ($mode -eq 'quandalf') { "Quandalf" } else { "Frodex" }
 $lines = @()
 $lines += "$statusIcon $agentLabel Pipeline $ts"
 $lines += ("-" * 33)
-$lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
-$lines += "Ingested : $ingested specs"
-if ($btExecuted -gt 0) { $lines += "Backtested: $btExecuted runs" } else { $lines += "Backtested: 0 (no variants)" }
-$lines += "Variants : $dirVariants new + $dirExplore explore"
-$lines += "Refined : $refined iterations"
-$lines += "Promoted : $promoted strategies"
-if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
-$lines += ("-" * 33)
-$lines += "Library : $librarySize strats | $libLessons lessons"
+
+if ($mode -eq 'quandalf') {
+  $totalEvents = @($mainEvents).Count
+  $generatorEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)generator') -or ([string]$_.action -match '(?i)GENERATOR|STRATEGY') }).Count
+  $researchEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)research') -or ([string]$_.action -match '(?i)RESEARCH') }).Count
+  $doctrineEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)doctrine') -or ([string]$_.action -match '(?i)DOCTRINE') }).Count
+  $auditorEvents = @($mainEvents | Where-Object { ([string]$_.agent -match '(?i)audit') -or ([string]$_.action -match '(?i)AUDIT') }).Count
+  $claudeSpecs = 0
+  foreach ($e in $mainEvents) {
+    $sum = if ($e.summary) { [string]$e.summary } else { '' }
+    if ($sum -match 'specs?=(\d+)') { $claudeSpecs += [int]$matches[1]; continue }
+    if ($sum -match 'promoted\s+(\d+)\s+spec') { $claudeSpecs += [int]$matches[1]; continue }
+    if ($sum -match 'variants=(\d+)') { $claudeSpecs += [int]$matches[1]; continue }
+  }
+
+  $lines += "Claude events : $totalEvents"
+  $lines += "Generator : $generatorEvents | Research : $researchEvents"
+  $lines += "Doctrine : $doctrineEvents | Auditor : $auditorEvents"
+  $lines += "Specs output : $claudeSpecs"
+  $lines += "Warnings : $($warnings.Count) | Errors : $errors"
+} else {
+  $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
+  $lines += "Ingested : $ingested specs"
+  if ($btExecuted -gt 0) { $lines += "Backtested: $btExecuted runs" } else { $lines += "Backtested: 0 (no variants)" }
+  $lines += "Variants : $dirVariants new + $dirExplore explore"
+  $lines += "Refined : $refined iterations"
+  $lines += "Promoted : $promoted strategies"
+  if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
+  $lines += ("-" * 33)
+  $lines += "Library : $librarySize strats | $libLessons lessons"
+}
 
 if ($hasErrors -or $hasWarnings) {
   $lines += ("-" * 33)
