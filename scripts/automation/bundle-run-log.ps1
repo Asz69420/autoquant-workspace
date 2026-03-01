@@ -15,13 +15,16 @@ $wsEnv = "$ROOT\.env"
 if (-not (Test-Path $wsEnv)) { Write-Host "No workspace .env"; exit 1 }
 
 $token = $null
+$logBotToken = $null
 $logChannel = $null
 Get-Content $wsEnv | ForEach-Object {
   if ($_ -match '^TELEGRAM_BOT_TOKEN=(.*)$') { $token = $matches[1].Trim() }
+  if ($_ -match '^TELEGRAM_LOG_BOT_TOKEN=(.*)$') { $logBotToken = $matches[1].Trim() }
   if ($_ -match '^TELEGRAM_LOG_CHAT_ID=(.*)$') { $logChannel = $matches[1].Trim() }
 }
 if (-not $token) { Write-Host "Missing bot token"; exit 1 }
 if (-not $logChannel) { Write-Host "Missing log channel ID"; exit 1 }
+$telegramSendToken = if (-not [string]::IsNullOrWhiteSpace($logBotToken)) { $logBotToken } else { $token }
 
 # --- Read events from recent window ---
 $logPath = "$ROOT\data\logs\actions.ndjson"
@@ -346,7 +349,7 @@ function Send-TextMessage {
 }
 
 if ($bannerPath) {
-  $uri = "https://api.telegram.org/bot$token/sendPhoto"
+  $uri = "https://api.telegram.org/bot$telegramSendToken/sendPhoto"
   $boundary = [System.Guid]::NewGuid().ToString()
   $parts = @()
   $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"chat_id`"`r`n`r`n$logChannel"
