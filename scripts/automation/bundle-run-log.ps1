@@ -331,7 +331,7 @@ if ($errors -gt 0) {
 $noteText = ($noteText -replace '\s+', ' ').Trim()
 # Keep note as one continuous paragraph (no manual line-wrapping).
 # Cap roughly to ~5 visual lines in Telegram caption width.
-if ($noteText.Length -gt 360) { $noteText = $noteText.Substring(0, 357) + '...' }
+if ($noteText.Length -gt 400) { $noteText = $noteText.Substring(0, 397) + '...' }
 if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
 
 $lines += "○───note─────────────────────────"
