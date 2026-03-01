@@ -14,13 +14,13 @@ Wrapper to emit deterministic Oragorn ActionEvents via scripts/log_event.py.
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('delegate', 'spawn', 'diagnose', 'context-update')]
+    [ValidateSet('delegate', 'spawn', 'spawn-finish', 'spawn-fail', 'diagnose', 'context-update')]
     [string]$Action,
 
     [Parameter(Mandatory = $true)]
     [string]$Summary,
 
-    [ValidateSet('OK', 'WARN', 'FAIL', 'INFO', 'BLOCKED')]
+    [ValidateSet('START', 'OK', 'WARN', 'FAIL', 'INFO', 'BLOCKED')]
     [string]$StatusWord = 'OK',
 
     [string]$ReasonCode,
@@ -41,12 +41,15 @@ $ErrorActionPreference = 'Stop'
 
 $actionMap = @{
     'delegate'       = 'DELEGATION_SENT'
-    'spawn'          = 'SUBAGENT_SPAWNED'
+    'spawn'          = 'SUBAGENT_SPAWN'
+    'spawn-finish'   = 'SUBAGENT_FINISH'
+    'spawn-fail'     = 'SUBAGENT_FAIL'
     'diagnose'       = 'DIAGNOSIS_COMPLETE'
     'context-update' = 'CONTEXT_UPDATE'
 }
 
 $statusEmojiMap = @{
+    'START'   = '▶️'
     'OK'      = '✅'
     'WARN'    = '⚠️'
     'FAIL'    = '❌'
@@ -63,6 +66,15 @@ if (-not $RunId -or [string]::IsNullOrWhiteSpace($RunId)) {
     $RunId = [guid]::NewGuid().ToString()
 }
 
+if (-not $PSBoundParameters.ContainsKey('StatusWord')) {
+    switch ($Action) {
+        'spawn' { $StatusWord = 'START' }
+        'spawn-finish' { $StatusWord = 'OK' }
+        'spawn-fail' { $StatusWord = 'FAIL' }
+        default { }
+    }
+}
+
 if (-not $ReasonCode -or [string]::IsNullOrWhiteSpace($ReasonCode)) {
     $ReasonCode = $emittedAction
 }
@@ -71,6 +83,10 @@ $statusWordUpper = $StatusWord.ToUpperInvariant()
 $statusEmoji = $statusEmojiMap[$statusWordUpper]
 if (-not $statusEmoji) {
     throw "Unsupported StatusWord for emoji mapping: $StatusWord"
+}
+
+if ($Action -like 'spawn*' -and $Inputs.Count -eq 0) {
+    $Inputs = @('sessions_spawn')
 }
 
 # Resolve workspace root robustly from script location: <root>/scripts/automation/this.ps1

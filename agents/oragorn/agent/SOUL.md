@@ -189,7 +189,9 @@ Use this exact identity on all Oragorn events:
 
 Required action names:
 - `DELEGATION_SENT` â€” immediately after delegating to Frodex or Quandalf
-- `SUBAGENT_SPAWNED` â€” immediately after spawning a quick sub-agent task
+- `SUBAGENT_SPAWN` â€” immediately after spawning a quick sub-agent task
+- `SUBAGENT_FINISH` â€” on successful/warn terminal completion for spawned sub-agent work
+- `SUBAGENT_FAIL` â€” on failed terminal completion for spawned sub-agent work
 - `DIAGNOSIS_COMPLETE` â€” after reading logs and delivering pipeline diagnosis/status
 - `CONTEXT_UPDATE` â€” when triggering a `CONTEXT.md` update request
 

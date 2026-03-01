@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Spawn lifecycle helper: enforce terminal ActionEvent emission for sessions_spawn runs.
+"""Spawn lifecycle helper: enforce canonical sub-agent lifecycle ActionEvents.
 
 Usage:
   python scripts/spawn_lifecycle.py start --run-id <id> --summary "..." [--emit-start]
   python scripts/spawn_lifecycle.py end --run-id <id> --result OK|WARN|FAIL --summary "..." [--reason-code X]
+
+Note: --emit-start is accepted for compatibility; start now always emits SUBAGENT_SPAWN.
 
 State files:
   data/logs/spawn_state/<run_id>.json
@@ -19,6 +21,10 @@ from pathlib import Path
 
 STATE_DIR = Path("data/logs/spawn_state")
 LOG_EVENT = Path("scripts/log_event.py")
+
+SPAWN_ACTION = "SUBAGENT_SPAWN"
+FINISH_ACTION = "SUBAGENT_FINISH"
+FAIL_ACTION = "SUBAGENT_FAIL"
 
 
 def ts_iso() -> str:
@@ -46,17 +52,39 @@ def save_state(run_id: str, state: dict) -> None:
     p.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def emit_event(*, run_id: str, status_word: str, summary: str, reason_code: str | None, model_id: str, agent: str, outputs: list[str] | None = None) -> None:
+def emit_event(
+    *,
+    run_id: str,
+    action: str,
+    status_word: str,
+    summary: str,
+    reason_code: str | None,
+    model_id: str,
+    agent: str,
+    outputs: list[str] | None = None,
+) -> None:
     cmd = [
         sys.executable,
         str(LOG_EVENT),
-        "--run-id", run_id,
-        "--agent", agent,
-        "--action", "sessions_spawn",
-        "--status-word", status_word,
-        "--status-emoji", {"START": "▶️", "OK": "✅", "WARN": "⚠️", "FAIL": "❌"}[status_word],
-        "--model-id", model_id,
-        "--summary", summary,
+        "--run-id",
+        run_id,
+        "--agent",
+        agent,
+        "--action",
+        action,
+        "--status-word",
+        status_word,
+        "--status-emoji",
+        {
+            "START": "▶️",
+            "OK": "✅",
+            "WARN": "⚠️",
+            "FAIL": "❌",
+        }[status_word],
+        "--model-id",
+        model_id,
+        "--summary",
+        summary,
     ]
     if reason_code:
         cmd += ["--reason-code", reason_code]
@@ -72,25 +100,25 @@ def cmd_start(args: argparse.Namespace) -> int:
         print("Terminal already emitted for this run_id; start ignored.", file=sys.stderr)
         return 1
 
+    emit_event(
+        run_id=args.run_id,
+        action=SPAWN_ACTION,
+        status_word="START",
+        summary=args.summary,
+        reason_code="SPAWN_START",
+        model_id=args.model_id,
+        agent=args.agent,
+    )
+
     new_state = {
         "run_id": args.run_id,
         "started_at": ts_iso(),
-        "emit_start": bool(args.emit_start),
+        "spawn_emitted": True,
         "terminal_emitted": False,
         "agent": args.agent,
         "model_id": args.model_id,
     }
     save_state(args.run_id, new_state)
-
-    if args.emit_start:
-        emit_event(
-            run_id=args.run_id,
-            status_word="START",
-            summary=args.summary,
-            reason_code="SPAWN_START",
-            model_id=args.model_id,
-            agent=args.agent,
-        )
     return 0
 
 
@@ -104,8 +132,10 @@ def cmd_end(args: argparse.Namespace) -> int:
         print("Terminal already emitted for this run_id. Use --force to override.", file=sys.stderr)
         return 1
 
+    action = FAIL_ACTION if args.result == "FAIL" else FINISH_ACTION
     emit_event(
         run_id=args.run_id,
+        action=action,
         status_word=args.result,
         summary=args.summary,
         reason_code=args.reason_code,
@@ -118,6 +148,7 @@ def cmd_end(args: argparse.Namespace) -> int:
         {
             "run_id": args.run_id,
             "terminal_emitted": True,
+            "terminal_action": action,
             "terminal_status": args.result,
             "terminal_reason_code": args.reason_code,
             "terminal_at": ts_iso(),
@@ -136,7 +167,11 @@ def build_parser() -> argparse.ArgumentParser:
     ps = sub.add_parser("start")
     ps.add_argument("--run-id", required=True)
     ps.add_argument("--summary", required=True)
-    ps.add_argument("--emit-start", action="store_true", help="Emit START event (use only for long/multi-step runs)")
+    ps.add_argument(
+        "--emit-start",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
     ps.add_argument("--agent", default="oQ")
     ps.add_argument("--model-id", default="openai-codex/gpt-5.3-codex")
 

@@ -247,7 +247,7 @@ if ($mode -eq 'quandalf') {
   $lines += "Total    : $totalStrictRuns runs"
 } elseif ($mode -eq 'oragorn') {
   $delegated = @($mainEvents | Where-Object { [string]$_.action -eq 'DELEGATION_SENT' }).Count
-  $spawned = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_SPAWNED' }).Count
+  $spawned = @($mainEvents | Where-Object { @('SUBAGENT_SPAWN','SUBAGENT_SPAWNED') -contains ([string]$_.action) }).Count
   $diagnosed = @($mainEvents | Where-Object { [string]$_.action -eq 'DIAGNOSIS_COMPLETE' }).Count
   $contextUpdates = @($mainEvents | Where-Object { [string]$_.action -eq 'CONTEXT_UPDATE' }).Count
   $totalActions = $delegated + $spawned + $diagnosed + $contextUpdates

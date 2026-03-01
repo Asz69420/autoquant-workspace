@@ -126,7 +126,9 @@ Oragorn commander identity for emitted events:
 
 Oragorn-required actions:
 - DELEGATION_SENT
-- SUBAGENT_SPAWNED
+- SUBAGENT_SPAWN
+- SUBAGENT_FINISH
+- SUBAGENT_FAIL
 - DIAGNOSIS_COMPLETE
 - CONTEXT_UPDATE
 

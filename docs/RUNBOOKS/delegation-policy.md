@@ -81,7 +81,7 @@ If implementation occurs before standalone approval, stop immediately, revert un
 - Reuse the same run_id for lifecycle pairing
 - Emit via `python scripts/log_event.py ...` (never hand-write JSON)
 - Verifier logging contract: outbox-only writes; never write NDJSON directly; never send Telegram directly.
-- Required fields per lifecycle event: shared `run_id`, `action=sessions_spawn`, `status_word`, `agent`, `summary`, timestamps from `log_event.py`
+- Required fields per lifecycle event: shared `run_id`, canonical actions (`SUBAGENT_SPAWN`, `SUBAGENT_FINISH`, `SUBAGENT_FAIL`), `status_word`, `agent`, `summary`, timestamps from `log_event.py`
 - If terminal event is missing or run_id mismatches, mark process-invalid, emit compliance `WARN`/`FAIL`, and block approval/handoff progression until corrected
 - If START exists, it must pair with the same run_id and valid ordering
 - User-facing chat output should default to minimal confirmation text (no raw audit dump unless requested): `**✅ Verified**` (or `**⚠️ Partial**` / `**❌ Not Verified**`).

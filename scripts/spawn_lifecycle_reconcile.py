@@ -2,7 +2,7 @@
 """Reconcile spawn lifecycle state and surface missing terminal events.
 
 - Scans data/logs/spawn_state/*.json
-- For stale runs with no terminal event, emits WARN ActionEvent with reason_code=MISSING_TERMINAL_EVENT
+- For stale runs with no terminal event, emits SUBAGENT_FAIL (reason_code=MISSING_TERMINAL_EVENT)
 - --strict exits nonzero if unresolved stale runs exist
 """
 from __future__ import annotations
@@ -16,6 +16,8 @@ from pathlib import Path
 
 STATE_DIR = Path("data/logs/spawn_state")
 LOG_EVENT = Path("scripts/log_event.py")
+
+TERMINAL_ACTIONS = {"SUBAGENT_FINISH", "SUBAGENT_FAIL"}
 
 
 def now_utc() -> datetime:
@@ -31,19 +33,28 @@ def parse_iso(s: str | None) -> datetime | None:
         return None
 
 
-def emit_warn(run_id: str, summary: str, model_id: str, agent: str) -> None:
+def emit_terminal_fail(run_id: str, summary: str, model_id: str, agent: str) -> None:
     cmd = [
         sys.executable,
         str(LOG_EVENT),
-        "--run-id", run_id,
-        "--agent", agent,
-        "--action", "sessions_spawn",
-        "--status-word", "WARN",
-        "--status-emoji", "⚠️",
-        "--model-id", model_id,
-        "--reason-code", "MISSING_TERMINAL_EVENT",
-        "--summary", summary,
-        "--inputs", "sessions_spawn",
+        "--run-id",
+        run_id,
+        "--agent",
+        agent,
+        "--action",
+        "SUBAGENT_FAIL",
+        "--status-word",
+        "FAIL",
+        "--status-emoji",
+        "❌",
+        "--model-id",
+        model_id,
+        "--reason-code",
+        "MISSING_TERMINAL_EVENT",
+        "--summary",
+        summary,
+        "--inputs",
+        "sessions_spawn",
     ]
     subprocess.run(cmd, check=True)
 
@@ -52,8 +63,17 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--grace-seconds", type=int, default=120)
     ap.add_argument("--strict", action="store_true")
-    ap.add_argument("--require-actions-log", action="store_true", help="Require terminal run_ids to be present in actions.ndjson")
-    ap.add_argument("--max-age-minutes", type=int, default=180, help="Lookback window for actions.ndjson delivery proof")
+    ap.add_argument(
+        "--require-actions-log",
+        action="store_true",
+        help="Require terminal run_ids to be present in actions.ndjson",
+    )
+    ap.add_argument(
+        "--max-age-minutes",
+        type=int,
+        default=180,
+        help="Lookback window for actions.ndjson delivery proof",
+    )
     args = ap.parse_args()
 
     if not STATE_DIR.exists():
@@ -74,7 +94,7 @@ def main() -> int:
                     obj = json.loads(line)
                 except Exception:
                     continue
-                if obj.get("action") != "sessions_spawn":
+                if obj.get("action") not in TERMINAL_ACTIONS:
                     continue
                 if obj.get("status_word") not in {"OK", "WARN", "FAIL"}:
                     continue
@@ -101,12 +121,18 @@ def main() -> int:
         run_id = st.get("run_id") or p.stem
 
         if st.get("terminal_emitted"):
-            if args.require_actions_log and str(run_id) not in delivered_run_ids and str(run_id) not in pending_run_ids:
+            if (
+                args.require_actions_log
+                and str(run_id) not in delivered_run_ids
+                and str(run_id) not in pending_run_ids
+            ):
                 unresolved += 1
                 agent = st.get("agent") or "oQ"
                 model_id = st.get("model_id") or "openai-codex/gpt-5.3-codex"
-                summary = "Spawn terminal event missing from actions.ndjson delivery proof"
-                emit_warn(run_id=str(run_id), summary=summary, model_id=model_id, agent=agent)
+                summary = "Sub-agent terminal event missing from actions.ndjson delivery proof"
+                emit_terminal_fail(
+                    run_id=str(run_id), summary=summary, model_id=model_id, agent=agent
+                )
                 st["terminal_emitted"] = True
                 p.write_text(json.dumps(st, ensure_ascii=False, indent=2), encoding="utf-8")
             continue
@@ -122,9 +148,13 @@ def main() -> int:
         unresolved += 1
         agent = st.get("agent") or "oQ"
         model_id = st.get("model_id") or "openai-codex/gpt-5.3-codex"
-        summary = f"Spawn lifecycle missing terminal event (age={int(age)}s)"
-        emit_warn(run_id=run_id, summary=summary, model_id=model_id, agent=agent)
+        summary = f"Sub-agent lifecycle missing terminal event (age={int(age)}s)"
+        emit_terminal_fail(run_id=run_id, summary=summary, model_id=model_id, agent=agent)
         st["terminal_emitted"] = True
+        st["terminal_action"] = "SUBAGENT_FAIL"
+        st["terminal_status"] = "FAIL"
+        st["terminal_reason_code"] = "MISSING_TERMINAL_EVENT"
+        st["terminal_at"] = now_utc().isoformat().replace("+00:00", "Z")
         p.write_text(json.dumps(st, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(f"Checked={checked} unresolved={unresolved}")
