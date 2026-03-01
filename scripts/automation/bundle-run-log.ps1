@@ -221,20 +221,18 @@ if ($warnings.Count -gt 0) {
 
 $noteText = $null
 if ($errors -gt 0) {
-  $noteText = "Issue: $errors error event(s) in this window."
+  $noteText = "I hit $errors issue(s) in this window and need a quick review."
 } elseif ($stall -gt 5) {
-  $noteText = "Issue: No new variants for $stall cycles."
+  $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
 } elseif ($starvation -gt 10) {
-  $noteText = "Issue: Input starvation for $starvation cycles."
+  $noteText = "I am input-starved for $starvation cycles, so throughput is constrained."
 } elseif ($topWarning) {
-  $noteText = "Watch: $topWarning"
+  $noteText = "I saw a warning worth watching: $topWarning"
 } else {
-  $lastEvent = @($mainEvents | Select-Object -Last 1)
-  $lastSummary = if ($lastEvent.Count -gt 0) { [string]$lastEvent[0].summary } else { '' }
-  if ([string]::IsNullOrWhiteSpace($lastSummary)) {
-    $noteText = "All clear this cycle."
+  if ($mode -eq 'quandalf') {
+    $noteText = "I completed $totalStrictRuns Claude run(s): generate $strategyGenerateCount, research $strategyResearchCount, doctrine $doctrineSynthesisCount, audit $backtestAuditCount."
   } else {
-    $noteText = $lastSummary
+    $noteText = "I completed this cycle cleanly: $ingested ingested, $btExecuted backtested, $refined refined, $promoted promoted."
   }
 }
 
