@@ -260,11 +260,36 @@ if ($errors -gt 0) {
 }
 
 $noteText = ($noteText -replace '\s+', ' ').Trim()
-if ($noteText.Length -gt 170) { $noteText = $noteText.Substring(0, 167) + '...' }
+if ($noteText.Length -gt 320) { $noteText = $noteText.Substring(0, 317) + '...' }
 if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
 
+# Allow richer context: wrap note to max 5 lines (shorter is still preferred)
+$maxNoteCharsPerLine = 46
+$maxNoteLines = 5
+$noteWrapped = @()
+$current = ''
+foreach ($word in ($noteText -split '\s+')) {
+  if ([string]::IsNullOrWhiteSpace($word)) { continue }
+  if ([string]::IsNullOrWhiteSpace($current)) {
+    $current = $word
+  } elseif (($current.Length + 1 + $word.Length) -le $maxNoteCharsPerLine) {
+    $current = "$current $word"
+  } else {
+    $noteWrapped += $current
+    $current = $word
+    if ($noteWrapped.Count -ge ($maxNoteLines - 1)) { break }
+  }
+}
+if (-not [string]::IsNullOrWhiteSpace($current) -and $noteWrapped.Count -lt $maxNoteLines) { $noteWrapped += $current }
+if ($noteWrapped.Count -eq 0) { $noteWrapped = @('All clear this cycle.') }
+if ($noteWrapped.Count -gt $maxNoteLines) { $noteWrapped = @($noteWrapped | Select-Object -First $maxNoteLines) }
+
 $lines += "○───note─────────────────────────"
-$lines += $noteText
+$lines += ("Note: " + $noteWrapped[0])
+if ($noteWrapped.Count -ge 2) { $lines += ("      " + $noteWrapped[1]) }
+if ($noteWrapped.Count -ge 3) { $lines += ("      " + $noteWrapped[2]) }
+if ($noteWrapped.Count -ge 4) { $lines += ("      " + $noteWrapped[3]) }
+if ($noteWrapped.Count -ge 5) { $lines += ("      " + $noteWrapped[4]) }
 
 $messageBody = ($lines -join "`n").TrimEnd()
 $caption = "``````" + "`n" + $messageBody + "`n" + "``````"
