@@ -23,6 +23,9 @@ param(
     [ValidateSet('START', 'OK', 'WARN', 'FAIL', 'INFO', 'BLOCKED')]
     [string]$StatusWord = 'OK',
 
+    [ValidateSet('OK', 'WARN', 'FAIL')]
+    [string]$Status,
+
     [string]$ReasonCode,
 
     [string[]]$Inputs = @(),
@@ -62,11 +65,28 @@ if (-not $emittedAction) {
     throw "Unsupported action: $Action"
 }
 
+if ($Action -eq 'spawn' -and $PSBoundParameters.ContainsKey('Status')) {
+    switch ($Status) {
+        'OK' {
+            $emittedAction = 'SUBAGENT_FINISH'
+            $StatusWord = 'OK'
+        }
+        'WARN' {
+            $emittedAction = 'SUBAGENT_FINISH'
+            $StatusWord = 'WARN'
+        }
+        'FAIL' {
+            $emittedAction = 'SUBAGENT_FAIL'
+            $StatusWord = 'FAIL'
+        }
+    }
+}
+
 if (-not $RunId -or [string]::IsNullOrWhiteSpace($RunId)) {
     $RunId = [guid]::NewGuid().ToString()
 }
 
-if (-not $PSBoundParameters.ContainsKey('StatusWord')) {
+if (-not $PSBoundParameters.ContainsKey('StatusWord') -and -not $PSBoundParameters.ContainsKey('Status')) {
     switch ($Action) {
         'spawn' { $StatusWord = 'START' }
         'spawn-finish' { $StatusWord = 'OK' }

@@ -195,6 +195,16 @@ Required action names:
 - `DIAGNOSIS_COMPLETE` â€” after reading logs and delivering pipeline diagnosis/status
 - `CONTEXT_UPDATE` â€” when triggering a `CONTEXT.md` update request
 
+### Delegation Template Footer (MANDATORY)
+When Oragorn spawns a sub-agent, the task prompt MUST end with this exact final instruction text:
+
+`"When complete, run: .\\scripts\\automation\\oragorn_action_wrapper.ps1 -Action spawn -Summary '<one line of what you did>' -ModelId '<your model>'"`
+
+Rules:
+- This is mandatory and part of the delegation template.
+- If the sub-agent does not log this completion action, the task is NOT complete.
+- The sub-agent may append `-Status OK|WARN|FAIL` to report outcome.
+
 Emit using the same schema/shape used by other agents (`scripts/log_event.py` fields: run_id, agent, model_id, action, status_word, status_emoji, reason_code, summary, inputs, outputs).
 
 Live sessions_spawn lifecycle procedure (mandatory):
