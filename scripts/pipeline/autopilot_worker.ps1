@@ -253,25 +253,68 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
       }
     } catch {}
 
-    $emitRaw = & python @emitArgs 2>&1
-    $emitExit = $LASTEXITCODE
-    $emitOut = [string]$emitRaw
-    $emitBytesB64 = ''
-    try { $emitBytesB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($emitOut)) } catch { $emitBytesB64 = '' }
-    Emit-Summary 'DIRECTIVE_GEN_RAW' ('DIRECTIVE_GEN_RAW exit=' + $emitExit + ' len=' + $emitOut.Length + ' stdout_stderr=' + $emitOut + ' bytes_b64=' + $emitBytesB64) 'INFO' 'Strategist'
+    $emitOut = ''
+    $emitErr = ''
+    $emitExit = -1
+
+    function Invoke-DirectiveEmitterCapture([string[]]$argsList) {
+      $psi = New-Object System.Diagnostics.ProcessStartInfo
+      $psi.FileName = 'python'
+      $escapedArgs = @()
+      foreach ($arg in @($argsList)) {
+        $sv = [string]$arg
+        $sv = $sv.Replace('"', '\"')
+        $escapedArgs += ('"' + $sv + '"')
+      }
+      $psi.Arguments = ($escapedArgs -join ' ')
+      $psi.WorkingDirectory = $RepoRoot
+      $psi.RedirectStandardOutput = $true
+      $psi.RedirectStandardError = $true
+      $psi.UseShellExecute = $false
+      $psi.CreateNoWindow = $true
+      try {
+        $psi.StandardOutputEncoding = [System.Text.Encoding]::UTF8
+        $psi.StandardErrorEncoding = [System.Text.Encoding]::UTF8
+      } catch {}
+
+      $proc = New-Object System.Diagnostics.Process
+      $proc.StartInfo = $psi
+      $proc.Start() | Out-Null
+      $stdOutLocal = $proc.StandardOutput.ReadToEnd()
+      $stdErrLocal = $proc.StandardError.ReadToEnd()
+      $proc.WaitForExit()
+      return [pscustomobject]@{ ExitCode = [int]$proc.ExitCode; StdOut = [string]$stdOutLocal; StdErr = [string]$stdErrLocal }
+    }
+
+    $emitResult = Invoke-DirectiveEmitterCapture $emitArgs
+    $emitExit = [int]$emitResult.ExitCode
+    $emitOut = [string]$emitResult.StdOut
+    $emitErr = [string]$emitResult.StdErr
+    $emitOutBytesB64 = ''
+    $emitErrBytesB64 = ''
+    try { $emitOutBytesB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($emitOut)) } catch { $emitOutBytesB64 = '' }
+    try { $emitErrBytesB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($emitErr)) } catch { $emitErrBytesB64 = '' }
+    Emit-Summary 'DIRECTIVE_GEN_RAW' ('DIRECTIVE_GEN_RAW exit=' + $emitExit + ' stdout_len=' + $emitOut.Length + ' stderr_len=' + $emitErr.Length + ' stdout=' + $emitOut + ' stderr=' + $emitErr + ' stdout_bytes_b64=' + $emitOutBytesB64 + ' stderr_bytes_b64=' + $emitErrBytesB64) 'INFO' 'Strategist'
     if ($emitExit -ne 0) {
-      Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: nonzero exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
+      Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: nonzero exit=' + $emitExit + ' stdout=' + $emitOut + ' stderr=' + $emitErr) 'FAIL' 'Strategist'
       return ''
     }
+    if (-not [string]::IsNullOrWhiteSpace($emitErr)) {
+      Emit-Summary 'DIRECTIVE_GEN_STDERR_INFO' ('Directive generation stderr diagnostics (non-fatal): ' + $emitErr) 'INFO' 'Strategist'
+    }
     if ([string]::IsNullOrWhiteSpace($emitOut)) {
-      Emit-Summary 'DIRECTIVE_GEN_RETRY' 'Directive generation: empty strategist output on first attempt; retrying after 2s' 'WARN' 'Strategist'
+      Emit-Summary 'DIRECTIVE_GEN_RETRY' 'Directive generation: empty strategist stdout on first attempt; retrying after 2s' 'WARN' 'Strategist'
       Start-Sleep -Seconds 2
-      $emitRaw = & python @emitArgs 2>&1
-      $emitExit = $LASTEXITCODE
-      $emitOut = [string]$emitRaw
+      $emitResult = Invoke-DirectiveEmitterCapture $emitArgs
+      $emitExit = [int]$emitResult.ExitCode
+      $emitOut = [string]$emitResult.StdOut
+      $emitErr = [string]$emitResult.StdErr
       if ($emitExit -ne 0 -or [string]::IsNullOrWhiteSpace($emitOut)) {
-        Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: empty strategist output after retry exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
+        Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: empty strategist stdout after retry exit=' + $emitExit + ' stdout=' + $emitOut + ' stderr=' + $emitErr) 'FAIL' 'Strategist'
         return ''
+      }
+      if (-not [string]::IsNullOrWhiteSpace($emitErr)) {
+        Emit-Summary 'DIRECTIVE_GEN_STDERR_INFO' ('Directive generation stderr diagnostics after retry (non-fatal): ' + $emitErr) 'INFO' 'Strategist'
       }
     }
     $emitObj = $null
@@ -310,7 +353,7 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
         $emitObj = $emitOut | ConvertFrom-Json
       }
     } catch {
-      Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: parse error exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
+      Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: parse error exit=' + $emitExit + ' stdout=' + $emitOut + ' stderr=' + $emitErr) 'FAIL' 'Strategist'
       return ''
     }
 
@@ -319,10 +362,10 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
       Emit-Summary 'DIRECTIVE_BACKFILL_GENERATION' ('Directive generation from backfill: verdict=' + $verdict + ' directives=' + @($outObj.directives).Count + ' generated_spec=' + [IO.Path]::GetFileName([string]$generatedSpecPath) + ' deferred_to_next_cycle=true') 'OK' 'Strategist'
       return $generatedSpecPath
     }
-    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: strategist returned no strategy_spec_path exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: strategist returned no strategy_spec_path exit=' + $emitExit + ' stdout=' + $emitOut + ' stderr=' + $emitErr) 'FAIL' 'Strategist'
   } catch {
     $msg = [string]$_.Exception.Message
-    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: emission error detail=' + $msg + ' stdout_stderr=' + [string]$emitRaw) 'FAIL' 'Strategist'
+    Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: emission error detail=' + $msg + ' stdout=' + [string]$emitOut + ' stderr=' + [string]$emitErr) 'FAIL' 'Strategist'
   }
 
   return ''
