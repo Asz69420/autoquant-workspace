@@ -85,9 +85,14 @@ function Format-CompactDuration {
 }
 
 $eventTimestamps = @($mainEvents | ForEach-Object { Get-EventUtcTimestamp $_ } | Where-Object { $_ -ne $null } | Sort-Object)
-$durationLabel = '0s'
+$durationLabel = '<1s'
 if ($eventTimestamps.Count -ge 2) {
-  $durationLabel = Format-CompactDuration ($eventTimestamps[-1] - $eventTimestamps[0])
+  $windowDuration = ($eventTimestamps[-1] - $eventTimestamps[0])
+  if ($windowDuration.TotalSeconds -eq 0) {
+    $durationLabel = '<1s'
+  } else {
+    $durationLabel = Format-CompactDuration $windowDuration
+  }
 }
 
 # --- Banner selection ---
