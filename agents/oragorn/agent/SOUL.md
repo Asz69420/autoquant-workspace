@@ -195,6 +195,13 @@ Required action names:
 - `DIAGNOSIS_COMPLETE` â€” after reading logs and delivering pipeline diagnosis/status
 - `CONTEXT_UPDATE` â€” when triggering a `CONTEXT.md` update request
 
+#### Parent-Owned Lifecycle Logging (Authoritative)
+- Parent (Oragorn) must emit `SUBAGENT_SPAWN` immediately after `sessions_spawn` accepts, with the same `run_id` and `child_session_key`.
+- Parent (Oragorn) must emit `SUBAGENT_FINISH` or `SUBAGENT_FAIL` on terminal completion, with the same correlation IDs.
+- Parent lifecycle emit + validate is the authoritative sub-agent logging mechanism.
+- Sub-agent footer logging is secondary redundancy (backup) only, not primary source of truth.
+- Fail closed: if parent lifecycle emit/verify cannot be performed, do not spawn (or mark task `BLOCKED` immediately).
+
 ### Delegation Template Footer (MANDATORY)
 When Oragorn spawns a sub-agent, the task prompt MUST end with this exact final instruction text:
 
@@ -202,7 +209,8 @@ When Oragorn spawns a sub-agent, the task prompt MUST end with this exact final 
 
 Rules:
 - This is mandatory and part of the delegation template.
-- If the sub-agent does not log this completion action, the task is NOT complete.
+- This footer log is secondary redundancy (backup), not the authoritative lifecycle source of truth.
+- If the sub-agent does not log this completion action, flag it; parent lifecycle logging requirements still govern completion.
 - The sub-agent may append `-Status OK|WARN|FAIL` to report outcome.
 
 Emit using the same schema/shape used by other agents (`scripts/log_event.py` fields: run_id, agent, model_id, action, status_word, status_emoji, reason_code, summary, inputs, outputs).

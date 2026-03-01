@@ -45,6 +45,10 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 - Never report DONE/complete before this gate passes.
 - If lifecycle entry is missing, status must be `BLOCKED`, backfill must be executed immediately, and the task remains unresolved until verified.
 - This gate applies to every spawned sub-agent run without exception.
+- Parent (Oragorn) must emit `SUBAGENT_SPAWN` immediately after `sessions_spawn` accepts, with the same `run_id` and `child_session_key`.
+- Parent (Oragorn) must emit `SUBAGENT_FINISH` or `SUBAGENT_FAIL` on terminal completion, with the same correlation IDs.
+- Sub-agent footer logging is backup only; it is not the authoritative logging mechanism.
+- If parent lifecycle emit/verify cannot be performed, do not spawn (or mark task `BLOCKED` immediately).
 
 ## Memory Boundary
 - `MEMORY.md` is now a compact index only.
