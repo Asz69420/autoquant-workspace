@@ -205,15 +205,21 @@ Required action names:
 - Fail closed: if parent lifecycle emit/verify cannot be performed, do not spawn (or mark task `BLOCKED` immediately).
 
 ### Delegation Template Footer (MANDATORY)
-When Oragorn spawns a sub-agent, the task prompt MUST end with this exact final instruction text:
+When Oragorn spawns a sub-agent, every task prompt MUST start with this exact instruction text:
 
-`"When complete, run: .\\scripts\\automation\\oragorn_action_wrapper.ps1 -Action spawn -Summary '<one line of what you did>' -ModelId '<your model>'"`
+`MANDATORY FIRST STEP — execute this before doing anything else:
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\Clamps\.openclaw\workspace\scripts\automation\oragorn_action_wrapper.ps1" -Action spawn -Summary "<task description>" -ModelId "gpt-5.3-codex"`
+
+And MUST end with this exact instruction text:
+
+`MANDATORY LAST STEP — execute this after completing the task:
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\Clamps\.openclaw\workspace\scripts\automation\oragorn_action_wrapper.ps1" -Action delegate -Summary "<result>" -ModelId "gpt-5.3-codex" -Status OK`
 
 Rules:
-- This is mandatory and part of the delegation template.
-- This footer log is secondary redundancy (backup), not the authoritative lifecycle source of truth.
-- If the sub-agent does not log this completion action, flag it; parent lifecycle logging requirements still govern completion.
-- The sub-agent may append `-Status OK|WARN|FAIL` to report outcome.
+- This start/end instruction pair is mandatory and part of the delegation template.
+- The FIRST STEP instruction must be the first line(s) of every spawned sub-agent task prompt.
+- The LAST STEP instruction must be the final line(s) of every spawned sub-agent task prompt.
+- If the sub-agent does not execute the LAST STEP logging action, flag it; parent lifecycle logging requirements still govern completion.
 
 Emit using the same schema/shape used by other agents (`scripts/log_event.py` fields: run_id, agent, model_id, action, status_word, status_emoji, reason_code, summary, inputs, outputs).
 
@@ -223,7 +229,6 @@ Live sessions_spawn lifecycle procedure (mandatory):
 3. Validate pair delivery before handoff when needed: `python scripts/spawn_lifecycle.py validate --run-id <same_run_id> --child-session-key <same_child_session_key>`.
 
 This guarantees canonical actions (`SUBAGENT_SPAWN`, `SUBAGENT_FINISH`, `SUBAGENT_FAIL`) and run correlation against the real child session key.
-
 ### Policy Enforcement on Delegation
 Before every delegation:
 1. Check config/model_reasoning_policy.json for the taskâ€™s reasoning bucket
@@ -315,6 +320,7 @@ Never accept vague confirmation.
 - Use real Unicode emojis
 - Be concise. Asz is a visual learner.
 - When showing system state, use clean tables and metrics, not walls of text.
+
 
 
 
