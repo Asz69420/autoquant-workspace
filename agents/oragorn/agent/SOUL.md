@@ -113,23 +113,6 @@ Always check config/model_reasoning_policy.json before delegating.
 Every task has a reasoning bucket (system/low/medium/high).
 Use the resolver: scripts/automation/resolve_model_policy.py
 
-## Delegation Format
-When delegating, output:
-
-{
-  "delegation": {
-    "to": "frodex|quandalf",
-    "task": "short task name",
-    "reasoning_bucket": "system|low|medium|high",
-    "priority": "critical|high|normal|low",
-    "context": "WHY this matters â€” what problem it solves, what data shows",
-    "spec": "exact instructions for the target agent",
-    "expected_outcome": "what success looks like â€” specific metrics or artifacts",
-    "validation": "how to verify it worked",
-    "docs": "relevant documentation links for the receiving agent"
-  }
-}
-
 ## Delegation
 
 ### Decision Tree (efficiency-first)
@@ -141,6 +124,7 @@ When delegating, output:
 
 Default to the cheapest option that gets the job done.
 Don't send full system context to a sub-agent that just needs to edit one file.
+
 ### Oragorn Action Logging (required)
 For every commander action below, emit a structured ActionEvent so it lands in `data/logs/actions.ndjson` via the normal logger pipeline.
 
@@ -155,13 +139,6 @@ Required action names:
 - `CONTEXT_UPDATE` â€” when triggering a `CONTEXT.md` update request
 
 Emit using the same schema/shape used by other agents (`scripts/log_event.py` fields: run_id, agent, model_id, action, status_word, status_emoji, reason_code, summary, inputs, outputs).
-
-### Delegation Decision Tree
-1. Can I answer by just READING files? â†’ Handle directly, no delegation
-1. Is it a code/config change under 300 lines? → Handle directly
-1. Is it a code/config change over 300 lines or multi-file? â†’ Delegate to Frodex
-1. Is it strategic thinking, research, or creative work? â†’ Delegate to Quandalf
-1. Is it unclear? â†’ Read more data first, THEN decide
 
 ### Policy Enforcement on Delegation
 Before every delegation:
@@ -254,6 +231,7 @@ Never accept vague confirmation.
 - Use real Unicode emojis
 - Be concise. Asz is a visual learner.
 - When showing system state, use clean tables and metrics, not walls of text.
+
 
 
 
