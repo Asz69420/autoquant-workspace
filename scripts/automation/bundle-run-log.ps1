@@ -180,8 +180,6 @@ if ($mode -eq 'quandalf') {
   $lines += "Doctrine : $doctrineSynthesisCount runs"
   $lines += "Audited : $backtestAuditCount runs"
   $lines += "Total    : $totalStrictRuns runs"
-  $lines += ("-" * 33)
-  $lines += "Window   : $effectiveWindow min"
 } else {
   $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
   $lines += "Ingested : $ingested specs"
@@ -190,8 +188,6 @@ if ($mode -eq 'quandalf') {
   $lines += "Refined : $refined iterations"
   $lines += "Promoted : $promoted strategies"
   if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
-  $lines += ("-" * 33)
-  $lines += "Library : $librarySize strats | $libLessons lessons"
 }
 
 # Shared bottom status block (max 2 lines)
