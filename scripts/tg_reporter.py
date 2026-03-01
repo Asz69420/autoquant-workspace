@@ -58,6 +58,12 @@ INFO_TELEGRAM_SUPPRESS = {
     "TV_INDICATOR_ADDED",
 }
 
+SUBAGENT_LIFECYCLE_ACTIONS = {
+    "SUBAGENT_SPAWN",
+    "SUBAGENT_FINISH",
+    "SUBAGENT_FAIL",
+}
+
 def compute_ts_local_aest(ts_iso_str):
     """Convert ISO UTC timestamp to ts_local (12-hour AEST)."""
     dt_utc = datetime.fromisoformat(ts_iso_str.replace("Z", "+00:00"))
@@ -251,6 +257,11 @@ def _keeper_telegram_message(event: dict) -> str:
     return _escape_md_v2(f"Keeper: {status_word}")
 
 
+def _is_subagent_lifecycle_event(event: dict) -> bool:
+    action = str(event.get("action") or "").upper()
+    return action in SUBAGENT_LIFECYCLE_ACTIONS
+
+
 def send_event_to_telegram(event):
     """Format and send an ActionEvent to Telegram. Returns True on success."""
     try:
@@ -314,8 +325,11 @@ def send_event_to_telegram(event):
                 if reason_code:
                     notify_cmd.extend(["--reason-code", reason_code])
 
+        lifecycle_event = _is_subagent_lifecycle_event(event)
+
         # Suppress individual reporter messages to TELEGRAM_LOG_CHAT_ID.
-        # Only bundled cycle summaries should post there.
+        # Only bundled cycle summaries should post there, except canonical
+        # sub-agent lifecycle events which must be delivered to log channel.
         log_chat_id = str(os.getenv("TELEGRAM_LOG_CHAT_ID") or "").strip()
         target_chat_id = None
         if "--chat-id" in notify_cmd:
@@ -327,11 +341,20 @@ def send_event_to_telegram(event):
                 target_chat_id = None
 
         if target_chat_id is None:
-            return None
-        if log_chat_id and target_chat_id == log_chat_id:
+            if lifecycle_event and log_chat_id:
+                notify_cmd.extend(["--chat-id", log_chat_id])
+                target_chat_id = log_chat_id
+            else:
+                return None
+
+        if log_chat_id and target_chat_id == log_chat_id and not lifecycle_event:
             return None
 
-        send_result = subprocess.run(notify_cmd, capture_output=True, text=True)
+        send_env = dict(os.environ)
+        if lifecycle_event:
+            send_env["TG_LOG_TEXT_ENABLED"] = "1"
+
+        send_result = subprocess.run(notify_cmd, capture_output=True, text=True, env=send_env)
 
         return send_result.returncode == 0
     except subprocess.CalledProcessError as e:
@@ -470,10 +493,10 @@ def drain_once(max_messages=20):
                 print(f"Skipped (already-logged): {event_file.name}", file=sys.stderr)
                 continue
 
-            # Result-first policy: suppress START notifications in Telegram.
-            # Final statuses (OK/WARN/FAIL/BLOCKED/etc.) are what matter in chat.
-            # Keep START in actions.ndjson for lifecycle auditability.
-            if status_word == "START":
+            # Result-first policy: suppress most START notifications in Telegram.
+            # Exception: canonical sub-agent lifecycle START (SUBAGENT_SPAWN)
+            # must be sent to log channel.
+            if status_word == "START" and str(event.get("action") or "").upper() != "SUBAGENT_SPAWN":
                 event_line = json.dumps(event)
                 with open(ACTIONS_LOG, "a") as f:
                     f.write(event_line + "\n")
