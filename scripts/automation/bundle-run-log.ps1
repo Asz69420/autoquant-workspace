@@ -63,6 +63,33 @@ $mainEvents = @($events | Where-Object {
 })
 if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events for pipeline=$mode"; exit 0 }
 
+function Get-EventUtcTimestamp {
+  param($Event)
+  $raw = if ($Event.ts_iso) { [string]$Event.ts_iso } elseif ($Event.ts) { [string]$Event.ts } else { $null }
+  if ([string]::IsNullOrWhiteSpace($raw)) { return $null }
+  try { return [DateTime]::Parse($raw).ToUniversalTime() } catch { return $null }
+}
+
+function Format-CompactDuration {
+  param([TimeSpan]$Duration)
+  if ($Duration.TotalSeconds -lt 0) { $Duration = [TimeSpan]::Zero }
+
+  $totalSeconds = [int][Math]::Floor($Duration.TotalSeconds)
+  $hours = [int][Math]::Floor($totalSeconds / 3600)
+  $minutes = [int][Math]::Floor(($totalSeconds % 3600) / 60)
+  $seconds = $totalSeconds % 60
+
+  if ($hours -gt 0) { return ('{0}h {1:00}m' -f $hours, $minutes) }
+  if ($minutes -gt 0) { return ('{0}m {1}s' -f $minutes, $seconds) }
+  return ('{0}s' -f $seconds)
+}
+
+$eventTimestamps = @($mainEvents | ForEach-Object { Get-EventUtcTimestamp $_ } | Where-Object { $_ -ne $null } | Sort-Object)
+$durationLabel = '0s'
+if ($eventTimestamps.Count -ge 2) {
+  $durationLabel = Format-CompactDuration ($eventTimestamps[-1] - $eventTimestamps[0])
+}
+
 # --- Banner selection ---
 $primaryAgent = if ($mode -eq 'quandalf') { "quandalf" } elseif ($mode -eq 'oragorn') { "oragorn" } else { "frodex" }
 
@@ -165,11 +192,10 @@ $statusIcon = switch ($statusTag) {
   "FAIL" { "❌" }
 }
 
-$ts = Get-Date -Format "h:mm tt"
 $agentLabel = if ($mode -eq 'quandalf') { "Quandalf" } elseif ($mode -eq 'oragorn') { "Oragorn" } else { "Frodex" }
 
 # Model label for header (abbrev, no spaces: GPT5.3 / OPUS4.6)
-$modelLabel = 'N/A'
+$modelLabel = ''
 $modelBuckets = @($mainEvents | ForEach-Object { [string]$_.model_id } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) -and $_ -ne 'system' } | Group-Object | Sort-Object Count -Descending)
 if ($modelBuckets.Count -gt 0) {
   $modelRaw = [string]$modelBuckets[0].Name
@@ -190,8 +216,12 @@ if ($modelBuckets.Count -gt 0) {
   }
 }
 
+$headerParts = @($statusIcon, $agentLabel, '⏱', $durationLabel)
+if (-not [string]::IsNullOrWhiteSpace($modelLabel)) { $headerParts += $modelLabel }
+$headerLine = ($headerParts -join ' ').Trim()
+
 $lines = @()
-$lines += "$statusIcon $agentLabel $modelLabel $ts"
+$lines += $headerLine
 $lines += "○───activity─────────────────────"
 
 if ($mode -eq 'quandalf') {

@@ -31,6 +31,8 @@ param(
 
     [string]$RunId,
 
+    [string]$ModelId = 'gpt-5.3-codex',
+
     [switch]$DryRun
 )
 
@@ -85,7 +87,7 @@ $argList = @(
     '--action', $emittedAction,
     '--status-word', $statusWordUpper,
     '--status-emoji', $statusEmoji,
-    '--model-id', 'gpt-5.3-codex',
+    '--model-id', $ModelId,
     '--summary', $Summary,
     '--reason-code', $ReasonCode
 )
