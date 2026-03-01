@@ -74,5 +74,7 @@ All notable actions must emit ActionEvents to `data/logs/outbox/`:
 - Auto-commit policy applies (git status → add → commit → log)
 - All notable decisions logged as ActionEvents to log group
 - For every `sessions_spawn`, emit terminal lifecycle logs with the same `run_id`: OK/WARN/FAIL on completion (mandatory)
+- Correlate each lifecycle pair with the spawned child session key (pass `--child-session-key` to `scripts/spawn_lifecycle.py` so both events carry `outputs:["child_session:<key>"]`)
 - Emit START only for long/multi-step runs or when explicitly requested; if emitted, it must use the same `run_id` and correct ordering
-- Use `scripts/log_event.py` for all ActionEvent emission (no manual JSON writes)
+- Use `scripts/log_event.py` / `scripts/spawn_lifecycle.py` for lifecycle ActionEvent emission (no manual JSON writes)
+- After terminal emit, run `python scripts/spawn_lifecycle.py validate --run-id <same_run_id> [--child-session-key <key>]` as a guard before handoff

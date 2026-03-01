@@ -197,6 +197,13 @@ Required action names:
 
 Emit using the same schema/shape used by other agents (`scripts/log_event.py` fields: run_id, agent, model_id, action, status_word, status_emoji, reason_code, summary, inputs, outputs).
 
+Live sessions_spawn lifecycle procedure (mandatory):
+1. Immediately after spawn returns, emit START with `python scripts/spawn_lifecycle.py start --run-id <run_id> --child-session-key <child_session_key> --summary "..." --agent Oragorn --model-id gpt-5.3-codex`
+2. On terminal completion, emit END with `python scripts/spawn_lifecycle.py end --run-id <same_run_id> --child-session-key <same_child_session_key> --result OK|WARN|FAIL --summary "..." --agent Oragorn --model-id gpt-5.3-codex`
+3. Validate pair delivery before handoff: `python scripts/spawn_lifecycle.py validate --run-id <same_run_id> --child-session-key <same_child_session_key>`
+
+This guarantees canonical actions (`SUBAGENT_SPAWN`, `SUBAGENT_FINISH`, `SUBAGENT_FAIL`) and run correlation against the real child session key.
+
 ### Policy Enforcement on Delegation
 Before every delegation:
 1. Check config/model_reasoning_policy.json for the taskâ€™s reasoning bucket
