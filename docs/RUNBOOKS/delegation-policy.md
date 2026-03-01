@@ -31,6 +31,8 @@ Proposal QC reporting must use fixed checklist categories (policy alignment, sco
 If any gate is skipped, output is process-invalid and must be corrected before topic continuation.
 For significant builds, verifier sub-agent QC is mandatory for both proposal and implementation stages; inline/local-only QC is insufficient as sole gate. Missing/invalid required artifact at required checkpoint is `PROCESS_INVALID` and blocks progression.
 DM output contract for significant builds: send only clean approval package and final verified handoff unless audit details are explicitly requested.
+
+Model/Reasoning enforcement source-of-truth: `docs/RUNBOOKS/model-reasoning-policy.md` (policy file + resolver + drift guard).
 If implementation occurs before standalone approval, stop immediately, revert unauthorized commits, and restart from proposal QC.
 
 ---

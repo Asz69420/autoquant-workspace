@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-03-01",
+  "unknown_task_policy": "error",
+  "fallback_bucket": "medium",
+  "buckets": {
+    "system": {
+      "description": "No LLM required. Deterministic script/file/network orchestration only.",
+      "llm_required": false,
+      "model": null,
+      "reasoning": null
+    },
+    "low": {
+      "description": "Cheap utility text and lightweight reasoning.",
+      "llm_required": true,
+      "model": "haiku",
+      "reasoning": "off"
+    },
+    "medium": {
+      "description": "Default strategy-quality work with balanced cost/performance.",
+      "llm_required": true,
+      "model": "gpt-5.3",
+      "reasoning": "medium"
+    },
+    "high": {
+      "description": "Deep synthesis/audit decisions where extra thinking is high value.",
+      "llm_required": true,
+      "model": "gpt-5.3",
+      "reasoning": "high"
+    }
+  },
+  "task_mappings": {
+    "logging": "system",
+    "bundle_run_log": "system",
+    "tg_reporter": "system",
+    "tg_notify": "system",
+    "tg_format": "system",
+    "keeper_checks": "system",
+    "backtest_engine": "system",
+    "batch_backtest_summary": "system",
+    "file_plumbing": "system",
+    "index_recombine": "system",
+    "youtube_ingestion": "system",
+    "tv_catalog_ingestion": "system",
+    "transcript_ingestion": "system",
+    "leaderboard_render": "system",
+    "daily_intel_text": "system",
+
+    "grabber_dedup_check": "low",
+    "simple_text_summary": "low",
+    "claude_bridge_chat": "low",
+
+    "analyser_thesis": "medium",
+    "analyser_reasoning": "medium",
+    "strategist_spec": "medium",
+    "strategist_reasoning": "medium",
+    "refinement_loop": "medium",
+    "refinement_reasoning": "medium",
+    "strategy_generate": "medium",
+    "backtest_audit": "medium",
+    "claude_strategy_generator": "medium",
+    "claude_backtest_auditor": "medium",
+
+    "strategy_research": "high",
+    "doctrine_synthesis": "high",
+    "claude_deep_iterator": "high",
+    "claude_strategy_researcher": "high",
+    "claude_doctrine_synthesizer": "high"
+  }
+}
