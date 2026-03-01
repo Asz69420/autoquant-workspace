@@ -220,26 +220,49 @@ if ($warnings.Count -gt 0) {
 }
 
 $noteText = $null
+$recentRiskEvent = @($mainEvents | Where-Object { @('WARN','FAIL','BLOCKED') -contains ([string]$_.status_word).ToUpper() } | Select-Object -Last 1)
+$recentRiskSummary = if ($recentRiskEvent.Count -gt 0) { ([string]$recentRiskEvent[0].summary -replace '\s+', ' ').Trim() } else { '' }
+
 if ($errors -gt 0) {
-  $noteText = "I hit $errors issue(s) in this window and need a quick review."
+  if (-not [string]::IsNullOrWhiteSpace($recentRiskSummary)) {
+    $noteText = "I hit $errors issue(s). Latest: $recentRiskSummary"
+  } else {
+    $noteText = "I hit $errors issue(s) in this window and need a quick review."
+  }
 } elseif ($stall -gt 5) {
   $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
 } elseif ($starvation -gt 10) {
   $noteText = "I am input-starved for $starvation cycles, so throughput is constrained."
 } elseif ($topWarning) {
-  $noteText = "I saw a warning worth watching: $topWarning"
+  $noteText = "I flagged a warning to watch: $topWarning"
 } else {
   if ($mode -eq 'quandalf') {
-    $noteText = "I completed $totalStrictRuns Claude run(s): generate $strategyGenerateCount, research $strategyResearchCount, doctrine $doctrineSynthesisCount, audit $backtestAuditCount."
+    if ($strategyGenerateCount -gt 0 -and $strategyResearchCount -eq 0 -and $doctrineSynthesisCount -eq 0 -and $backtestAuditCount -eq 0) {
+      $noteText = "I focused on strategy generation this window and completed it cleanly."
+    } elseif ($strategyResearchCount -gt 0 -and $strategyGenerateCount -eq 0) {
+      $noteText = "I focused on research updates this window and completed them cleanly."
+    } elseif ($totalStrictRuns -gt 0) {
+      $noteText = "I completed planned Claude runs cleanly across generation/research/doctrine/audit."
+    } else {
+      $noteText = "No Claude runs were recorded in this window."
+    }
   } else {
-    $noteText = "I completed this cycle cleanly: $ingested ingested, $btExecuted backtested, $refined refined, $promoted promoted."
+    if ($btExecuted -gt 0) {
+      $noteText = "I advanced $btExecuted backtest run(s) this cycle and kept the pipeline stable."
+    } elseif ($ingested -gt 0) {
+      $noteText = "I ingested $ingested new item(s) this cycle; backtests will follow next stages."
+    } elseif ($dirVariants -gt 0) {
+      $noteText = "I emitted $dirVariants new variant(s) this cycle to keep exploration moving."
+    } else {
+      $noteText = "This cycle was quiet, but the pipeline remained healthy."
+    }
   }
 }
 
 $noteText = ($noteText -replace '\s+', ' ').Trim()
-if ($noteText.Length -gt 132) { $noteText = $noteText.Substring(0, 129) + '...' }
+if ($noteText.Length -gt 156) { $noteText = $noteText.Substring(0, 153) + '...' }
 
-$maxLineLen = 44
+$maxLineLen = 46
 $wrapped = @()
 $current = ''
 foreach ($word in ($noteText -split '\s+')) {
@@ -259,9 +282,9 @@ if ($wrapped.Count -eq 0) { $wrapped = @('All clear this cycle.') }
 if ($wrapped.Count -gt 3) { $wrapped = @($wrapped | Select-Object -First 3) }
 
 $lines += ("-" * 33)
-$lines += ("Note   : " + $wrapped[0])
-if ($wrapped.Count -ge 2) { $lines += ("         " + $wrapped[1]) }
-if ($wrapped.Count -ge 3) { $lines += ("         " + $wrapped[2]) }
+$lines += ("Note: " + $wrapped[0])
+if ($wrapped.Count -ge 2) { $lines += ("      " + $wrapped[1]) }
+if ($wrapped.Count -ge 3) { $lines += ("      " + $wrapped[2]) }
 
 $messageBody = ($lines -join "`n").TrimEnd()
 $caption = "``````" + "`n" + $messageBody + "`n" + "``````"
