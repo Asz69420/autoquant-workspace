@@ -107,6 +107,10 @@ def pct(v):
     return v * 100.0 if abs(v) <= 1.0 else v
 
 
+def tf_sort_key(tf: str):
+    return (TF_ORDER.get(tf, 99), tf)
+
+
 def limit42(s: str) -> str:
     return s if len(s) <= MAX_WIDTH else s[:MAX_WIDTH]
 
@@ -220,7 +224,7 @@ def collect_rows():
         d = ds[0] if isinstance(ds, list) else ds
         asset = str(d.get("symbol") or "").upper().strip()
         tf = str(d.get("timeframe") or "").lower().strip()
-        if asset not in {"BTC", "ETH"} or tf not in TF_ORDER:
+        if asset not in {"BTC", "ETH"} or not tf:
             continue
 
         spec_path = str(r.get("strategy_spec_path") or "")
@@ -286,7 +290,7 @@ def render_tables(rows: list[Row]) -> list[str]:
         lines.append(limit42(header))
 
         a_rows = [r for r in rows if r.asset == asset]
-        for tf in sorted({r.tf for r in a_rows}, key=lambda x: TF_ORDER.get(x, 99)):
+        for tf in sorted({r.tf for r in a_rows}, key=tf_sort_key):
             t_rows = [r for r in a_rows if r.tf == tf]
             top3 = sorted(t_rows, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:3]
             if not top3:
