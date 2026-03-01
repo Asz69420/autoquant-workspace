@@ -273,6 +273,11 @@ def send_event_to_telegram(event):
         if event_type.endswith("_DEBUG") or reason_code.endswith("_DEBUG"):
             return None
 
+        # Keep subagent lifecycle events local-only (actions.ndjson/errors.ndjson);
+        # do not emit direct Telegram text messages for these.
+        if _is_subagent_lifecycle_event(event):
+            return None
+
         notify_cmd = None
 
         if event_type == "LEADERBOARD" and event.get("rendered_text") and event.get("chat_id"):
