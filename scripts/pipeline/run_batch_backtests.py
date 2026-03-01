@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -11,6 +12,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PY = sys.executable
+
+try:
+    _BACKTESTER_DIR = ROOT / 'scripts' / 'backtester'
+    if str(_BACKTESTER_DIR) not in sys.path:
+        sys.path.insert(0, str(_BACKTESTER_DIR))
+    from signal_templates import resolve_template  # type: ignore
+except Exception:
+    resolve_template = None
 
 
 def _load_json(path: str | Path) -> dict:
@@ -43,8 +52,10 @@ def _latest_meta(symbol: str, timeframe: str) -> str:
 def _resolve_datasets(arg: str) -> list[str]:
     if arg == 'default':
         return [
+            _latest_meta('BTC', '15m'),
             _latest_meta('BTC', '1h'),
             _latest_meta('BTC', '4h'),
+            _latest_meta('ETH', '15m'),
             _latest_meta('ETH', '1h'),
             _latest_meta('ETH', '4h'),
         ]
@@ -64,14 +75,54 @@ def _run(cmd: list[str]) -> str:
     return p.stdout.strip()
 
 
+def _variant_resolved_signature(variant_obj: dict, symbol: str, timeframe: str) -> str:
+    template_name = ''
+    if resolve_template is not None:
+        try:
+            template_name = str(resolve_template(variant_obj) or '')
+        except Exception:
+            template_name = ''
+
+    params = {}
+    for p in (variant_obj.get('parameters') or []):
+        if isinstance(p, dict) and p.get('name') is not None:
+            params[str(p.get('name'))] = p.get('default')
+
+    risk_policy = variant_obj.get('risk_policy') or {}
+    execution_policy = variant_obj.get('execution_policy') or {}
+
+    sig_obj = {
+        'template': template_name,
+        'params': params,
+        'risk_policy': {
+            'stop_type': risk_policy.get('stop_type'),
+            'stop_atr_mult': risk_policy.get('stop_atr_mult'),
+            'tp_type': risk_policy.get('tp_type'),
+            'tp_atr_mult': risk_policy.get('tp_atr_mult'),
+            'risk_per_trade_pct': risk_policy.get('risk_per_trade_pct'),
+        },
+        'execution_policy': {
+            'entry_fill': execution_policy.get('entry_fill'),
+            'tie_break': execution_policy.get('tie_break'),
+            'allow_reverse': execution_policy.get('allow_reverse'),
+        },
+        'symbol': symbol,
+        'timeframe': timeframe,
+    }
+    raw = json.dumps(sig_obj, sort_keys=True, separators=(',', ':'))
+    return hashlib.sha256(raw.encode('utf-8')).hexdigest()
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--strategy-spec', required=True)
     ap.add_argument('--variant', required=True, help='variant name or "all"')
     ap.add_argument('--datasets', default='default', help='default | csv list of dataset meta paths | JSON file path')
+    ap.add_argument('--max-runs', type=int, default=24)
     args = ap.parse_args()
 
     spec = _load_json(args.strategy_spec)
+    variant_objects = {str(v.get('name')): v for v in spec.get('variants', []) if isinstance(v, dict) and v.get('name')}
     variants = [v['name'] for v in spec.get('variants', [])]
     selected_variants = variants if args.variant == 'all' else [args.variant]
     for v in selected_variants:
@@ -81,9 +132,18 @@ def main() -> int:
     dataset_metas = _resolve_datasets(args.datasets)
 
     runs = []
+    seen_resolved = set()
     for variant in selected_variants:
+        variant_obj = variant_objects.get(variant, {})
         for dataset_meta in dataset_metas:
             meta = _load_json(dataset_meta)
+            symbol = str(meta.get('symbol') or '')
+            timeframe = str(meta.get('timeframe') or '')
+            sig = _variant_resolved_signature(variant_obj, symbol, timeframe)
+            if sig in seen_resolved:
+                print(f"DEDUP_RESOLVED_SKIP variant={variant} symbol={symbol} timeframe={timeframe}", file=sys.stderr)
+                continue
+            seen_resolved.add(sig)
             fout = _run([
                 PY,
                 'scripts/pipeline/check_feasibility.py',
@@ -148,7 +208,8 @@ def main() -> int:
                 run['relax_suggestion_path'] = info['relax_suggestion_path']
             runs.append(run)
 
-    runs = runs[:10]
+    if args.max_runs > 0:
+        runs = runs[:args.max_runs]
     summary = {
         'total_runs': len(runs),
         'failed_runs': sum(1 for r in runs if not r['gate_pass']),

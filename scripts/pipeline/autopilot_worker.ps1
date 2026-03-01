@@ -14,6 +14,20 @@ try { if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorActio
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 Set-Location -LiteralPath $RepoRoot
 
+$adaptivePolicyPath = Join-Path $RepoRoot 'config\adaptive_execution_policy.json'
+$adaptiveGateScript = Join-Path $RepoRoot 'scripts\pipeline\evaluate_promotion_gate.py'
+$adaptivePolicyEnabled = $false
+try {
+  if (Test-Path -LiteralPath $adaptivePolicyPath) {
+    $adaptivePolicyObj = Get-Content -LiteralPath $adaptivePolicyPath -Raw | ConvertFrom-Json
+    if ($adaptivePolicyObj -and $adaptivePolicyObj.enabled -and $adaptivePolicyObj.promotion_gate -and $adaptivePolicyObj.promotion_gate.enabled) {
+      $adaptivePolicyEnabled = $true
+    }
+  }
+} catch {
+  $adaptivePolicyEnabled = $false
+}
+
 function Run-Py($pyArgs) {
   if ($DryRun) { return '' }
 
@@ -811,6 +825,7 @@ try {
           } catch {}
 
           $promoStatus = 'OK'
+          $promoBlockedByAdaptiveGate = $false
           if ($sp.status -and [string]$sp.status -eq 'BLOCKED') { $promoStatus = 'BLOCKED' }
           if ($variantCount -eq 0) { $promoStatus = 'BLOCKED' }
 
@@ -836,13 +851,14 @@ try {
             try {
               $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
               # Balrog pre-backtest gate
-              $balrogResult = powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
+              $balrogResult = powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
               if ($LASTEXITCODE -ne 0) {
-                Write-Output "BALROG BLOCKED: Pre-backtest gate failed"
+                # Safety: fail closed when Balrog pre-gate blocks so backtests do not run on flagged artifacts.
+                throw ("BALROG BLOCKED: Pre-backtest gate failed. " + [string]$balrogResult)
               }
               $batchRaw = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$sp.strategy_spec_path,'--variant','all')
               # Balrog post-backtest verification
-              powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "post-backtest"
+              powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "post-backtest"
               if ([string]::IsNullOrWhiteSpace([string]$batchRaw)) {
                 throw 'promotion batch: empty runner output'
               }
@@ -883,16 +899,54 @@ try {
             }
           }
 
+          if ($promoStatus -ne 'BLOCKED' -and $adaptivePolicyEnabled -and (Test-Path -LiteralPath $adaptiveGateScript)) {
+            try {
+              $gateBatchPath = ''
+              if ($null -ne $batchArtifactPath -and -not [string]::IsNullOrWhiteSpace([string]$batchArtifactPath)) {
+                $gateBatchPath = [string]$batchArtifactPath
+              }
+              if (-not [string]::IsNullOrWhiteSpace($gateBatchPath) -and (Test-Path -LiteralPath $gateBatchPath)) {
+                $gateRaw = Run-Py @('scripts/pipeline/evaluate_promotion_gate.py','--batch-artifact',$gateBatchPath,'--policy',$adaptivePolicyPath)
+                if (-not [string]::IsNullOrWhiteSpace([string]$gateRaw)) {
+                  $gateObj = $gateRaw | ConvertFrom-Json
+                  $gateStatus = [string]$gateObj.status
+                  $gateSummary = [string]$gateObj.summary
+                  if ($gateStatus -eq 'BLOCKED') {
+                    $promoStatus = 'BLOCKED'
+                    $promoBlockedByAdaptiveGate = $true
+                    Emit-Summary 'PROMOTION_ADAPTIVE_GATE' $gateSummary 'WARN' 'Promotion'
+                    Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'ADAPTIVE_PROMOTION_GATE' -incrementAttempt $false
+                  } else {
+                    Emit-InfoSummary 'PROMOTION_ADAPTIVE_GATE' $gateSummary 'Promotion'
+                  }
+                }
+              }
+            } catch {
+              $gateErr = [string]$_.Exception.Message
+              Emit-Summary 'PROMOTION_ADAPTIVE_GATE' ('adaptive gate error: ' + $gateErr) 'WARN' 'Promotion'
+            }
+          }
 
           $promoId = [IO.Path]::GetFileNameWithoutExtension($sp.strategy_spec_path)
           $promoPath = "artifacts/promotions/" + (Get-Date -Format 'yyyyMMdd') + "/promo_" + $promoId + ".promotion_run.json"
+          $promoReasonCode = $null
+          $promoSuggestion = $null
+          if ($promoStatus -eq 'BLOCKED') {
+            if ($promoBlockedByAdaptiveGate) {
+              $promoReasonCode = 'ADAPTIVE_PROMOTION_GATE'
+              $promoSuggestion = 'Quality gate blocked promotion; improve PF / DD / expectancy before retry.'
+            } else {
+              $promoReasonCode = 'NO_VARIANTS_COMPILED'
+              $promoSuggestion = 'Indicator not mapped to executable signals yet; needs rule extraction or builtin mapping.'
+            }
+          }
           $promoObj = [ordered]@{
             schema_version = '1.0'
             id = "promo_" + $promoId
             created_at = [DateTime]::UtcNow.ToString('o')
             status = $(if ($promoStatus -eq 'BLOCKED') { 'BLOCKED' } else { 'OK' })
-            reason_code = $(if ($promoStatus -eq 'BLOCKED') { 'NO_VARIANTS_COMPILED' } else { $null })
-            suggestion = $(if ($promoStatus -eq 'BLOCKED') { 'Indicator not mapped to executable signals yet; needs rule extraction or builtin mapping.' } else { $null })
+            reason_code = $promoReasonCode
+            suggestion = $promoSuggestion
             input_linkmap_path = $lm
             thesis_artifact_path = $an.thesis_path
             strategy_spec_artifact_path = $sp.strategy_spec_path
@@ -1052,13 +1106,14 @@ try {
         try {
           $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
           # Balrog pre-backtest gate
-          $balrogResult = powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
+          $balrogResult = powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
           if ($LASTEXITCODE -ne 0) {
-            Write-Output "BALROG BLOCKED: Pre-backtest gate failed"
+            # Safety: fail closed when Balrog pre-gate blocks so backtests do not run on flagged artifacts.
+            throw ("BALROG BLOCKED: Pre-backtest gate failed. " + [string]$balrogResult)
           }
           $batchRaw = Run-Py @('scripts/pipeline/run_batch_backtests.py','--strategy-spec',$spPath,'--variant','all')
           # Balrog post-backtest verification
-          powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\pipeline\balrog_gate.ps1" -Mode "post-backtest"
+          powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "post-backtest"
           if ([string]::IsNullOrWhiteSpace([string]$batchRaw)) {
             throw ('backfill spec=' + [IO.Path]::GetFileName([string]$spPath) + ': empty runner output')
           }
@@ -1393,4 +1448,5 @@ Write-Output ($summary | ConvertTo-Json -Depth 5)
 
 # Explicit exit for scheduled task success reporting
 exit 0
+
 

@@ -10,6 +10,8 @@ param(
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
 Set-Location $ROOT
 
+$mode = $Pipeline.ToLowerInvariant()
+
 # --- Config from .env ---
 $wsEnv = "$ROOT\.env"
 if (-not (Test-Path $wsEnv)) { Write-Host "No workspace .env"; exit 1 }
@@ -32,8 +34,13 @@ if (-not (Test-Path $logPath)) { Write-Host "No action log"; exit 0 }
 
 $effectiveWindow = if ($WindowMinutes -lt 1) { 1 } else { $WindowMinutes }
 $cutoff = (Get-Date).AddMinutes(-1 * $effectiveWindow).ToUniversalTime()
+$tailLines = switch ($mode) {
+  'oragorn' { 5000 }
+  'quandalf' { 1500 }
+  default { 1200 }
+}
 $events = @()
-foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail 300)) {
+foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail $tailLines)) {
   try {
     $entry = $line | ConvertFrom-Json
     $tsRaw = if ($entry.ts_iso) { $entry.ts_iso } elseif ($entry.ts) { $entry.ts } else { $null }
@@ -45,7 +52,6 @@ foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail 300)) {
 if ($events.Count -eq 0) { Write-Host "No events in window"; exit 0 }
 
 # --- Filter noise + pipeline ownership ---
-$mode = $Pipeline.ToLowerInvariant()
 $mainEvents = @($events | Where-Object {
   $a = if ($_.agent) { [string]$_.agent } else { "" }
   $act = if ($_.action) { [string]$_.action } else { "" }
@@ -65,6 +71,35 @@ $mainEvents = @($events | Where-Object {
   return -not ($a -match '(?i)claude|quandalf|oragorn')
 })
 if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events for pipeline=$mode"; exit 0 }
+
+$oragornSubagentCompletionEvents = @()
+$isOragornSubagentNoteOnly = $false
+if ($mode -eq 'oragorn') {
+  $oragornSubagentCompletionEvents = @(
+    $mainEvents |
+    Where-Object {
+      $a = [string]$_.action
+      $s = [string]$_.summary
+      ((@('SUBAGENT_FINISH','SUBAGENT_FAIL') -contains $a) -and ($s -match '^Sub-agent completed:\s+.+\.jsonl\.deleted\.'))
+    }
+  )
+
+  $nonCompletionEvents = @(
+    $mainEvents |
+    Where-Object {
+      $a = [string]$_.action
+      $s = [string]$_.summary
+      -not ((@('SUBAGENT_FINISH','SUBAGENT_FAIL') -contains $a) -and ($s -match '^Sub-agent completed:\s+.+\.jsonl\.deleted\.'))
+    }
+  )
+
+  $isOragornSubagentNoteOnly = (
+    $oragornSubagentCompletionEvents.Count -gt 0 -and (
+      $nonCompletionEvents.Count -eq 0 -or
+      $WindowMinutes -le 2
+    )
+  )
+}
 
 function Get-EventUtcTimestamp {
   param($Event)
@@ -230,40 +265,47 @@ $headerLine = ($headerParts -join ' ').Trim()
 
 $lines = @()
 $lines += $headerLine
-$lines += "○───activity─────────────────────"
 
-if ($mode -eq 'quandalf') {
-  # Strict action-mode metrics only (no inferred/regex-derived counts)
-  $strategyGenerateCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
-  $strategyResearchCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
-  $doctrineSynthesisCount = @($mainEvents | Where-Object { [string]$_.action -eq 'doctrine_synthesis' }).Count
-  $backtestAuditCount = @($mainEvents | Where-Object { [string]$_.action -eq 'backtest_audit' }).Count
-  $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
+if (-not $isOragornSubagentNoteOnly) {
+  $lines += "○───activity─────────────────────"
 
-  $lines += "Generated : $strategyGenerateCount runs"
-  $lines += "Researched: $strategyResearchCount runs"
-  $lines += "Doctrine : $doctrineSynthesisCount runs"
-  $lines += "Audited : $backtestAuditCount runs"
-  $lines += "Total    : $totalStrictRuns runs"
-} elseif ($mode -eq 'oragorn') {
-  $delegated = @($mainEvents | Where-Object { [string]$_.action -eq 'DELEGATION_SENT' }).Count
-  $spawned = @($mainEvents | Where-Object { @('SUBAGENT_SPAWN','SUBAGENT_SPAWNED') -contains ([string]$_.action) }).Count
-  $diagnosed = @($mainEvents | Where-Object { [string]$_.action -eq 'DIAGNOSIS_COMPLETE' }).Count
-  $contextUpdates = @($mainEvents | Where-Object { [string]$_.action -eq 'CONTEXT_UPDATE' }).Count
-  $totalActions = $delegated + $spawned + $diagnosed + $contextUpdates
+  if ($mode -eq 'quandalf') {
+    # Strict action-mode metrics only (no inferred/regex-derived counts)
+    $strategyGenerateCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
+    $strategyResearchCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
+    $doctrineSynthesisCount = @($mainEvents | Where-Object { [string]$_.action -eq 'doctrine_synthesis' }).Count
+    $backtestAuditCount = @($mainEvents | Where-Object { [string]$_.action -eq 'backtest_audit' }).Count
+    $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
 
-  $lines += "Delegated : $delegated tasks"
-  $lines += "Sub-agents: $spawned spawned"
-  $lines += "Diagnosed : $diagnosed reads"
-  $lines += "Ctx updates: $contextUpdates syncs"
-} else {
-  $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
-  $lines += "Ingested : $ingested specs"
-  if ($btExecuted -gt 0) { $lines += "Backtested: $btExecuted runs" } else { $lines += "Backtested: 0 (no variants)" }
-  $lines += "Variants : $dirVariants new + $dirExplore explore"
-  $lines += "Refined : $refined iterations"
-  $lines += "Promoted : $promoted strategies"
-  if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
+    $lines += "Generated : $strategyGenerateCount runs"
+    $lines += "Researched: $strategyResearchCount runs"
+    $lines += "Doctrine : $doctrineSynthesisCount runs"
+    $lines += "Audited : $backtestAuditCount runs"
+    $lines += "Total    : $totalStrictRuns runs"
+  } elseif ($mode -eq 'oragorn') {
+    $delegated = @($mainEvents | Where-Object { [string]$_.action -eq 'DELEGATION_SENT' }).Count
+    $spawned = @($mainEvents | Where-Object { @('SUBAGENT_SPAWN','SUBAGENT_SPAWNED') -contains ([string]$_.action) }).Count
+    $completed = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
+    $failed = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FAIL' }).Count
+    $diagnosed = @($mainEvents | Where-Object { [string]$_.action -eq 'DIAGNOSIS_COMPLETE' }).Count
+    $contextUpdates = @($mainEvents | Where-Object { [string]$_.action -eq 'CONTEXT_UPDATE' }).Count
+    $totalActions = $delegated + $spawned + $completed + $failed + $diagnosed + $contextUpdates
+
+    $lines += "Delegated : $delegated tasks"
+    $lines += "Sub-agents: $spawned spawned"
+    $lines += "Completed : $completed finished"
+    $lines += "Failed    : $failed failed"
+    $lines += "Diagnosed : $diagnosed reads"
+    $lines += "Ctx updates: $contextUpdates syncs"
+  } else {
+    $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
+    $lines += "Ingested : $ingested specs"
+    if ($btExecuted -gt 0) { $lines += "Backtested: $btExecuted runs" } else { $lines += "Backtested: 0 (no variants)" }
+    $lines += "Variants : $dirVariants new + $dirExplore explore"
+    $lines += "Refined : $refined iterations"
+    $lines += "Promoted : $promoted strategies"
+    if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
+  }
 }
 
 # Shared bottom note block (up to 3 lines)
@@ -284,7 +326,26 @@ if ($warnings.Count -gt 0) {
 
 $noteText = $null
 
-if ($errors -gt 0) {
+if ($isOragornSubagentNoteOnly) {
+  $finishedCount = @($oragornSubagentCompletionEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
+  $failedCount = @($oragornSubagentCompletionEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FAIL' }).Count
+
+  if ($finishedCount -gt 0 -and $failedCount -eq 0) {
+    if ($finishedCount -eq 1) {
+      $noteText = "A sub-agent just finished successfully and I logged the completion."
+    } else {
+      $noteText = "$finishedCount sub-agents finished successfully and I logged their completions."
+    }
+  } elseif ($failedCount -gt 0 -and $finishedCount -eq 0) {
+    if ($failedCount -eq 1) {
+      $noteText = "A sub-agent run failed and I logged it for follow-up."
+    } else {
+      $noteText = "$failedCount sub-agent runs failed and I logged them for follow-up."
+    }
+  } else {
+    $noteText = "$finishedCount sub-agents finished and $failedCount failed; all outcomes were logged for follow-up."
+  }
+} elseif ($errors -gt 0) {
   $noteText = "I hit $errors issue(s) in this window and need a quick review."
 } elseif ($stall -gt 5) {
   $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
@@ -304,7 +365,24 @@ if ($errors -gt 0) {
       $noteText = "No Claude runs were recorded in this window."
     }
   } elseif ($mode -eq 'oragorn') {
-    if ($totalActions -gt 0) {
+    $subagentSummaries = @(
+      $mainEvents |
+      Where-Object { @('SUBAGENT_SPAWNED','SUBAGENT_SPAWN','SUBAGENT_FINISH','SUBAGENT_FAIL') -contains ([string]$_.action) } |
+      ForEach-Object {
+        $s = [string]$_.summary
+        if ([string]::IsNullOrWhiteSpace($s)) { $null } else { $s.Trim() }
+      } |
+      Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
+
+    if ($subagentSummaries.Count -gt 0) {
+      $uniqueSummaries = @{}
+      foreach ($s in $subagentSummaries) {
+        if (-not $uniqueSummaries.ContainsKey($s)) { $uniqueSummaries[$s] = $true }
+      }
+      $summaryList = @($uniqueSummaries.Keys | Select-Object -Last 3)
+      $noteText = "Sub-agent tasks this window: " + ($summaryList -join ' | ')
+    } elseif ($totalActions -gt 0) {
       $noteText = "I coordinated $totalActions command action(s) this window with clean telemetry."
     } else {
       $noteText = "No Oragorn command actions were recorded in this window."

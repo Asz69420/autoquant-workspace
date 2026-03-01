@@ -263,7 +263,7 @@ def main() -> int:
 
         holdout = holdouts[it - 1]
         train_metas = []
-        for sym, tf in [('BTC', '1h'), ('BTC', '4h'), ('ETH', '1h'), ('ETH', '4h')]:
+        for sym, tf in [('BTC', '15m'), ('BTC', '1h'), ('BTC', '4h'), ('ETH', '15m'), ('ETH', '1h'), ('ETH', '4h')]:
             m = _latest_meta(sym, tf)
             train_metas.append(str(_slice_training_meta(m, holdout, it)))
         meta_list_path = ROOT / 'artifacts' / 'datasets' / datetime.now().strftime('%Y%m%d') / f'iter{it}_datasets.json'

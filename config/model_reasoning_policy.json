@@ -45,6 +45,8 @@
     "transcript_ingestion": "system",
     "leaderboard_render": "system",
     "daily_intel_text": "system",
+    "evaluate_promotion_gate": "system",
+    "adaptive_policy_enforcement": "system",
 
     "grabber_dedup_check": "low",
     "simple_text_summary": "low",

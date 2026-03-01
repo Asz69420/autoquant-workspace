@@ -1,4 +1,4 @@
-# Balrog — Deterministic Firewall Gate
+# Balrog - Deterministic Firewall Gate
 # Binary checks only. No LLM. No intelligence. Just evidence.
 # Runs before/after pipeline cycles to enforce integrity.
 param(
@@ -13,19 +13,44 @@ Set-Location $ROOT
 $violations = @()
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
-# ─── HEALTH CHECKS (run anytime) ───
+function Test-IgnoredTempArtifactFile([System.IO.FileInfo]$File) {
+  if ($null -eq $File) { return $false }
+
+  $path = [string]$File.FullName
+  $name = [string]$File.Name
+
+  if ($path -match '(?i)[\\/]artifacts[\\/]tmp([\\/]|$)') { return $true }
+  if ($name -match '(?i)^tmp.*\.tmp$') { return $true }
+  if ($name -match '(?i)^tmp_.*\.(txt|json)$') { return $true }
+
+  return $false
+}
+
+# --- HEALTH CHECKS (run anytime) ---
 if ($Mode -eq "health" -or $Mode -eq "pre-backtest") {
-  # Check: no API keys leaked in artifacts
-  $secretPatterns = @("sk-", "api_key", "bot_token", "PRIVATE_KEY", "secret")
-  foreach ($pattern in $secretPatterns) {
-    $found = Get-ChildItem -Path "$ROOT\artifacts" -Recurse -File -ErrorAction SilentlyContinue | Select-String -Pattern $pattern -SimpleMatch -ErrorAction SilentlyContinue | Where-Object { $_.Path -notmatch "node_modules|\.git" }
+  $artifactFiles = Get-ChildItem -Path "$ROOT\artifacts" -Recurse -File -ErrorAction SilentlyContinue |
+    Where-Object {
+      $_.FullName -notmatch '(?i)node_modules|\.git' -and
+      -not (Test-IgnoredTempArtifactFile $_)
+    }
+
+  # Check: no API keys leaked in artifacts (tight patterns only)
+  $secretChecks = @(
+    @{ Name = 'OPENAI_STYLE_KEY'; Pattern = '(?i)\bsk-[A-Za-z0-9]{20,}\b' },
+    @{ Name = 'API_KEY_ASSIGNMENT'; Pattern = '(?i)\bapi[_-]?key\b\s*[:=]\s*["'']?[A-Za-z0-9_\-]{16,}' },
+    @{ Name = 'TOKEN_ASSIGNMENT'; Pattern = '(?i)\b(?:token|bot[_-]?token)\b\s*[:=]\s*["'']?[A-Za-z0-9_\-]{16,}' },
+    @{ Name = 'PRIVATE_KEY_BLOCK'; Pattern = '(?i)-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----' }
+  )
+
+  foreach ($check in $secretChecks) {
+    $found = $artifactFiles | Select-String -Pattern $check.Pattern -ErrorAction SilentlyContinue
     if ($found) {
-      $violations += "SECRET_LEAK: Pattern '$pattern' found in $($found[0].Path)"
+      $violations += "SECRET_LEAK: Pattern '$($check.Name)' found in $($found[0].Path)"
     }
   }
 
-  # Check: no zero-byte artifacts
-  $zeroFiles = Get-ChildItem -Path "$ROOT\artifacts" -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $_.Length -eq 0 }
+  # Check: no zero-byte artifacts (excluding known temp noise)
+  $zeroFiles = $artifactFiles | Where-Object { $_.Length -eq 0 }
   foreach ($f in $zeroFiles) {
     $violations += "ZERO_BYTE: $($f.FullName)"
   }
@@ -52,7 +77,7 @@ if ($Mode -eq "health" -or $Mode -eq "pre-backtest") {
   }
 }
 
-# ─── PRE-BACKTEST (validate specs before running) ───
+# --- PRE-BACKTEST (validate specs before running) ---
 if ($Mode -eq "pre-backtest") {
   $today = Get-Date -Format "yyyyMMdd"
   $specDir = "$ROOT\artifacts\strategy_specs\$today"
@@ -85,7 +110,7 @@ if ($Mode -eq "pre-backtest") {
   }
 }
 
-# ─── POST-BACKTEST (validate results are real) ───
+# --- POST-BACKTEST (validate results are real) ---
 if ($Mode -eq "post-backtest") {
   $today = Get-Date -Format "yyyyMMdd"
   $btDir = "$ROOT\artifacts\backtests\$today"
@@ -118,11 +143,11 @@ if ($Mode -eq "post-backtest") {
   }
 }
 
-# ─── REPORT ───
+# --- REPORT ---
 if ($violations.Count -gt 0) {
-  $report = "🔥 BALROG VIOLATION REPORT [$timestamp]`nMode: $Mode`nViolations: $($violations.Count)`n"
+  $report = "BALROG VIOLATION REPORT [$timestamp]`nMode: $Mode`nViolations: $($violations.Count)`n"
   foreach ($v in $violations) {
-    $report += "`n❌ $v"
+    $report += "`n[FAIL] $v"
   }
 
   # Write to log

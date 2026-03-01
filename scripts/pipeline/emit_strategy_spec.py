@@ -49,16 +49,73 @@ TEMPLATE_COMBOS = {
 
 
 def _read_advisory_directives() -> dict:
-    """Read Claude's strategy advisory for pipeline guidance."""
+    """Read Claude's strategy advisory for pipeline guidance.
+
+    Supports both legacy keyword extraction and structured `Machine Directives` JSON blocks.
+    """
     advisory_path = ROOT / "docs" / "claude-reports" / "STRATEGY_ADVISORY.md"
     if not advisory_path.exists():
         return {}
     try:
         text = advisory_path.read_text(encoding="utf-8")
-        result = {}
+        result: dict = {
+            "advisory_read": True,
+            "avoid_templates": [],
+            "prefer_templates": [],
+            "blacklist_variants": [],
+            "blacklist_directive_types": [],
+            "exclude_assets": [],
+            "rr_floor_min": None,
+            "stop_floor_min": None,
+            "disable_refinement": False,
+            "prioritize_claude_specs": False,
+            "machine_directives": [],
+        }
 
-        if "BLACKLIST" in text.upper() or "STOP ITERATING" in text.upper() or "FAILING PATTERN" in text.upper():
-            # Extract template names mentioned in failing patterns section
+        # Structured parser: ## Machine Directives ```json [...] ```
+        md_match = re.search(r"##\s*Machine\s+Directives.*?```json\s*(\[.*?\])\s*```", text, flags=re.IGNORECASE | re.DOTALL)
+        if md_match:
+            try:
+                md = json.loads(md_match.group(1))
+                if isinstance(md, list):
+                    result["machine_directives"] = md
+            except Exception:
+                pass
+
+        for item in result.get("machine_directives", []):
+            if not isinstance(item, dict):
+                continue
+            action = str(item.get("action") or "").strip().upper()
+            target = str(item.get("target") or "").strip()
+
+            if action == "BLACKLIST_TEMPLATE" and target in TEMPLATE_COMBOS:
+                result["avoid_templates"].append(target)
+            elif action == "PREFER_TEMPLATE" and target in TEMPLATE_COMBOS:
+                # Keep insertion order; final sort by priority handled below.
+                result["prefer_templates"].append((target, int(item.get("priority") or 9999)))
+            elif action == "BLACKLIST_VARIANT" and target:
+                result["blacklist_variants"].append(target)
+            elif action == "BLACKLIST_DIRECTIVE" and target:
+                result["blacklist_directive_types"].append(target.upper())
+            elif action == "EXCLUDE_ASSET" and target:
+                result["exclude_assets"].append(target.upper())
+            elif action == "RR_FLOOR":
+                try:
+                    result["rr_floor_min"] = float(item.get("minimum"))
+                except Exception:
+                    pass
+            elif action == "STOP_FLOOR":
+                try:
+                    result["stop_floor_min"] = float(item.get("minimum"))
+                except Exception:
+                    pass
+            elif action == "DISABLE_REFINEMENT":
+                result["disable_refinement"] = True
+            elif action == "PRIORITIZE_CLAUDE_SPECS":
+                result["prioritize_claude_specs"] = True
+
+        # Legacy keyword fallback (kept for compatibility)
+        if not result["avoid_templates"] and ("BLACKLIST" in text.upper() or "STOP ITERATING" in text.upper() or "FAILING PATTERN" in text.upper()):
             failing = []
             in_failing = False
             for line in text.split("\n"):
@@ -73,7 +130,7 @@ def _read_advisory_directives() -> dict:
                             failing.append(t)
             result["avoid_templates"] = list(set(failing))
 
-        if "PROMISING" in text.upper() or "EXPLORE" in text.upper():
+        if not result.get("prefer_templates") and ("PROMISING" in text.upper() or "EXPLORE" in text.upper()):
             promising = []
             in_promising = False
             for line in text.split("\n"):
@@ -88,7 +145,15 @@ def _read_advisory_directives() -> dict:
                             promising.append(t)
             result["prefer_templates"] = list(set(promising))
 
-        result["advisory_read"] = True
+        # Normalize + dedup
+        if result.get("prefer_templates") and isinstance(result["prefer_templates"], list) and result["prefer_templates"] and isinstance(result["prefer_templates"][0], tuple):
+            pref = sorted(result["prefer_templates"], key=lambda x: x[1])
+            result["prefer_templates"] = [p[0] for p in pref]
+        result["avoid_templates"] = list(dict.fromkeys([str(x) for x in result.get("avoid_templates", []) if x]))
+        result["prefer_templates"] = list(dict.fromkeys([str(x) for x in result.get("prefer_templates", []) if x]))
+        result["blacklist_variants"] = list(dict.fromkeys([str(x) for x in result.get("blacklist_variants", []) if x]))
+        result["blacklist_directive_types"] = list(dict.fromkeys([str(x).upper() for x in result.get("blacklist_directive_types", []) if x]))
+        result["exclude_assets"] = list(dict.fromkeys([str(x).upper() for x in result.get("exclude_assets", []) if x]))
         return result
     except Exception:
         return {}
@@ -665,30 +730,49 @@ def _apply_directive(base: dict, directive: dict, idx: int, magnitude: float = 1
 def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     if not directives:
         return []
-    chosen = directives[:3]
+
+    advisory = _read_advisory_directives()
+    blacklisted_directive_types = set(advisory.get("blacklist_directive_types", []))
+    blacklisted_variants = set(advisory.get("blacklist_variants", []))
+
+    filtered_directives = []
+    for d in directives:
+        d_type = str((d or {}).get('type') or '').upper()
+        if d_type and d_type in blacklisted_directive_types:
+            print(f"DIRECTIVE_SKIPPED_BLACKLIST type={d_type}", file=sys.stderr)
+            continue
+        filtered_directives.append(d)
+
+    if not filtered_directives:
+        return []
+
+    chosen = filtered_directives[:3]
     out: list[dict] = []
     for i, d in enumerate(chosen[:2], start=1):
         out.append(_apply_directive(seed, d, i, magnitude=1.0))
 
-    explore = copy.deepcopy(seed)
-    explore['name'] = 'directive_exploration'
-    explore['description'] = 'Exploration variant generated from directive context.'
-    explore['origin'] = 'EXPLORATION'
-    explore['directive_refs'] = [str(d.get('id')) for d in chosen]
-    for j, d in enumerate(chosen[:2], start=1):
-        explore = _apply_directive(explore, d, j, magnitude=0.5)
-    explore['name'] = 'directive_exploration'
-    explore['description'] = 'Exploration variant generated from directive context.'
-    explore['origin'] = 'EXPLORATION'
-    explore['directive_refs'] = [str(d.get('id')) for d in chosen]
-    out.append(explore)
+    if 'directive_exploration' not in blacklisted_variants:
+        explore = copy.deepcopy(seed)
+        explore['name'] = 'directive_exploration'
+        explore['description'] = 'Exploration variant generated from directive context.'
+        explore['origin'] = 'EXPLORATION'
+        explore['directive_refs'] = [str(d.get('id')) for d in chosen]
+        for j, d in enumerate(chosen[:2], start=1):
+            explore = _apply_directive(explore, d, j, magnitude=0.5)
+        explore['name'] = 'directive_exploration'
+        explore['description'] = 'Exploration variant generated from directive context.'
+        explore['origin'] = 'EXPLORATION'
+        explore['directive_refs'] = [str(d.get('id')) for d in chosen]
+        out.append(explore)
+    else:
+        print("VARIANT_SKIPPED_BLACKLIST name=directive_exploration", file=sys.stderr)
+
     # Template diversity: always include one variant with a different signal template
     import hashlib as _div_hl
     diversity = copy.deepcopy(seed)
     family_hash = _div_hl.sha256(str(seed.get('name', '')).encode()).hexdigest()
     all_templates = list(TEMPLATE_COMBOS.keys())
     # Read advisory to avoid failing templates
-    advisory = _read_advisory_directives()
     avoid = set(advisory.get("avoid_templates", []))
     prefer = list(advisory.get("prefer_templates", []))
 
@@ -720,6 +804,17 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     diversity['description'] = f"Forced template diversity: {pick}"
     diversity['origin'] = 'DIVERSITY'
     out.append(diversity)
+
+    if blacklisted_variants:
+        kept = []
+        for v in out:
+            vn = str(v.get('name') or '')
+            if vn and vn in blacklisted_variants:
+                print(f"VARIANT_SKIPPED_BLACKLIST name={vn}", file=sys.stderr)
+                continue
+            kept.append(v)
+        out = kept
+
     return out[:4]
 
 

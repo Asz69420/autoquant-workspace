@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-03-02",
+  "enabled": true,
+  "compatibility_mode": true,
+  "promotion_gate": {
+    "enabled": true,
+    "min_profit_factor": 1.05,
+    "max_drawdown": 30000.0,
+    "require_positive_net": true,
+    "min_executed_runs": 3
+  },
+  "strategy_loop": {
+    "exploit_ratio": 0.7,
+    "explore_ratio": 0.3,
+    "champion_count": 2,
+    "demote_fail_cycles": 3
+  },
+  "claude_directive_gate": {
+    "enabled": true,
+    "require_structured_directives": true,
+    "max_unmapped_directives": 0
+  }
+}
