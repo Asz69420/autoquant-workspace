@@ -31,6 +31,8 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 - Do **not** include raw log lines, file paths, timestamps, IDs, or verbose evidence unless user explicitly asks for details.
 - Keep routine Telegram/DM status replies brief (typically 1–3 sentences).
 - If uncertain, say so in one line and give one concrete next action.
+- This reporting contract applies to both direct assistant replies and delegated/sub-agent outputs.
+- When spawning sub-agents, require concise natural-language output only: verdict + one short context line; include evidence details only if explicitly requested.
 
 ## Delegation Capability Gate (Must Enforce)
 - Before spawning a sub-agent, verify the task’s required capabilities match the agent/session capabilities.
