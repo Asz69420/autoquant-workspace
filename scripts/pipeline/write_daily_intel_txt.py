@@ -290,7 +290,7 @@ def render_tables(rows: list[Row]) -> list[str]:
     lines: list[str] = []
     assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
 
-    header = FMT.format(name="Strat", pf="PF", wr="WR%", tc="TC%", dd="DD%", pnl="P&L%")
+    header = FMT.format(name="Strat", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
     width = min(MAX_WIDTH, len(header))
 
     for asset in assets:
@@ -307,16 +307,14 @@ def render_tables(rows: list[Row]) -> list[str]:
             prefix = f"○── {tf} "
             lines.append(limit42(prefix + "─" * max(0, width - len(prefix))))
 
-            max_tc = max((int(x.tc) for x in top3), default=0)
             for r in top3:
-                tc_pct = (float(r.tc) / float(max_tc) * 100.0) if max_tc > 0 else None
                 row = FMT.format(
                     name=r.name[:NAME_WIDTH],
                     pf=format_v(r.pf, d=2),
-                    wr=format_pct(r.wr, d=1),
-                    tc=format_pct(tc_pct, d=0),
-                    dd=format_pct(r.dd, d=1),
-                    pnl=format_pct(r.pnl, d=1, signed=True),
+                    wr=format_pct(r.wr, d=0),
+                    tc=str(int(r.tc)),
+                    dd=format_pct(r.dd, d=0),
+                    pnl=format_pct(r.pnl, d=0, signed=True),
                 )
                 lines.append(limit42(row))
 
