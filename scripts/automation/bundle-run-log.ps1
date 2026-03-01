@@ -2,7 +2,7 @@
 # Default mode is Frodex (15-min lab loop). Optional Quandalf mode for Claude windows.
 
 param(
-  [ValidateSet('frodex','quandalf')]
+  [ValidateSet('frodex','quandalf','oragorn')]
   [string]$Pipeline = 'frodex',
   [int]$WindowMinutes = 16
 )
@@ -53,13 +53,18 @@ $mainEvents = @($events | Where-Object {
     return ($a -match '(?i)claude|quandalf')
   }
 
-  # Frodex-owned stream: explicitly exclude Claude/Quandalf entries
-  return -not ($a -match '(?i)claude|quandalf')
+  if ($mode -eq 'oragorn') {
+    # Oragorn commander stream
+    return ($a -match '(?i)^oragorn$')
+  }
+
+  # Frodex-owned stream: explicitly exclude Claude/Quandalf/Oragorn entries
+  return -not ($a -match '(?i)claude|quandalf|oragorn')
 })
 if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events for pipeline=$mode"; exit 0 }
 
 # --- Banner selection ---
-$primaryAgent = if ($mode -eq 'quandalf') { "quandalf" } else { "frodex" }
+$primaryAgent = if ($mode -eq 'quandalf') { "quandalf" } elseif ($mode -eq 'oragorn') { "oragorn" } else { "frodex" }
 
 $bannerPath = $null
 $bannerDir = "$ROOT\assets\banners"
@@ -161,7 +166,7 @@ $statusIcon = switch ($statusTag) {
 }
 
 $ts = Get-Date -Format "h:mm tt"
-$agentLabel = if ($mode -eq 'quandalf') { "Quandalf" } else { "Frodex" }
+$agentLabel = if ($mode -eq 'quandalf') { "Quandalf" } elseif ($mode -eq 'oragorn') { "Oragorn" } else { "Frodex" }
 
 # Model label for header (abbrev, no spaces: GPT5.3 / OPUS4.6)
 $modelLabel = 'N/A'
@@ -202,6 +207,18 @@ if ($mode -eq 'quandalf') {
   $lines += "Doctrine : $doctrineSynthesisCount runs"
   $lines += "Audited : $backtestAuditCount runs"
   $lines += "Total    : $totalStrictRuns runs"
+} elseif ($mode -eq 'oragorn') {
+  $delegated = @($mainEvents | Where-Object { [string]$_.action -eq 'DELEGATION_SENT' }).Count
+  $spawned = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_SPAWNED' }).Count
+  $diagnosed = @($mainEvents | Where-Object { [string]$_.action -eq 'DIAGNOSIS_COMPLETE' }).Count
+  $contextUpdates = @($mainEvents | Where-Object { [string]$_.action -eq 'CONTEXT_UPDATE' }).Count
+  $totalActions = $delegated + $spawned + $diagnosed + $contextUpdates
+
+  $lines += "Delegated : $delegated tasks"
+  $lines += "Subagents : $spawned spawns"
+  $lines += "Diagnosis : $diagnosed reports"
+  $lines += "Context   : $contextUpdates updates"
+  $lines += "Total     : $totalActions actions"
 } else {
   $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
   $lines += "Ingested : $ingested specs"
@@ -254,6 +271,12 @@ if ($errors -gt 0) {
       $noteText = "I completed planned Claude runs cleanly across generation/research/doctrine/audit."
     } else {
       $noteText = "No Claude runs were recorded in this window."
+    }
+  } elseif ($mode -eq 'oragorn') {
+    if ($totalActions -gt 0) {
+      $noteText = "I coordinated $totalActions command action(s) this window with clean telemetry."
+    } else {
+      $noteText = "No Oragorn command actions were recorded in this window."
     }
   } else {
     if ($btExecuted -gt 0) {

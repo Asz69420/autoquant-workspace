@@ -120,6 +120,16 @@ Drift guard: scripts/tests/test_model_policy.py ensures no unmapped tasks exist.
 CRITICAL: Timestamp field is ts_iso, NOT ts
 Fields: ts_iso, ts_local, run_id, agent, model_id, action, status_word, reason_code, summary
 
+Oragorn commander identity for emitted events:
+- agent = `Oragorn`
+- model_id = `gpt-5.3-codex`
+
+Oragorn-required actions:
+- DELEGATION_SENT
+- SUBAGENT_SPAWNED
+- DIAGNOSIS_COMPLETE
+- CONTEXT_UPDATE
+
 Key summary events and their formats:
 - GRABBER_SUMMARY → “Grabber: fetched=N dedup=N failed=N”
 - BATCH_BACKTEST_SUMMARY → “Batch: runs=N executed=N skipped=N”

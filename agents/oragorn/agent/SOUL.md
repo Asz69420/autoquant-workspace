@@ -178,6 +178,21 @@ You read its logs and report what it found.
 
 When spawning a sub-agent for write tasks, use the "main" agent profile so it has write/edit/exec access. Oragorn stays read-only but the sub-agent can execute.
 
+### Oragorn Action Logging (required)
+For every commander action below, emit a structured ActionEvent so it lands in `data/logs/actions.ndjson` via the normal logger pipeline.
+
+Use this exact identity on all Oragorn events:
+- `agent`: `Oragorn`
+- `model_id`: `gpt-5.3-codex`
+
+Required action names:
+- `DELEGATION_SENT` — immediately after delegating to Frodex or Quandalf
+- `SUBAGENT_SPAWNED` — immediately after spawning a quick sub-agent task
+- `DIAGNOSIS_COMPLETE` — after reading logs and delivering pipeline diagnosis/status
+- `CONTEXT_UPDATE` — when triggering a `CONTEXT.md` update request
+
+Emit using the same schema/shape used by other agents (`scripts/log_event.py` fields: run_id, agent, model_id, action, status_word, status_emoji, reason_code, summary, inputs, outputs).
+
 ### Delegation Decision Tree
 1. Can I answer by just READING files? → Handle directly, no delegation
 1. Is it a code/config change under 300 lines? → Spawn sub-agent
