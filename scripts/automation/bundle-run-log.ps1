@@ -283,21 +283,9 @@ if ($warnings.Count -gt 0) {
 }
 
 $noteText = $null
-$recentRiskEvent = @($mainEvents | Where-Object { @('WARN','FAIL','BLOCKED') -contains ([string]$_.status_word).ToUpper() } | Select-Object -Last 1)
-$recentRiskSummary = if ($recentRiskEvent.Count -gt 0) { ([string]$recentRiskEvent[0].summary -replace '\s+', ' ').Trim() } else { '' }
-$latestSummaryEvent = @($mainEvents | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.summary) } | Select-Object -Last 1)
-$latestSummary = if ($latestSummaryEvent.Count -gt 0) { ([string]$latestSummaryEvent[0].summary -replace '\s+', ' ').Trim() } else { '' }
-if ($latestSummary.Length -gt 140) { $latestSummary = $latestSummary.Substring(0, 137) + '...' }
-$latestDetail = if (-not [string]::IsNullOrWhiteSpace($latestSummary)) { " Latest: $latestSummary" } else { '' }
-$appendLatestDetail = $true
 
 if ($errors -gt 0) {
-  if (-not [string]::IsNullOrWhiteSpace($recentRiskSummary)) {
-    $noteText = "I hit $errors issue(s). Latest: $recentRiskSummary"
-    $appendLatestDetail = $false
-  } else {
-    $noteText = "I hit $errors issue(s) in this window and need a quick review."
-  }
+  $noteText = "I hit $errors issue(s) in this window and need a quick review."
 } elseif ($stall -gt 5) {
   $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
 } elseif ($starvation -gt 10) {
@@ -334,13 +322,8 @@ if ($errors -gt 0) {
   }
 }
 
-if ($appendLatestDetail -and -not [string]::IsNullOrWhiteSpace($latestDetail)) {
-  $noteText = "$noteText$latestDetail"
-}
-
 $noteText = ($noteText -replace '\s+', ' ').Trim()
 # Keep note as one continuous paragraph (no manual line-wrapping).
-# Cap roughly to ~5 visual lines in Telegram caption width.
 if ($noteText.Length -gt 400) { $noteText = $noteText.Substring(0, 400) }
 if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
 
