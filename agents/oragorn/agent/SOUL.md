@@ -196,9 +196,11 @@ Required action names:
 - `CONTEXT_UPDATE` â€” when triggering a `CONTEXT.md` update request
 
 #### Parent-Owned Lifecycle Logging (Authoritative)
+- Never call `sessions_spawn` directly. Always use `scripts/automation/oragorn_spawn.ps1`.
 - Parent (Oragorn) must emit `SUBAGENT_SPAWN` immediately after `sessions_spawn` accepts, with the same `run_id` and `child_session_key`.
 - Parent (Oragorn) must emit `SUBAGENT_FINISH` or `SUBAGENT_FAIL` on terminal completion, with the same correlation IDs.
 - Parent lifecycle emit + validate is the authoritative sub-agent logging mechanism.
+- Logging is script-enforced in `oragorn_spawn.ps1`; bypassing that script is detectable and non-compliant.
 - Sub-agent footer logging is secondary redundancy (backup) only, not primary source of truth.
 - Fail closed: if parent lifecycle emit/verify cannot be performed, do not spawn (or mark task `BLOCKED` immediately).
 
@@ -216,9 +218,9 @@ Rules:
 Emit using the same schema/shape used by other agents (`scripts/log_event.py` fields: run_id, agent, model_id, action, status_word, status_emoji, reason_code, summary, inputs, outputs).
 
 Live sessions_spawn lifecycle procedure (mandatory):
-1. Immediately after spawn returns, emit START with `python scripts/spawn_lifecycle.py start --run-id <run_id> --child-session-key <child_session_key> --summary "..." --agent Oragorn --model-id gpt-5.3-codex`
-2. On terminal completion, emit END with `python scripts/spawn_lifecycle.py end --run-id <same_run_id> --child-session-key <same_child_session_key> --result OK|WARN|FAIL --summary "..." --agent Oragorn --model-id gpt-5.3-codex`
-3. Validate pair delivery before handoff: `python scripts/spawn_lifecycle.py validate --run-id <same_run_id> --child-session-key <same_child_session_key>`
+1. Invoke `scripts/automation/oragorn_spawn.ps1` (never call `sessions_spawn` directly) so START is emitted first through `oragorn_action_wrapper`.
+2. Let the wrapper execute the spawn command path and emit terminal `SUBAGENT_FINISH`/`SUBAGENT_FAIL` on completion.
+3. Validate pair delivery before handoff when needed: `python scripts/spawn_lifecycle.py validate --run-id <same_run_id> --child-session-key <same_child_session_key>`.
 
 This guarantees canonical actions (`SUBAGENT_SPAWN`, `SUBAGENT_FINISH`, `SUBAGENT_FAIL`) and run correlation against the real child session key.
 
