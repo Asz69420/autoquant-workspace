@@ -224,10 +224,6 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
   }
 
   $verdict = [string]$outObj.verdict
-  if (($verdict -ne 'REJECT') -and ($verdict -ne 'REVISE')) {
-    Emit-Summary 'DIRECTIVE_GEN_DIAG' ('DIRECTIVE_GEN_DIAG verdict=' + $verdict + ' thesis_path=null emission_attempted=false') 'INFO' 'Strategist'
-    return ''
-  }
 
   $hasDirectives = $false
   try {
