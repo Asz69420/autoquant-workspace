@@ -29,6 +29,7 @@ DOCTRINE_PATH = ROOT / "docs" / "DOCTRINE" / "analyser-doctrine.md"
 ADVISORY_PATH = ROOT / "docs" / "claude-reports" / "STRATEGY_ADVISORY.md"
 CONTEXT_PATH = ROOT / "agents" / "oragorn" / "agent" / "CONTEXT.md"
 SESSION_CONTEXT_PATH = ROOT / "docs" / "claude-context" / "SESSION_CONTEXT.md"
+CONTEXT_CHANGELOG_PATH = ROOT / "data" / "logs" / "context_changelog.ndjson"
 LOG_EVENT = ROOT / "scripts" / "log_event.py"
 
 
@@ -53,6 +54,55 @@ def _read_ndjson_tail(path: Path, max_lines: int) -> list[dict[str, Any]]:
 def _extract_int(summary: str, pattern: str) -> int:
     m = re.search(pattern, summary or "")
     return int(m.group(1)) if m else 0
+
+
+def _read_changelog_records(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    records: list[dict[str, Any]] = []
+    for idx, raw in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines()):
+        ln = raw.strip().lstrip("\ufeff")
+        if not ln:
+            continue
+        try:
+            obj = json.loads(ln)
+        except Exception:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        records.append({"line_idx": idx, "obj": obj})
+    return records
+
+
+def _write_changelog_records(path: Path, records: list[dict[str, Any]]) -> None:
+    if not path.exists():
+        return
+    raw_lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    for rec in records:
+        line_idx = int(rec["line_idx"])
+        if line_idx < 0 or line_idx >= len(raw_lines):
+            continue
+        raw_lines[line_idx] = json.dumps(rec["obj"], ensure_ascii=False, separators=(",", ":"))
+    path.write_text("\n".join(raw_lines).rstrip() + "\n", encoding="utf-8")
+
+
+def _merge_bullets_into_section(md: str, heading_regex: str, heading_title: str, bullets: list[str]) -> str:
+    if not bullets:
+        return md
+
+    pat = re.compile(rf"(?ms)^(?P<header>{heading_regex}[^\n]*\n)(?P<body>.*?)(?=^##\s|\Z)")
+    match = pat.search(md)
+
+    if match:
+        body = match.group("body")
+        add = [bullet for bullet in bullets if bullet not in body]
+        if not add:
+            return md
+        merged_body = body.rstrip() + ("\n" if body.strip() else "") + "\n".join(add) + "\n"
+        return md[: match.start()] + match.group("header") + merged_body + md[match.end() :]
+
+    block = heading_title + "\n" + "\n".join(bullets) + "\n"
+    return md.rstrip() + "\n\n" + block + "\n"
 
 
 def _replace_section(md: str, heading_regex: str, new_block: str) -> str:
@@ -222,6 +272,52 @@ Artifact state:
         else:
             out_md = _insert_before_heading(out_md, "## Roadmap", roadmap_block)
 
+        changelog_records = _read_changelog_records(CONTEXT_CHANGELOG_PATH)
+        unprocessed: list[dict[str, Any]] = []
+        for rec in changelog_records:
+            obj = rec.get("obj", {})
+            if obj.get("processed_at"):
+                continue
+            if not obj.get("type") or not obj.get("detail"):
+                continue
+            unprocessed.append(rec)
+
+        roadmap_bullets: list[str] = []
+        known_issue_bullets: list[str] = []
+        recent_updates_bullets: list[str] = []
+        merge_line_idxs: list[int] = []
+        seen_keys: set[str] = set()
+
+        for rec in unprocessed:
+            obj = rec["obj"]
+            typ = str(obj.get("type", "")).strip().lower()
+            ts = str(obj.get("ts_iso", "")).strip()
+            detail = str(obj.get("detail", "")).strip()
+            if not detail:
+                continue
+            key = f"{typ}|{ts}|{detail}"
+            if key in seen_keys:
+                continue
+            seen_keys.add(key)
+
+            bullet = f"- {detail}" + (f" _(log {ts})_" if ts else "")
+            if bullet in out_md:
+                continue
+
+            if typ == "roadmap":
+                roadmap_bullets.append(bullet)
+                merge_line_idxs.append(int(rec["line_idx"]))
+            elif typ == "known_issue":
+                known_issue_bullets.append(bullet)
+                merge_line_idxs.append(int(rec["line_idx"]))
+            elif typ in {"fix", "feature"}:
+                recent_updates_bullets.append(bullet)
+                merge_line_idxs.append(int(rec["line_idx"]))
+
+        out_md = _merge_bullets_into_section(out_md, r"## Roadmap(?:\s|$)", "## Roadmap", roadmap_bullets)
+        out_md = _merge_bullets_into_section(out_md, r"## Known Issues(?:\s|$|\s\(.*?\))", "## Known Issues", known_issue_bullets)
+        out_md = _merge_bullets_into_section(out_md, r"## Recent Updates(?:\s|$)", "## Recent Updates", recent_updates_bullets)
+
         # Basic validation
         required_headers = [
             "## Live Pipeline Snapshot (auto-updated)",
@@ -241,6 +337,15 @@ Artifact state:
             CONTEXT_PATH.write_text(out_md, encoding="utf-8")
             SESSION_CONTEXT_PATH.parent.mkdir(parents=True, exist_ok=True)
             SESSION_CONTEXT_PATH.write_text(out_md, encoding="utf-8")
+
+            if merge_line_idxs and changelog_records:
+                processed_at = datetime.now(UTC).isoformat().replace("+00:00", "Z")
+                merge_idx_set = set(merge_line_idxs)
+                for rec in changelog_records:
+                    if int(rec["line_idx"]) in merge_idx_set:
+                        rec["obj"]["processed_at"] = processed_at
+                _write_changelog_records(CONTEXT_CHANGELOG_PATH, changelog_records)
+
             summary = (
                 f"Context refreshed: fetched={fetched}, executed={executed}, promoted={promoted}, "
                 f"stall={stall}, starvation={starvation}, errors={max(errors,error_events)}"
@@ -252,6 +357,7 @@ Artifact state:
                 [
                     "agents/oragorn/agent/CONTEXT.md",
                     "docs/claude-context/SESSION_CONTEXT.md",
+                    "data/logs/context_changelog.ndjson",
                 ],
             )
         else:
