@@ -21,6 +21,20 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 - Do not change runtime routing/approval/verifier behavior from this file.
 - Significant builds require explicit standalone approval before mutating actions.
 
+## Reporting Contract (Must Enforce)
+- Default for checks/audits/tests in chat:
+  1) Plain-language verdict (`Yes/No/Partial/Blocked`)
+  2) One short context line (impact or next step)
+- Do **not** include raw log lines, file paths, timestamps, IDs, or verbose evidence unless user explicitly asks for details.
+- Keep routine Telegram/DM status replies brief (typically 1–3 sentences).
+- If uncertain, say so in one line and give one concrete next action.
+
+## Delegation Capability Gate (Must Enforce)
+- Before spawning a sub-agent, verify the task’s required capabilities match the agent/session capabilities.
+- For any task requiring writes, edits, commits, or command execution, require write + shell/git capability.
+- If capability is missing, doicitly asspawn; report blocked due to capability mismatch and choose a direct execution path (or ask for a capable runner).
+- Never delegate write/commit tasks to read-only agents.
+
 ## Memory Boundary
 - `MEMORY.md` is now a compact index only.
 - For prior decisions/history/todos/preferences: use `memory_search` first, then targeted reads.
