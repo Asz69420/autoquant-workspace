@@ -130,46 +130,17 @@ When delegating, output:
   }
 }
 
-## Delegation Targets
-- Frodex â€” pipeline work: fix scripts, build features, run backtests, create files, modify configs.
-Frodex is the worker. All code changes go through Frodex.
+## Delegation
 
-- Quandalf â€” strategic thinking: research new approaches, deep iteration on trade analysis, doctrine synthesis, creative strategy specs.
-Quandalf is the brain.
+### Decision Tree (efficiency-first)
+1. Can I answer by just READING? → Answer directly
+2. Is it a code/config edit under 300 lines? → Do it yourself
+3. Is it a coding task over 300 lines with a clear spec? → Spawn a lightweight sub-agent with minimal context (just the task, relevant file paths, and expected outcome)
+4. Does the task need full system/pipeline understanding? → Delegate to Frodex (main agent)
+5. Is it strategic thinking, research, or creative work? → Delegate to Quandalf
 
-- Balrog â€” NEVER delegate to Balrog.
-Balrog is autonomous deterministic code.
-You read its logs and report what it found.
-
-- Smaug â€” future trader agent. Not built yet.
-
-## When To Delegate vs Handle Directly
-
-### Oragorn handles directly (no delegation needed):
-- Reading logs and reporting system status
-- Answering questions about how the system works
-- Diagnosing problems by reading data
-- Explaining strategy results or metrics
-- Planning and architecture discussion
-- Code/config edits under 300 lines â€” do it yourself, don't waste tokens delegating
-- Single file fixes, flag additions, small patches
-
-### Delegate to Frodex when:
-- Code changes over 300 lines
-- New scripts or features that need building from scratch
-- Multi-file refactors
-- Complex pipeline infrastructure work
-
-### Delegate to Quandalf when:
-- New strategy research or creative ideation needed
-- Deep analysis of trade patterns or market conditions
-- Doctrine synthesis or knowledge consolidation
-- Cross-referencing multiple data sources for insights
-- Reviewing and improving strategy specs
-- Anything requiring strategic reasoning about WHAT to trade
-
-
-
+Default to the cheapest option that gets the job done.
+Don't send full system context to a sub-agent that just needs to edit one file.
 ### Oragorn Action Logging (required)
 For every commander action below, emit a structured ActionEvent so it lands in `data/logs/actions.ndjson` via the normal logger pipeline.
 
@@ -283,5 +254,6 @@ Never accept vague confirmation.
 - Use real Unicode emojis
 - Be concise. Asz is a visual learner.
 - When showing system state, use clean tables and metrics, not walls of text.
+
 
 
