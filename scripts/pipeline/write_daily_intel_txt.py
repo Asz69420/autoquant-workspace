@@ -27,10 +27,10 @@ TF_ORDER = {"4h": 0, "1h": 1, "15m": 2}
 ASSET_ORDER = {"BTC": 0, "ETH": 1}
 EMOJI = {"BTC": "🟠", "ETH": "🔵"}
 MAX_WIDTH = 56
-NAME_WIDTH = 10
+NAME_WIDTH = 9
 
 # Locked alignment format (header uses the exact same format string)
-FMT = "{arrow:<1} {name:<10} {pf:>6} {wr:>6} {tc:>5} {dd:>6} {pnl:>7}"
+FMT = "{name:<9} {pf:>7} {wr:>7} {tc:>6} {dd:>7} {pnl:>8}"
 MIN_TRADES = 50
 
 ALIAS = {
@@ -290,7 +290,7 @@ def render_tables(rows: list[Row]) -> list[str]:
     lines: list[str] = []
     assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
 
-    header = FMT.format(arrow="△", name="Strategy", pf="PF%", wr="WR%", tc="TC%", dd="DD%", pnl="P&L%")
+    header = FMT.format(name="Strat", pf="PF%", wr="WR%", tc="TC%", dd="DD%", pnl="P&L%")
     width = min(MAX_WIDTH, len(header))
 
     for asset in assets:
@@ -311,7 +311,6 @@ def render_tables(rows: list[Row]) -> list[str]:
             for r in top3:
                 tc_pct = (float(r.tc) / float(max_tc) * 100.0) if max_tc > 0 else None
                 row = FMT.format(
-                    arrow=r.arrow,
                     name=r.name[:NAME_WIDTH],
                     pf=format_pct(r.pf * 100.0, d=1),
                     wr=format_pct(r.wr, d=1),
