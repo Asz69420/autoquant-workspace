@@ -260,31 +260,11 @@ if ($errors -gt 0) {
 }
 
 $noteText = ($noteText -replace '\s+', ' ').Trim()
-if ($noteText.Length -gt 156) { $noteText = $noteText.Substring(0, 153) + '...' }
-
-$maxLineLen = 46
-$wrapped = @()
-$current = ''
-foreach ($word in ($noteText -split '\s+')) {
-  if ([string]::IsNullOrWhiteSpace($word)) { continue }
-  if ([string]::IsNullOrWhiteSpace($current)) {
-    $current = $word
-  } elseif (($current.Length + 1 + $word.Length) -le $maxLineLen) {
-    $current = "$current $word"
-  } else {
-    $wrapped += $current
-    $current = $word
-    if ($wrapped.Count -ge 2) { break }
-  }
-}
-if (-not [string]::IsNullOrWhiteSpace($current) -and $wrapped.Count -lt 3) { $wrapped += $current }
-if ($wrapped.Count -eq 0) { $wrapped = @('All clear this cycle.') }
-if ($wrapped.Count -gt 3) { $wrapped = @($wrapped | Select-Object -First 3) }
+if ($noteText.Length -gt 170) { $noteText = $noteText.Substring(0, 167) + '...' }
+if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
 
 $lines += ("-" * 33)
-$lines += ("Note: " + $wrapped[0])
-if ($wrapped.Count -ge 2) { $lines += ("      " + $wrapped[1]) }
-if ($wrapped.Count -ge 3) { $lines += ("      " + $wrapped[2]) }
+$lines += ("Note: " + $noteText)
 
 $messageBody = ($lines -join "`n").TrimEnd()
 $caption = "``````" + "`n" + $messageBody + "`n" + "``````"
