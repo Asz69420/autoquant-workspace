@@ -285,11 +285,11 @@ if ($noteWrapped.Count -eq 0) { $noteWrapped = @('All clear this cycle.') }
 if ($noteWrapped.Count -gt $maxNoteLines) { $noteWrapped = @($noteWrapped | Select-Object -First $maxNoteLines) }
 
 $lines += "○───note─────────────────────────"
-$lines += ("Note: " + $noteWrapped[0])
-if ($noteWrapped.Count -ge 2) { $lines += ("      " + $noteWrapped[1]) }
-if ($noteWrapped.Count -ge 3) { $lines += ("      " + $noteWrapped[2]) }
-if ($noteWrapped.Count -ge 4) { $lines += ("      " + $noteWrapped[3]) }
-if ($noteWrapped.Count -ge 5) { $lines += ("      " + $noteWrapped[4]) }
+$lines += $noteWrapped[0]
+if ($noteWrapped.Count -ge 2) { $lines += $noteWrapped[1] }
+if ($noteWrapped.Count -ge 3) { $lines += $noteWrapped[2] }
+if ($noteWrapped.Count -ge 4) { $lines += $noteWrapped[3] }
+if ($noteWrapped.Count -ge 5) { $lines += $noteWrapped[4] }
 
 $messageBody = ($lines -join "`n").TrimEnd()
 $caption = "``````" + "`n" + $messageBody + "`n" + "``````"
