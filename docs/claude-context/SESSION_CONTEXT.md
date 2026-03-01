@@ -120,6 +120,16 @@ Drift guard: scripts/tests/test_model_policy.py ensures no unmapped tasks exist.
 CRITICAL: Timestamp field is ts_iso, NOT ts
 Fields: ts_iso, ts_local, run_id, agent, model_id, action, status_word, reason_code, summary
 
+Oragorn commander identity for emitted events:
+- agent = `Oragorn`
+- model_id = `gpt-5.3-codex`
+
+Oragorn-required actions:
+- DELEGATION_SENT
+- SUBAGENT_SPAWNED
+- DIAGNOSIS_COMPLETE
+- CONTEXT_UPDATE
+
 Key summary events and their formats:
 - GRABBER_SUMMARY → “Grabber: fetched=N dedup=N failed=N”
 - BATCH_BACKTEST_SUMMARY → “Batch: runs=N executed=N skipped=N”
@@ -157,14 +167,33 @@ When reviewing or delegating script work:
 - No ?. null-conditional → use if ($obj) { $obj.Property }
 - No ??= null-coalescing assignment → standard if/else
 
-## Known Issues (as of 2026-03-01)
-- Pipeline was stalled 47 cycles — directive emission fix applied, monitoring recovery
-- DIRECTIVE_GEN_FAIL was recurring due to advisory text in JSON output — parser fix applied
-- Bundle log formatting recently overhauled — uses banners per agent + monospace metrics
-- Individual gateway spam messages still flood log channel (need to suppress, keep ndjson backend)
-- Position sizing hardcoded qty=1.0 (HIGH priority)
-- Frodex thinkingDefault needs setting to medium
-- stochastic_reversal template generates 0 trades
+## Live Pipeline Snapshot (auto-updated)
+Generated: 2026-03-01 09:24 UTC
+
+- Recent events window: last 50 ActionEvents
+- Grabber fetched: 2
+- Backtests executed: 7
+- Promoted variants: 4
+- Directive variants: 4
+- Stall cycles: 0
+- Starvation cycles: 0
+- Error events: 0
+
+Artifact state:
+- strategy_specs: 1
+- backtests: 0
+- bundles: 1
+- claude-specs (staging): 0
+
+## Known Issues (auto-updated)
+- No critical issues detected in the recent deterministic window.
+
+## Roadmap Progress (auto-updated)
+- Model policy Phase 1 (policy + resolver + drift guard): ✅ active
+- Model policy Phase 2 (script wiring references): 2 script(s) currently reference the resolver
+- Oragorn context auto-sync: ✅ enabled (daily target 03:00)
+- Doctrine source size: 40 lines
+- Strategy advisory source size: 268 lines
 
 ## Roadmap
 - Phase 2: Wire model_reasoning_policy.json resolver into all scripts
