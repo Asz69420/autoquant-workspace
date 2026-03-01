@@ -22,6 +22,11 @@ Agent N ─┘                      (data/logs/outbox/)      (formatted messages
 - **Command chat (`TELEGRAM_CMD_CHAT_ID`):** Your DM; for commands + replies only
 - **Enforcement:** Logger always sends to log group. (Future) Commander only accepts from DM.
 
+**Images-only log mode (reversible):**
+- Default behavior can suppress text-only log-channel sends (keep bundled image posts only).
+- Re-enable text log posts by setting env var: `TG_LOG_TEXT_ENABLED=1`
+- Disable again with: `TG_LOG_TEXT_ENABLED=0` (or unset)
+
 ## ActionEvent Outbox (Event Transport)
 
 **Path:** `data/logs/outbox/{ts_file}___{run_id}___{agent}___{status_word}.json`
