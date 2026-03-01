@@ -162,5 +162,7 @@ if ($exitCode -ne 0) {
     exit $exitCode
 }
 
+& "$workspaceRoot\scripts\automation\bundle-run-log.ps1" -Pipeline oragorn -WindowMinutes 2
+
 Write-Host "OK run_id=$RunId action=$emittedAction"
 exit 0
