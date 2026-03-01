@@ -163,8 +163,21 @@ $statusIcon = switch ($statusTag) {
 $ts = Get-Date -Format "h:mm tt"
 $agentLabel = if ($mode -eq 'quandalf') { "Quandalf" } else { "Frodex" }
 
+# Model label for header (abbrev)
+$modelLabel = 'n/a'
+$modelBuckets = @($mainEvents | ForEach-Object { [string]$_.model_id } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) -and $_ -ne 'system' } | Group-Object | Sort-Object Count -Descending)
+if ($modelBuckets.Count -gt 0) {
+  $modelRaw = [string]$modelBuckets[0].Name
+  if ($modelRaw -match '(?i)gpt-5\.3') { $modelLabel = 'GPT 5.3' }
+  elseif ($modelRaw -match '(?i)opus[-_ ]?4[-_ ]?6') { $modelLabel = 'Opus 4.6' }
+  else {
+    $modelLabel = $modelRaw
+    if ($modelLabel.Length -gt 14) { $modelLabel = $modelLabel.Substring(0, 14) }
+  }
+}
+
 $lines = @()
-$lines += "$statusIcon $agentLabel Pipeline $ts"
+$lines += "$statusIcon $agentLabel $modelLabel $ts"
 $lines += ("-" * 33)
 
 if ($mode -eq 'quandalf') {
@@ -190,7 +203,7 @@ if ($mode -eq 'quandalf') {
   if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
 }
 
-# Shared bottom status block (max 2 lines)
+# Shared bottom note block (up to 3 lines)
 $topWarning = $null
 if ($warnings.Count -gt 0) {
   $uniqueWarnings = @{}
@@ -206,19 +219,51 @@ if ($warnings.Count -gt 0) {
   }
 }
 
-$lines += ("-" * 33)
-$lines += "Status : $statusIcon $statusTag (warnings=$($warnings.Count), errors=$errors)"
+$noteText = $null
 if ($errors -gt 0) {
-  $lines += "Note   : Pipeline errors detected ($errors)"
+  $noteText = "Issue: $errors error event(s) in this window."
 } elseif ($stall -gt 5) {
-  $lines += "Note   : No new variants for $stall cycles"
+  $noteText = "Issue: No new variants for $stall cycles."
 } elseif ($starvation -gt 10) {
-  $lines += "Note   : Input starvation for $starvation cycles"
+  $noteText = "Issue: Input starvation for $starvation cycles."
 } elseif ($topWarning) {
-  $lines += "Note   : $topWarning"
+  $noteText = "Watch: $topWarning"
 } else {
-  $lines += "Note   : No active warnings"
+  $lastEvent = @($mainEvents | Select-Object -Last 1)
+  $lastSummary = if ($lastEvent.Count -gt 0) { [string]$lastEvent[0].summary } else { '' }
+  if ([string]::IsNullOrWhiteSpace($lastSummary)) {
+    $noteText = "All clear this cycle."
+  } else {
+    $noteText = $lastSummary
+  }
 }
+
+$noteText = ($noteText -replace '\s+', ' ').Trim()
+if ($noteText.Length -gt 132) { $noteText = $noteText.Substring(0, 129) + '...' }
+
+$maxLineLen = 44
+$wrapped = @()
+$current = ''
+foreach ($word in ($noteText -split '\s+')) {
+  if ([string]::IsNullOrWhiteSpace($word)) { continue }
+  if ([string]::IsNullOrWhiteSpace($current)) {
+    $current = $word
+  } elseif (($current.Length + 1 + $word.Length) -le $maxLineLen) {
+    $current = "$current $word"
+  } else {
+    $wrapped += $current
+    $current = $word
+    if ($wrapped.Count -ge 2) { break }
+  }
+}
+if (-not [string]::IsNullOrWhiteSpace($current) -and $wrapped.Count -lt 3) { $wrapped += $current }
+if ($wrapped.Count -eq 0) { $wrapped = @('All clear this cycle.') }
+if ($wrapped.Count -gt 3) { $wrapped = @($wrapped | Select-Object -First 3) }
+
+$lines += ("-" * 33)
+$lines += ("Note   : " + $wrapped[0])
+if ($wrapped.Count -ge 2) { $lines += ("         " + $wrapped[1]) }
+if ($wrapped.Count -ge 3) { $lines += ("         " + $wrapped[2]) }
 
 $messageBody = ($lines -join "`n").TrimEnd()
 $caption = "``````" + "`n" + $messageBody + "`n" + "``````"
