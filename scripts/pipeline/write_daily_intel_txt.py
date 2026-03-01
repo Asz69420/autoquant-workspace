@@ -26,10 +26,11 @@ SINCE_24H = NOW_UTC - timedelta(hours=24)
 TF_ORDER = {"4h": 0, "1h": 1, "15m": 2}
 ASSET_ORDER = {"BTC": 0, "ETH": 1}
 EMOJI = {"BTC": "🟠", "ETH": "🔵"}
-MAX_WIDTH = 42
+MAX_WIDTH = 56
+NAME_WIDTH = 10
 
 # Locked alignment format (header uses the exact same format string)
-FMT = "{arrow:<1} {name:<12} {pf:>4} {wr:>4} {tc:>3} {dd:>4} {pnl:>5}"
+FMT = "{arrow:<1} {name:<10} {pf:>6} {wr:>6} {tc:>5} {dd:>6} {pnl:>7}"
 MIN_TRADES = 50
 
 ALIAS = {
@@ -151,12 +152,12 @@ def build_name(spec_path: str, variant: str) -> tuple[str, str]:
             break
 
     if picks:
-        name = (picks[0] if len(picks) == 1 else f"{picks[0]}_{picks[1]}")[:12]
+        name = (picks[0] if len(picks) == 1 else f"{picks[0]}_{picks[1]}")[:NAME_WIDTH]
     else:
         stem = Path(spec_path).stem if spec_path else "spec"
         m = re.findall(r"[0-9a-fA-F]{4,}", stem)
         token = (m[-1][:4] if m else ("".join(ch for ch in stem if ch.isalnum())[-4:] or "Spec"))
-        name = f"{token}_Spec"[:12]
+        name = f"{token}_Spec"[:NAME_WIDTH]
 
     if "soheil" in name.lower():
         name = "MTF_Alpha"
@@ -278,11 +279,18 @@ def format_v(v, d=1, signed=False):
     return f"{v:+.{d}f}" if signed else f"{v:.{d}f}"
 
 
+def format_pct(v, d=1, signed=False):
+    if v is None:
+        return "-"
+    base = format_v(v, d=d, signed=signed)
+    return f"{base}%"
+
+
 def render_tables(rows: list[Row]) -> list[str]:
     lines: list[str] = []
     assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
 
-    header = FMT.format(arrow="△", name="Strategy", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
+    header = FMT.format(arrow="△", name="Strategy", pf="PF%", wr="WR%", tc="TC%", dd="DD%", pnl="P&L%")
     width = min(MAX_WIDTH, len(header))
 
     for asset in assets:
@@ -299,15 +307,17 @@ def render_tables(rows: list[Row]) -> list[str]:
             prefix = f"○── {tf} "
             lines.append(limit42(prefix + "─" * max(0, width - len(prefix))))
 
+            max_tc = max((int(x.tc) for x in top3), default=0)
             for r in top3:
+                tc_pct = (float(r.tc) / float(max_tc) * 100.0) if max_tc > 0 else None
                 row = FMT.format(
                     arrow=r.arrow,
-                    name=r.name[:12],
-                    pf=f"{r.pf:.2f}",
-                    wr=format_v(r.wr),
-                    tc=str(r.tc),
-                    dd=format_v(r.dd),
-                    pnl=format_v(r.pnl, signed=True),
+                    name=r.name[:NAME_WIDTH],
+                    pf=format_pct(r.pf * 100.0, d=1),
+                    wr=format_pct(r.wr, d=1),
+                    tc=format_pct(tc_pct, d=0),
+                    dd=format_pct(r.dd, d=1),
+                    pnl=format_pct(r.pnl, d=1, signed=True),
                 )
                 lines.append(limit42(row))
 
