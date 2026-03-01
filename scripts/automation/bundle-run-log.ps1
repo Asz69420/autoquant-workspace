@@ -1,5 +1,11 @@
 ﻿# Bundled Run Log — one photo+caption per pipeline cycle to LOG CHANNEL
-# Reads last 16 min of actions.ndjson, extracts metrics, sends clean summary
+# Default mode is Frodex (15-min lab loop). Optional Quandalf mode for Claude windows.
+
+param(
+  [ValidateSet('frodex','quandalf')]
+  [string]$Pipeline = 'frodex',
+  [int]$WindowMinutes = 16
+)
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
 Set-Location $ROOT
@@ -17,11 +23,12 @@ Get-Content $wsEnv | ForEach-Object {
 if (-not $token) { Write-Host "Missing bot token"; exit 1 }
 if (-not $logChannel) { Write-Host "Missing log channel ID"; exit 1 }
 
-# --- Read events from last 16 minutes ---
+# --- Read events from recent window ---
 $logPath = "$ROOT\data\logs\actions.ndjson"
 if (-not (Test-Path $logPath)) { Write-Host "No action log"; exit 0 }
 
-$cutoff = (Get-Date).AddMinutes(-16).ToUniversalTime()
+$effectiveWindow = if ($WindowMinutes -lt 1) { 1 } else { $WindowMinutes }
+$cutoff = (Get-Date).AddMinutes(-1 * $effectiveWindow).ToUniversalTime()
 $events = @()
 foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail 300)) {
   try {
@@ -34,21 +41,25 @@ foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail 300)) {
 }
 if ($events.Count -eq 0) { Write-Host "No events in window"; exit 0 }
 
-# --- Filter noise ---
+# --- Filter noise + pipeline ownership ---
+$mode = $Pipeline.ToLowerInvariant()
 $mainEvents = @($events | Where-Object {
-  $a = if ($_.agent) { $_.agent } else { "" }
-  $act = if ($_.action) { $_.action } else { "" }
-  ($a -ne "Logger") -and ($act -notmatch "AUDIT|DIAG")
+  $a = if ($_.agent) { [string]$_.agent } else { "" }
+  $act = if ($_.action) { [string]$_.action } else { "" }
+  if (($a -eq "Logger") -or ($act -match "AUDIT|DIAG")) { return $false }
+
+  if ($mode -eq 'quandalf') {
+    # Quandalf-owned stream (Claude strategist tasks)
+    return ($a -match '(?i)claude|quandalf')
+  }
+
+  # Frodex-owned stream: explicitly exclude Claude/Quandalf entries
+  return -not ($a -match '(?i)claude|quandalf')
 })
-if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events"; exit 0 }
+if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events for pipeline=$mode"; exit 0 }
 
 # --- Banner selection ---
-$agents = @($mainEvents | ForEach-Object { $_.agent } | Where-Object { $_ } | Sort-Object -Unique)
-$hasQuandalf = $false
-foreach ($a in $agents) {
-  if ($a -match "claude") { $hasQuandalf = $true; break }
-}
-$primaryAgent = if ($hasQuandalf) { "quandalf" } else { "frodex" }
+$primaryAgent = if ($mode -eq 'quandalf') { "quandalf" } else { "frodex" }
 
 $bannerPath = $null
 $bannerDir = "$ROOT\assets\banners"
@@ -150,7 +161,7 @@ $statusIcon = switch ($statusTag) {
 }
 
 $ts = Get-Date -Format "h:mm tt"
-$agentLabel = if ($hasQuandalf) { "Quandalf" } else { "Frodex" }
+$agentLabel = if ($mode -eq 'quandalf') { "Quandalf" } else { "Frodex" }
 
 $lines = @()
 $lines += "$statusIcon $agentLabel Pipeline $ts"

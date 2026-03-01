@@ -27,6 +27,13 @@ Agent N ─┘                      (data/logs/outbox/)      (formatted messages
 - Re-enable text log posts by setting env var: `TG_LOG_TEXT_ENABLED=1`
 - Disable again with: `TG_LOG_TEXT_ENABLED=0` (or unset)
 
+**Bundled banner ownership (Frodex vs Quandalf):**
+- `scripts/automation/bundle-run-log.ps1` now supports pipeline mode.
+- Default is Frodex (excludes Claude/Quandalf events):
+  - `powershell -ExecutionPolicy Bypass -File scripts/automation/bundle-run-log.ps1`
+- Quandalf summary mode (Claude-owned events only):
+  - `powershell -ExecutionPolicy Bypass -File scripts/automation/bundle-run-log.ps1 -Pipeline quandalf -WindowMinutes 130`
+
 ## ActionEvent Outbox (Event Transport)
 
 **Path:** `data/logs/outbox/{ts_file}___{run_id}___{agent}___{status_word}.json`
