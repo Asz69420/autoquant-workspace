@@ -9,6 +9,7 @@
 )
 
 $ErrorActionPreference = 'Stop'
+try { if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) { $PSNativeCommandUseErrorActionPreference = $false } } catch {}
 
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 Set-Location -LiteralPath $RepoRoot
@@ -244,6 +245,14 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
   Emit-Summary 'DIRECTIVE_GEN_DIAG' ('DIRECTIVE_GEN_DIAG verdict=' + $verdict + ' thesis_path=null emission_attempted=true cmd=python ' + ($emitArgs -join ' ')) 'INFO' 'Strategist'
 
   try {
+    $prevNativeErrPref = $null
+    try {
+      if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
+        $prevNativeErrPref = $PSNativeCommandUseErrorActionPreference
+        $PSNativeCommandUseErrorActionPreference = $false
+      }
+    } catch {}
+
     $emitRaw = & python @emitArgs 2>&1
     $emitExit = $LASTEXITCODE
     $emitOut = [string]$emitRaw
@@ -265,7 +274,46 @@ function Invoke-DirectiveDrivenSpecGeneration([string]$backfillSpecPath, [string
         return ''
       }
     }
-    $emitObj = $emitOut | ConvertFrom-Json
+    $emitObj = $null
+    try {
+      # Robust parsing: emitter may print advisory/non-JSON lines before final JSON.
+      $emitLines = @([string]$emitOut -split "`r?`n") | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+      for ($i = $emitLines.Count - 1; $i -ge 0; $i--) {
+        $candidate = ([string]$emitLines[$i]).Trim()
+        if (-not ($candidate.StartsWith('{') -or $candidate.StartsWith('['))) { continue }
+        try {
+          $emitObj = $candidate | ConvertFrom-Json
+          break
+        } catch {}
+      }
+      if ($null -eq $emitObj) {
+        # Fallback 1: extract trailing JSON object/array from mixed single-line output
+        $objIdx = ([string]$emitOut).LastIndexOf('{')
+        if ($objIdx -ge 0) {
+          $tailObj = ([string]$emitOut).Substring($objIdx).Trim()
+          if (-not [string]::IsNullOrWhiteSpace($tailObj)) {
+            try { $emitObj = $tailObj | ConvertFrom-Json } catch {}
+          }
+        }
+        if ($null -eq $emitObj) {
+          $arrIdx = ([string]$emitOut).LastIndexOf('[')
+          if ($arrIdx -ge 0) {
+            $tailArr = ([string]$emitOut).Substring($arrIdx).Trim()
+            if (-not [string]::IsNullOrWhiteSpace($tailArr)) {
+              try { $emitObj = $tailArr | ConvertFrom-Json } catch {}
+            }
+          }
+        }
+      }
+      if ($null -eq $emitObj) {
+        # Fallback 2: try full payload for compatibility with pure-JSON output
+        $emitObj = $emitOut | ConvertFrom-Json
+      }
+    } catch {
+      Emit-Summary 'DIRECTIVE_GEN_FAIL' ('Directive generation fail: parse error exit=' + $emitExit + ' stdout_stderr=' + $emitOut) 'FAIL' 'Strategist'
+      return ''
+    }
+
     $generatedSpecPath = [string]$emitObj.strategy_spec_path
     if (-not [string]::IsNullOrWhiteSpace($generatedSpecPath)) {
       Emit-Summary 'DIRECTIVE_BACKFILL_GENERATION' ('Directive generation from backfill: verdict=' + $verdict + ' directives=' + @($outObj.directives).Count + ' generated_spec=' + [IO.Path]::GetFileName([string]$generatedSpecPath) + ' deferred_to_next_cycle=true') 'OK' 'Strategist'
