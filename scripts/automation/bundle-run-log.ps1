@@ -215,10 +215,9 @@ if ($mode -eq 'quandalf') {
   $totalActions = $delegated + $spawned + $diagnosed + $contextUpdates
 
   $lines += "Delegated : $delegated tasks"
-  $lines += "Subagents : $spawned spawns"
-  $lines += "Diagnosis : $diagnosed reports"
-  $lines += "Context   : $contextUpdates updates"
-  $lines += "Total     : $totalActions actions"
+  $lines += "Sub-agents: $spawned spawned"
+  $lines += "Diagnosed : $diagnosed reads"
+  $lines += "Ctx updates: $contextUpdates syncs"
 } else {
   $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
   $lines += "Ingested : $ingested specs"
