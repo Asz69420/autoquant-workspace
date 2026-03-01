@@ -162,6 +162,55 @@ if ($exitCode -ne 0) {
     exit $exitCode
 }
 
+$actionsLogPath = Join-Path $workspaceRoot 'data\logs\actions.ndjson'
+$manualDrainOutput = @()
+$manualDrainExitCode = 0
+
+Push-Location -LiteralPath $workspaceRoot
+$previousErrorActionPreference = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+try {
+    $manualDrainOutput = & python 'scripts/tg_reporter.py' '--manual' 2>&1
+    $manualDrainExitCode = $LASTEXITCODE
+}
+finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+    Pop-Location
+}
+
+if ($manualDrainExitCode -ne 0) {
+    $manualDrainText = (($manualDrainOutput | ForEach-Object { [string]$_ }) -join [Environment]::NewLine)
+    $lockActive = $manualDrainText -match 'Another tg_reporter instance is active'
+
+    if ($lockActive) {
+        $deadline = (Get-Date).AddSeconds(20)
+        do {
+            $runSeen = $false
+            if (Test-Path -LiteralPath $actionsLogPath) {
+                try {
+                    $runSeen = Get-Content -LiteralPath $actionsLogPath -Encoding utf8 | ForEach-Object {
+                        if ([string]::IsNullOrWhiteSpace($_)) { $false }
+                        else {
+                            try {
+                                $evt = $_ | ConvertFrom-Json -ErrorAction Stop
+                                ($evt.run_id -eq $RunId)
+                            }
+                            catch { $false }
+                        }
+                    } | Where-Object { $_ } | Select-Object -First 1
+                }
+                catch { }
+            }
+
+            if ($runSeen) { break }
+            Start-Sleep -Milliseconds 1000
+        } while ((Get-Date) -lt $deadline)
+    }
+    else {
+        Write-Warning "tg_reporter manual drain failed (exit=$manualDrainExitCode); continuing to bundle send"
+    }
+}
+
 & "$workspaceRoot\scripts\automation\bundle-run-log.ps1" -Pipeline oragorn -WindowMinutes 2
 
 Write-Host "OK run_id=$RunId action=$emittedAction"
