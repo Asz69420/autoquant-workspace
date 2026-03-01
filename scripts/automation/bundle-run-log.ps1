@@ -181,11 +181,13 @@ if ($mode -eq 'quandalf') {
     if ($sum -match 'variants=(\d+)') { $claudeSpecs += [int]$matches[1]; continue }
   }
 
-  $lines += "Claude events : $totalEvents"
-  $lines += "Generator : $generatorEvents | Research : $researchEvents"
-  $lines += "Doctrine : $doctrineEvents | Auditor : $auditorEvents"
-  $lines += "Specs output : $claudeSpecs"
-  $lines += "Warnings : $($warnings.Count) | Errors : $errors"
+  $lines += "Generated : $claudeSpecs specs"
+  $lines += "Researched: $researchEvents runs"
+  $lines += "Doctrine : $doctrineEvents updates"
+  $lines += "Audited : $auditorEvents checks"
+  $lines += "Promoted : $promoted specs"
+  $lines += ("-" * 33)
+  $lines += "Activity : $totalEvents events | Gen $generatorEvents"
 } else {
   $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
   $lines += "Ingested : $ingested specs"
@@ -198,23 +200,34 @@ if ($mode -eq 'quandalf') {
   $lines += "Library : $librarySize strats | $libLessons lessons"
 }
 
-if ($hasErrors -or $hasWarnings) {
-  $lines += ("-" * 33)
-  if ($stall -gt 5) { $lines += "⚠️ No new variants for $stall cycles" }
-  if ($starvation -gt 10) { $lines += "⚠️ Input starvation for $starvation cycles" }
-  if ($errors -gt 0) { $lines += "❌ Pipeline errors: $errors" }
-
+# Shared bottom status block (max 2 lines)
+$topWarning = $null
+if ($warnings.Count -gt 0) {
   $uniqueWarnings = @{}
   foreach ($w in $warnings) {
     $cur = if ($uniqueWarnings.ContainsKey($w)) { $uniqueWarnings[$w] } else { 0 }
     $uniqueWarnings[$w] = $cur + 1
   }
-
-  $topWarnings = @($uniqueWarnings.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 3)
-  foreach ($tw in $topWarnings) {
+  $topWarningEntry = @($uniqueWarnings.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 1)
+  if ($topWarningEntry.Count -gt 0) {
+    $tw = $topWarningEntry[0]
     $suffix = if ($tw.Value -gt 1) { " x$($tw.Value)" } else { "" }
-    $lines += "⚠️ $($tw.Key)$suffix"
+    $topWarning = "$($tw.Key)$suffix"
   }
+}
+
+$lines += ("-" * 33)
+$lines += "Status : $statusTag (warnings=$($warnings.Count), errors=$errors)"
+if ($errors -gt 0) {
+  $lines += "Note   : Pipeline errors detected ($errors)"
+} elseif ($stall -gt 5) {
+  $lines += "Note   : No new variants for $stall cycles"
+} elseif ($starvation -gt 10) {
+  $lines += "Note   : Input starvation for $starvation cycles"
+} elseif ($topWarning) {
+  $lines += "Note   : $topWarning"
+} else {
+  $lines += "Note   : No active warnings"
 }
 
 $messageBody = ($lines -join "`n").TrimEnd()
