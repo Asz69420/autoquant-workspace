@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-0b9e4e1dce8a",
+  "created_at": "2026-03-02T16:00:25.516686Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=yCegV2dTcWw",
+  "title": "BTC Defends $66K — War With Iran, SPX in Limbo & What’s Next",
+  "author": "ECKrown",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=yCegV2dTcWw title=BTC Defends $66K — War With Iran, SPX in Limbo & What’s Next reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:VideoUnplayable: Could not retrieve a transcript for the video https://www.youtube.com/watch?v=yCegV2dTcWw!",
+    "This is most likely caused by: The video is unplayable for the following reason: This live event will begin in 14 minutes.",
+    "If you are sure that the."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=yCegV2dTcWw title=BTC Defends $66K — War With Iran, SPX in Limbo & What’s Next reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:VideoUnp",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=yCegV2dTcWw title=BTC Defends $66K — War With Iran, SPX in Limbo & What’s Next reason=TRANSCRIPT_UNAVAILABLE"
+    },
+    {
+      "timestamp": null,
+      "quote": "This is most likely caused by: The video is unplayable for the following reason: This live event will begin in 14 minutes.",
+      "note": "Meaning: This is most likely caused by: The video is unplayable for the following reason: This live event will begin in 14 minutes."
+    },
+    {
+      "timestamp": null,
+      "quote": "If you are sure that the.",
+      "note": "Meaning: If you are sure that the."
+    }
+  ],
+  "extracted_rules": [
+    "If you are sure that the."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "BTC",
+    "SPX"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-0b9e4e1dce8a.raw.txt",
+  "sha256": "0e2eda4cfcf488cbc8a6c0dd5e195ec41c2542cf1f314213c66524f44b985078",
+  "truncated": false
+}

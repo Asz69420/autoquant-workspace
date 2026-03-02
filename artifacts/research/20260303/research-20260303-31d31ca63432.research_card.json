@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-31d31ca63432",
+  "created_at": "2026-03-02T16:06:30.660027Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=5FkZrOoGmJc",
+  "title": "Трейдинг за начинаещи: Как трябва да изглежда денят ти !",
+  "author": "TradeTravelChill",
+  "summary_bullets": [
+    "If you start training today, in 2026, you will be able to do something different from 90% of the people.",
+    "You will not be able to look for signals, you will not be able to jump between strategies.",
+    "For sure, you will not be able to open your position and accept the principle.",
+    "You will be able to build up a simple, repeatable day by day process.",
+    "Because the truth is the following.",
+    "Not those who know a lot of indicators, but those who have a structure and I am a player.",
+    "In this video, I will show you exactly how to look like in a training day.",
+    "If you are starting, you want to do it seriously.",
+    "The first step is tomorrow's analysis.",
+    "It is necessary to look at the big picture."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "If you start training today, in 2026, you will be able to do something different from 90% of the people.",
+      "note": "Meaning: If you start training today, in 2026, you will be able to do something different from 90% of the people."
+    },
+    {
+      "timestamp": null,
+      "quote": "You will not be able to look for signals, you will not be able to jump between strategies.",
+      "note": "Meaning: You will not be able to look for signals, you will not be able to jump between strategies."
+    },
+    {
+      "timestamp": null,
+      "quote": "For sure, you will not be able to open your position and accept the principle.",
+      "note": "Meaning: For sure, you will not be able to open your position and accept the principle."
+    },
+    {
+      "timestamp": null,
+      "quote": "You will be able to build up a simple, repeatable day by day process.",
+      "note": "Meaning: You will be able to build up a simple, repeatable day by day process."
+    },
+    {
+      "timestamp": null,
+      "quote": "Because the truth is the following.",
+      "note": "Meaning: Because the truth is the following."
+    },
+    {
+      "timestamp": null,
+      "quote": "Not those who know a lot of indicators, but those who have a structure and I am a player.",
+      "note": "Meaning: Not those who know a lot of indicators, but those who have a structure and I am a player."
+    },
+    {
+      "timestamp": null,
+      "quote": "In this video, I will show you exactly how to look like in a training day.",
+      "note": "Meaning: In this video, I will show you exactly how to look like in a training day."
+    },
+    {
+      "timestamp": null,
+      "quote": "If you are starting, you want to do it seriously.",
+      "note": "Meaning: If you are starting, you want to do it seriously."
+    },
+    {
+      "timestamp": null,
+      "quote": "The first step is tomorrow's analysis.",
+      "note": "Meaning: The first step is tomorrow's analysis."
+    },
+    {
+      "timestamp": null,
+      "quote": "It is necessary to look at the big picture.",
+      "note": "Meaning: It is necessary to look at the big picture."
+    },
+    {
+      "timestamp": null,
+      "quote": "The first thing that I do every day is the market analysis.",
+      "note": "Meaning: The first thing that I do every day is the market analysis."
+    },
+    {
+      "timestamp": null,
+      "quote": "I don't trade, I don't look at the nominal graphics.",
+      "note": "Meaning: I don't trade, I don't look at the nominal graphics."
+    }
+  ],
+  "extracted_rules": [
+    "If you start training today, in 2026, you will be able to do something different from 90% of the people.",
+    "If you are starting, you want to do it seriously.",
+    "If we are in the trend, what is the trend?",
+    "Higher, higher, higher, higher high, higher high, higher high, higher high, higher high, and we enter the consolidation flag while we are still not doing it.",
+    "When I look at it, I realize that we are down-trend.",
+    "When I said this, I knew that the macro trend is not very good.",
+    "If you took a similar trade, you can allow yourself to cover the AMA and the previous structure, namely this top hand here and then to drive this trend down.",
+    "If you start trading seriously there is a little advantage and it matters.",
+    "This is the difference because you are a small player in a huge system and you need to develop a platform like Bitonics which we use and if you want, you have a QR code in the video, try it, we are extremely happy with them and we are extremely happy with them.",
+    "38.2% If we do it for 4 hours in a pullback where we tested 255 CMA this would coincide with the Fibonacci levels here I will look for the eventual short or I will expect this level to see what will be his reaction experience for the higher levels.",
+    "This day of consolidation will kill the accounts if you don't know what they look like.",
+    "Consolidation looks like this if you mark the lower limit and the upper limit in which the price is high you can see that the price is moving in a range.",
+    "So you have to know when we have lower days and lower levels in downtrend and when we have higher levels or consolidation in the next wave consolidation and in the next wave and after that we enter the consolidation mode in which there is a slightly lower trend.",
+    "So, again you have trades here, you have trades here but knowing that you are in a range you need adequate profit zones it is not good but when you know that you are choosing a macro trend and you are in a range in this trade and you expect to do something like this.",
+    "If you follow me on twitter I get a lot of important information such as the footprint such as the script settings and so on."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "If we are in the trend, what is the trend?"
+    },
+    {
+      "type": "trend",
+      "description": "For example, the 7th graphic looks like a trend for us."
+    },
+    {
+      "type": "trend",
+      "description": "The day graphic again looks like a trend for us."
+    },
+    {
+      "type": "trend",
+      "description": "This is what the trend looks like for us."
+    },
+    {
+      "type": "trend",
+      "description": "Here we have another example in a trend we are doing."
+    },
+    {
+      "type": "trend",
+      "description": "Lower days with this day, higher days from the previous one, and we start again to trend up."
+    },
+    {
+      "type": "trend",
+      "description": "So the first thing that interests me on today's time frame is what is the trend?"
+    },
+    {
+      "type": "trend",
+      "description": "When I look at it, I realize that we are down-trend."
+    },
+    {
+      "type": "trend",
+      "description": "What I see is that the trend is quite strong, and that absolutely all EMAs go down."
+    },
+    {
+      "type": "trend",
+      "description": "While looking for trades for 4 hours and 1 hour, I am more or less satisfied with this macro trend."
+    },
+    {
+      "type": "trend",
+      "description": "When I said this, I knew that the macro trend is not very good."
+    },
+    {
+      "type": "trend",
+      "description": "Quite often, for 4 hours, and on a daily schedule, we have a good trend."
+    },
+    {
+      "type": "trend",
+      "description": "But it happens as we saw a little while ago, this retest of the AMA that I told you about, on daily time frame, we were still in the category of a good trend."
+    },
+    {
+      "type": "trend",
+      "description": "Even though we were trying to do something that can confirm that the trend is going well."
+    },
+    {
+      "type": "trend",
+      "description": "The difference between the two time frames is that the daily schedule takes a long time, 4 hours to develop, which in rare cases, but it happens, allows us to be in a good trend."
+    },
+    {
+      "type": "trend",
+      "description": "For 4 hours, while we are still in a good trend."
+    },
+    {
+      "type": "trend",
+      "description": "After that, we are trying to change the trend in the same way."
+    },
+    {
+      "type": "trend",
+      "description": "If you took a similar trade, you can allow yourself to cover the AMA and the previous structure, namely this top hand here and then to drive this trend down."
+    },
+    {
+      "type": "trend",
+      "description": "Because, going down to 1 hour, to 15 minutes, to 5 minutes, to not talk for a minute, the trends are constantly changing."
+    },
+    {
+      "type": "trend",
+      "description": "Here we hold the trend from the beginning to the end and this whole thing depends on whether you are a trend trader who is trading EMAs, you are trading very fast and you get 100% You go down, you didn't check where you "
+    }
+  ],
+  "explicit_conditions": [
+    "So you have to know when we have lower days and lower levels in downtrend and when we have higher levels or consolidation in the next wave consolidation and in the next wave and after that Entry: the consolidation mode in which there is a slightly lower trend."
+  ],
+  "indicators_mentioned": [
+    "for long-term long-term"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "for long-term long-term",
+      "keywords": [
+        "for",
+        "long",
+        "term",
+        "long",
+        "term"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [
+    "daily",
+    "1m"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "GOLD",
+    "XRP"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-31d31ca63432.raw.txt",
+  "sha256": "fb0e4ca4816381bd9a54d9559c49541b12cab6b837a4ade8cd1656e5e352ab9e",
+  "truncated": false
+}

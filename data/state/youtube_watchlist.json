@@ -39,7 +39,7 @@
       "enabled": true,
       "mode": "INDICATORS",
       "channel_id": "UCnwxzpFzZNtLH8NgTeAROFA",
-      "last_seen_video_id": "oiXzKN-4Yus"
+      "last_seen_video_id": "yCegV2dTcWw"
     },
     {
       "name": "TradeTravelChill",
@@ -47,7 +47,7 @@
       "enabled": true,
       "mode": "INDICATORS",
       "channel_id": "UC8z0A6pWQ4mXucKtEfYiIAA",
-      "last_seen_video_id": "PQaVgnApKqk"
+      "last_seen_video_id": "5FkZrOoGmJc"
     },
     {
       "name": "DaviddTech",
@@ -59,27 +59,29 @@
     }
   ],
   "seen_video_ids": [
-    "oiXzKN-4Yus",
-    "77ikjQjdGFg",
-    "ssu2qDoPyks",
-    "whCcobPN71w",
+    "hAFvtCnrJAw",
     "Tp7ENo2ii40",
-    "HkMXGqz7MRI",
+    "6Ex-hduaP9A",
+    "3pW6m2oTCDE",
+    "yCegV2dTcWw",
     "QY6t8h7fgVo",
+    "qbyQ8322m-M",
+    "fV6NzO02KH4",
+    "ssu2qDoPyks",
+    "1yUwwqCsUqc",
+    "HkMXGqz7MRI",
+    "rh5nqX3tUds",
+    "pfBjvU0PQSc",
+    "89SIqgJIf0c",
+    "sY-uZnumYXM",
+    "oiXzKN-4Yus",
     "bB6oo3oJc0k",
     "lGtVSCYaRZg",
-    "0Fpag2wUr-g",
-    "89SIqgJIf0c",
+    "77ikjQjdGFg",
     "noG7YZlYsm0",
+    "5FkZrOoGmJc",
     "PQaVgnApKqk",
-    "6Ex-hduaP9A",
-    "fV6NzO02KH4",
-    "pfBjvU0PQSc",
-    "3pW6m2oTCDE",
-    "hAFvtCnrJAw",
-    "1yUwwqCsUqc",
-    "rh5nqX3tUds",
-    "sY-uZnumYXM",
-    "qbyQ8322m-M"
+    "whCcobPN71w",
+    "0Fpag2wUr-g"
   ]
 }

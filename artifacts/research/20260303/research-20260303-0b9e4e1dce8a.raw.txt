@@ -1,0 +1,6 @@
+Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v=yCegV2dTcWw title=BTC Defends $66K — War With Iran, SPX in Limbo & What’s Next reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:VideoUnplayable:
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=yCegV2dTcWw! This is most likely caused by:
+
+The video is unplayable for the following reason: This live event will begin in 14 minutes.
+
+If you are sure that the
