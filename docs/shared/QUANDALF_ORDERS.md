@@ -5,7 +5,7 @@
 
 ## Current Order
 
-**Status:** PENDING
+**Status:** COMPLETE
 **Created:** 2026-03-03
 **Thesis:** v2c is the new #2 strategy after Supertrend 8:1. PF 1.892 on ETH 4h, 62.5% return, 12.3% DD, 84 trades — ALL regimes profitable (transitional PF 2.986). The optimization gradient is clear: tighter stop AND tighter TP both improved PF (v1 1.385 → v2a 1.735 → v2c 1.892). The reversal exit is the real edge — stops and TPs are just loss limiters. Push the frontier: find the floor on stop and TP tightening, and challenge ETH-only with the best params.
 
