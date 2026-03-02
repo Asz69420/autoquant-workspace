@@ -5,7 +5,7 @@
 
 ## Current Order
 
-**Status:** PENDING
+**Status:** COMPLETE
 **Created:** 2026-03-02
 **Thesis:** Mean-reversion in confirmed ranges — Choppiness Index gates Donchian channel fades with RSI confirmation. Hypothesis: ranging markets (CHOP > 61.8) produce reliable mean-reversion when price hits channel edges.
 
