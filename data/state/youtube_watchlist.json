@@ -31,7 +31,7 @@
       "enabled": true,
       "mode": "INDICATORS",
       "channel_id": "UCRvqjQPSeaWn-uEx-w0XOIg",
-      "last_seen_video_id": "hAFvtCnrJAw"
+      "last_seen_video_id": "R9yYJXpYYzg"
     },
     {
       "name": "ECKrown",
@@ -55,33 +55,35 @@
       "enabled": true,
       "mode": "CONCEPTS",
       "channel_id": "UC7NJLsf6IonOy8QI8gt5BeA",
-      "last_seen_video_id": "lGtVSCYaRZg"
+      "last_seen_video_id": "HBG7Db8zEgs"
     }
   ],
   "seen_video_ids": [
-    "hAFvtCnrJAw",
-    "Tp7ENo2ii40",
-    "6Ex-hduaP9A",
     "3pW6m2oTCDE",
-    "yCegV2dTcWw",
-    "QY6t8h7fgVo",
-    "qbyQ8322m-M",
-    "fV6NzO02KH4",
-    "ssu2qDoPyks",
-    "1yUwwqCsUqc",
-    "HkMXGqz7MRI",
-    "rh5nqX3tUds",
-    "pfBjvU0PQSc",
-    "89SIqgJIf0c",
-    "sY-uZnumYXM",
-    "oiXzKN-4Yus",
-    "bB6oo3oJc0k",
-    "lGtVSCYaRZg",
-    "77ikjQjdGFg",
     "noG7YZlYsm0",
+    "hAFvtCnrJAw",
     "5FkZrOoGmJc",
+    "lGtVSCYaRZg",
+    "rh5nqX3tUds",
+    "sY-uZnumYXM",
+    "Tp7ENo2ii40",
     "PQaVgnApKqk",
+    "0Fpag2wUr-g",
+    "qbyQ8322m-M",
+    "bB6oo3oJc0k",
+    "yCegV2dTcWw",
+    "R9yYJXpYYzg",
+    "fV6NzO02KH4",
+    "pfBjvU0PQSc",
+    "HBG7Db8zEgs",
+    "1yUwwqCsUqc",
+    "oiXzKN-4Yus",
+    "77ikjQjdGFg",
+    "89SIqgJIf0c",
+    "ssu2qDoPyks",
+    "HkMXGqz7MRI",
+    "6Ex-hduaP9A",
     "whCcobPN71w",
-    "0Fpag2wUr-g"
+    "QY6t8h7fgVo"
   ]
 }

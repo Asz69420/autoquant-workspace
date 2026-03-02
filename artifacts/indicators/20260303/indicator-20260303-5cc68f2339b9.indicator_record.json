@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-5cc68f2339b9",
+  "created_at": "2026-03-02T17:34:51.732430Z",
+  "tv_ref": "tradingview:cdCfDdpK",
+  "url": "https://www.tradingview.com/script/cdCfDdpK-Nate-Opening-Playbook-Regime-Detector/",
+  "name": "Nate - Opening Playbook - Regime Detector",
+  "author": "ProsperityPub",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "5dc8ee3c9a991078dfe1c90df665906177a3deb42dba8fdb1d584fc3f834c8ca",
+  "truncated": false
+}

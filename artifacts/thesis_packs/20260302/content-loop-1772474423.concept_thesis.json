@@ -1,0 +1,17 @@
+{
+  "id": "concept-thesis-1772474423",
+  "created_at": "2026-03-02T18:00:23.975603+00:00",
+  "source": "analyser_content_worker",
+  "processed_research_cards": [
+    "artifacts/research/20260303/research-20260303-041c618be0f2.research_card.json"
+  ],
+  "key_ideas": [
+    "Backtesting is where serious trading actually starts \ud83d\udcca: extract repeatable concept from source context"
+  ],
+  "trading_relevant_concept_hooks": [
+    "Backtesting is where serious trading actually starts \ud83d\udcca: convert concept to testable entry/exit hypothesis"
+  ],
+  "proposed_automation_improvements_for_autoquant": [
+    "Backtesting is where serious trading actually starts \ud83d\udcca: record ingestion evidence pointer for doctrine traceability"
+  ]
+}

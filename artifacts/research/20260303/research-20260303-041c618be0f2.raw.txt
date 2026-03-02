@@ -1,0 +1,6 @@
+Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v=HBG7Db8zEgs title=Backtesting is where serious trading actually starts 📊 reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:TranscriptsDisabled:
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=HBG7Db8zEgs! This is most likely caused by:
+
+Subtitles are disabled for this video
+
+If you are sure that the described cause is not responsible for this error
