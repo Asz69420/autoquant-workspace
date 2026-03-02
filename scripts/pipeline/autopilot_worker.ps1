@@ -840,7 +840,11 @@ try {
             if ($sp.strategy_spec_path -and (Test-Path -LiteralPath $sp.strategy_spec_path)) {
               $specObj = Get-Content -LiteralPath $sp.strategy_spec_path -Raw | ConvertFrom-Json
               $specVariants = @($specObj.variants)
-              $directiveBatch = @($specVariants | Where-Object { [string]$_.origin -eq 'DIRECTIVE' }).Count
+              $specIsDirectiveContext = (-not [string]::IsNullOrWhiteSpace([string]$specObj.source_outcome_notes_path)) -or ([string]$specObj.generation_origin -like 'directive-generated*')
+              $directiveBatch = @($specVariants | Where-Object {
+                $origin = [string]$_.origin
+                ($origin -eq 'DIRECTIVE') -or ($specIsDirectiveContext -and $origin -eq 'DIVERSITY')
+              }).Count
               $explorationBatch = @($specVariants | Where-Object { [string]$_.name -like 'directive_exploration*' }).Count
               if ($directiveBatch -gt 0) { $directiveNotesSeen = 1 }
               $directiveVariantsEmitted += [int]$directiveBatch
@@ -1372,7 +1376,11 @@ if ([int]$directiveVariantsEmitted -eq 0) {
     if ($latestSpec) {
       $latestSpecObj = Get-Content -LiteralPath $latestSpec.FullName -Raw | ConvertFrom-Json
       $latestVariants = @($latestSpecObj.variants)
-      $directiveVariantsEmitted = @($latestVariants | Where-Object { [string]$_.origin -eq 'DIRECTIVE' }).Count
+      $latestIsDirectiveContext = (-not [string]::IsNullOrWhiteSpace([string]$latestSpecObj.source_outcome_notes_path)) -or ([string]$latestSpecObj.generation_origin -like 'directive-generated*')
+      $directiveVariantsEmitted = @($latestVariants | Where-Object {
+        $origin = [string]$_.origin
+        ($origin -eq 'DIRECTIVE') -or ($latestIsDirectiveContext -and $origin -eq 'DIVERSITY')
+      }).Count
       $explorationVariantsEmitted = @($latestVariants | Where-Object { [string]$_.name -like 'directive_exploration*' }).Count
       if ($directiveVariantsEmitted -gt 0) { $directiveNotesSeen = 1 }
     }
