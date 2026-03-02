@@ -1,4 +1,4 @@
-﻿⚠️ Frodex ⏱ 8s GPT5.3
+﻿⚠️ Frodex ⏱ 7s GPT5.3
 ○───activity─────────────────────
 Grabbed : 0 videos
 Ingested : 0 specs
