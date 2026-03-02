@@ -214,6 +214,13 @@ def main() -> int:
     for p in variant.get('parameters', []):
         if isinstance(p, dict) and 'name' in p and 'default' in p:
             variant_params[p['name']] = p['default']
+
+    # Pass entry conditions for spec_rules interpreter
+    if isinstance(variant.get('entry_long'), list):
+        variant_params['_entry_long'] = variant['entry_long']
+    if isinstance(variant.get('entry_short'), list):
+        variant_params['_entry_short'] = variant['entry_short']
+
     rules = parse_rules(variant.get('risk_rules', []))
     for k, v in rules.items():
         variant_params[k] = v

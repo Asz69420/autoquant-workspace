@@ -346,6 +346,144 @@ def stc_cycle_timing(df: pd.DataFrame, i: int, params: dict) -> tuple[bool, bool
 
 
 # ─────────────────────────────────────────────
+# RULE INTERPRETER — executes StrategySpec conditions directly
+# ─────────────────────────────────────────────
+import operator
+
+_OPS = {
+    '>': operator.gt,
+    '<': operator.lt,
+    '>=': operator.ge,
+    '<=': operator.le,
+    '==': operator.eq,
+    '!=': operator.ne,
+}
+
+
+def _resolve_value(token: str, df: pd.DataFrame, i: int) -> float | None:
+    """Resolve a token to a float — either a column lookup or a literal number."""
+    token = token.strip()
+
+    # Try as a number first
+    try:
+        return float(token)
+    except ValueError:
+        pass
+
+    # Try as a column name in the dataframe
+    if token in df.columns:
+        val = df[token].iloc[i]
+        if pd.notna(val):
+            return float(val)
+        return None
+
+    # Try common aliases: "close", "open", "high", "low", "volume"
+    lower = token.lower()
+    if lower in df.columns:
+        val = df[lower].iloc[i]
+        if pd.notna(val):
+            return float(val)
+        return None
+
+    return None
+
+
+def _resolve_value_prev(token: str, df: pd.DataFrame, i: int) -> float | None:
+    """Resolve a token value at bar i-1."""
+    if i < 1:
+        return None
+    return _resolve_value(token, df, i - 1)
+
+
+def _eval_condition(cond: str, df: pd.DataFrame, i: int) -> bool | None:
+    """Evaluate a single condition string against the dataframe at bar i.
+
+    Supported formats:
+      "COL_A > COL_B" — comparison between two columns or column vs literal
+      "COL_A > 61.8" — column vs literal
+      "COL_A crosses_above COL_B" — crossover detection
+      "COL_A crosses_below COL_B" — crossunder detection
+
+    Returns True/False if evaluation succeeds, None if data is missing.
+    """
+    cond = cond.strip()
+    if not cond:
+        return None
+
+    # Handle crosses_above / crosses_below
+    for cross_op, cross_fn in [("crosses_above", _crossed_above), ("crosses_below", _crossed_below)]:
+        if cross_op in cond:
+            parts = cond.split(cross_op, 1)
+            if len(parts) != 2:
+                return None
+            left_token = parts[0].strip()
+            right_token = parts[1].strip()
+
+            a_now = _resolve_value(left_token, df, i)
+            b_now = _resolve_value(right_token, df, i)
+            a_prev = _resolve_value_prev(left_token, df, i)
+            b_prev = _resolve_value_prev(right_token, df, i)
+
+            if any(v is None for v in [a_now, b_now, a_prev, b_prev]):
+                return None
+
+            return cross_fn(a_prev, a_now, b_prev, b_now)
+
+    # Handle standard comparison operators
+    for op_str in sorted(_OPS.keys(), key=len, reverse=True):
+        if op_str in cond:
+            parts = cond.split(op_str, 1)
+            if len(parts) != 2:
+                continue
+            left_val = _resolve_value(parts[0].strip(), df, i)
+            right_val = _resolve_value(parts[1].strip(), df, i)
+            if left_val is None or right_val is None:
+                return None
+            return _OPS[op_str](left_val, right_val)
+
+    return None
+
+
+def _eval_conditions(conditions: list, df: pd.DataFrame, i: int) -> bool:
+    """Evaluate a list of condition strings. ALL must be True (AND logic)."""
+    if not conditions:
+        return False
+    for cond in conditions:
+        if not isinstance(cond, str):
+            continue
+        result = _eval_condition(cond, df, i)
+        if result is not True:
+            return False
+    return True
+
+
+def spec_rules(df: pd.DataFrame, i: int, params: dict) -> tuple[bool, bool]:
+    """Rule interpreter template — executes StrategySpec conditions directly.
+
+    Reads entry_long[] and entry_short[] from variant_params.
+    Each condition is a string like "RSI_14 < 35" or "close crosses_above EMA_50".
+    All conditions in a list must be True (AND logic) for the signal to fire.
+
+    This allows Quandalf to design ANY indicator combination without needing a hardcoded template.
+
+    Falls back gracefully — if conditions can't be parsed, returns no signals rather than crashing.
+    """
+    if i < 2:
+        return False, False
+
+    entry_long = params.get("_entry_long", [])
+    entry_short = params.get("_entry_short", [])
+
+    if not entry_long and not entry_short:
+        return False, False
+
+    long_sig = _eval_conditions(entry_long, df, i) if entry_long else False
+    short_sig = _eval_conditions(entry_short, df, i) if entry_short else False
+
+    return bool(long_sig), bool(short_sig)
+
+
+# ─────────────────────────────────────────────
 # REGISTRY
 # ─────────────────────────────────────────────
 TEMPLATE_REGISTRY: dict[str, SignalFn] = {
@@ -359,6 +497,7 @@ TEMPLATE_REGISTRY: dict[str, SignalFn] = {
     "choppiness_donchian_fade": choppiness_donchian_fade,
     "kama_vortex_divergence": kama_vortex_divergence,
     "stc_cycle_timing": stc_cycle_timing,
+    "spec_rules": spec_rules,
 }
 
 
@@ -383,6 +522,12 @@ def resolve_template(variant: dict) -> str:
     """
     if not isinstance(variant, dict):
         return "ema_crossover"
+
+    # Spec-driven rules — highest priority when entry conditions are present
+    entry_long = variant.get("entry_long", [])
+    entry_short = variant.get("entry_short", [])
+    if (isinstance(entry_long, list) and entry_long) or (isinstance(entry_short, list) and entry_short):
+        return "spec_rules"
 
     # Direct template specification — highest priority
     explicit = str(variant.get("template_name") or "").strip().lower()
@@ -477,6 +622,9 @@ def resolve_template(variant: dict) -> str:
 def get_signals(template_name: str, df: pd.DataFrame, row_index: int, variant_params: dict) -> tuple[bool, bool]:
     """Dispatch signal generation by template name.
 
+    For spec_rules template, injects entry_long/entry_short from the variant
+    into params so the interpreter can read them.
+
     Unknown template names fall back to ema_crossover.
     """
     fn = TEMPLATE_REGISTRY.get(str(template_name or "").strip().lower(), ema_crossover)
@@ -500,4 +648,5 @@ __all__ = [
     "choppiness_donchian_fade",
     "kama_vortex_divergence",
     "stc_cycle_timing",
+    "spec_rules",
 ]

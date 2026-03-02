@@ -158,7 +158,7 @@ async def deny(update: Update) -> None:
     await update.message.reply_text("⛔ Not authorised.")
 
 
-def run_claude(prompt: str, allowed_tools: str, timeout: int = 120) -> str:
+def run_claude(prompt: str, allowed_tools: str, timeout: int = 300) -> str:
     """Run `claude -p` as a subprocess and return stdout."""
     cmd = [
         "claude", "-p", prompt,
