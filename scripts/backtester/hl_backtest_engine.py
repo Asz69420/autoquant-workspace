@@ -136,30 +136,13 @@ def apply_fill(raw_price: float, side: str, slippage_bps: float) -> tuple[float,
     return px, raw_price - px
 
 
-def calculate_position_size(equity: float, risk_pct: float, entry_price: float, stop_price: float, side: str) -> float:
-    """Calculate position size based on risk per trade and stop distance.
-
-    Args:
-        equity: Current account equity
-        risk_pct: Risk per trade as decimal (e.g., 0.01 = 1%)
-        entry_price: Entry price after slippage
-        stop_price: Stop loss price (None means use 2% of entry as default stop distance)
-        side: 'long' or 'short'
-
-    Returns:
-        Position size in units of the asset
-    """
+def calculate_position_size(equity: float, risk_pct: float, entry_price: float, stop_price: float | None, side: str) -> float:
     if risk_pct <= 0 or equity <= 0 or entry_price <= 0:
         return 1.0
 
-    # fallback
     if stop_price is not None and stop_price > 0:
-        if side == 'long':
-            stop_distance = abs(entry_price - stop_price)
-        else:
-            stop_distance = abs(stop_price - entry_price)
+        stop_distance = abs(entry_price - stop_price)
     else:
-        # Default: use 2% of entry price as stop distance
         stop_distance = entry_price * 0.02
 
     if stop_distance <= 0:
@@ -167,12 +150,9 @@ def calculate_position_size(equity: float, risk_pct: float, entry_price: float, 
 
     risk_amount = equity * risk_pct
     qty = risk_amount / stop_distance
-
-    # Cap at 95% of equity / entry_price to prevent overleveraging
     max_qty = (equity * 0.95) / entry_price
     qty = min(qty, max_qty)
 
-    # Floor at a minimum meaningful size
     if qty * entry_price < 1.0:
         qty = 1.0 / entry_price
 
@@ -256,6 +236,7 @@ def main() -> int:
     tp_type = str(risk_policy.get('tp_type', 'none'))
     sl_mult = float(risk_policy.get('stop_atr_mult', 0.0)) if stop_type == 'atr' else 0.0
     tp_mult = float(risk_policy.get('tp_atr_mult', 0.0)) if tp_type == 'atr' else 0.0
+    risk_per_trade_pct = float(risk_policy.get('risk_per_trade_pct', 0.01))
 
     rows = list(csv.DictReader(csv_path.open('r', encoding='utf-8-sig', newline='')))
     bars = [{
@@ -265,7 +246,6 @@ def main() -> int:
     df = pd.DataFrame(bars)
     ind_df = build_indicator_frame(df)
 
-    # indicators
     ema9 = ema21 = ema50 = ema200 = None
     prev_ema9 = prev_ema21 = prev_ema50 = None
     prev_close = None
@@ -290,6 +270,7 @@ def main() -> int:
     entries_taken = 0
     exits_taken = 0
     total_bars_in_position = 0
+    equity = args.initial_capital
 
     for i, b in enumerate(bars):
         tr = max(b['high'] - b['low'], abs(b['high'] - (prev_close if prev_close is not None else b['close'])), abs(b['low'] - (prev_close if prev_close is not None else b['close'])))
@@ -306,7 +287,6 @@ def main() -> int:
 
         rsi, avg_gain, avg_loss = rsi_step(prev_close, b['close'], avg_gain, avg_loss, rsi_period)
 
-        # Prefer pandas-ta indicators when present; fallback to legacy custom calculations.
         adx_val = None
         try:
             rowi = ind_df.iloc[i]
@@ -344,10 +324,10 @@ def main() -> int:
             total_bars_in_position += 1
 
         def close_position(raw_exit_price: float, reason: str):
-            nonlocal pos, total_fees_paid, total_slippage_cost_est, exits_taken
+            nonlocal pos, total_fees_paid, total_slippage_cost_est, exits_taken, equity
             if pos is None:
                 return
-            qty = 1.0
+            qty = pos['qty']
             exit_side = 'sell' if pos['side'] == 'long' else 'buy'
             exit_px, exit_slip = apply_fill(raw_exit_price, exit_side, slippage_bps)
             total_slippage_cost_est += exit_slip * qty
@@ -355,7 +335,8 @@ def main() -> int:
             fees = (pos['entry_price'] * qty + exit_px * qty) * (fee_bps / 10_000.0)
             total_fees_paid += fees
             pnl = gross - fees
-            trades.append({'entry_time': pos['entry_time'], 'entry_price': round(pos['entry_price'], 8), 'exit_time': b['time'], 'exit_price': round(exit_px, 8), 'side': pos['side'], 'qty': qty, 'pnl': round(pnl, 8), 'pnl_pct': round((pnl / pos['entry_price']) * 100, 4), 'reason': reason, 'bars_held': max(1, i - pos['entry_idx'] + 1), 'entry_regime': pos.get('entry_regime', 'transitional'), 'entry_adx': (round(float(pos['entry_adx']), 8) if pos.get('entry_adx') is not None else None)})
+            equity += pnl
+            trades.append({'entry_time': pos['entry_time'], 'entry_price': round(pos['entry_price'], 8), 'exit_time': b['time'], 'exit_price': round(exit_px, 8), 'side': pos['side'], 'qty': round(qty, 8), 'pnl': round(pnl, 8), 'pnl_pct': round((pnl / (pos['entry_price'] * qty)) * 100, 4), 'reason': reason, 'bars_held': max(1, i - pos['entry_idx'] + 1), 'entry_regime': pos.get('entry_regime', 'transitional'), 'entry_adx': (round(float(pos['entry_adx']), 8) if pos.get('entry_adx') is not None else None)})
             exits_taken += 1
             pos = None
 
@@ -366,7 +347,13 @@ def main() -> int:
                 ep, eslip = apply_fill(b['close'], eside, slippage_bps)
                 total_slippage_cost_est += eslip
                 regime = _classify_regime_from_adx(adx_series[i] if i < len(adx_series) else None)
-                pos = {'side': 'short' if short_sig else 'long', 'entry_price': ep, 'entry_time': b['time'], 'entry_idx': i, 'entry_regime': regime, 'entry_adx': (adx_series[i] if i < len(adx_series) else None)}
+                rev_side = 'short' if short_sig else 'long'
+                if stop_type == 'atr' and atr is not None and sl_mult > 0:
+                    rev_stop = ep + sl_mult * atr if rev_side == 'short' else ep - sl_mult * atr
+                else:
+                    rev_stop = None
+                rev_qty = calculate_position_size(equity, risk_per_trade_pct, ep, rev_stop, rev_side)
+                pos = {'side': rev_side, 'entry_price': ep, 'entry_time': b['time'], 'entry_idx': i, 'entry_regime': regime, 'entry_adx': (adx_series[i] if i < len(adx_series) else None), 'qty': rev_qty}
                 entries_taken += 1
                 prev_close = b['close']
                 continue
@@ -391,7 +378,13 @@ def main() -> int:
             ep, eslip = apply_fill(raw_ep, eside, slippage_bps)
             total_slippage_cost_est += eslip
             regime = _classify_regime_from_adx(adx_series[i] if i < len(adx_series) else None)
-            pos = {'side': 'long' if long_sig else 'short', 'entry_price': ep, 'entry_time': et, 'entry_idx': i, 'entry_regime': regime, 'entry_adx': (adx_series[i] if i < len(adx_series) else None)}
+            entry_side = 'long' if long_sig else 'short'
+            if stop_type == 'atr' and atr is not None and sl_mult > 0:
+                entry_stop = ep - sl_mult * atr if entry_side == 'long' else ep + sl_mult * atr
+            else:
+                entry_stop = None
+            entry_qty = calculate_position_size(equity, risk_per_trade_pct, ep, entry_stop, entry_side)
+            pos = {'side': entry_side, 'entry_price': ep, 'entry_time': et, 'entry_idx': i, 'entry_regime': regime, 'entry_adx': (adx_series[i] if i < len(adx_series) else None), 'qty': entry_qty}
             entries_taken += 1
 
         prev_close = b['close']
@@ -449,18 +442,21 @@ def main() -> int:
         'created_at': datetime.now(UTC).isoformat(),
         'inputs': {'dataset_meta': args.dataset_meta, 'dataset_csv': str(csv_path), 'strategy_spec': args.strategy_spec, 'variant': args.variant},
         'fee_model_hash': fee_model_hash,
-        'settings': {'entry_fill_rule': entry_fill, 'tie_break': tie_break, 'fee_mode': fee_mode, 'fee_bps': fee_bps, 'slippage_bps': slippage_bps, 'cost_config_path': str(cost_config_path), 'fee_model_hash': fee_model_hash},
+        'settings': {'entry_fill_rule': entry_fill, 'tie_break': tie_break, 'fee_mode': fee_mode, 'fee_bps': fee_bps, 'slippage_bps': slippage_bps, 'cost_config_path': str(cost_config_path), 'fee_model_hash': fee_model_hash, 'risk_per_trade_pct': risk_per_trade_pct},
         'indicator_registry': INDICATOR_REGISTRY,
         'results': {
+            'initial_capital': args.initial_capital,
+            'final_equity': round(equity, 8),
             'net_profit': round(net, 8),
-            'net_profit_pct': round((net / args.initial_capital), 8) if args.initial_capital else None,
+            'net_profit_pct': round((net / args.initial_capital) * 100, 4) if args.initial_capital else None,
+            'total_return_on_capital_pct': round(((equity - args.initial_capital) / args.initial_capital) * 100, 4),
             'total_trades': total,
             'win_rate': round((len(wins) / total), 8) if total else 0.0,
             'profit_factor': round((sum(wins) / abs(sum(losses))) if losses else (999.0 if wins else 0.0), 8),
             'max_drawdown': round(maxdd, 8),
-            'max_drawdown_pct': round((maxdd / peak * 100) if peak > 0 else 0.0, 4),
-            'total_return_pct': round((eq / abs(trades[0]['entry_price']) * 100) if trades and trades[0]['entry_price'] != 0 else 0.0, 4),
-            'avg_trade_pnl_pct': round((sum(t['pnl'] / t['entry_price'] * 100 for t in trades) / len(trades)) if trades else 0.0, 4),
+            'max_drawdown_pct': round((maxdd / args.initial_capital * 100), 4) if args.initial_capital else 0.0,
+            'total_return_pct': round((eq / args.initial_capital * 100) if args.initial_capital else 0.0, 4),
+            'avg_trade_pnl_pct': round((sum(t['pnl_pct'] for t in trades) / len(trades)) if trades else 0.0, 4),
             'total_fees_paid': round(total_fees_paid, 8),
             'total_slippage_cost_est': round(total_slippage_cost_est, 8),
             'start_ts': meta.get('start'),
