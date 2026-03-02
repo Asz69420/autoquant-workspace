@@ -4,6 +4,7 @@ param(
   [string]$Mode = 'WARN',
   [int]$LockStaleMinutes = 60,
   [string]$RepoRoot = '',
+  [string]$OragornWorkspacePath = 'C:\Users\Clamps\.openclaw\workspace-oragorn',
   [switch]$NoBanner
 )
 
@@ -13,6 +14,16 @@ if ([string]::IsNullOrWhiteSpace($RepoRoot)) {
   $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 }
 Set-Location -LiteralPath $RepoRoot
+
+# Preflight adapter: route Oragorn session dumps out of workspace-oragorn/memory
+$routeScript = Join-Path $RepoRoot 'scripts\automation\route_oragorn_session_dumps.ps1'
+if (Test-Path -LiteralPath $routeScript) {
+  try {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File $routeScript -OragornWorkspacePath $OragornWorkspacePath | Out-Null
+  } catch {
+    Write-Warning ('Oragorn session dump routing preflight failed: ' + $_.Exception.Message)
+  }
+}
 
 function Get-UntrackedPaths {
   $lines = @(git status --porcelain=v1 --untracked-files=all)
@@ -181,6 +192,15 @@ $memoryDumpViolations = @($memoryDumpViolations | Sort-Object -Unique)
 $backupViolations = @($backupViolations | Sort-Object -Unique)
 $otherViolations = @($otherViolations | Sort-Object -Unique)
 
+$autopilotStateLockStale = $false
+foreach ($sl in $staleLocks) {
+  $p = ([string]$sl.path).Replace('\','/').ToLowerInvariant()
+  if ($p -eq 'data/state/autopilot.lock' -or $p -eq 'data/state/locks/autopilot_worker.lock') {
+    $autopilotStateLockStale = $true
+    break
+  }
+}
+
 $hasViolations = ($rootLeaks.Count -gt 0 -or $memoryDumpViolations.Count -gt 0 -or $backupViolations.Count -gt 0 -or $otherViolations.Count -gt 0 -or $staleLocks.Count -gt 0)
 
 if (-not $NoBanner) {
@@ -241,7 +261,15 @@ if (-not $hasViolations) {
 
 if ($Mode -eq 'FAIL') {
   Write-Output ''
-  Write-Output 'RESULT: FAIL (violations present)'
+  if ($staleLocks.Count -gt 0) {
+    if ($autopilotStateLockStale) {
+      Write-Output 'RESULT: FAIL (stale lock detected, includes autopilot lock)'
+    } else {
+      Write-Output 'RESULT: FAIL (stale lock(s) detected)'
+    }
+  } else {
+    Write-Output 'RESULT: FAIL (violations present)'
+  }
   exit 2
 }
 
