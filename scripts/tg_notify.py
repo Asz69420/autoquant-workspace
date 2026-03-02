@@ -165,7 +165,7 @@ def send_telegram_message(
 
     # Optional hard gate: suppress text-only sends to log channel (image/bundle-only mode).
     # Reversible via env: TG_LOG_TEXT_ENABLED=1
-    log_text_enabled = _env_bool("TG_LOG_TEXT_ENABLED", default=False)
+    log_text_enabled = _env_bool("TG_LOG_TEXT_ENABLED", default=True)
     if str(target_chat_id) == str(log_chat_id) and not log_text_enabled:
         return True
 
