@@ -5,7 +5,10 @@
   [switch]$RunYouTubeWatcher,
   [switch]$RunTVCatalogWorker,
   [switch]$ForceRecombine,
-  [string]$FastCommand = ''
+  [string]$FastCommand = '',
+  [ValidateSet('WARN','FAIL')]
+  [string]$RepoHygieneMode = 'FAIL',
+  [switch]$SkipRepoHygieneGate
 )
 
 $ErrorActionPreference = 'Stop'
@@ -543,6 +546,27 @@ if (Handle-FastCommand $FastCommand) {
 }
 
 try {
+  if (-not $DryRun -and -not $SkipRepoHygieneGate) {
+    $hygieneScript = Join-Path $RepoRoot 'scripts\automation\repo_hygiene_gate.ps1'
+    if (Test-Path -LiteralPath $hygieneScript) {
+      $hOut = @()
+      & powershell -NoProfile -ExecutionPolicy Bypass -File $hygieneScript -Mode $RepoHygieneMode -LockStaleMinutes 60 -NoBanner 2>&1 | ForEach-Object { $hOut += [string]$_ }
+      $hExit = $LASTEXITCODE
+      $hText = ($hOut -join ' | ')
+      if ([string]::IsNullOrWhiteSpace($hText)) { $hText = 'repo hygiene gate completed (no output)' }
+      if ($hExit -ne 0) {
+        Emit-Summary 'REPO_HYGIENE_GATE' ('Repo hygiene gate exit=' + $hExit + ' mode=' + $RepoHygieneMode + ' details=' + $hText) 'WARN' 'Autopilot'
+        if ($RepoHygieneMode -eq 'FAIL') {
+          throw ('REPO_HYGIENE_GATE_FAIL mode=FAIL exit=' + $hExit)
+        }
+      } else {
+        Emit-Summary 'REPO_HYGIENE_GATE' ('Repo hygiene gate mode=' + $RepoHygieneMode + ' status=OK details=' + $hText) 'INFO' 'Autopilot'
+      }
+    } else {
+      Emit-Summary 'REPO_HYGIENE_GATE' ('Repo hygiene script missing: ' + $hygieneScript) 'WARN' 'Autopilot'
+    }
+  }
+
   $lock = Ensure-Lock 'autopilot_worker'
 
   if ($RunYouTubeWatcher -and -not $DryRun) {

@@ -59,6 +59,14 @@ data/cache/
 data/logs/
 logs/
 *.log
+# Explicit root-cycle debug logs (belt-and-suspenders)
+cycle*.log
+
+# Oragorn raw session-note dumps (policy: ignore raw dumps; keep curated memory tracked)
+memory/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-*.md
+
+# Oragorn context sync backups
+agents/oragorn/agent/CONTEXT.bak-*.md
 
 # ======== Notebooks & IDE Caches ========
 .ipynb_checkpoints/
