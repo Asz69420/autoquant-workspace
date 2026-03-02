@@ -1,18 +1,18 @@
 ﻿{
     "event":  "LAB_SUMMARY",
-    "created_at":  "2026-03-02T14:19:57.5773149Z",
-    "bundles_processed":  0,
+    "created_at":  "2026-03-02T15:24:46.3321193Z",
+    "bundles_processed":  1,
     "promotions_processed":  0,
     "refinements_run":  0,
     "new_candidates_count":  100,
-    "candidates_ingested":  0,
+    "candidates_ingested":  1,
     "candidates_reaching_refinement":  0,
     "candidates_passing_gate":  0,
     "directive_notes_seen":  1,
     "directive_variants_emitted":  0,
     "directive_backfill_specs_generated":  0,
     "active_library_size":  500,
-    "new_indicators_added":  0,
+    "new_indicators_added":  1,
     "skipped_indicators_dedup":  133,
     "errors_count":  0,
     "dry_run":  false,
@@ -21,7 +21,7 @@
     "insight_failed":  0,
     "recombine_created":  0,
     "recombine_bundle_path":  "",
-    "starvation_cycles":  110,
-    "drought_cycles":  19,
-    "directive_loop_stall_cycles":  16
+    "starvation_cycles":  115,
+    "drought_cycles":  24,
+    "directive_loop_stall_cycles":  21
 }

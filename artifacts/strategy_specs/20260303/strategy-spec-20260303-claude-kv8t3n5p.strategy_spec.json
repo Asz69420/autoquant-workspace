@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-kv8t3n5p",
+  "name": "KAMA Vortex Transitional Regime Capture",
+  "source": "claude-advisor",
+  "created": "2026-03-03T00:15:00Z",
+  "edge_hypothesis": "Transitional regime alpha is growing (4 strategies, best PF=2.77). KAMA adapts its smoothing to market noise — when price is above KAMA, the adaptive filter confirms direction. Vortex indicator measures positive vs negative directional movement independent of trend strength. When VTXP crosses above VTXM, directional force is shifting bullish. Combining these two NEVER-TESTED indicators targets the consolidation-to-trend transition that produces outsized moves. Neither KAMA nor Vortex has ever appeared in any ACCEPT — this is pure exploration of untapped indicator space.",
+  "variants": [
+    {
+      "name": "kama_vortex_transitional_1h_8to1",
+      "template_name": "spec_rules",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "Vortex crossover catches directional regime shifts. KAMA filter confirms price is on the right side of the adaptive average. 8:1 R:R is the proven sweet spot. 1h timeframe for sufficient trade count. Simple 2-condition entry avoids the 0-trade problem."
+    },
+    {
+      "name": "kama_vortex_transitional_4h_10to1",
+      "template_name": "spec_rules",
+      "timeframe": "4h",
+      "asset": "ETH",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "4h Vortex crosses are higher conviction directional shifts. 10:1 R:R with wider 2.0x stop for 4h noise. Tests whether longer timeframe catches bigger transitional moves."
+    }
+  ]
+}

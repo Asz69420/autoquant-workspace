@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-cw6x9m2j",
+  "name": "CCI Williams Double-Extreme Mean Reversion",
+  "source": "claude-advisor",
+  "created": "2026-03-03T00:15:00Z",
+  "edge_hypothesis": "CCI and Williams %R have NEVER appeared in any ACCEPT strategy. Both measure price extremes from different angles — CCI measures deviation from statistical mean, Williams %R measures current close relative to the high-low range. When both simultaneously signal exhaustion, the convergent extreme indicates high-probability mean-reversion. An ADX < 25 gate restricts entries to ranging conditions where mean-reversion is reliable (ranging produces 19/23 ACCEPTs). This is a pure mean-reversion play using untested oscillators in the dominant profit regime.",
+  "variants": [
+    {
+      "name": "cci_willr_extreme_1h_8to1",
+      "template_name": "spec_rules",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "entry_long": [
+        "CCI_20_0.015 < -100",
+        "WILLR_14 < -80",
+        "ADX_14 < 25"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 100",
+        "WILLR_14 > -20",
+        "ADX_14 < 25"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "CCI < -100 and WILLR < -80 together indicate deep oversold. ADX < 25 ensures ranging market where mean-reversion works. 8:1 R:R is the proven floor for ACCEPTs. 3 conditions keeps it tight but all are achievable — CCI regularly hits -100 and WILLR regularly hits -80 in ranging ETH."
+    },
+    {
+      "name": "cci_willr_extreme_4h_10to1",
+      "template_name": "spec_rules",
+      "timeframe": "4h",
+      "asset": "ETH",
+      "entry_long": [
+        "CCI_20_0.015 < -100",
+        "WILLR_14 < -80",
+        "ADX_14 < 25"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 100",
+        "WILLR_14 > -20",
+        "ADX_14 < 25"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "4h double-extreme is rarer but higher conviction. Wider 2.0x stop for 4h noise, 10:1 R:R. 4h CCI/WILLR extremes should produce cleaner mean-reversion entries with larger expected moves."
+    },
+    {
+      "name": "cci_willr_extreme_1h_12to1",
+      "template_name": "spec_rules",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "entry_long": [
+        "CCI_20_0.015 < -100",
+        "WILLR_14 < -80",
+        "ADX_14 < 25"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 100",
+        "WILLR_14 > -20",
+        "ADX_14 < 25"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "12:1 R:R ceiling test on the same signal. RSI slingshot proved 12:1 can ACCEPT (PF=1.270). If CCI/WILLR double-extreme is a higher quality signal than RSI alone, 12:1 should capture the full mean-reversion swing. Fewer winners but each should be a large reversal move."
+    }
+  ]
+}

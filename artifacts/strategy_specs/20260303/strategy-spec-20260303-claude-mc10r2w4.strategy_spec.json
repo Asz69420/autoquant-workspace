@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-mc10r2w4",
+  "name": "MACD Confirmation R:R Ceiling Test",
+  "source": "claude-advisor",
+  "created": "2026-03-03T00:15:00Z",
+  "edge_hypothesis": "MACD 7:1 is the current MACD champion (PF=1.712, 161 trades). Supertrend showed that pushing R:R from 7:1 to 8:1 improved PF from ~1.4 to 1.921. If MACD confirmation exhibits similar tail-harvesting behavior, higher R:R ratios (10:1, 14:1) should filter for only the large moves, improving PF at the cost of fewer trades. The 2.0x ATR stop gives room for intrabar noise while the wide TP captures trend continuation after MACD zero-cross confirmation.",
+  "variants": [
+    {
+      "name": "macd_rr_ceiling_1h_10to1",
+      "template_name": "macd_confirmation",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "components": {
+        "baseline": {"indicator": "EMA", "params": {"period": 50}},
+        "confirmation": {"indicator": "MACD", "params": {"fast": 12, "slow": 26, "signal": 9}},
+        "volume_volatility": {"indicator": "ATR", "params": {"period": 14}}
+      },
+      "RoleFramework": {
+        "baseline": {"indicator": "EMA", "params": {"period": 50}},
+        "confirmation": {"indicator": "MACD", "params": {"fast": 12, "slow": 26, "signal": 9}},
+        "volume_volatility": {"indicator": "ATR", "params": {"period": 14}}
+      },
+      "edge_hypothesis": "10:1 R:R on MACD confirmation 1h ETH. MACDh zero-cross is a proven signal (9 ACCEPTs). 2.0x stop accommodates hourly noise. If 7:1 achieved PF=1.712, 10:1 should improve PF by filtering for only the strongest moves."
+    },
+    {
+      "name": "macd_rr_ceiling_4h_10to1",
+      "template_name": "macd_confirmation",
+      "timeframe": "4h",
+      "asset": "ETH",
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "components": {
+        "baseline": {"indicator": "EMA", "params": {"period": 50}},
+        "confirmation": {"indicator": "MACD", "params": {"fast": 12, "slow": 26, "signal": 9}},
+        "volume_volatility": {"indicator": "ATR", "params": {"period": 14}}
+      },
+      "RoleFramework": {
+        "baseline": {"indicator": "EMA", "params": {"period": 50}},
+        "confirmation": {"indicator": "MACD", "params": {"fast": 12, "slow": 26, "signal": 9}},
+        "volume_volatility": {"indicator": "ATR", "params": {"period": 14}}
+      },
+      "edge_hypothesis": "4h timeframe reduces noise. Same 10:1 R:R. 4h MACD crosses are less frequent but higher conviction. Tests whether longer timeframe improves or degrades MACD tail-harvesting."
+    },
+    {
+      "name": "macd_rr_ceiling_1h_14to1",
+      "template_name": "macd_confirmation",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 28.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "components": {
+        "baseline": {"indicator": "EMA", "params": {"period": 50}},
+        "confirmation": {"indicator": "MACD", "params": {"fast": 12, "slow": 26, "signal": 9}},
+        "volume_volatility": {"indicator": "ATR", "params": {"period": 14}}
+      },
+      "RoleFramework": {
+        "baseline": {"indicator": "EMA", "params": {"period": 50}},
+        "confirmation": {"indicator": "MACD", "params": {"fast": 12, "slow": 26, "signal": 9}},
+        "volume_volatility": {"indicator": "ATR", "params": {"period": 14}}
+      },
+      "edge_hypothesis": "Extreme 14:1 R:R ceiling test. Same MACD signal, 28x ATR take-profit. This will have very few winners but each should be massive. Tests whether MACD can replicate Supertrend's ultra-high R:R success. Expect 30-50% fewer trades than 10:1 variant."
+    }
+  ]
+}

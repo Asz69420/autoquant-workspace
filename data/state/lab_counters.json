@@ -1,16 +1,16 @@
 ﻿{
-    "directive_loop_stall_cycles":  16,
+    "directive_loop_stall_cycles":  21,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-cw6x9m2j.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-kv8t3n5p.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-mc10r2w4.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-st2f6j8d.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-er5k8w3m.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-st9k4m7p.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-er9s4w6k.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-dm5r8t2k.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-ec7w3k9d.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-mc5s9k3w.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-st4q7r2n.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-ec3w5m8k.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-046-1d57747d-461f063e.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-mc5s9k3w.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-02T14:19:57.6244352Z"
+    "updated_at":  "2026-03-02T15:24:46.3857279Z"
 }

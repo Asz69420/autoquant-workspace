@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-5655bce57730",
+  "created_at": "2026-03-02T15:19:51.761712Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/vy6hSxaY-3D-Volume-Profile-UAlgo/",
+  "title": "3D Volume Profile [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "Top catalog indicator: 3D Volume Profile [UAlgo] by UAlgo."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: 3D Volume Profile [UAlgo] by UAlgo.",
+      "note": "Meaning: Top catalog indicator: 3D Volume Profile [UAlgo] by UAlgo."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-5655bce57730.raw.txt",
+  "sha256": "fe92447921f87d65e37765d4c4f0e13d188826c13a8f9c0afae00c41f4601914",
+  "truncated": false
+}

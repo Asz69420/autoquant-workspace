@@ -1,5 +1,5 @@
 {
-  "top_cursor": 2688,
+  "top_cursor": 2788,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -86,7 +86,8 @@
     "smarttrend pro [willyalgotrader]|willyalgotrader",
     "stochastic buy/sell signal|nathanl19",
     "bbr2.1|junjunms",
-    "swing profile [bigbeluga]|bigbeluga"
+    "swing profile [bigbeluga]|bigbeluga",
+    "3d volume profile [ualgo]|ualgo"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -174,7 +175,8 @@
     "9z4Y3HQj",
     "dx95Np9f",
     "RnUblmpw",
-    "gFlv7t7R"
+    "gFlv7t7R",
+    "vy6hSxaY"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",
