@@ -1,0 +1,244 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-mc9v4h6t",
+  "created_at": "2026-03-03T14:10:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD confirmation has 2 ACCEPTs: PF=1.712 (7:1 R:R, 161 trades) and PF=1.460 (6:1, 170 trades). BOTH are on 1h. The 4h timeframe has NEVER been backtested with MACD. THESIS: On 1h, MACD histogram zero-crosses happen frequently — many are intraday noise where momentum briefly shifts then reverses. On 4h, a zero-cross represents 4+ CONSECUTIVE HOURS of sustained momentum change. These are not noise — they're structural momentum shifts. The 4h MACD histogram is inherently smoother (each bar aggregates 4x more data), producing fewer but HIGHER CONVICTION zero-crosses. At 10:1 R:R on 4h, each winning trade captures a multi-day continuation (15.0x ATR). Expected trade count: 30-60 (vs 161 on 1h). But if signal quality is genuinely higher, the win rate should be 15-20% (vs 1h's ~22%), and each winner is worth 10x the stop instead of 7x. The net effect: similar or better PF with fewer, higher-quality trades. Also testing: MACD on 1h with WIDER STOP (2.0x ATR) at 10:1 R:R. The 1h ACCEPT uses 1.5x stop. Hypothesis: some MACD signals are correct but trigger a brief countertrend move before the momentum resumes — wider stop survives this. THREE OUTCOMES: (1) 4h PF > 1.7 = 4h MACD is a superior timeframe for this template — upgrade portfolio. (2) 4h PF 1.2-1.7 = 4h works but 1h is still optimal — use both for diversification. (3) 4h PF < 1.0 = MACD momentum-shift mechanism requires 1h granularity to work — 4h aggregation destroys the edge. INVALIDATION: PF < 1.0 on all three variants.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "macd_4h_momentum_10to1",
+      "description": "MACD histogram zero-cross on ETH/4h at 10:1 R:R. The FLAGSHIP 4h variant. MACDh crossing above zero on 4h means momentum has been building for 4+ hours — the MACD line has crossed above the signal line AND sustained the cross long enough for the histogram to flip positive. This is a higher bar than 1h, where a brief 1-hour surge can trigger a zero-cross that immediately reverses. At 1.5x ATR stop, the position is protected if the zero-cross was a false signal. At 15.0x ATR TP (10:1), the target is a 2-3 day momentum continuation. Close > EMA_50 confirms the 4h trend direction. Expected: 30-50 trades over the backtest period. If PF > 1.5, 4h MACD is a portfolio-level addition.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero (4h momentum shift to bullish).",
+        "close > EMA_50 (bullish trend confirmation on 4h).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero (4h momentum shift to bearish).",
+        "close < EMA_50 (bearish trend confirmation on 4h).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "EMA baseline: close vs EMA_50 for 4h trend direction",
+        "MACD confirmation: MACDh_12_26_9 zero-cross on 4h — higher conviction than 1h",
+        "ATR volatility: position sizing and stop/TP",
+        "4h timeframe: NEVER TESTED with MACD — completely novel",
+        "R:R 10:1 — multi-day momentum continuation target",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (15.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees.",
+        "4h momentum thesis: are 4h zero-crosses higher conviction than 1h?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 15.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 20.0, "step": 2.5, "default": 15.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 on 4h — structural trend filter, 200-hour context"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross on 4h — fewer but higher-conviction signals than 1h"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 15.0x TP — 10:1 R:R, multi-day momentum continuation"}
+      ]
+    },
+    {
+      "name": "macd_4h_tail_harvester_12to1",
+      "description": "MACD histogram zero-cross on ETH/4h at 12:1 R:R. The TAIL HARVESTER variant. If the 4h MACD thesis is correct (higher conviction per signal), then pushing to 12:1 R:R should work because 4h trends run LONGER than 1h trends. At 18.0x ATR TP on 4h, targets are 3-5 day ETH trend legs — major directional moves that produce 6-10% returns. Breakeven win rate: 7.7%. The 12:1 R:R ratio is validated at ACCEPT-level (RSI slingshot PF=1.270 at 12:1). If 4h MACD signals are genuinely higher conviction, 12:1 should produce PF > 1.3. Expected: 30-50 trades. This is the STRETCH test — if it works, 4h MACD at 12:1 is a standalone portfolio strategy.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero (4h momentum shift to bullish).",
+        "close > EMA_50 (bullish trend confirmation on 4h).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero (4h momentum shift to bearish).",
+        "close < EMA_50 (bearish trend confirmation on 4h).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "EMA baseline: close vs EMA_50 for 4h structural trend",
+        "MACD confirmation: MACDh_12_26_9 zero-cross on 4h",
+        "ATR volatility: position sizing and stop/TP",
+        "4h timeframe: tail harvester at extreme R:R",
+        "R:R 12:1 — validated ratio, targeting major 3-5 day ETH moves",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 12:1. Needs 7.7% win rate to break even after fees.",
+        "Tail harvester: do 4h MACD signals capture the full multi-day tail?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 24.0, "step": 3.0, "default": 18.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 on 4h — structural trend direction"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross on 4h — highest conviction MACD signal, targeting tail harvesting"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 18.0x TP — 12:1 R:R, 3-5 day ETH trend legs"}
+      ]
+    },
+    {
+      "name": "macd_1h_widestop_10to1",
+      "description": "MACD histogram zero-cross on ETH/1h with WIDER STOP: 2.0x ATR stop / 20.0x ATR TP (10:1 R:R). The RESCUE VARIANT. The existing MACD ACCEPTs use 1.5x stop. Hypothesis: some MACD zero-crosses are CORRECT momentum signals, but the initial momentum bar triggers a brief countertrend pullback (liquidity sweep, stop hunt) before the momentum resumes. At 1.5x stop, these trades are killed. At 2.0x stop, they SURVIVE the pullback and eventually ride the momentum. The wider stop also pushes R:R to 10:1 (vs existing 7:1 and 6:1). SAME LOGIC as the Supertrend ultra-wide thesis: wider stop + higher R:R rescues premature stops while each rescued winner produces significantly more profit. If PF > 1.712, the wider stop IMPROVES on the champion MACD ACCEPT. If PF 1.3-1.7, wider stops help but not transformatively. If PF < 1.0, MACD momentum is fast-acting and the extra 0.5x ATR just lets bad trades bleed.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero (momentum shift to bullish).",
+        "close > EMA_50 (bullish trend confirmation).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero (momentum shift to bearish).",
+        "close < EMA_50 (bearish trend confirmation).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "EMA baseline: close vs EMA_50 for trend direction",
+        "MACD confirmation: MACDh_12_26_9 zero-cross",
+        "ATR volatility: WIDER 2.0x stop — testing premature-stop rescue",
+        "1h timeframe: proven for MACD, testing wider stop impact",
+        "R:R 10:1 — higher than existing 7:1 and 6:1 ACCEPTs",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees.",
+        "Wide-stop rescue: do countertrend pullbacks after MACD zero-cross get absorbed?"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.25, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 15.0, "max": 25.0, "step": 2.5, "default": 20.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 — trend direction, same as existing MACD ACCEPTs"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross — same signal, testing wider stop impact"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x WIDE stop / 20.0x TP — 10:1 R:R, testing if wider stop rescues premature stops"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

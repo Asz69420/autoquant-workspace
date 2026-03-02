@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "delta flow volume profile [ualgo]|ualgo",
+    "script_id": "IvPoI8ii",
+    "name": "Delta Flow Volume Profile [UAlgo]",
+    "author": "UAlgo",
+    "indicator_record_path": "artifacts/indicators/20260303/indicator-20260303-7048d24e439b.indicator_record.json",
+    "first_seen_ts": "2026-03-02T23:19:52.311489+00:00",
+    "sources": [
+      "trending"
+    ]
+  },
+  {
+    "tv_key": "premarket sts|alexmlntrading",
+    "script_id": "cN08Zl0x",
+    "name": "PREMARKET STS",
+    "author": "AlexMLNtrading",
+    "indicator_record_path": "artifacts/indicators/20260303/indicator-20260303-e7165546598f.indicator_record.json",
+    "first_seen_ts": "2026-03-02T23:19:51.256151+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "machine learning - lorentzian knn classifier|mark_novak",
     "script_id": "x2AYq2Kv",
     "name": "Machine Learning - Lorentzian KNN Classifier",
@@ -8,6 +30,7 @@
     "first_seen_ts": "2026-03-02T21:34:52.593397+00:00",
     "sources": [
       "top",
+      "librarian",
       "librarian",
       "librarian",
       "librarian",
@@ -33,6 +56,7 @@
       "librarian",
       "librarian",
       "librarian",
+      "librarian",
       "librarian"
     ]
   },
@@ -45,6 +69,7 @@
     "first_seen_ts": "2026-03-02T21:19:52.047311+00:00",
     "sources": [
       "top",
+      "librarian",
       "librarian",
       "librarian",
       "librarian",

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-e7165546598f",
+  "created_at": "2026-03-02T23:19:50.447216Z",
+  "tv_ref": "tradingview:cN08Zl0x",
+  "url": "https://www.tradingview.com/script/cN08Zl0x/",
+  "name": "PREMARKET STS",
+  "author": "AlexMLNtrading",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "3d2db05e0e9abe09597f5e91ad757d7910142a7b024222f183e32a8f28aff25a",
+  "truncated": false
+}

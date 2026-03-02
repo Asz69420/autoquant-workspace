@@ -211,3 +211,55 @@ If PF decreases: some winners needed that extra room and a 1.0 ATR stop would ha
 ### Expected: v2b (1.25 stop) is the winner — PF > 1.4, DD stays under 12%.
 
 ---
+
+## Entry 008 — v2c Breakthrough: #2 Strategy Found (2026-03-03)
+
+### Results
+- **v2c (1.0 stop, 10 TP) ETH 4h: PF 1.892, DD 12.3%, 84 trades, 62.5% return** — NEW #2 STRATEGY
+- v2a (1.0 stop, 12 TP) ETH 4h: PF 1.735, DD 11.4%, 80 trades, 46.4% return — strong
+- v2b (1.25 stop, 12 TP) ETH 4h: PF 1.436, DD 11.7%, 80 trades, 24.9% return — clearly worse
+- 1h confirmed dead again: best was v2a at PF 1.128, v2c at 0.856 (negative return)
+
+### Regime Breakdown (the real story)
+| Variant | Trending PF | Ranging PF | Transitional PF |
+|---|---|---|---|
+| v2c (winner) | 1.636 | 1.855 | **2.986** |
+| v2a | 1.768 | 1.544 | 2.220 |
+| v2b | 1.582 | 1.338 | 1.286 |
+| v1 (baseline) | 1.453 | 1.222 | 1.613 |
+
+v2c is ALL-regime profitable with transitional PF 2.986 — the highest single-regime PF of any strategy ever tested.
+
+### My Prediction Was Wrong (and why that matters)
+I predicted v2b (moderate 1.25 ATR stop) would be the winner. Instead v2c (tightest both ends) won decisively. What I got wrong:
+
+1. **"Some winners need breathing room"** — FALSE. The reversal exit fires early enough that winners don't dip 1.0+ ATR before being captured. The 1.0-1.25 ATR zone is mostly losers bouncing before dying.
+2. **"Reducing TP would shrink the 3 biggest wins"** — WRONG DIRECTION. TP 10 beat TP 12. The winners that ran past 10 ATR were a tiny minority. Many more trades ran to ~10 ATR then reversed back down and exited via reversal at lower profit. TP 10 captures them at peak.
+
+### Key Insight: The Optimization Gradient
+v1 → v2c progression: PF 1.385 → 1.735 → 1.892. Each tightening step improved PF. The gradient hasn't flattened yet. This means there MAY be more juice — or we're about to hit a cliff where too-tight parameters start killing winners.
+
+**The reversal exit is the strategy's soul.** Stops and TPs are just damage limiters. The tighter they are, the less damage losers do, as long as winners survive to reach the reversal exit.
+
+### Strategy Rankings Update
+1. Supertrend 8:1 tail harvester — PF 1.921, DD 10.9%, 85 trades, all regimes
+2. **Vortex Transition v2c — PF 1.892, DD 12.3%, 84 trades, all regimes** ← NEW
+3. Supertrend ultra ADX10 8:1 — PF 1.907, DD 12.9%, 99 trades
+4. MACD 7:1 tail harvester — PF 1.712, DD 7.5%, 161 trades
+
+v2c and Supertrend are essentially tied. But v2c has BETTER transitional alpha (2.986 vs Supertrend's ~1.3). They're complementary — Supertrend is the all-weather workhorse, Vortex is the transitional specialist.
+
+### What I'm Testing Next (v3)
+1. **v3a (0.75 ATR stop, 10 TP)** — Push stop tighter. Find the floor. If PF > 2.0: we haven't peaked. If PF drops: 1.0 ATR is the optimum.
+2. **v3b (1.0 ATR stop, 8 TP)** — Push TP tighter. Find the TP floor. If PF > 2.0: more winners converting to TP hits. If PF drops: 10 ATR is the optimum.
+3. **v2c on BTC** — Our best signal on the untested asset. 706+ outcomes, 0 BTC ACCEPTs. But every prior BTC test used weaker strategies. If BTC fails with our strongest signal, the "ETH only" thesis is confirmed beyond doubt.
+
+### Hypotheses
+- H1: 0.75 ATR stop kills some winners (prediction: PF drops to ~1.6, proving 1.0 is the floor)
+- H2: TP 8 captures more winners at peak (prediction: PF rises to ~1.95, slight improvement)
+- H3: BTC with v2c params will be profitable but weaker than ETH (prediction: PF 1.1-1.3)
+
+### Dead Indicator List (cumulative)
+STIFFNESS, ADX-as-filter, QQE (mean-reversion), Donchian touches
+
+---

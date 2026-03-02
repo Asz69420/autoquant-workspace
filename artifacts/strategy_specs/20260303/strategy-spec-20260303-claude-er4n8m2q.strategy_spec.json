@@ -1,0 +1,250 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-er4n8m2q",
+  "created_at": "2026-03-03T14:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The ema_rsi_atr ACCEPT (PF=1.327) has a STUNNING ranging PF of 2.864 — the highest ranging performance of any ACCEPT. But it runs in ALL regimes, dragging overall PF down. The existing ACCEPT uses standard 1.5x ATR stop with 10:1 TP. THESIS: In ranging markets, price mean-reverts — the 'wrong side' of a trade is apparent FAST. A TIGHTER stop (1.0x ATR) should CUT LOSSES FASTER while the 8:1 TP target (8.0x ATR) captures the full swing to the opposite side of the range. The math: if mean-reversion is the mechanism, most losing trades fail within 1x ATR (they're on the wrong side). Widening the stop to 1.5x just lets losing trades bleed longer. Tightening to 1.0x kills bad trades sooner while keeping winners (which move away from entry quickly in mean-reversion). Also test on 15m — never backtested with ema_rsi_atr. On 15m, the EMA trend is shorter-lived, RSI oscillates faster, and trade duration is compressed. If mean-reversion holds on 15m, we get MORE trades with FASTER turnaround. Expected: similar PF (1.3-1.5) but 2-3x more trades, improving portfolio Sharpe. INVALIDATION: If 1.0x ATR stop produces < 1.0 PF across all variants, the existing 1.5x stop is structurally necessary — some winners need the extra room to develop.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["15m", "1h", "4h"],
+  "variants": [
+    {
+      "name": "ema_rsi_atr_tight_15m_8to1",
+      "description": "EMA+RSI+ATR on ETH/15m with tight stop: 1.0x ATR stop / 8.0x ATR TP (8:1 R:R). The SPEED variant. On 15m, EMA_9 vs EMA_50 crosses happen frequently. RSI_14 oscillates more aggressively, giving more entry signals. With 1.0x ATR stop, losers are killed within 1-2 bars. Winners on 15m mean-reversion should travel 3-5 bars to hit 8x ATR TP. Expected: 200-400 trades (vs 162 for the 1h ACCEPT). If PF holds at 1.2+, this is a high-frequency ranging strategy. Never backtested: ema_rsi_atr on 15m is completely unexplored territory.",
+      "entry_long": [
+        "close > EMA_50 (bullish trend baseline).",
+        "RSI_14 > 50 (momentum confirms upside direction).",
+        "ATR_14 volatility gate (minimum volatility for viable trade).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "close < EMA_50 (bearish trend baseline).",
+        "RSI_14 < 50 (momentum confirms downside direction).",
+        "ATR_14 volatility gate.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 15m",
+        "EMA baseline: close vs EMA_50 for trend direction",
+        "RSI confirmation: RSI_14 > 50 for long, < 50 for short",
+        "ATR volatility gate: minimum volatility threshold",
+        "Tight stop: 1.0x ATR — fast loss-cutting for mean-reversion",
+        "R:R 8:1 — captures full range swing on 15m",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "Tight-stop thesis: do bad trades fail within 1.0x ATR in ranging markets?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 12.0, "step": 2.0, "default": 8.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 — trend direction filter for 15m ranging entries"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 above/below 50 — momentum confirmation aligned with EMA direction"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x TIGHT stop / 8.0x TP — 8:1 R:R, fast loss-cutting in mean-reversion"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_tight_1h_8to1",
+      "description": "EMA+RSI+ATR on ETH/1h with tight stop: 1.0x ATR stop / 8.0x ATR TP (8:1 R:R). The CONTROLLED COMPARISON variant. The existing ACCEPT uses 1.5x stop / 10:1 TP on 1h and gets PF=1.327 with ranging PF=2.864. This variant tests whether a TIGHTER stop (1.0x) with LOWER R:R (8:1) produces better overall PF by cutting losses faster. Direct comparison: same template, same timeframe, same asset — only stop/TP differs. If PF > 1.327, tight stops ARE the improvement. If PF < 1.0, the extra 0.5x ATR breathing room is structurally necessary for this template.",
+      "entry_long": [
+        "close > EMA_50 (bullish trend baseline).",
+        "RSI_14 > 50 (momentum confirms upside direction).",
+        "ATR_14 volatility gate (minimum volatility for viable trade).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "close < EMA_50 (bearish trend baseline).",
+        "RSI_14 < 50 (momentum confirms downside direction).",
+        "ATR_14 volatility gate.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "EMA baseline: close vs EMA_50 for trend direction",
+        "RSI confirmation: RSI_14 > 50 for long, < 50 for short",
+        "ATR volatility gate: minimum volatility threshold",
+        "Tight stop: 1.0x ATR — controlled comparison vs existing 1.5x ACCEPT",
+        "R:R 8:1 — lower than existing 10:1, testing win-rate improvement",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "Controlled comparison: 1.0x/8:1 vs existing ACCEPT's 1.5x/10:1"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 12.0, "step": 2.0, "default": 8.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 — identical to existing ACCEPT's trend filter"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 above/below 50 — standard momentum gate"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x TIGHT stop / 8.0x TP — 8:1 R:R, testing if tighter stop improves PF vs existing 1.5x/10:1 ACCEPT"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_tight_4h_8to1",
+      "description": "EMA+RSI+ATR on ETH/4h with moderate stop: 1.25x ATR stop / 10.0x ATR TP (8:1 R:R). The HIGHER TIMEFRAME variant. On 4h, intrabar noise is larger (4 hours of price action per bar), so the stop is slightly wider at 1.25x ATR to avoid false stops on 4h noise. The TP at 10.0x ATR targets multi-day ETH swings. Expected: 40-80 trades. On 4h, the EMA_50 represents 200 hours (~8 days) of price history — a genuine medium-term trend indicator. RSI on 4h is smoother, producing fewer but higher-quality momentum signals. If this variant produces PF > 1.3, ema_rsi_atr works across ALL tested timeframes (15m/1h/4h), suggesting the edge mechanism (trend+momentum+volatility) is timeframe-invariant.",
+      "entry_long": [
+        "close > EMA_50 (bullish trend baseline on 4h — 200-hour trend).",
+        "RSI_14 > 50 (momentum confirms upside direction on 4h).",
+        "ATR_14 volatility gate (minimum volatility for 4h trade viability).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "close < EMA_50 (bearish trend baseline on 4h).",
+        "RSI_14 < 50 (momentum confirms downside direction on 4h).",
+        "ATR_14 volatility gate.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "EMA baseline: close vs EMA_50 for 4h trend direction",
+        "RSI confirmation: RSI_14 — smoother on 4h, higher-quality signals",
+        "ATR volatility gate: 4h ATR for viable swing size",
+        "Moderate stop: 1.25x ATR — wider than 15m/1h to accommodate 4h noise",
+        "R:R 8:1 — multi-day swing target",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.25x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "Higher-timeframe thesis: does ema_rsi_atr edge persist on 4h?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.25x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.25},
+        {"name": "tp_atr_mult", "min": 7.5, "max": 15.0, "step": 2.5, "default": 10.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.25,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 on 4h — 200-hour trend direction, medium-term structural filter"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 on 4h — smoother oscillation, fewer false signals than 15m/1h"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.25x stop / 10.0x TP — 8:1 R:R, adapted stop width for 4h noise profile"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

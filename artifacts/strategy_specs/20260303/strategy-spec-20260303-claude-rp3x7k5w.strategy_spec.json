@@ -1,0 +1,244 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-rp3x7k5w",
+  "created_at": "2026-03-03T14:05:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "RSI pullback has 1 ACCEPT at 8:1 R:R on 1h (PF=1.442, 156 trades, ranging PF=1.795). THESIS: The pullback mechanism behaves DIFFERENTLY across timeframes. On 15m, pullbacks are RAPID — driven by order flow imbalance and liquidity sweeps that resolve in 1-3 bars. On 4h, pullbacks are STRUCTURAL — representing genuine repositioning after multi-day trend continuation. This creates a natural R:R LADDER: shorter timeframes need lower R:R (quicker resolution) while longer timeframes support higher R:R (longer trend continuation after the pullback). Testing: 8:1 on 15m (fast snap-back), 10:1 on 1h (proven timeframe with higher R:R), 12:1 on 4h (structural pullback, maximum R:R). The diagnostic question: does PF INCREASE with timeframe? If yes, the mechanism is genuine and 4h pullbacks are the highest-quality signals. If PF is constant across timeframes, the edge is timeframe-invariant and we should maximize trade count (15m). If PF decreases with timeframe, 1h is the sweet spot and the mechanism doesn't scale. INVALIDATION: If all three variants produce PF < 1.0, the RSI pullback edge has been arbitraged away since the original ACCEPT was generated.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["15m", "1h", "4h"],
+  "variants": [
+    {
+      "name": "rsi_pullback_15m_8to1_snapback",
+      "description": "RSI pullback on ETH/15m at 8:1 R:R. The SPEED variant. On 15m, RSI oscillates rapidly — a pullback below 30 (oversold) and recovery above 30 happens frequently as intrabar noise pushes RSI to extremes. With EMA_50 as trend filter, only pullbacks in the direction of the 15m trend are taken. At 1.5x ATR stop, the position is killed quickly if the pullback was actually a reversal (not just noise). At 8:1 TP (12.0x ATR), the target is a 2-4 hour continuation of the 15m trend. Expected: 300-500 trades. High trade count + 8:1 R:R = robust statistical sample. If PF > 1.2, this is a viable high-frequency ranging strategy. Never backtested: rsi_pullback on 15m is completely unexplored.",
+      "entry_long": [
+        "close > EMA_50 (bullish trend — pullback in uptrend context).",
+        "RSI_14 crosses above oversold level (RSI recovery from pullback).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "close < EMA_50 (bearish trend — pullback in downtrend context).",
+        "RSI_14 crosses below overbought level (RSI rejection from pullback).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 15m",
+        "EMA baseline: close vs EMA_50 for trend direction",
+        "RSI confirmation: RSI_14 pullback recovery from oversold/overbought",
+        "ATR volatility: position sizing and stop/TP calculation",
+        "15m timeframe: fast pullback resolution, high trade count",
+        "R:R 8:1 — snap-back target for 15m pullbacks",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "15m snap-back: does the pullback resolve within 2-4 hours?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 16.0, "step": 2.0, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 — trend context filter, only take pullbacks in trend direction"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 pullback recovery — crosses above oversold (30) for longs, below overbought (70) for shorts"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 12.0x TP — 8:1 R:R on 15m, targeting fast snap-back"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_1h_10to1_extended",
+      "description": "RSI pullback on ETH/1h at 10:1 R:R. The EXTENDED R:R variant on the proven timeframe. The existing ACCEPT runs at 8:1 (PF=1.442). Pushing to 10:1 tests whether the 1h pullback mechanism supports larger moves. At 10:1 R:R with 1.5x ATR stop, the TP is 15.0x ATR — targeting the FULL continuation of the trend leg after the pullback resolves. If PF > 1.442, the original 8:1 is leaving money on the table. If PF drops to ~1.2, the extra 2x ATR of TP target catches diminishing returns. Expected: ~120-150 trades (slightly fewer than 156 because some 8:1 winners don't reach 10:1).",
+      "entry_long": [
+        "close > EMA_50 (bullish trend — pullback in uptrend context).",
+        "RSI_14 crosses above oversold level (RSI recovery from pullback).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "close < EMA_50 (bearish trend — pullback in downtrend context).",
+        "RSI_14 crosses below overbought level (RSI rejection from pullback).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "EMA baseline: close vs EMA_50 for trend direction",
+        "RSI confirmation: RSI_14 pullback recovery",
+        "ATR volatility: position sizing and stop/TP",
+        "1h timeframe: proven for RSI pullback (existing ACCEPT at 8:1)",
+        "R:R 10:1 — testing if existing 8:1 ACCEPT is leaving money on the table",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (15.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees.",
+        "Extended R:R: does the 1h pullback mechanism support 10:1 TP?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 15.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 20.0, "step": 2.5, "default": 15.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 — identical to existing ACCEPT's trend filter"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 pullback recovery — same mechanism, testing extended TP"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 15.0x TP — 10:1 R:R, does the pullback support larger continuation?"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_4h_12to1_structural",
+      "description": "RSI pullback on ETH/4h at 12:1 R:R. The STRUCTURAL PULLBACK variant. On 4h, an RSI pullback to oversold represents 8+ hours of sustained selling pressure within an intact trend. This is NOT noise — it's institutional repositioning. When RSI recovers from this deep pullback, it signals that buying pressure has absorbed the selling wave. At 12:1 R:R with 1.5x ATR stop, each winner captures a multi-day trend continuation (18.0x ATR). Expected: 30-60 trades. Few trades but highest conviction per signal. If PF > 1.3, 4h RSI pullbacks are the highest-quality version of this template. 12:1 R:R is validated (RSI slingshot PF=1.270 at 12:1).",
+      "entry_long": [
+        "close > EMA_50 (bullish structural trend on 4h).",
+        "RSI_14 crosses above oversold level (recovery from structural pullback).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "close < EMA_50 (bearish structural trend on 4h).",
+        "RSI_14 crosses below overbought level (rejection from structural rally).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "EMA baseline: close vs EMA_50 for structural 4h trend",
+        "RSI confirmation: RSI_14 structural pullback recovery",
+        "ATR volatility: 4h ATR for position sizing",
+        "4h timeframe: structural pullbacks, highest conviction signals",
+        "R:R 12:1 — validated ratio (RSI slingshot PF=1.270 at 12:1)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 12:1. Needs 7.7% win rate to break even after fees.",
+        "Structural pullback thesis: are 4h pullbacks the highest-quality RSI signal?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 24.0, "step": 3.0, "default": 18.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "close vs EMA_50 on 4h — structural trend direction over 200 hours"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 on 4h — structural pullback recovery, highest-conviction signal quality"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 18.0x TP — 12:1 R:R, multi-day trend continuation target"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

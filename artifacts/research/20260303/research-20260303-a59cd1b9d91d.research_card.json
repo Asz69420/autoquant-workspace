@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-a59cd1b9d91d",
+  "created_at": "2026-03-02T23:19:50.819718Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/cN08Zl0x/",
+  "title": "PREMARKET STS",
+  "author": "AlexMLNtrading",
+  "summary_bullets": [
+    "Top catalog indicator: PREMARKET STS by AlexMLNtrading."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: PREMARKET STS by AlexMLNtrading.",
+      "note": "Meaning: Top catalog indicator: PREMARKET STS by AlexMLNtrading."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-a59cd1b9d91d.raw.txt",
+  "sha256": "fb26ff28c0f07139688f1b596664d9eed2203cccccbe551c5dc231754f5a3574",
+  "truncated": false
+}

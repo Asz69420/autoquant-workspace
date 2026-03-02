@@ -1,5 +1,5 @@
 {
-  "top_cursor": 3448,
+  "top_cursor": 3488,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -97,7 +97,9 @@
     "orb scalper pro (9:30 ny)|stonktrader4",
     "footprint delta divergence|bying369",
     "range expansion x|outskilledya",
-    "machine learning - lorentzian knn classifier|mark_novak"
+    "machine learning - lorentzian knn classifier|mark_novak",
+    "premarket sts|alexmlntrading",
+    "delta flow volume profile [ualgo]|ualgo"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -196,7 +198,9 @@
     "dUOLKImL",
     "yjkYEJS3",
     "JjEZRUBP",
-    "x2AYq2Kv"
+    "x2AYq2Kv",
+    "cN08Zl0x",
+    "IvPoI8ii"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",
@@ -208,6 +212,7 @@
     "[blackcat] l2 main force trend|blackcat1402",
     "initial value breakout [omegatools]|omegatools",
     "adaptive quasimodo + confluence engine - phenlabs|phenlabs",
-    "casper smc: 5m orb + retest|hoosn1ck"
+    "casper smc: 5m orb + retest|hoosn1ck",
+    "delta flow volume profile [ualgo]|ualgo"
   ]
 }
