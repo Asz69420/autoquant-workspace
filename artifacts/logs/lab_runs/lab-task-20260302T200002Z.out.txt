@@ -1,0 +1,28 @@
+﻿{
+    "event":  "LAB_SUMMARY",
+    "created_at":  "2026-03-02T20:00:22.7902501Z",
+    "bundles_processed":  0,
+    "promotions_processed":  0,
+    "refinements_run":  0,
+    "new_candidates_count":  100,
+    "candidates_ingested":  0,
+    "candidates_reaching_refinement":  0,
+    "candidates_passing_gate":  0,
+    "directive_notes_seen":  1,
+    "directive_variants_emitted":  0,
+    "directive_backfill_specs_generated":  0,
+    "active_library_size":  500,
+    "new_indicators_added":  0,
+    "skipped_indicators_dedup":  141,
+    "errors_count":  0,
+    "dry_run":  false,
+    "insight_new":  0,
+    "insight_processed":  0,
+    "insight_failed":  0,
+    "recombine_created":  0,
+    "recombine_bundle_path":  "",
+    "starvation_cycles":  138,
+    "drought_cycles":  47,
+    "directive_loop_stall_cycles":  44
+}
+
