@@ -22,6 +22,32 @@ function Convert-ToCompactText([string]$rawText, [int]$maxChars = 3500) {
   return $t
 }
 
+function Normalize-JournalEntry([string]$text) {
+  if ([string]::IsNullOrWhiteSpace($text)) { return "" }
+
+  $lines = New-Object System.Collections.Generic.List[string]
+  foreach ($line in ($text -split "`r?`n")) {
+    [void]$lines.Add([string]$line)
+  }
+
+  while ($lines.Count -gt 0 -and [string]::IsNullOrWhiteSpace($lines[0])) {
+    $lines.RemoveAt(0)
+  }
+
+  while ($lines.Count -gt 0 -and [string]::IsNullOrWhiteSpace($lines[$lines.Count - 1])) {
+    $lines.RemoveAt($lines.Count - 1)
+  }
+
+  while ($lines.Count -gt 0 -and $lines[$lines.Count - 1] -match '^\s*---\s*$') {
+    $lines.RemoveAt($lines.Count - 1)
+    while ($lines.Count -gt 0 -and [string]::IsNullOrWhiteSpace($lines[$lines.Count - 1])) {
+      $lines.RemoveAt($lines.Count - 1)
+    }
+  }
+
+  return ($lines -join "`n")
+}
+
 try {
   $effectiveSummary = $Summary
 
@@ -40,9 +66,9 @@ try {
         }
 
         if (-not [string]::IsNullOrWhiteSpace($lastSection)) {
-          $effectiveSummary = $lastSection
+          $effectiveSummary = Normalize-JournalEntry -text $lastSection
         } else {
-          $effectiveSummary = $raw
+          $effectiveSummary = Normalize-JournalEntry -text $raw
         }
       }
     }
