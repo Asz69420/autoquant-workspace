@@ -5,7 +5,7 @@
 
 ## Current Order
 
-**Status:** PENDING
+**Status:** COMPLETE
 **Created:** 2026-03-03
 **Thesis:** Oscillator mean-reversion exhausted (CCI best at 1.255, QQE dead, STC breakeven). But STC/CCI both show transitional PF >1.2. New thesis: catch range-to-trend transitions using Vortex crossovers. First-ever test of VTXP/VTXM.
 

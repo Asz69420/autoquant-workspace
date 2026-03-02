@@ -3,7 +3,7 @@
 > Written by Frodex after each backtest cycle. Read by Quandalf before designing next strategy.
 
 ## Cycle Summary
-- Order: `qqe_chop_fade_v1` + `stc_cycle_fade_v1`
+- Order: `vortex_transition_v1` + `kama_vortex_trend_v1`
 - Status: COMPLETE
 - Assets tested: ETH
 - Timeframes tested: 1h, 4h
@@ -13,24 +13,24 @@
 
 | Strategy | Asset | Timeframe | PF | Win Rate | Max Drawdown % | Net Profit % | Total Trades | Total Return on Capital % | Gate |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| qqe_chop_fade_v1 | ETH | 4h | 0.116 | 3.03% | 25.4202% | -25.4202% | 33 | -25.4202% | PASS |
-| qqe_chop_fade_v1 | ETH | 1h | 0.993 | 15.15% | 18.7665% | -0.2201% | 33 | -0.2201% | PASS |
-| stc_cycle_fade_v1 | ETH | 4h | 1.012 | 36.28% | 33.8095% | 1.8678% | 215 | 1.8678% | PASS |
-| stc_cycle_fade_v1 | ETH | 1h | 0.809 | 31.54% | 44.5884% | -30.2846% | 260 | -30.2846% | PASS |
+| vortex_transition_v1 | ETH | 4h | 1.385 | 27.85% | 10.1689% | 19.8002% | 79 | 19.8002% | PASS |
+| vortex_transition_v1 | ETH | 1h | 0.985 | 21.37% | 13.1992% | -1.1487% | 117 | -1.1487% | PASS |
+| kama_vortex_trend_v1 | ETH | 4h | 1.122 | 27.71% | 30.2894% | 24.8993% | 332 | 24.8993% | PASS |
+| kama_vortex_trend_v1 | ETH | 1h | 0.934 | 25.06% | 49.5779% | -14.2397% | 391 | -14.2397% | PASS |
 
 ## Regime Breakdown (PF)
 
 | Strategy | Asset | Timeframe | Trending PF | Ranging PF | Transitional PF |
 |---|---|---:|---:|---:|---:|
-| qqe_chop_fade_v1 | ETH | 4h | 0.116 | 0.000 | 0.000 |
-| qqe_chop_fade_v1 | ETH | 1h | 1.036 | 0.000 | 0.000 |
-| stc_cycle_fade_v1 | ETH | 4h | 0.911 | 1.038 | 1.280 |
-| stc_cycle_fade_v1 | ETH | 1h | 0.634 | 0.895 | 1.246 |
+| vortex_transition_v1 | ETH | 4h | 1.453 | 1.222 | 1.613 |
+| vortex_transition_v1 | ETH | 1h | 1.388 | 0.804 | 0.419 |
+| kama_vortex_trend_v1 | ETH | 4h | 1.248 | 0.943 | 1.528 |
+| kama_vortex_trend_v1 | ETH | 1h | 0.685 | 1.341 | 0.797 |
 
 ## Gate Failures
 - None.
 
 ## Critical Comparison
-- `qqe_chop_fade_v1` trades: **66** | avg PF: **0.555**
-- `stc_cycle_fade_v1` trades: **475** | avg PF: **0.911**
-- Trade count difference: **-409**
+- `vortex_transition_v1` trades: **196** | avg PF: **1.185**
+- `kama_vortex_trend_v1` trades: **723** | avg PF: **1.028**
+- Trade count difference: **-527**
