@@ -60,43 +60,11 @@ claude -p "$prompt" --allowedTools "Read,Write,Glob,Grep" 2>&1 | Tee-Object -App
 # Auto-promote any new specs to pipeline
 powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\promote-claude-specs.ps1" 2>&1 | Tee-Object -Append -FilePath $logFile
 
-function Convert-ToOperatorNote([string]$rawText, [int]$maxChars = 420) {
-  if ([string]::IsNullOrWhiteSpace($rawText)) { return "" }
-  $t = $rawText -replace '(?m)^\s{0,3}#{1,6}\s*', ''
-  $t = $t -replace '[*_`>\[\]\|]', ' '
-  $t = $t -replace '\s+', ' '
-  $t = $t.Trim()
-  if ($t.Length -eq 0) { return "" }
-
-  $sentences = @($t -split '(?<=[\.!\?])\s+') | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-  if ($sentences.Count -eq 0) { $sentences = @($t) }
-
-  $picked = @()
-  foreach ($s in $sentences) {
-    $candidate = $s.Trim()
-    if ($candidate.Length -lt 20) { continue }
-    $picked += $candidate
-    if ($picked.Count -ge 3) { break }
-  }
-  if ($picked.Count -eq 0) { $picked = @($sentences[0].Trim()) }
-
-  $msg = ($picked -join ' ')
-  if ($msg.Length -gt $maxChars) { $msg = $msg.Substring(0, $maxChars - 3) + '...' }
-  return $msg
-}
-
-# Check if Deep Iteration Log has new content and DM Asz (natural-language operator note)
 $iterLog = "$ROOT\docs\claude-reports\DEEP_ITERATION_LOG.md"
 if (Test-Path $iterLog) {
-  $content = Get-Content $iterLog -Raw -ErrorAction SilentlyContinue
-  if ($content -and $content.Length -gt 50) {
-    $snippet = $content.Substring(0, [Math]::Min(1600, $content.Length))
-    $note = Convert-ToOperatorNote $snippet
-    if (-not [string]::IsNullOrWhiteSpace($note)) {
-      $msg = "🧙 Deep iterator note: $note"
-      powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
-    }
-  }
+  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+    -TaskLabel "deep iterator cycle" `
+    -SourceFile $iterLog | Out-Null
 }
 
 Write-Output "[$timestamp] Deep Iterator complete." | Tee-Object -Append -FilePath $logFile

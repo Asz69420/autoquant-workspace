@@ -49,3 +49,12 @@ Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $log
 
 # Auto-promote generated specs into pipeline
 powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\promote-claude-specs.ps1"
+
+$recentSpecs = @(
+  Get-ChildItem "$ROOT\artifacts\claude-specs\*.strategy_spec.json" -ErrorAction SilentlyContinue |
+  Where-Object { $_.LastWriteTime -ge (Get-Date).AddHours(-3) }
+)
+$summary = "Generated $($recentSpecs.Count) spec file(s) in this cycle."
+powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+  -TaskLabel "generator cycle" `
+  -Summary $summary | Out-Null

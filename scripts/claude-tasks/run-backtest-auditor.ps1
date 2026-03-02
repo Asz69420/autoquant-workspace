@@ -54,3 +54,10 @@ python scripts/log_event.py --agent "claude-auditor" --action "backtest_audit" -
 Write-Output "[$timestamp] Starting Backtest Auditor..." | Tee-Object -FilePath $logFile -Append
 claude -p $prompt --allowedTools "Read,Write,Bash(python scripts/log_event.py*)" 2>&1 | Tee-Object -FilePath $logFile -Append
 Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
+
+$auditFile = "$ROOT\docs\claude-reports\BACKTEST_AUDIT.md"
+if (Test-Path $auditFile) {
+  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+    -TaskLabel "audit cycle" `
+    -SourceFile $auditFile | Out-Null
+}

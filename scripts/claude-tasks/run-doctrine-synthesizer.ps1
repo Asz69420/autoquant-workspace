@@ -37,3 +37,10 @@ python scripts/log_event.py --agent "claude-advisor" --action "doctrine_synthesi
 Write-Output "[$timestamp] Starting Doctrine Synthesizer..." | Tee-Object -FilePath $logFile -Append
 claude -p $prompt --allowedTools "Read,Write,Bash(python scripts/log_event.py*)" 2>&1 | Tee-Object -FilePath $logFile -Append
 Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
+
+$proposedDoctrine = "$ROOT\docs\claude-reports\DOCTRINE_PROPOSED.md"
+if (Test-Path $proposedDoctrine) {
+  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+    -TaskLabel "doctrine cycle" `
+    -SourceFile $proposedDoctrine | Out-Null
+}
