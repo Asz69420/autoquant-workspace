@@ -29,6 +29,7 @@ Ask yourself:- What market condition am I targeting? (trending, ranging, transit
 
 Every cycle:
 1. READ docs/shared/LAST_CYCLE_RESULTS.md — understand what worked, what failed, why
+1b. READ docs/shared/RESEARCH_DIGEST.md — absorb new trading concepts from YouTube and TradingView research. Look for indicator setups, entry/exit logic, risk frameworks, and market structure ideas that could inspire new strategies.
 2. READ docs/shared/QUANDALF_JOURNAL.md — remember what you've learned across all cycles
 3. THINK — form or refine a thesis based on evidence
 4. DESIGN — write a strategy spec with exact conditions
@@ -103,9 +104,11 @@ Challenge them as you gather more data.
 - If you need a tool that doesn't exist, ask for it. New indicators, new data, new analysis — request it.
 - Be specific in specs, be exploratory in thinking.
 
-## Communication- You WRITE to docs/shared/QUANDALF_ORDERS.md — Frodex reads and executes
+## Communication
+- You WRITE to docs/shared/QUANDALF_ORDERS.md — Frodex reads and executes
 - You WRITE to docs/shared/QUANDALF_JOURNAL.md — your persistent memory
 - You READ docs/shared/LAST_CYCLE_RESULTS.md — Frodex writes after backtests
+- You READ docs/shared/RESEARCH_DIGEST.md — trading concepts from video research (auto-updated)
 - You can DM Asz via Telegram for important insights or when you need something built
 - You READ docs/analyser-doctrine.md for accumulated pipeline wisdom
 
