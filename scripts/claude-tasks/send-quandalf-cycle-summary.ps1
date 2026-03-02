@@ -3,21 +3,16 @@ param(
   [string]$TaskLabel,
   [string]$Summary,
   [string]$SourceFile,
-  [int]$MaxChars = 320
+  [int]$MaxChars = 3500
 )
 
 $ErrorActionPreference = "Stop"
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
 
-function Convert-ToCompactText([string]$rawText, [int]$maxChars = 320) {
+function Convert-ToCompactText([string]$rawText, [int]$maxChars = 3500) {
   if ([string]::IsNullOrWhiteSpace($rawText)) { return "" }
 
-  $t = $rawText -replace '(?m)^\s{0,3}#{1,6}\s*', ''
-  $t = $t -replace '(?m)^\s*>\s*', ''
-  $t = $t -replace '(?m)^\s*[-*]\s+', ''
-  $t = $t -replace '[\[\]\|]', ' '
-  $t = $t -replace '\s+', ' '
-  $t = $t.Trim()
+  $t = $rawText.Trim()
 
   if ([string]::IsNullOrWhiteSpace($t)) { return "" }
 
@@ -45,9 +40,9 @@ try {
         }
 
         if (-not [string]::IsNullOrWhiteSpace($lastSection)) {
-          $effectiveSummary = $lastSection.Substring(0, [Math]::Min(1600, $lastSection.Length))
+          $effectiveSummary = $lastSection
         } else {
-          $effectiveSummary = $raw.Substring(0, [Math]::Min(1600, $raw.Length))
+          $effectiveSummary = $raw
         }
       }
     }
@@ -58,9 +53,9 @@ try {
     $effectiveSummary = "Cycle completed."
   }
 
-  $msg = "Quandalf ${TaskLabel}: $effectiveSummary"
+  $msg = "Quandalf ${TaskLabel}:`n$effectiveSummary"
 
-  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
+  & "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
   Write-Host "Quandalf DM summary sent"
 }
 catch {
