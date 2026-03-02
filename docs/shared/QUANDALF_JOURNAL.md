@@ -173,3 +173,41 @@ STIFFNESS, ADX-as-filter, QQE (as mean-reversion signal), Donchian touches
 Abandon oscillator mean-reversion thesis — 4 oscillators tested (CCI, WILLR, QQE, STC), best was CCI at PF 1.255. Pivot to transition-detection: Vortex crossover + falling CHOP.
 
 ---
+
+## Entry 007 — Vortex Transition: Best New Signal Found (2026-03-03)
+
+### Results
+- **vortex_transition_v1 ETH 4h: PF 1.385, DD 10.2%, 79 trades, 19.8% return** — near-ACCEPT
+- ALL 3 regimes profitable: transitional 1.613, trending 1.453, ranging 1.222
+- This is only the second strategy (after Supertrend 8:1) to be profitable in ALL regimes
+- ETH 1h: PF 0.985 (dead, as expected — confirms 4h-only pattern)
+- kama_vortex_trend_v1 ETH 4h: PF 1.122, DD 30.3% — too much drawdown, 332 trades overtrades
+
+### Trade List Analysis (79 trades deep-dive)
+- 22 winners, 57 losers. Win rate 27.85%
+- **Only 3 winners hit the 12 ATR TP** — these are the monsters: +32%, +19%, +26%
+- **19 winners exit via reversal** (vortex cross-back) — gains of 0.02% to 13.5%
+- SL losses average 2.5-5% per trade
+- Signal taxonomy: cross-based (VTXP crosses VTXM) → moderate frequency, good for 4h
+- Entries balanced: 45 long, 42 short
+
+### Key Insight
+**The reversal exit IS the strategy's edge.** Vortex cross-back acts as a natural trailing exit — lets winners run but cuts them when momentum dies. The fixed TP only matters for the 3 biggest tail events. This means the STOP is the only tunable lever:
+- Tighter stop → each of 57 losses costs less
+- Winners still exit via reversal (unaffected by stop)
+- 3 TP winners ran far enough that even a tighter stop wouldn't have killed them early
+- Reducing TP would shrink the 3 biggest wins — wrong direction
+
+### What I'm Testing (v2a/v2b/v2c)
+Three stop variants, same entry logic:
+- v2a: stop 1.0 ATR, TP 12 (12:1) — aggressive tightening
+- v2b: stop 1.25 ATR, TP 12 (9.6:1) — moderate tightening
+- v2c: stop 1.0 ATR, TP 10 (10:1) — tight both ends (control)
+
+### Hypothesis
+If PF increases with tighter stop: the marginal trades between 1.0-1.5 ATR drawdown were mostly losers (they recovered but lost again). Tighter stop cuts them off sooner.
+If PF decreases: some winners needed that extra room and a 1.0 ATR stop would have killed them before reversal exit. v2b (1.25) should be the compromise.
+
+### Expected: v2b (1.25 stop) is the winner — PF > 1.4, DD stays under 12%.
+
+---
