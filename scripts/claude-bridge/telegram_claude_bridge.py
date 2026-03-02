@@ -436,9 +436,11 @@ async def handle_plain_dm(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         await update.message.reply_text(f"🚫 Blocked — matched safety filter: `{threat}`")
         return
 
-    await update.message.reply_text("🔍 Querying Claude (read-only)…")
+    await update.message.reply_text("🔍 Querying Claude (DM mode)…")
     loop = asyncio.get_running_loop()
-    output = await loop.run_in_executor(None, run_claude, query, "Read,Glob,Grep")
+    # DM mode: allow writes only under docs/shared/
+    dm_allowed = "Read,Glob,Grep,Write(docs/shared/*)"
+    output = await loop.run_in_executor(None, run_claude, query, dm_allowed)
     log_command(USER_ID, "/cli(dm)", query, output, True)
     await update.message.reply_text(truncate(output))
 
