@@ -27,23 +27,6 @@ function Convert-ToCompactText([string]$rawText, [int]$maxChars = 320) {
   return $t
 }
 
-function Convert-MarkupToHtml([string]$text) {
-  if ([string]::IsNullOrWhiteSpace($text)) { return "" }
-
-  $escaped = [System.Security.SecurityElement]::Escape($text)
-  $escaped = $escaped -replace '`', ''
-
-  # Bold markers
-  $escaped = $escaped -replace '\*\*(.+?)\*\*', '<b>$1</b>'
-  $escaped = $escaped -replace '__(.+?)__', '<b>$1</b>'
-
-  # Italic markers
-  $escaped = $escaped -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
-  $escaped = $escaped -replace '(?<!_)_(.+?)(?<!_)_', '<i>$1</i>'
-
-  return $escaped
-}
-
 try {
   $effectiveSummary = $Summary
 
@@ -61,8 +44,7 @@ try {
     $effectiveSummary = "Cycle completed."
   }
 
-  $msgRaw = "🧙‍♂️ Quandalf ${TaskLabel}: $effectiveSummary"
-  $msg = Convert-MarkupToHtml -text $msgRaw
+  $msg = "🧙‍♂️ Quandalf ${TaskLabel}: $effectiveSummary"
 
   powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg | Out-Null
   Write-Host "Quandalf DM summary sent"

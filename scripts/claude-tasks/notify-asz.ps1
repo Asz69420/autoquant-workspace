@@ -30,15 +30,34 @@ if (-not $token -or -not $chatId) {
   exit 1
 }
 
+function Convert-MarkupToHtml([string]$text) {
+  if ([string]::IsNullOrWhiteSpace($text)) { return "" }
+
+  $escaped = [System.Security.SecurityElement]::Escape($text)
+  $escaped = $escaped -replace '`', ''
+
+  # Bold markers
+  $escaped = $escaped -replace '\*\*(.+?)\*\*', '<b>$1</b>'
+  $escaped = $escaped -replace '__(.+?)__', '<b>$1</b>'
+
+  # Italic markers
+  $escaped = $escaped -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
+  $escaped = $escaped -replace '(?<!_)_(.+?)(?<!_)_', '<i>$1</i>'
+
+  return $escaped
+}
+
 $url = "https://api.telegram.org/bot$token/sendMessage"
+$renderedMessage = Convert-MarkupToHtml -text $Message
 $body = @{
   chat_id = $chatId
-  text = $Message
+  text = $renderedMessage
   parse_mode = "HTML"
 } | ConvertTo-Json -Compress
 
 try {
-  Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json" | Out-Null
+  $response = Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json"
+  Write-Output $response
   Write-Host "DM sent to Asz"
 } catch {
   Write-Host "Failed to send DM: $_"
