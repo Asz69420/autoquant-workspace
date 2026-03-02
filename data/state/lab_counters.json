@@ -1,16 +1,16 @@
 ﻿{
-    "directive_loop_stall_cycles":  39,
+    "directive_loop_stall_cycles":  40,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-05e-7d8846f7-f5d08d61.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-710-136c101c-a42c1b07.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-54c-78dda5c6-e4d1f6d5.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-211-7f76705e-7d8846f7.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-d3c-f7003710-136c101c.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-w9d-9941854c-78dda5c6.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-4c8-e6b34211-7f76705e.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-81e-806c8d3c-f7003710.strategy_spec.json",
                                   "artifacts/strategy_specs/20260302/strategy-spec-20260302-ude-rp6k3w9d-9941854c.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-b2k-26bf44c8-e6b34211.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-a50-d2eee81e-806c8d3c.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-claude-rp6k3w9d.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-ude-er4n7b2k-26bf44c8.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-b2k-26bf44c8-e6b34211.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-02T07:10:09.1010702Z"
+    "updated_at":  "2026-03-02T07:25:30.8089950Z"
 }

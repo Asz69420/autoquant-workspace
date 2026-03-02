@@ -1,7 +1,7 @@
-﻿⚠️ Frodex ⏱ 10m 5s GPT5.3
+﻿⚠️ Frodex ⏱ 5m 41s GPT5.3
 ○───activity─────────────────────
-Grabbed : 0 videos
-Ingested : 0 specs
+Grabbed : 1 videos
+Ingested : 1 specs
 Backtested: 3 runs
 Variants : 0 new + 0 explore
 Refined : 0 iterations
