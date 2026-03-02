@@ -136,6 +136,49 @@ def apply_fill(raw_price: float, side: str, slippage_bps: float) -> tuple[float,
     return px, raw_price - px
 
 
+def calculate_position_size(equity: float, risk_pct: float, entry_price: float, stop_price: float, side: str) -> float:
+    """Calculate position size based on risk per trade and stop distance.
+
+    Args:
+        equity: Current account equity
+        risk_pct: Risk per trade as decimal (e.g., 0.01 = 1%)
+        entry_price: Entry price after slippage
+        stop_price: Stop loss price (None means use 2% of entry as default stop distance)
+        side: 'long' or 'short'
+
+    Returns:
+        Position size in units of the asset
+    """
+    if risk_pct <= 0 or equity <= 0 or entry_price <= 0:
+        return 1.0
+
+    # fallback
+    if stop_price is not None and stop_price > 0:
+        if side == 'long':
+            stop_distance = abs(entry_price - stop_price)
+        else:
+            stop_distance = abs(stop_price - entry_price)
+    else:
+        # Default: use 2% of entry price as stop distance
+        stop_distance = entry_price * 0.02
+
+    if stop_distance <= 0:
+        stop_distance = entry_price * 0.02
+
+    risk_amount = equity * risk_pct
+    qty = risk_amount / stop_distance
+
+    # Cap at 95% of equity / entry_price to prevent overleveraging
+    max_qty = (equity * 0.95) / entry_price
+    qty = min(qty, max_qty)
+
+    # Floor at a minimum meaningful size
+    if qty * entry_price < 1.0:
+        qty = 1.0 / entry_price
+
+    return round(qty, 8)
+
+
 def _min_trades_required(meta: dict, gates: dict) -> int:
     timeframe = str(meta.get('timeframe', '')).lower()
     start = meta.get('start')
