@@ -32,7 +32,7 @@ try {
 
   if ([string]::IsNullOrWhiteSpace($effectiveSummary) -and -not [string]::IsNullOrWhiteSpace($SourceFile)) {
     if (Test-Path $SourceFile) {
-      $raw = Get-Content $SourceFile -Raw -ErrorAction SilentlyContinue
+      $raw = Get-Content -Path $SourceFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
       if (-not [string]::IsNullOrWhiteSpace($raw)) {
         $effectiveSummary = $raw.Substring(0, [Math]::Min(1600, $raw.Length))
       }

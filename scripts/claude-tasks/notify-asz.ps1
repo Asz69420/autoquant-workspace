@@ -52,7 +52,8 @@ $body = @{
 $body = $body -replace '\\u003c', '<' -replace '\\u003e', '>'
 
 try {
-  $response = Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json"
+  $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+  $response = Invoke-RestMethod -Uri $url -Method Post -Body $bodyBytes -ContentType "application/json; charset=utf-8"
   Write-Output $response
   Write-Host "DM sent to Asz"
 } catch {
