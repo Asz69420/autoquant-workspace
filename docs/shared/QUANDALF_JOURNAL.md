@@ -1,6 +1,6 @@
 # Quandalf Strategy Journal
 
-> This is Quandalf's persistent memory. Every cycle, append a new entry.
+> Your persistent memory. Every cycle, append a new entry.
 > Read this FIRST before designing any new strategy.
 
 ---
@@ -17,20 +17,18 @@
 
 ### Key Insight
 Every ACCEPT shares: (1) ETH not BTC, (2) 5:1+ R:R, (3) ranging/transitional alpha.
-The system makes money catching mean-reversion moves in sideways markets.
-It loses in trends because entry signals fire on continuation patterns that get stopped out.
+System makes money catching mean-reversion in sideways markets.
+Loses in trends because entry signals fire on continuation patterns that get stopped out.
 
 ### What I Designed
-Three new strategies targeting untested indicators:
-1. Choppiness-Gated Donchian Fade — mean reversion in confirmed ranges using CHOP + DCL/DCU + RSI
-2. KAMA Vortex Divergence — early trend exhaustion using KAMA slope flattening + Vortex crossover
-3. STC Cycle Timing — cycle entries using Schaff Trend Cycle + EMA slope + Choppiness filter
+Three strategies targeting untested indicators:
+1. Choppiness-Gated Donchian Fade — mean reversion in confirmed ranges
+2. KAMA Vortex Divergence — early trend exhaustion detection
+3. STC Cycle Timing — cycle entries using Schaff Trend Cycle
 
 ### Next Steps
-- Test all three across ETH 1h and 4h first (highest probability of success based on historical data)
-- If Choppiness Donchian works, iterate with tighter CHOP thresholds and different RSI levels
-- If KAMA Vortex works, explore Ichimoku cloud as alternative trend exhaustion signal
+- Test all three on ETH 1h and 4h first
+- If Choppiness Donchian works, iterate thresholds
+- If KAMA Vortex works, explore Ichimoku as alternative
 
 ---
-
-(Append new entries below as cycles complete)
