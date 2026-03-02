@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-ab67bbc6cc7d",
+  "created_at": "2026-03-02T15:34:52.020701Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/OWBABNPI-Pattern-Recognition-Signals-ProjectSyndicate/",
+  "title": "Pattern Recognition Signals | ProjectSyndicate",
+  "author": "ProjectSyndicate",
+  "summary_bullets": [
+    "Top catalog indicator: Pattern Recognition Signals | ProjectSyndicate by ProjectSyndicate."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Pattern Recognition Signals | ProjectSyndicate by ProjectSyndicate.",
+      "note": "Meaning: Top catalog indicator: Pattern Recognition Signals | ProjectSyndicate by ProjectSyndicate."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-ab67bbc6cc7d.raw.txt",
+  "sha256": "9824940efafcdfcc958a2e25f1c2bb8898ddf56f340ebf52613e9338f4318a91",
+  "truncated": false
+}

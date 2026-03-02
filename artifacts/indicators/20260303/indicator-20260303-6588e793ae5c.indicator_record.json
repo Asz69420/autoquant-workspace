@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-6588e793ae5c",
+  "created_at": "2026-03-02T15:34:51.702728Z",
+  "tv_ref": "tradingview:OWBABNPI",
+  "url": "https://www.tradingview.com/script/OWBABNPI-Pattern-Recognition-Signals-ProjectSyndicate/",
+  "name": "Pattern Recognition Signals | ProjectSyndicate",
+  "author": "ProjectSyndicate",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "e50266b1bf8880d2b6702f3a88af0676ade90b0d9e7a9f40f1f3cf6f82e3e5ab",
+  "truncated": false
+}
