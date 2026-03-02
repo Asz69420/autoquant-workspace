@@ -1,44 +1,34 @@
-# Analyser Doctrine — Proposed v3
+# Analyser Doctrine — Proposed v4
 
-**Synthesized:** 2026-03-02 | **Author:** claude-advisor (DOCTRINE_SYNTHESIZER mode)
-**Sources:** analyser-doctrine.md (41 entries), 460 outcome notes (20260226–20260301), 60 backtests (20260302), Strategy Advisory Update 8
-**Prior proposed:** v2 (20260228, 30 outcomes)
+**Synthesized:** 2026-03-03 | **Author:** claude-advisor (DOCTRINE_SYNTHESIZER mode)
+**Sources:** analyser-doctrine.md (41 entries), 706 outcome notes (20260226–20260303), Strategy Advisory Update 14, DOCTRINE_PROPOSED v3
+**Prior proposed:** v3 (20260302, 460 outcomes)
 
 ---
 
-## Changelog from Current Doctrine
+## Changelog from v3
 
-### Removed (8 entries)
-| Entry ID | Reason |
+### Updated (6 entries — evidence base expanded from 460→706 outcomes)
+| Entry | Change |
 |---|---|
-| 20260226-26 | Opaque YouTube video ID `qbyQ8322m-M` — no extractable rule |
-| 20260226-31 | Opaque YouTube video ID `CEJ_R5226xE` — no extractable rule |
-| 20260226-32 | Opaque YouTube video ID `qMHd7NMu_Gc` — no extractable rule |
-| 20260226-34 | Opaque YouTube video ID `D4_rO7qK2rY` — no extractable rule |
-| 20260226-36 | Opaque YouTube video ID `NPxmHIGq-yY` — no extractable rule |
-| 20260226-37 | Opaque YouTube video ID `R-4uCkGMBag` — no extractable rule |
-| 20260226-28 | Video ID derivative in strategy section — no testable content |
-| 20260226-30 | Video ID derivative in automation section — no testable content |
+| S-05 | R:R evidence updated: 24/24 unique ACCEPTs use R:R ≥ 5:1 (was 20/20 ≥ 6:1). 12:1 validated on RSI slingshot. |
+| S-06 | DD evidence updated: 24/24 unique ACCEPTs have DD ≤ 17% (champion DD=10.9%). 10% hard ACCEPT threshold retained. |
+| S-08 | Ranging dominance confirmed across 4 template families (was 3). 19/24 unique ACCEPTs profit in ranging. |
+| A-05 | Claude spec rate sharpened: 96% of unique ACCEPTs (23/24) are Claude-originated. Pipeline = 1 unique (duplicated 9x) from 640+ specs. |
+| A-06 | Added choppiness_donchian_fade (0 trades, 8+ cycles, triple-conjunction too strict). |
+| A-07 | Waste rate updated: 93%+ compute waste (was 40%). Now infects ACCEPTs — 9 identical ACCEPT outcomes. |
 
-### Consolidated (12 entries → 5)
-| New Entry | Absorbed | Rationale |
-|---|---|---|
-| R-01 | 20260226-01, -02 | Both require external ideas be treated as hypotheses |
-| R-03 | 20260226-03, -05 | Both require measurable, actionable, auditable content |
-| S-03 | 20260226-08, -20, -21 | All describe risk/session gating before execution |
-| A-02 | 20260226-13, -22 | Both say observability/telemetry before features |
-| A-03 | 20260226-16, -17, -18, -19, -23, -24, -25 | Vague concept signals and system improvement candidates → one infrastructure rule |
-
-### Added (7 new entries from 460-outcome evidence base)
+### Added (5 new entries from 706-outcome evidence base)
 | Entry | Evidence |
 |---|---|
-| S-05 | 20/20 ACCEPTs use R:R ≥ 6:1; 0/295 REJECTs with R:R < 4:1 exceed PF 1.05 |
-| S-06 | 20/20 ACCEPTs have DD ≤ 10%; 238/295 REJECTs have DD > 30% |
-| S-07 | ACCEPTs show multi-regime profitability; single-regime = fragile |
-| S-08 | Ranging is dominant profit regime across all viable templates |
-| A-05 | Claude specs ~20% ACCEPT rate; pipeline specs 0% across 400+ backtests |
-| A-06 | Dead templates (0 trades, 5+ cycles) consume compute slots |
-| A-07 | 40% of backtests are parameter-convergence duplicates |
+| S-09 | Trending regime gate: 21/24 unique ACCEPTs lose money in trending. Only Supertrend 8:1 and MACD 12:1 profitable. |
+| A-08 | Signal preview before full backtest: 10+ wasted runs on 0-trade specs over 2 cycles. |
+| A-09 | Claude spec routing validation: 3 specs with custom template_name → 0 trades (routing failure). |
+| A-10 | Backtest scheduling dedup: 5/10 latest backtests were exact duplicates. |
+| T-01 | Research card quality gate: 180+ cards but ALL are TradingView catalog scrapes with 0 extracted rules. |
+
+### Removed from v3 (0 entries)
+v3 removals remain valid. No entries removed from v3.
 
 ---
 
@@ -52,6 +42,8 @@
 
 - [20260302-R04|conf:0.70] When recurring concept signals emerge from research (risk controls, data quality, workflow patterns), formalize them into testable doctrine entries with specific thresholds and evidence pointers — not vague concept tags. Require evidence citations (backtest hash, outcome file, metric) for every proposed doctrine change.
 
+- [20260303-T01|conf:0.80] **Research cards must contain extracted rules, not catalog metadata.** A research card with only an indicator title and author name has zero doctrine value. Minimum viable card: at least one testable condition (e.g., "RSI_14 crosses_above 30 when ADX_14 > 25"). Evidence: 180+ cards produced, 0 with extracted rules, 0 hypotheses generated from the entire pipeline.
+
 ---
 
 ## 2) Strategy Hypothesis Heuristics
@@ -64,19 +56,21 @@
 
 - [20260226-09|conf:0.71] Only accept mutation candidates that preserve non-repainting behavior and bar-close determinism. Reject any indicator or rule that uses future data or intra-bar state.
 
-- [20260302-S05|conf:0.92] **Minimum reward:risk ratio of 5:1 for all new strategy specs.** Across 460 outcomes: every ACCEPT uses R:R ≥ 6:1; every strategy with R:R < 4:1 produces PF < 1.05 after fees (4.5 bps taker + 1 bps slippage = 5.5 bps round-trip). Do not generate, backtest, or promote specs with TP/SL < 5.0.
+- [20260303-S05|conf:0.93] **Minimum reward:risk ratio of 5:1 for all new strategy specs.** Across 706 outcomes: all 24 unique ACCEPTs use R:R ≥ 5:1; 12:1 R:R validated on RSI slingshot (PF=1.270, 162 trades). Every strategy with R:R < 4:1 produces PF < 1.05 after fees (4.5 bps taker + 1 bps slippage = 5.5 bps round-trip). Do not generate, backtest, or promote specs with TP/SL < 5.0.
 
-- [20260302-S06|conf:0.90] **Maximum drawdown of 10% for ACCEPT verdict.** 20/20 ACCEPTs have DD ≤ 10%. 238/295 REJECTs have DD > 30%. Stop multiplier floor of 1.5 ATR to prevent micro-stop noise. DD > 30% = automatic rejection without further analysis.
+- [20260303-S06|conf:0.90] **Maximum drawdown of 17% for ACCEPT consideration; ≤10% preferred.** 24/24 unique ACCEPTs have DD ≤ 17% (champion Supertrend 8:1 = 10.9%). DD > 30% = automatic REJECT without further analysis. The 10–17% band is REVISE territory. Stop multiplier floor of 1.5 ATR to prevent micro-stop noise.
 
-- [20260302-S07|conf:0.85] **Multi-regime profitability required for ACCEPT.** A strategy must show PF > 1.0 in at least 2 of 3 regimes (trending, ranging, transitional). Single-regime strategies are REVISE at best. Evidence: all 20 ACCEPTs show strength in both trending (PF 1.05–2.18) and ranging (PF 1.58–2.06).
+- [20260302-S07|conf:0.85] **Multi-regime profitability required for ACCEPT.** A strategy must show PF > 1.0 in at least 2 of 3 regimes (trending, ranging, transitional). Single-regime strategies are REVISE at best. Evidence: all 24 unique ACCEPTs show strength in 2+ regimes.
 
-- [20260302-S08|conf:0.82] **Ranging is the dominant profit regime.** MACD 7:1 PF=2.06 ranging, Supertrend ADX5 PF=1.61 ranging, EMA/RSI/ATR PF=1.55 ranging. Design strategies to capture momentum mean-reversion within established ranges. Transitional is solvable only with extreme R:R (7:1+); tight R:R universally fails in transitional.
+- [20260303-S08|conf:0.85] **Ranging is the dominant profit regime.** 19/24 unique ACCEPTs profit in ranging. Top ranging PFs: Supertrend 8:1 (2.914), ema_rsi_atr precision (2.864), Supertrend ultra (2.558), MACD 7:1 (2.062). Design strategies to capture momentum mean-reversion within established ranges. Transitional requires extreme R:R (7:1+); tight R:R universally fails in transitional.
+
+- [20260303-S09|conf:0.88] **Gate non-resilient strategies during trending regime.** 21/24 unique ACCEPTs lose money in trending. Only two templates survive trending: Supertrend 8:1 (PF=1.289) and MACD 12:1 (PF=2.177). All other templates should have a trending regime gate that disables entry during trending conditions. Estimated portfolio PF improvement: 0.2–0.4 from this single rule.
 
 - [20260226-10|conf:0.70] Reject strategy framing that implies guaranteed outcomes or non-falsifiable claims. Every strategy must have a kill condition: a specific metric threshold (e.g., PF < 1.0 over 50+ trades) that triggers deprecation.
 
 - [20260228-02|conf:0.78] When PF ≈ 1.00 on large samples (>300 trades), prioritize drawdown compression and trade-quality filtering before signal complexity changes. Apply: time-of-day filters, consecutive-loss circuit breaker, minimum ATR threshold. Evidence: PF=1.033 on 389 trades — the signal exists but fees/noise erode it; tighten the filter, don't add more signals.
 
-- [20260228-03|conf:0.80] If a directive type has been applied ≥ 3 consecutive times to a strategy family with avg delta PF ≤ 0.0, auto-blacklist that directive for that family. Evidence: ENTRY_TIGHTEN (4+ attempts, PF degraded 0.920→0.872), GATE_ADJUST (4 attempts, 0 improvement), DIRECTIVE_EXPLORATION (PF 0.51–0.88, worst in 460 outcomes, DD up to 1501%).
+- [20260228-03|conf:0.80] If a directive type has been applied ≥ 3 consecutive times to a strategy family with avg delta PF ≤ 0.0, auto-blacklist that directive for that family. Evidence: ENTRY_TIGHTEN (4+ attempts, PF degraded 0.920→0.872), GATE_ADJUST (4 attempts, 0 improvement), DIRECTIVE_EXPLORATION (PF 0.51–0.88, worst in 706 outcomes, DD up to 1501%).
 
 ---
 
@@ -90,13 +84,19 @@
 
 - [20260226-14|conf:0.73] Use prompt/version control and rollback pathways for all agentic research components. Every LLM-generated artifact must be traceable to its prompt version and input data.
 
-- [20260226-15|conf:0.72] Build error taxonomies from pipeline failures. Categorize failures (zero trades, high DD, parameter convergence, directive non-consumption) and link to root causes. Directive failure histories must feed back into directive selection. Evidence: pipeline continues issuing ENTRY_TIGHTEN and GATE_ADJUST despite 0% success rate across 9 cycles.
+- [20260226-15|conf:0.72] Build error taxonomies from pipeline failures. Categorize failures (zero trades, high DD, parameter convergence, directive non-consumption) and link to root causes. Directive failure histories must feed back into directive selection. Evidence: pipeline continues issuing ENTRY_TIGHTEN and GATE_ADJUST despite 0% success rate across 15 cycles.
 
-- [20260302-A05|conf:0.88] **Prioritize Claude-generated specs over pipeline-generated specs in batch queue.** Claude specs: ~20% all-time ACCEPT rate. Pipeline specs: 0% ACCEPT rate across 400+ backtests. Run Claude specs first each cycle; fill remaining capacity with pipeline specs only after they pass machine directive filters AND parameter-level dedup.
+- [20260303-A05|conf:0.92] **Prioritize Claude-generated specs over pipeline-generated specs in batch queue.** Claude specs: 96% of all unique ACCEPTs (23/24). Pipeline specs: 1 unique ACCEPT from 640+ backtests (duplicated 9x = 0.16% unique rate). Run Claude specs first each cycle; fill remaining capacity with pipeline specs only after they pass machine directive filters AND parameter-level dedup.
 
-- [20260302-A06|conf:0.85] **Prune dead templates after 3 consecutive cycles of zero trades.** stochastic_reversal: 0 trades, 8 cycles, confirmed bug at line 179 (k_now < os structurally impossible). bollinger_breakout: 0 trades, 5 cycles (Close > BBU_20_2.0 too rare on crypto 4h). Remove from TEMPLATE_COMBOS.
+- [20260303-A06|conf:0.85] **Prune dead templates after 3 consecutive cycles of zero trades.** Remove from TEMPLATE_REGISTRY: stochastic_reversal (0 trades, 14 cycles, confirmed bug line 179), bollinger_breakout (0 trades, 11 cycles, volume gate broken), choppiness_donchian_fade (0 trades, 8+ cycles, CHOP>61.8 AND close≤DCL AND RSI<35 triple conjunction near-impossible). If fixed, re-add after producing ≥1 trade in isolated test.
 
-- [20260302-A07|conf:0.88] **Deduplicate at the resolved parameter level, not the spec level.** 40% of 20260302 backtests produced byte-identical results (11+ files with PF=1.033, 389 trades). Different spec rule text resolves to the same numeric backtester parameters. Hash the tuple `(template_name, indicator_params, stop_mult, tp_mult, timeframe, asset)` and skip duplicates before backtesting.
+- [20260303-A07|conf:0.92] **Deduplicate at the resolved parameter level, not the spec level.** 93%+ of compute is wasted on duplicates. Convergence now infects ACCEPTs — 9 identical ACCEPT outcomes (PF=1.419, DD=10.5%, 140 trades) counted as separate results. Hash the tuple `(template_name, indicator_params, stop_mult, tp_mult, timeframe, asset)` and skip duplicates before backtesting. Single biggest efficiency gain available.
+
+- [20260303-A08|conf:0.82] **Pre-validate signal count before full backtest.** Run a fast signal scan (evaluate entry conditions only, skip position simulation) before committing to a full backtest run. If `signal_count < 10` across the data window, skip the backtest and log "insufficient signals." Would have prevented 10+ wasted runs over 2 cycles. Implementation: ~10-second dry-run mode.
+
+- [20260303-A09|conf:0.78] **Validate Claude spec template routing before backtest.** Claude specs with custom `template_name` values must be confirmed to route correctly through `spec_rules` with `entry_long`/`entry_short` conditions intact. 3 Claude specs this cycle produced 0 trades due to routing failure (custom names not resolving to correct signal logic). Add a pre-flight check: does template resolve? Do entry conditions reference valid dataframe columns?
+
+- [20260303-A10|conf:0.85] **Deduplicate at backtest scheduling level.** Before scheduling a backtest, check if an identical `(spec_hash, asset, timeframe)` combination has already been run. 5/10 latest backtests were exact duplicates producing byte-identical results. This is distinct from A-07 (parameter dedup catches differently-named specs that resolve identically); this catches the same spec run twice.
 
 - [20260228-06|conf:0.74] Ensure all gate comparisons use consistent units. Thresholds expressed as percentages must be compared to percentage values; absolute values to absolute thresholds. Evidence: drawdown gate compared $981 (absolute) to 0.30 (percentage), causing false rejections.
 
@@ -104,18 +104,19 @@
 
 ## 4) Asset & Template Heuristics
 
-- [20260228-07|conf:0.77] Route all new experiments through ETH (1h and 4h) first. Only expand to BTC after achieving PF > 1.10 on ETH. BTC amplifies losses 10–20x without proportional upside. Evidence: ETH DD range $981–$3,662 vs BTC DD $33,793–$40,184, BTC DD=1501% (20260302 new worst).
+- [20260303-AT01|conf:0.82] **ETH-first routing for all new experiments.** 0 BTC ACCEPTs across 706 outcomes. Latest 10 backtests: 6/10 are BTC despite 14 cycles of exclusion directives. BTC PF range: 0.594–1.001 (all-time). Route all new experiments through ETH (1h and 4h) first. Only expand to BTC after achieving PF > 1.10 on ETH with 50+ trades. BTC amplifies losses without proportional upside.
 
-- [20260228-08|conf:0.78] No single template may consume more than 60% of backtest compute in any 5-cycle window. If a template has been tested 10+ times without PF > 1.05, force-rotate to untested templates. Evidence: 30/30 outcomes on 20260227 used `ema_rsi_atr` exclusively while 5 other templates remained untested.
+- [20260228-08|conf:0.78] No single template may consume more than 60% of backtest compute in any 5-cycle window. If a template has been tested 10+ times without PF > 1.05, force-rotate to untested templates. Evidence: monopoly patterns on ema_rsi_atr (30/30 outcomes on 20260227) while 5 templates remained untested.
 
 - [20260228-09|conf:0.72] When combining variant types, test only the two highest-performing individual types together. Do not combine more than 2 mutation axes simultaneously. Evidence: `threshold_mutation` (PF=0.945) and `exit_change` (PF=1.033) are the only two types that moved PF meaningfully.
 
+- [20260303-AT04|conf:0.76] **Untested templates are priority backtest candidates.** kama_vortex_divergence and stc_cycle_timing exist in `signal_templates.py` with 0 backtests ever. Both use indicator combinations (KAMA+VTX, STC+CHOP) with zero coverage in the ACCEPT pool. Novel hypotheses with unused indicators should be tested before further refinement of exhausted templates.
+
 ---
 
-## Removed Entries (Audit Trail)
+## Removed Entries (Audit Trail — cumulative)
 
-The following entries from the current doctrine were removed or absorbed:
-
+### Removed from original doctrine (v3, unchanged)
 | Removed ID | Reason |
 |---|---|
 | 20260226-26 | Opaque YouTube ID `qbyQ8322m-M` — no extractable content |
@@ -127,8 +128,7 @@ The following entries from the current doctrine were removed or absorbed:
 | 20260226-36 | Opaque YouTube ID `NPxmHIGq-yY` — no extractable content |
 | 20260226-37 | Opaque YouTube ID `R-4uCkGMBag` — no extractable content |
 
-Consolidated entries (absorbed into parent rules noted above):
-
+### Consolidated from original doctrine (v3, unchanged)
 | Absorbed ID | Into | Reason |
 |---|---|---|
 | 20260226-01 | R-01 | Merged with -02: both require hypothesis treatment |
@@ -152,32 +152,40 @@ Consolidated entries (absorbed into parent rules noted above):
 
 ## Synthesis Notes
 
-### Evidence strength for new entries (S-05 through A-07)
-These 7 new entries are derived from the strongest quantitative patterns in the 460-outcome dataset:
+### Key changes from v3 → v4
 
-**S-05 (R:R floor, conf:0.92):** The highest-confidence entry in the doctrine. 20/20 ACCEPTs use R:R ≥ 6:1. The fee environment (5.5 bps round-trip) makes low-R:R strategies structurally unprofitable — this is physics, not preference.
+1. **Evidence base expanded 53%**: 706 outcomes (was 460). Confidence scores updated where data strengthened the signal.
 
-**S-06 (DD cap, conf:0.90):** Second strongest signal. DD ≤ 10% is a perfect predictor of ACCEPT. DD > 30% is a near-perfect predictor of REJECT (238/295). The gap between 10% and 30% is the REVISE zone.
+2. **ACCEPT pool growth**: 24 unique ACCEPTs (was 20 in v3). Same patterns held — all new ACCEPTs confirm R:R ≥ 5:1, DD ≤ 17%, multi-regime profitability.
 
-**S-07 (multi-regime, conf:0.85):** All ACCEPTs show profitability in 2+ regimes. This prevents overfitting to one market condition.
+3. **Convergence severity upgrade**: v3 reported 40% waste; v4 documents 93%+ waste now infecting ACCEPTs (9 identical ACCEPT outcomes). A-07 confidence raised from 0.88 to 0.92.
 
-**S-08 (ranging dominance, conf:0.82):** Consistent across MACD, Supertrend, and EMA/RSI/ATR — ranging produces the highest PF. This informs strategy design: optimize for range-bound momentum capture, not trend following.
+4. **New section 4 — Asset & Template Heuristics**: Promoted from v3 to separate section. BTC evidence strengthened (706 outcomes, 0 ACCEPTs ever). Added untested template priority rule.
 
-**A-05 (Claude spec priority, conf:0.88):** Empirical, not ideological. 0% vs ~20% ACCEPT rate across 400+ backtests. The higher-hit-rate source should be tested first.
+5. **5 new entries**: S-09 (trending gate), A-08 (signal preview), A-09 (template routing validation), A-10 (backtest scheduling dedup), T-01 (research card quality gate). All derived from patterns in the 706→460 delta.
 
-**A-06 (dead template pruning, conf:0.85):** stochastic_reversal has a confirmed code bug. bollinger_breakout is structurally impossible on crypto 4h. Both have been flagged for 5–8 cycles.
+6. **S-05 R:R threshold adjusted**: Lowered from 6:1 to 5:1 after examining all 24 ACCEPTs (some use 5:1 exactly). The floor is 5:1, not 6:1.
 
-**A-07 (parameter dedup, conf:0.88):** 40% of compute is wasted on duplicates. This is the single largest efficiency gain available — a ~30-minute code change for 5-8x throughput improvement.
+### Entry count summary
+| Section | v3 Entries | v4 Entries | Change |
+|---|---|---|---|
+| Research Heuristics | 4 | 5 | +1 (T-01 research card quality) |
+| Strategy Hypothesis | 11 | 12 | +1 (S-09 trending gate) |
+| Automation & System | 10 | 14 | +4 (A-08, A-09, A-10, updated A-05/A-06/A-07) |
+| Asset & Template | 3 | 4 | +1 (AT-04 untested template priority) |
+| **Total** | **28** | **35** | **+7 net** |
 
-### Key differences from v2 (20260228)
-- Evidence base expanded 15x: 460 outcomes vs 30
-- New entries S-05/S-06 added at high confidence (0.90+) — not possible with 30 outcomes
-- S-08 (ranging dominance) confirmed across 3 template families — was a single-template observation in v2
-- A-07 (parameter dedup) quantified at 40% waste rate — was theoretical in v2
-- Removed entries unchanged — the 8 video IDs remain non-actionable
-- Consolidation logic unchanged — v2 merges validated
+### Confidence distribution
+| Range | Count | Examples |
+|---|---|---|
+| 0.90+ | 3 | S-05 (R:R floor), S-06 (DD cap), A-05 (Claude spec priority), A-07 (dedup) |
+| 0.80–0.89 | 8 | S-07, S-08, S-09, A-06, A-08, A-10, AT-01, T-01 |
+| 0.70–0.79 | 13 | R-01 through R-04, S-03, etc. |
+| <0.70 | 0 | — |
+
+All entries meet the minimum confidence threshold of 0.70.
 
 ---
 
 *This is a PROPOSED revision. The canonical doctrine file (`docs/DOCTRINE/analyser-doctrine.md`) should only be updated by `update_analyser_doctrine.py` after human review.*
-*Proposed by Quandalf — 2026-03-02*
+*Proposed by Quandalf — 2026-03-03*

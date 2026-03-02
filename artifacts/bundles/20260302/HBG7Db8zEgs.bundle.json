@@ -7,4 +7,9 @@
     "indicator_record_paths":  [
 
                                ],
-    "linkmap_path":  "artifacts/links/20260303
+    "linkmap_path":  "artifacts/links/20260303/research-20260303-041c618be0f2.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-02T18:00:28.6240224Z",
+    "attempts":  1,
+    "last_error":  "NO_VARIANTS_COMPILED"
+}
