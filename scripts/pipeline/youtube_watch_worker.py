@@ -23,6 +23,7 @@ MAX_RETRY_ATTEMPTS = 5
 BACKOFF_BASE_SECONDS = [15 * 60, 30 * 60, 60 * 60, 2 * 60 * 60, 4 * 60 * 60]
 JITTER_MAX_SECONDS = 10 * 60
 SHORTS_MAX_SECONDS = 90
+MAX_VIDEO_SECONDS = 3600
 
 
 def _j(path: Path, default):
@@ -124,6 +125,21 @@ def _notify_transcript_failure(video_id: str, title: str, detail: str):
     try:
         subprocess.run(
             [PY, 'scripts/tg_notify.py', msg, '--reason-code', 'YT_TRANSCRIPT_FAIL'],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception:
+        pass
+
+
+def _notify_watch_skip(reason_code: str, title: str, duration_s: int):
+    """Send best-effort Telegram log-channel alert for watch-list skips."""
+    msg = f"{reason_code}: {title} ({duration_s}s)"
+    try:
+        subprocess.run(
+            [PY, 'scripts/tg_notify.py', msg, '--reason-code', reason_code],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -326,6 +342,11 @@ def main() -> int:
             duration_s = _fetch_video_duration_seconds(vid)
             if duration_s is not None and duration_s < SHORTS_MAX_SECONDS:
                 _log('YT_VIDEO_SKIPPED_SHORT', 'SKIPPED_SHORT', f"SKIPPED_SHORT: {item['title']} ({duration_s}s)", 'INFO')
+                seen_videos.add(vid)
+                continue
+            if duration_s is not None and duration_s > MAX_VIDEO_SECONDS:
+                _log('YT_VIDEO_SKIPPED_LONG', 'SKIPPED_LONG', f"SKIPPED_LONG: {item['title']} ({duration_s}s)", 'INFO')
+                _notify_watch_skip('SKIPPED_LONG', item['title'], duration_s)
                 seen_videos.add(vid)
                 continue
 
