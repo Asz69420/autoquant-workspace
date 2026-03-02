@@ -167,6 +167,7 @@ def run_claude(prompt: str, allowed_tools: str, timeout: int = 600) -> str:
         "claude",
         "-p",
         prompt,
+        "--yes",
         "--allowedTools",
         allowed_tools,
     ]
