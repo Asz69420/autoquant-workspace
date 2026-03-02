@@ -1,0 +1,1 @@
+Take 10 percent partial profits on repeated momentum exhaustion signals while trade remains in profit, with hard full-close signal preserved.

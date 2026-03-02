@@ -1,0 +1,106 @@
+﻿{
+    "queue":  [
+                  {
+                      "job_id":  "job-1771908491777",
+                      "question":  "Update USER.md: set User preferred name to \"alex\". Keep all routing/verifier/keeper/logger/queue behavior unchanged.",
+                      "created_at":  "2026-02-24T04:48:11.7793061+00:00",
+                      "chat_id":  "telegram:1801759510",
+                      "message_id":  "hard-c-1",
+                      "update_id":  "",
+                      "idem_key":  "tg:msg:telegram:1801759510:hard-c-1"
+                  },
+                  {
+                      "job_id":  "job-1771936529024",
+                      "question":  "build path smoke executor guard",
+                      "created_at":  "2026-02-24T12:35:29.0277100+00:00",
+                      "chat_id":  "telegram:1801759510",
+                      "message_id":  "smoke-1",
+                      "update_id":  "smoke-upd-1",
+                      "idem_key":  "tg:update:smoke-upd-1",
+                      "executor_type":  "LOCAL_SCRIPT"
+                  }
+              ],
+    "history":  [
+                    {
+                        "job_id":  "job-1771905043616",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:50:46.8648935+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905044275",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:50:47.5595200+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905044939",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:50:47.5635377+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905062718",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:51:05.8841360+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905063392",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:51:06.4958147+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905064011",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:51:06.4958147+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905150385",
+                        "result":  "BLOCKED",
+                        "ended_at":  "2026-02-24T03:53:06.7187983+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905207189",
+                        "result":  "BLOCKED",
+                        "ended_at":  "2026-02-24T03:53:43.7087400+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905263789",
+                        "result":  "BLOCKED",
+                        "ended_at":  "2026-02-24T03:54:33.8471325+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905327761",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:55:30.9219695+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905328427",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:55:31.6174118+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905329051",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T03:55:31.6174118+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771905341961",
+                        "result":  "BLOCKED",
+                        "ended_at":  "2026-02-24T03:55:43.1513536+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771906072326",
+                        "result":  "BLOCKED",
+                        "ended_at":  "2026-02-24T04:07:58.8934551+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771906085613",
+                        "result":  "CANCELLED",
+                        "ended_at":  "2026-02-24T04:08:06.2323012+00:00"
+                    },
+                    {
+                        "job_id":  "job-1771908263577",
+                        "result":  "BLOCKED",
+                        "ended_at":  "2026-02-24T12:35:50.9980165+00:00"
+                    }
+                ],
+    "active":  null
+}

@@ -1,0 +1,31 @@
+{
+  "research_card_path": "artifacts/research/20260226/research-20260226-27bed815124d.research_card.json",
+  "indicator_record_paths": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-61b0609b397a.indicator_record.json",
+    "artifacts/indicators/20260226/indicator-20260226-d7d778c2797c.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "EMA this one moving average exponential and we need to change its settings so her",
+      "author_hint": null,
+      "keywords": [
+        "ema",
+        "this",
+        "one",
+        "moving",
+        "average"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=QY6t8h7fgVo",
+      "video_id": "QY6t8h7fgVo",
+      "noted_at": "2026-02-26T12:07:26.924481+00:00"
+    }
+  ]
+}

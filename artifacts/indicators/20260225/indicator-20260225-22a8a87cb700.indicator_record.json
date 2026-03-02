@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-22a8a87cb700",
+  "created_at": "2026-02-25T03:22:30.541293Z",
+  "tv_ref": "tradingview:wmjH1p3J",
+  "url": "https://www.tradingview.com/script/wmjH1p3J-Jam-Trade-fx-open-gap/",
+  "name": "Jam Trade fx open gap",
+  "author": "george2020lewis",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "a2e73e023ec21c8d587b43bcc7a1cccd68ad92fe71a8a84e55d47efc8562ceed",
+  "truncated": false
+}

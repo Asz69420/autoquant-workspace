@@ -1,0 +1,31 @@
+{
+  "research_card_path": "artifacts/research/20260228/research-20260228-a8937f232297.research_card.json",
+  "indicator_record_paths": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260227/indicator-20260227-f92518d63fcd.indicator_record.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260227/indicator-20260227-6804fcdefcb6.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "of a better strategy than my Bfast re-entry",
+      "author_hint": null,
+      "keywords": [
+        "of",
+        "a",
+        "better",
+        "strategy",
+        "than"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "MichaelIonita",
+      "channel_url": "https://m.youtube.com/@michaelionita/videos",
+      "video_url": "https://www.youtube.com/watch?v=77ikjQjdGFg",
+      "video_id": "77ikjQjdGFg",
+      "noted_at": "2026-02-27T18:42:07.104408+00:00"
+    }
+  ]
+}

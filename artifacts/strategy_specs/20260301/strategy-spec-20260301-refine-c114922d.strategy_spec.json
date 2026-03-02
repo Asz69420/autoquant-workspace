@@ -1,0 +1,1409 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-refine-c114922d",
+  "created_at": "2026-02-28T22:20:51.989547Z",
+  "variants": [
+    {
+      "name": "directive_variant_1_exit_change",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_exploit_1",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 1.8,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_exploit_2",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.2,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_exploit_3",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_exploit_4",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.4,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_exploit_5",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.8,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.6,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_exploit_6",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.2,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_exploit_7",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.1,
+        "tp_type": "atr",
+        "tp_atr_mult": 1.6,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_role_entry",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "entry",
+          "notes": "TPX role_swap to entry"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    },
+    {
+      "name": "directive_variant_1_exit_change_role_confirmation",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: GOLD OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+        "Outcome-guided experiment: Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}",
+        "Avoid prior failure pattern: Refinement reported no improvement"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ],
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "TPX role_swap to confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 27,
+        "parameter_count": 5
+      }
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": [
+      "bollinger_breakout",
+      "rsi_pullback",
+      "stochastic_reversal",
+      "ema_rsi_atr",
+      "ema_crossover"
+    ],
+    "prefer_templates": []
+  },
+  "backtester_executable_indicators": [
+    "EMA",
+    "SMA",
+    "T3",
+    "KAMA",
+    "ALMA",
+    "RSI",
+    "ATR",
+    "MACD",
+    "Bollinger Bands",
+    "Stochastic",
+    "ADX",
+    "CCI",
+    "Williams %R",
+    "OBV",
+    "VWAP",
+    "Ichimoku",
+    "Supertrend",
+    "Donchian Channels",
+    "QQE",
+    "Choppiness Index",
+    "Vortex",
+    "STC",
+    "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema",
+    "SMA": "sma",
+    "T3": "t3",
+    "KAMA": "kama",
+    "ALMA": "alma",
+    "RSI": "rsi",
+    "ATR": "atr",
+    "MACD": "macd",
+    "Bollinger Bands": "bbands",
+    "Stochastic": "stoch",
+    "ADX": "adx",
+    "CCI": "cci",
+    "Williams %R": "willr",
+    "OBV": "obv",
+    "VWAP": "vwap",
+    "Ichimoku": "ichimoku",
+    "Supertrend": "supertrend",
+    "Donchian Channels": "donchian",
+    "QQE": "qqe",
+    "Choppiness Index": "chop",
+    "Vortex": "vortex",
+    "STC": "stc",
+    "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": [
+      "ema",
+      "sma",
+      "t3",
+      "kama",
+      "alma",
+      "hull_ma",
+      "supertrend",
+      "ichimoku"
+    ],
+    "confirmation": [
+      "rsi",
+      "macd",
+      "stochastic",
+      "cci",
+      "williams_r",
+      "qqe",
+      "vortex",
+      "stc",
+      "choppiness_index"
+    ],
+    "volume_volatility": [
+      "obv",
+      "vwap",
+      "atr",
+      "bollinger",
+      "donchian",
+      "adx",
+      "stiffness"
+    ]
+  },
+  "source_thesis_path": "artifacts/thesis/20260301/thesis-20260301-511b718ee01e.thesis.json",
+  "consumed_outcome_notes_path": "C:/Users/Clamps/.openclaw/workspace/artifacts/outcomes/20260227/outcome_notes_smoke-test-templates.json",
+  "consumed_outcome_verdict": "REJECT",
+  "consumed_directives": [
+    {
+      "id": "d2",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "take_profit_atr": 2.5,
+        "time_stop_bars": 18,
+        "break_even_trigger_r": 1.0
+      }
+    },
+    {
+      "id": "d3",
+      "type": "THRESHOLD_SWEEP",
+      "params": {
+        "entry_tightness_grid": [
+          10,
+          15,
+          20
+        ],
+        "target_trade_count_range": [
+          220,
+          320
+        ],
+        "selection_metric": "maximize_PF_subject_to_DD_reduction"
+      }
+    }
+  ]
+}

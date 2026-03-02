@@ -1,0 +1,223 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-ec75k3m9",
+  "created_at": "2026-03-01T18:30:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "EMA crossover is marginal at standard R:R (best PF=1.073, typical PF=0.99) with persistent DD blowouts. However, EMA crossover has NEVER been tested with extreme R:R — the universal principle that improved MACD PF monotonically from 1.347 (3.5:1) to 1.353 (5:1) to 1.442 (8:1). EMA crossover produces the HIGHEST trade count of any template (183-389 trades on ETH/4h), which means MORE opportunities to capture fat tails. The DD blowout problem is caused by holding losing trades too long at standard R:R. With tight stops (1.0-1.5x ATR), each losing trade is cut quickly — the DD comes from MANY small losses, not a few large ones. At 6:1 R:R with 1.5x stop, breakeven win rate is only 14%. EMA_9/EMA_21 crossovers capture momentum shifts — not every shift leads to a sustained trend, but in crypto, the ones that DO sustain produce 6-8x ATR moves regularly (trend continuations after momentum flips). If even 20% of EMA crosses produce 6x ATR continuation moves, the strategy is profitable. This is a controlled rehabilitation test: if extreme R:R cannot rescue EMA crossover — the most signal-rich template — then the template should be permanently retired. Invalidation: (1) if PF < 1.0 at all R:R levels tested (4:1, 6:1, 8:1), the EMA crossover signal quality is too low for ANY R:R to compensate — retire permanently; (2) if PF improves monotonically with R:R (matching MACD pattern), the extreme R:R principle is template-universal.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ema_crossover_moderate_rr_4to1",
+      "description": "EMA_9/EMA_21 crossover on ETH/4h with 4:1 R:R (1.5x stop / 6.0x TP). Control variant — least extreme R:R tested. At breakeven win rate of 20%, this is achievable if even a moderate fraction of EMA crosses produce trend continuations. Uses the 1.5x ATR safety-floor stop. This establishes the baseline for monotonic R:R improvement testing on EMA crossover.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (fast EMA bullish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (fast EMA bearish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (6.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 4:1. Needs 20% win rate to break even after fees.",
+        "Control variant: establishes baseline for R:R monotonic improvement test"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 6.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.5, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 8.0, "step": 1.0, "default": 6.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 and EMA_21 crossover — highest signal count template (183-389 trades)"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_9/EMA_21 momentum shift detection"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 6.0x TP — 4:1 R:R control variant"}
+      ]
+    },
+    {
+      "name": "ema_crossover_extreme_rr_6to1",
+      "description": "EMA_9/EMA_21 crossover on ETH/4h with 6:1 R:R (1.5x stop / 9.0x TP). Mid-range extreme R:R test. At breakeven win rate of 14%, this is very achievable even with a noisy signal like EMA crossover. The safety-floor 1.5x stop gives trades room to breathe. 9.0x ATR TP targets major trend legs — on ETH/4h, ATR is ~$50-80, so TP is $450-720 of price movement, which occurs regularly during trend initiations that EMA crosses capture.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (fast EMA bullish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (fast EMA bearish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (9.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 6:1. Needs 14% win rate to break even after fees.",
+        "Mid-range variant: if 4:1 and 6:1 both profitable, confirms monotonic improvement"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 9.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.5, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 7.0, "max": 12.0, "step": 1.0, "default": 9.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 and EMA_21 crossover — testing extreme R:R rehabilitation"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_9/EMA_21 momentum shift — mid-range 6:1 R:R"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 9.0x TP — targets major trend legs"}
+      ]
+    },
+    {
+      "name": "ema_crossover_ultimate_8to1",
+      "description": "EMA_9/EMA_21 crossover on ETH/4h with 8:1 R:R (1.0x stop / 8.0x TP). Mirrors the MACD 8:1 ultra approach — tight 1.0x ATR stop cuts losers fast, 8.0x ATR TP captures fat tails. At breakeven win rate of 11.1%, even a low-quality signal like EMA crossover should produce enough winners. The MACD 8:1 ultra achieved 18.59% win rate and DD=7.1% — if EMA crossover achieves even 15% win rate at 8:1, it becomes viable. The tight stop also addresses the DD blowout problem: instead of one large DD event, losses are distributed as many small stops.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (fast EMA bullish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (fast EMA bearish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "Ultimate variant: mirrors MACD 8:1 ultra approach. If PF > 1.0, extreme R:R is template-universal"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 10.0, "step": 1.0, "default": 8.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 and EMA_21 crossover — ultimate rehabilitation test"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_9/EMA_21 momentum shift — 8:1 R:R mirrors MACD ultra"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 8.0x TP — tight stop fixes DD blowout problem"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

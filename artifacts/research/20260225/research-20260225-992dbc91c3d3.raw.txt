@@ -1,0 +1,295 @@
+This indicator is awesome. It gives you
+impulse signal where the momentum is
+suddenly increasing and a breakout is
+probably going to happen. This is one of
+the best indicators on trading view for
+scalping strategies and day trading
+strategies. So it's suitable for time
+frames like 1 minute, 5 minutes, 15
+minutes up to 1 hour. This indicator can
+be used for any type of trading
+strategies whether it is trend following
+strategy, reversal strategy or breakout
+trading strategy because it gives you a
+signal when there is a sudden increase
+of momentum in the market. I will
+completely explain this indicator and
+how you can use it in trading. So, make
+sure you watch this video until the end
+and let's get started. Before I add the
+indicator, if you like my content,
+please support the channel by liking the
+video and subscribing to my channel if
+you haven't subscribed yet. All right,
+on Trading View platform here, we click
+on indicators and we search BB impulse
+indicator. This one which is written by
+Lazy Bayer. All right, this is the
+indicator and as you can see it is added
+here below the chart. As you can see, we
+have a histogram and the bars are
+sometimes above the center line and
+sometimes below the center line with
+different colors. As you can see, this
+indicator is built based on Ballinger
+bands and it is created by John
+Ballinger who's the one created the
+Ballinger bands. If we go to the
+settings of the indicator, you can see
+that we have settings for length and
+multiplier. similar to Ballinger bands
+and similarly by default the length is
+set at 20 and the multiplier is set at
+two. We don't change this because this
+is optimized for most of trading
+strategies. But here we have another two
+settings which are alert level which is
+set at 24 and impulse level which is set
+at 04. Before I close the settings here
+we go to the style tab and here we
+change the histogram to columns. So the
+bars will be better visible on the price
+chart. All right. So this dashed line
+here is alert level which is set at 24
+and this solid line here is impulse
+level which is set at 04. So depending
+on the size of the bar if the bar passes
+the alert level or impulse level we can
+have a signal about increase of
+momentum. when the bar passes the alert
+level the dashed line it is alert signal
+that the momentum is probably going to
+increase and when the bar passes the
+impulse level the solid line here it is
+impulse signal and it tells us that we
+had a sudden increase of momentum in the
+market but not any impulse signal means
+that the price is going to further move
+in that direction for example for this
+impulse signal that we had here which is
+a downside signal you can see that the
+price didn't go down considerably. But
+for this impulse signal that we had
+here, which is an upside signal, the
+price advanced after that considerably.
+So the context of the signal is
+important. All that the impulse signal
+is telling us is that we had a sudden
+increase of momentum. But deciding on if
+the context confirms further movement of
+the price after that needs more
+analysis, which I explain it now. But
+before that, I'm proud to announce that
+I have published a book, The Art of
+Price Action Trading, which is a
+complete guide to price action analysis.
+The link is in the description and you
+can get it later if you want to master
+price action trading. All right, getting
+back to the indicator. So, as I said,
+when we have impulse signal, it only
+tells us that in that time period, we
+had considerable increase of momentum.
+But it doesn't mean that definitely
+after that the price is going to further
+move in that direction like this case
+here which is not worth of trading. But
+this one here for this signal it was
+definitely worth of trading because you
+can see that the price advanced after
+that considerably. Two of the main
+situations where you may get a false
+signal like this is when a reversal is
+happening in the market like this case
+here and another one is when a pullback
+happens in the market especially deeper
+pullbacks. First let me explain reversal
+situation and then I will explain
+pullback situation. In times that a
+reversal is happening in the market. It
+is very common to have exhaustion move
+which is a sudden increase of momentum
+alongside with sharp advancing or
+decline of the price and usually with
+high amount of volume. During this
+downtrend when we identify that the
+current trend is down when we got a
+bearish signal like this. The first
+thing that comes to mind is that this
+was a pullback and the pullback ended
+now and the price is going to decline
+more like these bearish signals here. So
+you must have a reversal identification
+in your system even when you're using a
+trend following strategy so you can
+avoid false signals like this where a
+reversal is happening in the market. One
+good measure for probability of a
+reversal is divergence. Let's add RSI to
+our chart. This one relative strength
+index and see if RSI is showing any
+divergence or not. You can see that
+following this downtrend where the price
+was making lower highs and lower lows
+here when the price made lower low you
+can see that RSI made higher low. This
+is a bullish divergence and it tells us
+that probably a reversal is going to
+happen. So at this point when we got
+this bearish signal we don't enter a
+trade because there is a probability of
+reversal in the market. Even in terms of
+price action where the price is in this
+range. You can see that when this signal
+happened the price couldn't break the
+previous low and here tight
+consolidation. Just see how many candles
+inside the body of this candle. After
+that a downside gap but not any
+considerable momentum as you can see. So
+here we could easily avoid this false
+signal. But here for this bullish signal
+that we have here, this is happening
+following a bullish divergence. And it
+tells us that now we have a sudden
+increase of momentum, increase of upside
+momentum. But we need more confirmation.
+We can use price action concept for
+further confirmation. For a bullish
+divergence, we mark the high of the
+pattern and we wait to see if the price
+can break above this high or not.
+Because if this high is broken, which is
+the last lower high following this
+downtrend, it tells us that the
+structure of the downtrend is already
+broken. So even higher probability now
+to have a reversal and starting of an
+uptrend. Here you can see that this
+candle is closed above this high level.
+So the reversal here is confirmed and in
+practice we could enter a long position
+at this point. And you can see how the
+price turned to an uptrend after that
+making this position very profitable.
+All right. So now you learn how you can
+avoid false signals that are happening
+during reversal situation of the market.
+But as I said we can also have these
+kinds of impulse signals during
+pullbacks. And now let me teach you how
+you can avoid them and instead take high
+probability signals inside a trend.
+First let me close RSI and then we add
+another indicator. Here we click on
+indicators and we search MACD. This one
+moving average convergence divergence
+and we need to change its settings. So
+here we go to the settings of MACD. And
+first here in the inputs tab for the
+fast length we set it at 100. For the
+slow length we set it at 200. And here
+for signal length we set it at 50. And
+then we go to the style tab and we
+remove MACD line and signal line because
+we only need the histogram for
+identifying trends of the market. So we
+can further validate the signals to be
+sure that they are happening in the same
+direction with the current trend of the
+market. This MACD with the settings that
+we made will help us with trend
+identification. When the MACD histogram
+is above the center line and green, the
+market is in an uptrend. And when the
+MACD histogram is below the center line
+and red, the market is in a downtrend.
+So when the MACD histogram is above the
+center line and green, we only focus on
+bullish signals. We don't take bearish
+signals because they are against the
+current trend of the market. So when
+MACD histogram is green, the focus is on
+bullish signals. But we don't trade only
+based on this because as I said this
+shows that we had increased momentum in
+this time period. But entering a trade
+depends on the context. At the moment
+the trend is up. So the first condition
+is okay. But what about the price
+action? You can clearly see that the
+price is in a tight consolidation period
+here like this. And although we had
+sudden increase of momentum here in this
+candle but the price couldn't break the
+previous high. And even after that there
+is no upside break of the price. And
+then here the price went down. But we
+don't pay attention to this breakout or
+these bearish signals that we have here
+because they are against the longerterm
+trend of the market. So here we could
+easily avoid this false signal that we
+had here. If we entered only based on
+this that would be a losing position.
+But with price action analysis we didn't
+enter any long position here at this
+point. All right, moving on the chart
+here. You can see that we had a bullish
+signal. But what about the price action?
+You can clearly see that the price is in
+a tight consolidation period like this.
+And at this point where we had a sudden
+increase of momentum in this candle, the
+price didn't break the high. But later
+after that here, you can see that the
+price could successfully close above
+this level. So the buy signal here is
+confirmed. And in practice, we could
+enter a long position at this point. And
+you can see that this was a profitable
+trade here. Another long position signal
+happened at this point. And when we
+check the price action, we can see that
+the price is in a consolidation period.
+In this period, when we had this
+increase of momentum, the price didn't
+break above this range until here where
+we got a candle that is closed above the
+high of the range. So in practice, we
+could enter a long position at this
+point. And this is also a profitable
+trade as you can see. And we do this
+similarly when the MACD histogram is
+below the center line and red. This
+indicator is a perfect choice for
+breakout trading strategies, especially
+breakout during trends that can provide
+you low-risk trading opportunities. But
+please pay attention that you need to
+manage your risk properly because losing
+positions are always part of the game
+and you cannot avoid all of your false
+signals. There is a riskmanagement
+strategy that is called 1% roll and it
+is one of the best risk management
+strategy that you can use. By the help
+of this risk management, you can
+minimize the effect of your losing
+positions and make consistent profit in
+the long run. I have a complete guide on
+this. The link is also placed in the
+description and I highly recommend you
+to watch it because without a proper
+risk management, you cannot become a
+consistently profitable trader. All
+right, that's it. Thank you for watching
+this video. So, if you have any
+questions, feel free to ask and leave a
+comment for me. I'll answer your
+questions as soon as possible. If you
+haven't subscribed to my channel, please
+subscribe and hit the bell so you get
+the notifications of my new videos. See
+you guys in next video and good luck
+with your trading.

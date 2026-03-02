@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-03b731537d51",
+  "created_at": "2026-03-01T11:00:09.590948Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/1cv0jerm-Ultimate-Merged-Indicator/",
+  "title": "Ultimate Merged Indicator",
+  "author": "mahendrabgavali",
+  "summary_bullets": [
+    "Top catalog indicator: Ultimate Merged Indicator by mahendrabgavali."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Ultimate Merged Indicator by mahendrabgavali.",
+      "note": "Meaning: Top catalog indicator: Ultimate Merged Indicator by mahendrabgavali."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-03b731537d51.raw.txt",
+  "sha256": "cfa7b669c182caf889bd3be439f4c7a9a7131a30f4c3971ad374968df8eee535",
+  "truncated": false
+}

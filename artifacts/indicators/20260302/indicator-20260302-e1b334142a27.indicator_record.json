@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-e1b334142a27",
+  "created_at": "2026-03-02T01:19:51.382503Z",
+  "tv_ref": "tradingview:TnfAMXmg",
+  "url": "https://www.tradingview.com/script/TnfAMXmg-Candle-Body-Momentum-UkutaLabs/",
+  "name": "Candle Body Momentum [UkutaLabs]",
+  "author": "UkutaLabs",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "522952257581ed1ce4fca12e7d3b2646dc22f372fdf36a37b44f8882620c7f69",
+  "truncated": false
+}

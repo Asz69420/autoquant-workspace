@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260226-159fb09a2695",
+  "created_at": "2026-02-26T13:24:36.174645Z",
+  "inputs": {
+    "research_card_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\research\\20260226\\research-20260226-97880cde9e7c.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\links\\20260226\\research-20260226-97880cde9e7c.linkmap.json"
+    ]
+  },
+  "title": "strategy_006_donchian_breakout_obv_confirmation",
+  "thesis_bullets": [
+    "STRATEGY: Donchian Channel Breakout with OBV Volume Confirmation ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Breakout/expansion after consolidation TYPE: Breakout/momentum CONCEPT: Classic turtle trading breakout adapted for crypto.",
+    "Price breaking the 20-period Donchian high/low signals a potential new trend.",
+    "OBV confirmation ensures the breakout has real volume behind it, filtering fake breakouts.",
+    "ADX rising confirms momentum is building.",
+    "Exit uses a shorter 10-period Donchian to capture the meat of the move without giving back too much.",
+    "INDICATORS USED: - Donchian Channels (period 20) - breakout entry signal - Donchian Channels (period 10) - exit signal (shorter period) - OBV - volume confirmation (OBV must be above its own 20-period SMA) - ADX (period 14) - rising ADX confirms building momentum - ATR (period 14) - position sizing and initial stop ENTRY LONG: 1.",
+    "Price closes above 20-period Donchian Channel high (new 20-bar high) 2.",
+    "OBV > SMA(OBV, 20) (volume is supporting the move) 3.",
+    "ADX(14) > 20 (some trend strength exists) 4.",
+    "ADX is rising (current ADX > ADX from 3 bars ago) ENTRY SHORT: 1."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on 4h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on 4h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "SMA",
+        "ATR",
+        "ADX"
+      ],
+      "timeframe_bias": "4h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on 4h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "159fb09a2695f4efa23a3ad17bc6accec0767b8fbe322b0d0b2c7dc6320c1042"
+}

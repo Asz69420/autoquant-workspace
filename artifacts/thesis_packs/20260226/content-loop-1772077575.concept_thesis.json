@@ -1,0 +1,17 @@
+{
+  "id": "concept-thesis-1772077575",
+  "created_at": "2026-02-26T03:46:15.325427+00:00",
+  "source": "analyser_content_worker",
+  "processed_research_cards": [
+    "artifacts/research/20260226/research-20260226-674543307c9c.research_card.json"
+  ],
+  "key_ideas": [
+    "yTqDkdGO3oY: extract repeatable concept from source context"
+  ],
+  "trading_relevant_concept_hooks": [
+    "yTqDkdGO3oY: convert concept to testable entry/exit hypothesis"
+  ],
+  "proposed_automation_improvements_for_autoquant": [
+    "yTqDkdGO3oY: record ingestion evidence pointer for doctrine traceability"
+  ]
+}

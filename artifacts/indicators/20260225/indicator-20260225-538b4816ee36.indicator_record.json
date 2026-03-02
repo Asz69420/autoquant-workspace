@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-538b4816ee36",
+  "created_at": "2026-02-25T02:20:04.712829Z",
+  "tv_ref": "tradingview:xP0fTjlv",
+  "url": "https://www.tradingview.com/script/xP0fTjlv-blackcat-L2-Main-Force-Trend/",
+  "name": "[blackcat] L2 Main Force Trend",
+  "author": "blackcat1402",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "06a9483023509fd1145fd0412541ed1122fe5da65ff5ba676aa0e64ff3e0c640",
+  "truncated": false
+}

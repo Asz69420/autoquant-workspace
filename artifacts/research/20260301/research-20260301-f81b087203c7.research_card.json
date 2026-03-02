@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-f81b087203c7",
+  "created_at": "2026-02-28T23:00:03.344380Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/x6PT4qxC-IbnEissa-Pro-V2/",
+  "title": "IbnEissa Pro V2",
+  "author": "IbnEissa",
+  "summary_bullets": [
+    "Top catalog indicator: IbnEissa Pro V2 by IbnEissa."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: IbnEissa Pro V2 by IbnEissa.",
+      "note": "Meaning: Top catalog indicator: IbnEissa Pro V2 by IbnEissa."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-f81b087203c7.raw.txt",
+  "sha256": "08c9cdc8f2b8ec1a3ecf9ba96199364af9eff223234fd352e4c2f117d7b16157",
+  "truncated": false
+}

@@ -1,0 +1,247 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-rp7t8h2a",
+  "created_at": "2026-03-01T22:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The tail harvester pattern (tight stops + extreme R:R + low win rate + fat-tail capture) is the most important strategic discovery in the system. It has been proven on MACD (PF=1.302-1.442 across 5:1-12:1 R:R) and Supertrend (PF=1.395 at 5:1 R:R). RSI pullback already has an ACCEPT at moderate R:R (PF=1.21, DD=9.2%, 38 trades) using the default configuration: EMA_200 trend filter, EMA_50 slope confirmation, RSI <= 40 pullback threshold. This spec applies the exact tail harvester formula to the proven RSI pullback entry signal WITHOUT changing any entry parameters. The recent rp41w7j3 spec took the WRONG approach: it changed the trend EMA from 200 to 100, producing PF=0.983 with catastrophic DD=264%. That failure confirms the ACCEPT configuration should be preserved. This spec keeps EMA_200, keeps RSI<=40, keeps EMA_50 slope — and ONLY changes the exit structure to tight stop (1.0x ATR) + extreme TP (5.0-8.0x ATR). The RSI pullback entry captures temporary selling pressure in confirmed uptrends. With fat-tailed crypto returns, ~20% of these pullback entries should produce continuation moves of 5-8x ATR. The tight 1.0x ATR stop means false signals are cut immediately — if price doesn't bounce from the pullback within 1 ATR, the trend is weakening and we exit. The 3rd variant tests a deeper pullback (RSI<=35) which selects for more oversold conditions that should produce stronger bounces, at the cost of fewer signals. Invalidation: (1) if both 5:1 and 8:1 produce PF < 1.0, the RSI pullback signal quality is too low for tail harvesting — the entry timing doesn't capture trend continuation moves; (2) if trade count drops below 15, the RSI<=40 threshold combined with EMA_200 on 4h is too restrictive for tail harvesting; (3) if the deep dip variant (RSI<=35) has 0 trades, the threshold is too extreme for 4h.",
+  "regime_assumption": "trending",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "rsi_pullback_tail_harvester_5to1",
+      "description": "RSI pullback on ETH/4h with proven ACCEPT parameters (EMA_200 trend, EMA_50 slope, RSI<=40) and tail harvester exits: 1.0x ATR stop, 5.0x ATR TP (5:1 R:R). Breakeven win rate: 17%. The RSI pullback ACCEPT (PF=1.21) used moderate R:R — this tests whether the tail harvester pattern that boosted MACD from ~1.0 to 1.442 and Supertrend from 1.264 to 1.395 also works on RSI pullback. If successful, the tail harvester is confirmed as a universal meta-strategy applicable to any decent entry signal.",
+      "entry_long": [
+        "Close > EMA_200 confirms uptrend (proven ACCEPT configuration).",
+        "EMA_50 slope rising (current > previous bar) confirms medium-term momentum.",
+        "RSI_14 <= 40 indicates pullback within uptrend (proven ACCEPT threshold).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms downtrend (proven ACCEPT configuration).",
+        "EMA_50 slope falling (current < previous bar) confirms bearish momentum.",
+        "RSI_14 >= 60 indicates pullback within downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (5.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 5:1. Needs 17% win rate to break even after fees.",
+        "Tail harvester pattern: tight stop captures false signals immediately, extreme TP captures fat-tail continuation moves."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 5.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "ema_trend", "min": 200, "max": 200, "step": 1, "default": 200},
+        {"name": "ema_slope", "min": 50, "max": 50, "step": 1, "default": 50},
+        {"name": "rsi_long_max", "min": 35.0, "max": 45.0, "step": 5.0, "default": 40.0},
+        {"name": "rsi_short_min", "min": 55.0, "max": 65.0, "step": 5.0, "default": 60.0},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 6.0, "step": 0.5, "default": 5.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 5.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend filter + EMA_50 slope — proven ACCEPT configuration unchanged"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 40 pullback threshold — proven ACCEPT threshold, not relaxed"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 5.0x TP — tail harvester exits on proven RSI pullback entry"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_tail_harvester_8to1",
+      "description": "RSI pullback on ETH/4h with proven ACCEPT parameters and aggressive tail harvester exits: 1.0x ATR stop, 8.0x ATR TP (8:1 R:R). Breakeven win rate: 11%. This matches the MACD champion's R:R ratio (8:1 → PF=1.442). If the R:R curve shape is universal across templates, 8:1 should outperform 5:1 on RSI pullback just as it did for MACD. The RSI pullback's trend-confirmed dip entry should occasionally catch 8x ATR continuation moves when trends resume strongly after pullbacks.",
+      "entry_long": [
+        "Close > EMA_200 confirms uptrend (proven ACCEPT configuration).",
+        "EMA_50 slope rising (current > previous bar) confirms medium-term momentum.",
+        "RSI_14 <= 40 indicates pullback within uptrend (proven ACCEPT threshold).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms downtrend (proven ACCEPT configuration).",
+        "EMA_50 slope falling (current < previous bar) confirms bearish momentum.",
+        "RSI_14 >= 60 indicates pullback within downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11% win rate to break even after fees.",
+        "Tests whether MACD R:R curve peak at 8:1 replicates on RSI pullback."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "ema_trend", "min": 200, "max": 200, "step": 1, "default": 200},
+        {"name": "ema_slope", "min": 50, "max": 50, "step": 1, "default": 50},
+        {"name": "rsi_long_max", "min": 35.0, "max": 45.0, "step": 5.0, "default": 40.0},
+        {"name": "rsi_short_min", "min": 55.0, "max": 65.0, "step": 5.0, "default": 60.0},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 10.0, "step": 1.0, "default": 8.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend filter + EMA_50 slope — proven ACCEPT configuration unchanged"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 40 pullback threshold — matches proven ACCEPT"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 8.0x TP — tests MACD champion R:R (8:1) on RSI pullback"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_deep_dip_tail_5to1",
+      "description": "RSI pullback on ETH/4h with TIGHTER entry quality (RSI<=35 instead of 40) and tail harvester exits: 1.0x ATR stop, 5.0x ATR TP (5:1 R:R). The hypothesis: deeper pullbacks (RSI<=35) select for more oversold conditions that produce stronger mean-reversion bounces. Combined with tail harvester exits, these rare, high-quality dip entries should produce larger continuation moves. Advisory notes RSI<=30 produces 0 trades on 1h — but RSI<=35 on 4h is untested and should generate signals. Comparison with the 5:1 variant (RSI<=40) isolates whether entry quality matters more than signal quantity for the tail harvester pattern.",
+      "entry_long": [
+        "Close > EMA_200 confirms uptrend (proven ACCEPT configuration).",
+        "EMA_50 slope rising (current > previous bar) confirms medium-term momentum.",
+        "RSI_14 <= 35 indicates DEEP pullback within uptrend (tighter than ACCEPT threshold).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms downtrend (proven ACCEPT configuration).",
+        "EMA_50 slope falling (current < previous bar) confirms bearish momentum.",
+        "RSI_14 >= 65 indicates deep pullback within downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (5.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 5:1. Needs 17% win rate to break even after fees.",
+        "Deep dip variant: tests whether tighter entry quality (RSI<=35) improves tail harvester performance."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 5.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "ema_trend", "min": 200, "max": 200, "step": 1, "default": 200},
+        {"name": "ema_slope", "min": 50, "max": 50, "step": 1, "default": 50},
+        {"name": "rsi_long_max", "min": 30.0, "max": 40.0, "step": 5.0, "default": 35.0},
+        {"name": "rsi_short_min", "min": 60.0, "max": 70.0, "step": 5.0, "default": 65.0},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 6.0, "step": 0.5, "default": 5.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 5.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend filter + EMA_50 slope — proven ACCEPT configuration unchanged"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 35 DEEP pullback threshold — tighter than ACCEPT to select higher-quality entries"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 5.0x TP — tail harvester on deep dip entries"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

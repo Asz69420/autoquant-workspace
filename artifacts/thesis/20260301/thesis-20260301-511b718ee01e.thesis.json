@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260301-511b718ee01e",
+  "created_at": "2026-02-28T22:20:51.599295Z",
+  "inputs": {
+    "research_card_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\research\\20260301\\research-20260301-8f2e19f20b17.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\links\\20260301\\research-20260301-8f2e19f20b17.linkmap.json"
+    ]
+  },
+  "title": "The Mechanism That Ends Business Cycles",
+  "thesis_bullets": [
+    "Hey everyone and thanks for jumping back into the macroverse.",
+    "Today we're going to talk about the mechanism that typically ends business cycles.",
+    "Use the coupon code ITC50 to get 50% off your first month.",
+    "Let's go ahead and jump in.",
+    "So, we've been putting out videos for a while talking about how business cycles end.",
+    "We've also been discussing the idea that we are in fact in a late business cycle environment.",
+    "Late business cycle environments are characterized where higher risk assets bleed to lower risk assets.",
+    "I've called it sort of rolling down the risk curve.",
+    "stocks bleed to gold and we've been watching that play out for for quite some time now.",
+    "In this video, I want to talk about the mechanism that typically ends the business cycle."
+  ],
+  "hypotheses": [
+    {
+      "statement": "GOLD continuation edge appears when signal alignment persists on 1h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest GOLD on 1h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "1h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "GOLD OHLCV on 1h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "511b718ee01eb2eaebf131d9a487552e7a6372878e57bac45703a8a033671c6d"
+}

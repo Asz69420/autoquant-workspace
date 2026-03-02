@@ -1,0 +1,5 @@
+//@version=5
+indicator("Small Test", overlay=true)
+// comment
+a=ta.sma(close,14)
+plot(a)

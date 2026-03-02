@@ -1,0 +1,31 @@
+{
+  "research_card_path": "artifacts/research/20260224/research-20260224-b5be8fb285c2.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260224/indicator-20260224-7cf6c305398a.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "by Kivanc and RSI divergence on BTC 1h and ETH 4h",
+      "author_hint": "Kivanc and RSI divergence on BTC 1h and ETH 4h",
+      "keywords": [
+        "by",
+        "kivanc",
+        "and",
+        "rsi",
+        "divergence"
+      ],
+      "confidence": 0.75
+    },
+    {
+      "hint": "Today we used Supertrend",
+      "author_hint": "Kivanc and RSI divergence on BTC 1h and ETH 4h",
+      "keywords": [
+        "today",
+        "we",
+        "used",
+        "supertrend"
+      ],
+      "confidence": 0.75
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+﻿C:/Users/Clamps/.openclaw/workspace/artifacts/outcomes/20260226/outcome_notes_autopilot-1772103107.json
+{
+    "event":  "LAB_SUMMARY",
+    "created_at":  "2026-02-26T11:05:15.2784733Z",
+    "bundles_processed":  1,
+    "promotions_processed":  0,
+    "refinements_run":  0,
+    "new_candidates_count":  100,
+    "candidates_ingested":  1,
+    "candidates_reaching_refinement":  0,
+    "candidates_passing_gate":  231,
+    "directive_notes_seen":  1,
+    "directive_variants_emitted":  66,
+    "directive_backfill_specs_generated":  0,
+    "active_library_size":  500,
+    "new_indicators_added":  0,
+    "skipped_indicators_dedup":  54,
+    "errors_count":  33,
+    "dry_run":  false,
+    "insight_new":  0,
+    "insight_processed":  0,
+    "insight_failed":  0,
+    "recombine_created":  0,
+    "recombine_bundle_path":  "",
+    "starvation_cycles":  49,
+    "drought_cycles":  0,
+    "directive_loop_stall_cycles":  0
+}

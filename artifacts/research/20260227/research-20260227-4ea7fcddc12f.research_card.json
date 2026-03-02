@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-4ea7fcddc12f",
+  "created_at": "2026-02-26T21:38:04.173096Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=7rianyn0wPI",
+  "title": "INSANE New TradingView Indicator Shows Buy & Sell Signals [TESTED]",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "This brand new buy sale indicator on Trading View looks incredible.",
+    "It paints perfect entries, and entries and exits are all over the charts.",
+    "But indicators don't make money, strategies do.",
+    "So in this video I'm going to be turning this into a real trading strategy, and back to stick properly for at least 100 takes.",
+    "So you can see that it's actually worth adding to your Trading View chart or just ignoring.",
+    "But for this to actually mean anything, we're going to have to start right now.",
+    "Okay guys, here we are on Trading View.",
+    "This is the brand new indicator.",
+    "We're currently on SolUSDT on the two hour timeframe.",
+    "As you can see, I've already added the indicator to the charts."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This brand new buy sale indicator on Trading View looks incredible.",
+      "note": "Meaning: This brand new buy sale indicator on Trading View looks incredible."
+    },
+    {
+      "timestamp": null,
+      "quote": "It paints perfect entries, and entries and exits are all over the charts.",
+      "note": "Meaning: It paints perfect entries, and entries and exits are all over the charts."
+    },
+    {
+      "timestamp": null,
+      "quote": "But indicators don't make money, strategies do.",
+      "note": "Meaning: But indicators don't make money, strategies do."
+    },
+    {
+      "timestamp": null,
+      "quote": "So in this video I'm going to be turning this into a real trading strategy, and back to stick properly for at least 100 takes.",
+      "note": "Meaning: So in this video I'm going to be turning this into a real trading strategy, and back to stick properly for at least 100 takes."
+    },
+    {
+      "timestamp": null,
+      "quote": "So you can see that it's actually worth adding to your Trading View chart or just ignoring.",
+      "note": "Meaning: So you can see that it's actually worth adding to your Trading View chart or just ignoring."
+    },
+    {
+      "timestamp": null,
+      "quote": "But for this to actually mean anything, we're going to have to start right now.",
+      "note": "Meaning: But for this to actually mean anything, we're going to have to start right now."
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay guys, here we are on Trading View.",
+      "note": "Meaning: Okay guys, here we are on Trading View."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is the brand new indicator.",
+      "note": "Meaning: This is the brand new indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "We're currently on SolUSDT on the two hour timeframe.",
+      "note": "Meaning: We're currently on SolUSDT on the two hour timeframe."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you can see, I've already added the indicator to the charts.",
+      "note": "Meaning: As you can see, I've already added the indicator to the charts."
+    },
+    {
+      "timestamp": null,
+      "quote": "You can see the buy sale signals.",
+      "note": "Meaning: You can see the buy sale signals."
+    },
+    {
+      "timestamp": null,
+      "quote": "They look pretty awesome at first sight.",
+      "note": "Meaning: They look pretty awesome at first sight."
+    }
+  ],
+  "extracted_rules": [
+    "The only way to tell is to first this indicator to be part of a system and actually backtest to make sure that the rules are actually good.",
+    "So today I have put together some rules to backtest this strategy here.",
+    "We're going to add a vol or a volatility indicator, and we're going to add the ATR bands for stop loss.",
+    "If I click here, we'll be able to add that directly to the chart.",
+    "The white line is plotted at 0.5, which means that when the green line is above the white line here, we're actually in a trending market.",
+    "This indicator here is going to help us to stay out of markets when we're chopping sideways just like this up here and we don't want to be chit-chopped in and out of the market.",
+    "Now all of these rules put together have started to create us a strategy and not just an indicator.",
+    "We have rules for entries, but entries are nothing without knowing when we're going to get out of our positions.",
+    "That's where we're going to be using ATR bands to be able to set our stop loss and also to project our take profits.",
+    "If you don't have it once again, you'll be able to find it on the David Tick website under free indicators just here.",
+    "So we're going to set our first long entry to this candle here and we're going to set our stop loss to the ATR bands.",
+    "And then finally, we're going to be looking for the money, we're going to be setting our risk to reward to 1.5.",
+    "We're going to know exactly when we're going to be taking a trade, when we're going to exit a trade and how much we're going to be trading with thanks to all of the rules that we've put together and that we're going to back test that now on historical data.",
+    "Okay guys, after a couple of hours of backtesting I've added the strategy to the famous boilerplate by David Tech just here which allows us to back test these strategies with the rules using the trading view backtester and all of the data that they have.",
+    "As you can see from the equity curve I've added the buy and hold meaning that if you would have purchased Soul here you would have actually beaten the strategy for a couple of months even a year but after that the strategy against the benchmark actually destroyed it.",
+    "If I scroll down a little bit we look at the benchmark data here you would see that you currently beat up 293% if you would have purchased Soul back here.",
+    "If I scroll down a bit you can see that we had 131 wins against 117 losses and currently we're in zero open trades.",
+    "If you're interested in seeing more back tests on different coin pairs we're even gonna be exploring things like Forex and Gold and things like that in the near future."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "So we're going to add one for trend direction."
+    },
+    {
+      "type": "risk",
+      "description": "We're going to add a vol or a volatility indicator, and we're going to add the ATR bands for stop loss."
+    },
+    {
+      "type": "trend",
+      "description": "Right, this is going to be our confirmation indicator that gets us in and gives us our entries, but we do need a trend indicator that's going to tell us which way the market is going."
+    },
+    {
+      "type": "filter",
+      "description": "So for that, we're going to be adding the range of filter, which is by Donovan wall."
+    },
+    {
+      "type": "trend",
+      "description": "As you can see, it gives us this pink and lime cloud and a trend line just here."
+    },
+    {
+      "type": "trend",
+      "description": "This is going to be known as our base line, which gives us our trend direction."
+    },
+    {
+      "type": "trend",
+      "description": "Okay, the Quant Nomad is a very, very good indicator as well and it's going to help us to make sure that there's enough movement or we're actually already in a trend that we're not a sideways moving market."
+    },
+    {
+      "type": "trend",
+      "description": "The white line is plotted at 0.5, which means that when the green line is above the white line here, we're actually in a trending market."
+    },
+    {
+      "type": "risk",
+      "description": "That's where we're going to be using ATR bands to be able to set our stop loss and also to project our take profits."
+    },
+    {
+      "type": "risk",
+      "description": "What ATR bands actually do is they give us a little bit of a idea of the volatility in the market and allow us to set better stop losses."
+    },
+    {
+      "type": "filter",
+      "description": "So first of all, we're going to be looking at the range filter."
+    },
+    {
+      "type": "filter",
+      "description": "The range filter has gone green and price is above it just here."
+    },
+    {
+      "type": "risk",
+      "description": "So we're going to set our first long entry to this candle here and we're going to set our stop loss to the ATR bands."
+    },
+    {
+      "type": "risk",
+      "description": "And then finally, we're going to be looking for the money, we're going to be setting our risk to reward to 1.5."
+    }
+  ],
+  "explicit_conditions": [
+    "We're going to add a vol or a volatility indicator, and we're going to add the ATR bands for stop loss.",
+    "That's where we're going to be using ATR bands to be able to set our stop loss and also to project our take profits.",
+    "So we're going to set our first long entry to this candle here and we're going to set our stop loss to the ATR bands.",
+    "And then finally, we're going to be looking for the money, we're going to be setting our risk to reward to 1.5."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "daily"
+  ],
+  "assets_mentioned": [
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-4ea7fcddc12f.raw.txt",
+  "sha256": "144bb21c47467a6ff0d58004462138bbb8b4a9937946260481bc07bfea6cee76",
+  "truncated": false
+}

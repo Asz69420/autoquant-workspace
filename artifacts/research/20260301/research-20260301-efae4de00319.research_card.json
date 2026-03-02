@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-efae4de00319",
+  "created_at": "2026-03-01T10:34:50.177160Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/62mMrCyO-Simple-Profit-monk-trading/",
+  "title": "Simple Profit monk trading",
+  "author": "Monk_Trading",
+  "summary_bullets": [
+    "Top catalog indicator: Simple Profit monk trading by Monk_Trading."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Simple Profit monk trading by Monk_Trading.",
+      "note": "Meaning: Top catalog indicator: Simple Profit monk trading by Monk_Trading."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-efae4de00319.raw.txt",
+  "sha256": "6188a34f24c40e9dbbaa8104bd66981502b33644622b4924de94c7558922ef61",
+  "truncated": false
+}

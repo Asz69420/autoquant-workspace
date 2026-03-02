@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-mc4r8j6w",
+  "created_at": "2026-03-01T08:00:02.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD tail harvesters achieved PF=1.71 (7:1) and PF=1.36 (5:1) on 1h — both ACCEPTs. But the transitional regime still drags PF down (transitional PF=1.31 vs ranging PF=2.06). This spec tests a COMPLEMENTARY approach: time-bounded momentum capture. The thesis is that MACD histogram zero-crosses that don't produce immediate directional movement (within 8-15 bars on 1h) are failed signals trapped in the transitional regime. By auto-exiting stale trades via strict max_bars_in_trade, we cut losses in transitional periods while preserving winners in ranging/trending. Also tests 4h timeframe to compare against the 1h tail harvester success.",
+  "invalidation": "If time-capped variants show lower PF than the uncapped tail harvesters (PF=1.71), time-bounding hurts more than it helps — stick with pure tail harvesting. If 4h variant underperforms 1h, confirms that 1h is the optimal MACD timeframe.",
+  "variants": [
+    {
+      "name": "macd_time_capped_12bar_moderate_rr",
+      "description": "Time-bounded MACD: 12-bar max hold with moderate 4:1 R:R. Hypothesis: MACD zero-crosses that haven't reached TP within 12 bars (~12h on 1h chart) are failed signals in choppy conditions. The 12-bar time cap acts as a proxy transitional-regime filter — winners in trending/ranging regimes move fast, losers in transitional stagnate. Moderate R:R (4:1) is achievable within the time window.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-cross, bullish momentum shift)",
+        "Close > EMA_50 (trend confirmation)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-cross, bearish momentum shift)",
+        "Close < EMA_50 (bearish trend confirmation)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 4.0x ATR from entry",
+        "Stop loss at 1.5x ATR from entry",
+        "Exit after 12 bars if neither TP nor stop hit (time cap — cut stale trades)",
+        "Exit on opposite MACD histogram zero-cross"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR (validated minimum)",
+        "TP: 4.0x ATR (2.67:1 R:R — achievable within 12-bar window)",
+        "Time cap at 12 bars acts as implicit transitional-regime filter"
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "default": 1.5, "min": 1.0, "max": 2.5, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 4.0, "min": 2.5, "max": 6.0, "step": 0.5},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 12, "min": 6, "max": 20, "step": 2}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 4.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "Close > EMA_50 trend confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram zero-cross for momentum shift"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP scaling"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "macd_time_capped_8bar_tight",
+      "description": "Aggressive time-bounded MACD: 8-bar max hold with tighter 3:1 R:R. Tests whether extremely short holding periods concentrate returns in the initial momentum burst following a MACD zero-cross. On 1h chart, 8 bars = 8 hours. If MACD momentum is real, 8h should be enough for a 3x ATR move. If not, the signal was noise.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-cross)",
+        "Close > EMA_50 (trend confirmation)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-cross)",
+        "Close < EMA_50 (bearish trend confirmation)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 3.0x ATR from entry",
+        "Stop loss at 1.5x ATR from entry",
+        "Exit after 8 bars if neither TP nor stop hit (aggressive time cap)",
+        "Exit on opposite MACD histogram zero-cross"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR (validated minimum)",
+        "TP: 3.0x ATR (2:1 R:R)",
+        "8-bar aggressive time cap — tests immediate momentum hypothesis"
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "default": 1.5, "min": 1.0, "max": 2.5, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 3.0, "min": 2.0, "max": 5.0, "step": 0.5},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 8, "min": 4, "max": 15, "step": 1}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "Close > EMA_50 trend confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram zero-cross for momentum shift"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP scaling"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "macd_4h_moderate_tail_5to1",
+      "description": "4h timeframe comparison: MACD tail harvester on 4h with moderate 5:1 R:R. The original MACD ACCEPT (macd_wide_exit_fee_killer) was on 4h at PF=1.347 with 189 trades. Recent 1h tail harvesters achieved PF=1.71. This variant tests whether the 4h tail-harvester concept with wider stops (2.0x vs original 1.0x) improves the already-accepted 4h result. The wider stop should reduce DD below the original 6.2%.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-cross)",
+        "Close > EMA_50 (trend confirmation)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-cross)",
+        "Close < EMA_50 (bearish trend confirmation)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 5.0x ATR from entry (moderate tail harvester for 4h)",
+        "Stop loss at 2.0x ATR from entry (wider than original 1.0x ACCEPT)",
+        "Exit on opposite MACD histogram zero-cross"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR (wider than original ACCEPT at 1.0x — targeting DD reduction)",
+        "TP: 5.0x ATR (2.5:1 R:R)",
+        "4h timeframe — fewer signals but each captures multi-day trend moves"
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "default": 2.0, "min": 1.5, "max": 3.0, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 5.0, "min": 3.0, "max": 8.0, "step": 1.0},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 20, "min": 8, "max": 30, "step": 4}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 5.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "Close > EMA_50 trend confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram zero-cross for momentum shift"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP scaling, wider stop than original ACCEPT"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    }
+  ]
+}

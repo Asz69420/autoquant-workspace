@@ -1,0 +1,11 @@
+{
+  "run_id": "test-spawn-lifecycle-1",
+  "started_at": "2026-02-23T05:47:31.972226Z",
+  "emit_start": false,
+  "terminal_emitted": true,
+  "agent": "oQ",
+  "model_id": "openai-codex/gpt-5.3-codex",
+  "terminal_status": "OK",
+  "terminal_reason_code": "TEST",
+  "terminal_at": "2026-02-23T05:47:32.199091Z"
+}

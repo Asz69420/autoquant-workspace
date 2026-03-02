@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-aa313a6eb12f",
+  "created_at": "2026-02-26T12:40:00.797462Z",
+  "source_type": "transcript_drop",
+  "source_ref": "transcript_drop://strategy_002_bollinger_squeeze_breakout",
+  "title": "strategy_002_bollinger_squeeze_breakout",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "STRATEGY: Bollinger Squeeze Breakout ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Low volatility compression about to expand TYPE: Volatility expansion / breakout CONCEPT: Markets cycle between low and high volatility.",
+    "When Bollinger Bands contract to their narrowest point (a “squeeze”), a big move is building.",
+    "We detect the squeeze using Bollinger Band width, confirm breakout direction using MACD and OBV, and ride the expansion.",
+    "This catches the start of major moves that other strategies miss because they wait for trend confirmation after the move has already started.",
+    "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - squeeze detection and breakout levels - Bollinger Band Width: (Upper - Lower) / Middle - measures squeeze tightness - MACD (fast 12, slow 26, signal 9) - directional bias during squeeze - OBV - volume accumulation/distribution during squeeze reveals hidden intent - ADX (period 14) - confirms low volatility (ADX < 20 = squeeze, ADX rising = expansion starting) - ATR (period 14) - stop loss sizing SQUEEZE DETECTION: - Calculate BB Width",
+    "Squeeze was active (at least 5 bars of compressed BB Width) 2.",
+    "Price closes above upper Bollinger Band (breakout) 3.",
+    "MACD histogram is positive (momentum confirms upward direction) 4.",
+    "OBV > SMA(OBV, 20) (volume was accumulating during squeeze) 5.",
+    "ADX starts rising (current ADX > ADX from 2 bars ago) ENTRY SHORT: 1."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "STRATEGY: Bollinger Squeeze Breakout ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Low volatility compression about to expand TYPE: Volatility expansion / breakout CONCEPT: Markets cycle between low",
+      "note": "Meaning: STRATEGY: Bollinger Squeeze Breakout ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Low volatility compression about to expand TYPE: Volatility expans"
+    },
+    {
+      "timestamp": null,
+      "quote": "When Bollinger Bands contract to their narrowest point (a “squeeze”), a big move is building.",
+      "note": "Meaning: When Bollinger Bands contract to their narrowest point (a “squeeze”), a big move is building."
+    },
+    {
+      "timestamp": null,
+      "quote": "We detect the squeeze using Bollinger Band width, confirm breakout direction using MACD and OBV, and ride the expansion.",
+      "note": "Meaning: We detect the squeeze using Bollinger Band width, confirm breakout direction using MACD and OBV, and ride the expansion."
+    },
+    {
+      "timestamp": null,
+      "quote": "This catches the start of major moves that other strategies miss because they wait for trend confirmation after the move has already started.",
+      "note": "Meaning: This catches the start of major moves that other strategies miss because they wait for trend confirmation after the move has already started."
+    },
+    {
+      "timestamp": null,
+      "quote": "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - squeeze detection and breakout levels - Bollinger Band Width: (Upper - Lower) / Middle - measures squeeze tightness - MACD (fast 12, slow ",
+      "note": "Meaning: INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - squeeze detection and breakout levels - Bollinger Band Width: (Upper - Lower) / Middle - "
+    },
+    {
+      "timestamp": null,
+      "quote": "Squeeze was active (at least 5 bars of compressed BB Width) 2.",
+      "note": "Meaning: Squeeze was active (at least 5 bars of compressed BB Width) 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes above upper Bollinger Band (breakout) 3.",
+      "note": "Meaning: Price closes above upper Bollinger Band (breakout) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "MACD histogram is positive (momentum confirms upward direction) 4.",
+      "note": "Meaning: MACD histogram is positive (momentum confirms upward direction) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "OBV > SMA(OBV, 20) (volume was accumulating during squeeze) 5.",
+      "note": "Meaning: OBV > SMA(OBV, 20) (volume was accumulating during squeeze) 5."
+    },
+    {
+      "timestamp": null,
+      "quote": "ADX starts rising (current ADX > ADX from 2 bars ago) ENTRY SHORT: 1.",
+      "note": "Meaning: ADX starts rising (current ADX > ADX from 2 bars ago) ENTRY SHORT: 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes below lower Bollinger Band (breakdown) 3.",
+      "note": "Meaning: Price closes below lower Bollinger Band (breakdown) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "MACD histogram is negative (momentum confirms downward) 4.",
+      "note": "Meaning: MACD histogram is negative (momentum confirms downward) 4."
+    }
+  ],
+  "extracted_rules": [
+    "When Bollinger Bands contract to their narrowest point (a “squeeze”), a big move is building.",
+    "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - squeeze detection and breakout levels - Bollinger Band Width: (Upper - Lower) / Middle - measures squeeze tightness - MACD (fast 12, slow 26, signal 9) - directional bias during squeeze - OBV - volume accumulation/distribution during squeeze reveals hidden intent - ADX (period 14) - confirms low volatility (ADX < 20 = squeeze, ADX rising = expansion starting) - ATR (period 14) - stop loss sizing SQUEEZE DETECTION: - Calculate BB Width",
+    "ADX starts rising EXIT RULES: - Take profit: 3.0x ATR(14) from entry (squeeze breakouts produce big moves) - Stop loss: Middle Bollinger Band (SMA 20) — if price falls back to middle, the breakout failed - Alternative stop: 1.5x ATR, whichever is tighter - Trailing stop: After 2.0 ATR in profit, trail at 1.5 ATR behind price - Time stop: If 3.0 ATR target not reached in 25 candles, exit at market - Max hold: 40 candles RISK MANAGEMENT: - Risk per trade: 1.25% of account (higher conviction setup,"
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "This catches the start of major moves that other strategies miss because they wait for trend confirmation after the move has already started."
+    },
+    {
+      "type": "risk",
+      "description": "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - squeeze detection and breakout levels - Bollinger Band Width: (Upper - Lower) / Middle - measures squeeze tightness - MACD (fast 12, slow 26, signal 9) - dire"
+    },
+    {
+      "type": "momentum",
+      "description": "MACD histogram is positive (momentum confirms upward direction) 4."
+    },
+    {
+      "type": "momentum",
+      "description": "MACD histogram is negative (momentum confirms downward) 4."
+    },
+    {
+      "type": "risk",
+      "description": "Stop: below previous swing low."
+    },
+    {
+      "type": "trend",
+      "description": "ADX rising confirms the transition from range to trend."
+    }
+  ],
+  "explicit_conditions": [
+    "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - squeeze detection and breakout levels - Bollinger Band Width: (Upper - Lower) / Middle - measures squeeze tightness - MACD (fast 12, slow 26, signal 9) - directional bias during squeeze - OBV - volume accumulation/distribution during squeeze reveals hidden intent - ADX (period 14) - confirms low volatility (ADX < 20 = squeeze, ADX rising = expansion starting) - ATR (period 14) - stop loss sizing SQUEEZE DETECTION: - Calculate BB Width",
+    "ADX starts rising EXIT RULES: - Take profit: 3.0x ATR(14) from entry (squeeze breakouts produce big moves) - Stop loss: Middle Bollinger Band (SMA 20) — if price falls back to middle, the breakout failed - Alternative stop: 1.5x ATR, whichever is tighter - Trailing stop: After 2.0 ATR in profit, trail at 1.5 ATR behind price - Time stop: If 3.0 ATR target not reached in 25 candles, exit at market - Max hold: 40 candles RISK MANAGEMENT: - Risk per trade: 1.25% of account (higher conviction setup,"
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "SMA",
+    "MACD",
+    "ATR",
+    "Bollinger Bands",
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "4h"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-aa313a6eb12f.raw.txt",
+  "sha256": "0f8479b139596996157c5a8693d8246efe128e4f07ab2f21170ac0fd963c523f",
+  "truncated": false
+}

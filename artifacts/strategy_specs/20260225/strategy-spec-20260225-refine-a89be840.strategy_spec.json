@@ -1,0 +1,1018 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260225-refine-a89be840",
+  "created_at": "2026-02-25T03:27:20.076102Z",
+  "source_thesis_path": "artifacts/thesis/20260225/thesis-20260225-3315d61e42cf.thesis.json",
+  "variants": [
+    {
+      "name": "baseline",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_exploit_1",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 1.8,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_exploit_2",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.2,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_exploit_3",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_exploit_4",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.4,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_exploit_5",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.8,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.6,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_exploit_6",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.2,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_exploit_7",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.1,
+        "tp_type": "atr",
+        "tp_atr_mult": 1.6,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "pressure confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_role_entry",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "entry",
+          "notes": "TPX role_swap to entry"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    },
+    {
+      "name": "baseline_role_confirmation",
+      "description": "Direct deterministic mapping from thesis signals, constraints, and hypotheses.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution."
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {
+          "indicator": "TPX",
+          "role": "confirmation",
+          "notes": "TPX role_swap to confirmation"
+        },
+        {
+          "indicator": "MACD-long",
+          "role": "trend",
+          "notes": "trend context"
+        },
+        {
+          "indicator": "MACD-short",
+          "role": "entry",
+          "notes": "entry alignment"
+        }
+      ],
+      "complexity": {
+        "indicator_count": 3,
+        "condition_count": 21,
+        "parameter_count": 3
+      }
+    }
+  ]
+}

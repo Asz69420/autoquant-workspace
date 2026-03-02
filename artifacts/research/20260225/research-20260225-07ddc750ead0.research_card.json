@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-07ddc750ead0",
+  "created_at": "2026-02-25T12:56:10.808843Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/JVVhxzEX-Intraday-Levels-OmegaTools/",
+  "title": "Intraday Levels [OmegaTools]",
+  "author": "OmegaTools",
+  "summary_bullets": [
+    "Top catalog indicator: Intraday Levels [OmegaTools] by OmegaTools."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Intraday Levels [OmegaTools] by OmegaTools.",
+      "note": "Meaning: Top catalog indicator: Intraday Levels [OmegaTools] by OmegaTools."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-07ddc750ead0.raw.txt",
+  "sha256": "2d3c9122f3dcd82d0693da97e5e580938c10cfc23db671db4054ac5d537e91fd",
+  "truncated": false
+}

@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-sr04e7f2",
+  "created_at": "2026-02-28T07:30:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Stochastic K/D crossover in extreme oversold/overbought zones captures mean-reversion bounces during ranging markets. The critical insight from 60+ cycles of data: ranging regime showed PF 1.04 — the only naturally profitable regime for ema_rsi_atr outcomes. Yet every spec designed so far is a trend-following strategy that LOSES in ranging markets. This spec inverts the approach: trade ONLY when ADX < 20 (ranging), buy oversold K/D crosses below 15, sell overbought K/D crosses above 85. Tighter zones (15/85 vs default 20/80) ensure only extreme reversals are captured. Quick TP at Bollinger midband targets small, repeatable gains.",
+  "regime_assumption": "Ranging markets only (ADX < 20). Invalidates during trending regimes where stochastic can stay overbought/oversold for extended periods. Expected to underperform when ADX > 25. This is explicitly designed as the complement to the supertrend_follow and macd_confirmation trend-following specs.",
+  "variants": [
+    {
+      "name": "stoch_ranging_reversal_tight",
+      "description": "Stochastic K/D crossover in extreme zones (15/85) with ADX < 20 ranging regime gate. Tight stops and quick TP target small, repeatable mean-reversion gains. ETH/1h for low drawdown.",
+      "entry_long": [
+        "Require Stochastic K crosses above D on bar close.",
+        "Require Stochastic K < 15 (deep oversold zone).",
+        "Require ADX_14 < 20 to confirm ranging regime.",
+        "Use signal: stochastic_reversal"
+      ],
+      "entry_short": [
+        "Require Stochastic K crosses below D on bar close.",
+        "Require Stochastic K > 85 (deep overbought zone).",
+        "Require ADX_14 < 20 to confirm ranging regime.",
+        "Use signal: stochastic_reversal"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime gate: ADX_14 < 20 (ranging only — inverse of trend specs)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on Stochastic K crossing back to neutral zone (40-60).",
+        "Exit on ADX_14 rising above 25 (regime shift to trending).",
+        "Exit on max bars in trade threshold (10 bars — quick mean-reversion).",
+        "Hypothesis failure mode guard: Ranging market breaks into trend while position open",
+        "Hypothesis failure mode guard: Stochastic stays extreme during sharp directional move"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 1.0x ATR_14 from entry (tight stop for mean-reversion).",
+        "Take profit at 1.5x ATR_14 from entry (1.5:1 R:R, quick scalp).",
+        "Regime invalidation: exit if ADX_14 > 25 regardless of P&L."
+      ],
+      "parameters": [
+        {
+          "name": "stoch_os",
+          "min": 10,
+          "max": 25,
+          "step": 5,
+          "default": 15
+        },
+        {
+          "name": "stoch_ob",
+          "min": 75,
+          "max": 90,
+          "step": 5,
+          "default": 85
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 5,
+          "max": 15,
+          "step": 1,
+          "default": 10
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 0.8,
+          "max": 1.5,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 1.0,
+          "max": 2.5,
+          "step": 0.5,
+          "default": 1.5
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 1.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": false
+      },
+      "components": [
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "STOCHk/STOCHd crossover in extreme OS/OB zones as reversal signal"},
+        {"indicator": "EMA", "role": "trend", "notes": "EMA context (baseline placeholder, not primary signal in mean-reversion mode)"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing, ADX_14 < 20 as ranging regime filter"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    },
+    {
+      "name": "stoch_ranging_wider_zones",
+      "description": "Stochastic reversal with standard 20/80 zones for more trade frequency. Tests whether relaxed zone boundaries still capture mean-reversion edge or dilute signal quality. Wider TP to let winners run slightly further.",
+      "entry_long": [
+        "Require Stochastic K crosses above D on bar close.",
+        "Require Stochastic K < 20 (standard oversold zone).",
+        "Require ADX_14 < 20 to confirm ranging regime.",
+        "Use signal: stochastic_reversal"
+      ],
+      "entry_short": [
+        "Require Stochastic K crosses below D on bar close.",
+        "Require Stochastic K > 80 (standard overbought zone).",
+        "Require ADX_14 < 20 to confirm ranging regime.",
+        "Use signal: stochastic_reversal"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 < 20 (ranging only)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on Stochastic K crossing back to neutral zone (40-60).",
+        "Exit on ADX_14 rising above 25 (regime shift to trending).",
+        "Exit on max bars in trade threshold (12 bars).",
+        "Hypothesis failure mode guard: Ranging market breaks into trend while position open",
+        "Hypothesis failure mode guard: Double-dip oversold during extended drawdown"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 1.2x ATR_14 from entry.",
+        "Take profit at 2.0x ATR_14 from entry (1.67:1 R:R).",
+        "Regime invalidation: exit if ADX_14 > 25."
+      ],
+      "parameters": [
+        {
+          "name": "stoch_os",
+          "min": 15,
+          "max": 30,
+          "step": 5,
+          "default": 20
+        },
+        {
+          "name": "stoch_ob",
+          "min": 70,
+          "max": 85,
+          "step": 5,
+          "default": 80
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 6,
+          "max": 20,
+          "step": 2,
+          "default": 12
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 1.0,
+          "max": 2.0,
+          "step": 0.2,
+          "default": 1.2
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 1.5,
+          "max": 3.0,
+          "step": 0.5,
+          "default": 2.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": false
+      },
+      "components": [
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "STOCHk/STOCHd crossover in standard 20/80 zones"},
+        {"indicator": "EMA", "role": "trend", "notes": "EMA context baseline"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP, ADX_14 < 20 ranging filter"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  },
+  "generation_origin": "claude-advisor-strategy-generator"
+}

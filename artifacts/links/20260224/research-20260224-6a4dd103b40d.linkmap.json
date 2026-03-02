@@ -1,0 +1,20 @@
+{
+  "research_card_path": "artifacts/research/20260224/research-20260224-6a4dd103b40d.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260224/indicator-20260224-45403878d6e0.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "red K trader pressure index",
+      "author_hint": "red K trader",
+      "keywords": [
+        "pressure",
+        "index",
+        "red",
+        "k",
+        "trader"
+      ],
+      "confidence": 0.93
+    }
+  ]
+}

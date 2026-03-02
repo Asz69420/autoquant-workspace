@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_gann static step",
+    "created_at":  "2026-03-01T15:19:50.299937+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260302/research-20260302-c007455e34b6.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260302/indicator-20260302-9b04b31c68be.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260302/research-20260302-c007455e34b6.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T15:21:47.3806755Z",
+    "attempts":  1,
+    "last_error":  null
+}

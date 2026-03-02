@@ -1,0 +1,115 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772112663-backfill-strategy-spec-20260226-7f959832e3b5.strategy_spec",
+  "run_id": "autopilot-1772112663-backfill-strategy-spec-20260226-7f959832e3b5.strategy_spec",
+  "created_at": "2026-02-26T13:38:32.828024+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260226-7f959832e3b5.strategy_spec",
+  "template": "directive_variant_1_entry_tighten",
+  "metrics": {
+    "profit_factor_after_costs": 0.92023873,
+    "max_drawdown": 981.19936581,
+    "trades": 226
+  },
+  "failure_reasons": [
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 981.199 > 0.30",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260226\\hl_20260226_5be620a4.backtest_result.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.920",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260226\\hl_20260226_5be620a4.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "confidence_threshold_delta": 0.05
+      },
+      "rationale": "Tighten entry quality to reduce adverse excursions.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "stop_atr_mult": 1.2,
+        "tp_atr_mult": 1.8
+      },
+      "rationale": "Adjust exits to cap drawdown.",
+      "priority": 2
+    },
+    {
+      "id": "d3",
+      "type": "PARAM_SWEEP",
+      "params": {
+        "parameter": "risk_r",
+        "range": [
+          0.5,
+          1.5
+        ],
+        "step": 0.25
+      },
+      "rationale": "Re-balance payoff profile to improve PF.",
+      "priority": 1
+    },
+    {
+      "id": "d4",
+      "type": "ROLE_SWAP",
+      "params": {
+        "swap": "entry<->confirmation"
+      },
+      "rationale": "Test alternate component role assignment for better edge.",
+      "priority": 3
+    },
+    {
+      "id": "d5",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 1,
+    "history_window": [
+      {
+        "id": "outcome-notes-autopilot-1772112435",
+        "created_at": "2026-02-26T13:28:31.900087+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP",
+          "TEMPLATE_SWITCH"
+        ]
+      }
+    ],
+    "directive_type_stats": {}
+  },
+  "next_experiments": [
+    "Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+    "Apply EXIT_CHANGE with params={\"stop_atr_mult\": 1.2, \"tp_atr_mult\": 1.8}",
+    "Apply PARAM_SWEEP with params={\"parameter\": \"risk_r\", \"range\": [0.5, 1.5], \"step\": 0.25}",
+    "Apply ROLE_SWAP with params={\"swap\": \"entry<->confirmation\"}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260226/batch_20260226_2cfb56b4.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260226/refine_20260226_54a950ec.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ]
+}

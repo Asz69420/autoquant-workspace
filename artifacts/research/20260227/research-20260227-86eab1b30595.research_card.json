@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-86eab1b30595",
+  "created_at": "2026-02-26T21:23:11.994033Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=jBkCq0DnHQU",
+  "title": "I Turned a FREE TradingView Indicator Into a Real Strategy… The Test Shocked Me",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "This very strange indicator has a 63% win rate, but what's weird about it is it only allows you to trade above the line.",
+    "So guys, I'm going to be converting this into a trading strategy with rules so you can follow along.",
+    "But for us to do that, we're going to have this start right now.",
+    "Okay, guys, here I am on trading view.",
+    "This is the new strategy called Managing Cloud.",
+    "We're going to go through the indicators involved and I'll give you the full back testing results.",
+    "As you can see, they look pretty awesome.",
+    "So let's get straight to business.",
+    "Okay, so the first indicator that we're going to be using is the EWMA.",
+    "I'm on BTCUSDT on the one hour timeframe."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This very strange indicator has a 63% win rate, but what's weird about it is it only allows you to trade above the line.",
+      "note": "Meaning: This very strange indicator has a 63% win rate, but what's weird about it is it only allows you to trade above the line."
+    },
+    {
+      "timestamp": null,
+      "quote": "So guys, I'm going to be converting this into a trading strategy with rules so you can follow along.",
+      "note": "Meaning: So guys, I'm going to be converting this into a trading strategy with rules so you can follow along."
+    },
+    {
+      "timestamp": null,
+      "quote": "But for us to do that, we're going to have this start right now.",
+      "note": "Meaning: But for us to do that, we're going to have this start right now."
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay, guys, here I am on trading view.",
+      "note": "Meaning: Okay, guys, here I am on trading view."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is the new strategy called Managing Cloud.",
+      "note": "Meaning: This is the new strategy called Managing Cloud."
+    },
+    {
+      "timestamp": null,
+      "quote": "We're going to go through the indicators involved and I'll give you the full back testing results.",
+      "note": "Meaning: We're going to go through the indicators involved and I'll give you the full back testing results."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you can see, they look pretty awesome.",
+      "note": "Meaning: As you can see, they look pretty awesome."
+    },
+    {
+      "timestamp": null,
+      "quote": "So let's get straight to business.",
+      "note": "Meaning: So let's get straight to business."
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay, so the first indicator that we're going to be using is the EWMA.",
+      "note": "Meaning: Okay, so the first indicator that we're going to be using is the EWMA."
+    },
+    {
+      "timestamp": null,
+      "quote": "I'm on BTCUSDT on the one hour timeframe.",
+      "note": "Meaning: I'm on BTCUSDT on the one hour timeframe."
+    },
+    {
+      "timestamp": null,
+      "quote": "We're going to go up to indicators up here and we're going to type EWMA.",
+      "note": "Meaning: We're going to go up to indicators up here and we're going to type EWMA."
+    },
+    {
+      "timestamp": null,
+      "quote": "It's the Entrophy Weighted Moving Average.",
+      "note": "Meaning: It's the Entrophy Weighted Moving Average."
+    }
+  ],
+  "extracted_rules": [
+    "So guys, I'm going to be converting this into a trading strategy with rules so you can follow along.",
+    "It helps us to keep out of these sideways moving sort of choppy movements and tells us when we can actually trade.",
+    "For example, this one here actually will only tell us when we're allowed to trade.",
+    "When the green line is above zero and red is below zero, we're looking for longs.",
+    "And when it's the other way round, we're looking for shorts.",
+    "The ATR bands adapt perfectly to price movement and just gives us enough wiggle room to have a good stop loss and know exactly when we're going to get out of the market.",
+    "That gives us enough wiggle room to set our stop loss to the ATR bands.",
+    "We're going to set our stop loss to the ATR bands and we're looking for a risk to reward of one to two.",
+    "If that doesn't bring luck, I don't know what will.",
+    "We have a total number of trades of 237 and a win rate of 62.8%, a profit factor of 2.1, and the equity curve looks pretty awesome if I do so myself.",
+    "But if we look at the benchmark, we absolutely crushed the benchmark, and we didn't even go underwater.",
+    "If we look at the number of wins against losses, we had 149 winning trades and 88 losers.",
+    "So if you want to learn how to algo trade 100% automatically with systems, come join me."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "So the next indicator we're going to add is going to give us our trend direction on a much lower timeframe so we know which way to trade."
+    },
+    {
+      "type": "filter",
+      "description": "So we're going to add the Range Filter."
+    },
+    {
+      "type": "filter",
+      "description": "The Range Filter by Donovan Wall is just this one here."
+    },
+    {
+      "type": "filter",
+      "description": "And thanks to Donovan Wall's Range Filter, we know we're allowed to take an entry here long and pick up movements just like this."
+    },
+    {
+      "type": "trend",
+      "description": "Our third indicator that we're going to be adding is going to be called the Le Mans Trend indicator by David Tech."
+    },
+    {
+      "type": "risk",
+      "description": "But we all know we'd be completely lost without the wonders of the ATR to set our stop losses and take profit."
+    },
+    {
+      "type": "risk",
+      "description": "The ATR bands adapt perfectly to price movement and just gives us enough wiggle room to have a good stop loss and know exactly when we're going to get out of the market."
+    },
+    {
+      "type": "risk",
+      "description": "That gives us enough wiggle room to set our stop loss to the ATR bands."
+    },
+    {
+      "type": "filter",
+      "description": "Thanks to the range of filter turning green, which was on this candle here and we're looking for green to be over red and red to be below the zero line, which is around this candle just here."
+    },
+    {
+      "type": "risk",
+      "description": "We're going to set our stop loss to the ATR bands and we're looking for a risk to reward of one to two."
+    },
+    {
+      "type": "risk",
+      "description": "You have a mere drawdown of 21%."
+    },
+    {
+      "type": "risk",
+      "description": "I know that going through 21% is enormous, but we are on 10x leverage and 10% of the account."
+    }
+  ],
+  "explicit_conditions": [
+    "The ATR bands adapt perfectly to price movement and just gives us enough wiggle room to have a good stop loss and know exactly when we're going to get out of the market.",
+    "That gives us enough wiggle room to set our stop loss to the ATR bands.",
+    "We're going to set our stop loss to the ATR bands and we're looking for a risk to reward of one to two."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "BTC"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-86eab1b30595.raw.txt",
+  "sha256": "342c5e9f6b8f59342aab4a208a4eaef6ce7e5a0541c9a60beeb379d79072163e",
+  "truncated": false
+}

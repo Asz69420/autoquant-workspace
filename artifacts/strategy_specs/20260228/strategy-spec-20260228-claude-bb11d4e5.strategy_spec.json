@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-bb11d4e5",
+  "created_at": "2026-02-28T18:30:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Advisory data reveals ETH/1h has ranging-regime PF=1.115 — the highest regime-specific edge in the entire dataset. Bollinger breakouts are designed to capture volatility expansion from compression (squeeze). This is a fundamentally different thesis from all pipeline specs: instead of following existing trends, we catch the moment a range BREAKS. Volume confirmation (1.2-1.5x average) filters false breakouts. The key insight is regime-targeting: by designing explicitly for ranging-to-expansion transitions on ETH/1h, we align strategy mechanics with the strongest observed regime edge. Additionally, Bollinger breakouts are structurally infrequent (bands must be broken, not just touched), naturally limiting trade count and fee drag.",
+  "regime_assumption": "RANGING-TO-EXPANSION. This strategy specifically targets the transition from low-volatility ranging into directional expansion. It will fire when Bollinger bands are broken, which happens most often during range breakouts. Expected to underperform during sustained trends (price stays outside bands, no new breakout signal). Expected to fail during false breakouts in choppy conditions. Invalidate if ranging-regime PF < 1.0 (contradicts the ETH/1h ranging edge finding) or if false breakout rate exceeds 70%.",
+  "invalidation_conditions": [
+    "Ranging-regime PF < 1.0 (should specifically exploit ranging edge)",
+    "False breakout rate > 70% (volume filter not working)",
+    "Total trades < 15 (signal too rare to be testable)",
+    "Fee drag > 40% of gross profit (frequency too high despite being breakout-only)"
+  ],
+  "variants": [
+    {
+      "name": "boll_squeeze_vol_confirm",
+      "description": "Bollinger breakout with volume confirmation (1.2x avg) on ETH/1h. Core thesis test: does capturing ranging-to-expansion transitions on ETH/1h exploit the 1.115 ranging PF edge? Volume filter aims to distinguish real breakouts from noise.",
+      "entry_long": [
+        "Close breaks above BBU_20_2.0 (upper Bollinger band breakout).",
+        "Volume >= 1.2x 20-period volume average (institutional participation).",
+        "Execute on bar close only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "entry_short": [
+        "Close breaks below BBL_20_2.0 (lower Bollinger band breakdown).",
+        "Volume >= 1.2x 20-period volume average.",
+        "Execute on bar close only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime target: Ranging-to-expansion transitions (ETH/1h ranging PF=1.115)"
+      ],
+      "exit_rules": [
+        "Stop loss at 1.5x ATR below entry (tight: breakout should move immediately).",
+        "Take profit at 2.5x ATR above entry (R:R 1:1.67).",
+        "Exit if price re-enters Bollinger band (breakout failed).",
+        "Exit on max 15 bars in trade (breakout momentum is short-lived on 1h).",
+        "Hypothesis failure mode guard: False breakout with immediate reversal into range",
+        "Hypothesis failure mode guard: Volume spike without follow-through (news-driven)"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 0.75%.",
+        "Reduced risk for 1h — higher frequency means more fee exposure.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "volume_ratio_min", "min": 1.0, "max": 2.0, "step": 0.2, "default": 1.2},
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 2.0, "max": 3.5, "step": 0.5, "default": 2.5},
+        {"name": "max_bars_in_trade", "min": 8, "max": 20, "step": 4, "default": 15}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.5,
+        "risk_per_trade_pct": 0.75
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Bollinger Bands", "role": "trend", "notes": "BBU/BBL_20_2.0 as breakout detection bands"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "Volume ratio as breakout confirmation"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "boll_breakout_high_vol",
+      "description": "Bollinger breakout requiring stronger volume confirmation (1.5x avg). Tests whether stricter volume gate reduces false breakouts enough to improve PF, even at cost of fewer trades.",
+      "entry_long": [
+        "Close breaks above BBU_20_2.0.",
+        "Volume >= 1.5x 20-period volume average (strong institutional confirmation).",
+        "Execute on bar close only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "entry_short": [
+        "Close breaks below BBL_20_2.0.",
+        "Volume >= 1.5x 20-period volume average.",
+        "Execute on bar close only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime target: Strong volume breakouts from range"
+      ],
+      "exit_rules": [
+        "Stop loss at 1.5x ATR below entry.",
+        "Take profit at 3.0x ATR above entry (R:R 1:2.0 — wider target for high-conviction entries).",
+        "Exit if price re-enters Bollinger band.",
+        "Exit on max 20 bars in trade.",
+        "Hypothesis failure mode guard: Volume gate too strict — insufficient trades",
+        "Hypothesis failure mode guard: High-volume breakout reversal (stop hunt)"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 1%.",
+        "Higher conviction entries allow standard risk allocation.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "volume_ratio_min", "min": 1.2, "max": 2.0, "step": 0.3, "default": 1.5},
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 2.5, "max": 4.0, "step": 0.5, "default": 3.0},
+        {"name": "max_bars_in_trade", "min": 12, "max": 30, "step": 6, "default": 20}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Bollinger Bands", "role": "trend", "notes": "BBU/BBL_20_2.0 breakout detection"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "High volume ratio (1.5x) as conviction filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "boll_breakout_4h_trend",
+      "description": "Bollinger breakout on ETH/4h. Tests whether band breakouts on higher timeframe produce higher-quality, lower-frequency signals. 4h breakouts should be more structural than 1h noise.",
+      "entry_long": [
+        "Close breaks above BBU_20_2.0.",
+        "Volume >= 1.2x 20-period volume average.",
+        "Execute on bar close only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "entry_short": [
+        "Close breaks below BBL_20_2.0.",
+        "Volume >= 1.2x 20-period volume average.",
+        "Execute on bar close only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime target: 4h structural breakouts from compression"
+      ],
+      "exit_rules": [
+        "Stop loss at 2.0x ATR below entry (wider for 4h volatility).",
+        "Take profit at 3.5x ATR above entry (R:R 1:1.75).",
+        "Exit if price re-enters Bollinger band.",
+        "Exit on max 30 bars in trade (5 days on 4h).",
+        "Hypothesis failure mode guard: 4h breakouts too infrequent for meaningful sample",
+        "Hypothesis failure mode guard: Trending regime dominates 4h — breakouts redundant"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 1%.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "volume_ratio_min", "min": 1.0, "max": 1.5, "step": 0.25, "default": 1.2},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 3.0, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 2.5, "max": 4.5, "step": 0.5, "default": 3.5},
+        {"name": "max_bars_in_trade", "min": 20, "max": 40, "step": 5, "default": 30}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.5,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Bollinger Bands", "role": "trend", "notes": "BBU/BBL_20_2.0 breakout on 4h timeframe"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "Volume confirmation for structural breakouts"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "RSI", "ATR", "MACD", "Bollinger Bands",
+    "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP",
+    "Ichimoku", "Supertrend", "Donchian Channels"
+  ]
+}

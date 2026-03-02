@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_abc finder|heads",
+    "created_at":  "2026-03-01T17:34:49.116084+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260302/research-20260302-cbc3fa506bb3.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260302/indicator-20260302-1cb2c2cb7a25.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260302/research-20260302-cbc3fa506bb3.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T17:36:56.1631876Z",
+    "attempts":  1,
+    "last_error":  null
+}

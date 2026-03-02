@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-7a0a96227e55",
+  "created_at": "2026-02-24T23:32:16.990533Z",
+  "tv_ref": "tradingview:eSSw7HmH",
+  "url": "https://www.tradingview.com/script/eSSw7HmH-Gann-Fibonacci-Swing-Toolkit-BigBeluga/",
+  "name": "Gann-Fibonacci Swing Toolkit [BigBeluga]",
+  "author": "BigBeluga",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "7b928d088eebefc6f670e2b07400a1126a6a4d8190eb1badde2a4727b3764666",
+  "truncated": false
+}

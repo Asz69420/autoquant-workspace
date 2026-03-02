@@ -1,0 +1,1 @@
+﻿{"action":"config_update","timestamp":"2026-02-22T10:42:14.2904732Z","tags":["config","agent-model"],"reason_code":"MODEL_SWAP","summary":"Model defaults swapped: Primary=Codex (gpt-5.3), Fallback=Haiku","status_word":"OK","status_emoji":"⚙️","agent":"òQ"}

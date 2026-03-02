@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-63e6f5f5b9f4",
+  "created_at": "2026-02-26T22:12:07.627661Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=noG7YZlYsm0",
+  "title": "Биткойн  Трейдъри Разкриват Тайни за Успешна Търговия",
+  "author": "TradeTravelChill",
+  "summary_bullets": [
+    "This is what we are traders, we are trading both up and down and we are not interested in what we are going to do on the market.",
+    "We are going to sell our chips, what we want to say about the graphics, a little bit before that.",
+    "Absolutely nothing out of nowhere, not for me, for the students and for the team."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This is what we are traders, we are trading both up and down and we are not interested in what we are going to do on the market.",
+      "note": "Meaning: This is what we are traders, we are trading both up and down and we are not interested in what we are going to do on the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "We are going to sell our chips, what we want to say about the graphics, a little bit before that.",
+      "note": "Meaning: We are going to sell our chips, what we want to say about the graphics, a little bit before that."
+    },
+    {
+      "timestamp": null,
+      "quote": "Absolutely nothing out of nowhere, not for me, for the students and for the team.",
+      "note": "Meaning: Absolutely nothing out of nowhere, not for me, for the students and for the team."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-63e6f5f5b9f4.raw.txt",
+  "sha256": "8b42453b4e7f0833abe7fa94ed788aa6e326fb1fd278114ed429c7a8372c9b33",
+  "truncated": false
+}

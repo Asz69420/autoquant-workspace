@@ -1,0 +1,305 @@
+{
+  "channel": "https://m.youtube.com/@michaelionita/videos",
+  "scope": "last_10_uploads",
+  "processed": 10,
+  "failed": 0,
+  "video_pointers": [
+    {
+      "title": "NEW Gaussian Channel Strategy to Long & Short Crypto Automatically (TradingView)",
+      "url": "https://www.youtube.com/watch?v=qbyQ8322m-M",
+      "published": "2026-02-19T16:01:28+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "NEW Claude Opus 4.6 AI Good For TradingView Strategies? (Backtesting Engine) (watch ASAP)",
+      "url": "https://www.youtube.com/watch?v=Zepx8mARre0",
+      "published": "2026-02-11T11:40:22+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "NEW OpenClaw AI Good For Trading Strategies? (watch ASAP) (Clawdbot / Moltbot)",
+      "url": "https://www.youtube.com/watch?v=CEJ_R5226xE",
+      "published": "2026-02-04T16:11:17+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "Awesome Gold Trading Strategy (modified Gaussian Channel on TradingView)",
+      "url": "https://www.youtube.com/watch?v=lQ3ZbZcOeU4",
+      "published": "2026-01-29T12:33:36+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "NEW GPT 5.2 AI Good For TradingView Strategies? (watch ASAP)",
+      "url": "https://www.youtube.com/watch?v=HzA8o5fg5T8",
+      "published": "2025-12-18T13:53:09+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "NEW GEMINI 3 AI Good For TradingView Strategies? (watch ASAP)",
+      "url": "https://www.youtube.com/watch?v=2LC979UiRns",
+      "published": "2025-11-23T13:17:49+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "How to TRADE the Crypto Market and WIN (avoided the crash)",
+      "url": "https://www.youtube.com/watch?v=qMHd7NMu_Gc",
+      "published": "2025-11-21T13:05:11+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "How to Reverse Engineer a Closed Source TradingView Indicator with AI (IT WORKS)",
+      "url": "https://www.youtube.com/watch?v=WW16O1JDdj4",
+      "published": "2025-11-13T14:06:25+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "BIG TRAP Is Laid For You 👀 Bitcoin & Crypto in Q4 2025",
+      "url": "https://www.youtube.com/watch?v=IUsYDXKD6ww",
+      "published": "2025-11-07T02:10:17+00:00",
+      "transcript_status": "OK"
+    },
+    {
+      "title": "Bitcoin: Bull Market Support Band Indicator Any Good? Take care!",
+      "url": "https://www.youtube.com/watch?v=rAQUKGtNMD4",
+      "published": "2025-10-30T14:20:51+00:00",
+      "transcript_status": "OK"
+    }
+  ],
+  "research_cards": [
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "qbyQ8322m-M",
+      "title": "NEW Gaussian Channel Strategy to Long & Short Crypto Automatically (TradingView)",
+      "url": "https://www.youtube.com/watch?v=qbyQ8322m-M",
+      "published": "2026-02-19T16:01:28+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "data ingestion quality",
+        "risk controls/gating",
+        "iteration/experimentation",
+        "content monetization",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "Zepx8mARre0",
+      "title": "NEW Claude Opus 4.6 AI Good For TradingView Strategies? (Backtesting Engine) (watch ASAP)",
+      "url": "https://www.youtube.com/watch?v=Zepx8mARre0",
+      "published": "2026-02-11T11:40:22+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "prompt engineering",
+        "data ingestion quality",
+        "execution reliability",
+        "risk controls/gating",
+        "monitoring & observability",
+        "iteration/experimentation",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "CEJ_R5226xE",
+      "title": "NEW OpenClaw AI Good For Trading Strategies? (watch ASAP) (Clawdbot / Moltbot)",
+      "url": "https://www.youtube.com/watch?v=CEJ_R5226xE",
+      "published": "2026-02-04T16:11:17+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "ai agents/orchestration",
+        "prompt engineering",
+        "data ingestion quality",
+        "risk controls/gating",
+        "monitoring & observability",
+        "iteration/experimentation",
+        "content monetization",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "lQ3ZbZcOeU4",
+      "title": "Awesome Gold Trading Strategy (modified Gaussian Channel on TradingView)",
+      "url": "https://www.youtube.com/watch?v=lQ3ZbZcOeU4",
+      "published": "2026-01-29T12:33:36+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "risk controls/gating",
+        "monitoring & observability",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "HzA8o5fg5T8",
+      "title": "NEW GPT 5.2 AI Good For TradingView Strategies? (watch ASAP)",
+      "url": "https://www.youtube.com/watch?v=HzA8o5fg5T8",
+      "published": "2025-12-18T13:53:09+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "prompt engineering",
+        "data ingestion quality",
+        "risk controls/gating",
+        "monitoring & observability",
+        "iteration/experimentation",
+        "content monetization",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "2LC979UiRns",
+      "title": "NEW GEMINI 3 AI Good For TradingView Strategies? (watch ASAP)",
+      "url": "https://www.youtube.com/watch?v=2LC979UiRns",
+      "published": "2025-11-23T13:17:49+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "ai agents/orchestration",
+        "prompt engineering",
+        "data ingestion quality",
+        "execution reliability",
+        "risk controls/gating",
+        "monitoring & observability",
+        "iteration/experimentation",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "qMHd7NMu_Gc",
+      "title": "How to TRADE the Crypto Market and WIN (avoided the crash)",
+      "url": "https://www.youtube.com/watch?v=qMHd7NMu_Gc",
+      "published": "2025-11-21T13:05:11+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "execution reliability",
+        "risk controls/gating",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "WW16O1JDdj4",
+      "title": "How to Reverse Engineer a Closed Source TradingView Indicator with AI (IT WORKS)",
+      "url": "https://www.youtube.com/watch?v=WW16O1JDdj4",
+      "published": "2025-11-13T14:06:25+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "prompt engineering",
+        "data ingestion quality",
+        "risk controls/gating",
+        "monitoring & observability",
+        "iteration/experimentation",
+        "content monetization",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "IUsYDXKD6ww",
+      "title": "BIG TRAP Is Laid For You 👀 Bitcoin & Crypto in Q4 2025",
+      "url": "https://www.youtube.com/watch?v=IUsYDXKD6ww",
+      "published": "2025-11-07T02:10:17+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "data ingestion quality",
+        "execution reliability",
+        "risk controls/gating",
+        "content monetization",
+        "community/distribution"
+      ]
+    },
+    {
+      "source": "YouTube",
+      "mode": "CONCEPTS",
+      "video_id": "rAQUKGtNMD4",
+      "title": "Bitcoin: Bull Market Support Band Indicator Any Good? Take care!",
+      "url": "https://www.youtube.com/watch?v=rAQUKGtNMD4",
+      "published": "2025-10-30T14:20:51+00:00",
+      "transcript_status": "OK",
+      "concepts": [
+        "workflow automation",
+        "risk controls/gating",
+        "iteration/experimentation",
+        "community/distribution"
+      ]
+    }
+  ],
+  "key_ideas": [
+    "risk controls/gating (signal:10)",
+    "community/distribution (signal:10)",
+    "workflow automation (signal:9)",
+    "data ingestion quality (signal:7)",
+    "iteration/experimentation (signal:7)",
+    "monitoring & observability (signal:6)",
+    "content monetization (signal:5)",
+    "prompt engineering (signal:5)",
+    "execution reliability (signal:4)",
+    "ai agents/orchestration (signal:2)"
+  ],
+  "proposed_automation_improvements_for_autoquant": [
+    "Auto-transcript ingestion + concept tagging pipeline for every new video/research source",
+    "Session gating checklist before enabling any strategy execution module",
+    "Agent quality gate requiring evidence links for each proposed change",
+    "Unified risk telemetry board (drawdown, latency, failover, execution drift)",
+    "Prompt-template library with versioning and rollback for research agents",
+    "ResearchCard schema validation + duplicate detection before storage",
+    "Weekly concept drift detector to flag stale assumptions in automation logic",
+    "Execution incident postmortem generator from logs + journal events",
+    "Automated content-to-product pipeline (notes -> assets -> landing snippets)",
+    "Human approval queue for high-impact automation changes"
+  ],
+  "monetization_angles_ai_automation": [
+    "AI automation audit service for trading operators (process-focused)",
+    "Subscription knowledge base of vetted automation playbooks",
+    "Template packs for research workflow orchestration",
+    "Paid cohort on building safe AI-assisted trading operations",
+    "Managed dashboard setup for risk/ops observability",
+    "Consulting retainers for execution reliability improvements",
+    "Creator partnership program for automation tooling integrations",
+    "Micro-SaaS: transcript-to-actionable research card engine",
+    "Premium automation office hours community",
+    "Compliance-friendly documentation generator for algo ops"
+  ],
+  "trading_relevant_concept_hooks": [
+    "Session gating before execution enablement",
+    "Risk limit enforcement as non-optional pre-trade check",
+    "Execution quality tracking (slippage/latency) as continuous signal",
+    "Data quality scoring prior to model/research use",
+    "Human-in-the-loop approvals for regime changes",
+    "Kill-switch design for automation failure scenarios",
+    "Operational logging standards for reproducibility",
+    "Hypothesis-driven iteration loops instead of ad-hoc changes",
+    "Separation of research concepts from live deployment claims",
+    "Feedback loop from outcomes into process improvements"
+  ],
+  "next_experiments_suggestions_not_executed": [
+    "Pilot daily ingestion of one new creator feed into ResearchCard pipeline",
+    "Test transcript quality thresholds and fallback labeling policy",
+    "Run a one-week manual-vs-automated concept tagging comparison",
+    "Prototype risk-gate checklist embedded in AutoQuant session startup",
+    "Build a small telemetry dashboard for execution + risk events",
+    "Trial two monetization offers with lightweight landing copy tests",
+    "Evaluate agent prompt versioning impact on output consistency",
+    "Design failure taxonomy for transcript/process pipeline errors",
+    "Create rubric for selecting automation ideas by effort vs reliability gain",
+    "Draft operator SOP for approving/rejecting automation updates"
+  ]
+}

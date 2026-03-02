@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-b55b76be0b59",
+  "created_at": "2026-02-25T22:40:13.104992Z",
+  "tv_ref": "tradingview:zNZYQ9Q9",
+  "url": "https://www.tradingview.com/script/zNZYQ9Q9-Smart-Trend-Zofesu/",
+  "name": "Smart Trend [Zofesu]",
+  "author": "Zofesu",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "a930b76cfdd6f4b6525b626b8ba83f6b914c81720cc6e1463134516664530836",
+  "truncated": false
+}

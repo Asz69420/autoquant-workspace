@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "id": "insight-1f36d5dde530",
+  "created_at": "2026-02-25T11:03:43.434437Z",
+  "source": "manual",
+  "title": "Test insight pulse",
+  "concept": "If trend aligns with regime gate, enter on pullback and cut at invalidation.",
+  "tags": [],
+  "suggested_roles": [],
+  "confidence": 0.5,
+  "status": "PROCESSED"
+}

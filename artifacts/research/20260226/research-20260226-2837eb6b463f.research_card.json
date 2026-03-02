@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-2837eb6b463f",
+  "created_at": "2026-02-25T22:33:43.484231Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/6pDGXgSO-Volume-Flow-Analysis-UAlgo/",
+  "title": "Volume Flow Analysis [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "Top catalog indicator: Volume Flow Analysis [UAlgo] by UAlgo."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Volume Flow Analysis [UAlgo] by UAlgo.",
+      "note": "Meaning: Top catalog indicator: Volume Flow Analysis [UAlgo] by UAlgo."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-2837eb6b463f.raw.txt",
+  "sha256": "7b3c5970a8f4496b1fbc2300cf87f7bd7e9c5cb1309d9c1ce04c71a1d290d029",
+  "truncated": false
+}

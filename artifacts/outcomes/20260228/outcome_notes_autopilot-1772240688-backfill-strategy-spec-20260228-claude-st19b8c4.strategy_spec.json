@@ -1,0 +1,124 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772240688-backfill-strategy-spec-20260228-claude-st19b8c4.strategy_spec",
+  "run_id": "autopilot-1772240688-backfill-strategy-spec-20260228-claude-st19b8c4.strategy_spec",
+  "created_at": "2026-02-28T01:09:34.841545+00:00",
+  "verdict": "REVISE",
+  "strategy_family": "strategy-spec-20260228-claude-st19b8c4.strategy_spec",
+  "template": "supertrend_strong_trend",
+  "metrics": {
+    "profit_factor_after_costs": 2.01855827,
+    "max_drawdown": 0.052426899772000005,
+    "trades": 16,
+    "regime_breakdown": {
+      "trending_trades": 16,
+      "ranging_trades": 0,
+      "transitional_trades": 0
+    },
+    "regime_pf": {
+      "trending": 2.01855827,
+      "ranging": 0.0,
+      "transitional": 0.0
+    },
+    "regime_wr": {
+      "trending": 0.4375,
+      "ranging": 0.0,
+      "transitional": 0.0
+    },
+    "dominant_regime": "trending"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending"
+    ],
+    "bad_regimes": [
+      "ranging",
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": true
+  },
+  "failure_reasons": [
+    {
+      "code": "LOW_TRADE_COUNT",
+      "short": "Trade count below gate: 16 < 20",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260228\\hl_20260228_b58008ef.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "require_regime_filter": true,
+        "allowed_regime": "trending"
+      },
+      "rationale": "Regime-aware: strategy shows edge mainly in trending; restrict trading to that regime.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "ENTRY_RELAX",
+      "params": {
+        "confidence_threshold_delta": -0.05
+      },
+      "rationale": "Increase participation to clear minimum trade gate.",
+      "priority": 1
+    },
+    {
+      "id": "d3",
+      "type": "THRESHOLD_SWEEP",
+      "params": {
+        "parameter": "confidence_threshold",
+        "range": [
+          0.5,
+          0.7
+        ],
+        "step": 0.05
+      },
+      "rationale": "Sweep entry threshold to recover trade frequency.",
+      "priority": 2
+    },
+    {
+      "id": "d4",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"allowed_regime\": \"trending\", \"require_regime_filter\": true}",
+    "Apply ENTRY_RELAX with params={\"confidence_threshold_delta\": -0.05}",
+    "Apply THRESHOLD_SWEEP with params={\"parameter\": \"confidence_threshold\", \"range\": [0.5, 0.7], \"step\": 0.05}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260228/batch_20260228_bdfcf162.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260228/refine_20260228_d59ef30b.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "cce3f51b1754b345"
+}

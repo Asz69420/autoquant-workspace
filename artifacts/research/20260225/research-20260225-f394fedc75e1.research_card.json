@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-f394fedc75e1",
+  "created_at": "2026-02-24T23:33:14.496933Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/gqdGAvbK-Trend-Freeway-MTF-ProjectSyndicate/",
+  "title": "Trend Freeway MTF | ProjectSyndicate",
+  "author": "ProjectSyndicate",
+  "summary_bullets": [
+    "Top catalog indicator: Trend Freeway MTF | ProjectSyndicate by ProjectSyndicate."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Trend Freeway MTF | ProjectSyndicate by ProjectSyndicate.",
+      "note": "Meaning: Top catalog indicator: Trend Freeway MTF | ProjectSyndicate by ProjectSyndicate."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: Trend Freeway MTF | ProjectSyndicate by ProjectSyndicate."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-f394fedc75e1.raw.txt",
+  "sha256": "3b9f8c50e9b8e6458058d5a8566684025df7e14eade6f52499e18c66834cb033",
+  "truncated": false
+}

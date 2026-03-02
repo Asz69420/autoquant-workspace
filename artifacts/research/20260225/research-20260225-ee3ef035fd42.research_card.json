@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-ee3ef035fd42",
+  "created_at": "2026-02-25T11:46:33.694434Z",
+  "source_type": "manual_insight",
+  "source_ref": "manual_insight:insight-7db72d3b35a6:new",
+  "title": "Momentum pullback scale-out",
+  "summary_bullets": [
+    "Take 10 percent partial profits on repeated momentum exhaustion signals while trade remains in profit, with hard full-close signal preserved."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Take 10 percent partial profits on repeated momentum exhaustion signals while trade remains in profit, with hard full-close signal preserved.",
+      "note": "Meaning: Take 10 percent partial profits on repeated momentum exhaustion signals while trade remains in profit, with hard full-close signal preserved."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "Take 10 percent partial profits on repeated momentum exhaustion signals while trade remains in profit, with hard full-close signal preserved."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [
+    "scale-out",
+    "exit"
+  ],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-ee3ef035fd42.raw.txt",
+  "sha256": "231fff42e608458684c9f38c8815f9e2099b1d98dce8a30a29f5d9b54851a47c",
+  "truncated": false
+}

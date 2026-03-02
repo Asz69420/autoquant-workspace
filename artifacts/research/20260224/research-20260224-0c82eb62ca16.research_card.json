@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260224-0c82eb62ca16",
+  "created_at": "2026-02-24T11:04:36.502547Z",
+  "source_type": "text",
+  "source_ref": "fixture://cap-test",
+  "summary_bullets": [],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [
+    "MACD mentioned"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "MACD mentioned",
+      "keywords": [
+        "macd",
+        "mentioned"
+      ],
+      "confidence": 0.75
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260224/research-20260224-0c82eb62ca16.raw.txt",
+  "sha256": "d7ab95b3c9dfa10614cfc3b9d800ee0207f3b912da5b75fe7f1f2e2ccb67e6e6",
+  "truncated": false
+}

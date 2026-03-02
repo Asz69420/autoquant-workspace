@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-6c4d9e03",
+  "created_at": "2026-02-28T12:00:02.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "EMA 9/21 crossover is the simplest trend signal and the most prone to whipsaws, but this is a feature when combined with asymmetric risk:reward. The key insight: most EMA crossovers fail (win rate ~35-40%), but the ones that succeed tend to produce large directional moves because they catch genuine trend shifts early. By using a 3:1 R:R (stop 2.0 ATR, TP 6.0 ATR) with long max_bars (50 bars = ~8 days on 4h), we accept frequent small losses but capture outsized wins. This is the opposite philosophy from the pipeline's approach of trying to improve PF through entry selectivity (confidence thresholds, RSI bands) — instead, we simplify entry and widen the profit target. The edge comes from trend persistence on ETH/4h (trending PF=1.054 in recent backtests). EMA crossovers have NOT been tested by the pipeline since the earliest cycles, making this a fresh template test.",
+  "regime_assumption": "Requires trending markets where EMA crossovers lead to sustained moves. ETH/4h trending PF=1.054 is the target regime. The asymmetric R:R means we can tolerate low win rates (35%) and still be profitable if average win > 3x average loss. Invalidates in tight ranging markets where crossovers whipsaw every few bars without direction.",
+  "invalidation_conditions": [
+    "Win rate < 25% (crossovers are whipsawing too frequently even for asymmetric R:R)",
+    "Average winning trade < 2x average losing trade (the asymmetry is not materializing)",
+    "Trade count > 500 (too many signals means the crossover is not selective enough on this TF)",
+    "Trending regime PF < 1.0 (the trend persistence hypothesis is wrong for EMA crossovers)"
+  ],
+  "variants": [
+    {
+      "name": "ema_cross_asymmetric_wide",
+      "description": "EMA 9/21 crossover with extreme asymmetric R:R (3:1). Very wide TP (6.0 ATR) and moderate stop (2.0 ATR). Accepts ~35% win rate, betting that winning trades produce large moves. Tests the trend persistence hypothesis on ETH/4h.",
+      "entry_long": [
+        "Require EMA_9 cross above EMA_21 on bar close.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "Require EMA_9 cross below EMA_21 on bar close.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Strategy philosophy: simple entry, asymmetric exit (accept low win rate for large winners)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite EMA crossover (trend reversal).",
+        "Exit on max bars in trade threshold (50 bars = ~8.3 days on 4h).",
+        "Trailing stop consideration: move stop to breakeven after 1.5 ATR profit.",
+        "Hypothesis failure mode guard: Rapid EMA re-cross within 3 bars (whipsaw)",
+        "Hypothesis failure mode guard: Extended sideways consolidation consuming max_bars without TP"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 2.0x ATR_14 from entry.",
+        "Take profit at 6.0x ATR_14 from entry (3.0:1 R:R).",
+        "Asymmetric R:R rationale: expected win rate ~35%, but avg_win/avg_loss > 3.0 required for PF > 1.0.",
+        "Break-even move at 1.5x ATR profit to protect capital after initial move."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 30, "max": 60, "step": 5, "default": 50},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 3.0, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 8.0, "step": 1.0, "default": 6.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9 and EMA_21 crossover as trend shift signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "Same EMA pair — crossover IS the signal, no separate confirmation needed"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for asymmetric stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    },
+    {
+      "name": "ema_cross_balanced_rr",
+      "description": "Control variant with balanced 2:1 R:R (stop 1.5 ATR, TP 3.0 ATR). Tests whether the extreme asymmetry in variant 1 outperforms a more conventional ratio. Shorter max_bars (30) to cut losses on stalled trades faster.",
+      "entry_long": [
+        "Require EMA_9 cross above EMA_21 on bar close.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "Require EMA_9 cross below EMA_21 on bar close.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite EMA crossover.",
+        "Exit on max bars in trade threshold (30 bars).",
+        "Hypothesis failure mode guard: Rapid EMA re-cross within 3 bars",
+        "Hypothesis failure mode guard: Extended consolidation consuming time stop"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 1.5x ATR_14 from entry.",
+        "Take profit at 3.0x ATR_14 from entry (2.0:1 R:R).",
+        "Balanced R:R control variant for comparison against asymmetric variant."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 15, "max": 40, "step": 5, "default": 30},
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.5, "step": 0.5, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 2.0, "max": 4.5, "step": 0.5, "default": 3.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9/EMA_21 crossover signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA crossover is the sole entry criterion"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    },
+    {
+      "name": "ema_cross_1h_rapid",
+      "description": "EMA crossover on ETH/1h testing whether higher trade frequency on shorter timeframe benefits from the ranging-edge (PF=1.115). Moderate R:R (2:1) with tighter time stop (15 bars) to exploit short-term momentum bursts after crossovers.",
+      "entry_long": [
+        "Require EMA_9 cross above EMA_21 on bar close.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "Require EMA_9 cross below EMA_21 on bar close.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite EMA crossover.",
+        "Exit on max bars in trade threshold (15 bars).",
+        "Hypothesis failure mode guard: 1h EMA whipsaw during low-volume periods",
+        "Hypothesis failure mode guard: Fee drag exceeding gross profit on short holds"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 0.75% (reduced for 1h higher frequency).",
+        "Stop loss at 1.5x ATR_14 from entry.",
+        "Take profit at 3.0x ATR_14 from entry (2.0:1 R:R).",
+        "Fee awareness: 1h frequency will increase fee load — monitor fee-to-profit ratio."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 8, "max": 25, "step": 1, "default": 15},
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.5, "step": 0.5, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 2.0, "max": 4.0, "step": 0.5, "default": 3.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 0.75,
+        "max_drawdown_cap": 0.20,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9/EMA_21 crossover on 1h for short-term momentum"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA crossover as sole entry signal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for 1h-calibrated stop/TP"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  },
+  "generation_origin": "claude-advisor-strategy-generator"
+}

@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-2b3022abede7",
+  "created_at": "2026-02-26T12:40:00.329063Z",
+  "source_type": "transcript_drop",
+  "source_ref": "transcript_drop://strategy_001_multi_timeframe_trend_alignment",
+  "title": "strategy_001_multi_timeframe_trend_alignment",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "STRATEGY: Multi-Timeframe Trend Alignment (4h Trend + 1h Entry) ASSET: BTC, ETH TIMEFRAME: 1h entries, 4h trend context MARKET CONDITION: Trending on higher timeframe, pullback on lower timeframe TYPE: Multi-timeframe trend following CONCEPT: The most robust trading strategies align multiple timeframes.",
+    "We use the 4h chart to determine trend direction and only take 1h entries in that direction.",
+    "This means we need 4h indicator values available on the 1h chart.",
+    "The 4h trend tells us WHAT to trade (long or short), the 1h tells us WHEN to enter.",
+    "This dramatically reduces false signals because you’re always trading with the bigger picture.",
+    "INDICATORS USED (4h context - calculated on 1h using 4x periods): - EMA 200 on 1h (equivalent to ~EMA 50 on 4h) - major trend direction - EMA 800 on 1h (equivalent to ~EMA 200 on 4h) - macro trend filter - ADX calculated on last 56 bars of 1h (equivalent to 14 bars on 4h) - trend strength INDICATORS USED (1h entry): - RSI (period 14) - pullback detection - MACD (fast 12, slow 26, signal 9) - momentum shift timing - EMA 21 - immediate 1h trend - ATR (period 14) - stops and targets 4H TREND DETERM",
+    "4h context shows UPTREND (EMA 200 > EMA 800, ADX > 20) 2.",
+    "Price pulls back below EMA 21 on 1h (short-term dip within uptrend) 3.",
+    "RSI(14) drops below 40 (pullback has some depth, not just a 1-bar dip) 4.",
+    "MACD histogram turns from negative to positive (momentum shifting back up) 5."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "STRATEGY: Multi-Timeframe Trend Alignment (4h Trend + 1h Entry) ASSET: BTC, ETH TIMEFRAME: 1h entries, 4h trend context MARKET CONDITION: Trending on higher timeframe, pullback on lower timeframe TYPE",
+      "note": "Meaning: STRATEGY: Multi-Timeframe Trend Alignment (4h Trend + 1h Entry) ASSET: BTC, ETH TIMEFRAME: 1h entries, 4h trend context MARKET CONDITION: Trending on h"
+    },
+    {
+      "timestamp": null,
+      "quote": "We use the 4h chart to determine trend direction and only take 1h entries in that direction.",
+      "note": "Meaning: We use the 4h chart to determine trend direction and only take 1h entries in that direction."
+    },
+    {
+      "timestamp": null,
+      "quote": "This means we need 4h indicator values available on the 1h chart.",
+      "note": "Meaning: This means we need 4h indicator values available on the 1h chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "The 4h trend tells us WHAT to trade (long or short), the 1h tells us WHEN to enter.",
+      "note": "Meaning: The 4h trend tells us WHAT to trade (long or short), the 1h tells us WHEN to enter."
+    },
+    {
+      "timestamp": null,
+      "quote": "This dramatically reduces false signals because you’re always trading with the bigger picture.",
+      "note": "Meaning: This dramatically reduces false signals because you’re always trading with the bigger picture."
+    },
+    {
+      "timestamp": null,
+      "quote": "INDICATORS USED (4h context - calculated on 1h using 4x periods): - EMA 200 on 1h (equivalent to ~EMA 50 on 4h) - major trend direction - EMA 800 on 1h (equivalent to ~EMA 200 on 4h) - macro trend fil",
+      "note": "Meaning: INDICATORS USED (4h context - calculated on 1h using 4x periods): - EMA 200 on 1h (equivalent to ~EMA 50 on 4h) - major trend direction - EMA 800 on 1h"
+    },
+    {
+      "timestamp": null,
+      "quote": "4h context shows UPTREND (EMA 200 > EMA 800, ADX > 20) 2.",
+      "note": "Meaning: 4h context shows UPTREND (EMA 200 > EMA 800, ADX > 20) 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price pulls back below EMA 21 on 1h (short-term dip within uptrend) 3.",
+      "note": "Meaning: Price pulls back below EMA 21 on 1h (short-term dip within uptrend) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "RSI(14) drops below 40 (pullback has some depth, not just a 1-bar dip) 4.",
+      "note": "Meaning: RSI(14) drops below 40 (pullback has some depth, not just a 1-bar dip) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "MACD histogram turns from negative to positive (momentum shifting back up) 5.",
+      "note": "Meaning: MACD histogram turns from negative to positive (momentum shifting back up) 5."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes back above EMA 21 (pullback is ending, trend resuming) ENTRY SHORT (1h): 1.",
+      "note": "Meaning: Price closes back above EMA 21 (pullback is ending, trend resuming) ENTRY SHORT (1h): 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price rallies above EMA 21 on 1h (short-term bounce within downtrend) 3.",
+      "note": "Meaning: Price rallies above EMA 21 on 1h (short-term bounce within downtrend) 3."
+    }
+  ],
+  "extracted_rules": [
+    "The 4h trend tells us WHAT to trade (long or short), the 1h tells us WHEN to enter.",
+    "Price closes back below EMA 21 (bounce is ending, downtrend resuming) EXIT RULES: - Take profit: 2.5x ATR(14) from entry - Stop loss: 1.5x ATR(14) from entry (just beyond the pullback extreme) - Trailing stop: After 1.5 ATR in profit, trail at EMA 21 - Time stop: 24 candles (24 hours) — if trade hasn’t worked by then, the setup failed - Trend invalidation: If EMA 200 crosses below EMA 800 (trend reversal on higher TF), close immediately RISK MANAGEMENT: - Risk per trade: 1% of account - Max conc"
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "STRATEGY: Multi-Timeframe Trend Alignment (4h Trend + 1h Entry) ASSET: BTC, ETH TIMEFRAME: 1h entries, 4h trend context MARKET CONDITION: Trending on higher timeframe, pullback on lower timeframe TYPE: Multi-timeframe tr"
+    },
+    {
+      "type": "trend",
+      "description": "We use the 4h chart to determine trend direction and only take 1h entries in that direction."
+    },
+    {
+      "type": "trend",
+      "description": "The 4h trend tells us WHAT to trade (long or short), the 1h tells us WHEN to enter."
+    },
+    {
+      "type": "trend",
+      "description": "INDICATORS USED (4h context - calculated on 1h using 4x periods): - EMA 200 on 1h (equivalent to ~EMA 50 on 4h) - major trend direction - EMA 800 on 1h (equivalent to ~EMA 200 on 4h) - macro trend filter - ADX calculated"
+    },
+    {
+      "type": "trend",
+      "description": "4h context shows UPTREND (EMA 200 > EMA 800, ADX > 20) 2."
+    },
+    {
+      "type": "trend",
+      "description": "Price pulls back below EMA 21 on 1h (short-term dip within uptrend) 3."
+    },
+    {
+      "type": "momentum",
+      "description": "MACD histogram turns from negative to positive (momentum shifting back up) 5."
+    },
+    {
+      "type": "trend",
+      "description": "Price closes back above EMA 21 (pullback is ending, trend resuming) ENTRY SHORT (1h): 1."
+    },
+    {
+      "type": "trend",
+      "description": "Price rallies above EMA 21 on 1h (short-term bounce within downtrend) 3."
+    },
+    {
+      "type": "risk",
+      "description": "Stop: below previous swing low."
+    },
+    {
+      "type": "trend",
+      "description": "The 4h trend provides the directional edge — you’re trading with the flow of the larger market."
+    },
+    {
+      "type": "trend",
+      "description": "The 1h entry provides timing precision — you’re buying dips and selling rips within that trend."
+    },
+    {
+      "type": "trend",
+      "description": "FALSIFIABLE HYPOTHESIS: BTC/ETH 1h entries aligned with 4h uptrend (EMA 200 > 800 on 1h equivalent) that buy pullbacks below EMA 21 with RSI < 40 and MACD reversal produce profit factor above 1.25 and win rate above 45%."
+    }
+  ],
+  "explicit_conditions": [
+    "Price closes back below EMA 21 (bounce is ending, downtrend resuming) EXIT RULES: - Take profit: 2.5x ATR(14) from entry - Stop loss: 1.5x ATR(14) from entry (just beyond the pullback extreme) - Trailing stop: After 1.5 ATR in profit, trail at EMA 21 - Time stop: 24 candles (24 hours) — if trade hasn’t worked by then, the setup failed - Trend invalidation: If EMA 200 crosses below EMA 800 (trend reversal on higher TF), close immediately RISK MANAGEMENT: - Risk per trade: 1% of account - Max conc"
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "RSI",
+    "MACD",
+    "ATR",
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "4h",
+    "1h"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-2b3022abede7.raw.txt",
+  "sha256": "1eca258442edb20e391e48acfaa57720d92a784cdaaf167ca5ded8e31113d705",
+  "truncated": false
+}

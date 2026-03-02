@@ -1,0 +1,12 @@
+{
+  "run_id": "subagent-lifecycle-test-fail-1772366935",
+  "started_at": "2026-03-01T12:08:55.036877Z",
+  "spawn_emitted": true,
+  "terminal_emitted": true,
+  "agent": "oQ",
+  "model_id": "openai-codex/gpt-5.3-codex",
+  "terminal_action": "SUBAGENT_FAIL",
+  "terminal_status": "FAIL",
+  "terminal_reason_code": "TEST_FAIL",
+  "terminal_at": "2026-03-01T12:08:55.270530Z"
+}

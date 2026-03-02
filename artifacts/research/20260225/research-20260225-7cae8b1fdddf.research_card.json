@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-7cae8b1fdddf",
+  "created_at": "2026-02-25T12:50:19.658001Z",
+  "source_type": "manual",
+  "source_ref": "manual:large-script",
+  "title": "Large Strategy",
+  "summary_bullets": [],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-7cae8b1fdddf.raw.txt",
+  "sha256": "05354f659d48ee904ddbae77c470dfe175da10b980d294efd513f1ba6c278cdc",
+  "truncated": false
+}

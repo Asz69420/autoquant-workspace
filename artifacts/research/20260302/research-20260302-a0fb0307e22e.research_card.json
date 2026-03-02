@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-a0fb0307e22e",
+  "created_at": "2026-03-01T17:19:50.249236Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/v5zEBKFJ-Malaysian-SnR-Levels-UAlgo/",
+  "title": "Malaysian SnR Levels [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "Top catalog indicator: Malaysian SnR Levels [UAlgo] by UAlgo."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Malaysian SnR Levels [UAlgo] by UAlgo.",
+      "note": "Meaning: Top catalog indicator: Malaysian SnR Levels [UAlgo] by UAlgo."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-a0fb0307e22e.raw.txt",
+  "sha256": "8e2a8dcb86dcc90bdafe69f8874e5db0daff284abc4873a12f98ab303b114293",
+  "truncated": false
+}

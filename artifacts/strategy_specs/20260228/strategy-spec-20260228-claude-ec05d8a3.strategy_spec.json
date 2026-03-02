@@ -1,0 +1,314 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-ec05d8a3",
+  "created_at": "2026-02-28T07:30:01.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The only profitable outcome in 60+ cycles (PF 1.033, 389 trades) came from EXIT_CHANGE, not signal improvement. This means the pipeline's entire signal (ema_rsi_atr) may have marginal edge that is destroyed by poor exit parameters. EMA 9/21 crossover is the simplest, cleanest trend signal with the least overfitting risk. By pairing it with the exit optimization insight — wider stops (2.0-2.5x ATR) and asymmetric TP (3.0x ATR) — we test whether a clean signal with optimized exits can outperform the more complex ema_rsi_atr. The hypothesis: the edge is in exit management, not entry complexity. EMA crossover fires fewer, higher-conviction signals than ema_rsi_atr's continuous RSI filtering.",
+  "regime_assumption": "Works in trending and transitional regimes where directional moves develop. ADX > 20 gate filters ranging chop. The PF 1.033 outcome showed balanced performance across trending (1.054) and transitional (1.048) regimes — exits matter more than regime selection when the signal is clean.",
+  "variants": [
+    {
+      "name": "ema_cross_exit_optimized",
+      "description": "EMA 9/21 crossover with exit parameters derived from the PF 1.033 exit_change insight. Wider stops (2.0x ATR) and asymmetric TP (3.0x ATR) replicate the winning exit profile. ETH/1h for direct comparison to the profitable outcome.",
+      "entry_long": [
+        "Require EMA_9 crosses above EMA_21 on bar close.",
+        "Require ADX_14 > 20 to confirm trending regime.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "Require EMA_9 crosses below EMA_21 on bar close.",
+        "Require ADX_14 > 20 to confirm trending regime.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime gate: ADX_14 > 20 (trending)",
+        "Exit optimization: derived from PF 1.033 exit_change insight on family 6167b17afa4f",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite EMA 9/21 crossover (signal reversal).",
+        "Exit on ADX_14 dropping below 15 (regime invalidation).",
+        "Exit on max bars in trade threshold (20 bars).",
+        "Hypothesis failure mode guard: Late crossover after extended trend run",
+        "Hypothesis failure mode guard: Whipsaw during low-ADX consolidation"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 2.0x ATR_14 from entry (wider stop from exit_change insight).",
+        "Take profit at 3.0x ATR_14 from entry (1.5:1 R:R — asymmetric payoff).",
+        "Exit optimization note: PF 1.033 outcome used wider stops that avoided premature stop-outs during regime transitions."
+      ],
+      "parameters": [
+        {
+          "name": "adx_min",
+          "min": 15,
+          "max": 30,
+          "step": 5,
+          "default": 20
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 10,
+          "max": 30,
+          "step": 5,
+          "default": 20
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 1.5,
+          "max": 3.0,
+          "step": 0.5,
+          "default": 2.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 2.5,
+          "max": 4.5,
+          "step": 0.5,
+          "default": 3.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9/EMA_21 crossover as clean entry signal — simplest trend signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_9 vs EMA_21 relative position confirms direction"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for exit-optimized stop/TP sizing, ADX_14 > 20 trending gate"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    },
+    {
+      "name": "ema_cross_wide_exit_eth4h",
+      "description": "EMA crossover on ETH/4h with even wider exits (2.5x stop, 4.0x TP) for 1.6:1 R:R. 4h timeframe reduces noise and produces fewer, higher-quality crossover signals. Tests whether longer timeframe + wider exits amplifies the exit_change edge.",
+      "entry_long": [
+        "Require EMA_9 crosses above EMA_21 on bar close.",
+        "Require ADX_14 > 20 to confirm trending regime.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "Require EMA_9 crosses below EMA_21 on bar close.",
+        "Require ADX_14 > 20 to confirm trending regime.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 20 (trending)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite EMA 9/21 crossover (signal reversal).",
+        "Exit on ADX_14 dropping below 15 (regime invalidation).",
+        "Exit on max bars in trade threshold (15 bars on 4h = 60 hours).",
+        "Hypothesis failure mode guard: 4h bar close misses intra-bar reversal",
+        "Hypothesis failure mode guard: Low trade count produces unreliable statistics"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 2.5x ATR_14 from entry (wide stop for 4h timeframe).",
+        "Take profit at 4.0x ATR_14 from entry (1.6:1 R:R).",
+        "4h timeframe note: fewer signals, wider ATR means larger nominal stop — acceptable on ETH."
+      ],
+      "parameters": [
+        {
+          "name": "adx_min",
+          "min": 15,
+          "max": 30,
+          "step": 5,
+          "default": 20
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 8,
+          "max": 25,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 2.0,
+          "max": 3.5,
+          "step": 0.5,
+          "default": 2.5
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 3.0,
+          "max": 6.0,
+          "step": 0.5,
+          "default": 4.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 4.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9/EMA_21 crossover on 4h — cleaner signal, less noise"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_9 vs EMA_21 relative position"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for wide exit sizing, ADX_14 > 20 trending gate"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    },
+    {
+      "name": "ema_cross_no_regime_gate",
+      "description": "Control variant: EMA crossover with exit optimization but NO ADX regime gate. Tests whether the exit parameters alone (without regime filtering) produce positive expectancy. If this variant matches the gated variants, it proves exits matter more than regime selection.",
+      "entry_long": [
+        "Require EMA_9 crosses above EMA_21 on bar close.",
+        "No regime gate — trade all market conditions.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "Require EMA_9 crosses below EMA_21 on bar close.",
+        "No regime gate — trade all market conditions.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Control variant: no ADX regime gate — tests exit params in isolation",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite EMA 9/21 crossover (signal reversal).",
+        "Exit on max bars in trade threshold (20 bars).",
+        "Hypothesis failure mode guard: Excessive whipsaw in ranging market without regime gate",
+        "Hypothesis failure mode guard: Drawdown accumulation during extended chop"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 2.0x ATR_14 from entry (exit-optimized).",
+        "Take profit at 3.0x ATR_14 from entry (1.5:1 R:R).",
+        "Control variant: no regime gate to isolate exit parameter effect."
+      ],
+      "parameters": [
+        {
+          "name": "max_bars_in_trade",
+          "min": 10,
+          "max": 30,
+          "step": 5,
+          "default": 20
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 1.5,
+          "max": 3.0,
+          "step": 0.5,
+          "default": 2.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 2.5,
+          "max": 4.5,
+          "step": 0.5,
+          "default": 3.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9/EMA_21 crossover — no regime filter"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_9 vs EMA_21 relative position"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for exit-optimized stop/TP sizing only"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  },
+  "generation_origin": "claude-advisor-strategy-generator"
+}

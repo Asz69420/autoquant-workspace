@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-6b278c266cdd",
+  "created_at": "2026-03-01T17:19:49.044302Z",
+  "tv_ref": "tradingview:dTZk6sb8",
+  "url": "https://www.tradingview.com/script/dTZk6sb8/",
+  "name": "Breakout Pullback Reload Continue",
+  "author": "AlaaElkawasy22",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "ab1f655c2303272d564590c44fc5d2ad0184fcdf5935b1a8295f36bd7159318f",
+  "truncated": false
+}

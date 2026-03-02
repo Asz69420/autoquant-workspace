@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-99538ffa21d1",
+  "created_at": "2026-03-02T03:19:50.552962Z",
+  "tv_ref": "tradingview:TTmkTksI",
+  "url": "https://www.tradingview.com/script/TTmkTksI-Support-Resistance-Channel-Breakout-SuprAlgo/",
+  "name": "Support/Resistance Channel Breakout [SuprAlgo]",
+  "author": "SuprAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "88da54b53cd8101c2b22c8939b4760ba809dabc6465f0b41271689785fce521f",
+  "truncated": false
+}

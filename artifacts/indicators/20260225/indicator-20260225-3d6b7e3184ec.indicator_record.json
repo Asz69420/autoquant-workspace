@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-3d6b7e3184ec",
+  "created_at": "2026-02-24T23:33:14.208767Z",
+  "tv_ref": "tradingview:gqdGAvbK",
+  "url": "https://www.tradingview.com/script/gqdGAvbK-Trend-Freeway-MTF-ProjectSyndicate/",
+  "name": "Trend Freeway MTF | ProjectSyndicate",
+  "author": "ProjectSyndicate",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "1dadee969c92c5fd800ae49d43753f8abacf5e23dbe21af54adf7d083aba053a",
+  "truncated": false
+}

@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-de18e042f087",
+  "created_at": "2026-02-26T21:29:53.724681Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=kSfSp0hZwto",
+  "title": "My Community Found a FREE TradingView Indicator… The Backtest Blew My Mind",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "Today, we're going to be testing this indicator here.",
+    "This was sent to me by my community.",
+    "It's new and popular on TradingView.",
+    "But for that to happen, we're going to have to start right now.",
+    "So guys, here I am on TradingView.",
+    "This indicator and the full setup that we're going to be trying today was sent to me by a member of my community.",
+    "And I'm really excited because it not only has it been backtested, but we've actually put it into live trading for a couple of months to make sure it actually works.",
+    "So the indicator is called the Commodity Trend by BigBuruga, a very popular pine script developer on TradingView in the recent couple of months.",
+    "And it's always good to find new and interesting indicators on TradingView by some of these absolutely amazing developers that give everything away for free.",
+    "Let's get over to my chart."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Today, we're going to be testing this indicator here.",
+      "note": "Meaning: Today, we're going to be testing this indicator here."
+    },
+    {
+      "timestamp": null,
+      "quote": "This was sent to me by my community.",
+      "note": "Meaning: This was sent to me by my community."
+    },
+    {
+      "timestamp": null,
+      "quote": "It's new and popular on TradingView.",
+      "note": "Meaning: It's new and popular on TradingView."
+    },
+    {
+      "timestamp": null,
+      "quote": "But for that to happen, we're going to have to start right now.",
+      "note": "Meaning: But for that to happen, we're going to have to start right now."
+    },
+    {
+      "timestamp": null,
+      "quote": "So guys, here I am on TradingView.",
+      "note": "Meaning: So guys, here I am on TradingView."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator and the full setup that we're going to be trying today was sent to me by a member of my community.",
+      "note": "Meaning: This indicator and the full setup that we're going to be trying today was sent to me by a member of my community."
+    },
+    {
+      "timestamp": null,
+      "quote": "And I'm really excited because it not only has it been backtested, but we've actually put it into live trading for a couple of months to make sure it actually works.",
+      "note": "Meaning: And I'm really excited because it not only has it been backtested, but we've actually put it into live trading for a couple of months to make sure it a"
+    },
+    {
+      "timestamp": null,
+      "quote": "So the indicator is called the Commodity Trend by BigBuruga, a very popular pine script developer on TradingView in the recent couple of months.",
+      "note": "Meaning: So the indicator is called the Commodity Trend by BigBuruga, a very popular pine script developer on TradingView in the recent couple of months."
+    },
+    {
+      "timestamp": null,
+      "quote": "And it's always good to find new and interesting indicators on TradingView by some of these absolutely amazing developers that give everything away for free.",
+      "note": "Meaning: And it's always good to find new and interesting indicators on TradingView by some of these absolutely amazing developers that give everything away for"
+    },
+    {
+      "timestamp": null,
+      "quote": "Let's get over to my chart.",
+      "note": "Meaning: Let's get over to my chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "I'm currently on Avax USDT, which we're going to be backtesting on the one hour time frame.",
+      "note": "Meaning: I'm currently on Avax USDT, which we're going to be backtesting on the one hour time frame."
+    },
+    {
+      "timestamp": null,
+      "quote": "I've already added the indicator to my chart.",
+      "note": "Meaning: I've already added the indicator to my chart."
+    }
+  ],
+  "extracted_rules": [
+    "So if you've been following me for a while, we all know that having just one indicator on the chart just makes it look pretty.",
+    "I let my system take care of all of my trades from the beginning all the way through the risk management.",
+    "For that, we need to know the rules.",
+    "The rules, as always, with me are known in advance.",
+    "Nobody wants to be chopped in and out of markets like here, where each and every one of our entries are going to get hit the stop loss.",
+    "When price is above it and it is green, we're looking for longs.",
+    "And when price is below and it's orange, we're looking for shorts.",
+    "When it goes above these zero lines here, it goes green and that's when we can take a long.",
+    "And when it goes below these zero lines here, we go red and that's when we can start thinking about taking shorts.",
+    "The ADX is one of my favorite indicators to keep us out of markets when they're going sideways.",
+    "When the ADX is above the moving average, we can actually take any long or short positions.",
+    "I've marked on the chart our first entry so that we can just go through the rules one more time.",
+    "We're going to set our stop loss to the ATR bands and we're going to set our risk to reward to a 1.5 and boom, we only just about managed to hit the take profit on that one there but it was a winning trade and a perfectly cherry peaked trade.",
+    "If we scroll down and look at the bench mark which I absolutely love that Trading View has added this that we can see that currently if you would have purchased Avax around here you would currently be down at 14% and you would have been underwater up to 39%.",
+    "We currently are in a short trade at the moment and if I put the buy and hold onto the chart we absolutely crushed the buy and hold except for this little period here."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "So the indicator is called the Commodity Trend by BigBuruga, a very popular pine script developer on TradingView in the recent couple of months."
+    },
+    {
+      "type": "trend",
+      "description": "It adds not only this area down below, but also adds something that looks a bit like a super trend just above."
+    },
+    {
+      "type": "trend",
+      "description": "We're just going to be using the super trend just here."
+    },
+    {
+      "type": "risk",
+      "description": "I let my system take care of all of my trades from the beginning all the way through the risk management."
+    },
+    {
+      "type": "risk",
+      "description": "Nobody wants to be chopped in and out of markets like here, where each and every one of our entries are going to get hit the stop loss."
+    },
+    {
+      "type": "trend",
+      "description": "The commodity trend reactor is going to give us our trend direction."
+    },
+    {
+      "type": "trend",
+      "description": "The next confluence indicator that we're going to be using and often is an indicator that we actually use for trend direction."
+    },
+    {
+      "type": "filter",
+      "description": "We're going to be using the range filter."
+    },
+    {
+      "type": "filter",
+      "description": "The range filter by Donovan Wall is an absolutely brilliant indicator as well."
+    },
+    {
+      "type": "filter",
+      "description": "We can see the range filter is this indicator here."
+    },
+    {
+      "type": "trend",
+      "description": "As I said, it is often used as a trend direction indicator, but we're going to be using its confluence here."
+    },
+    {
+      "type": "trend",
+      "description": "So first thing is the price is above the commodity trend."
+    },
+    {
+      "type": "filter",
+      "description": "Our range filter is also green."
+    },
+    {
+      "type": "risk",
+      "description": "We're going to set our stop loss to the ATR bands and we're going to set our risk to reward to a 1.5 and boom, we only just about managed to hit the take profit on that one there but it was a winning trade and a perfectl"
+    }
+  ],
+  "explicit_conditions": [
+    "I let my system take care of all of my trades from the beginning all the way through the risk management.",
+    "Nobody wants to be chopped in and out of markets like here, where each and every one of our entries are going to get hit the stop loss.",
+    "When it goes above these zero lines here, it goes green and that's when we can take a long.",
+    "And when it goes below these zero lines here, we go red and that's when we can start thinking about taking shorts.",
+    "When the ADX is above the moving average, we can actually take any long or short positions.",
+    "We're going to set our stop loss to the ATR bands and we're going to set our risk to reward to a 1.5 and boom, we only just about managed to hit the take profit on that one there but it was a winning trade and a perfectly cherry peaked trade."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "ATR",
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-de18e042f087.raw.txt",
+  "sha256": "c7211b5ef39876d5359287df8c1ba41a3df34f15bfd452158b2c34cbcf5349e4",
+  "truncated": false
+}

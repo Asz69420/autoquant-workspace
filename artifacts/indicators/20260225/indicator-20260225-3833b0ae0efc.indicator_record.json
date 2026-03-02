@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-3833b0ae0efc",
+  "created_at": "2026-02-24T23:52:55.564281Z",
+  "tv_ref": "tradingview:YvJagokC",
+  "url": "https://www.tradingview.com/script/YvJagokC-blackcat-L1-Uptrend-Entry-Indicator/",
+  "name": "[blackcat] L1 Uptrend Entry Indicator",
+  "author": "blackcat1402",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "dbc3fd8ed9c03b455673a7b181ab3a5fecc8562b7c6ab5f2b68da68d9ac66a42",
+  "truncated": false
+}

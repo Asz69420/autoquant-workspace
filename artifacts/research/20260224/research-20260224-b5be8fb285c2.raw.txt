@@ -1,0 +1,2 @@
+Today we used Supertrend indicator by Kivanc and RSI divergence on BTC 1h and ETH 4h.
+Rule: wait for trend flip and volume confirmation.

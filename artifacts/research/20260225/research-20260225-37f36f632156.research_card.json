@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-37f36f632156",
+  "created_at": "2026-02-25T12:50:19.840169Z",
+  "source_type": "manual",
+  "source_ref": "manual:small-script",
+  "title": "Small Indicator",
+  "summary_bullets": [],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-37f36f632156.raw.txt",
+  "sha256": "163ecc650df82f33f22e1ab6a0a860a815638ecc1ae944fbc82d9afd98eb1f5c",
+  "truncated": false
+}

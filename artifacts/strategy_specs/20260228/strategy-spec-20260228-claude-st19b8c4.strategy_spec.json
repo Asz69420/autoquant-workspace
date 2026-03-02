@@ -1,0 +1,236 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-st19b8c4",
+  "created_at": "2026-02-28T12:00:02.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend direction flips are the cleanest binary trend-change signal — no ambiguity, no parameter-dependent threshold interpretation. But the existing 4 Supertrend specs gate at ADX 20-35 uniformly. This spec tests a different hypothesis: Supertrend signals are ONLY worth taking when the trend is already STRONG (ADX>30+). In weak trends, Supertrend flips are noise; in strong trends, they mark genuine regime shifts. The key insight from advisory data: ETH/4h trending PF=1.054, meaning strong trends DO follow through in crypto. By requiring ADX>30 and using extended hold periods (30-50 bars on 4h = 5-8 days), we ride the entire trend move instead of taking profit too early. This is a 'conviction filter' approach — trade less, hold longer, win bigger.",
+  "regime_assumption": "Exclusively targets strong trending regimes (ADX > 30). This is deliberately restrictive — the hypothesis predicts that most Supertrend flips in weak/moderate trends are false signals. Only when ADX confirms strong directional movement should the flip be trusted. Invalidates in ranging (ADX < 20) and transitional (ADX 20-30) — these are explicitly excluded. Expected trade frequency: very low (1-3 per week on 4h), compensated by higher win rate and larger average win.",
+  "variants": [
+    {
+      "name": "supertrend_strong_trend",
+      "description": "Supertrend flip with ADX>30 gate and 3:1 R:R. Control variant to test whether high-ADX gating improves Supertrend signal quality on ETH/4h. Different from existing specs which use ADX 20-25 — this requires ESTABLISHED strong trend.",
+      "entry_long": [
+        "Require SUPERTd_7_3.0 flips from negative to positive on bar close (trend change to bullish).",
+        "Require ADX_14 > 30 (strong trend confirmed before entry).",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "Require SUPERTd_7_3.0 flips from positive to negative on bar close (trend change to bearish).",
+        "Require ADX_14 > 30 (strong trend confirmed before entry).",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 30 (strong trend only — conviction filter)",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on SUPERTd_7_3.0 flipping direction (trend reversal).",
+        "Exit on ADX_14 dropping below 20 (trend dying).",
+        "Exit on max bars in trade threshold (30 bars = ~5 days on 4h).",
+        "Hypothesis failure mode guard: Supertrend whipsaw in choppy high-ADX market",
+        "Hypothesis failure mode guard: ADX spike from news event with no sustained trend"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 2.0x ATR_14 from entry (moderate buffer for 4h volatility).",
+        "Take profit at 6.0x ATR_14 from entry (3:1 R:R).",
+        "Conviction filter: fewer entries mean each must deliver higher return."
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 25, "max": 40, "step": 5, "default": 30},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 3.0, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 8.0, "step": 1.0, "default": 6.0},
+        {"name": "max_bars_in_trade", "min": 20, "max": 40, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "trend", "notes": "SUPERTd_7_3.0 direction flip as entry trigger"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 30 conviction filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    },
+    {
+      "name": "supertrend_marathon_hold",
+      "description": "Supertrend flip with ADX>25 and maximum hold period (50 bars = ~8 days on 4h). Tests the 'let winners run' thesis: ETH/4h trends persist for days (advisory data shows trending PF=1.054). By extending hold time and using 5:1 R:R, we maximize trend capture per trade. This variant sacrifices win rate for average win size.",
+      "entry_long": [
+        "Require SUPERTd_7_3.0 flips from negative to positive on bar close.",
+        "Require ADX_14 > 25 (trend must be developing).",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "Require SUPERTd_7_3.0 flips from positive to negative on bar close.",
+        "Require ADX_14 > 25 (trend must be developing).",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 25 (developing trend)",
+        "Extended hold: 50 bars max (~8 days on 4h, marathon hold)",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on SUPERTd_7_3.0 flipping direction.",
+        "Exit on ADX_14 dropping below 18 (trend dissipating).",
+        "Exit on max bars in trade threshold (50 bars = ~8 days on 4h).",
+        "Hypothesis failure mode guard: Trend stalls but doesn't reverse (trade dies slowly)",
+        "Hypothesis failure mode guard: Multi-day consolidation eats into unrealized gains"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 2.5x ATR_14 from entry (wide stop for multi-day hold).",
+        "Take profit at 12.5x ATR_14 from entry (5:1 R:R — trend runner).",
+        "Marathon hold thesis: crypto trends can persist 3-8 days on 4h before exhaustion."
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 20, "max": 35, "step": 5, "default": 25},
+        {"name": "stop_atr_mult", "min": 2.0, "max": 3.5, "step": 0.5, "default": 2.5},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 16.0, "step": 2.0, "default": 12.5},
+        {"name": "max_bars_in_trade", "min": 30, "max": 60, "step": 10, "default": 50}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "trend", "notes": "SUPERTd_7_3.0 direction flip — marathon hold variant"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 25 with extended exit horizon"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for wide stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    },
+    {
+      "name": "supertrend_eth1h_test",
+      "description": "Supertrend flip on ETH/1h to test whether the same signal works on shorter timeframe. Advisory shows ETH/1h has ranging edge (PF=1.115) — Supertrend may catch trend initiation moments from range extremes. Moderate ADX gate (>22) and standard R:R. If successful, validates cross-timeframe signal robustness.",
+      "entry_long": [
+        "Require SUPERTd_7_3.0 flips from negative to positive on bar close.",
+        "Require ADX_14 > 22 (trend developing).",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "Require SUPERTd_7_3.0 flips from positive to negative on bar close.",
+        "Require ADX_14 > 22 (trend developing).",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime gate: ADX_14 > 22",
+        "Cross-timeframe test: 1h version of 4h Supertrend thesis",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on SUPERTd_7_3.0 flipping direction.",
+        "Exit on ADX_14 dropping below 15 (trend gone).",
+        "Exit on max bars in trade threshold (20 bars = ~20h on 1h).",
+        "Hypothesis failure mode guard: 1h noise producing frequent whipsaw flips",
+        "Hypothesis failure mode guard: Higher trade frequency negating fee optimization"
+      ],
+      "risk_rules": [
+        "Risk note: risk per trade target is 1%.",
+        "Stop loss at 1.5x ATR_14 from entry (tighter for 1h timeframe).",
+        "Take profit at 4.5x ATR_14 from entry (3:1 R:R).",
+        "1h timeframe: tighter parameters to account for faster signal cadence."
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 18, "max": 30, "step": 2, "default": 22},
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.5, "step": 0.5, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 3.0, "max": 6.0, "step": 0.5, "default": 4.5},
+        {"name": "max_bars_in_trade", "min": 12, "max": 30, "step": 4, "default": 20}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 4.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "trend", "notes": "SUPERTd_7_3.0 direction flip on 1h timeframe"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 22 moderate gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for 1h-calibrated stop/TP"}
+      ],
+      "origin": "CLAUDE_GENERATED"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  },
+  "generation_origin": "claude-advisor-strategy-generator"
+}

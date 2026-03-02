@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-8cf584375e28",
+  "created_at": "2026-02-25T02:39:22.790005Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/jgopUzJY-Adaptive-Quasimodo-Confluence-Engine-PhenLabs/",
+  "title": "Adaptive Quasimodo + Confluence Engine - PhenLabs",
+  "author": "PhenLabs",
+  "summary_bullets": [
+    "Trending catalog indicator: Adaptive Quasimodo + Confluence Engine - PhenLabs by PhenLabs."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Trending catalog indicator: Adaptive Quasimodo + Confluence Engine - PhenLabs by PhenLabs.",
+      "note": "Meaning: Trending catalog indicator: Adaptive Quasimodo + Confluence Engine - PhenLabs by PhenLabs."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Trending catalog indicator: Adaptive Quasimodo + Confluence Engine - PhenLabs by PhenLabs."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-8cf584375e28.raw.txt",
+  "sha256": "4a8160c4f9f7a06b57e78e083a7503ee4d85f31253cdea28bb320c296ac0cad7",
+  "truncated": false
+}

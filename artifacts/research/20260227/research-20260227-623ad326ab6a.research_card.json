@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-623ad326ab6a",
+  "created_at": "2026-02-26T23:00:02.865707Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/FnH0YWPK/",
+  "title": "GEX Levels Dashboard - ES/SPX/SPY Gamma Exposure",
+  "author": "TLADe_TradeLikeaDealer",
+  "summary_bullets": [
+    "Top catalog indicator: GEX Levels Dashboard - ES/SPX/SPY Gamma Exposure by TLADe_TradeLikeaDealer."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: GEX Levels Dashboard - ES/SPX/SPY Gamma Exposure by TLADe_TradeLikeaDealer.",
+      "note": "Meaning: Top catalog indicator: GEX Levels Dashboard - ES/SPX/SPY Gamma Exposure by TLADe_TradeLikeaDealer."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "SPX"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-623ad326ab6a.raw.txt",
+  "sha256": "dbf2ccffae92820dc1161fe0d95f9a10599a0ac5fa62dd79a0d26a8c09aca738",
+  "truncated": false
+}

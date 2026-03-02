@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-6abd1c369f5f",
+  "created_at": "2026-03-01T10:00:08.702417Z",
+  "tv_ref": "tradingview:U2S5LhZD",
+  "url": "https://www.tradingview.com/script/U2S5LhZD-3D-Money-Flow-Index-UAlgo/",
+  "name": "3D Money Flow Index [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "a5b454c026b34ea35b7f3d20ccd2b5245b92abf482e06468d5db1ab051496ec7",
+  "truncated": false
+}

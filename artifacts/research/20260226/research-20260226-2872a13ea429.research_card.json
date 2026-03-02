@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-2872a13ea429",
+  "created_at": "2026-02-26T03:45:37.913680Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=WW16O1JDdj4",
+  "title": "WW16O1JDdj4",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=WW16O1JDdj4 video_id=WW16O1JDdj4."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=WW16O1JDdj4 video_id=WW16O1JDdj4.",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=WW16O1JDdj4 video_id=WW16O1JDdj4."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-2872a13ea429.raw.txt",
+  "sha256": "d95baa45603f01d54212bca059242684344ae8b059e91d0d8a1b6749ef64c42c",
+  "truncated": false
+}

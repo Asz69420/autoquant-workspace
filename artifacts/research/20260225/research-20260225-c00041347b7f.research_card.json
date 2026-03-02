@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-c00041347b7f",
+  "created_at": "2026-02-25T11:04:16.205638Z",
+  "source_type": "manual_insight",
+  "source_ref": "manual_insight:insight-1f36d5dde530",
+  "title": "Test insight pulse",
+  "summary_bullets": [
+    "If trend aligns with regime gate, enter on pullback and cut at invalidation."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "If trend aligns with regime gate, enter on pullback and cut at invalidation.",
+      "note": "Meaning: If trend aligns with regime gate, enter on pullback and cut at invalidation."
+    }
+  ],
+  "extracted_rules": [
+    "If trend aligns with regime gate, enter on pullback and cut at invalidation."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "If trend aligns with regime gate, enter on pullback and cut at invalidation."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-c00041347b7f.raw.txt",
+  "sha256": "f58e2fe78c558b7eb57d47f051302885bacbb4328fe052f6dc2f670fddbb0b3c",
+  "truncated": false
+}

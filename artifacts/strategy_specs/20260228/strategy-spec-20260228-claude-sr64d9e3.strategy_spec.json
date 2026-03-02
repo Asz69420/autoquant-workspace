@@ -1,0 +1,307 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-sr64d9e3",
+  "created_at": "2026-02-28T14:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Stochastic K/D crossovers in oversold/overbought zones detect mean-reversion inflection points within a range. The template has been DEAD (0 trades for 3 cycles) because the default OB/OS zones (K>80/K<20) are too extreme for crypto's persistent volatility — price rarely reaches these levels on 4h bars. Widening to K>65/K<35 and K>70/K<30 should generate trades while still targeting extreme-enough conditions for reversal probability. The edge is that crypto ranges (ETH/4h ranging PF=1.127 on BTC, ETH/1h ranging PF=1.115 on prior data) show mean-reversion works — stochastic just needs calibrated zones. Regime assumption: ranging only (ADX<25). Invalidation: if widened zones still produce <10 trades, the stochastic indicator's OB/OS zones are fundamentally mismatched with crypto price distribution and the template should be permanently retired.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h", "1h"],
+  "variants": [
+    {
+      "name": "stoch_wide_zones_ranging",
+      "description": "Stochastic K/D crossover with widened OB/OS zones (65/35) to fix the 0-trade problem. K<35 for oversold long entries, K>65 for overbought short entries. Tight 2:1 R:R for quick mean-reversion captures within ranges. This is the diagnostic variant — if it still produces 0 trades, stochastic is permanently unsuitable for crypto.",
+      "entry_long": [
+        "STOCHk crosses above STOCHd (bullish crossover).",
+        "STOCHk < 35 confirms oversold zone (widened from default 20).",
+        "Bar-close execution only.",
+        "Use signal: stochastic_reversal"
+      ],
+      "entry_short": [
+        "STOCHk crosses below STOCHd (bearish crossover).",
+        "STOCHk > 65 confirms overbought zone (widened from default 80).",
+        "Bar-close execution only.",
+        "Use signal: stochastic_reversal"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h and 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit long when STOCHk crosses below STOCHd (reversal of entry signal).",
+        "Exit short when STOCHk crosses above STOCHd.",
+        "Exit on ATR-based take profit hit (2.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Hypothesis failure mode guard: Widened zones still too restrictive, or ranging price action doesn't reach stochastic extremes on 4h bars"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 2.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {
+          "name": "stoch_ob",
+          "min": 60,
+          "max": 75,
+          "step": 5,
+          "default": 65
+        },
+        {
+          "name": "stoch_os",
+          "min": 25,
+          "max": 40,
+          "step": 5,
+          "default": 35
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 0.8,
+          "max": 1.2,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 1.5,
+          "max": 2.5,
+          "step": 0.5,
+          "default": 2.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "stoch_moderate_zones_tight_exit",
+      "description": "Stochastic K/D crossover with moderate zone widening (70/30). Tighter than the diagnostic variant to test whether moderate widening is sufficient. 1.5:1 R:R for fast mean-reversion scalps. If this produces trades while K<20/K>80 doesn't, the zone calibration is the fix.",
+      "entry_long": [
+        "STOCHk crosses above STOCHd (bullish crossover).",
+        "STOCHk < 30 confirms oversold zone (widened from default 20).",
+        "Bar-close execution only.",
+        "Use signal: stochastic_reversal"
+      ],
+      "entry_short": [
+        "STOCHk crosses below STOCHd (bearish crossover).",
+        "STOCHk > 70 confirms overbought zone (widened from default 80).",
+        "Bar-close execution only.",
+        "Use signal: stochastic_reversal"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h and 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit long when STOCHk crosses below STOCHd.",
+        "Exit short when STOCHk crosses above STOCHd.",
+        "Exit on ATR-based take profit hit (1.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Hypothesis failure mode guard: 1.5:1 R:R may be insufficient to overcome fee drag at high trade frequency"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 1.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {
+          "name": "stoch_ob",
+          "min": 65,
+          "max": 80,
+          "step": 5,
+          "default": 70
+        },
+        {
+          "name": "stoch_os",
+          "min": 20,
+          "max": 35,
+          "step": 5,
+          "default": 30
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 0.8,
+          "max": 1.2,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 1.2,
+          "max": 2.0,
+          "step": 0.2,
+          "default": 1.5
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 1.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "stoch_aggressive_zones_wide_tp",
+      "description": "Stochastic K/D crossover with aggressively widened zones (60/40). Maximum trade generation to definitively determine if stochastic can work in crypto. Wider TP (2.5:1) to capture larger reversions. If even 60/40 produces <20 trades, stochastic is structurally incompatible with crypto on these timeframes.",
+      "entry_long": [
+        "STOCHk crosses above STOCHd (bullish crossover).",
+        "STOCHk < 40 confirms oversold zone (aggressively widened from default 20).",
+        "Bar-close execution only.",
+        "Use signal: stochastic_reversal"
+      ],
+      "entry_short": [
+        "STOCHk crosses below STOCHd (bearish crossover).",
+        "STOCHk > 60 confirms overbought zone (aggressively widened from default 80).",
+        "Bar-close execution only.",
+        "Use signal: stochastic_reversal"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h and 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit long when STOCHk crosses below STOCHd.",
+        "Exit short when STOCHk crosses above STOCHd.",
+        "Exit on ATR-based take profit hit (2.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Hypothesis failure mode guard: Zones too wide — signals fire in non-extreme conditions with no reversal edge"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 2.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {
+          "name": "stoch_ob",
+          "min": 55,
+          "max": 70,
+          "step": 5,
+          "default": 60
+        },
+        {
+          "name": "stoch_os",
+          "min": 30,
+          "max": 45,
+          "step": 5,
+          "default": 40
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 0.8,
+          "max": 1.5,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 2.0,
+          "max": 3.0,
+          "step": 0.5,
+          "default": 2.5
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

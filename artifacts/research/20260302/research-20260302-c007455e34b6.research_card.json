@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-c007455e34b6",
+  "created_at": "2026-03-01T15:19:50.136709Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/Z133PoZV-Gann-Static-Step-Cycle-Two-Way-v-3/",
+  "title": "Gann Static Step-Cycle (Two-Way) v.3",
+  "author": "OVIMONT",
+  "summary_bullets": [
+    "Top catalog indicator: Gann Static Step-Cycle (Two-Way) v.3 by OVIMONT."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Gann Static Step-Cycle (Two-Way) v.3 by OVIMONT.",
+      "note": "Meaning: Top catalog indicator: Gann Static Step-Cycle (Two-Way) v.3 by OVIMONT."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-c007455e34b6.raw.txt",
+  "sha256": "f9ebd12ab94ddb2af309a7da37945c89036ac4f128fb88a188b4a3f5f5fdf9f2",
+  "truncated": false
+}

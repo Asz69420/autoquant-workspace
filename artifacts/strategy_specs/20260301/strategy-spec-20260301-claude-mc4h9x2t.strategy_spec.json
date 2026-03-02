@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-mc4h9x2t",
+  "created_at": "2026-03-01T20:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD histogram zero-cross is the system's strongest signal, now ACCEPTED at two R:R levels: 3.5:1 on 4h (PF=1.347, 189 trades) and 6:1 on 1h (PF=1.46, 170 trades). The advisory explicitly requests: 'Test the extreme R:R variants (TP=10.0x, R:R=5:1) for tail-heavy distribution viability.' The fundamental question is whether MACD momentum shifts produce a FAT TAIL distribution in subsequent price movement. If the MACD histogram crossing zero signals a genuine regime transition (from bearish momentum to bullish or vice versa), the resulting trend should occasionally produce massive moves (5-12x ATR). At 3.5x TP we're clipping winners early. At 6x TP we're capturing more tail. At 10-12x TP we're harvesting the full fat tail — the question is whether enough trades reach these extreme targets to maintain PF>1.0. Evidence suggests yes: MACD PF INCREASED from 1.347 (3.5x) to 1.46 (6x), meaning wider TPs captured more edge, not less. The win rate dropped from ~30% to ~21% but the increased R:R more than compensated. If this trend continues to 10x, we may find PF peaks somewhere in the 8-12x range. Testing on 4h (where we have 189 trades as baseline) to control for timeframe effects. The 4h MACD signal quality is proven — this purely tests the optimal R:R extraction point. Regime: ALL (MACD is profitable across trending, ranging, and transitional at 6:1). Invalidation: if PF decreases monotonically from 6x to 10x to 12x TP, the tail distribution has a hard cap and optimal R:R is 6-8x. If PF < 1.0 at 8x, the tail caps out quickly and 6x is near-optimal.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "macd_4h_tail_harvester_8to1",
+      "description": "MACD histogram zero-cross with close vs EMA50 confirmation on ETH/4h with 8:1 R:R. The bridge variant between proven 3.5x TP (PF=1.347) and extreme 10x. 2.0x ATR stop provides safe floor. 8.0x ATR TP is the same R:R that made Supertrend achieve PF=1.91. If MACD PF increased from 1.347 (3.5x) through 1.46 (6x), then 8x should continue the trend. Win rate will be ~15-18%. This variant has the highest probability of success as it's the smallest extension from proven territory.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-cross, bullish momentum shift).",
+        "Close > EMA_50 confirms price is above trend — momentum shift is with the trend.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-cross, bearish momentum shift).",
+        "Close < EMA_50 confirms price is below trend — momentum shift is with the trend.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < PF at 6x TP, tail distribution caps between 6-8x ATR for MACD"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 7.0, "max": 9.0, "step": 1.0, "default": 8.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend confirmation — close must be above/below for signal quality"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram zero-cross — system's strongest signal, proven at 3.5x and 6x"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 8.0x TP — bridging proven 6x to extreme 10x territory"}
+      ]
+    },
+    {
+      "name": "macd_4h_extreme_tail_10to1",
+      "description": "MACD histogram zero-cross on ETH/4h with 10:1 R:R — the advisory-requested extreme test. This is the headline variant: does the MACD signal produce tail distributions heavy enough for 10x TP? At 10:1, we need ~10% of trades to hit TP for break-even (ignoring fees). The MACD histogram crossing zero signals genuine momentum regime shifts — not random oscillations. In strong trends, ETH can move 10+ ATR from a momentum shift point. Win rate will be ~10-12% but each winner = 10x risk. Wider stop (2.0x ATR) gives the position room to survive initial counter-moves before the trend develops.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-cross, bullish momentum shift).",
+        "Close > EMA_50 confirms price is above trend.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-cross, bearish momentum shift).",
+        "Close < EMA_50 confirms price is below trend.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 1.0, MACD tail distribution caps below 10x ATR — optimal R:R is 6-8x"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 12.0, "step": 1.0, "default": 10.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram zero-cross — testing tail distribution at 10x TP (advisory-requested)"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 10.0x TP — extreme tail harvesting, 5:1 R:R"}
+      ]
+    },
+    {
+      "name": "macd_4h_wide_stop_tail_12to1",
+      "description": "MACD histogram zero-cross on ETH/4h with 12:1 R:R and wider stop (2.5x ATR). The maximum-extraction variant. At 12x TP, we're harvesting only the absolute largest trend moves that follow MACD momentum shifts. Wider stop (2.5x vs 2.0x) improves win rate by giving trades more room to survive choppy initial price action after the signal. Combined, the 2.5x/12x setup (4.8:1 effective R:R after accounting for wider stop) captures the deepest end of the tail distribution. Expected win rate: 8-12%. If this produces PF>1.0, it proves MACD signals genuinely capture regime transitions with 12+ ATR follow-through — an extraordinary finding. If PF collapses, it defines the upper bound of MACD tail exploitation.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-cross, bullish momentum shift).",
+        "Close > EMA_50 confirms price is above trend.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-cross, bearish momentum shift).",
+        "Close < EMA_50 confirms price is below trend.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.5x ATR).",
+        "Hypothesis failure mode: if PF < 1.0, MACD tail exhaustion confirmed at 12x — optimal TP is between 6-10x"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 2.0, "max": 3.0, "step": 0.5, "default": 2.5},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 14.0, "step": 1.0, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram zero-cross — maximum tail extraction test at 12x TP"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.5x stop / 12.0x TP — widest stop for survival + deepest TP for maximum tail capture"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "run_id": "subagent-lifecycle-test-ok-1772366934",
+  "started_at": "2026-03-01T12:08:54.609802Z",
+  "spawn_emitted": true,
+  "terminal_emitted": true,
+  "agent": "oQ",
+  "model_id": "openai-codex/gpt-5.3-codex",
+  "terminal_action": "SUBAGENT_FINISH",
+  "terminal_status": "OK",
+  "terminal_reason_code": null,
+  "terminal_at": "2026-03-01T12:08:54.823414Z"
+}

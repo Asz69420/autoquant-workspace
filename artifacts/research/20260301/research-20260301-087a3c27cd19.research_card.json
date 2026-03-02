@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-087a3c27cd19",
+  "created_at": "2026-03-01T10:34:50.999233Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/bVIqPFAa-Price-Normalized-RSI-Profile-UAlgo/",
+  "title": "Price Normalized RSI Profile [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "Top catalog indicator: Price Normalized RSI Profile [UAlgo] by UAlgo."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Price Normalized RSI Profile [UAlgo] by UAlgo.",
+      "note": "Meaning: Top catalog indicator: Price Normalized RSI Profile [UAlgo] by UAlgo."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-087a3c27cd19.raw.txt",
+  "sha256": "34e5b6a021a17a71b61edac12aeff836fc980792acfbcc1a7a4b13c87bf27056",
+  "truncated": false
+}

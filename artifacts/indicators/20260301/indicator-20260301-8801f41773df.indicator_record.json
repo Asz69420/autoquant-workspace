@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-8801f41773df",
+  "created_at": "2026-03-01T10:49:50.009777Z",
+  "tv_ref": "tradingview:10yYqaY7",
+  "url": "https://www.tradingview.com/script/10yYqaY7-ORB-Strategy-LuciTech/",
+  "name": "ORB Strategy [LuciTech]",
+  "author": "TradesLuci",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "8a987c2412021acdab402dda05b7c6bac62e476fdbf6c6c047ba7206fe024970",
+  "truncated": false
+}

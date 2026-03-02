@@ -1,0 +1,13 @@
+//@version=6
+strategy("TV Parity EMA9/EMA21 ATR14", overlay=true, initial_capital=10000)
+emaFast = ta.ema(close, 9)
+emaSlow = ta.ema(close, 21)
+atr = ta.atr(14)
+longCond = ta.crossover(emaFast, emaSlow)
+shortCond = ta.crossunder(emaFast, emaSlow)
+if (longCond)
+    strategy.entry("L", strategy.long)
+if (shortCond)
+    strategy.entry("S", strategy.short)
+strategy.exit("XL", "L", stop=strategy.position_avg_price - 1.5 * atr, limit=strategy.position_avg_price + 2.0 * atr)
+strategy.exit("XS", "S", stop=strategy.position_avg_price + 1.5 * atr, limit=strategy.position_avg_price - 2.0 * atr)

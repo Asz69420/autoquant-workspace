@@ -1,0 +1,16 @@
+﻿{
+    "id":  "bundle_strategy_003_us_session_momentum_scalp",
+    "created_at":  "2026-02-26T12:40:01.462341+00:00",
+    "source":  "transcript_drop",
+    "source_ref":  "transcript_drop://strategy_003_us_session_momentum_scalp",
+    "video_id":  "strategy_003_us_session_momentum_scalp",
+    "research_card_path":  "artifacts/research/20260226/research-20260226-f48fdac2c019.research_card.json",
+    "linkmap_path":  "artifacts/links/20260226/research-20260226-f48fdac2c019.linkmap.json",
+    "indicator_record_paths":  [
+
+                               ],
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-02-26T13:26:24.2559617Z",
+    "attempts":  1,
+    "last_error":  "THESIS_GEN_FAIL: Python exit 2: python: can\u0027t open file \u0027C:\\\\WINDOWS\\\\system32\\\\scripts\\\\pipeline\\\\run_analyser.py\u0027: [Errno 2] No such file or directory\r\n"
+}

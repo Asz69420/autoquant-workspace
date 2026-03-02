@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-ef659640aa7b",
+  "created_at": "2026-02-25T12:56:11.549888Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/sevQh9oE-Dual-View-HTF-Candlestick-Patterns-theUltimator5/",
+  "title": "Dual View HTF Candlestick Patterns [theUltimator5]",
+  "author": "TheUltimator5",
+  "summary_bullets": [
+    "Top catalog indicator: Dual View HTF Candlestick Patterns [theUltimator5] by TheUltimator5."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Dual View HTF Candlestick Patterns [theUltimator5] by TheUltimator5.",
+      "note": "Meaning: Top catalog indicator: Dual View HTF Candlestick Patterns [theUltimator5] by TheUltimator5."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-ef659640aa7b.raw.txt",
+  "sha256": "1855216bfc9bf5af83234e94be96e4f0b2479f3a7aab02e83bfaa6ffc7fcdb36",
+  "truncated": false
+}

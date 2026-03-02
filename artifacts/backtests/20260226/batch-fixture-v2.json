@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "id": "batch-fixture",
+  "created_at": "2026-02-26T05:40:33.802576+00:00",
+  "strategy_spec_path": "C:/Users/Clamps/.openclaw/workspace/artifacts/strategy_specs/20260226/fixture_same_family.strategy_spec.json",
+  "variant": "TemplateA",
+  "runs": [
+    {
+      "variant_name": "TemplateA",
+      "symbol": "BTC",
+      "timeframe": "1h",
+      "dataset_meta_path": "meta.json",
+      "backtest_result_path": "C:/Users/Clamps/.openclaw/workspace/artifacts/backtests/20260226/fixture.backtest_result.json",
+      "trade_list_path": "trade_list.json",
+      "gate_pass": false,
+      "profit_factor": 0.8,
+      "max_drawdown": 0.41,
+      "trades": 8
+    }
+  ],
+  "summary": {
+    "total_runs": 1,
+    "failed_runs": 0,
+    "net_profit": -100,
+    "trades": 8,
+    "profit_factor": 0.8,
+    "max_drawdown": 0.41
+  }
+}

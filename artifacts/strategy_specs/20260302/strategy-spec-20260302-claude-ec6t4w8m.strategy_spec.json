@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-ec6t4w8m",
+  "created_at": "2026-03-02T12:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "EMA crossover has been dismissed as 'noise' (PF=1.03) — but ONLY at low R:R (2:1). The system's foundational discovery is that extreme R:R amplifies hidden edge: MACD went from PF=1.03 at 2:1 to PF=1.712 at 7:1. EMA_9/EMA_21 crossover is the SIMPLEST possible trend signal — two moving averages crossing. This spec tests whether extreme R:R (7:1 through 10:1) can extract tail-harvesting edge from this simple signal. THREE POSSIBLE OUTCOMES: (1) If PF > 1.2 at 7:1+, then signal complexity doesn't matter — any trend detection works for tail harvesting, and we should add ema_crossover to the portfolio as a high-frequency, low-correlation diversifier. (2) If PF = 1.0-1.1, the signal captures SOME directional edge but not enough to overcome fees at extreme R:R — intermediate signal quality. (3) If PF < 1.0, ema_crossover's signal quality is fundamentally insufficient for tail harvesting, confirming that MACD's histogram zero-line cross provides materially better signal quality than a simple EMA cross. This is a DIAGNOSTIC experiment — it validates or refutes the thesis that 'any trend signal works with extreme R:R.' Regime assumption: ALL (ema_crossover takes signals in all regimes to maximize trade count for statistical significance). Invalidation: If PF < 0.9 at 7:1 R:R with 200+ trades, signal quality is the bottleneck, not R:R — close the ema_crossover chapter permanently.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "ema_crossover_1h_tail_test_7to1",
+      "description": "EMA_9/EMA_21 crossover on ETH/1h with 7:1 R:R (1.5x ATR stop / 10.5x ATR TP). Direct comparison to MACD 1h 7:1 (the portability test from mc7h1f6p). EMA crossover generates more signals than MACD (every EMA cross vs. histogram zero-line cross), so expect 250-400 trades. Higher trade count means better statistical significance. If PF > 1.2 with 300+ trades, ema_crossover becomes a viable portfolio component due to signal frequency and simplicity. Breakeven win rate: 12.5% after fees.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (fast EMA bullish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (fast EMA bearish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "EMA crossover: EMA_9 crosses EMA_21",
+        "No additional trend filter — testing raw signal quality",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 7:1. Needs 12.5% win rate to break even after fees.",
+        "Diagnostic: does the simplest trend signal produce tail-harvesting PF > 1.1?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 10.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 7.5, "max": 13.5, "step": 1.5, "default": 10.5},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 and EMA_21 crossover — simplest trend signal in the system"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA crossover IS the signal — no secondary confirmation, testing raw signal quality"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 10.5x TP — STOP_FLOOR compliant, 7:1 R:R"}
+      ]
+    },
+    {
+      "name": "ema_crossover_4h_tail_test_8to1",
+      "description": "EMA_9/EMA_21 crossover on ETH/4h with 8:1 R:R (1.5x ATR stop / 12.0x ATR TP). 4h timeframe reduces noise compared to 1h — fewer whipsaw crosses, higher signal quality per cross. On 4h, EMA crosses should produce 60-120 trades (vs. 250-400 on 1h). If 4h PF > 1h PF, it confirms that EMA crossover's weakness is noise-frequency, not signal logic. 8:1 R:R selected because MACD's 4h peak is at 7:1 — testing whether EMA crossover's simpler signal benefits from slightly higher R:R to compensate for lower signal quality. Breakeven win rate: 11.1%.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (fast EMA bullish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (fast EMA bearish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "EMA crossover: EMA_9 crosses EMA_21",
+        "No additional trend filter — testing raw signal quality on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "4h noise reduction test: does fewer crosses = higher PF per cross?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 16.0, "step": 2.0, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9/EMA_21 crossover on 4h — reduced noise vs 1h"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA crossover signal only — no MACD/RSI filter, pure trend detection"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 12.0x TP — 8:1 R:R, STOP_FLOOR compliant"}
+      ]
+    },
+    {
+      "name": "ema_crossover_1h_extreme_rr_10to1",
+      "description": "EMA_9/EMA_21 crossover on ETH/1h with 10:1 R:R (1.5x ATR stop / 15.0x ATR TP). The extreme end of the R:R curve for the simplest signal. MACD at 12:1 on 4h still produces PF=1.302 — does ema_crossover have ANY tail-harvesting capability at this extreme? 10:1 means breakeven at 9.1% win rate. With 300+ expected trades, even a 10% win rate produces PF > 1.0. If this variant works (PF > 1.1), ema_crossover captures genuine trend continuation tails despite its simplicity. This is the stress test variant — if it fails while the 7:1 works, we know ema_crossover's R:R ceiling. If BOTH fail, ema_crossover is confirmed noise regardless of R:R.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (fast EMA bullish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (fast EMA bearish crossover).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "EMA crossover: EMA_9 crosses EMA_21",
+        "Extreme R:R stress test — 10:1 on simplest signal",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (15.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees.",
+        "Stress test: does ema_crossover have ANY tail harvesting capability at extreme R:R?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 15.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 20.0, "step": 2.5, "default": 15.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9/EMA_21 crossover — extreme R:R stress test on simplest signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "Raw crossover signal, no additional filters"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 15.0x TP — 10:1 R:R extreme, STOP_FLOOR compliant"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "verdict": "REVISE",
+  "reasoning": "This variant is effectively flat: PF is only 1.0008 despite 406 trades, so edge is negligible after costs and highly vulnerable to small execution drift. Drawdown is too large for that return profile (DD_abs 55,871.20), which makes the risk-adjusted expectancy unattractive for deployment. The larger sample size increases confidence that this is a weak, not noisy, edge. Keep iterating, but do not ACCEPT in current form.",
+  "confidence": 0.88,
+  "directives": [
+    {
+      "type": "RISK_ADJUST",
+      "params": {
+        "stop_loss_atr": 1.5,
+        "max_risk_per_trade_pct": 0.35,
+        "daily_loss_limit_r": 3
+      },
+      "reasoning": "A near-breakeven PF cannot support extreme drawdown; tightening stop distance and per-trade risk is required to improve survival while preserving optionality."
+    },
+    {
+      "type": "EXIT_CHANGE",
+      "params": {
+        "take_profit_atr": 2.5,
+        "time_stop_bars": 18,
+        "break_even_trigger_r": 1.0
+      },
+      "reasoning": "With WR 44.83%, profitability depends on payoff efficiency; structured exits can improve realized R and reduce capital tied in stagnant positions."
+    },
+    {
+      "type": "THRESHOLD_SWEEP",
+      "params": {
+        "entry_tightness_grid": [
+          10,
+          15,
+          20
+        ],
+        "target_trade_count_range": [
+          220,
+          320
+        ],
+        "selection_metric": "maximize_PF_subject_to_DD_reduction"
+      },
+      "reasoning": "406 trades with PF ~1.00 suggests residual overtrading; a controlled sweep to reduce frequency should test whether quality improves enough to create real edge."
+    }
+  ],
+  "regime_recommendation": {
+    "add_filter": false,
+    "allowed_regimes": [],
+    "reasoning": "No regime breakdown was provided, so regime-specific filtering cannot be validated; include trend/range/transitional split in next run before deployment decisions."
+  },
+  "edge_assessment": {
+    "type": "statistical",
+    "decay_risk": "high",
+    "robustness": "fragile"
+  },
+  "doctrine_update": "If PF is ~1.00 on large samples (>300 trades), prioritize drawdown compression and trade-quality reduction before any further complexity changes.",
+  "meta": {
+    "strategy": "strategy-spec-20260227-aca46eedbd4e",
+    "variant": "directive_variant_1_entry_tighten",
+    "asset": "BTC",
+    "timeframe": "4h",
+    "acceptance_trigger": "PF >= 1.08 with materially lower drawdown on a comparable sample size"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-0d7017d4e42c",
+  "created_at": "2026-02-25T22:19:15.738445Z",
+  "tv_ref": "tradingview:MZMjh3nw",
+  "url": "https://www.tradingview.com/script/MZMjh3nw-blackcat-L2-Institutional-BS-Indicator/",
+  "name": "[blackcat] L2 Institutional BS Indicator",
+  "author": "blackcat1402",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "7c1c9d2e9f728d49da1aa19d2c9df8d91e684507bc20dc2f60c2e3bff80d838b",
+  "truncated": false
+}

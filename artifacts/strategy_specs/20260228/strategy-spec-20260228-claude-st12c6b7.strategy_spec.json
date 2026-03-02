@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-st12c6b7",
+  "created_at": "2026-02-28T18:30:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend direction flips are structurally rare events — they mark major trend reversals/initiations, not incremental momentum changes. By requiring ADX > 30 (not the default 20), we filter to only strong, established trends where the Supertrend flip has the highest conviction. The core innovation is EXTREME exit asymmetry: 2.0 ATR stop with 5.0-6.0 ATR take profit (1:2.5 to 1:3 R:R). We accept a low win rate (~25-35%) in exchange for outsized winners. This is the purest trend-following approach possible: rare entries, tight risk control, and patience for big moves. Fee drag is minimized by structural signal rarity (est. 15-40 trades). This directly addresses the advisory's #1 finding: fee drag at 62% of gross means the only path to profitability is fewer, larger trades.",
+  "regime_assumption": "STRONG TRENDING ONLY. ADX > 30 gate ensures we only trade when trends are well-established. Supertrend flips during strong trends signal the START of a new strong trend (not continuation). The combination should produce the highest-conviction entries in the template registry. Expected to produce very few trades — this is by design. Invalidate if ADX > 30 filter produces < 10 trades (too restrictive) or if the extreme asymmetry produces win rate < 15% (stops too tight relative to noise).",
+  "invalidation_conditions": [
+    "Total trades < 10 (ADX > 30 too restrictive for Supertrend signals)",
+    "Win rate < 15% (2.0 ATR stop too tight for Supertrend entry lag)",
+    "No trades hit the 5.0+ ATR TP (trends don't run far enough)",
+    "Trending-regime PF < 1.0 despite extreme selectivity"
+  ],
+  "variants": [
+    {
+      "name": "supertrend_extreme_asym",
+      "description": "Supertrend flip with ADX>30 and extreme R:R asymmetry (2.0:5.0 ATR). Tests whether ultra-selective entries + outsized targets overcome low win rate. Core thesis: fewer trades, bigger winners, minimal fee drag.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive (trend direction change to bullish).",
+        "ADX_14 > 30 (strong trend confirmed).",
+        "Execute on bar close only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative (trend direction change to bearish).",
+        "ADX_14 > 30 (strong trend confirmed).",
+        "Execute on bar close only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 30 (strong trending only)"
+      ],
+      "exit_rules": [
+        "Stop loss at 2.0x ATR below entry (controlled risk).",
+        "Take profit at 5.0x ATR above entry (R:R 1:2.5 — outsized target).",
+        "Exit on opposite Supertrend direction flip.",
+        "Exit on max 50 bars in trade (8.3 days on 4h — patience for big moves).",
+        "Hypothesis failure mode guard: Supertrend flip lag means entry is mid-trend, not start",
+        "Hypothesis failure mode guard: ADX > 30 signals trend exhaustion rather than strength"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 1%.",
+        "Extreme asymmetry means most trades are losers — mental capital management required.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 25, "max": 40, "step": 5, "default": 30},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 7.0, "step": 1.0, "default": 5.0},
+        {"name": "max_bars_in_trade", "min": 30, "max": 70, "step": 10, "default": 50}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 5.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "trend", "notes": "SUPERTd_7_3.0 direction flip as structural entry signal"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 30 as strong-trend conviction gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for asymmetric stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "supertrend_moderate_adx20",
+      "description": "Supertrend flip with default ADX>20 and moderate asymmetry (2.0:3.5 ATR). Control variant: tests whether looser ADX gate produces enough additional trades to outperform the extreme variant despite lower per-trade quality.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive.",
+        "ADX_14 > 20 (standard trend threshold).",
+        "Execute on bar close only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative.",
+        "ADX_14 > 20.",
+        "Execute on bar close only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 20 (standard trending)"
+      ],
+      "exit_rules": [
+        "Stop loss at 2.0x ATR below entry.",
+        "Take profit at 3.5x ATR above entry (R:R 1:1.75).",
+        "Exit on opposite Supertrend direction flip.",
+        "Exit on max 35 bars in trade.",
+        "Hypothesis failure mode guard: Weaker ADX gate admits choppy-trend entries",
+        "Hypothesis failure mode guard: Moderate TP clips big winners"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 1%.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 15, "max": 30, "step": 5, "default": 20},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 2.5, "max": 4.5, "step": 0.5, "default": 3.5},
+        {"name": "max_bars_in_trade", "min": 20, "max": 50, "step": 10, "default": 35}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.5,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "trend", "notes": "SUPERTd_7_3.0 direction flip"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 20 standard trend gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "supertrend_trailing_exit",
+      "description": "Supertrend flip with ADX>25 and NO fixed TP — uses Supertrend line itself as trailing stop. Tests whether letting Supertrend manage the full trade lifecycle (entry AND exit) produces better trend capture than fixed ATR targets.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive.",
+        "ADX_14 > 25 (moderate-strong trend).",
+        "Execute on bar close only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative.",
+        "ADX_14 > 25.",
+        "Execute on bar close only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 25 (moderate-strong trending)"
+      ],
+      "exit_rules": [
+        "Stop loss at 2.0x ATR below entry (initial protective stop only).",
+        "Take profit at 8.0x ATR above entry (very wide — acts as emergency cap).",
+        "Primary exit: opposite Supertrend direction flip (trailing stop built into indicator).",
+        "Exit on max 60 bars in trade (10 days — let the full trend play out).",
+        "Hypothesis failure mode guard: Supertrend trailing stop too loose — gives back profits",
+        "Hypothesis failure mode guard: Very long hold times increase exposure to gap risk"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 1%.",
+        "Primary risk management via Supertrend reversal exit, not fixed TP.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 20, "max": 35, "step": 5, "default": 25},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 10.0, "step": 2.0, "default": 8.0},
+        {"name": "max_bars_in_trade", "min": 40, "max": 80, "step": 10, "default": 60}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "trend", "notes": "SUPERTd_7_3.0 for both entry (flip) and exit (reversal)"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 25 trend conviction gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for initial stop sizing only"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "RSI", "ATR", "MACD", "Bollinger Bands",
+    "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP",
+    "Ichimoku", "Supertrend", "Donchian Channels"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260227-6804fcdefcb6",
+  "created_at": "2026-02-26T23:00:02.577538Z",
+  "tv_ref": "tradingview:FnH0YWPK",
+  "url": "https://www.tradingview.com/script/FnH0YWPK/",
+  "name": "GEX Levels Dashboard - ES/SPX/SPY Gamma Exposure",
+  "author": "TLADe_TradeLikeaDealer",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "f689c0d44a97c82f91cfe6b185801d0ff533fd2923ba6134224cf020b4d7696d",
+  "truncated": false
+}

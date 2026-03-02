@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-35326d176bee",
+  "created_at": "2026-02-25T02:20:04.988740Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/xP0fTjlv-blackcat-L2-Main-Force-Trend/",
+  "title": "[blackcat] L2 Main Force Trend",
+  "author": "blackcat1402",
+  "summary_bullets": [
+    "Trending catalog indicator: [blackcat] L2 Main Force Trend by blackcat1402."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Trending catalog indicator: [blackcat] L2 Main Force Trend by blackcat1402.",
+      "note": "Meaning: Trending catalog indicator: [blackcat] L2 Main Force Trend by blackcat1402."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Trending catalog indicator: [blackcat] L2 Main Force Trend by blackcat1402."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-35326d176bee.raw.txt",
+  "sha256": "c916d1950df2eb5e5bd85d10bbdcfeed1ddf8bed88227815315526ab68bbc49f",
+  "truncated": false
+}

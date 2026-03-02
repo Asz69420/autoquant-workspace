@@ -1,0 +1,60 @@
+STRATEGY: Multi-Timeframe Trend Alignment (4h Trend + 1h Entry)
+ASSET: BTC, ETH
+TIMEFRAME: 1h entries, 4h trend context
+MARKET CONDITION: Trending on higher timeframe, pullback on lower timeframe
+TYPE: Multi-timeframe trend following
+CONCEPT: The most robust trading strategies align multiple timeframes. We use the 4h chart to determine trend direction and only take 1h entries in that direction. This means we need 4h indicator values available on the 1h chart. The 4h trend tells us WHAT to trade (long or short), the 1h tells us WHEN to enter. This dramatically reduces false signals because you’re always trading with the bigger picture.
+INDICATORS USED (4h context - calculated on 1h using 4x periods):
+- EMA 200 on 1h (equivalent to ~EMA 50 on 4h) - major trend direction
+- EMA 800 on 1h (equivalent to ~EMA 200 on 4h) - macro trend filter
+- ADX calculated on last 56 bars of 1h (equivalent to 14 bars on 4h) - trend strength
+INDICATORS USED (1h entry):
+- RSI (period 14) - pullback detection
+- MACD (fast 12, slow 26, signal 9) - momentum shift timing
+- EMA 21 - immediate 1h trend
+- ATR (period 14) - stops and targets
+4H TREND DETERMINATION (using 1h equivalents):
+- UPTREND: EMA 200 (1h) > EMA 800 (1h) AND ADX(56 bars) > 20
+- DOWNTREND: EMA 200 (1h) < EMA 800 (1h) AND ADX(56 bars) > 20
+- NO TRADE: ADX(56 bars) < 20 (no clear trend on higher timeframe)
+ENTRY LONG (1h):
+1. 4h context shows UPTREND (EMA 200 > EMA 800, ADX > 20)
+2. Price pulls back below EMA 21 on 1h (short-term dip within uptrend)
+3. RSI(14) drops below 40 (pullback has some depth, not just a 1-bar dip)
+4. MACD histogram turns from negative to positive (momentum shifting back up)
+5. Price closes back above EMA 21 (pullback is ending, trend resuming)
+ENTRY SHORT (1h):
+1. 4h context shows DOWNTREND (EMA 200 < EMA 800, ADX > 20)
+2. Price rallies above EMA 21 on 1h (short-term bounce within downtrend)
+3. RSI(14) rises above 60 (bounce has some depth)
+4. MACD histogram turns from positive to negative (momentum shifting back down)
+5. Price closes back below EMA 21 (bounce is ending, downtrend resuming)
+EXIT RULES:
+- Take profit: 2.5x ATR(14) from entry
+- Stop loss: 1.5x ATR(14) from entry (just beyond the pullback extreme)
+- Trailing stop: After 1.5 ATR in profit, trail at EMA 21
+- Time stop: 24 candles (24 hours) — if trade hasn’t worked by then, the setup failed
+- Trend invalidation: If EMA 200 crosses below EMA 800 (trend reversal on higher TF), close immediately
+RISK MANAGEMENT:
+- Risk per trade: 1% of account
+- Max concurrent positions: 1 per asset
+- Minimum 6 bars between entries (avoid re-entering same pullback)
+- Skip if pullback was deeper than 3x ATR below EMA 21 (that’s not a pullback, it’s a reversal)
+- Skip if RSI went below 25 during pullback (too much selling pressure for a normal pullback)
+RATIONALE:
+Multi-timeframe alignment is how professional traders operate. The 4h trend provides the directional edge — you’re trading with the flow of the larger market. The 1h entry provides timing precision — you’re buying dips and selling rips within that trend. The key insight is the EMA 21 as the “pullback boundary”: price dipping below it and reclaiming it signals the pullback is over. This is not a new concept but it’s one of the most consistently profitable approaches across all markets.
+FALSIFIABLE HYPOTHESIS:
+BTC/ETH 1h entries aligned with 4h uptrend (EMA 200 > 800 on 1h equivalent) that buy pullbacks below EMA 21 with RSI < 40 and MACD reversal produce profit factor above 1.25 and win rate above 45%.
+PARAMETER RANGES FOR SWEEP:
+- Higher TF EMA fast (1h equivalent): 150-250, step 50
+- Higher TF EMA slow (1h equivalent): 600-1000, step 200
+- Higher TF ADX threshold: 15-25, step 5
+- Higher TF ADX lookback (1h bars): 42-70, step 14
+- Entry EMA: 13-34, step 7
+- RSI pullback threshold long: 35-45, step 5
+- RSI pullback threshold short: 55-65, step 5
+- RSI extreme skip threshold: 20-30, step 5
+- TP ATR multiplier: 2.0-3.5, step 0.5
+- SL ATR multiplier: 1.0-2.0, step 0.5
+- Time stop candles: 18-30, step 6
+- Min bars between entries: 4-10, step 3

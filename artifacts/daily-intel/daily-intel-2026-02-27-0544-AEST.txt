@@ -1,0 +1,10 @@
+﻿Daily Intel Report — 2026-02-27 05:44 AEST
+
+Status: fail
+Promoted count: 0
+Compat status: unknown (run did not complete)
+Reason_code alerts: RETRIEVAL_FAIL
+
+Notes:
+- Configured path scripts/keeper/runner.py is missing in this workspace.
+- Fallback scripts/keeper/legacy/runner.py was executed and returned RETRIEVAL_FAIL.

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260224-7cf6c305398a",
+  "created_at": "2026-02-24T11:04:36.120014Z",
+  "tv_ref": "tv://supertrend-kivanc",
+  "url": "https://tradingview.com/script/example",
+  "name": "Supertrend",
+  "author": "KivancOzbilgic",
+  "key_inputs": [
+    "atr_period",
+    "multiplier"
+  ],
+  "signals_described": [
+    "trend flip",
+    "buy/sell"
+  ],
+  "notes": [
+    "fixture"
+  ],
+  "source_pointer": "artifacts/indicators/20260224/indicator-20260224-7cf6c305398a.pine.txt",
+  "sha256": "746bd609e911803d65f9b2d90ce69d3bcfe2cfd42eaed38b0788b7516cb7d758",
+  "truncated": false
+}

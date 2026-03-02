@@ -1,0 +1,105 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772277588-backfill-strategy-spec-20260228-claude-ea14c6d7.strategy_spec",
+  "run_id": "autopilot-1772277588-backfill-strategy-spec-20260228-claude-ea14c6d7.strategy_spec",
+  "created_at": "2026-02-28T11:24:27.671952+00:00",
+  "verdict": "REVISE",
+  "strategy_family": "strategy-spec-20260228-claude-ea14c6d7.strategy_spec",
+  "template": "atr_expansion_fee_killer",
+  "metrics": {
+    "profit_factor_after_costs": 1.19414262,
+    "max_drawdown": 0.189110321679,
+    "trades": 255,
+    "regime_breakdown": {
+      "trending_trades": 121,
+      "ranging_trades": 92,
+      "transitional_trades": 42
+    },
+    "regime_pf": {
+      "trending": 1.14004882,
+      "ranging": 1.53857041,
+      "transitional": 0.72884502
+    },
+    "regime_wr": {
+      "trending": 0.29752066,
+      "ranging": 0.34782609,
+      "transitional": 0.26190476
+    },
+    "dominant_regime": "trending"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending",
+      "ranging"
+    ],
+    "bad_regimes": [
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "require_regime_filter": true,
+        "regime_gate": "trend_or_volatility"
+      },
+      "rationale": "Doctrine: regime assumptions/gating required; strategy lacks explicit regime filter.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-06|conf:0.76",
+      "theme": "regime_required",
+      "text": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "id": "20260226-20|conf:0.72",
+      "theme": "regime_required",
+      "text": "Embed concept hook into testable hypothesis design: Session gating before execution enablement"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260228/batch_20260228_bd8109d2.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260228/refine_20260228_d59ef30b.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "ba1768d0cae2a8be"
+}

@@ -1,0 +1,15 @@
+Patch C:/Users/Clamps/.openclaw/workspace/scripts/keeper/runner_v2.py in place (do NOT create runner_v3.py). No LLM integration. Keep existing core behavior, but implement:
+1) baseline guard by invoking scripts/automation/baseline_check.py each run; if over cap emit WARN reason_code=BASELINE_OVER_CAP (or FAIL if extreme, e.g., >150% cap), include top 3 contributors; when ok emit minimal INFO BASELINE_OK.
+2) manifest enforcement using BASELINE_MANIFEST.json default_load deny forbidden entries: any *-FULL.md, USER-EXTENDED.md, AGENTS-FULL.md, SOUL-FULL.md, any path under memory/. On violation emit FAIL reason_code=BASELINE_MANIFEST_VIOLATION and exit after one final summary event.
+3) idempotent write suppression for MEMORY.md, docs/STATUS.md, handoff output: compare content and skip unchanged writes.
+4) memory index discipline hook: if MEMORY-INDEX.md exists check bullets<=20 and token_est<=400; if exceeded WARN reason_code=MEMORY_INDEX_TOO_LARGE; if missing INFO reason_code=MEMORY_INDEX_MISSING. Non-destructive only.
+5) budget caps defaults max_files_touched=10 max_bytes_changed=50000 max_runtime_seconds=120; if exceeded FAIL reason_code=KEEPER_BUDGET_EXCEEDED and include cap hit.
+6) telemetry discipline: exactly ONE final structured summary event per run with reason_code=KEEPER_SUMMARY and status_word one of OK/WARN/FAIL/NOOP and include files_written, bytes_changed, baseline_tokens_est, warnings_count. Keep intermediate events minimal: baseline guard + any violations only.
+Ensure compatibility with existing imports and Python version.
+After patch: run basic syntax check on the file, then provide a concise summary of changes.
+Then run three smoke tests:
+A) no-change run (expect NOOP, no rewrites)
+B) temporary manifest violation (modify manifest, run, restore)
+C) temporary baseline over cap simulation (temporarily lower target cap in manifest, run, restore)
+Capture relevant log event examples from data/logs/outbox.
+Finally commit only intended files with message: feat(keeper): harden v2 baseline guards and noop telemetry and print commit hash + short diffstat + proof checks (mtime unchanged for no-change).

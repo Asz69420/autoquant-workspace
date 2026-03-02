@@ -1,0 +1,22 @@
+DAILY INTEL — UPDATED
+Generated: 2026-02-28 AEST
+
+RUN STATUS
+- status: ACTIVE
+- source: latest batch/backtest artifacts
+
+LEADERBOARD (Top PnL, latest executed runs)
+Symbol  TF   Strategy                          PnL      PF    Trades    DD
+BTC     4h   supertrend_marathon_hold        +26475.8  1.39      37   28651.1
+BTC     4h   ema_cross_trending_only         +15995.5  1.07     183   39610.3
+BTC     4h   supertrend_eth1h_test            +8957.2  1.13      47   16840.6
+ETH     4h   directive_exit_change_exploit_6  +1676.9  1.24     117    1676.8
+ETH     1h   macd_wide_exit_fee_killer        +1659.9  1.35     189     617.1
+ETH     4h   supertrend_strong_trend          +1502.1  2.02      16     524.3
+ETH     4h   directive_exit_change_exploit_3  +1469.7  1.21     121    1449.3
+ETH     4h   directive_exit_change_exploit_5  +1227.8  1.18     126    1759.9
+BTC     4h   ema_cross_extreme_rr             +1136.5  1.01     183   45955.5
+ETH     1h   supertrend_marathon_hold          +900.1  1.44      35     489.1
+
+NOTES
+- This is a TXT export as requested.

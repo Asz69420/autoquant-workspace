@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-f48fdac2c019",
+  "created_at": "2026-02-26T12:40:01.316126Z",
+  "source_type": "transcript_drop",
+  "source_ref": "transcript_drop://strategy_003_us_session_momentum_scalp",
+  "title": "strategy_003_us_session_momentum_scalp",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "STRATEGY: US Session Momentum Scalp ASSET: BTC, ETH TIMEFRAME: 15m MARKET CONDITION: US market session only (high liquidity, high volume) TYPE: Session momentum scalp CONCEPT: Only trade during US equity market hours (13:30-20:00 UTC / 9:30 AM-4:00 PM ET) when crypto volume and liquidity peak due to institutional and retail trader activity.",
+    "Use VWAP as the session anchor — price above VWAP is bullish bias, below is bearish.",
+    "Combine with MACD for momentum timing and Stochastic for entry precision.",
+    "Close all positions before session end.",
+    "SESSION FILTER: - Active hours: 13:30 - 19:30 UTC (close positions by 19:30, market closes 20:00) - No new entries after 18:30 UTC (need at least 1 hour for trade to play out) - Skip weekends (Saturday/Sunday) - Skip US public holidays: New Years Day, MLK Day, Presidents Day, Good Friday, Memorial Day, Juneteenth, Independence Day, Labor Day, Thanksgiving, Christmas - Implementation: check candle timestamp against allowed hours before any entry logic INDICATORS USED: - VWAP (session reset daily)",
+    "Current time is within US session hours 2.",
+    "Price is above VWAP (bullish session bias) 3.",
+    "MACD histogram is positive and increasing (momentum building) 4.",
+    "Stochastic K crosses above D from below 30 (pullback entry) 5.",
+    "Price is above EMA 9 (immediate short-term trend up) ENTRY SHORT: 1."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "STRATEGY: US Session Momentum Scalp ASSET: BTC, ETH TIMEFRAME: 15m MARKET CONDITION: US market session only (high liquidity, high volume) TYPE: Session momentum scalp CONCEPT: Only trade during US equ",
+      "note": "Meaning: STRATEGY: US Session Momentum Scalp ASSET: BTC, ETH TIMEFRAME: 15m MARKET CONDITION: US market session only (high liquidity, high volume) TYPE: Session"
+    },
+    {
+      "timestamp": null,
+      "quote": "Use VWAP as the session anchor — price above VWAP is bullish bias, below is bearish.",
+      "note": "Meaning: Use VWAP as the session anchor — price above VWAP is bullish bias, below is bearish."
+    },
+    {
+      "timestamp": null,
+      "quote": "Combine with MACD for momentum timing and Stochastic for entry precision.",
+      "note": "Meaning: Combine with MACD for momentum timing and Stochastic for entry precision."
+    },
+    {
+      "timestamp": null,
+      "quote": "Close all positions before session end.",
+      "note": "Meaning: Close all positions before session end."
+    },
+    {
+      "timestamp": null,
+      "quote": "SESSION FILTER: - Active hours: 13:30 - 19:30 UTC (close positions by 19:30, market closes 20:00) - No new entries after 18:30 UTC (need at least 1 hour for trade to play out) - Skip weekends (Saturda",
+      "note": "Meaning: SESSION FILTER: - Active hours: 13:30 - 19:30 UTC (close positions by 19:30, market closes 20:00) - No new entries after 18:30 UTC (need at least 1 hou"
+    },
+    {
+      "timestamp": null,
+      "quote": "Current time is within US session hours 2.",
+      "note": "Meaning: Current time is within US session hours 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price is above VWAP (bullish session bias) 3.",
+      "note": "Meaning: Price is above VWAP (bullish session bias) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "MACD histogram is positive and increasing (momentum building) 4.",
+      "note": "Meaning: MACD histogram is positive and increasing (momentum building) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "Stochastic K crosses above D from below 30 (pullback entry) 5.",
+      "note": "Meaning: Stochastic K crosses above D from below 30 (pullback entry) 5."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price is above EMA 9 (immediate short-term trend up) ENTRY SHORT: 1.",
+      "note": "Meaning: Price is above EMA 9 (immediate short-term trend up) ENTRY SHORT: 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price is below VWAP (bearish session bias) 3.",
+      "note": "Meaning: Price is below VWAP (bearish session bias) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "MACD histogram is negative and decreasing (selling momentum) 4.",
+      "note": "Meaning: MACD histogram is negative and decreasing (selling momentum) 4."
+    }
+  ],
+  "extracted_rules": [
+    "STRATEGY: US Session Momentum Scalp ASSET: BTC, ETH TIMEFRAME: 15m MARKET CONDITION: US market session only (high liquidity, high volume) TYPE: Session momentum scalp CONCEPT: Only trade during US equity market hours (13:30-20:00 UTC / 9:30 AM-4:00 PM ET) when crypto volume and liquidity peak due to institutional and retail trader activity.",
+    "Price is below EMA 9 (immediate short-term trend down) EXIT RULES: - Take profit: 1.5x ATR(14) from entry (quick scalp target) - Stop loss: 1.0x ATR(14) from entry (tight stop, 1.5:1 R:R) - Session exit: Close ALL open positions at 19:30 UTC regardless of P&L - VWAP cross exit: If price crosses VWAP against your position, exit immediately - No overnight holds RISK MANAGEMENT: - Risk per trade: 0.5% of account (smaller for scalps, higher frequency) - Max trades per session: 4 (avoid overtrading) ",
+    "The session-end close eliminates overnight gap risk.",
+    "If hl_backtest_engine.py doesn’t currently support session-hour filters, this will need a small addition to check candle timestamps against allowed trading windows before evaluating entry conditions."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "STRATEGY: US Session Momentum Scalp ASSET: BTC, ETH TIMEFRAME: 15m MARKET CONDITION: US market session only (high liquidity, high volume) TYPE: Session momentum scalp CONCEPT: Only trade during US equity market hours (13"
+    },
+    {
+      "type": "momentum",
+      "description": "Combine with MACD for momentum timing and Stochastic for entry precision."
+    },
+    {
+      "type": "momentum",
+      "description": "MACD histogram is positive and increasing (momentum building) 4."
+    },
+    {
+      "type": "trend",
+      "description": "Price is above EMA 9 (immediate short-term trend up) ENTRY SHORT: 1."
+    },
+    {
+      "type": "momentum",
+      "description": "MACD histogram is negative and decreasing (selling momentum) 4."
+    },
+    {
+      "type": "risk",
+      "description": "Price is below EMA 9 (immediate short-term trend down) EXIT RULES: - Take profit: 1.5x ATR(14) from entry (quick scalp target) - Stop loss: 1.0x ATR(14) from entry (tight stop, 1.5:1 R:R) - Session exit: Close ALL open p"
+    },
+    {
+      "type": "risk",
+      "description": "The session-end close eliminates overnight gap risk."
+    },
+    {
+      "type": "filter",
+      "description": "If hl_backtest_engine.py doesn’t currently support session-hour filters, this will need a small addition to check candle timestamps against allowed trading windows before evaluating entry conditions."
+    }
+  ],
+  "explicit_conditions": [
+    "Price is below EMA 9 (immediate short-term trend down) EXIT RULES: - Take profit: 1.5x ATR(14) from entry (quick scalp target) - Stop loss: 1.0x ATR(14) from entry (tight stop, 1.5:1 R:R) - Session exit: Close ALL open positions at 19:30 UTC regardless of P&L - VWAP cross exit: If price crosses VWAP against your position, exit immediately - No overnight holds RISK MANAGEMENT: - Risk per trade: 0.5% of account (smaller for scalps, higher frequency) - Max trades per session: 4 (avoid overtrading).",
+    "The session-end close eliminates overnight gap risk.",
+    "If hl_backtest_engine.py doesn’t currently support session-hour filters, this will need a small addition to check candle timestamps against allowed trading windows before evaluating entry conditions."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "MACD",
+    "ATR",
+    "VWAP",
+    "Stochastic"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "15m",
+    "daily"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-f48fdac2c019.raw.txt",
+  "sha256": "9f6062c21778586ccf3300f9b81268abf73c62151d36567517659978f58dc3e4",
+  "truncated": false
+}

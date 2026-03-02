@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-093f798eaa49",
+  "created_at": "2026-03-01T10:49:51.053306Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/6Gsj9Jyx-Adaptive-Momentum-Trend-Arbitrex-Trader/",
+  "title": "Adaptive Momentum Trend [Arbitrex Trader]",
+  "author": "arbitrexnebula",
+  "summary_bullets": [
+    "Top catalog indicator: Adaptive Momentum Trend [Arbitrex Trader] by arbitrexnebula."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Adaptive Momentum Trend [Arbitrex Trader] by arbitrexnebula.",
+      "note": "Meaning: Top catalog indicator: Adaptive Momentum Trend [Arbitrex Trader] by arbitrexnebula."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: Adaptive Momentum Trend [Arbitrex Trader] by arbitrexnebula."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-093f798eaa49.raw.txt",
+  "sha256": "9a43925241a4c246bd493ee7a94a8213591bd6e61d36213eda73042b7dc8a289",
+  "truncated": false
+}

@@ -1,0 +1,210 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772098290",
+  "run_id": "autopilot-1772098290",
+  "created_at": "2026-02-26T09:32:54.789751+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260225-b9d78de1d903.strategy_spec",
+  "template": "param_perturbation",
+  "metrics": {
+    "profit_factor_after_costs": 0.92080704,
+    "max_drawdown": 938.4677018,
+    "trades": 226
+  },
+  "failure_reasons": [
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 938.468 > 0.30",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260226\\hl_20260226_aea17987.backtest_result.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.921",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260226\\hl_20260226_aea17987.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "ENTRY_RELAX",
+      "params": {
+        "confidence_threshold_delta": -0.05
+      },
+      "rationale": "Opposite of prior tightening after PF deterioration.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "stop_atr_mult": 1.5,
+        "tp_atr_mult": 2.25
+      },
+      "rationale": "Opposite direction: widen exits after worse PF.",
+      "priority": 2
+    },
+    {
+      "id": "d3",
+      "type": "PARAM_SWEEP",
+      "params": {
+        "parameter": "risk_r",
+        "range": [
+          1.5,
+          0.5
+        ],
+        "step": 0.25
+      },
+      "rationale": "Flip sweep direction after worse PF.",
+      "priority": 1
+    },
+    {
+      "id": "d4",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_TREND"
+      },
+      "rationale": "Alternate structural change after role swap underperformed.",
+      "priority": 3
+    },
+    {
+      "id": "d5",
+      "type": "ROLE_SWAP",
+      "params": {
+        "swap": "entry<->confirmation"
+      },
+      "rationale": "Alternate structural change after template switch underperformed.",
+      "priority": 2
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 5,
+    "history_window": [
+      {
+        "id": "outcome-notes-autopilot-1772098290-backfill-strategy-spec-20260225-93f40d23887f.strategy_spec",
+        "created_at": "2026-02-26T09:32:53.421844+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92080704,
+        "directive_types": [
+          "ENTRY_RELAX",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "TEMPLATE_SWITCH",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-autopilot-1772098290-backfill-strategy-spec-20260225-3315d61e42cf.strategy_spec",
+        "created_at": "2026-02-26T09:32:52.250163+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92080704,
+        "directive_types": [
+          "ENTRY_RELAX",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "TEMPLATE_SWITCH",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-autopilot-1772098290-backfill-strategy-spec-20260225-64a3d2591bcc.strategy_spec",
+        "created_at": "2026-02-26T09:32:51.139922+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92080704,
+        "directive_types": [
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP",
+          "TEMPLATE_SWITCH"
+        ]
+      },
+      {
+        "id": "outcome-notes-autopilot-1772093593-backfill-strategy-spec-20260225-c01413ceb0b3.strategy_spec",
+        "created_at": "2026-02-26T08:13:17.416571+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 1.0,
+        "directive_types": [
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP",
+          "TEMPLATE_SWITCH"
+        ]
+      },
+      {
+        "id": "outcome-notes-autopilot-1772093593-backfill-strategy-spec-20260225-b9d78de1d903.strategy_spec",
+        "created_at": "2026-02-26T08:13:16.242202+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 1.0,
+        "directive_types": [
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP",
+          "TEMPLATE_SWITCH"
+        ]
+      }
+    ],
+    "directive_type_stats": {
+      "ENTRY_TIGHTEN": {
+        "tried": 3,
+        "improved": 0,
+        "worsened": 1,
+        "flat": 2,
+        "avg_delta_pf": -0.026397653333333326
+      },
+      "EXIT_CHANGE": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 1,
+        "flat": 3,
+        "avg_delta_pf": -0.019798239999999995
+      },
+      "PARAM_SWEEP": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 1,
+        "flat": 3,
+        "avg_delta_pf": -0.019798239999999995
+      },
+      "ROLE_SWAP": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 1,
+        "flat": 3,
+        "avg_delta_pf": -0.019798239999999995
+      },
+      "TEMPLATE_SWITCH": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 1,
+        "flat": 3,
+        "avg_delta_pf": -0.019798239999999995
+      },
+      "ENTRY_RELAX": {
+        "tried": 1,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 1,
+        "avg_delta_pf": 0.0
+      }
+    }
+  },
+  "next_experiments": [
+    "Apply ENTRY_RELAX with params={\"confidence_threshold_delta\": -0.05}",
+    "Apply EXIT_CHANGE with params={\"stop_atr_mult\": 1.5, \"tp_atr_mult\": 2.25}",
+    "Apply PARAM_SWEEP with params={\"parameter\": \"risk_r\", \"range\": [1.5, 0.5], \"step\": 0.25}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_TREND\"}",
+    "Apply ROLE_SWAP with params={\"swap\": \"entry<->confirmation\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260226/batch_20260226_385caab7.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260225/refine_20260225_4ef1acca.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ]
+}

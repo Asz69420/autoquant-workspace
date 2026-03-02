@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-27bed815124d",
+  "created_at": "2026-02-26T12:07:26.687077Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=QY6t8h7fgVo",
+  "title": "He Became MILLIONAIRE with THIS Powerful Indicator!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "Bill Williams was a famous American trader who has author of many books about trading and also creator of some popular indicators that are used by traders in all financial markets.",
+    "Today we're gonna talk about Alligator which is one of the famous indicators created by Bill Williams.",
+    "I will teach you what this indicator is and how you can use it in trading and then I will teach you a trading strategy based on Alligator which is very accurate and profitable.",
+    "All right on trading view platform here we click on indicators and we search Alligator.",
+    "This one Williams Alligator which is a belt and indicator on trading view platform.",
+    "All right this is the indicator and as you can see it is overlaid on the price chart.",
+    "We have three lines here in this indicator.",
+    "The green line is called the alligator lips.",
+    "The red line is called the alligator's teeth and the blue line is called the alligator's jaw.",
+    "If we go to the settings of the indicator you can see that for the jaw the length of the moving average 13."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Bill Williams was a famous American trader who has author of many books about trading and also creator of some popular indicators that are used by traders in all financial markets.",
+      "note": "Meaning: Bill Williams was a famous American trader who has author of many books about trading and also creator of some popular indicators that are used by trad"
+    },
+    {
+      "timestamp": null,
+      "quote": "Today we're gonna talk about Alligator which is one of the famous indicators created by Bill Williams.",
+      "note": "Meaning: Today we're gonna talk about Alligator which is one of the famous indicators created by Bill Williams."
+    },
+    {
+      "timestamp": null,
+      "quote": "I will teach you what this indicator is and how you can use it in trading and then I will teach you a trading strategy based on Alligator which is very accurate and profitable.",
+      "note": "Meaning: I will teach you what this indicator is and how you can use it in trading and then I will teach you a trading strategy based on Alligator which is very"
+    },
+    {
+      "timestamp": null,
+      "quote": "All right on trading view platform here we click on indicators and we search Alligator.",
+      "note": "Meaning: All right on trading view platform here we click on indicators and we search Alligator."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one Williams Alligator which is a belt and indicator on trading view platform.",
+      "note": "Meaning: This one Williams Alligator which is a belt and indicator on trading view platform."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right this is the indicator and as you can see it is overlaid on the price chart.",
+      "note": "Meaning: All right this is the indicator and as you can see it is overlaid on the price chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "We have three lines here in this indicator.",
+      "note": "Meaning: We have three lines here in this indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "The green line is called the alligator lips.",
+      "note": "Meaning: The green line is called the alligator lips."
+    },
+    {
+      "timestamp": null,
+      "quote": "The red line is called the alligator's teeth and the blue line is called the alligator's jaw.",
+      "note": "Meaning: The red line is called the alligator's teeth and the blue line is called the alligator's jaw."
+    },
+    {
+      "timestamp": null,
+      "quote": "If we go to the settings of the indicator you can see that for the jaw the length of the moving average 13.",
+      "note": "Meaning: If we go to the settings of the indicator you can see that for the jaw the length of the moving average 13."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the teeth the length of the moving average is 8 and for the lips the length of the moving average is 5.",
+      "note": "Meaning: For the teeth the length of the moving average is 8 and for the lips the length of the moving average is 5."
+    },
+    {
+      "timestamp": null,
+      "quote": "The offset for the jaw is set at 8.",
+      "note": "Meaning: The offset for the jaw is set at 8."
+    }
+  ],
+  "extracted_rules": [
+    "If we go to the settings of the indicator you can see that for the jaw the length of the moving average 13.",
+    "The default settings work well for most of trading strategies and we're gonna continue with these settings but depending on your trading strategy you can change them if you need to adjust the settings."
+  ],
+  "parameters_set": [
+    {
+      "name": "length",
+      "value": "144",
+      "context": "the settings of the EMA here for the length we set it at 144 which is a Fibonacci number and then we"
+    }
+  ],
+  "indicators_mentioned": [
+    "EMA this one moving average exponential and we need to change its settings so her"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "EMA this one moving average exponential and we need to change its settings so her",
+      "keywords": [
+        "ema",
+        "this",
+        "one",
+        "moving",
+        "average"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-27bed815124d.raw.txt",
+  "sha256": "97910e2e7a3e2e671cc3d10ddfefa65bc2bcf197773792f3e74f610f219ff2cd",
+  "truncated": false
+}

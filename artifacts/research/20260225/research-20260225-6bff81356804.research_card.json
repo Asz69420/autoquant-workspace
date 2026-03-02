@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-6bff81356804",
+  "created_at": "2026-02-24T23:24:22.594013Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/iS8g648s/",
+  "title": "open) adds volume\\n\\nDown LTF candle (close",
+  "author": "tradingview",
+  "summary_bullets": [
+    "Top catalog indicator: open) adds volume\\n\\nDown LTF candle (close by tradingview."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: open) adds volume\\n\\nDown LTF candle (close by tradingview.",
+      "note": "Meaning: Top catalog indicator: open) adds volume\\n\\nDown LTF candle (close by tradingview."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-6bff81356804.raw.txt",
+  "sha256": "13403f054c4688be760c2f346a6e0671fc3558989eb1f69d968cea568ac3dd16",
+  "truncated": false
+}

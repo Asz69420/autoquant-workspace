@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-e9938dd7f323",
+  "created_at": "2026-02-25T12:56:10.549469Z",
+  "tv_ref": "tradingview:JVVhxzEX",
+  "url": "https://www.tradingview.com/script/JVVhxzEX-Intraday-Levels-OmegaTools/",
+  "name": "Intraday Levels [OmegaTools]",
+  "author": "OmegaTools",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "caa4d92289e14ffa3ea9958926619462e043a58f50fa537f4368a82841770239",
+  "truncated": false
+}

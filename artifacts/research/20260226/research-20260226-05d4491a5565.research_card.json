@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-05d4491a5565",
+  "created_at": "2026-02-26T03:19:42.400497Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=Kdwi5DvBC5I",
+  "title": "Kdwi5DvBC5I",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=Kdwi5DvBC5I."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=Kdwi5DvBC5I.",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=Kdwi5DvBC5I."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-05d4491a5565.raw.txt",
+  "sha256": "f5e5653a8148543eb8bdf3be030eea7c57b3e3c51746aa39419ae36c74b7b56f",
+  "truncated": false
+}

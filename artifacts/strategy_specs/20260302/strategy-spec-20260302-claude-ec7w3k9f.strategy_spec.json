@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-ec7w3k9f",
+  "created_at": "2026-03-02T22:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "EMA crossover currently produces PF=1.03 with 389 trades (NOISE status). The diagnostic spec ec6t4w8m tests high R:R (7-10:1) but NO time caps. ea9p5k2m proved that a 5-bar time cap transforms a mediocre signal (ema_rsi_atr) into an ACCEPT (PF=1.288). The hypothesis: EMA_9/EMA_21 crossovers generate a brief directional impulse in the first 3-7 bars. After that, the signal decays into noise as price oscillates around the new EMA alignment. By applying aggressive time caps (3-7 bars) with extreme R:R (8-12:1), we extract only the explosive initial impulse and cut all drift trades. The time cap acts as a de facto 'momentum decay filter' — if the crossover hasn't produced a large move within 3-5 bars, it's a false signal and we exit flat rather than holding through reversal. This tests whether ema_crossover's NOISE status is caused by holding too long, not by poor signal quality. Regime assumption: RANGING (crossover impulses should work best when price is oscillating around EMA convergence zones). Invalidation: if PF < 0.95 with 50+ trades across all time cap variants, the crossover signal itself is too weak and the template should be removed.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "crossover_impulse_3bar_10to1",
+      "description": "Ultra-aggressive impulse extraction: 3-bar time cap forces exit within 3 bars of entry. Only trades that produce an explosive move within 3 hours (1h TF) or 12 hours (4h TF) survive. 10:1 R:R captures rare large impulses while the time cap cuts the 80%+ of crossovers that produce no follow-through. Expect very low win rate (~15%) but massive winners.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 on bar close.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 on bar close.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h and 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (15.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "Exit on max bars in trade (3 bars) — impulse decay filter.",
+        "Hypothesis failure mode guard: 3-bar cap may exit before TP on most trades, producing many small time-exit trades"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 15.0x ATR_14 from entry (10:1 R:R).",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%.",
+        "Time cap: exit at bar 3 if neither stop nor TP hit."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 18.0, "step": 1.5, "default": 15.0},
+        {"name": "max_bars_in_trade", "min": 2, "max": 5, "step": 1, "default": 3}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "ema_crossover baseline — EMA_9/EMA_21 crossover signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "ema_crossover confirmation — same EMA pair"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR-based stop/TP only, no volatility gate on entry"}
+      ]
+    },
+    {
+      "name": "crossover_impulse_5bar_8to1",
+      "description": "Matched to ea9p5k2m's winning 5-bar time cap. Tests whether the 5-bar sweet spot that produced an ACCEPT on ema_rsi_atr also works for the simpler ema_crossover signal. 8:1 R:R is slightly less extreme, giving more room for TP hits. This is the 'control' variant — if this outperforms the 3-bar and 7-bar variants, the 5-bar cap is universally optimal across templates.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 on bar close.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 on bar close.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h and 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "Exit on max bars in trade (5 bars) — ea9p5k2m-matched time cap.",
+        "Hypothesis failure mode guard: 5-bar cap may still be too short for ema_crossover which has slower signal propagation than ema_rsi_atr"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry (8:1 R:R).",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%.",
+        "Time cap: exit at bar 5 if neither stop nor TP hit."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 14.0, "step": 1.0, "default": 12.0},
+        {"name": "max_bars_in_trade", "min": 4, "max": 7, "step": 1, "default": 5}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "ema_crossover baseline — EMA_9/EMA_21 crossover signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "ema_crossover confirmation — same EMA pair"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR-based stop/TP, 5-bar time cap matched to ea9p5k2m"}
+      ]
+    },
+    {
+      "name": "crossover_impulse_7bar_12to1",
+      "description": "Maximum R:R variant (12:1) with slightly relaxed 7-bar time cap. Tests the extreme lottery approach: most trades exit via time cap for small gains/losses, but rare explosive crossover impulses hit the 18x ATR TP for massive wins. If ema_crossover contains even a small fraction of genuinely explosive crossovers, the 12:1 R:R captures disproportionate value from them.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 on bar close.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 on bar close.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h and 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "Exit on max bars in trade (7 bars) — extended impulse window.",
+        "Hypothesis failure mode guard: 12:1 R:R may produce extremely low win rate (<10%), requiring 100+ trades to evaluate statistically"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry (12:1 R:R).",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%.",
+        "Time cap: exit at bar 7 if neither stop nor TP hit."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 15.0, "max": 21.0, "step": 1.5, "default": 18.0},
+        {"name": "max_bars_in_trade", "min": 5, "max": 10, "step": 1, "default": 7}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "ema_crossover baseline — EMA_9/EMA_21 crossover signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "ema_crossover confirmation — same EMA pair"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR-based stop/TP, 7-bar time cap, extreme 12:1 R:R"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

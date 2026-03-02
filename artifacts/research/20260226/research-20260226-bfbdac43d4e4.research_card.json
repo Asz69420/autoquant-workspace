@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-bfbdac43d4e4",
+  "created_at": "2026-02-26T03:17:52.198066Z",
+  "source_type": "youtube_indicator_url",
+  "source_ref": "https://www.youtube.com/watch?v=QulfTJxnZhU",
+  "title": "QulfTJxnZhU",
+  "author": "manual-youtube",
+  "summary_bullets": [
+    "Manual indicator ingest from YouTube URL.",
+    "source_ref=https://www.youtube.com/watch?v=QulfTJxnZhU video_id=QulfTJxnZhU."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Manual indicator ingest from YouTube URL.",
+      "note": "Meaning: Manual indicator ingest from YouTube URL."
+    },
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=QulfTJxnZhU video_id=QulfTJxnZhU.",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=QulfTJxnZhU video_id=QulfTJxnZhU."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-bfbdac43d4e4.raw.txt",
+  "sha256": "5158ea5b2ba0c2a4d4543db586db44becabeb9e13b5bf2687e39f89f19f68b44",
+  "truncated": false
+}

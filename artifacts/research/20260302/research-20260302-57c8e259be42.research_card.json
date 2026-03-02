@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-57c8e259be42",
+  "created_at": "2026-03-01T15:19:49.374997Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/Erc9h2dj/",
+  "title": "MSNR Structure Pro -",
+  "author": "fabio-ict",
+  "summary_bullets": [
+    "Top catalog indicator: MSNR Structure Pro - by fabio-ict."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: MSNR Structure Pro - by fabio-ict.",
+      "note": "Meaning: Top catalog indicator: MSNR Structure Pro - by fabio-ict."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-57c8e259be42.raw.txt",
+  "sha256": "d9a0e04f1ae3079c87adc07ba84d4c8206fca169ef34518f4a658897705d3fc2",
+  "truncated": false
+}

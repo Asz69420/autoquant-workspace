@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-a0a1f19272e8",
+  "created_at": "2026-02-28T18:42:10.799229Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=6Ex-hduaP9A",
+  "title": "A trader’s nightmare: when an influencer can’t explain their edge…",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "Sorry bro, you can't practice my strategy.",
+    "So if two people look at exactly the same chart, are they going to take exactly the same trade?",
+    "You just have to like feel the market.",
+    "And your back test feels it too.",
+    "So how do your students learn it or even understand it?",
+    "Well, they just follow my guidance.",
+    "So, if you can't test it, verify it, or even explain it, why should I buy your course?",
+    "It has thousands of back tested and live traded strategies instead."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Sorry bro, you can't practice my strategy.",
+      "note": "Meaning: Sorry bro, you can't practice my strategy."
+    },
+    {
+      "timestamp": null,
+      "quote": "So if two people look at exactly the same chart, are they going to take exactly the same trade?",
+      "note": "Meaning: So if two people look at exactly the same chart, are they going to take exactly the same trade?"
+    },
+    {
+      "timestamp": null,
+      "quote": "You just have to like feel the market.",
+      "note": "Meaning: You just have to like feel the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "And your back test feels it too.",
+      "note": "Meaning: And your back test feels it too."
+    },
+    {
+      "timestamp": null,
+      "quote": "So how do your students learn it or even understand it?",
+      "note": "Meaning: So how do your students learn it or even understand it?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Well, they just follow my guidance.",
+      "note": "Meaning: Well, they just follow my guidance."
+    },
+    {
+      "timestamp": null,
+      "quote": "So, if you can't test it, verify it, or even explain it, why should I buy your course?",
+      "note": "Meaning: So, if you can't test it, verify it, or even explain it, why should I buy your course?"
+    },
+    {
+      "timestamp": null,
+      "quote": "It has thousands of back tested and live traded strategies instead.",
+      "note": "Meaning: It has thousands of back tested and live traded strategies instead."
+    }
+  ],
+  "extracted_rules": [
+    "So if two people look at exactly the same chart, are they going to take exactly the same trade?",
+    "So, if you can't test it, verify it, or even explain it, why should I buy your course?"
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-a0a1f19272e8.raw.txt",
+  "sha256": "3b51d569c39fee1f52c9f84c9d4b0cf72128c17698eca8dceda6d7c67e694841",
+  "truncated": false
+}

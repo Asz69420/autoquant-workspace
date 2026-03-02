@@ -1,0 +1,98 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772335188-backfill-strategy-spec-20260301-claude-rp5r7c1h.strategy_spec",
+  "run_id": "autopilot-1772335188-backfill-strategy-spec-20260301-claude-rp5r7c1h.strategy_spec",
+  "created_at": "2026-03-01T03:21:22.896227+00:00",
+  "verdict": "ACCEPT",
+  "strategy_family": "strategy-spec-20260301-claude-rp5r7c1h.strategy_spec",
+  "template": "rsi_pullback_tail_harvester_7to1",
+  "metrics": {
+    "profit_factor_after_costs": 1.42134288,
+    "max_drawdown": 0.137672296641,
+    "trades": 127,
+    "regime_breakdown": {
+      "trending_trades": 27,
+      "ranging_trades": 60,
+      "transitional_trades": 40
+    },
+    "regime_pf": {
+      "trending": 1.60508654,
+      "ranging": 1.41530578,
+      "transitional": 1.30910059
+    },
+    "regime_wr": {
+      "trending": 0.25925926,
+      "ranging": 0.25,
+      "transitional": 0.15
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending",
+      "ranging",
+      "transitional"
+    ],
+    "bad_regimes": [],
+    "all_good": true,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "PARAM_SWEEP",
+      "params": {
+        "parameter": "risk_r",
+        "range": [
+          0.75,
+          1.75
+        ],
+        "step": 0.25,
+        "reason": "all_regimes_strong"
+      },
+      "rationale": "Regime-aware: robust across regimes; prioritise refinement over structural changes.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply PARAM_SWEEP with params={\"parameter\": \"risk_r\", \"range\": [0.75, 1.75], \"reason\": \"all_regimes_strong\", \"step\": 0.25}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260301/batch_20260301_029e270f.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260301/refine_20260301_084024d5.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "cd0cfb05cf329f5c"
+}

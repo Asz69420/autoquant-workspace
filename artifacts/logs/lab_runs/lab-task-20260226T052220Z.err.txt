@@ -1,0 +1,7 @@
+﻿C:\Users\Clamps\.openclaw\workspace\scripts\pipeline\autopilot_worker.ps1 : Cannot process argument transformation on 
+parameter 'MaxBundlesPerRun'. Cannot convert value "banana" to type "System.Int32". Error: "Input string was not in a 
+correct format."
+    + CategoryInfo          : InvalidData: (:) [autopilot_worker.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : ParameterArgumentTransformationError,autopilot_worker.ps1
+ 
+

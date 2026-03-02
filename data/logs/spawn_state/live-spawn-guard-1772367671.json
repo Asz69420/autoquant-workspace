@@ -1,0 +1,13 @@
+{
+  "run_id": "live-spawn-guard-1772367671",
+  "child_session_key": "agent:main:subagent:da2cf6f0-a07e-4de9-958c-bcd016806ef6",
+  "started_at": "2026-03-01T12:21:11.949400Z",
+  "spawn_emitted": true,
+  "terminal_emitted": true,
+  "agent": "Oragorn",
+  "model_id": "gpt-5.3-codex",
+  "terminal_action": "SUBAGENT_FINISH",
+  "terminal_status": "OK",
+  "terminal_reason_code": "SUBAGENT_COMPLETED",
+  "terminal_at": "2026-03-01T12:21:12.147619Z"
+}

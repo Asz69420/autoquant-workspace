@@ -1,0 +1,6 @@
+﻿{
+"verdict": "PASS",
+"total_issues_found": 0,
+"issues_returned": 0,
+"issues": []
+}

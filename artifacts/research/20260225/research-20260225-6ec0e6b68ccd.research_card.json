@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-6ec0e6b68ccd",
+  "created_at": "2026-02-24T23:32:17.243978Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/eSSw7HmH-Gann-Fibonacci-Swing-Toolkit-BigBeluga/",
+  "title": "Gann-Fibonacci Swing Toolkit [BigBeluga]",
+  "author": "BigBeluga",
+  "summary_bullets": [
+    "Top catalog indicator: Gann-Fibonacci Swing Toolkit [BigBeluga] by BigBeluga."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Gann-Fibonacci Swing Toolkit [BigBeluga] by BigBeluga.",
+      "note": "Meaning: Top catalog indicator: Gann-Fibonacci Swing Toolkit [BigBeluga] by BigBeluga."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-6ec0e6b68ccd.raw.txt",
+  "sha256": "201bed196ecaecfcc364ccd42eb8d6d2444f98e670eadf85257d558138a63090",
+  "truncated": false
+}

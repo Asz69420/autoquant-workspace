@@ -1,0 +1,16 @@
+﻿{
+    "id":  "bundle_strategy_002_bollinger_squeeze_breakout",
+    "created_at":  "2026-02-26T12:40:00.948980+00:00",
+    "source":  "transcript_drop",
+    "source_ref":  "transcript_drop://strategy_002_bollinger_squeeze_breakout",
+    "video_id":  "strategy_002_bollinger_squeeze_breakout",
+    "research_card_path":  "artifacts/research/20260226/research-20260226-aa313a6eb12f.research_card.json",
+    "linkmap_path":  "artifacts/links/20260226/research-20260226-aa313a6eb12f.linkmap.json",
+    "indicator_record_paths":  [
+
+                               ],
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-02-26T13:26:25.2870960Z",
+    "attempts":  1,
+    "last_error":  "THESIS_GEN_FAIL: Python exit 2: python: can\u0027t open file \u0027C:\\\\WINDOWS\\\\system32\\\\scripts\\\\pipeline\\\\run_analyser.py\u0027: [Errno 2] No such file or directory\r\n"
+}

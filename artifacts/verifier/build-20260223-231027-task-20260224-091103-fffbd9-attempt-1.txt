@@ -1,0 +1,13 @@
+﻿{
+"verdict": "PARTIAL",
+"total_issues_found": 1,
+"issues_returned": 1,
+"issues": [
+{
+"severity": "MINOR",
+"file": "scripts/tests/run_work_smoke.txt",
+"message": "AUTO_FIX_OK=1 not found for smoke validation.",
+"suggested_fix": "Add `AUTO_FIX_OK=1` to scripts/tests/run_work_smoke.txt and rerun verification."
+}
+]
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-f91afa396b8f",
+  "created_at": "2026-02-25T22:33:42.414176Z",
+  "tv_ref": "tradingview:BgfMNDGT",
+  "url": "https://www.tradingview.com/script/BgfMNDGT-Breakout-Vault-Confirmed/",
+  "name": "Breakout Vault [Confirmed]",
+  "author": "ArisCodes",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "8f51582bcc833daac90e24151aba0bf1dc4fb8897f9de5217dbe05cb249d46fb",
+  "truncated": false
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260228-1afc36d4bc18",
+  "created_at": "2026-02-27T19:07:03.920659Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=oiXzKN-4Yus",
+  "title": "JOB MARKET REKT, BTC DOWNSIDE, SPX REVERSING, GOLD CONTINUING?",
+  "author": "ECKrown",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=oiXzKN-4Yus title=JOB MARKET REKT, BTC DOWNSIDE, SPX REVERSING, GOLD CONTINUING?",
+    "reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extension is too long."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=oiXzKN-4Yus title=JOB MARKET REKT, BTC DOWNSIDE, SPX REVERSING, GOLD CONTINUING?",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=oiXzKN-4Yus title=JOB MARKET REKT, BTC DOWNSIDE, SPX REVERSING, GOLD CONTINUING?"
+    },
+    {
+      "timestamp": null,
+      "quote": "reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extension is too long.",
+      "note": "Meaning: reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extension is too long."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "BTC",
+    "SPX",
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260228/research-20260228-1afc36d4bc18.raw.txt",
+  "sha256": "fb98ae90b2b87b2a0e6973cc607f413c3580c731ed5c01a73417b49240091889",
+  "truncated": false
+}

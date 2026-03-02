@@ -1,0 +1,4 @@
+﻿In this strategy we require trend alignment using EMA 50 and EMA 200.
+Enter long when RSI crosses above 55 and MACD histogram turns positive.
+Stop loss is 1.5 ATR below entry and take profit is 2.5 ATR.
+Risk per trade is 1 percent.

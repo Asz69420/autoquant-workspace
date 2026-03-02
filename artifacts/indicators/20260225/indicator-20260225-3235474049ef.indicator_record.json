@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-3235474049ef",
+  "created_at": "2026-02-24T23:32:19.097880Z",
+  "tv_ref": "tradingview:4daIYbKA",
+  "url": "https://www.tradingview.com/script/4daIYbKA-Synthetic-IV-Rank-UAlgo/",
+  "name": "Synthetic IV Rank [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "74228e7a2a9894d918f7ed9f962552134efdc86b3bc34e157eb875c3763a1a00",
+  "truncated": false
+}

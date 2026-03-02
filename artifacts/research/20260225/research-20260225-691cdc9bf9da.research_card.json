@@ -1,0 +1,209 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-691cdc9bf9da",
+  "created_at": "2026-02-24T23:04:01.462247Z",
+  "source_type": "transcript",
+  "source_ref": "https://m.youtube.com/watch?v=HkMXGqz7MRI",
+  "title": "SoheilPKO Multi-EMA Setup",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "You're going to learn perfect EMA settings and then a very accurate trading strategy that makes consistent profit.",
+    "All right, we need to add five exponential moving averages with some special settings and combination.",
+    "Here we click on indicators and we search ribbon.",
+    "This indicator gives you four moving averages and then later I will add another EMA.",
+    "We need to change the settings of these moving averages.",
+    "So here we go to the settings of the ribbon and first we change the type of moving averages to EMA because as I said we need exponential moving averages.",
+    "Then here for the first EMA we set the length at five.",
+    "For the second EMA we also set the length at five.",
+    "And for the first EMA here for the source of calculation we set it to high.",
+    "And for the second EMA it should be based on low."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "You're going to learn perfect EMA settings and then a very accurate trading strategy that makes consistent profit.",
+      "note": "Meaning: You're going to learn perfect EMA settings and then a very accurate trading strategy that makes consistent profit."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, we need to add five exponential moving averages with some special settings and combination.",
+      "note": "Meaning: All right, we need to add five exponential moving averages with some special settings and combination."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here we click on indicators and we search ribbon.",
+      "note": "Meaning: Here we click on indicators and we search ribbon."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator gives you four moving averages and then later I will add another EMA.",
+      "note": "Meaning: This indicator gives you four moving averages and then later I will add another EMA."
+    },
+    {
+      "timestamp": null,
+      "quote": "We need to change the settings of these moving averages.",
+      "note": "Meaning: We need to change the settings of these moving averages."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we go to the settings of the ribbon and first we change the type of moving averages to EMA because as I said we need exponential moving averages.",
+      "note": "Meaning: So here we go to the settings of the ribbon and first we change the type of moving averages to EMA because as I said we need exponential moving average"
+    },
+    {
+      "timestamp": null,
+      "quote": "Then here for the first EMA we set the length at five.",
+      "note": "Meaning: Then here for the first EMA we set the length at five."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the second EMA we also set the length at five.",
+      "note": "Meaning: For the second EMA we also set the length at five."
+    },
+    {
+      "timestamp": null,
+      "quote": "And for the first EMA here for the source of calculation we set it to high.",
+      "note": "Meaning: And for the first EMA here for the source of calculation we set it to high."
+    },
+    {
+      "timestamp": null,
+      "quote": "And for the second EMA it should be based on low.",
+      "note": "Meaning: And for the second EMA it should be based on low."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we have two EMAs with the same length of five.",
+      "note": "Meaning: So here we have two EMAs with the same length of five."
+    },
+    {
+      "timestamp": null,
+      "quote": "One based on high and the other based on low.",
+      "note": "Meaning: One based on high and the other based on low."
+    }
+  ],
+  "extracted_rules": [
+    "When the price is above the orange line, we consider the market as trending up and when the price is below the orange line, we consider that the market is trending down.",
+    "For example, at this point from here when these candles are closed, you can see that the white channel is completely below the orange line.",
+    "In the next step we want to know when this pullback is ended so we can enter a trade.",
+    "When this happened, it shows that probably the pullback ended and there is a possibility for further decline of the price.",
+    "So here the sell signal is confirmed and in practice we could enter a short position at this point with the stop loss above the green channel and profit target at risk-to-reward ratio of two.",
+    "You can see that from here when these candles are closed, the white channel is completely above the orange line.",
+    "But we stick to the rules of this trading strategy to decrease our risk as much as possible.",
+    "When this happened, it shows end of the pullback and further advancing of the price is probable to happen.",
+    "And we could enter a short position at this point with the stop loss above the green channel and profit target at riskto-reward ratio of two.",
+    "So here the buy signal is confirmed and we could enter a long position at this point with the stop loss below the green channel and profit target at risk-to-reward ratio of two.",
+    "This is not possible and you need to manage your risk properly so you can minimize the effect of your losing positions.",
+    "1% role risk management is the best risk management strategy that is recommended by professional traders.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management, you cannot become a consistently profitable trader.",
+    "If you have any questions, feel free to ask and leave a comment for me."
+  ],
+  "parameters_set": [
+    {
+      "name": "length",
+      "value": "200",
+      "context": "here in the inputs tab here for the length we set it at 200 and then here in the style tab we chan"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "First of all, this is a reversal trading strategy, which means that we are trying to catch the starting of a new trend."
+    },
+    {
+      "type": "trend",
+      "description": "And we're going to use it for trend identification."
+    },
+    {
+      "type": "trend",
+      "description": "As I mentioned earlier, we use the orange line for trend identification."
+    },
+    {
+      "type": "trend",
+      "description": "When the price is above the orange line, we consider the market as trending up and when the price is below the orange line, we consider that the market is trending down."
+    },
+    {
+      "type": "trend",
+      "description": "So the crossing of the price above or below the orange line can be a signal for starting of a new trend."
+    },
+    {
+      "type": "trend",
+      "description": "So this is a signal that probably a downtrend is going to start."
+    },
+    {
+      "type": "risk",
+      "description": "Still too risky to enter a trade based on this signal and we need more confirmation to have higher probability that a downtrend is really happening."
+    },
+    {
+      "type": "risk",
+      "description": "So here the sell signal is confirmed and in practice Entry: a short position at this point with the stop loss above the green channel and Target: 2R."
+    },
+    {
+      "type": "trend",
+      "description": "This was a short position setup where we identified starting of a new downtrend."
+    },
+    {
+      "type": "trend",
+      "description": "And now let me teach you a long position setup which is where we identify starting of an uptrend."
+    },
+    {
+      "type": "trend",
+      "description": "This is a signal that probably an uptrend is forming."
+    },
+    {
+      "type": "risk",
+      "description": "But we stick to the rules of this trading strategy to decrease our risk as much as possible."
+    },
+    {
+      "type": "trend",
+      "description": "All right, following this uptrend, we're trying to catch a downside reversal of the price."
+    },
+    {
+      "type": "confirmation",
+      "description": "So the sell signal here is confirmed."
+    },
+    {
+      "type": "risk",
+      "description": "And Entry: a short position at this point with the stop loss above the green channel and profit target at riskto-reward ratio of two."
+    },
+    {
+      "type": "trend",
+      "description": "As you can see following the downtrend here you can see that we got crossing of the price above the orange line."
+    },
+    {
+      "type": "risk",
+      "description": "So here the buy signal is confirmed and Entry: a long position at this point with the Stop: below the green channel and Target: 2R."
+    },
+    {
+      "type": "risk",
+      "description": "This is not possible and you need to manage your risk properly so you can minimize the effect of your losing positions."
+    },
+    {
+      "type": "risk",
+      "description": "1% role risk management is the best risk management strategy that is recommended by professional traders."
+    },
+    {
+      "type": "risk",
+      "description": "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management, you cannot become a consistently profitable trader."
+    }
+  ],
+  "explicit_conditions": [
+    "So here the sell signal is confirmed and in practice Entry: a short position at this point with the stop loss above the green channel and Target: 2R.",
+    "But we stick to the rules of this trading strategy to decrease our risk as much as possible.",
+    "And Entry: a short position at this point with the stop loss above the green channel and profit target at riskto-reward ratio of two.",
+    "This is not possible and you need to manage your risk properly so you can minimize the effect of your losing positions.",
+    "1% role risk management is the best risk management strategy that is recommended by professional traders.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management, you cannot become a consistently profitable trader."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-691cdc9bf9da.raw.txt",
+  "sha256": "1a029ea5f8e56d6f560fc42d0af9534183017e0eef2a3c92de9212721e2f4e39",
+  "truncated": false
+}

@@ -170,13 +170,13 @@ When reviewing or delegating script work:
 - No ??= null-coalescing assignment → standard if/else
 
 ## Live Pipeline Snapshot (auto-updated)
-Generated: 2026-03-01 10:06 UTC
+Generated: 2026-03-01 17:00 UTC
 
 - Recent events window: last 50 ActionEvents
-- Grabber fetched: 2
-- Backtests executed: 7
-- Promoted variants: 4
-- Directive variants: 4
+- Grabber fetched: 0
+- Backtests executed: 3
+- Promoted variants: 0
+- Directive variants: 1
 - Stall cycles: 0
 - Starvation cycles: 0
 - Error events: 0
@@ -195,8 +195,8 @@ Artifact state:
 - Model policy Phase 2 (script wiring references): 2 script(s) currently reference the resolver
 - Oragorn context auto-sync: ✅ enabled (daily target 03:00)
 - Doctrine source size: 40 lines
-- Strategy advisory source size: 269 lines
-- Refactor backtest auditor — replace most Claude checks with deterministic script _(log 2026-03-01T10:04:53.4017593Z)_
+- Strategy advisory source size: 282 lines
+
 ## Roadmap
 - Phase 2: Wire model_reasoning_policy.json resolver into all scripts
 - Refactor backtest auditor — replace most Claude checks with deterministic script, only send edge cases to Claude for narrative interpretation. Most audit checks are pure math that don't need an LLM.

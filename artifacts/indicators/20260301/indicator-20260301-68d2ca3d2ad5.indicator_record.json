@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-68d2ca3d2ad5",
+  "created_at": "2026-03-01T11:34:49.723023Z",
+  "tv_ref": "tradingview:yj1KKxkh",
+  "url": "https://www.tradingview.com/script/yj1KKxkh-AboB7rr/",
+  "name": "AboB7rr",
+  "author": "AboB7r",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "93a66005a8fbb3afee5d68519736ba891b794910c0136e5b5b1b5d3b098929dd",
+  "truncated": false
+}

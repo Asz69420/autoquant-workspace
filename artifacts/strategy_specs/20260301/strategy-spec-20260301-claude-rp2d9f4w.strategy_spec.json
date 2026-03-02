@@ -1,0 +1,259 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-rp2d9f4w",
+  "created_at": "2026-03-01T22:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "RSI pullback has 2 verified unique ACCEPTs (PF=1.421 at 7:1, PF=1.332 shallow dip). The advisory proved RSI<40 works but RSI relaxed is CATASTROPHIC (DD=263%). The unexplored direction is TIGHTER RSI + FASTER trend detection. Default RSI pullback uses EMA_200 (33 days on 4h) for trend and EMA_50 (8 days) for slope — extremely slow. By the time EMA_200 confirms a trend, the move is well underway and pullbacks may be shallow/rare. EMA_100 (16 days on 4h, 4 days on 1h) detects trends earlier, creating more opportunities for pullback entries in young trends where mean-reversion probability is highest. EMA_21 slope (3.5 days on 4h) reacts faster than EMA_50 slope, detecting slope changes that precede pullback reversals. Combined with RSI<30-35 (deeper than default 40), this creates a 'deep conviction' entry: only enter when RSI is genuinely oversold in a recently-confirmed trend. The hypothesis is that fewer, higher-quality entries improve PF while the faster trend parameters compensate with more signal opportunities. Also testing 1h timeframe (untested for RSI pullback) where 4x more bars create enough opportunities even with strict RSI<30. Invalidation: if all variants produce <30 trades, the parameter combination is too restrictive even on 1h; if DD exceeds 20%, the faster EMAs are catching false trends.",
+  "regime_assumption": "trending_and_ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "rsi_deep_conviction_1h_7to1",
+      "description": "RSI pullback on ETH/1h with deep conviction entry: RSI<30, EMA_100 trend, EMA_21 slope. 7:1 R:R (matching proven RSI optimal). Stop 1.5x ATR, TP 10.5x ATR. RSI<30 is deeper than the standard <40, requiring genuine oversold conditions before entry. EMA_100 on 1h = 4 days of trend confirmation — fast enough to catch new trends, slow enough to avoid noise. EMA_21 slope = 21 hours, detecting short-term momentum shifts. On 1h, even with strict RSI<30, the 4x bar count vs 4h should produce 80-150 trades. If PF exceeds the 4h verified ACCEPT (PF=1.421), the 1h deep conviction approach is superior to the 4h standard approach.",
+      "entry_long": [
+        "Close > EMA_100 (faster trend confirmation — 4 days on 1h instead of 8 days with EMA_200).",
+        "EMA_21 rising (slope_now > slope_prev — fast momentum detection).",
+        "RSI_14 <= 30 (deep conviction — genuine oversold in uptrend, not just a shallow dip).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (faster trend confirmation for bearish bias).",
+        "EMA_21 falling (slope_now < slope_prev — bearish momentum).",
+        "RSI_14 >= 70 (deep conviction — overbought in downtrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "ema_trend=100",
+        "ema_slope=21",
+        "rsi_long_max=30",
+        "rsi_short_min=70",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 7:1.",
+        "Tail harvester: proven optimal R:R for RSI pullback."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 10.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 12.0, "step": 0.5, "default": 10.5},
+        {"name": "ema_trend", "min": 50, "max": 200, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 9, "max": 50, "step": 10, "default": 21},
+        {"name": "rsi_long_max", "min": 25, "max": 40, "step": 5, "default": 30},
+        {"name": "rsi_short_min", "min": 60, "max": 75, "step": 5, "default": 70},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 trend (faster than default EMA_200 — detects trends earlier on 1h)"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 < 30 deep conviction entry — deeper oversold than default 40, fewer but higher-quality signals"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 10.5x TP — 7:1 R:R matching proven RSI optimal"}
+      ]
+    },
+    {
+      "name": "rsi_fast_trend_4h_7to1",
+      "description": "RSI pullback on ETH/4h with faster trend detection: EMA_100 trend (vs default 200), EMA_21 slope (vs default 50), RSI<35. 7:1 R:R. This is the controlled comparison against the verified ACCEPT (rsi_pullback_tail_harvester_7to1, PF=1.421, 127 trades, default EMA_200/EMA_50/RSI<40). By changing only the trend/slope EMAs and RSI threshold (not timeframe), we isolate whether faster trend detection improves RSI pullback. If PF exceeds 1.421 with similar trade count, the faster parameters are strictly better. If PF is lower but trade count is higher, there's a quality-quantity tradeoff to evaluate.",
+      "entry_long": [
+        "Close > EMA_100 (faster trend — catches trends 50 bars earlier than EMA_200 on 4h).",
+        "EMA_21 rising (fast slope detection — 3.5 days vs 8 days with EMA_50).",
+        "RSI_14 <= 35 (tighter than default 40 — slightly deeper conviction).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (faster bearish trend detection).",
+        "EMA_21 falling (fast slope — bearish momentum).",
+        "RSI_14 >= 65 (tighter short entry — overbought in downtrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "ema_trend=100",
+        "ema_slope=21",
+        "rsi_long_max=35",
+        "rsi_short_min=65",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 7:1.",
+        "Controlled comparison: same R:R as verified ACCEPT, different entry parameters."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 10.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 12.0, "step": 0.5, "default": 10.5},
+        {"name": "ema_trend", "min": 50, "max": 200, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 9, "max": 50, "step": 10, "default": 21},
+        {"name": "rsi_long_max", "min": 30, "max": 40, "step": 5, "default": 35},
+        {"name": "rsi_short_min", "min": 60, "max": 70, "step": 5, "default": 65},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 trend + EMA_21 slope — faster than default EMA_200/EMA_50 for earlier trend detection"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 < 35 — tighter entry than default 40, isolating fast-trend parameter impact"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 10.5x TP — 7:1 R:R, same as verified ACCEPT for controlled comparison"}
+      ]
+    },
+    {
+      "name": "rsi_deep_conviction_1h_5to1",
+      "description": "RSI pullback on ETH/1h with deep conviction RSI<30, fast trend EMA_100/EMA_21, and moderate 5:1 R:R. Stop 1.5x ATR, TP 7.5x ATR. The RSI R:R curve is compromised by resolver collision on 4h — starting fresh on 1h. 5:1 is the moderate baseline (MACD at 5:1 achieves PF=1.353-1.358). If RSI deep conviction on 1h achieves PF>1.35 at 5:1, the deep entry filter is working. Combined with the 7:1 variant above, this begins mapping the 1h RSI R:R curve from scratch — uncontaminated by the resolver collision that plagued 4h RSI data. Expected: 60-120 trades (fewer than 7:1 variant due to tighter TP, same entries).",
+      "entry_long": [
+        "Close > EMA_100 (faster trend confirmation on 1h).",
+        "EMA_21 rising (fast momentum detection).",
+        "RSI_14 <= 30 (deep conviction — oversold in confirmed uptrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (bearish trend on 1h).",
+        "EMA_21 falling (bearish momentum).",
+        "RSI_14 >= 70 (deep conviction — overbought in confirmed downtrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "ema_trend=100",
+        "ema_slope=21",
+        "rsi_long_max=30",
+        "rsi_short_min=70",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (7.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 5:1.",
+        "Moderate R:R: mapping RSI 1h R:R curve from scratch (uncontaminated by resolver collision)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 7.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 9.0, "step": 0.5, "default": 7.5},
+        {"name": "ema_trend", "min": 50, "max": 200, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 9, "max": 50, "step": 10, "default": 21},
+        {"name": "rsi_long_max", "min": 25, "max": 40, "step": 5, "default": 30},
+        {"name": "rsi_short_min", "min": 60, "max": 75, "step": 5, "default": 70},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 trend + EMA_21 slope — fast trend detection on 1h"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 < 30 — deep conviction entry, mapping clean 1h RSI R:R curve"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 7.5x TP — 5:1 R:R, moderate baseline for 1h curve"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

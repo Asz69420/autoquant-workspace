@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-d4d61f6be32d",
+  "created_at": "2026-02-26T02:21:51.156119Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/x2oOiauU-Keltner-SD-SuperTrend-RakoQuant/",
+  "title": "Keltner SD SuperTrend | RakoQuant",
+  "author": "RakoQuant",
+  "summary_bullets": [
+    "Top catalog indicator: Keltner SD SuperTrend | RakoQuant by RakoQuant."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Keltner SD SuperTrend | RakoQuant by RakoQuant.",
+      "note": "Meaning: Top catalog indicator: Keltner SD SuperTrend | RakoQuant by RakoQuant."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: Keltner SD SuperTrend | RakoQuant by RakoQuant."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-d4d61f6be32d.raw.txt",
+  "sha256": "b09e382074620bef5851e37d318ccd84ec90b9ae8b3c5853e26ef72457508f4b",
+  "truncated": false
+}

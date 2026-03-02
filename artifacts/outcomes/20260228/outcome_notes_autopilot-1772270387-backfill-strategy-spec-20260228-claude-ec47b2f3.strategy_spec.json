@@ -1,0 +1,141 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772270387-backfill-strategy-spec-20260228-claude-ec47b2f3.strategy_spec",
+  "run_id": "autopilot-1772270387-backfill-strategy-spec-20260228-claude-ec47b2f3.strategy_spec",
+  "created_at": "2026-02-28T09:23:55.961532+00:00",
+  "verdict": "REVISE",
+  "strategy_family": "strategy-spec-20260228-claude-ec47b2f3.strategy_spec",
+  "template": "ema_crossover_breakeven_runner",
+  "metrics": {
+    "profit_factor_after_costs": 1.0315028,
+    "max_drawdown": 2.685976338647,
+    "trades": 183,
+    "regime_breakdown": {
+      "trending_trades": 48,
+      "ranging_trades": 94,
+      "transitional_trades": 41
+    },
+    "regime_pf": {
+      "trending": 1.2730964,
+      "ranging": 0.99411914,
+      "transitional": 0.85752252
+    },
+    "regime_wr": {
+      "trending": 0.52083333,
+      "ranging": 0.43617021,
+      "transitional": 0.41463415
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending"
+    ],
+    "bad_regimes": [
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": true
+  },
+  "failure_reasons": [
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 2.686 > 0.30",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260228\\hl_20260228_28b39c25.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "rationale": "Doctrine: risk gating before complexity on drawdown-heavy strategies.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "GATE_ADJUST",
+      "params": {
+        "require_regime_filter": true,
+        "allowed_regime": "trending"
+      },
+      "rationale": "Regime-aware: strategy shows edge mainly in trending; restrict trading to that regime.",
+      "priority": 1
+    },
+    {
+      "id": "d3",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "confidence_threshold_delta": 0.05
+      },
+      "rationale": "Tighten entry quality to reduce adverse excursions.",
+      "priority": 1
+    },
+    {
+      "id": "d4",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "stop_atr_mult": 1.2,
+        "tp_atr_mult": 1.8
+      },
+      "rationale": "Adjust exits to cap drawdown.",
+      "priority": 2
+    },
+    {
+      "id": "d5",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+    "Apply GATE_ADJUST with params={\"allowed_regime\": \"trending\", \"require_regime_filter\": true}",
+    "Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+    "Apply EXIT_CHANGE with params={\"stop_atr_mult\": 1.2, \"tp_atr_mult\": 1.8}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260228/batch_20260228_afb9a86a.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260228/refine_20260228_d59ef30b.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "f0bd7a6b38354da8"
+}

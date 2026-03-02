@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-ae9814d39aed",
+  "created_at": "2026-03-02T05:19:51.171354Z",
+  "tv_ref": "tradingview:9QMDACW3",
+  "url": "https://www.tradingview.com/script/9QMDACW3-RSI-Divergence-Regular-Hidden-Live-StableLogic/",
+  "name": "RSI Divergence (Regular + Hidden + Live) - StableLogic",
+  "author": "Stable_Logic",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "f52135f89a2ee90205e454c3ff01cb15e728394604e88a9171b0f242e693747a",
+  "truncated": false
+}

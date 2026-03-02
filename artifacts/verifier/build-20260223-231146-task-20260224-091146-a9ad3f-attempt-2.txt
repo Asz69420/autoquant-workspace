@@ -1,0 +1,13 @@
+﻿{
+"verdict": "WARN",
+"total_issues_found": 1,
+"issues_returned": 1,
+"issues": [
+{
+"severity": "MINOR",
+"file": "scripts/tests/run_work_smoke.txt",
+"message": "Verification warning mode requested; task_id presence check passed but run is flagged WARN per instruction.",
+"suggested_fix": "No file fix required. If you want a clean PASS output, rerun without WARN-mode instruction."
+}
+]
+}

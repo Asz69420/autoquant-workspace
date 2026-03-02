@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-996efe05d853",
+  "created_at": "2026-02-26T02:21:50.924029Z",
+  "tv_ref": "tradingview:x2oOiauU",
+  "url": "https://www.tradingview.com/script/x2oOiauU-Keltner-SD-SuperTrend-RakoQuant/",
+  "name": "Keltner SD SuperTrend | RakoQuant",
+  "author": "RakoQuant",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "37124ec6285d2bbb20562ad71cc5df0eeb00daba0b2acdc8fe3d37ba0f8634e2",
+  "truncated": false
+}

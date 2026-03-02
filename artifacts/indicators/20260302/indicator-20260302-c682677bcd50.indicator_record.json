@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-c682677bcd50",
+  "created_at": "2026-03-02T01:49:50.365893Z",
+  "tv_ref": "tradingview:5zAdLu8t",
+  "url": "https://www.tradingview.com/script/5zAdLu8t-Smart-Money-Gold-Map-XAUUSD-Kill-Zones-Liquidity-Sweeps/",
+  "name": "Smart Money Gold Map [XAUUSD Kill Zones + Liquidity Sweeps]",
+  "author": "DefinedEdge",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "dd2923c160b8fdb1d134608d775c443e04c15fb1cb23d9362cafe3a7b5c3ffb7",
+  "truncated": false
+}

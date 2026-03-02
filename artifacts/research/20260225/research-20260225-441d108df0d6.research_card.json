@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-441d108df0d6",
+  "created_at": "2026-02-24T23:32:18.505601Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/mxwLMo5z-Tri-Core-Statistical-Trend-Navigator/",
+  "title": "Tri-Core Statistical Trend Navigator",
+  "author": "ZakAlgo_Trade",
+  "summary_bullets": [
+    "Trending catalog indicator: Tri-Core Statistical Trend Navigator by ZakAlgo_Trade."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Trending catalog indicator: Tri-Core Statistical Trend Navigator by ZakAlgo_Trade.",
+      "note": "Meaning: Trending catalog indicator: Tri-Core Statistical Trend Navigator by ZakAlgo_Trade."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Trending catalog indicator: Tri-Core Statistical Trend Navigator by ZakAlgo_Trade."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-441d108df0d6.raw.txt",
+  "sha256": "be5c9df9a8e2c1ef6347278536affacd81b43f6a9bcf231a2cff69d425a55fdf",
+  "truncated": false
+}

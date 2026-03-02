@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-st4m2r8k",
+  "created_at": "2026-03-02T23:30:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend's best regime is RANGING (PF=1.611 at ADX>5, PF=2.062 for MACD ranging) — yet all existing Supertrend specs either use default ADX>20 or push toward HIGH ADX (>30, >35). No spec explicitly isolates the RANGING regime where Supertrend actually performs best. The hypothesis: in low-ADX ranging markets (ADX 5-15), Supertrend direction flips near range support/resistance boundaries. Most of these flips lead to mean-reversion moves within the range — they travel to the opposite range boundary before Supertrend flips again. With extreme R:R (7:1-9:1), the majority of these range trades will hit the stop (the range isn't wide enough for 7x ATR TP), BUT the occasional range breakout — where price breaks through a range boundary and trends — will hit the extreme TP. The time cap serves a critical function here: in ranging markets, trades that haven't moved decisively in 6-8 bars are trapped in the mid-range chop zone. Exiting at market after 6-8 bars saves most of the stop loss capital on these chop trades. The winners (range breakouts) hit TP within 3-5 bars because genuine breakouts accelerate rapidly. Net effect: (a) fewer full-stop losses (most exit at partial loss via time cap), (b) same winner count (breakouts are fast), (c) improved PF because loss side improves. This directly complements st7a3k5w (ADX>30/35 trending specialist) — if both specs produce PF > 1.2, the optimal portfolio is: ranging Supertrend (this spec) + trending Supertrend (st7a3k5w) = full regime coverage with Supertrend. Invalidation: if PF < 0.8 at low ADX, ranging Supertrend flips are pure noise — the edge is entirely in trending markets.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "supertrend_1h_range_timecap6_8to1",
+      "description": "Supertrend direction flip on ETH/1h with ADX>5 (minimum — accepts ranging markets), 8:1 R:R (2.0x ATR stop, 16.0x ATR TP), and 6-bar time cap (6 hours). ADX>5 is deliberately permissive — it passes almost all market conditions except dead-flat. The key insight: Supertrend ADX>5 produced PF=1.611 in ranging (the system's 2nd best regime PF). The 6-bar time cap kills mid-range chop trades that slowly bleed to the full 2.0x ATR stop. At 8:1 R:R on 1h, only genuine range breakouts reach TP. Expected: ~100 trades (similar to ADX>5 base), improved loss profile from time cap, PF potentially above 1.6 if time caps reduce average loss without cutting winners.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive (Supertrend turns bullish — direction change).",
+        "ADX_14 > 5 (minimum activity filter — excludes dead-flat markets only).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative (Supertrend turns bearish — direction change).",
+        "ADX_14 > 5 (minimum activity filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (16.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Exit at market after 6 bars if neither TP nor SL has been hit (time-decay exit — kills mid-range chop).",
+        "Hypothesis failure mode: if PF < 0.8, ranging Supertrend at 8:1 R:R is noise — try 6:1 R:R to test if edge exists at lower R:R"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 16.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%.",
+        "Time exit after 6 bars at market price."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 14.0, "max": 18.0, "step": 2.0, "default": 16.0},
+        {"name": "adx_min", "min": 3.0, "max": 10.0, "step": 2.0, "default": 5.0},
+        {"name": "max_bars_in_trade", "min": 4, "max": 8, "step": 2, "default": 6},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "max_bars_in_trade": 6
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — range boundary signal in low-ADX conditions"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 5 — permissive filter, isolates ranging regime by excluding dead-flat only"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 16.0x TP — 8:1 R:R with 6-bar time cap"}
+      ]
+    },
+    {
+      "name": "supertrend_1h_range_timecap8_7to1",
+      "description": "Same ranging Supertrend on ETH/1h but with ADX>10 (slightly more selective — excludes dead and near-dead markets), 7:1 R:R (2.0x stop, 14.0x TP), and 8-bar time cap (8 hours). This variant tests whether a slightly higher ADX floor improves signal quality. ADX 10-20 is the classic ranging zone. At 7:1 R:R (matching the MACD champion), direct PF comparison against MACD 7:1 (PF=1.712) reveals whether Supertrend can match MACD's signal quality in ranging. The 8-bar cap gives 33% more development time than the 6-bar variant — useful for Supertrend which may have slightly slower signal development than MACD zero-cross.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive (Supertrend turns bullish).",
+        "ADX_14 > 10 (moderate activity filter — excludes dead and near-dead markets).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative (Supertrend turns bearish).",
+        "ADX_14 > 10 (moderate activity filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (14.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Exit at market after 8 bars if neither TP nor SL has been hit (time-decay exit).",
+        "Hypothesis failure mode: if PF at ADX>10 < PF at ADX>5, the lowest-ADX signals have the MOST edge — pure ranging is the sweet spot"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 14.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%.",
+        "Time exit after 8 bars at market price."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 16.0, "step": 2.0, "default": 14.0},
+        {"name": "adx_min", "min": 8.0, "max": 15.0, "step": 2.0, "default": 10.0},
+        {"name": "max_bars_in_trade", "min": 6, "max": 10, "step": 2, "default": 8},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 14.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "max_bars_in_trade": 8
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — range boundary detection"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 10 — moderate filter, ranging zone 10-20"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 14.0x TP — 7:1 R:R with 8-bar time cap"}
+      ]
+    },
+    {
+      "name": "supertrend_4h_range_timecap5_9to1",
+      "description": "Ranging Supertrend on ETH/4h with ADX>5 (maximum range inclusion), 9:1 R:R (2.0x stop, 18.0x TP), and 5-bar time cap (20 hours — roughly one trading day). The 4h timeframe tests whether Supertrend ranging signals are cleaner on higher timeframes where range boundaries are more established. At 9:1 R:R, only multi-day trend initiations from range breakouts reach TP. The 5-bar (20 hour) time cap is aggressive for 4h — it demands the breakout develops within one trading day, which is appropriate for genuine breakouts. Expected: fewer trades (~40-60), higher signal quality per trade, PF potentially > 1.3 if 4h ranges produce cleaner breakout signals than 1h.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive (Supertrend turns bullish).",
+        "ADX_14 > 5 (minimum activity filter — maximum range inclusion).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative (Supertrend turns bearish).",
+        "ADX_14 > 5 (minimum activity filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Exit at market after 5 bars if neither TP nor SL has been hit (time-decay exit — one trading day on 4h).",
+        "Hypothesis failure mode: if 4h PF < 1h PF at same ADX level, ranging Supertrend works better on shorter timeframes where range flips are more frequent"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%.",
+        "Time exit after 5 bars at market price."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 16.0, "max": 20.0, "step": 2.0, "default": 18.0},
+        {"name": "adx_min", "min": 3.0, "max": 10.0, "step": 2.0, "default": 5.0},
+        {"name": "max_bars_in_trade", "min": 3, "max": 7, "step": 2, "default": 5},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20,
+        "max_bars_in_trade": 5
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — range boundary on 4h timeframe"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 5 — permissive, maximum range market inclusion"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 18.0x TP — 9:1 R:R with 5-bar time cap (20 hours)"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

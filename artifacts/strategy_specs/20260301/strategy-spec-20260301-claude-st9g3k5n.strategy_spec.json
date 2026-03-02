@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-st9g3k5n",
+  "created_at": "2026-03-01T08:00:01.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The supertrend flip is a validated high-quality trend signal (PF=1.264 at ADX 15 with 85 trades, PF=1.540 at ADX default with 18 trades). However, the tail-harvester concept (extreme R:R 5:1 to 7:1) has NEVER been tested with supertrend. The supertrend flip captures the exact moment of trend reversal — a structurally ideal entry point for wide TP targets because the new trend has maximum runway ahead. Testing three ADX thresholds (15, 20, 28) with extreme R:R to find the sweet spot between trade count and signal quality.",
+  "invalidation": "If PF < 1.0 across all ADX thresholds with 20+ trades, the supertrend flip signal decays too fast for tail harvesting. Revert to moderate R:R approach (previous validated 2.0:4.0 range).",
+  "variants": [
+    {
+      "name": "supertrend_strong_trend_tail_7to1",
+      "description": "Strong trend tail harvester: ADX > 28 ensures only established trends are traded. Supertrend flip in strong trend = high conviction. 7:1 R:R captures the explosive continuation. Fewer signals but higher quality. Previous strong-trend result: PF=1.540 but only 18 trades — extreme R:R may help or hurt at this signal frequency.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive (trend reversal signal)",
+        "ADX_14 > 28 (strong trend confirmed, skip transitional zone)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative (bearish trend reversal)",
+        "ADX_14 > 28 (strong trend confirmed, skip transitional zone)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 7.0x ATR from entry (tail harvester target)",
+        "Stop loss at 2.0x ATR from entry",
+        "Exit on opposite supertrend flip"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR (validated minimum 1.5x, wider for trend riding)",
+        "TP: 7.0x ATR (3.5:1 R:R tail harvester)",
+        "ADX > 28 filters out toxic transitional regime (PF=0.595-0.919)"
+      ],
+      "parameters": [
+        {"name": "adx_min", "default": 28, "min": 20, "max": 35, "step": 2},
+        {"name": "stop_atr_mult", "default": 2.0, "min": 1.5, "max": 3.0, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 7.0, "min": 4.0, "max": 12.0, "step": 1.0},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 30, "min": 10, "max": 50, "step": 5}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip for trend reversal signal"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 28 strong trend filter, excludes toxic transitional zone"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP scaling"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "supertrend_relaxed_tail_7to1",
+      "description": "Relaxed ADX tail harvester: ADX > 15 (validated relaxation that increased trades from 16 to 85 while preserving PF=1.264). Now combined with extreme 7:1 R:R. Tests whether the higher trade count from relaxed ADX paired with extreme R:R produces a better risk-adjusted result than either approach alone.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive (trend reversal signal)",
+        "ADX_14 > 15 (relaxed trend gate, validated at PF=1.264)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative (bearish trend reversal)",
+        "ADX_14 > 15 (relaxed trend gate, validated at PF=1.264)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 7.0x ATR from entry (tail harvester target)",
+        "Stop loss at 2.0x ATR from entry",
+        "Exit on opposite supertrend flip"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR",
+        "TP: 7.0x ATR (3.5:1 R:R)",
+        "ADX 15 relaxation validated in prior cycle (trades 16→85, PF preserved)"
+      ],
+      "parameters": [
+        {"name": "adx_min", "default": 15, "min": 10, "max": 25, "step": 5},
+        {"name": "stop_atr_mult", "default": 2.0, "min": 1.5, "max": 3.0, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 7.0, "min": 4.0, "max": 12.0, "step": 1.0},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 30, "min": 10, "max": 50, "step": 5}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip for trend reversal signal"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 15 relaxed gate (validated PF=1.264 at 85 trades)"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP scaling"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "supertrend_moderate_widestop_6to1",
+      "description": "Moderate ADX with wider stop and 6:1 R:R. Tests ADX > 20 (default) with 2.5x ATR stop (wider to avoid noise whipsaws that caused DD blowouts in prior supertrend tests with tight stops) and 6:1 R:R. The wider stop sacrifices some R:R efficiency for trade survival — prior tests showed stops < 1.5x cause DD blowouts (181%).",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from negative to positive (trend reversal signal)",
+        "ADX_14 > 20 (default moderate trend gate)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from positive to negative (bearish trend reversal)",
+        "ADX_14 > 20 (default moderate trend gate)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 6.0x ATR from entry",
+        "Stop loss at 2.5x ATR from entry (wider to survive noise)",
+        "Exit on opposite supertrend flip"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.5x ATR (wider — prior tests with < 1.5x caused 181% DD blowout)",
+        "TP: 6.0x ATR (2.4:1 R:R)",
+        "Wider stop prioritizes trade survival over R:R efficiency"
+      ],
+      "parameters": [
+        {"name": "adx_min", "default": 20, "min": 15, "max": 30, "step": 5},
+        {"name": "stop_atr_mult", "default": 2.5, "min": 1.5, "max": 3.5, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 6.0, "min": 4.0, "max": 10.0, "step": 1.0},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 35, "min": 15, "max": 50, "step": 5}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip for trend reversal signal"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 20 default gate"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP scaling, wider stop to prevent DD blowouts"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    }
+  ]
+}

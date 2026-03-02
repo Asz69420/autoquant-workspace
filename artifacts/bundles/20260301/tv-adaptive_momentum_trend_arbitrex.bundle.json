@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_adaptive momentu",
+    "created_at":  "2026-03-01T10:49:51.209260+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260301/research-20260301-093f798eaa49.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260301/indicator-20260301-b565a9234b0c.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260301/research-20260301-093f798eaa49.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T10:51:46.4904458Z",
+    "attempts":  1,
+    "last_error":  null
+}

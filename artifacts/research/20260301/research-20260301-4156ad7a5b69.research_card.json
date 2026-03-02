@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-4156ad7a5b69",
+  "created_at": "2026-03-01T11:19:50.222784Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/D7dxLPWz-Ornstein-Uhlenbeck-Mean-Reversion-Probability-Bands-UAlgo/",
+  "title": "Ornstein-Uhlenbeck Mean Reversion Probability Bands [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "Top catalog indicator: Ornstein-Uhlenbeck Mean Reversion Probability Bands [UAlgo] by UAlgo."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Ornstein-Uhlenbeck Mean Reversion Probability Bands [UAlgo] by UAlgo.",
+      "note": "Meaning: Top catalog indicator: Ornstein-Uhlenbeck Mean Reversion Probability Bands [UAlgo] by UAlgo."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-4156ad7a5b69.raw.txt",
+  "sha256": "45b6b4b16d6be277ad34653108738247a35a33d9730119f1a1394c4faf6cbb7f",
+  "truncated": false
+}

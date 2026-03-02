@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-f0ae9a565e50",
+  "created_at": "2026-02-26T03:45:36.388085Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=Zepx8mARre0",
+  "title": "Zepx8mARre0",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=Zepx8mARre0 video_id=Zepx8mARre0."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=Zepx8mARre0 video_id=Zepx8mARre0.",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=Zepx8mARre0 video_id=Zepx8mARre0."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-f0ae9a565e50.raw.txt",
+  "sha256": "66391a5bc0742a885d159089c22ef6506afb726eb40483a1f5245d19f5c869ab",
+  "truncated": false
+}

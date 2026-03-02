@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-7b20910940cf",
+  "created_at": "2026-03-01T09:00:10.490723Z",
+  "tv_ref": "tradingview:Pv9YcT0e",
+  "url": "https://www.tradingview.com/script/Pv9YcT0e-HyperTrend-Monk-Trading/",
+  "name": "HyperTrend [Monk Trading]",
+  "author": "Monk_Trading",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "d848cea1e38b36bac600ceff4fe0ee91af597bebc740cf93e113c4458b126fd3",
+  "truncated": false
+}

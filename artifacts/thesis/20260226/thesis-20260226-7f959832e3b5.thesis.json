@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260226-7f959832e3b5",
+  "created_at": "2026-02-26T13:27:44.378467Z",
+  "inputs": {
+    "research_card_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\research\\20260226\\research-20260226-2b3022abede7.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\links\\20260226\\research-20260226-2b3022abede7.linkmap.json"
+    ]
+  },
+  "title": "strategy_001_multi_timeframe_trend_alignment",
+  "thesis_bullets": [
+    "STRATEGY: Multi-Timeframe Trend Alignment (4h Trend + 1h Entry) ASSET: BTC, ETH TIMEFRAME: 1h entries, 4h trend context MARKET CONDITION: Trending on higher timeframe, pullback on lower timeframe TYPE: Multi-timeframe trend following CONCEPT: The most robust trading strategies align multiple timeframes.",
+    "We use the 4h chart to determine trend direction and only take 1h entries in that direction.",
+    "This means we need 4h indicator values available on the 1h chart.",
+    "The 4h trend tells us WHAT to trade (long or short), the 1h tells us WHEN to enter.",
+    "This dramatically reduces false signals because you’re always trading with the bigger picture.",
+    "INDICATORS USED (4h context - calculated on 1h using 4x periods): - EMA 200 on 1h (equivalent to ~EMA 50 on 4h) - major trend direction - EMA 800 on 1h (equivalent to ~EMA 200 on 4h) - macro trend filter - ADX calculated on last 56 bars of 1h (equivalent to 14 bars on 4h) - trend strength INDICATORS USED (1h entry): - RSI (period 14) - pullback detection - MACD (fast 12, slow 26, signal 9) - momen",
+    "4h context shows UPTREND (EMA 200 > EMA 800, ADX > 20) 2.",
+    "Price pulls back below EMA 21 on 1h (short-term dip within uptrend) 3.",
+    "RSI(14) drops below 40 (pullback has some depth, not just a 1-bar dip) 4.",
+    "MACD histogram turns from negative to positive (momentum shifting back up) 5."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on 4h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on 4h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "EMA",
+        "RSI",
+        "MACD",
+        "ATR",
+        "ADX"
+      ],
+      "timeframe_bias": "4h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on 4h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "7f959832e3b5c814636b622654e63168a8fec6f649f7556cb1843ab1b453552a"
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-5b18d5df1628",
+  "created_at": "2026-03-01T10:49:50.303326Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/10yYqaY7-ORB-Strategy-LuciTech/",
+  "title": "ORB Strategy [LuciTech]",
+  "author": "TradesLuci",
+  "summary_bullets": [
+    "Top catalog indicator: ORB Strategy [LuciTech] by TradesLuci."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: ORB Strategy [LuciTech] by TradesLuci.",
+      "note": "Meaning: Top catalog indicator: ORB Strategy [LuciTech] by TradesLuci."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-5b18d5df1628.raw.txt",
+  "sha256": "1fbbdf2d60cb88ed6d457a468691289e3407432715d8248dbabccf3ad065eff7",
+  "truncated": false
+}

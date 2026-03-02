@@ -1,0 +1,22 @@
+{
+  "channel_slug": "michaelionita",
+  "channel_name": "MichaelIonita",
+  "created_at": "2026-02-27T19:07:34.729096+00:00",
+  "video_ids": [
+    "77ikjQjdGFg",
+    "3pW6m2oTCDE"
+  ],
+  "concept_thesis_paths": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/thesis_packs/20260227/content-loop-1772219254.concept_thesis.json"
+  ],
+  "key_signals": [
+    {
+      "signal": "Claude AI can NOW Automatically Build and Improve Your TradingView Strategies (while you sleep): extract repeatable concept from source context",
+      "count": 1
+    },
+    {
+      "signal": "How to trade like a pro (step by step) \ud83e\udd16: extract repeatable concept from source context",
+      "count": 1
+    }
+  ]
+}

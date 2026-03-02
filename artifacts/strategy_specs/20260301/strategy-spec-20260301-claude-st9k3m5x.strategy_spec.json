@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-st9k3m5x",
+  "created_at": "2026-03-01T22:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend tail harvester at 5:1 R:R hit ACCEPT (PF=1.395, DD=12.3%, 85 trades) with ADX>15. The MACD R:R curve shows PF peaking at 8:1 (PF=1.442) before declining at 12:1 (PF=1.302). This spec tests whether supertrend follows the same R:R curve shape. CRITICALLY, this spec uses ADX>15 (the ACCEPT-proven threshold), NOT ADX>28 (the recent st82n4p6 spec which restricted trades to only 23). The ACCEPT had 85 trades at ADX>15 — sufficient sample size. The recent ADX>28 experiment showed PF=1.545 with only 23 trades — promising but statistically unreliable. This spec preserves the proven ADX>15 gate and ONLY varies R:R to isolate the R:R effect. Three R:R points tested: 7:1 (between existing data points), 8:1 (MACD champion's ratio), and 10:1 (tests diminishing returns). All use 1.0x ATR tight stop, matching the MACD tail harvester formula. Supertrend's ranging dominance (PF=2.002 at 5:1) suggests extreme R:R should work particularly well during ranging regimes where price bounces between range boundaries create multiple opportunities for large moves. Invalidation: (1) if PF declines monotonically from 5:1 to 10:1, supertrend's optimal R:R is LOWER than MACD's — the entry signal captures shorter moves; (2) if PF increases monotonically, the optimal point is above 10:1 — extend testing further; (3) if trade count drops below 30, the tight stop is killing too many trades before they reach TP.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "supertrend_tail_harvester_7to1",
+      "description": "Supertrend direction flip on ETH/4h with ADX>15 (ACCEPT-proven gate) and 7:1 R:R (1.0x stop / 7.0x TP). This fills the gap between the 5:1 ACCEPT (PF=1.395) and the untested 8:1. If PF rises from 5:1 to 7:1, the curve matches MACD's shape. At breakeven win rate of 12.5%, this is very forgiving — only 1 in 8 trades needs to reach TP.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from <= 0 to > 0 (supertrend direction change to bullish).",
+        "ADX_14 > 15 (relaxed gate — matches the ACCEPT configuration, not the recent ADX>28 experiment).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from >= 0 to < 0 (supertrend direction change to bearish).",
+        "ADX_14 > 15 (relaxed gate — matches the ACCEPT configuration).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (7.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 7:1. Needs 12.5% win rate to break even after fees.",
+        "Tests intermediate R:R point between 5:1 ACCEPT and 8:1 MACD-champion ratio."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 7.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 12.0, "max": 20.0, "step": 1.0, "default": 15.0},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 5.0, "max": 9.0, "step": 1.0, "default": 7.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — ACCEPT-proven entry signal"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 15 — ACCEPT-proven relaxed gate preserving 85-trade sample size"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 7.0x TP — R:R curve interpolation between 5:1 ACCEPT and 8:1"}
+      ]
+    },
+    {
+      "name": "supertrend_tail_harvester_8to1",
+      "description": "Supertrend direction flip on ETH/4h with ADX>15 and 8:1 R:R (1.0x stop / 8.0x TP). This is the critical test: does the MACD champion's R:R ratio (8:1 → PF=1.442) replicate on supertrend? At breakeven win rate of 11%, this is very forgiving. The supertrend 5:1 ACCEPT had ranging PF=2.002 — if ranging trades produce large bounded moves that reach 8x ATR when ranges break out, this could be the supertrend champion variant.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from <= 0 to > 0 (supertrend direction change to bullish).",
+        "ADX_14 > 15 (relaxed gate — matches the ACCEPT configuration).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from >= 0 to < 0 (supertrend direction change to bearish).",
+        "ADX_14 > 15 (relaxed gate — matches the ACCEPT configuration).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11% win rate to break even after fees.",
+        "Critical test: does MACD champion R:R replicate on supertrend?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 12.0, "max": 20.0, "step": 1.0, "default": 15.0},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 10.0, "step": 1.0, "default": 8.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — ACCEPT-proven entry signal"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 15 — preserves ACCEPT sample size for reliable comparison"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 8.0x TP — tests MACD champion ratio on supertrend"}
+      ]
+    },
+    {
+      "name": "supertrend_tail_harvester_10to1",
+      "description": "Supertrend direction flip on ETH/4h with ADX>15 and 10:1 R:R (1.0x stop / 10.0x TP). Diminishing returns test. MACD showed decline from 8:1 (PF=1.442) to 12:1 (PF=1.302). Does supertrend decline at the same rate? If supertrend 10:1 PF is HIGHER than its 8:1 PF, the supertrend R:R curve peaks later than MACD — possible because supertrend's ranging dominance captures range breakouts that produce exceptionally large moves. At breakeven win rate of 9%, nearly any signal with occasional large continuations is profitable.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from <= 0 to > 0 (supertrend direction change to bullish).",
+        "ADX_14 > 15 (relaxed gate — matches the ACCEPT configuration).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from >= 0 to < 0 (supertrend direction change to bearish).",
+        "ADX_14 > 15 (relaxed gate — matches the ACCEPT configuration).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 10:1. Needs 9% win rate to break even after fees.",
+        "Diminishing returns test: maps the supertrend R:R decline curve."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 12.0, "max": 20.0, "step": 1.0, "default": 15.0},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 12.0, "step": 1.0, "default": 10.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — ACCEPT-proven entry signal"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 15 — preserves ACCEPT sample size"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 10.0x TP — maps diminishing returns boundary for supertrend"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

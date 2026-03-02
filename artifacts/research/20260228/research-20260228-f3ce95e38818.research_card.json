@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260228-f3ce95e38818",
+  "created_at": "2026-02-27T23:00:03.143676Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/3K5zQwqm-ADX-Dynamic-Zone-Inside-the-SuperTrend-with-Support-Resistant/",
+  "title": "ADX Dynamic Zone Inside the SuperTrend with Support / Resistant",
+  "author": "fullmax",
+  "summary_bullets": [
+    "Top catalog indicator: ADX Dynamic Zone Inside the SuperTrend with Support / Resistant by fullmax."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: ADX Dynamic Zone Inside the SuperTrend with Support / Resistant by fullmax.",
+      "note": "Meaning: Top catalog indicator: ADX Dynamic Zone Inside the SuperTrend with Support / Resistant by fullmax."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: ADX Dynamic Zone Inside the SuperTrend with Support / Resistant by fullmax."
+    }
+  ],
+  "indicators_mentioned": [
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260228/research-20260228-f3ce95e38818.raw.txt",
+  "sha256": "2c98b00e8513672387e2cd6f9f9f3a44d3c64bb10defeebea9fc348db2b9c00e",
+  "truncated": false
+}

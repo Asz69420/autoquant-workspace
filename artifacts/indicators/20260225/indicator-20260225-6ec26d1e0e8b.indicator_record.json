@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-6ec26d1e0e8b",
+  "created_at": "2026-02-25T03:21:54.697230Z",
+  "tv_ref": "tradingview:muLbjEdA",
+  "url": "https://www.tradingview.com/script/muLbjEdA-Casper-SMC-5m-ORB-Retest/",
+  "name": "Casper SMC: 5m ORB + Retest",
+  "author": "hoosn1ck",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "c6c2c2da4681661aed5a8134779593e9448cad1f40a3c8340cc3ae863de20291",
+  "truncated": false
+}

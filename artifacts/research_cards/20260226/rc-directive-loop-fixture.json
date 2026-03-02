@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "id": "rc-directive-loop-fixture",
+  "title": "Directive Loop Fixture",
+  "summary_bullets": [
+    "Test fixture for directive loop"
+  ],
+  "indicators_mentioned": [
+    "RSI"
+  ],
+  "timeframes_mentioned": [
+    "1h"
+  ],
+  "assets_mentioned": [
+    "BTC"
+  ],
+  "tags": [
+    "fixture"
+  ]
+}

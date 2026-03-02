@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-31f4caa0b08a",
+  "created_at": "2026-02-24T23:33:15.380960Z",
+  "tv_ref": "tradingview:N3rtZ7Ok",
+  "url": "https://www.tradingview.com/script/N3rtZ7Ok-blackcat-L1-Mid-Axis-Indicator/",
+  "name": "[blackcat] L1 Mid-Axis Indicator",
+  "author": "blackcat1402",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "bf6afaaebe272b9c48576bb35213e7cc0a245e4219e8b9ccc45ce9a96c5dade7",
+  "truncated": false
+}

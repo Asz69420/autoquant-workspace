@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-e66b34c01ee4",
+  "created_at": "2026-03-02T01:34:50.612440Z",
+  "tv_ref": "tradingview:CjkS91iy",
+  "url": "https://www.tradingview.com/script/CjkS91iy-Harmonic-Periodicity-Matrix-Pineify/",
+  "name": "Harmonic Periodicity Matrix [Pineify]",
+  "author": "Pineify",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "ac3bdc638cb1748d8c1dfea260984b6ce3480484e19f9829c5248cd4e337f000",
+  "truncated": false
+}

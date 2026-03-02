@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-92837bcc0022",
+  "created_at": "2026-03-01T11:19:49.955979Z",
+  "tv_ref": "tradingview:D7dxLPWz",
+  "url": "https://www.tradingview.com/script/D7dxLPWz-Ornstein-Uhlenbeck-Mean-Reversion-Probability-Bands-UAlgo/",
+  "name": "Ornstein-Uhlenbeck Mean Reversion Probability Bands [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "a29d86b5c87bf1ba6b128674baacefc327bf64544cf4b3526c0eb1c0abd6a927",
+  "truncated": false
+}

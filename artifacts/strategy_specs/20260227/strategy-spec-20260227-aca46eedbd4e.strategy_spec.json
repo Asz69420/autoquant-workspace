@@ -1,0 +1,543 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260227-aca46eedbd4e",
+  "created_at": "2026-02-27T02:28:28.957307Z",
+  "variants": [
+    {
+      "name": "directive_variant_1_entry_tighten",
+      "description": "Directive-driven variant from ENTRY_TIGHTEN.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.65.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.65.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "Avoid prior failure pattern: Max drawdown too high: 981.199 > 0.30",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confirmation_bars\": 2, \"require_trend_alignment\": true, \"signal_selectivity_increase_pct\": 25}",
+        "Outcome-guided experiment: Apply EXIT_CHANGE with params={\"move_stop_to_breakeven_after_partial\": true, \"partial_take_profit\": {\"at_r_multiple\": 1.0, \"enabled\": true, \"size_pct\": 50}, \"time_stop_bars\": 8}"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.65
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d1"
+      ]
+    },
+    {
+      "name": "directive_variant_2_exit_change",
+      "description": "Directive-driven variant from EXIT_CHANGE.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.60.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "Avoid prior failure pattern: Max drawdown too high: 981.199 > 0.30",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confirmation_bars\": 2, \"require_trend_alignment\": true, \"signal_selectivity_increase_pct\": 25}",
+        "Outcome-guided experiment: Apply EXIT_CHANGE with params={\"move_stop_to_breakeven_after_partial\": true, \"partial_take_profit\": {\"at_r_multiple\": 1.0, \"enabled\": true, \"size_pct\": 50}, \"time_stop_bars\": 8}"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.6
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 1.5,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 2.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "DIRECTIVE",
+      "directive_refs": [
+        "d2"
+      ]
+    },
+    {
+      "name": "directive_exploration",
+      "description": "Exploration variant generated from directive context.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.62.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.62.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "Avoid prior failure pattern: Max drawdown too high: 981.199 > 0.30",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confirmation_bars\": 2, \"require_trend_alignment\": true, \"signal_selectivity_increase_pct\": 25}",
+        "Outcome-guided experiment: Apply EXIT_CHANGE with params={\"move_stop_to_breakeven_after_partial\": true, \"partial_take_profit\": {\"at_r_multiple\": 1.0, \"enabled\": true, \"size_pct\": 50}, \"time_stop_bars\": 8}"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.62
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "default": 0.75,
+          "min": 0.1,
+          "max": 20.0,
+          "step": 0.1
+        },
+        {
+          "name": "tp_atr_mult",
+          "default": 1.0,
+          "min": 0.1,
+          "max": 40.0,
+          "step": 0.1
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 0.75,
+        "tp_type": "atr",
+        "tp_atr_mult": 1.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "EXPLORATION",
+      "directive_refs": [
+        "d1",
+        "d2"
+      ]
+    },
+    {
+      "name": "library_augmented",
+      "description": "Library-augmented variant selected by keyword overlap.",
+      "entry_long": [
+        "Require trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.65.",
+        "Require thesis regime match before long entry.",
+        "Use signal: alignment_entry"
+      ],
+      "entry_short": [
+        "Require inverse trend/confirmation alignment on bar close.",
+        "Require candidate signal confidence >= 0.65.",
+        "Reject short if thesis regime does not support reversal.",
+        "Use signal: alignment_entry"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: BTC OHLCV on 1h",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on signal invalidation.",
+        "Exit on opposite alignment signal.",
+        "Exit on max bars in trade threshold.",
+        "Hypothesis failure mode guard: Range-bound chop erodes edge",
+        "Hypothesis failure mode guard: Signal lag after volatility shock",
+        "Hypothesis failure mode guard: Indicator disagreement at entry"
+      ],
+      "risk_rules": [
+        "Risk note: ATR placeholder used for backtester compatibility when discretionary/swing stop is implied.",
+        "Risk note: risk per trade target is 1%.",
+        "Take profit objective maps to ATR multiple for deterministic execution.",
+        "Outcome-guided experiment: Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+        "Avoid prior failure pattern: Max drawdown too high: 981.199 > 0.30",
+        "Outcome-guided experiment: Apply ENTRY_TIGHTEN with params={\"confirmation_bars\": 2, \"require_trend_alignment\": true, \"signal_selectivity_increase_pct\": 25}",
+        "Outcome-guided experiment: Apply EXIT_CHANGE with params={\"move_stop_to_breakeven_after_partial\": true, \"partial_take_profit\": {\"at_r_multiple\": 1.0, \"enabled\": true, \"size_pct\": 50}, \"time_stop_bars\": 8}"
+      ],
+      "parameters": [
+        {
+          "name": "confidence_threshold",
+          "min": 0.5,
+          "max": 0.9,
+          "step": 0.05,
+          "default": 0.65
+        },
+        {
+          "name": "max_bars_in_trade",
+          "min": 3,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "name": "risk_r",
+          "min": 0.25,
+          "max": 2.0,
+          "step": 0.25,
+          "default": 1.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "LIBRARY_AUGMENTED",
+      "directive_refs": [
+        "d1"
+      ],
+      "indicator_refs": [
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-52d4c59ff27b.indicator_record.json",
+        "artifacts/indicators/20260225/indicator-20260225-3833b0ae0efc.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-eedb741feca2.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-80b0f4d40f88.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-8a0d053c51fb.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-61b0609b397a.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-2f3c661f40e3.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-bc07844e2b14.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-ac13ff5d5279.indicator_record.json",
+        "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-1a3e3e9acb0b.indicator_record.json"
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA",
+    "SMA",
+    "T3",
+    "KAMA",
+    "ALMA",
+    "RSI",
+    "ATR",
+    "MACD",
+    "Bollinger Bands",
+    "Stochastic",
+    "ADX",
+    "CCI",
+    "Williams %R",
+    "OBV",
+    "VWAP",
+    "Ichimoku",
+    "Supertrend",
+    "Donchian Channels",
+    "QQE",
+    "Choppiness Index",
+    "Vortex",
+    "STC",
+    "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema",
+    "SMA": "sma",
+    "T3": "t3",
+    "KAMA": "kama",
+    "ALMA": "alma",
+    "RSI": "rsi",
+    "ATR": "atr",
+    "MACD": "macd",
+    "Bollinger Bands": "bbands",
+    "Stochastic": "stoch",
+    "ADX": "adx",
+    "CCI": "cci",
+    "Williams %R": "willr",
+    "OBV": "obv",
+    "VWAP": "vwap",
+    "Ichimoku": "ichimoku",
+    "Supertrend": "supertrend",
+    "Donchian Channels": "donchian",
+    "QQE": "qqe",
+    "Choppiness Index": "chop",
+    "Vortex": "vortex",
+    "STC": "stc",
+    "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": [
+      "ema",
+      "sma",
+      "t3",
+      "kama",
+      "alma",
+      "hull_ma",
+      "supertrend",
+      "ichimoku"
+    ],
+    "confirmation": [
+      "rsi",
+      "macd",
+      "stochastic",
+      "cci",
+      "williams_r",
+      "qqe",
+      "vortex",
+      "stc",
+      "choppiness_index"
+    ],
+    "volume_volatility": [
+      "obv",
+      "vwap",
+      "atr",
+      "bollinger",
+      "donchian",
+      "adx",
+      "stiffness"
+    ]
+  },
+  "source_spec_path": "C:/Users/Clamps/.openclaw/workspace/artifacts/strategy_specs/20260227/strategy-spec-20260227-aca46eedbd4e.strategy_spec.json",
+  "source_outcome_notes_path": "C:/Users/Clamps/.openclaw/workspace/artifacts/outcomes/20260227/outcome_notes_loop-test.json",
+  "consumed_outcome_notes_path": "C:/Users/Clamps/.openclaw/workspace/artifacts/outcomes/20260227/outcome_notes_loop-test.json",
+  "consumed_outcome_verdict": "REJECT",
+  "consumed_directives": [
+    {
+      "id": "d1",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "signal_selectivity_increase_pct": 25,
+        "require_trend_alignment": true,
+        "confirmation_bars": 2
+      }
+    },
+    {
+      "id": "d2",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "time_stop_bars": 8,
+        "partial_take_profit": {
+          "enabled": true,
+          "at_r_multiple": 1.0,
+          "size_pct": 50
+        },
+        "move_stop_to_breakeven_after_partial": true
+      }
+    }
+  ],
+  "generation_origin": "loop-test"
+}

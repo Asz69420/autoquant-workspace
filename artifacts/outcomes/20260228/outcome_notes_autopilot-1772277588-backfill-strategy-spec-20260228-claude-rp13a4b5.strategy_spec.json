@@ -1,0 +1,135 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772277588-backfill-strategy-spec-20260228-claude-rp13a4b5.strategy_spec",
+  "run_id": "autopilot-1772277588-backfill-strategy-spec-20260228-claude-rp13a4b5.strategy_spec",
+  "created_at": "2026-02-28T11:24:29.263353+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260228-claude-rp13a4b5.strategy_spec",
+  "template": "rsi_fast_trend_balanced",
+  "metrics": {
+    "profit_factor_after_costs": 1.98681186,
+    "max_drawdown": 0.015753892161,
+    "trades": 10,
+    "regime_breakdown": {
+      "trending_trades": 6,
+      "ranging_trades": 2,
+      "transitional_trades": 2
+    },
+    "regime_pf": {
+      "trending": 2.13073493,
+      "ranging": 0.0,
+      "transitional": 999.0
+    },
+    "regime_wr": {
+      "trending": 0.5,
+      "ranging": 0.0,
+      "transitional": 1.0
+    },
+    "dominant_regime": "trending"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending",
+      "transitional"
+    ],
+    "bad_regimes": [
+      "ranging"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "LOW_TRADE_COUNT",
+      "short": "Trade count below gate: 10 < 20",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260228\\hl_20260228_98f45038.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "require_regime_filter": true,
+        "regime_gate": "trend_or_volatility"
+      },
+      "rationale": "Doctrine: regime assumptions/gating required; strategy lacks explicit regime filter.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "ENTRY_RELAX",
+      "params": {
+        "confidence_threshold_delta": -0.05
+      },
+      "rationale": "Increase participation to clear minimum trade gate.",
+      "priority": 1
+    },
+    {
+      "id": "d3",
+      "type": "THRESHOLD_SWEEP",
+      "params": {
+        "parameter": "confidence_threshold",
+        "range": [
+          0.5,
+          0.7
+        ],
+        "step": 0.05
+      },
+      "rationale": "Sweep entry threshold to recover trade frequency.",
+      "priority": 2
+    },
+    {
+      "id": "d4",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-06|conf:0.76",
+      "theme": "regime_required",
+      "text": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "id": "20260226-20|conf:0.72",
+      "theme": "regime_required",
+      "text": "Embed concept hook into testable hypothesis design: Session gating before execution enablement"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+    "Apply ENTRY_RELAX with params={\"confidence_threshold_delta\": -0.05}",
+    "Apply THRESHOLD_SWEEP with params={\"parameter\": \"confidence_threshold\", \"range\": [0.5, 0.7], \"step\": 0.05}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260228/batch_20260228_1b8ace00.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260228/refine_20260228_d59ef30b.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "c8cccb79c9297165"
+}

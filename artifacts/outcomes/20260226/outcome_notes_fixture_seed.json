@@ -1,0 +1,33 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-fixture-seed",
+  "run_id": "fixture-seed",
+  "created_at": "2026-02-26T05:49:03.699982Z",
+  "verdict": "REVISE",
+  "strategy_family": "thesis-20260226-c23f63fba17c",
+  "template": "",
+  "failure_reasons": [
+    {
+      "code": "LOW_TRADE_COUNT",
+      "short": "fixture",
+      "evidence_pointer": "fixture"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "ENTRY_RELAX",
+      "params": {
+        "confidence_threshold_delta": -0.05
+      },
+      "rationale": "fixture",
+      "priority": 1
+    }
+  ],
+  "next_experiments": [
+    "fixture"
+  ],
+  "sources_used": [
+    "fixture"
+  ]
+}

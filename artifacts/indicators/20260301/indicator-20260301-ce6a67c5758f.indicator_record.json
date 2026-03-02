@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-ce6a67c5758f",
+  "created_at": "2026-03-01T09:49:50.152449Z",
+  "tv_ref": "tradingview:waMFt43R",
+  "url": "https://www.tradingview.com/script/waMFt43R-OB-Range-Retest-Confirmed/",
+  "name": "OB Range Retest [Confirmed]",
+  "author": "ArisCodes",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "ddfb0b59b703ba9e2a2c19d133853bee36143f3b8c4e4f82790c0ac342965747",
+  "truncated": false
+}

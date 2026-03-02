@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-a4e7618505df",
+  "created_at": "2026-02-24T23:52:56.835469Z",
+  "tv_ref": "tradingview:aucWhLbR",
+  "url": "https://www.tradingview.com/script/aucWhLbR-Wolfe-Wave-Pattern-UAlgo/",
+  "name": "Wolfe Wave Pattern [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "ba94608a06f5104def557dd557f45d8bbf8b0e5dd156807697e3004790e0b523",
+  "truncated": false
+}

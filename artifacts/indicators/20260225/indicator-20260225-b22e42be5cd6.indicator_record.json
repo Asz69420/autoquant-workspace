@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-b22e42be5cd6",
+  "created_at": "2026-02-25T00:20:35.374340Z",
+  "tv_ref": "tradingview:YeznJyfS",
+  "url": "https://www.tradingview.com/script/YeznJyfS-CVD-Divergence-Absorption-UAlgo/",
+  "name": "CVD Divergence &amp; Absorption [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "d06382fc90232673de962d1cbb946682ecaa67d4745b82d972b6ce51f8da1127",
+  "truncated": false
+}

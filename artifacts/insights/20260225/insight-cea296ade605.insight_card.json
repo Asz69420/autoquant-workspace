@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "id": "insight-cea296ade605",
+  "created_at": "2026-02-25T11:25:06.853524Z",
+  "source": "manual",
+  "title": "Partial profit scaling via indicator signals",
+  "concept": "Potentially take partial profits based on an indicator rather than full in/out trade management. Keep full-close signal capability for exits, but for scaling out, take 10% off position each time the take-profit signal fires while the position is in profit. Repeat up to 10 times to fully close the trade. This acts as risk mitigation and has shown decent results; need to identify robust concepts/indicators that are suitable for partial profit-taking triggers.",
+  "tags": [
+    "partial-take-profit",
+    "scale-out",
+    "risk-mitigation",
+    "indicator-exit"
+  ],
+  "suggested_roles": [
+    "exit",
+    "risk",
+    "confirmation"
+  ],
+  "confidence": 0.68,
+  "status": "NEW"
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-a6fd9ae04745",
+  "created_at": "2026-02-25T03:22:27.678798Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/1V20Rv3b/",
+  "title": "Tectonic [The_lurker]",
+  "author": "The_lurker",
+  "summary_bullets": [
+    "Top catalog indicator: Tectonic [The_lurker] by The_lurker."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Tectonic [The_lurker] by The_lurker.",
+      "note": "Meaning: Top catalog indicator: Tectonic [The_lurker] by The_lurker."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-a6fd9ae04745.raw.txt",
+  "sha256": "591426094a619bb035a3dbc7f809808be76fdb736e698e6c685b4d408651ce4f",
+  "truncated": false
+}

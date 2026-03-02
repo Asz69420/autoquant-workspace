@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-1ae5fa0d5a1f",
+  "created_at": "2026-02-26T09:38:14.275678Z",
+  "source_type": "transcript_drop",
+  "source_ref": "https://www.youtube.com/watch?v=ydjTTG7Ik5U",
+  "title": "ydjTTG7Ik5U",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "﻿In this strategy we require trend alignment using EMA 50 and EMA 200.",
+    "Enter long when RSI crosses above 55 and MACD histogram turns positive.",
+    "Stop loss is 1.5 ATR below entry and take profit is 2.5 ATR.",
+    "Risk per trade is 1 percent."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "﻿In this strategy we require trend alignment using EMA 50 and EMA 200.",
+      "note": "Meaning: ﻿In this strategy we require trend alignment using EMA 50 and EMA 200."
+    },
+    {
+      "timestamp": null,
+      "quote": "Enter long when RSI crosses above 55 and MACD histogram turns positive.",
+      "note": "Meaning: Enter long when RSI crosses above 55 and MACD histogram turns positive."
+    },
+    {
+      "timestamp": null,
+      "quote": "Stop loss is 1.5 ATR below entry and take profit is 2.5 ATR.",
+      "note": "Meaning: Stop loss is 1.5 ATR below entry and take profit is 2.5 ATR."
+    },
+    {
+      "timestamp": null,
+      "quote": "Risk per trade is 1 percent.",
+      "note": "Meaning: Risk per trade is 1 percent."
+    }
+  ],
+  "extracted_rules": [
+    "Enter long when RSI crosses above 55 and MACD histogram turns positive.",
+    "Stop loss is 1.5 ATR below entry and take profit is 2.5 ATR.",
+    "Risk per trade is 1 percent."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "﻿In this strategy we require trend alignment using EMA 50 and EMA 200."
+    },
+    {
+      "type": "momentum",
+      "description": "Enter long when RSI crosses above 55 and MACD histogram turns positive."
+    },
+    {
+      "type": "risk",
+      "description": "Stop loss is 1.5 ATR below entry and take profit is 2.5 ATR."
+    },
+    {
+      "type": "risk",
+      "description": "Risk per trade is 1 percent."
+    }
+  ],
+  "explicit_conditions": [
+    "Stop loss is 1.5 ATR below entry and take profit is 2.5 ATR.",
+    "Risk per trade is 1 percent."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "RSI",
+    "MACD",
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-1ae5fa0d5a1f.raw.txt",
+  "sha256": "d2c36ad90565ae9a0546f9427a30d16afffe978c807bab52a90e22246b035caf",
+  "truncated": false
+}

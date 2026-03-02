@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-er7v4x2p",
+  "created_at": "2026-03-01T08:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The ema_rsi_atr template is the ONLY template with a built-in ATR volatility expansion gate (ATR > ATR_MA20). This ensures signals fire exclusively during expanding volatility — exactly when wide TP targets have the highest probability of being reached. Previous tests used default narrow R:R (1.5:2.0) producing avg PF=0.97 due to fee drag. Applying the validated tail-harvester concept (extreme R:R 5:1 to 7:1) to this volatility-gated signal tests whether the triple-gate (trend + momentum + volatility expansion) produces sufficient signal quality for wide targets. Testing on ETH/1h to match recent MACD tail harvester success (PF=1.71 on 1h).",
+  "invalidation": "If PF < 1.0 across all variants with 30+ trades, the ema_rsi_atr signal quality is too low for tail-harvesting even with volatility expansion gating. Deprioritize template entirely.",
+  "variants": [
+    {
+      "name": "ema_rsi_atr_vol_expansion_7to1",
+      "description": "Triple-gate tail harvester: EMA trend + RSI momentum (tightened to 45-65) + ATR volatility expansion, with 7:1 R:R. Hypothesis: tighter RSI bands filter for stronger momentum confirmation, volatility gate ensures only expanding-vol entries, 7:1 R:R overcomes fee drag.",
+      "entry_long": [
+        "EMA_9 > EMA_21 (trend alignment)",
+        "RSI_14 between 45 and 65 (momentum confirmed but not overbought)",
+        "ATR_14 > ATR_14_MA20 (volatility expanding)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "EMA_9 < EMA_21 (bearish trend alignment)",
+        "RSI_14 between 35 and 55 (momentum confirmed but not oversold)",
+        "ATR_14 > ATR_14_MA20 (volatility expanding)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 7.0x ATR from entry (tail harvester target)",
+        "Stop loss at 2.0x ATR from entry",
+        "Exit on opposite EMA crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR (wide enough to avoid noise, validated minimum 1.5x)",
+        "TP: 7.0x ATR (3.5:1 R:R tail harvester)",
+        "Volatility expansion gate (ATR > ATR_MA20) is template-native"
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "default": 45, "min": 30, "max": 55, "step": 5},
+        {"name": "rsi_long_max", "default": 65, "min": 55, "max": 75, "step": 5},
+        {"name": "rsi_short_min", "default": 35, "min": 25, "max": 45, "step": 5},
+        {"name": "rsi_short_max", "default": 55, "min": 45, "max": 70, "step": 5},
+        {"name": "stop_atr_mult", "default": 2.0, "min": 1.5, "max": 3.0, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 7.0, "min": 4.0, "max": 12.0, "step": 1.0},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 30, "min": 10, "max": 50, "step": 5}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 vs EMA_21 trend alignment"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 momentum gate, tightened 45-65 long / 35-55 short"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 > ATR_14_MA20 volatility expansion gate (template-native)"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "ema_rsi_atr_vol_expansion_10to1",
+      "description": "Extreme tail harvester variant: same triple-gate but 10:1 R:R (2.0x stop, 10.0x TP). Tests the upper bound of the tail-harvesting concept with volatility expansion gating. If vol-expansion signals are truly high-quality, the extreme target should capture large moves with low win rate but high expectancy.",
+      "entry_long": [
+        "EMA_9 > EMA_21 (trend alignment)",
+        "RSI_14 between 45 and 65 (momentum confirmed but not overbought)",
+        "ATR_14 > ATR_14_MA20 (volatility expanding)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "EMA_9 < EMA_21 (bearish trend alignment)",
+        "RSI_14 between 35 and 55 (momentum confirmed but not oversold)",
+        "ATR_14 > ATR_14_MA20 (volatility expanding)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 10.0x ATR from entry (extreme tail harvester)",
+        "Stop loss at 2.0x ATR from entry",
+        "Exit on opposite EMA crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR",
+        "TP: 10.0x ATR (5:1 R:R extreme tail harvester)",
+        "Expect low win rate (~15-20%) but high avg-win/avg-loss ratio"
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "default": 45, "min": 30, "max": 55, "step": 5},
+        {"name": "rsi_long_max", "default": 65, "min": 55, "max": 75, "step": 5},
+        {"name": "rsi_short_min", "default": 35, "min": 25, "max": 45, "step": 5},
+        {"name": "rsi_short_max", "default": 55, "min": 45, "max": 70, "step": 5},
+        {"name": "stop_atr_mult", "default": 2.0, "min": 1.5, "max": 3.0, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 10.0, "min": 6.0, "max": 15.0, "step": 1.0},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 40, "min": 15, "max": 60, "step": 5}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 vs EMA_21 trend alignment"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 momentum gate, tightened 45-65 long / 35-55 short"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 > ATR_14_MA20 volatility expansion gate (template-native)"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "ema_rsi_atr_vol_expansion_5to1_default_rsi",
+      "description": "Control variant: default RSI bands (40-70 long, 30-60 short) with moderate 5:1 R:R. Tests whether the ATR volatility gate alone is sufficient for tail-harvesting without tightening RSI. More signals expected = higher trade count. If this outperforms the tightened-RSI variants, RSI tightening hurts more than it helps.",
+      "entry_long": [
+        "EMA_9 > EMA_21 (trend alignment)",
+        "RSI_14 between 40 and 70 (default RSI bands)",
+        "ATR_14 > ATR_14_MA20 (volatility expanding)",
+        "Bar-close execution only"
+      ],
+      "entry_short": [
+        "EMA_9 < EMA_21 (bearish trend alignment)",
+        "RSI_14 between 30 and 60 (default RSI bands)",
+        "ATR_14 > ATR_14_MA20 (volatility expanding)",
+        "Bar-close execution only"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "exit_rules": [
+        "TP at 5.0x ATR from entry (moderate tail harvester)",
+        "Stop loss at 2.0x ATR from entry",
+        "Exit on opposite EMA crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR",
+        "TP: 5.0x ATR (2.5:1 R:R moderate tail harvester)",
+        "Default RSI bands as control comparison"
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "default": 40, "min": 30, "max": 50, "step": 5},
+        {"name": "rsi_long_max", "default": 70, "min": 60, "max": 80, "step": 5},
+        {"name": "rsi_short_min", "default": 30, "min": 20, "max": 40, "step": 5},
+        {"name": "rsi_short_max", "default": 60, "min": 50, "max": 70, "step": 5},
+        {"name": "stop_atr_mult", "default": 2.0, "min": 1.5, "max": 3.0, "step": 0.5},
+        {"name": "tp_atr_mult", "default": 5.0, "min": 3.0, "max": 8.0, "step": 1.0},
+        {"name": "risk_r", "default": 1.0, "min": 0.5, "max": 2.0, "step": 0.25},
+        {"name": "max_bars_in_trade", "default": 25, "min": 10, "max": 40, "step": 5}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 5.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 vs EMA_21 trend alignment"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 default bands 40-70 long / 30-60 short"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 > ATR_14_MA20 volatility expansion gate (template-native)"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    }
+  ]
+}

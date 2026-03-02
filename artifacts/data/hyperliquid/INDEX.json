@@ -1,0 +1,98 @@
+[
+  {
+    "symbol": "ETH",
+    "tf": "15m",
+    "start": "2026-01-25T14:00:00+00:00",
+    "end": "2026-02-24T14:00:00+00:00",
+    "sha256": "cf4f60285b2334f88881abb9cfae71c484ce6b24326e540710ad6d005eaf414b",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/15m/20260125T140000Z-20260224T140000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "1h",
+    "start": "2025-07-31T04:00:00+00:00",
+    "end": "2026-02-24T14:00:00+00:00",
+    "sha256": "3c13a075657c9e56b8821c851eff36d060ca3b56f94cb5d0bd716afe87111dee",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/1h/20250731T040000Z-20260224T140000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "4h",
+    "start": "2024-02-25T12:00:00+00:00",
+    "end": "2026-02-24T12:00:00+00:00",
+    "sha256": "0133b39f387a904fcfd0ad999f4ec79cc386479f9802a5ba49ab32ade67491e4",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/4h/20240225T120000Z-20260224T120000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "1h",
+    "start": "2025-07-31T04:00:00+00:00",
+    "end": "2026-02-24T14:00:00+00:00",
+    "sha256": "c5c4b63225e6095f518271976a9c812334618d3bec533bf178c6dac63ecba65e",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/1h/20250731T040000Z-20260224T140000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "4h",
+    "start": "2024-02-25T12:00:00+00:00",
+    "end": "2026-02-24T12:00:00+00:00",
+    "sha256": "bf9885f51788f91d58e61692999194d992fe2605f855285150c72642bdee75d7",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/4h/20240225T120000Z-20260224T120000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "1h",
+    "start": "2026-02-23T04:00:00+00:00",
+    "end": "2026-02-25T03:00:00+00:00",
+    "sha256": "7b054266f7f66f41d1bd023a2acdb74a81cc67455ba2d65eac19ac59ad15ce21",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/1h/20260223T040000Z-20260225T030000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "1h",
+    "start": "2025-08-01T21:00:00+00:00",
+    "end": "2026-02-26T06:00:00+00:00",
+    "sha256": "26e6f77a8a6f25e20418d6a1a6ce1cbcc955180abca864482b8638afa8c85774",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/1h/20250801T210000Z-20260226T060000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "1h",
+    "start": "2025-08-01T21:00:00+00:00",
+    "end": "2026-02-26T06:00:00+00:00",
+    "sha256": "91f1eddbf6141261f0470fa34b3fbbe7d3e539fc889b13b9e30e49763807a999",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/1h/20250801T210000Z-20260226T060000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "15m",
+    "start": "2026-01-05T02:15:00+00:00",
+    "end": "2026-02-26T06:45:00+00:00",
+    "sha256": "cb7dfc00afa0338c6149be61bcb0d011d5b018632675f74ee272f182b986a15d",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/15m/20260105T021500Z-20260226T064500Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "15m",
+    "start": "2026-01-05T02:15:00+00:00",
+    "end": "2026-02-26T06:45:00+00:00",
+    "sha256": "a71ec000588fd670bd8610f2060d5fe0186abb938bef61f9a4026c14b4609bb6",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/15m/20260105T021500Z-20260226T064500Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "4h",
+    "start": "2024-02-27T04:00:00+00:00",
+    "end": "2026-02-26T00:00:00+00:00",
+    "sha256": "5c483189e6e098e08e5792e9da91e35092fef0542713a42b6a660c643ef61bee",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/4h/20240227T040000Z-20260226T000000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "4h",
+    "start": "2024-02-27T04:00:00+00:00",
+    "end": "2026-02-26T00:00:00+00:00",
+    "sha256": "34bab5bd6c5129c1df28916e4bd4a3957b5566df3be23e2c3520ee13a5566118",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/4h/20240227T040000Z-20260226T000000Z.csv"
+  }
+]

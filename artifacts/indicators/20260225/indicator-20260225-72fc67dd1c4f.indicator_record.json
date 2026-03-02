@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-72fc67dd1c4f",
+  "created_at": "2026-02-25T12:56:11.270371Z",
+  "tv_ref": "tradingview:sevQh9oE",
+  "url": "https://www.tradingview.com/script/sevQh9oE-Dual-View-HTF-Candlestick-Patterns-theUltimator5/",
+  "name": "Dual View HTF Candlestick Patterns [theUltimator5]",
+  "author": "TheUltimator5",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "d589bec67f59e7a0f7fade8f42d0e1ea43983a502eb81be5f1eaebca92f90766",
+  "truncated": false
+}

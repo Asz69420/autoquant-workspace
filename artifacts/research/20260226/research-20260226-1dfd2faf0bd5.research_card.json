@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-1dfd2faf0bd5",
+  "created_at": "2026-02-26T12:40:03.272181Z",
+  "source_type": "transcript_drop",
+  "source_ref": "transcript_drop://strategy_008_bb_mean_reversion_rsi",
+  "title": "strategy_008_bb_mean_reversion_rsi",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "STRATEGY: Bollinger Band Mean Reversion with RSI Confirmation ASSET: BTC, ETH TIMEFRAME: 1h MARKET CONDITION: Ranging/mean-reverting with established trend context TYPE: Mean reversion within trend CONCEPT: Trade bounces off Bollinger Band extremes but ONLY in the direction of the larger trend.",
+    "This prevents counter-trend mean reversion trades that get steamrolled.",
+    "RSI confirms the oversold/overbought condition is genuine.",
+    "Price targeting the middle band (SMA 20) gives a clear mechanical exit.",
+    "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (period 14) - stop loss sizing - SMA 20 - take profit target (Bollinger middle band) ENTRY LONG: 1.",
+    "Price closes at or below lower Bollinger Band 2.",
+    "RSI(14) < 30 (oversold confirmation) 3.",
+    "Price is above EMA 200 (we are in an uptrend, this is a pullback) 4.",
+    "Previous candle was also below or touching lower BB (sustained touch, not spike) ENTRY SHORT: 1.",
+    "Price closes at or above upper Bollinger Band 2."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "STRATEGY: Bollinger Band Mean Reversion with RSI Confirmation ASSET: BTC, ETH TIMEFRAME: 1h MARKET CONDITION: Ranging/mean-reverting with established trend context TYPE: Mean reversion within trend CO",
+      "note": "Meaning: STRATEGY: Bollinger Band Mean Reversion with RSI Confirmation ASSET: BTC, ETH TIMEFRAME: 1h MARKET CONDITION: Ranging/mean-reverting with established t"
+    },
+    {
+      "timestamp": null,
+      "quote": "This prevents counter-trend mean reversion trades that get steamrolled.",
+      "note": "Meaning: This prevents counter-trend mean reversion trades that get steamrolled."
+    },
+    {
+      "timestamp": null,
+      "quote": "RSI confirms the oversold/overbought condition is genuine.",
+      "note": "Meaning: RSI confirms the oversold/overbought condition is genuine."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price targeting the middle band (SMA 20) gives a clear mechanical exit.",
+      "note": "Meaning: Price targeting the middle band (SMA 20) gives a clear mechanical exit."
+    },
+    {
+      "timestamp": null,
+      "quote": "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (peri",
+      "note": "Meaning: INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major"
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes at or below lower Bollinger Band 2.",
+      "note": "Meaning: Price closes at or below lower Bollinger Band 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "RSI(14) < 30 (oversold confirmation) 3.",
+      "note": "Meaning: RSI(14) < 30 (oversold confirmation) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price is above EMA 200 (we are in an uptrend, this is a pullback) 4.",
+      "note": "Meaning: Price is above EMA 200 (we are in an uptrend, this is a pullback) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "Previous candle was also below or touching lower BB (sustained touch, not spike) ENTRY SHORT: 1.",
+      "note": "Meaning: Previous candle was also below or touching lower BB (sustained touch, not spike) ENTRY SHORT: 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes at or above upper Bollinger Band 2.",
+      "note": "Meaning: Price closes at or above upper Bollinger Band 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "RSI(14) > 70 (overbought confirmation) 3.",
+      "note": "Meaning: RSI(14) > 70 (overbought confirmation) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price is below EMA 200 (we are in a downtrend, this is a bounce) 4.",
+      "note": "Meaning: Price is below EMA 200 (we are in a downtrend, this is a bounce) 4."
+    }
+  ],
+  "extracted_rules": [
+    "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (period 14) - stop loss sizing - SMA 20 - take profit target (Bollinger middle band) ENTRY LONG: 1.",
+    "Previous candle was also above or touching upper BB EXIT RULES: - Take profit: Price reaches SMA 20 (middle Bollinger Band) - Stop loss: 2.0x ATR(14) beyond the Bollinger Band that triggered entry - Time stop: If middle band not reached within 12 candles (12 hours), exit at market - Breakeven: Move stop to entry once price moves 1.0 ATR in favor RISK MANAGEMENT: - Risk per trade: 0.75% of account (smaller size for mean reversion) - Max concurrent positions: 1 per asset - Skip entry if Bollinger "
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "STRATEGY: Bollinger Band Mean Reversion with RSI Confirmation ASSET: BTC, ETH TIMEFRAME: 1h MARKET CONDITION: Ranging/mean-reverting with established trend context TYPE: Mean reversion within trend CONCEPT: Trade bounces"
+    },
+    {
+      "type": "trend",
+      "description": "This prevents counter-trend mean reversion trades that get steamrolled."
+    },
+    {
+      "type": "risk",
+      "description": "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (period 14) - stop loss s"
+    },
+    {
+      "type": "trend",
+      "description": "Price is above EMA 200 (we are in an uptrend, this is a pullback) 4."
+    },
+    {
+      "type": "trend",
+      "description": "Price is below EMA 200 (we are in a downtrend, this is a bounce) 4."
+    },
+    {
+      "type": "risk",
+      "description": "Stop: below previous swing low."
+    },
+    {
+      "type": "momentum",
+      "description": "RSI confirmation filters out the touches that happen during momentum (which would continue through the band)."
+    },
+    {
+      "type": "trend",
+      "description": "FALSIFIABLE HYPOTHESIS: BTC/ETH 1h pullbacks to lower Bollinger Band during uptrends (price > EMA 200) with RSI < 30 revert to the middle band within 12 candles at least 55% of the time, producing profit factor above 1.1"
+    },
+    {
+      "type": "trend",
+      "description": "PARAMETER RANGES FOR SWEEP: - BB period: 15-25, step 5 - BB std dev: 1.5-2.5, step 0.25 - RSI threshold long: 25-35, step 5 - RSI threshold short: 65-75, step 5 - EMA trend filter: 100-200, step 50 - Stop ATR multiplier:"
+    }
+  ],
+  "explicit_conditions": [
+    "INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (period 14) - stop loss sizing - SMA 20 - take profit target (Bollinger middle band) ENTRY LONG: 1.",
+    "Previous candle was also above or touching upper BB EXIT RULES: - Take profit: Price reaches SMA 20 (middle Bollinger Band) - Stop loss: 2.0x ATR(14) beyond the Bollinger Band that triggered entry - Time stop: If middle band not reached within 12 candles (12 hours), exit at market - Breakeven: Move stop to entry once price moves 1.0 ATR in favor RISK MANAGEMENT: - Risk per trade: 0.75% of account (smaller size for mean reversion) - Max concurrent positions: 1 per asset - Skip entry if Bollinger."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "SMA",
+    "RSI",
+    "ATR",
+    "Bollinger Bands"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "1h"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-1dfd2faf0bd5.raw.txt",
+  "sha256": "b421a4b8fde8ab4db7c638574d46d3ef6ce39fe9fb35d1c87e57a418de915534",
+  "truncated": false
+}

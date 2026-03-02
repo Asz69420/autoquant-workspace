@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-fc1a5305acbc",
+  "created_at": "2026-02-28T23:00:05.689717Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/JSULpbV7-Volume-Divergence-Reversal-Signals-AlgoAlpha/",
+  "title": "Volume Divergence Reversal Signals [AlgoAlpha]",
+  "author": "AlgoAlpha",
+  "summary_bullets": [
+    "Top catalog indicator: Volume Divergence Reversal Signals [AlgoAlpha] by AlgoAlpha."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Volume Divergence Reversal Signals [AlgoAlpha] by AlgoAlpha.",
+      "note": "Meaning: Top catalog indicator: Volume Divergence Reversal Signals [AlgoAlpha] by AlgoAlpha."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-fc1a5305acbc.raw.txt",
+  "sha256": "885791e50c796ec67c8faea1fb29b8d9582c3280917ac86e259c9bc22edcdd12",
+  "truncated": false
+}

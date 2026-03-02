@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-9b80c94be407",
+  "created_at": "2026-02-26T21:15:44.856617Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=YvGITxuf7zg",
+  "title": "This Smart Money Indicator Looked Too Good to Be True... I Tested It",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "Today, we're going to be backtesting this popular smart money indicator on trading view.",
+    "It was sent to me by my community.",
+    "It looks amazing on a chart.",
+    "But does it actually really make any money?",
+    "Well, I can tell you one little secret actually changed everything.",
+    "But for this to happen, we're going to have to start right now.",
+    "Okay, guys, here we are on trading view.",
+    "First of all, we're going to give credit where credit was due.",
+    "We're going to go over to indicators here and we're going to click on trending.",
+    "Today's indicator we're going to be backtesting is this smart money structure by Gaines Algo has 6,800 downloads."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Today, we're going to be backtesting this popular smart money indicator on trading view.",
+      "note": "Meaning: Today, we're going to be backtesting this popular smart money indicator on trading view."
+    },
+    {
+      "timestamp": null,
+      "quote": "It was sent to me by my community.",
+      "note": "Meaning: It was sent to me by my community."
+    },
+    {
+      "timestamp": null,
+      "quote": "It looks amazing on a chart.",
+      "note": "Meaning: It looks amazing on a chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "But does it actually really make any money?",
+      "note": "Meaning: But does it actually really make any money?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Well, I can tell you one little secret actually changed everything.",
+      "note": "Meaning: Well, I can tell you one little secret actually changed everything."
+    },
+    {
+      "timestamp": null,
+      "quote": "But for this to happen, we're going to have to start right now.",
+      "note": "Meaning: But for this to happen, we're going to have to start right now."
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay, guys, here we are on trading view.",
+      "note": "Meaning: Okay, guys, here we are on trading view."
+    },
+    {
+      "timestamp": null,
+      "quote": "First of all, we're going to give credit where credit was due.",
+      "note": "Meaning: First of all, we're going to give credit where credit was due."
+    },
+    {
+      "timestamp": null,
+      "quote": "We're going to go over to indicators here and we're going to click on trending.",
+      "note": "Meaning: We're going to go over to indicators here and we're going to click on trending."
+    },
+    {
+      "timestamp": null,
+      "quote": "Today's indicator we're going to be backtesting is this smart money structure by Gaines Algo has 6,800 downloads.",
+      "note": "Meaning: Today's indicator we're going to be backtesting is this smart money structure by Gaines Algo has 6,800 downloads."
+    },
+    {
+      "timestamp": null,
+      "quote": "Looks like a killer of an indicator looks very, very good.",
+      "note": "Meaning: Looks like a killer of an indicator looks very, very good."
+    },
+    {
+      "timestamp": null,
+      "quote": "So we're going to go over and add this to our charts to do.",
+      "note": "Meaning: So we're going to go over and add this to our charts to do."
+    }
+  ],
+  "extracted_rules": [
+    "This one here, if you were to hit it, would have managed to get you about 8% and they generally seem to pop up quite well.",
+    "There's some real rules behind the actual strategy by adding another indicator for stoplosses and take profits.",
+    "Okay, so these are the rules of the strategy.",
+    "I'm going to add a couple of indicators for confluence and we're going to see if we can make this any better.",
+    "Okay, guys, I've come up with a new set of rules for this strategy.",
+    "When price is above the range filter, it is green and not gray like this here.",
+    "We're looking for longs and when it's pink and prices below it, we're looking for shorts.",
+    "And this is how we set our stop loss and take profit.",
+    "One thing I'd say that when using the ATR bands is use a maximum percentage value inside your rules.",
+    "So if the stop loss is too far away you either cancel that trade or you use a percentage instead.",
+    "This will keep you out of huge trades with huge stop losses that never ever either hit the stop loss or take profits.",
+    "We're going to set our first long entry on the candle setting the stop loss directly to the ATR band and looking for a take profit of one to 1.5 and boom.",
+    "I actually thought it was going to hit the stop loss before not so bad.",
+    "The stop loss is actually huge.",
+    "Personally, I'd have a stop loss of a maximum of 2.5 percent and then it's up to whether you decide whether to take those trades or actually cancel these orders.",
+    "If we look at the benchmark, we did actually for the first time in a long time, actually go underwater 16 percent.",
+    "So it meant throughout all of this time here on the equity curve, if you would have started this strategy, you would have gone down 16 percent before actually seeing any profit.",
+    "If I keep going down, you can see the wins and losses."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "First of all, we have a momentum indicator that checks price change and then make sure that that price change goes over a threshold."
+    },
+    {
+      "type": "trend",
+      "description": "We then have an anti-spam filter meaning that we will not be taking hundreds of chains all in the same trend one after the other and we will put a distance between each and every trade."
+    },
+    {
+      "type": "trend",
+      "description": "Next, we have a trend direction."
+    },
+    {
+      "type": "filter",
+      "description": "We have a volume filter that allows us to make sure that we're not getting into trades where there's no volume at all."
+    },
+    {
+      "type": "filter",
+      "description": "We then have an optional breakout filter."
+    },
+    {
+      "type": "filter",
+      "description": "By adding the range filter, it allows us to filter out some of these bad trades."
+    },
+    {
+      "type": "filter",
+      "description": "When price is above the range filter, it is green and not gray like this here."
+    },
+    {
+      "type": "filter",
+      "description": "So as you can see, it filters out some of the trades like these ones here but keeps some of the better trades very much like these ones here."
+    },
+    {
+      "type": "risk",
+      "description": "ATR bands allowing us to set our stop losses and take profits."
+    },
+    {
+      "type": "risk",
+      "description": "And this is how we set our stop loss and take profit."
+    },
+    {
+      "type": "risk",
+      "description": "So if the stop loss is too far away you either cancel that trade or you use a percentage instead."
+    },
+    {
+      "type": "risk",
+      "description": "This will keep you out of huge trades with huge stop losses that never ever either hit the stop loss or take profits."
+    },
+    {
+      "type": "risk",
+      "description": "We're going to set our first long entry on the candle setting the stop loss directly to the ATR band and looking for a take profit of one to 1.5 and boom."
+    },
+    {
+      "type": "risk",
+      "description": "I actually thought it was going to hit the stop loss before not so bad."
+    },
+    {
+      "type": "risk",
+      "description": "The stop loss is actually huge."
+    },
+    {
+      "type": "risk",
+      "description": "Personally, I'd have a stop loss of a maximum of 2.5 percent and then it's up to whether you decide whether to take those trades or actually cancel these orders."
+    }
+  ],
+  "explicit_conditions": [
+    "And this is how we set our stop loss and take profit.",
+    "So if the stop loss is too far away you either cancel that trade or you use a percentage instead.",
+    "This will keep you out of huge trades with huge stop losses that never ever either hit the stop loss or take profits.",
+    "We're going to set our first long entry on the candle setting the stop loss directly to the ATR band and looking for a take profit of one to 1.5 and boom.",
+    "I actually thought it was going to hit the stop loss before not so bad.",
+    "The stop loss is actually huge.",
+    "Personally, I'd have a stop loss of a maximum of 2.5 percent and then it's up to whether you decide whether to take those trades or actually cancel these orders."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-9b80c94be407.raw.txt",
+  "sha256": "e9537993bdaec91edd80128b30ace184a42dd037e12c6cffd21e7ac1116d4930",
+  "truncated": false
+}

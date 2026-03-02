@@ -1,0 +1,1 @@
+Manual indicator ingest from YouTube URL. source_ref=https://www.youtube.com/watch?v=QulfTJxnZhU video_id=QulfTJxnZhU

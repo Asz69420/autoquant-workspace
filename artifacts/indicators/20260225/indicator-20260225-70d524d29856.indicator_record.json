@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-70d524d29856",
+  "created_at": "2026-02-25T02:39:22.497069Z",
+  "tv_ref": "tradingview:jgopUzJY",
+  "url": "https://www.tradingview.com/script/jgopUzJY-Adaptive-Quasimodo-Confluence-Engine-PhenLabs/",
+  "name": "Adaptive Quasimodo + Confluence Engine - PhenLabs",
+  "author": "PhenLabs",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "ce412d55b7a9c0e80f6b79b51daa06f4f52f3c0ae734f4deba72c897e2e0adf2",
+  "truncated": false
+}

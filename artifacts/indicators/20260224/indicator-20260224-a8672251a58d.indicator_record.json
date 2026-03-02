@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260224-a8672251a58d",
+  "created_at": "2026-02-24T11:04:36.667949Z",
+  "tv_ref": "tv://cap-test",
+  "name": "MACD",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [],
+  "sha256": "5210ff85f7fa7ee24ec5c0382b65b740af47bcc59ddc7ae2fca3c995c3fcf124",
+  "truncated": false
+}

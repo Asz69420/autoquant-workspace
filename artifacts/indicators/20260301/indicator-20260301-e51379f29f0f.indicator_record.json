@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-e51379f29f0f",
+  "created_at": "2026-03-01T13:19:50.136276Z",
+  "tv_ref": "tradingview:Iujj3hZh",
+  "url": "https://www.tradingview.com/script/Iujj3hZh-Institutional-Liquidity-Grab/",
+  "name": "Institutional Liquidity Grab",
+  "author": "xriswart",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "83e5138d1665453405fe402b379e85e15861916717677bd36d10c9485efba0e3",
+  "truncated": false
+}

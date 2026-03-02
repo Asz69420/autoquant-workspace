@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-ff4143545220",
+  "created_at": "2026-02-26T21:44:30.610031Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=2yH2nAC7G80",
+  "title": "This Buy/Sell Indicator is INSANE! (TradingView Indicator Test 2025)",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "Today we're going to be looking at this indicator here and I'm going to be testing it as far as I possibly can to see whether or not it is possible.",
+    "So if that sounds good, let's get straight to it.",
+    "Hey traders, I hope you're all going extremely well.",
+    "My name is David and welcome to my channel where I test trading indicators to see whether they are profitable on live markets.",
+    "Okay, today we have a new indicator called the trend at speed analyzer by Xiaman himself.",
+    "So without further ado, let's get over to my screen and let's have a look at this brand new indicator.",
+    "I do videos about indicators every single week.",
+    "Don't forget to hit that bell button so that you get an alert as soon as I find something interesting.",
+    "Let's get over to my screen.",
+    "Let's have a look at this new indicator."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Today we're going to be looking at this indicator here and I'm going to be testing it as far as I possibly can to see whether or not it is possible.",
+      "note": "Meaning: Today we're going to be looking at this indicator here and I'm going to be testing it as far as I possibly can to see whether or not it is possible."
+    },
+    {
+      "timestamp": null,
+      "quote": "So if that sounds good, let's get straight to it.",
+      "note": "Meaning: So if that sounds good, let's get straight to it."
+    },
+    {
+      "timestamp": null,
+      "quote": "Hey traders, I hope you're all going extremely well.",
+      "note": "Meaning: Hey traders, I hope you're all going extremely well."
+    },
+    {
+      "timestamp": null,
+      "quote": "My name is David and welcome to my channel where I test trading indicators to see whether they are profitable on live markets.",
+      "note": "Meaning: My name is David and welcome to my channel where I test trading indicators to see whether they are profitable on live markets."
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay, today we have a new indicator called the trend at speed analyzer by Xiaman himself.",
+      "note": "Meaning: Okay, today we have a new indicator called the trend at speed analyzer by Xiaman himself."
+    },
+    {
+      "timestamp": null,
+      "quote": "So without further ado, let's get over to my screen and let's have a look at this brand new indicator.",
+      "note": "Meaning: So without further ado, let's get over to my screen and let's have a look at this brand new indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "I do videos about indicators every single week.",
+      "note": "Meaning: I do videos about indicators every single week."
+    },
+    {
+      "timestamp": null,
+      "quote": "Don't forget to hit that bell button so that you get an alert as soon as I find something interesting.",
+      "note": "Meaning: Don't forget to hit that bell button so that you get an alert as soon as I find something interesting."
+    },
+    {
+      "timestamp": null,
+      "quote": "Let's get over to my screen.",
+      "note": "Meaning: Let's get over to my screen."
+    },
+    {
+      "timestamp": null,
+      "quote": "Let's have a look at this new indicator.",
+      "note": "Meaning: Let's have a look at this new indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay, here we are on trading view.",
+      "note": "Meaning: Okay, here we are on trading view."
+    },
+    {
+      "timestamp": null,
+      "quote": "We're going to be back testing.",
+      "note": "Meaning: We're going to be back testing."
+    }
+  ],
+  "extracted_rules": [
+    "So if that sounds good, let's get straight to it.",
+    "We're going to go up to indicators up the top here and then we're going to search for trend speed analyzer by Xiaman here has 3200 downloads when I started this video.",
+    "Now we have a histogram down the bottom here, which allows us to tell whether we're looking for long positions when it goes green and short positions when it goes red.",
+    "It does tend to have a dark red when the markets are moving faster.",
+    "And when we're in more colon solidation periods, we have a light pink color here.",
+    "And that tends to help us to stay out of market when markets are going sideways.",
+    "We need to know exactly when we're going to get into our trades.",
+    "So we'll be adding a couple of other indicators to keep us out of markets when markets are moving sideways.",
+    "And that's going to keep us out of markets when markets are moving sideways.",
+    "So we're looking for price to be above the moving average and for it to be green when we're looking for longs.",
+    "Right, OK, for the stop loss and the take profit, we're going to use the trusty ATR bands.",
+    "Now, the ATR bands by David Tech are a great way to set your stop loss and take profit as they adapt to market conditions and means you don't have exactly the same stop loss and take profit.",
+    "So this helps you to get a better stop loss.",
+    "We're going to set the stop loss just like that.",
+    "And then we're going to look for a risk to reward of one point five.",
+    "If you were to purchase this pair over here, you would currently be up 63 percent."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Okay, today we have a new indicator called the trend at speed analyzer by Xiaman himself."
+    },
+    {
+      "type": "trend",
+      "description": "This is the trend speed analyzer by Xiaman."
+    },
+    {
+      "type": "momentum",
+      "description": "And as you can see, it is a bit of an histogram down here at the bottom panel."
+    },
+    {
+      "type": "momentum",
+      "description": "Now we have a histogram down the bottom here, which allows us to tell whether we're looking for long positions when it goes green and short positions when it goes red."
+    },
+    {
+      "type": "momentum",
+      "description": "The histogram has gone green and the ADX has gone red over blue."
+    },
+    {
+      "type": "risk",
+      "description": "Right, OK, for the stop loss and the take profit, we're going to use the trusty ATR bands."
+    },
+    {
+      "type": "risk",
+      "description": "Now, the ATR bands by David Tech are a great way to set your stop loss and take profit as they adapt to market conditions and means you don't have exactly the same stop loss and take profit."
+    },
+    {
+      "type": "trend",
+      "description": "No matter whether the markets are ranging or actually trending."
+    },
+    {
+      "type": "risk",
+      "description": "So this helps you to get a better stop loss."
+    },
+    {
+      "type": "risk",
+      "description": "We're going to set the stop loss just like that."
+    },
+    {
+      "type": "risk",
+      "description": "And then we're going to look for a risk to reward of one point five."
+    }
+  ],
+  "explicit_conditions": [
+    "Now we have a histogram down the bottom here, which allows us to tell whether we're looking for long positions when it goes green and short positions when it goes red.",
+    "Right, OK, for the stop loss and the take profit, we're going to use the trusty ATR bands.",
+    "Now, the ATR bands by David Tech are a great way to set your stop loss and take profit as they adapt to market conditions and means you don't have exactly the same stop loss and take profit.",
+    "So this helps you to get a better stop loss.",
+    "We're going to set the stop loss just like that.",
+    "And then we're going to look for a risk to reward of one point five."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "for trend speed analyzer by Xiaman here has 3200 downloads when I started this vi",
+    "ATR",
+    "ADX"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "for trend speed analyzer by Xiaman here has 3200 downloads when I started this vi",
+      "keywords": [
+        "for",
+        "trend",
+        "speed",
+        "analyzer",
+        "by"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-ff4143545220.raw.txt",
+  "sha256": "0aa53739e2a02b1d19f4681ddb640ffe971edba4807f6fe1280cc25a8ab79082",
+  "truncated": false
+}

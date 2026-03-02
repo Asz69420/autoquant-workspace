@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-ac4fb150b6e6",
+  "created_at": "2026-03-01T17:19:49.940890Z",
+  "tv_ref": "tradingview:v5zEBKFJ",
+  "url": "https://www.tradingview.com/script/v5zEBKFJ-Malaysian-SnR-Levels-UAlgo/",
+  "name": "Malaysian SnR Levels [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "72379497f03b8bf54ccfad7d0fb66e6cb5a6e94d31f923dc55179b57df8f77bf",
+  "truncated": false
+}

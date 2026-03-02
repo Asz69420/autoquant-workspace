@@ -1,0 +1,13 @@
+﻿{
+    "schema_version":  "1.0",
+    "id":  "promo_strategy-spec-20260226-6efb47fd8758.strategy_spec",
+    "created_at":  "2026-02-26T12:43:25.3007672Z",
+    "status":  "OK",
+    "reason_code":  null,
+    "suggestion":  null,
+    "input_linkmap_path":  "artifacts/links/20260226/research-20260226-b2e915fe9508.linkmap.json",
+    "thesis_artifact_path":  "artifacts/thesis/20260226/thesis-20260226-6efb47fd8758.thesis.json",
+    "strategy_spec_artifact_path":  "artifacts/strategy_specs/20260226/strategy-spec-20260226-6efb47fd8758.strategy_spec.json",
+    "batch_backtest_artifact_path":  "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\batches\\20260226\\batch_20260226_b6c8fc3a.batch_backtest.json",
+    "experiment_plan_artifact_path":  "artifacts\\experiments\\20260226\\exp_20260226_87219e18.experiment_plan.json"
+}

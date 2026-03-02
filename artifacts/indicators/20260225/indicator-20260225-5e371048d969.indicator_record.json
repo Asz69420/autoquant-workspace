@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-5e371048d969",
+  "created_at": "2026-02-24T23:24:22.409095Z",
+  "tv_ref": "tradingview:iS8g648s",
+  "url": "https://www.tradingview.com/script/iS8g648s/",
+  "name": "open) adds volume\\n\\nDown LTF candle (close",
+  "author": "tradingview",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "646adef6ac634c100fcacef5b742b02ac81df0fea15dc114906d03f02b940afd",
+  "truncated": false
+}

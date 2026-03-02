@@ -1,0 +1,38 @@
+📊 DAILY INTEL — 2026-03-02 5:30 AEST
+
+🟠 BTC
+Strat          PF     WR%     TC     DD%     P&L%
+○── 4h ──────────────────────────────────────────
+Suprtrnd_    1.39     41%     61     34%      +4%
+EMA_RSI      1.17     32%    167    105%      +4%
+Direct_Te    1.05     26%    203    330%      +1%
+
+🔵 ETH
+Strat          PF     WR%     TC     DD%     P&L%
+○── 4h ──────────────────────────────────────────
+Suprtrnd_    1.92     24%     85     24%     +44%
+Direct_Te    1.34     31%    190     53%     +39%
+Direct_Ch    1.24     38%    117     95%     +17%
+○── 1h ──────────────────────────────────────────
+MACD_Tigh    1.71     20%    161     21%     +32%
+MACD_4H      1.46     20%    170     33%     +22%
+MACD_Wide    1.23     25%    110     86%     +11%
+
+⚡ 24H ACTIVITY
+Cycles:162 Backtests:21 Specs:163 Errors:19
+
+🎯 MILESTONES
+• PF>1 firsts: Templa_Di, Templa_Di
+• New records: Suprtrnd_ 1.92, MACD_Tigh 1.71
+• Near-promotion
+
+⚠️ ATTENTION
+• FAIL errors:19/24h
+• Top:DIRECTIVE_GEN_FAIL x14
+
+⚡ ERRORS (24h)
+ No errors in last 24h
+ 🔥 Balrog: 40 violations in last 5 checks
+
+🧙 QUANDALF SUGGESTS
+(no suggestions in latest advisory)

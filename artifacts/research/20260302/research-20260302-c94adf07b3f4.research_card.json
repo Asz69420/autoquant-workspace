@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-c94adf07b3f4",
+  "created_at": "2026-03-01T17:19:49.304458Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/dTZk6sb8/",
+  "title": "Breakout Pullback Reload Continue",
+  "author": "AlaaElkawasy22",
+  "summary_bullets": [
+    "Top catalog indicator: Breakout Pullback Reload Continue by AlaaElkawasy22."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Breakout Pullback Reload Continue by AlaaElkawasy22.",
+      "note": "Meaning: Top catalog indicator: Breakout Pullback Reload Continue by AlaaElkawasy22."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-c94adf07b3f4.raw.txt",
+  "sha256": "cf926477961ee147e951440dc6f880a02958d5d785fb03e6ead1dead89e8f7c0",
+  "truncated": false
+}

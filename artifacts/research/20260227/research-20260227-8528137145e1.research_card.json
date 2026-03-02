@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-8528137145e1",
+  "created_at": "2026-02-26T21:26:22.026297Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=_kvEItHHhJc",
+  "title": "A Subscriber Sent Me This FREE TradingView Indicator… I Gave It $10,000 to Test",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "I found this brand new trading view indicator that provides a biocell signals and I gave it $10,000 to back test it as far as we possibly can so that you guys can add this strategy to your trading plan but for us to do that we're gonna have to start right now okay guys we're gonna go straight over to trading view first things first I'm gonna give credit where credit is due I found this indicator on the no-nonsense 4x channel they do multiple back tests of these indicators and this is the best in"
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "I found this brand new trading view indicator that provides a biocell signals and I gave it $10,000 to back test it as far as we possibly can so that you guys can add this strategy to your trading pla",
+      "note": "Meaning: I found this brand new trading view indicator that provides a biocell signals and I gave it $10,000 to back test it as far as we possibly can so that y"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [
+    "for the dmh again and you add the version by valor you can see that they",
+    "for atr bands by david tech this one just here we"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "for the dmh again and you add the version by valor you can see that they",
+      "keywords": [
+        "for",
+        "the",
+        "dmh",
+        "again",
+        "and"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "name": "for atr bands by david tech this one just here we",
+      "keywords": [
+        "for",
+        "atr",
+        "bands",
+        "by",
+        "david"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-8528137145e1.raw.txt",
+  "sha256": "1f5dc22f4c7ab95b33ddb7be9e137fe506361af96715d3c995bbdb3a74a3afde",
+  "truncated": false
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772430588-backfill-strategy-spec-20260302-0e9-fc7f6b8d-90f8d3f3.strategy_spec",
+  "run_id": "autopilot-1772430588-backfill-strategy-spec-20260302-0e9-fc7f6b8d-90f8d3f3.strategy_spec",
+  "created_at": "2026-03-02T05:55:14.639118+00:00",
+  "verdict": "REVISE",
+  "strategy_family": "strategy-spec-20260302-0e9-fc7f6b8d-90f8d3f3.strategy_spec",
+  "template": "template_diversity",
+  "metrics": {
+    "profit_factor_after_costs": 1.17919525,
+    "max_drawdown": 0.108098692866,
+    "trades": 131,
+    "regime_breakdown": {
+      "trending_trades": 44,
+      "ranging_trades": 49,
+      "transitional_trades": 38
+    },
+    "regime_pf": {
+      "trending": 0.65868713,
+      "ranging": 2.42717849,
+      "transitional": 0.81849449
+    },
+    "regime_wr": {
+      "trending": 0.27272727,
+      "ranging": 0.36734694,
+      "transitional": 0.18421053
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "ranging"
+    ],
+    "bad_regimes": [
+      "trending",
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": true
+  },
+  "failure_reasons": [
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "require_regime_filter": true,
+        "allowed_regime": "ranging"
+      },
+      "rationale": "Regime-aware: strategy shows edge mainly in ranging; restrict trading to that regime.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"allowed_regime\": \"ranging\", \"require_regime_filter\": true}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260302/batch_20260302_be8cb029.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260302/refine_20260302_7a2bd9e8.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "8a8647db0a2e0126"
+}

@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_3d money flow in",
+    "created_at":  "2026-03-01T10:00:09.126780+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260301/research-20260301-3e313948c9b2.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260301/indicator-20260301-6abd1c369f5f.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260301/research-20260301-3e313948c9b2.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T10:02:52.9474570Z",
+    "attempts":  1,
+    "last_error":  null
+}

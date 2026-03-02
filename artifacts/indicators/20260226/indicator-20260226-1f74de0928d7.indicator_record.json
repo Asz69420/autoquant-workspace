@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-1f74de0928d7",
+  "created_at": "2026-02-25T22:33:43.214693Z",
+  "tv_ref": "tradingview:6pDGXgSO",
+  "url": "https://www.tradingview.com/script/6pDGXgSO-Volume-Flow-Analysis-UAlgo/",
+  "name": "Volume Flow Analysis [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "7cd80dd662d116ad56c1af916f67686e5586ab798f5d031f5817ed435a3082e6",
+  "truncated": false
+}

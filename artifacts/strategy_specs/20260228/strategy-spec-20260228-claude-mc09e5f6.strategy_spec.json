@@ -1,0 +1,245 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-mc09e5f6",
+  "created_at": "2026-02-28T12:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD histogram zero-line cross confirmed by EMA_50 trend alignment captures momentum shifts with trend context. Unlike EMA crossovers (lagging) or RSI pullbacks (counter-trend), MACD histogram measures the rate of change of momentum — crossing zero indicates acceleration in the trend direction. EMA_50 alignment ensures we trade with the higher timeframe trend. Wide exits (2.5x ATR stop, 4x ATR TP) incorporate the key finding that wider stops were the only modification producing profitability.",
+  "regime_assumption": "TRENDING. MACD confirmation works best when there is a clear directional trend for the histogram to track. ADX > 20 gate ensures minimum trend strength. Expected to underperform in ranging/choppy conditions where MACD oscillates around zero. Invalidate if trending-regime PF < 0.95.",
+  "invalidation_conditions": [
+    "Trending-regime PF < 0.95 on 200+ trade sample",
+    "Overall PF < 0.85 (worse than ema_rsi_atr baseline of 0.92)",
+    "MACD zero-cross entries show no timing advantage over EMA crossover entries"
+  ],
+  "variants": [
+    {
+      "name": "macd_trend_wide_exit",
+      "description": "MACD histogram zero-cross with EMA_50 trend and wide asymmetric exits. Core hypothesis test: does MACD provide better timing than EMA for trend entries when combined with wider exits?",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero (histogram turns positive).",
+        "Close > EMA_50 (aligned with higher timeframe trend).",
+        "ADX_14 > 20 (minimum trend strength).",
+        "Execute on bar close only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero (histogram turns negative).",
+        "Close < EMA_50 (aligned with higher timeframe trend).",
+        "ADX_14 > 20 (minimum trend strength).",
+        "Execute on bar close only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 20 (trending)"
+      ],
+      "exit_rules": [
+        "Stop loss at 2.5x ATR below entry (wide stop per exit_change insight).",
+        "Take profit at 4.0x ATR above entry (R:R 1:1.6).",
+        "Exit on opposite MACD histogram zero-cross.",
+        "Exit on max 25 bars in trade.",
+        "Hypothesis failure mode guard: MACD whipsaw during range-bound consolidation",
+        "Hypothesis failure mode guard: Late entry after trend already extended"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 1%.",
+        "Wide exit ratio informed by exit_change profitability finding.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 15, "max": 30, "step": 5, "default": 20},
+        {"name": "stop_atr_mult", "min": 2.0, "max": 3.5, "step": 0.5, "default": 2.5},
+        {"name": "tp_atr_mult", "min": 3.0, "max": 5.0, "step": 0.5, "default": 4.0},
+        {"name": "max_bars_in_trade", "min": 15, "max": 40, "step": 5, "default": 25}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 4.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_50 as higher timeframe trend filter"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-line cross as entry timing signal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "macd_strong_trend_adx25",
+      "description": "MACD entry with tighter ADX gate (>25) and balanced exits. Tests whether stronger trend requirement improves entry quality enough to justify fewer trades.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero.",
+        "Close > EMA_50.",
+        "ADX_14 > 25 (confirmed trending regime).",
+        "Execute on bar close only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero.",
+        "Close < EMA_50.",
+        "ADX_14 > 25 (confirmed trending regime).",
+        "Execute on bar close only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 > 25 (strong trending)"
+      ],
+      "exit_rules": [
+        "Stop loss at 2.0x ATR below entry.",
+        "Take profit at 3.5x ATR above entry (R:R 1:1.75).",
+        "Exit on opposite MACD histogram zero-cross.",
+        "Exit on max 20 bars in trade.",
+        "Hypothesis failure mode guard: Insufficient trade count from dual ADX+MACD filter",
+        "Hypothesis failure mode guard: MACD lag missing trend starts"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 1%.",
+        "If fewer than 50 trades in backtest, result needs longer test period.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 20, "max": 35, "step": 5, "default": 25},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 3.0, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 2.5, "max": 4.5, "step": 0.5, "default": 3.5},
+        {"name": "max_bars_in_trade", "min": 10, "max": 30, "step": 5, "default": 20}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.5,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_50 trend alignment filter"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross with ADX_14 > 25 gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    },
+    {
+      "name": "macd_1h_momentum",
+      "description": "MACD on 1h ETH for higher-frequency momentum capture. Tests whether MACD's faster signal generation on 1h produces enough trade volume with positive expectancy.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero.",
+        "Close > EMA_50.",
+        "ADX_14 > 20.",
+        "Execute on bar close only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero.",
+        "Close < EMA_50.",
+        "ADX_14 > 20.",
+        "Execute on bar close only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime gate: ADX_14 > 20 (trending)"
+      ],
+      "exit_rules": [
+        "Stop loss at 2.0x ATR below entry.",
+        "Take profit at 3.0x ATR above entry (R:R 1:1.5).",
+        "Exit on opposite MACD histogram zero-cross.",
+        "Exit on max 15 bars in trade.",
+        "Hypothesis failure mode guard: 1h MACD whipsaw frequency",
+        "Hypothesis failure mode guard: Fee erosion on higher trade frequency"
+      ],
+      "risk_rules": [
+        "Risk per trade target is 0.75%.",
+        "Reduced risk for higher-frequency 1h timeframe.",
+        "Max concurrent positions: 1"
+      ],
+      "parameters": [
+        {"name": "adx_min", "min": 15, "max": 25, "step": 5, "default": 20},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 2.5, "max": 4.0, "step": 0.5, "default": 3.0},
+        {"name": "max_bars_in_trade", "min": 8, "max": 20, "step": 4, "default": 15}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 0.75
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_50 trend filter on 1h"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross on 1h for faster momentum signals"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_CREATIVE"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "RSI", "ATR", "MACD", "Bollinger Bands",
+    "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP",
+    "Ichimoku", "Supertrend", "Donchian Channels"
+  ]
+}

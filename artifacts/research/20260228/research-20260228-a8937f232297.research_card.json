@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260228-a8937f232297",
+  "created_at": "2026-02-27T18:42:06.826043Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=77ikjQjdGFg",
+  "title": "Claude AI can NOW Automatically Build and Improve Your TradingView Strategies (while you sleep)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "AI is now capable of improving your trading strategies while you're sleeping.",
+    "Using the back testing engine that I've developed, AI can finally iterate through its own ideas and only give you a strategy if it's better than before.",
+    "This is a gamecher and these are the results.",
+    "I gave it the super trend strategy.",
+    "It has rookie numbers as you can see.",
+    "And this is how the AI improved it.",
+    "And then I thought, what if it can create a better strategy than my botfast re-entry from the master class if I give it enough time?",
+    "So I went to sleep and I let it calculate.",
+    "And then I woke up to this.",
+    "The AI was able to create a strategy that makes it into my top three riskreward ranking."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "AI is now capable of improving your trading strategies while you're sleeping.",
+      "note": "Meaning: AI is now capable of improving your trading strategies while you're sleeping."
+    },
+    {
+      "timestamp": null,
+      "quote": "Using the back testing engine that I've developed, AI can finally iterate through its own ideas and only give you a strategy if it's better than before.",
+      "note": "Meaning: Using the back testing engine that I've developed, AI can finally iterate through its own ideas and only give you a strategy if it's better than before"
+    },
+    {
+      "timestamp": null,
+      "quote": "This is a gamecher and these are the results.",
+      "note": "Meaning: This is a gamecher and these are the results."
+    },
+    {
+      "timestamp": null,
+      "quote": "I gave it the super trend strategy.",
+      "note": "Meaning: I gave it the super trend strategy."
+    },
+    {
+      "timestamp": null,
+      "quote": "It has rookie numbers as you can see.",
+      "note": "Meaning: It has rookie numbers as you can see."
+    },
+    {
+      "timestamp": null,
+      "quote": "And this is how the AI improved it.",
+      "note": "Meaning: And this is how the AI improved it."
+    },
+    {
+      "timestamp": null,
+      "quote": "And then I thought, what if it can create a better strategy than my botfast re-entry from the master class if I give it enough time?",
+      "note": "Meaning: And then I thought, what if it can create a better strategy than my botfast re-entry from the master class if I give it enough time?"
+    },
+    {
+      "timestamp": null,
+      "quote": "So I went to sleep and I let it calculate.",
+      "note": "Meaning: So I went to sleep and I let it calculate."
+    },
+    {
+      "timestamp": null,
+      "quote": "And then I woke up to this.",
+      "note": "Meaning: And then I woke up to this."
+    },
+    {
+      "timestamp": null,
+      "quote": "The AI was able to create a strategy that makes it into my top three riskreward ranking.",
+      "note": "Meaning: The AI was able to create a strategy that makes it into my top three riskreward ranking."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you can see, it iterated a few times.",
+      "note": "Meaning: As you can see, it iterated a few times."
+    },
+    {
+      "timestamp": null,
+      "quote": "It didn't manage to beat my own strategy, but holy moly, it's better than a variation of it.",
+      "note": "Meaning: It didn't manage to beat my own strategy, but holy moly, it's better than a variation of it."
+    }
+  ],
+  "extracted_rules": [
+    "Using the back testing engine that I've developed, AI can finally iterate through its own ideas and only give you a strategy if it's better than before.",
+    "And then I thought, what if it can create a better strategy than my botfast re-entry from the master class if I give it enough time?",
+    "So, if you don't watch this video, you're missing out on a massive game changer in trading.",
+    "And in about 10 minutes from now, if you continue watching this video, you will know everything you need to know to use this for yourself.",
+    "And guys, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.",
+    "I will put the link down below and choose your app Mac OS or Windows and when you open it up it will look something like this.",
+    "And if you want to learn how to automate any Trading View strategy, especially the ones that you create with this AI, I will put a link to a video up top.",
+    "I will still have to decide if I put it in Signnum or in my masterass.",
+    "It can run back tests to see if its ideas make any sense.",
+    "So, if you ask the AI to come up with a scoring system for your strategies, for which I created a prompt that you can use also in the Google document linked down below and it will instruct the AI to test on all the assets in the data folder and not just Bitcoin.",
+    "So if you don't have it, you can't use it and then it doesn't make sense to continue watching the video in my opinion.",
+    "But then if you don't have it, then how do you compete with somebody that creates strategies while they're sleeping?",
+    "If you don't have enough tokens, but sometimes it makes mistakes when coding pine script.",
+    "But if you're really serious about this, you would go for the max plan.",
+    "Keep in mind when you click on it, it will actually trade on the entire history of Bitcoin, which of course is not a good idea, right?",
+    "But it's also another thing that the back testing engine takes care of when you give it the code.",
+    "If you set this to another number, you have issues.",
+    "Again, remember there is an open trade and in that case if your chart data that you have in this folder is not exactly up to par today, of course then that last trade will not match perfectly.",
+    "I will come back when this is done.",
+    "What do you do if the AI gives you back test numbers that don't match with Trading Views numbers?"
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "I gave it the super trend strategy."
+    },
+    {
+      "type": "risk",
+      "description": "The AI was able to create a strategy that makes it into my top three riskreward ranking."
+    },
+    {
+      "type": "risk",
+      "description": "I have my own riskreward score."
+    },
+    {
+      "type": "trend",
+      "description": "And this is how the Super Trend V4 strategy scores that I showed you in the beginning of the video."
+    },
+    {
+      "type": "risk",
+      "description": "And yes, shorting is risky, so it gets a lower score."
+    },
+    {
+      "type": "filter",
+      "description": "And before I get a comment about overfitting or curve fitting, I know about this problem of course and I avoid it by testing on a lot of assets and then compiling a score."
+    },
+    {
+      "type": "trend",
+      "description": "And I chose the super trend strategy as a demo because everyone has access to this, right?"
+    },
+    {
+      "type": "trend",
+      "description": "Rename it to super trend v1."
+    },
+    {
+      "type": "trend",
+      "description": "In our case, it was super trend v2."
+    },
+    {
+      "type": "trend",
+      "description": "So, I copy super trend v2."
+    },
+    {
+      "type": "trend",
+      "description": "And as you can see here I have the wrong name so I have to put super trend v2 super trend v2."
+    },
+    {
+      "type": "trend",
+      "description": "And as well, you get access to the AI trend radar where you can see which assets trend upwards or downwards so you never miss out on a trending asset."
+    },
+    {
+      "type": "risk",
+      "description": "We want to make sure the mindset of the people joining is proper long-term, lower risk, higher portfolio value, right?"
+    }
+  ],
+  "explicit_conditions": [
+    "And then I thought, what if it can create a better strategy than my botfast re-entry from the master class if I give it enough time?",
+    "We want to make sure the mindset of the people joining is proper long-term, lower risk, higher portfolio value, right?"
+  ],
+  "indicators_mentioned": [
+    "of a better strategy than my Bfast re-entry"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "of a better strategy than my Bfast re-entry",
+      "keywords": [
+        "of",
+        "a",
+        "better",
+        "strategy",
+        "than"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [
+    "weekly"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260228/research-20260228-a8937f232297.raw.txt",
+  "sha256": "a7d22ae7d9e1551e1ba53eb045c19e63e50634ea6f62fc82a840d66a907f83b8",
+  "truncated": false
+}

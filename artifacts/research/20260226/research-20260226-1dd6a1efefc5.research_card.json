@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-1dd6a1efefc5",
+  "created_at": "2026-02-26T12:40:01.803773Z",
+  "source_type": "transcript_drop",
+  "source_ref": "transcript_drop://strategy_005_ichimoku_cloud_cci_momentum",
+  "title": "strategy_005_ichimoku_cloud_cci_momentum",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "STRATEGY: Ichimoku Cloud Trend + CCI Momentum Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Trending with momentum confirmation TYPE: Trend following with momentum timing CONCEPT: Ichimoku Cloud provides one of the most complete trend identification systems - it shows trend direction, strength, support/resistance, and momentum all in one indicator.",
+    "CCI adds precise entry timing by catching momentum shifts.",
+    "We enter when CCI shows momentum returning to the trend direction while Ichimoku confirms the trend is strong and price is on the right side of the cloud.",
+    "INDICATORS USED: - Ichimoku Cloud (conversion 9, base 26, span B 52, displacement 26) - Tenkan-sen (conversion line) - short-term momentum - Kijun-sen (base line) - medium-term trend - Senkou Span A and B (cloud) - trend direction and S/R - CCI (period 20) - momentum entry timing - ATR (period 14) - stop loss and position sizing ENTRY LONG: 1.",
+    "Price is above the Ichimoku Cloud (above both Span A and Span B) 2.",
+    "Tenkan-sen > Kijun-sen (short-term momentum aligned with trend) 3.",
+    "Cloud is green (Span A > Span B, bullish cloud) 4.",
+    "CCI(20) crosses above -100 from below (momentum returning after pullback) ENTRY SHORT: 1.",
+    "Tenkan-sen < Kijun-sen (bearish momentum) 3.",
+    "Cloud is red (Span A < Span B, bearish cloud) 4."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "STRATEGY: Ichimoku Cloud Trend + CCI Momentum Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Trending with momentum confirmation TYPE: Trend following with momentum timing CONCEPT: Ichimoku Clo",
+      "note": "Meaning: STRATEGY: Ichimoku Cloud Trend + CCI Momentum Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Trending with momentum confirmation TYPE: Trend fol"
+    },
+    {
+      "timestamp": null,
+      "quote": "CCI adds precise entry timing by catching momentum shifts.",
+      "note": "Meaning: CCI adds precise entry timing by catching momentum shifts."
+    },
+    {
+      "timestamp": null,
+      "quote": "We enter when CCI shows momentum returning to the trend direction while Ichimoku confirms the trend is strong and price is on the right side of the cloud.",
+      "note": "Meaning: We enter when CCI shows momentum returning to the trend direction while Ichimoku confirms the trend is strong and price is on the right side of the clo"
+    },
+    {
+      "timestamp": null,
+      "quote": "INDICATORS USED: - Ichimoku Cloud (conversion 9, base 26, span B 52, displacement 26) - Tenkan-sen (conversion line) - short-term momentum - Kijun-sen (base line) - medium-term trend - Senkou Span A a",
+      "note": "Meaning: INDICATORS USED: - Ichimoku Cloud (conversion 9, base 26, span B 52, displacement 26) - Tenkan-sen (conversion line) - short-term momentum - Kijun-sen "
+    },
+    {
+      "timestamp": null,
+      "quote": "Price is above the Ichimoku Cloud (above both Span A and Span B) 2.",
+      "note": "Meaning: Price is above the Ichimoku Cloud (above both Span A and Span B) 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "Tenkan-sen > Kijun-sen (short-term momentum aligned with trend) 3.",
+      "note": "Meaning: Tenkan-sen > Kijun-sen (short-term momentum aligned with trend) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "Cloud is green (Span A > Span B, bullish cloud) 4.",
+      "note": "Meaning: Cloud is green (Span A > Span B, bullish cloud) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "CCI(20) crosses above -100 from below (momentum returning after pullback) ENTRY SHORT: 1.",
+      "note": "Meaning: CCI(20) crosses above -100 from below (momentum returning after pullback) ENTRY SHORT: 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Tenkan-sen < Kijun-sen (bearish momentum) 3.",
+      "note": "Meaning: Tenkan-sen < Kijun-sen (bearish momentum) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "Cloud is red (Span A < Span B, bearish cloud) 4.",
+      "note": "Meaning: Cloud is red (Span A < Span B, bearish cloud) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "CCI(20) crosses below +100 from above (momentum fading after bounce) EXIT RULES: - Primary exit: Price closes inside the cloud (trend weakening) - Secondary exit: Tenkan crosses Kijun opposite directi",
+      "note": "Meaning: CCI(20) crosses below +100 from above (momentum fading after bounce) EXIT RULES: - Primary exit: Price closes inside the cloud (trend weakening) - Seco"
+    },
+    {
+      "timestamp": null,
+      "quote": "The cloud acts as dynamic support/resistance that adapts to volatility.",
+      "note": "Meaning: The cloud acts as dynamic support/resistance that adapts to volatility."
+    }
+  ],
+  "extracted_rules": [
+    "We enter when CCI shows momentum returning to the trend direction while Ichimoku confirms the trend is strong and price is on the right side of the cloud.",
+    "INDICATORS USED: - Ichimoku Cloud (conversion 9, base 26, span B 52, displacement 26) - Tenkan-sen (conversion line) - short-term momentum - Kijun-sen (base line) - medium-term trend - Senkou Span A and B (cloud) - trend direction and S/R - CCI (period 20) - momentum entry timing - ATR (period 14) - stop loss and position sizing ENTRY LONG: 1.",
+    "CCI(20) crosses below +100 from above (momentum fading after bounce) EXIT RULES: - Primary exit: Price closes inside the cloud (trend weakening) - Secondary exit: Tenkan crosses Kijun opposite direction (momentum shift) - Stop loss: Opposite edge of cloud or 2.0x ATR, whichever is tighter - Take profit: 3.0x ATR from entry - Trailing stop: Once in 2.0 ATR profit, trail at Kijun-sen level RISK MANAGEMENT: - Risk per trade: 1% of account - Max concurrent positions: 1 per asset - Skip entry if clou"
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "STRATEGY: Ichimoku Cloud Trend + CCI Momentum Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Trending with momentum confirmation TYPE: Trend following with momentum timing CONCEPT: Ichimoku Cloud provides one of t"
+    },
+    {
+      "type": "momentum",
+      "description": "CCI adds precise entry timing by catching momentum shifts."
+    },
+    {
+      "type": "trend",
+      "description": "Entry: when CCI shows momentum returning to the trend direction while Ichimoku confirms the trend is strong and price is on the right side of the cloud."
+    },
+    {
+      "type": "risk",
+      "description": "INDICATORS USED: - Ichimoku Cloud (conversion 9, base 26, span B 52, displacement 26) - Tenkan-sen (conversion line) - short-term momentum - Kijun-sen (base line) - medium-term trend - Senkou Span A and B (cloud) - trend"
+    },
+    {
+      "type": "trend",
+      "description": "Tenkan-sen > Kijun-sen (short-term momentum aligned with trend) 3."
+    },
+    {
+      "type": "momentum",
+      "description": "CCI(20) crosses above -100 from below (momentum returning after pullback) ENTRY SHORT: 1."
+    },
+    {
+      "type": "momentum",
+      "description": "Tenkan-sen < Kijun-sen (bearish momentum) 3."
+    },
+    {
+      "type": "risk",
+      "description": "Stop: below previous swing low."
+    },
+    {
+      "type": "trend",
+      "description": "CCI entry timing catches the moment momentum returns after a pullback within the trend - much better than entering on the initial breakout."
+    },
+    {
+      "type": "trend",
+      "description": "The cloud-based exit is dynamic and gets tighter as trend weakens."
+    }
+  ],
+  "explicit_conditions": [
+    "Entry: when CCI shows momentum returning to the trend direction while Ichimoku confirms the trend is strong and price is on the right side of the cloud.",
+    "INDICATORS USED: - Ichimoku Cloud (conversion 9, base 26, span B 52, displacement 26) - Tenkan-sen (conversion line) - short-term momentum - Kijun-sen (base line) - medium-term trend - Senkou Span A and B (cloud) - trend direction and S/R - CCI (period 20) - momentum entry timing - ATR (period 14) - stop loss and position sizing ENTRY LONG: 1.",
+    "CCI(20) crosses below +100 from above (momentum fading after bounce) EXIT RULES: - Primary exit: Price closes inside the cloud (trend weakening) - Secondary exit: Tenkan crosses Kijun opposite direction (momentum shift) - Stop loss: Opposite edge of cloud or 2.0x ATR, whichever is tighter - Take profit: 3.0x ATR from entry - Trailing stop: Once in 2.0 ATR profit, trail at Kijun-sen level RISK MANAGEMENT: - Risk per trade: 1% of account - Max concurrent positions: 1 per asset - Skip entry if clou"
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "4h"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-1dd6a1efefc5.raw.txt",
+  "sha256": "8b4792a29371dd9dc7877756202a3cd3594694882a8177471f48a6668879f387",
+  "truncated": false
+}

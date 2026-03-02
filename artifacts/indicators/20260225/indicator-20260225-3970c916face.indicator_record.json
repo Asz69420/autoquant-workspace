@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-3970c916face",
+  "created_at": "2026-02-25T00:20:36.540233Z",
+  "tv_ref": "tradingview:15ozjPWk",
+  "url": "https://www.tradingview.com/script/15ozjPWk-TTP-Universal-Divergence-Detector/",
+  "name": "TTP Universal Divergence Detector",
+  "author": "TheTradingParrot",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "dcf07828fae690e293842271e3469852a4d0c5536371e70fdbe7894f5fd385fe",
+  "truncated": false
+}

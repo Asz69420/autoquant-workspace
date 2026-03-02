@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-d7d778c2797c",
+  "created_at": "2026-02-25T22:20:55.356571Z",
+  "tv_ref": "tradingview:A312Ypea",
+  "url": "https://www.tradingview.com/script/A312Ypea/",
+  "name": "ZoneX Vynex",
+  "author": "PrimeVerse_app",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "70d8ef7184d04484c88750f2495daa839830e3971a02f1e3df770dcbc2d12465",
+  "truncated": false
+}

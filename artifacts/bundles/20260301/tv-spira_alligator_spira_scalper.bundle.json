@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_spira alligator|",
+    "created_at":  "2026-03-01T13:19:51.410674+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260301/research-20260301-4054ecfb6804.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260301/indicator-20260301-c017df177b2e.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260301/research-20260301-4054ecfb6804.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T13:21:48.6518420Z",
+    "attempts":  1,
+    "last_error":  null
+}

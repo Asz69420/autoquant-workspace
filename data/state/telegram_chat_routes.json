@@ -1,0 +1,14 @@
+{
+  "routes": [
+    {
+      "chat_id": "telegram:group:-5230682562",
+      "mode": "ANALYSER_READONLY",
+      "name": "Noodle"
+    },
+    {
+      "chat_id": "telegram:group:-1003841245720",
+      "mode": "ANALYSER_READONLY",
+      "name": "Noodle"
+    }
+  ]
+}

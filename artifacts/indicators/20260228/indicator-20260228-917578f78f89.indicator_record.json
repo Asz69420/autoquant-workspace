@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260228-917578f78f89",
+  "created_at": "2026-02-27T23:00:02.781027Z",
+  "tv_ref": "tradingview:3K5zQwqm",
+  "url": "https://www.tradingview.com/script/3K5zQwqm-ADX-Dynamic-Zone-Inside-the-SuperTrend-with-Support-Resistant/",
+  "name": "ADX Dynamic Zone Inside the SuperTrend with Support / Resistant",
+  "author": "fullmax",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "3c0e6a918513d5f83fb5f3db41ea69645a3d85cd615ca9bf393758fc3fb682ff",
+  "truncated": false
+}

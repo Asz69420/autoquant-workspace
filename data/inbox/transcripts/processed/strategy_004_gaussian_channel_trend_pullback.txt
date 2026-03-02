@@ -1,0 +1,59 @@
+STRATEGY: Gaussian Channel Trend Pullback (Approximation)
+ASSET: BTC, ETH
+TIMEFRAME: 4h (primary), also test on 1h
+MARKET CONDITION: Established trends with healthy pullbacks
+TYPE: Trend pullback (buy the dip / sell the rip)
+CONCEPT: Inspired by Gaussian channel strategies that perform well on BTC. A Gaussian channel is essentially a heavily smoothed moving average with deviation bands that identify trend direction and pullback zones. We approximate this using EMA with Bollinger-style ATR bands. The key insight is: in a strong trend, pullbacks to the lower channel band are buying opportunities, not reversals. We combine with Stochastic to time entries precisely when the pullback is exhausted and momentum is turning back.
+INDICATORS USED:
+- EMA 25 - center of the Gaussian channel approximation
+- ATR (period 14) - channel width (2x ATR above and below EMA 25)
+- Stochastic (K period 14, D period 3, smooth 3) - pullback exhaustion timing
+- EMA 50 - trend direction confirmation
+- EMA 200 - major trend filter
+- ADX (period 14) - trend strength confirmation
+CHANNEL CONSTRUCTION:
+- Upper channel: EMA(25) + 2.0 * ATR(14)
+- Lower channel: EMA(25) - 2.0 * ATR(14)
+- Channel slope: EMA(25) current vs EMA(25) from 5 bars ago
+- Channel is “up” if current EMA(25) > EMA(25) 5 bars ago
+- Channel is “down” if current EMA(25) < EMA(25) 5 bars ago
+ENTRY LONG (buy the dip in uptrend):
+1. Channel slope is up (EMA 25 rising over last 5 bars)
+2. EMA 50 > EMA 200 (major uptrend confirmed)
+3. Price pulls back to lower half of channel (below EMA 25 but above lower channel)
+4. Stochastic K crosses above D from below 20 (pullback exhausted, momentum returning)
+5. ADX > 20 (trend has enough strength)
+ENTRY SHORT (sell the rip in downtrend):
+1. Channel slope is down (EMA 25 falling over last 5 bars)
+2. EMA 50 < EMA 200 (major downtrend confirmed)
+3. Price rallies to upper half of channel (above EMA 25 but below upper channel)
+4. Stochastic K crosses below D from above 80 (bounce exhausted, selling resuming)
+5. ADX > 20
+EXIT RULES:
+- Take profit: Price reaches opposite channel band (upper band for longs, lower for shorts)
+- Stop loss: Price closes beyond the channel band on entry side (below lower channel for longs)
+- Alternative stop: 1.5x ATR from entry, whichever is tighter
+- Trailing stop: Once price crosses EMA 25 in profit direction, trail stop at EMA 25 level
+- Time stop: Exit if trade hasn’t reached TP within 20 candles
+RISK MANAGEMENT:
+- Risk per trade: 1% of account
+- Max concurrent positions: 1 per asset
+- Do NOT enter if price is outside the channel (breakout territory, not pullback)
+- Do NOT enter if channel is flat (sideways, no trend to pull back to)
+- Channel must have been trending for at least 10 bars before entry
+RATIONALE:
+This strategy exploits the strongest edge in crypto: trends are persistent and pullbacks within trends are buying/selling opportunities. The Gaussian-style channel identifies the trend and its boundaries. Stochastic times the exact moment the pullback exhausts. The dual EMA filter ensures we only trade with established trends. This is the type of strategy MichaelAutomates demonstrated works well on BTC with the proper Gaussian channel indicator.
+FALSIFIABLE HYPOTHESIS:
+In BTC/ETH 4h uptrends (EMA 50 > 200), pullbacks to the lower half of a Gaussian-approximation channel with Stochastic reversal produce profit factor above 1.3 and win rate above 50%, with the channel providing natural R:R of at least 1.5:1.
+PARAMETER RANGES FOR SWEEP:
+- Channel center EMA: 20-35, step 5
+- Channel width ATR multiplier: 1.5-2.5, step 0.25
+- Channel slope lookback: 3-8, step 1
+- Stochastic K period: 10-20, step 2
+- Stochastic D period: 3-5, step 1
+- Stochastic entry threshold: 15-25, step 5
+- EMA fast: 30-50, step 10
+- EMA slow: 150-200, step 50
+- ADX minimum: 15-25, step 5
+- Trailing stop activation: at EMA cross vs 1.0 ATR profit
+- Time stop: 15-25 candles, step 5

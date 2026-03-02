@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-d4a4752096a4",
+  "created_at": "2026-03-01T19:19:49.627682Z",
+  "tv_ref": "tradingview:3fUlTbhp",
+  "url": "https://www.tradingview.com/script/3fUlTbhp-Daily-MGI-OnlyFlow/",
+  "name": "Daily MGI - OnlyFlow",
+  "author": "ofderk",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "63e1e24c829c8e93304872e4c465be44629ccbb1bcd19828569dc463bf5796ea",
+  "truncated": false
+}

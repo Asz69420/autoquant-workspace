@@ -1,0 +1,61 @@
+STRATEGY: US Session Momentum Scalp
+ASSET: BTC, ETH
+TIMEFRAME: 15m
+MARKET CONDITION: US market session only (high liquidity, high volume)
+TYPE: Session momentum scalp
+CONCEPT: Only trade during US equity market hours (13:30-20:00 UTC / 9:30 AM-4:00 PM ET) when crypto volume and liquidity peak due to institutional and retail trader activity. Use VWAP as the session anchor — price above VWAP is bullish bias, below is bearish. Combine with MACD for momentum timing and Stochastic for entry precision. Close all positions before session end. Skip US public holidays entirely.
+SESSION FILTER:
+- Active hours: 13:30 - 19:30 UTC (close positions by 19:30, market closes 20:00)
+- No new entries after 18:30 UTC (need at least 1 hour for trade to play out)
+- Skip weekends (Saturday/Sunday)
+- Skip US public holidays: New Years Day, MLK Day, Presidents Day, Good Friday, Memorial Day, Juneteenth, Independence Day, Labor Day, Thanksgiving, Christmas
+- Implementation: check candle timestamp against allowed hours before any entry logic
+INDICATORS USED:
+- VWAP (session reset daily) - directional bias anchor
+- MACD (fast 12, slow 26, signal 9) - momentum confirmation
+- Stochastic (K 14, D 3, smooth 3) - entry timing
+- EMA 9 - fast trend on 15m
+- ATR (period 14) - stop loss and targets
+ENTRY LONG:
+1. Current time is within US session hours
+2. Price is above VWAP (bullish session bias)
+3. MACD histogram is positive and increasing (momentum building)
+4. Stochastic K crosses above D from below 30 (pullback entry)
+5. Price is above EMA 9 (immediate short-term trend up)
+ENTRY SHORT:
+1. Current time is within US session hours
+2. Price is below VWAP (bearish session bias)
+3. MACD histogram is negative and decreasing (selling momentum)
+4. Stochastic K crosses below D from above 70 (bounce entry)
+5. Price is below EMA 9 (immediate short-term trend down)
+EXIT RULES:
+- Take profit: 1.5x ATR(14) from entry (quick scalp target)
+- Stop loss: 1.0x ATR(14) from entry (tight stop, 1.5:1 R:R)
+- Session exit: Close ALL open positions at 19:30 UTC regardless of P&L
+- VWAP cross exit: If price crosses VWAP against your position, exit immediately
+- No overnight holds
+RISK MANAGEMENT:
+- Risk per trade: 0.5% of account (smaller for scalps, higher frequency)
+- Max trades per session: 4 (avoid overtrading)
+- Max concurrent positions: 1 per asset
+- If first 2 trades of session are both losers, stop trading that session (session is not favorable)
+- No trading in first 15 minutes of session (13:30-13:45 UTC) — let the opening volatility settle
+RATIONALE:
+US session concentrates 60-70% of crypto volume into a predictable window. VWAP is the institutional benchmark — price above VWAP means buyers are in control that session, below means sellers. By only trading during high-liquidity hours, we get better fills, tighter spreads, and more reliable signals. The session-end close eliminates overnight gap risk. The 2-loss circuit breaker prevents bleeding on bad days.
+FALSIFIABLE HYPOTHESIS:
+BTC/ETH 15m trades during US session hours (13:30-19:30 UTC) using VWAP directional bias with MACD/Stochastic confirmation produce profit factor above 1.2 with at least 20 trade opportunities per month.
+PARAMETER RANGES FOR SWEEP:
+- Session start UTC: 13:30-14:30, step 30min
+- Session end UTC: 19:00-20:00, step 30min
+- No-entry cutoff before close: 60-120 min, step 30
+- MACD fast: 8-12, step 2
+- MACD slow: 21-26, step 5
+- Stochastic K: 10-20, step 2
+- Stochastic entry threshold: 20-35, step 5
+- EMA fast period: 5-13, step 4
+- TP ATR multiplier: 1.0-2.0, step 0.25
+- SL ATR multiplier: 0.75-1.25, step 0.25
+- Max trades per session: 3-6, step 1
+- Opening settle period minutes: 0-30, step 15
+NOTE FOR BACKTESTER:
+The backtester needs to support time-of-day filtering for this strategy. If hl_backtest_engine.py doesn’t currently support session-hour filters, this will need a small addition to check candle timestamps against allowed trading windows before evaluating entry conditions. The holiday list should be maintained as a simple JSON config file.

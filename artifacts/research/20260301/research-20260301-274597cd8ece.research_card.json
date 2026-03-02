@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-274597cd8ece",
+  "created_at": "2026-03-01T11:00:10.373889Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/fb6Yb6Ow/",
+  "title": "Aegis Triple Strike [wjdtks255]",
+  "author": "wjdtks255",
+  "summary_bullets": [
+    "Top catalog indicator: Aegis Triple Strike [wjdtks255] by wjdtks255."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Aegis Triple Strike [wjdtks255] by wjdtks255.",
+      "note": "Meaning: Top catalog indicator: Aegis Triple Strike [wjdtks255] by wjdtks255."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-274597cd8ece.raw.txt",
+  "sha256": "1b7f0374baffec833fcedb706866f4a1e2947d624296fd1aa83a9fc4d5beed3b",
+  "truncated": false
+}

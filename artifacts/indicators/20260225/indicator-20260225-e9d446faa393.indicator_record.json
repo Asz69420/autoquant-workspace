@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-e9d446faa393",
+  "created_at": "2026-02-24T23:32:18.222633Z",
+  "tv_ref": "tradingview:mxwLMo5z",
+  "url": "https://www.tradingview.com/script/mxwLMo5z-Tri-Core-Statistical-Trend-Navigator/",
+  "name": "Tri-Core Statistical Trend Navigator",
+  "author": "ZakAlgo_Trade",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "6b1cc341f1f410448f03ad5bfbe6370cf29f6fc269f2a173af24542d8435f2ac",
+  "truncated": false
+}

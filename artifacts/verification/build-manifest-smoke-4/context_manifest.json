@@ -1,0 +1,20 @@
+﻿{
+    "task_id":  "build-manifest-smoke-4",
+    "build_session_id":  "build-manifest-smoke-session-4",
+    "ts_iso":  "2026-02-24T05:11:45.7854963+00:00",
+    "changed_files":  [
+
+                      ],
+    "diff_sha256":  "",
+    "contract_hashes":  {
+                            "USER.md":  "caaaea32b6e7f936da14cefa66049d31ebbeb26f5c4d3f14bf955cf410988bf4",
+                            "AGENTS-CORE.md":  "241837c7012f5e26610af356716f595402716e88e479555cbc5f29da5306bc76",
+                            "SOUL-DIGEST.md":  "da17262cbed0990d860aa9d2df0a46c096a9fcd954ece7d5eb2ce7ac015b1bb7",
+                            "docs/CONTRACTS/verification-gate.md":  "71d3dab7164b16616984ed12256c912b923a6424738fce4fd480f9c4d398bb54"
+                        },
+    "topn":  10,
+    "max_attempts":  3,
+    "max_fix_time_seconds":  120,
+    "max_total_edits_per_run":  3,
+    "scope_fingerprint":  "190277423bc204292cddaead761bd139134a16c4284a58c19e3902928b5f549e"
+}

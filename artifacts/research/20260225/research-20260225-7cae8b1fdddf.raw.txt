@@ -1,0 +1,1 @@
+Large strategy component test

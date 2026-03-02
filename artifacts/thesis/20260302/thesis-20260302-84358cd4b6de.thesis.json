@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260302-84358cd4b6de",
+  "created_at": "2026-03-01T20:00:13.657352Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260302/research-20260302-a42d33224aac.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260302/research-20260302-a42d33224aac.linkmap.json"
+    ]
+  },
+  "title": "Bitcoin: The Beauty of Mathematics (Part 68)",
+  "thesis_bullets": [
+    "Hey everyone and thanks for jumping back into the cryptoverse.",
+    "Today we're going to talk about Bitcoin, the beauty of mathematics part 68.",
+    "You can also check out my other website benjenkowan.com as well.",
+    "Let's go ahead and jump in.",
+    "So the cryptocurrency market cap is coming in at around 2.29 trillion.",
+    "This is still about 50 to 55% I think 50 53.55% below that quote unquote fair value logarithmic aggression trend line.",
+    "One of the things you'll notice this cycle is there wasn't really a period where the asset class went durably overvalued.",
+    "And we talked about that through the cycle.",
+    "And the reason it never went durably overvalued this past cycle was because altcoins never really joined in on the bull market.",
+    "Very similar to what happened in the 2019 bull market where we never had more of a we never really had a durable overvaluation because altcoins never really joined in on on the fund."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on daily.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on daily: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "daily",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on daily",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "84358cd4b6deee8d01621647aece6953d8a32f4952038b3bb0b7d2e9e6f2810f"
+}

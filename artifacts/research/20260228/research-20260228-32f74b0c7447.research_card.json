@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260228-32f74b0c7447",
+  "created_at": "2026-02-28T00:42:05.962235Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=Tp7ENo2ii40",
+  "title": "\"They're Down 50% Against Gold\"",
+  "author": "IntoTheCryptoverse",
+  "summary_bullets": [
+    "If you think, well, yeah, you've made a lot of money in stocks.",
+    "I mean, like, I've done really well with just buying low expense ratio index funds for a long time, but it does not change the fact, and you guys know me.",
+    "Like, I've always looked at opportunity costs.",
+    "Like, think about altcoins and Bitcoin, how I spent four or five years, since 2022, early 2022 telling people that alts were bleeding to Bitcoin and there was no justification for for them as a long-term investment.",
+    "The reality is how good stocks have been over the last few years since 2021.",
+    "I haven't gone and panicked sold my index funds."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "If you think, well, yeah, you've made a lot of money in stocks.",
+      "note": "Meaning: If you think, well, yeah, you've made a lot of money in stocks."
+    },
+    {
+      "timestamp": null,
+      "quote": "I mean, like, I've done really well with just buying low expense ratio index funds for a long time, but it does not change the fact, and you guys know me.",
+      "note": "Meaning: I mean, like, I've done really well with just buying low expense ratio index funds for a long time, but it does not change the fact, and you guys know "
+    },
+    {
+      "timestamp": null,
+      "quote": "Like, I've always looked at opportunity costs.",
+      "note": "Meaning: Like, I've always looked at opportunity costs."
+    },
+    {
+      "timestamp": null,
+      "quote": "Like, think about altcoins and Bitcoin, how I spent four or five years, since 2022, early 2022 telling people that alts were bleeding to Bitcoin and there was no justification for for them as a long-t",
+      "note": "Meaning: Like, think about altcoins and Bitcoin, how I spent four or five years, since 2022, early 2022 telling people that alts were bleeding to Bitcoin and th"
+    },
+    {
+      "timestamp": null,
+      "quote": "The reality is how good stocks have been over the last few years since 2021.",
+      "note": "Meaning: The reality is how good stocks have been over the last few years since 2021."
+    },
+    {
+      "timestamp": null,
+      "quote": "I haven't gone and panicked sold my index funds.",
+      "note": "Meaning: I haven't gone and panicked sold my index funds."
+    }
+  ],
+  "extracted_rules": [
+    "If you think, well, yeah, you've made a lot of money in stocks."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260228/research-20260228-32f74b0c7447.raw.txt",
+  "sha256": "82bb921534538d86318eccaef30cdf88937c72424ab6a49f4a661299bca0f1d9",
+  "truncated": false
+}

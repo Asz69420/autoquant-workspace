@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-2f566f7ee1ef",
+  "created_at": "2026-02-25T11:31:39.111804Z",
+  "source_type": "manual_insight",
+  "source_ref": "manual_insight:insight-054812a16ac5:revisit",
+  "title": "Breakout continuation with ATR trail",
+  "summary_bullets": [
+    "Trend-confirm and trail stop with ATR as volatility expands."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Trend-confirm and trail stop with ATR as volatility expands.",
+      "note": "Meaning: Trend-confirm and trail stop with ATR as volatility expands."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Trend-confirm and trail stop with ATR as volatility expands."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-2f566f7ee1ef.raw.txt",
+  "sha256": "72b63d41253aef0b799a66363be817fc85444d0fc404682fc580f57e72771ca9",
+  "truncated": false
+}

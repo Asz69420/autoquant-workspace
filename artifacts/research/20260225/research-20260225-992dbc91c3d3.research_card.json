@@ -1,0 +1,227 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-992dbc91c3d3",
+  "created_at": "2026-02-25T02:52:52.041648Z",
+  "source_type": "transcript",
+  "source_ref": "https://m.youtube.com/watch?v=Uj7Bk7r9dfU",
+  "title": "YouTube Indicator Video Uj7Bk7r9dfU",
+  "author": "youtube",
+  "summary_bullets": [
+    "It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen.",
+    "This is one of the best indicators on trading view for scalping strategies and day trading strategies.",
+    "So it's suitable for time frames like 1 minute, 5 minutes, 15 minutes up to 1 hour.",
+    "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudden increase of momentum in the market.",
+    "I will completely explain this indicator and how you can use it in trading.",
+    "All right, on Trading View platform here, we click on indicators and we search BB impulse indicator.",
+    "This one which is written by Lazy Bayer.",
+    "All right, this is the indicator and as you can see it is added here below the chart.",
+    "As you can see, we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors.",
+    "As you can see, this indicator is built based on Ballinger bands and it is created by John Ballinger who's the one created the Ballinger bands."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen.",
+      "note": "Meaning: It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is one of the best indicators on trading view for scalping strategies and day trading strategies.",
+      "note": "Meaning: This is one of the best indicators on trading view for scalping strategies and day trading strategies."
+    },
+    {
+      "timestamp": null,
+      "quote": "So it's suitable for time frames like 1 minute, 5 minutes, 15 minutes up to 1 hour.",
+      "note": "Meaning: So it's suitable for time frames like 1 minute, 5 minutes, 15 minutes up to 1 hour."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudde",
+      "note": "Meaning: This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy be"
+    },
+    {
+      "timestamp": null,
+      "quote": "I will completely explain this indicator and how you can use it in trading.",
+      "note": "Meaning: I will completely explain this indicator and how you can use it in trading."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, on Trading View platform here, we click on indicators and we search BB impulse indicator.",
+      "note": "Meaning: All right, on Trading View platform here, we click on indicators and we search BB impulse indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one which is written by Lazy Bayer.",
+      "note": "Meaning: This one which is written by Lazy Bayer."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, this is the indicator and as you can see it is added here below the chart.",
+      "note": "Meaning: All right, this is the indicator and as you can see it is added here below the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you can see, we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors.",
+      "note": "Meaning: As you can see, we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you can see, this indicator is built based on Ballinger bands and it is created by John Ballinger who's the one created the Ballinger bands.",
+      "note": "Meaning: As you can see, this indicator is built based on Ballinger bands and it is created by John Ballinger who's the one created the Ballinger bands."
+    },
+    {
+      "timestamp": null,
+      "quote": "If we go to the settings of the indicator, you can see that we have settings for length and multiplier.",
+      "note": "Meaning: If we go to the settings of the indicator, you can see that we have settings for length and multiplier."
+    },
+    {
+      "timestamp": null,
+      "quote": "similar to Ballinger bands and similarly by default the length is set at 20 and the multiplier is set at two.",
+      "note": "Meaning: similar to Ballinger bands and similarly by default the length is set at 20 and the multiplier is set at two."
+    }
+  ],
+  "extracted_rules": [
+    "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudden increase of momentum in the market.",
+    "If we go to the settings of the indicator, you can see that we have settings for length and multiplier.",
+    "So depending on the size of the bar if the bar passes the alert level or impulse level we can have a signal about increase of momentum.",
+    "when the bar passes the alert level the dashed line it is alert signal that the momentum is probably going to increase and when the bar passes the impulse level the solid line here it is impulse signal and it tells us that we had a sudden increase of momentum in the market but not any impulse signal means that the price is going to further move in that direction for example for this impulse signal that we had here which is a downside signal you can see that the price didn't go down considerably.",
+    "But deciding on if the context confirms further movement of the price after that needs more analysis, which I explain it now.",
+    "So, as I said, when we have impulse signal, it only tells us that in that time period, we had considerable increase of momentum.",
+    "Two of the main situations where you may get a false signal like this is when a reversal is happening in the market like this case here and another one is when a pullback happens in the market especially deeper pullbacks.",
+    "During this downtrend when we identify that the current trend is down when we got a bearish signal like this.",
+    "So you must have a reversal identification in your system even when you're using a trend following strategy so you can avoid false signals like this where a reversal is happening in the market.",
+    "This one relative strength index and see if RSI is showing any divergence or not.",
+    "You can see that following this downtrend where the price was making lower highs and lower lows here when the price made lower low you can see that RSI made higher low.",
+    "So at this point when we got this bearish signal we don't enter a trade because there is a probability of reversal in the market.",
+    "You can see that when this signal happened the price couldn't break the previous low and here tight consolidation.",
+    "For a bullish divergence, we mark the high of the pattern and we wait to see if the price can break above this high or not.",
+    "Because if this high is broken, which is the last lower high following this downtrend, it tells us that the structure of the downtrend is already broken.",
+    "So the reversal here is confirmed and in practice we could enter a long position at this point.",
+    "When the MACD histogram is above the center line and green, the market is in an uptrend.",
+    "And when the MACD histogram is below the center line and red, the market is in a downtrend.",
+    "So when the MACD histogram is above the center line and green, we only focus on bullish signals.",
+    "So when MACD histogram is green, the focus is on bullish signals."
+  ],
+  "parameters_set": [
+    {
+      "name": "fast length",
+      "value": "100",
+      "context": "first here in the inputs tab for the fast length we set it at 100. For the slow length we set it at 200."
+    },
+    {
+      "name": "slow length",
+      "value": "200",
+      "context": "fast length we set it at 100. For the slow length we set it at 200. And here for signal length we set it a"
+    },
+    {
+      "name": "signal length",
+      "value": "50",
+      "context": "h we set it at 200. And here for signal length we set it at 50. And then we go to the style tab and we"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen."
+    },
+    {
+      "type": "trend",
+      "description": "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudden increase of moment"
+    },
+    {
+      "type": "momentum",
+      "description": "As you can see, we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors."
+    },
+    {
+      "type": "momentum",
+      "description": "So depending on the size of the bar if the bar passes the alert level or impulse level we can have a signal about increase of momentum."
+    },
+    {
+      "type": "momentum",
+      "description": "when the bar passes the alert level the dashed line it is alert signal that the momentum is probably going to increase and when the bar passes the impulse level the solid line here it is impulse signal and it tells us th"
+    },
+    {
+      "type": "momentum",
+      "description": "All that the impulse signal is telling us is that we had a sudden increase of momentum."
+    },
+    {
+      "type": "momentum",
+      "description": "So, as I said, when we have impulse signal, it only tells us that in that time period, we had considerable increase of momentum."
+    },
+    {
+      "type": "momentum",
+      "description": "It is very common to have exhaustion move which is a sudden increase of momentum alongside with sharp advancing or decline of the price and usually with high amount of volume."
+    },
+    {
+      "type": "trend",
+      "description": "During this downtrend when we identify that the current trend is down when we got a bearish signal like this."
+    },
+    {
+      "type": "trend",
+      "description": "So you must have a reversal identification in your system even when you're using a trend following strategy so you can avoid false signals like this where a reversal is happening in the market."
+    },
+    {
+      "type": "trend",
+      "description": "You can see that following this downtrend where the price was making lower highs and lower lows here when the price made lower low you can see that RSI made higher low."
+    },
+    {
+      "type": "momentum",
+      "description": "After that a downside gap but not any considerable momentum as you can see."
+    },
+    {
+      "type": "filter",
+      "description": "So here we could easily avoid this false signal."
+    },
+    {
+      "type": "momentum",
+      "description": "And it tells us that now we have a sudden increase of momentum, increase of upside momentum."
+    },
+    {
+      "type": "trend",
+      "description": "Because if this high is broken, which is the last lower high following this downtrend, it tells us that the structure of the downtrend is already broken."
+    },
+    {
+      "type": "trend",
+      "description": "So even higher probability now to have a reversal and starting of an uptrend."
+    },
+    {
+      "type": "confirmation",
+      "description": "So the reversal here is confirmed and in practice Entry: a long position at this point."
+    },
+    {
+      "type": "trend",
+      "description": "And you can see how the price turned to an uptrend after that making this position very profitable."
+    },
+    {
+      "type": "filter",
+      "description": "So now you learn how you can avoid false signals that are happening during reversal situation of the market."
+    },
+    {
+      "type": "trend",
+      "description": "And now let me teach you how you can avoid them and instead take high probability signals inside a trend."
+    }
+  ],
+  "explicit_conditions": [
+    "When the MACD histogram is above the center line and green, the market is in an uptrend.",
+    "And when the MACD histogram is below the center line and red, the market is in a downtrend.",
+    "So when the MACD histogram is above the center line and green, we only focus on bullish signals.",
+    "And we do this similarly when the MACD histogram is below the center line and red.",
+    "This indicator is a perfect choice for breakout trading strategies, especially breakout during trends that can provide you low-risk trading opportunities.",
+    "But please pay attention that you need to manage your risk properly because losing positions are always part of the game and you cannot avoid all of your false signals.",
+    "There is a riskmanagement strategy that is called 1% roll and it is one of the best risk management strategy that you can use.",
+    "By the help of this risk management, you can minimize the effect of your losing positions and make consistent profit in the long run.",
+    "The link is also placed in the description and I highly recommend you to watch it because without a proper risk management, you cannot become a consistently profitable trader."
+  ],
+  "risk_management_notes": [
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-992dbc91c3d3.raw.txt",
+  "sha256": "f4a0ef51641d2fcc0f5d778df6166643bf61a6a7fc9d8e15c32e4a6065d1a90f",
+  "truncated": false
+}

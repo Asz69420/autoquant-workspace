@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-046365a8f8f2",
+  "created_at": "2026-03-01T19:34:50.112313Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/cnydr3fS-MNQ-Liquidity-Sweep-Strategy-KUSH/",
+  "title": "MNQ Liquidity Sweep Strategy ( KUSH )",
+  "author": "guptakush961",
+  "summary_bullets": [
+    "Top catalog indicator: MNQ Liquidity Sweep Strategy ( KUSH ) by guptakush961."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: MNQ Liquidity Sweep Strategy ( KUSH ) by guptakush961.",
+      "note": "Meaning: Top catalog indicator: MNQ Liquidity Sweep Strategy ( KUSH ) by guptakush961."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-046365a8f8f2.raw.txt",
+  "sha256": "49a59d254441df8fcfc84249b378f3bf9983f129986f31d048f632201333e805",
+  "truncated": false
+}

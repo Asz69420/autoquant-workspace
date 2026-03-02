@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-e85275dbfa54",
+  "created_at": "2026-03-01T21:19:49.063289Z",
+  "tv_ref": "tradingview:s4BcZ5JI",
+  "url": "https://www.tradingview.com/script/s4BcZ5JI-KNN-Machine-Learning-Momentum-Indicator/",
+  "name": "KNN Machine Learning Momentum Indicator",
+  "author": "SatohK",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "1711ac8037bab6f30bdd6286d1cbbd2b16a837ac0eb3821c1de1d5380179fe03",
+  "truncated": false
+}

@@ -1,0 +1,46 @@
+STRATEGY: ADX Trend Filter + Supertrend Entry
+ASSET: BTC, ETH
+TIMEFRAME: 4h
+MARKET CONDITION: Strong trending markets
+TYPE: Trend following
+CONCEPT: Only take trades when the market is confirmed trending using ADX. Use Supertrend indicator for precise entry and exit timing. EMA cross provides directional bias. This avoids choppy sideways markets where most strategies bleed out from false signals.
+INDICATORS USED:
+- ADX (period 14) - trend strength filter, must be above 25
+- Supertrend (period 10, multiplier 3.0) - entry/exit signal
+- EMA 50 - medium trend direction
+- EMA 200 - major trend direction
+- ATR (period 14) - stop loss and position sizing
+ENTRY LONG:
+1. ADX(14) > 25 (confirmed trend exists)
+2. EMA 50 > EMA 200 (uptrend confirmed)
+3. Supertrend flips from red to green (buy signal)
+4. Price closes above Supertrend line
+All conditions must be true on the same candle close.
+ENTRY SHORT:
+1. ADX(14) > 25 (confirmed trend exists)
+2. EMA 50 < EMA 200 (downtrend confirmed)
+3. Supertrend flips from green to red (sell signal)
+4. Price closes below Supertrend line
+All conditions must be true on the same candle close.
+EXIT RULES:
+- Primary exit: Supertrend flips opposite direction
+- Stop loss: 1.5x ATR(14) from entry price
+- Take profit: 3.0x ATR(14) from entry price (2:1 reward-risk)
+- Trailing stop: Once in 1.5 ATR profit, trail stop at 1.0 ATR behind price
+- Max hold time: 30 candles (120 hours on 4h)
+RISK MANAGEMENT:
+- Risk per trade: 1% of account
+- Max concurrent positions: 1 per asset
+- No new entries if ADX drops below 20 while in trade (tighten stop to breakeven)
+RATIONALE:
+ADX filter eliminates the biggest killer of trend strategies - choppy sideways markets. Supertrend provides clean mechanical entries that are easy to backtest. EMA cross ensures we trade with the major trend, not against it. The 2:1 R:R means we only need 34% win rate to be profitable.
+FALSIFIABLE HYPOTHESIS:
+In trending BTC/ETH 4h markets (ADX > 25), Supertrend signals aligned with EMA 50/200 direction produce a profit factor above 1.2 with max drawdown under 15%.
+PARAMETER RANGES FOR SWEEP:
+- ADX threshold: 20-30, step 5
+- Supertrend period: 7-14, step 1
+- Supertrend multiplier: 2.0-4.0, step 0.5
+- EMA fast: 20-50, step 10
+- EMA slow: 100-200, step 50
+- Stop ATR multiplier: 1.0-2.0, step 0.25
+- Take profit ATR multiplier: 2.0-4.0, step 0.5

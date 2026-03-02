@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-cf37b1155a52",
+  "created_at": "2026-02-26T21:20:02.101126Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=tzXWPcf-GM4",
+  "title": "TRADER REVIEW: The \" ONE CANDLE \" Scalping Strategy I Will Use For Life @The Rumers",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "This trader here says that one single indicator is enough to become a profitable trader and that indicator is the nine exponential moving average.",
+    "And listen, I suggest you stay until the end because yes, this strategy looks a little bit too simple to be profitable, but when backtesting, the data did something that I just didn't expect.",
+    "Okay, guys, here we are on YouTube.",
+    "This is the YouTube channel I was talking about.",
+    "I've been through this strategy and pretty anything seems very, very simple.",
+    "This paid trader has been pitching they has 26 years of trading experience behind him.",
+    "And in this words, you just simply don't need any more indicators.",
+    "And that is the exponential moving average, also known as the EMA at a length of nine.",
+    "And even better, he claims that with this indicator, you can get sniper entries, which is a pretty cool story.",
+    "So I guess now it's time for us to test it."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This trader here says that one single indicator is enough to become a profitable trader and that indicator is the nine exponential moving average.",
+      "note": "Meaning: This trader here says that one single indicator is enough to become a profitable trader and that indicator is the nine exponential moving average."
+    },
+    {
+      "timestamp": null,
+      "quote": "And listen, I suggest you stay until the end because yes, this strategy looks a little bit too simple to be profitable, but when backtesting, the data did something that I just didn't expect.",
+      "note": "Meaning: And listen, I suggest you stay until the end because yes, this strategy looks a little bit too simple to be profitable, but when backtesting, the data "
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay, guys, here we are on YouTube.",
+      "note": "Meaning: Okay, guys, here we are on YouTube."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is the YouTube channel I was talking about.",
+      "note": "Meaning: This is the YouTube channel I was talking about."
+    },
+    {
+      "timestamp": null,
+      "quote": "I've been through this strategy and pretty anything seems very, very simple.",
+      "note": "Meaning: I've been through this strategy and pretty anything seems very, very simple."
+    },
+    {
+      "timestamp": null,
+      "quote": "This paid trader has been pitching they has 26 years of trading experience behind him.",
+      "note": "Meaning: This paid trader has been pitching they has 26 years of trading experience behind him."
+    },
+    {
+      "timestamp": null,
+      "quote": "And in this words, you just simply don't need any more indicators.",
+      "note": "Meaning: And in this words, you just simply don't need any more indicators."
+    },
+    {
+      "timestamp": null,
+      "quote": "And that is the exponential moving average, also known as the EMA at a length of nine.",
+      "note": "Meaning: And that is the exponential moving average, also known as the EMA at a length of nine."
+    },
+    {
+      "timestamp": null,
+      "quote": "And even better, he claims that with this indicator, you can get sniper entries, which is a pretty cool story.",
+      "note": "Meaning: And even better, he claims that with this indicator, you can get sniper entries, which is a pretty cool story."
+    },
+    {
+      "timestamp": null,
+      "quote": "So I guess now it's time for us to test it.",
+      "note": "Meaning: So I guess now it's time for us to test it."
+    },
+    {
+      "timestamp": null,
+      "quote": "And for that to happen, we're going to have to start right now.",
+      "note": "Meaning: And for that to happen, we're going to have to start right now."
+    },
+    {
+      "timestamp": null,
+      "quote": "So in this video, you're going to be getting the exact rules of the strategy, the exact variations because there are three and the backtesting results, no discretion, no cherry picking, and the twist ",
+      "note": "Meaning: So in this video, you're going to be getting the exact rules of the strategy, the exact variations because there are three and the backtesting results,"
+    }
+  ],
+  "extracted_rules": [
+    "And listen, I suggest you stay until the end because yes, this strategy looks a little bit too simple to be profitable, but when backtesting, the data did something that I just didn't expect.",
+    "So in this video, you're going to be getting the exact rules of the strategy, the exact variations because there are three and the backtesting results, no discretion, no cherry picking, and the twist is the version that most people are using is not the one that matters.",
+    "So when that price is below the EMA like it is currently at the moment and then breaks over, this is where we're going to be looking to take a long, very, very simple.",
+    "We'll take a long on the following candle after it actually breaks out without any stop loss.",
+    "We're going to be actually using the EMA as our stop is going to be our stop loss and also our take profits.",
+    "When price goes below the EMA like that, we can either stay out of the market and only accept longs or what we can do is we can actually short the market at this point here as price crosses below, we can actually take an entry and we can hold that entry as a short or just a sale until price actually comes back and crosses above the EMA.",
+    "So if we go back over to our first long entry here, this is where we would have got in or on the retest.",
+    "We would still not have any stop loss, which in my eyes makes this one a little bit more risky because we don't even have the EMA protecting us if price continues to dump.",
+    "And when it does, we're gonna be holding onto our position all the way up to where price crosses back over and clearly closes over the EMA.",
+    "If you would be trading this from 2022 yes, you would be in the green the whole way up but there was a huge period where this trading strategy was actually falling apart.",
+    "If I go to one year you can see that the one year chart is not the greatest in the world either.",
+    "Now guys do remember this doesn't have a stop loss 22% doesn't mean that you wouldn't have gone even further down it's just that we would have hit that to EMA at 22% and that would have been the maximum drawdown we went through between two actual highs.",
+    "Okay, as I said earlier, there is one thing that is a bit worrying is when we do do a full back test on the whole entire history, we do go often into the red for a long period of time, just like that.",
+    "So if you would have been trading this all the way from 2020, meaning around the past five to six years, you would actually be in profit and not a little bit, quite a lot, you'd be actually up 322%."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "We'll take a long on the following candle after it actually breaks out without any stop loss."
+    },
+    {
+      "type": "risk",
+      "description": "We're going to be actually using the EMA as our stop is going to be our stop loss and also our take profits."
+    },
+    {
+      "type": "trend",
+      "description": "Once we've retested, we'll be able to take our entry there, just giving us a little bit of time to confirm that we are actually in a trend."
+    },
+    {
+      "type": "risk",
+      "description": "So maybe a little bit less risky, allowing us to retest that EMA, just making sure that we don't get chopped in and out of entries as price does tend to come back to the EMA quite often."
+    },
+    {
+      "type": "risk",
+      "description": "We would still not have any stop loss, which in my eyes makes this one a little bit more risky because we don't even have the EMA protecting us if price continues to dump."
+    },
+    {
+      "type": "risk",
+      "description": "In my eyes, this is probably one of the more risky setups."
+    },
+    {
+      "type": "risk",
+      "description": "Obviously the separator is gonna be the hardest one to back test as there is no stop losses and those big wicks are kind of in the eye of the EMA holder."
+    },
+    {
+      "type": "risk",
+      "description": "Now guys do remember this doesn't have a stop loss 22% doesn't mean that you wouldn't have gone even further down it's just that we would have hit that to EMA at 22% and that would have been the maximum drawdown we went "
+    },
+    {
+      "type": "risk",
+      "description": "The max drawdown is acceptable at 11% and we have a win rate of 32%."
+    }
+  ],
+  "explicit_conditions": [
+    "We'll take a long on the following candle after it actually breaks out without any stop loss.",
+    "We're going to be actually using the EMA as our stop is going to be our stop loss and also our take profits.",
+    "When price goes below the EMA like that, we can either stay out of the market and only accept longs or what we can do is we can actually short the market at this point here as price crosses below, we can actually take an entry and we can hold that entry as a short or just a sale until price actually comes back and crosses above the EMA.",
+    "So if we go back over to our first long entry here, this is where we would have got in or on the retest.",
+    "We would still not have any stop loss, which in my eyes makes this one a little bit more risky because we don't even have the EMA protecting us if price continues to dump.",
+    "Now guys do remember this doesn't have a stop loss 22% doesn't mean that you wouldn't have gone even further down it's just that we would have hit that to EMA at 22% and that would have been the maximum drawdown we went through between two actual highs."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "EMA"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-cf37b1155a52.raw.txt",
+  "sha256": "8b433272b0225735d41ca63d2ac218e3b5d2af98052842b6845f6078bfa411e0",
+  "truncated": false
+}

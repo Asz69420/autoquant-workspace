@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-mc9x2k7d",
+  "created_at": "2026-03-01T14:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD tail harvesters at 7:1 R:R achieved PF=1.71 on both 4h and 1h ETH (all-regime ACCEPT). The regime breakdown reveals ranging PF=2.06 — the strongest single-regime PF observed across any template. MACD histogram zero-cross inherently captures momentum INFLECTION points, not trend continuation. At wider R:R (10:1), we only need ~12% win rate for profitability. The hypothesis: by pushing R:R to 10:1 on 1h timeframe, we filter to ONLY the strongest momentum shifts — the ones where histogram acceleration sustains long enough to hit a 10x ATR target. These are the fat-tail events where momentum genuinely shifts direction (not noise). The 1h timeframe captures more granular momentum shifts than 4h, generating more trade opportunities. Combined with a 1.5x ATR stop (proven minimum safe floor), the extreme asymmetry means even a 15% win rate produces PF>1.5. Regime assumption: ALL REGIMES (MACD is the only template showing PF>1.0 in all three regimes at tail-harvester R:R). Invalidation: if win rate drops below 10% at 10:1, the momentum inflection signals don't generate enough sustained moves to justify extreme R:R — cap R:R at 8:1 for this template.",
+  "regime_assumption": "all_regimes",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h"],
+  "variants": [
+    {
+      "name": "macd_extreme_tail_1h_10to1",
+      "description": "MACD histogram zero-cross on ETH/1h with extreme 10:1 R:R (1.5x ATR stop, 15.0x ATR TP). Captures only the strongest momentum inflection events. At 10:1, a 12% win rate produces PF=1.3. The 1h timeframe generates ~2x more MACD crossovers than 4h, compensating for the lower win rate at extreme TP. This variant tests whether MACD momentum shifts on 1h sustain long enough for 15x ATR moves.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero (histogram turns positive — momentum inflection).",
+        "Close > EMA_50 confirms medium-term uptrend context.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero (histogram turns negative — momentum inflection).",
+        "Close < EMA_50 confirms medium-term downtrend context.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime gate: ADX_14 used for regime classification (trending>25, ranging<20, transitional 20-25)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (15.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 10:1.",
+        "Hypothesis failure: if win rate < 10%, MACD momentum inflections don't sustain for 15x ATR moves on 1h"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 15.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 18.0, "step": 1.0, "default": 15.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend context — close vs EMA_50 for directional bias"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross — momentum inflection signal, proven PF=1.71 at 7:1"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP sizing — 1.5x stop / 15.0x TP for extreme 10:1 R:R"}
+      ]
+    },
+    {
+      "name": "macd_ultra_tail_1h_12to1",
+      "description": "MACD histogram zero-cross on ETH/1h with ultra-extreme 12:1 R:R (1.5x ATR stop, 18.0x ATR TP). The maximum asymmetry variant — pushes R:R to the boundary of feasibility. At 12:1, only a 10% win rate is needed for PF=1.2. This tests the absolute upper bound of the tail harvester architecture: are there momentum moves on 1h ETH that sustain for 18x ATR? If yes, this variant captures them with minimal capital risk per trade.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero (histogram turns positive).",
+        "Close > EMA_50 confirms medium-term uptrend context.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero (histogram turns negative).",
+        "Close < EMA_50 confirms medium-term downtrend context.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "Regime gate: ADX_14 used for regime classification",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 12:1.",
+        "Hypothesis failure: if trades < 50 or win rate < 8%, 18x ATR moves are too rare on 1h to be tradeable"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 15.0, "max": 22.0, "step": 1.0, "default": 18.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend context — directional bias filter"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross — testing extreme 12:1 R:R upper bound"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP sizing — 1.5x stop / 18.0x TP for 12:1 R:R"}
+      ]
+    },
+    {
+      "name": "macd_moderate_tail_4h_9to1",
+      "description": "MACD histogram zero-cross on ETH/4h with 9:1 R:R (2.0x ATR stop, 18.0x ATR TP). The 4h bridge variant — tests the gap between proven 7:1 (PF=1.71) and untested 10:1. A wider 2.0x ATR stop on 4h gives more breathing room for the larger timeframe's noise, while 9:1 R:R is a previously untested point in the parameter space. If 7:1 works at PF=1.71, does 9:1 maintain PF>1.4? This answers whether the R:R-PF relationship is linear or has a cliff.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero (histogram turns positive).",
+        "Close > EMA_50 confirms medium-term uptrend context.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero (histogram turns negative).",
+        "Close < EMA_50 confirms medium-term downtrend context.",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Regime gate: ADX_14 used for regime classification",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "R:R = 9:1.",
+        "Hypothesis failure: if PF drops below 1.2 compared to 7:1's PF=1.71, R:R-PF has a cliff between 7:1 and 9:1"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.25, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 14.0, "max": 20.0, "step": 1.0, "default": 18.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend context — proven baseline from 7:1 ACCEPT"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross — testing 9:1 gap between proven 7:1 and untested 10:1"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for stop/TP — 2.0x stop (wider for 4h noise) / 18.0x TP for 9:1 R:R"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-6060caebd172",
+  "created_at": "2026-02-24T23:52:55.851360Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/YvJagokC-blackcat-L1-Uptrend-Entry-Indicator/",
+  "title": "[blackcat] L1 Uptrend Entry Indicator",
+  "author": "blackcat1402",
+  "summary_bullets": [
+    "Top catalog indicator: [blackcat] L1 Uptrend Entry Indicator by blackcat1402."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: [blackcat] L1 Uptrend Entry Indicator by blackcat1402.",
+      "note": "Meaning: Top catalog indicator: [blackcat] L1 Uptrend Entry Indicator by blackcat1402."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: [blackcat] L1 Uptrend Entry Indicator by blackcat1402."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-6060caebd172.raw.txt",
+  "sha256": "5c06c9060f937d88391d90a492c7252e1727d267c59f772ae71bebae9752dd84",
+  "truncated": false
+}

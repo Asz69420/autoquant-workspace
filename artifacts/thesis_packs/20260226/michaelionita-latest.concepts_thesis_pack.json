@@ -1,0 +1,27 @@
+{
+  "channel_slug": "michaelionita",
+  "channel_name": "MichaelIonita",
+  "created_at": "2026-02-26T03:58:00.508273+00:00",
+  "video_ids": [
+    "qbyQ8322m-M",
+    "Zepx8mARre0",
+    "CEJ_R5226xE"
+  ],
+  "concept_thesis_paths": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/thesis_packs/20260226/content-loop-1772078280.concept_thesis.json"
+  ],
+  "key_signals": [
+    {
+      "signal": "qbyQ8322m-M: extract repeatable concept from source context",
+      "count": 1
+    },
+    {
+      "signal": "Zepx8mARre0: extract repeatable concept from source context",
+      "count": 1
+    },
+    {
+      "signal": "CEJ_R5226xE: extract repeatable concept from source context",
+      "count": 1
+    }
+  ]
+}

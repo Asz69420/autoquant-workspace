@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-43b20e6d6c61",
+  "created_at": "2026-03-01T10:00:09.493037Z",
+  "tv_ref": "tradingview:0Obr0hKM",
+  "url": "https://www.tradingview.com/script/0Obr0hKM-Adaptive-MAD-Supertrend-GForge/",
+  "name": "Adaptive MAD Supertrend | GForge",
+  "author": "GForge",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "b07f96e8e9846777a8ae43067276e9bbb3f95ce0cca3d57838f2e6bc27322559",
+  "truncated": false
+}

@@ -1,0 +1,25 @@
+﻿📊 DAILY INTEL — 2026-02-27 5:44 AEST
+
+🟠 BTC
+△ Strategy       PF  WR%  TC  DD%  P&L%
+○── 4h ────────────────────────────────
+⚠ Keeper_Daily   --   --   --   --    --
+
+🔵 ETH
+△ Strategy       PF  WR%  TC  DD%  P&L%
+○── 4h ────────────────────────────────
+⚠ Keeper_Daily   --   --   --   --    --
+
+⚡ 24H ACTIVITY
+Cycles:1 Backtests:0
+Specs:0 Errors:1
+
+🎯 MILESTONES
+• Schedule fixed to 5:30 AEST
+• DM delivery enabled
+
+⚠️ ATTENTION
+• Status: FAIL
+• Reason: RETRIEVAL_FAIL
+• Missing path: scripts/keeper/runner.py
+• Fallback failed: scripts/keeper/legacy/runner.py

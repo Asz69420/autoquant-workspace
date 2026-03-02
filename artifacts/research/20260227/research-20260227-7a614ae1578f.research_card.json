@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-7a614ae1578f",
+  "created_at": "2026-02-26T21:33:49.633300Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=Ntp-o384C5g",
+  "title": "TRADER REVIEW: 1 Minute Scalping Strategy Works Everyday (Stupid Simple and Proven) @Jdub Trades",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "This trader here claims that he makes 40k a month last month.",
+    "I made over $44,000 and in this video, we're gonna be backtesting to see if it actually works But for that to happen, we're gonna have to start right now big bank small bank I like to make money.",
+    "All right from watching through JDum's trading advice on his YouTube channel I found that he consistently mentions his profitable trading strategy in countless videos If you're trying to find a repeatable and simple trading strategy that you can use every single day to make consistent profits in the market This video is for you reporting that he earns at least $500 a day to $40,000 a month last month.",
+    "I made over $44,000 now in my experience of running thousands of tests and backtesting over 1,300 strategies these results are not typical and based on benchmarks and the most profitable hedge funds in the world With the best to quants out there This is I can tell you well out of the ordinary and one other thing that absolutely sticks out to me There is extremely low time frame strategy starting on the one minute time frame But I'm certainly not judging.",
+    "There is only one way to find out if he's telling the truth And that is to sit down all of the rules and code this strategy so that we can backtest it on as much Possible data as I can find Okay, here we are on my computer.",
+    "There are three strategies But the one that he generally uses is this retest strategy just here So this is the one that I'm actually going to be backtesting today So I'm gonna write down all of the rules on trading view so you can understand and then we'll back test it on Multiple coin pairs on Forex and on gold and some other assets as well Okay, here we are on trading view as you can see I'm on a euro USD on the 15 minute time frame I've already highlighted the New York sessions here because t",
+    "I've got to back test it as far as I possibly can and on multiple Coin pairs and then we'll go through them all together It's not there because it doesn't work on the euro dollar.",
+    "They may not work on something else So we're going to test it on absolutely everything.",
+    "Here we are back on trading view I've lined up all the coins ready for us to back test as you can see I have the trading strategy ready It's coded.",
+    "It's back tested as far as he possibly can I'm not sure I've got enough money to back test this."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This trader here claims that he makes 40k a month last month.",
+      "note": "Meaning: This trader here claims that he makes 40k a month last month."
+    },
+    {
+      "timestamp": null,
+      "quote": "I made over $44,000 and in this video, we're gonna be backtesting to see if it actually works But for that to happen, we're gonna have to start right now big bank small bank I like to make money.",
+      "note": "Meaning: I made over $44,000 and in this video, we're gonna be backtesting to see if it actually works But for that to happen, we're gonna have to start right n"
+    },
+    {
+      "timestamp": null,
+      "quote": "All right from watching through JDum's trading advice on his YouTube channel I found that he consistently mentions his profitable trading strategy in countless videos If you're trying to find a repeat",
+      "note": "Meaning: All right from watching through JDum's trading advice on his YouTube channel I found that he consistently mentions his profitable trading strategy in c"
+    },
+    {
+      "timestamp": null,
+      "quote": "I made over $44,000 now in my experience of running thousands of tests and backtesting over 1,300 strategies these results are not typical and based on benchmarks and the most profitable hedge funds i",
+      "note": "Meaning: I made over $44,000 now in my experience of running thousands of tests and backtesting over 1,300 strategies these results are not typical and based on"
+    },
+    {
+      "timestamp": null,
+      "quote": "There is only one way to find out if he's telling the truth And that is to sit down all of the rules and code this strategy so that we can backtest it on as much Possible data as I can find Okay, here",
+      "note": "Meaning: There is only one way to find out if he's telling the truth And that is to sit down all of the rules and code this strategy so that we can backtest it "
+    },
+    {
+      "timestamp": null,
+      "quote": "There are three strategies But the one that he generally uses is this retest strategy just here So this is the one that I'm actually going to be backtesting today So I'm gonna write down all of the ru",
+      "note": "Meaning: There are three strategies But the one that he generally uses is this retest strategy just here So this is the one that I'm actually going to be backte"
+    },
+    {
+      "timestamp": null,
+      "quote": "I've got to back test it as far as I possibly can and on multiple Coin pairs and then we'll go through them all together It's not there because it doesn't work on the euro dollar.",
+      "note": "Meaning: I've got to back test it as far as I possibly can and on multiple Coin pairs and then we'll go through them all together It's not there because it does"
+    },
+    {
+      "timestamp": null,
+      "quote": "They may not work on something else So we're going to test it on absolutely everything.",
+      "note": "Meaning: They may not work on something else So we're going to test it on absolutely everything."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here we are back on trading view I've lined up all the coins ready for us to back test as you can see I have the trading strategy ready It's coded.",
+      "note": "Meaning: Here we are back on trading view I've lined up all the coins ready for us to back test as you can see I have the trading strategy ready It's coded."
+    },
+    {
+      "timestamp": null,
+      "quote": "It's back tested as far as he possibly can I'm not sure I've got enough money to back test this.",
+      "note": "Meaning: It's back tested as far as he possibly can I'm not sure I've got enough money to back test this."
+    },
+    {
+      "timestamp": null,
+      "quote": "There was a lot of entries But I've ever back tested on as much data as I could gather right.",
+      "note": "Meaning: There was a lot of entries But I've ever back tested on as much data as I could gather right."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you can see We have the high and the low marked out here.",
+      "note": "Meaning: As you can see We have the high and the low marked out here."
+    }
+  ],
+  "extracted_rules": [
+    "I made over $44,000 and in this video, we're gonna be backtesting to see if it actually works But for that to happen, we're gonna have to start right now big bank small bank I like to make money.",
+    "All right from watching through JDum's trading advice on his YouTube channel I found that he consistently mentions his profitable trading strategy in countless videos If you're trying to find a repeatable and simple trading strategy that you can use every single day to make consistent profits in the market This video is for you reporting that he earns at least $500 a day to $40,000 a month last month.",
+    "There is only one way to find out if he's telling the truth And that is to sit down all of the rules and code this strategy so that we can backtest it on as much Possible data as I can find Okay, here we are on my computer.",
+    "There are three strategies But the one that he generally uses is this retest strategy just here So this is the one that I'm actually going to be backtesting today So I'm gonna write down all of the rules on trading view so you can understand and then we'll back test it on Multiple coin pairs on Forex and on gold and some other assets as well Okay, here we are on trading view as you can see I'm on a euro USD on the 15 minute time frame I've already highlighted the New York sessions here because t",
+    "You can see we have our stop loss and take profit The stop loss is the retested candle which actually come across and broke above And then we're doing a risk to reward of one to two So in the settings, we can change all of the settings.",
+    "We can test it on absolutely anything I've set up all of the settings here We can either set our stop loss to the impulse Candle which is this candle here the yellow candle highlighted by yellow here Is the candle the one that broke out once after retesting our zone And we can do all wonderful things like add multiple trades per session and things like that But most importantly, we can use the trading view backtester Where we're going to be backtesting all of our strategies like you can see on t",
+    "This strategy is absolutely rubbish Okay, guys And there is one thing that I did forget to state and that is that we are actually backtesting here The first strategy which was the breakout and we're using this yellow candle and the risk to reward was two There was a second setup I'm not going to go through all of the actual coin pairs because we've already seen that this strategy isn't Great.",
+    "So what I'm going to do is now I'm going to check the I'm going to check very quickly the previous day high So if we go here, we can click take profit on previous day high or low That's going to take our take profit all the way up to here Which allows for the trading strategy to do pretty much the same There's a little bit less drawdown There's one final thing that I can do and that is use the full zone for the stop loss And that may also decrease the drawdown.",
+    "There you go by increasing our stop loss I actually p&l is a lot better, but we're still at minus 31 percent This whizzed through a couple of these other ones here still looking pretty awful to be honest guys We may have had a winner We have actually got a little bit of profit here before actually sloping completely off at 24 percent And that's on the smp and that's that very much similar We had a little bit of profit in this zone here, but we still absolutely Sloped into underwater territory Fi",
+    "Okay guys Okay, guys, I guess that is really the end of the full back test Okay, guys, I really guess there is no point in me dragging this out even further to be 100 honest with you I kind of guessed it would have been I'm going to add this to my excel spreadsheet where you can see all of the back tested trading strategies And their results Unfortunately when you go all the way down to the one minute time frame there isn't much data for each candle Although we would all love to work really hard"
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "You can see we have our stop loss and take profit The stop loss is the retested candle which actually come across and broke above And then we're doing a risk to reward of one to two So in the settings, we can change all "
+    },
+    {
+      "type": "risk",
+      "description": "We can test it on absolutely anything I've set up all of the settings here We can either set our stop loss to the impulse Candle which is this candle here the yellow candle highlighted by yellow here Is the candle the on"
+    },
+    {
+      "type": "risk",
+      "description": "This strategy is absolutely rubbish Okay, guys And there is one thing that I did forget to state and that is that we are actually backtesting here The first strategy which was the breakout and we're using this yellow can"
+    },
+    {
+      "type": "risk",
+      "description": "So what I'm going to do is now I'm going to check the I'm going to check very quickly the previous day high So if we go here, we can click take profit on previous day high or low That's going to take our take profit all "
+    },
+    {
+      "type": "risk",
+      "description": "There you go by increasing our stop loss I actually p&l is a lot better, but we're still at minus 31 percent This whizzed through a couple of these other ones here still looking pretty awful to be honest guys We may have"
+    }
+  ],
+  "explicit_conditions": [
+    "You can see we have our stop loss and take profit The stop loss is the retested candle which actually come across and broke above And then we're doing a risk to reward of one to two So in the settings, we can change all of the settings.",
+    "We can test it on absolutely anything I've set up all of the settings here We can either set our stop loss to the impulse Candle which is this candle here the yellow candle highlighted by yellow here Is the candle the one that broke out once after retesting our zone And we can do all wonderful things like add multiple trades per session and things like that But most importantly, we can use the trading view backtester Where we're going to be backtesting all of our strategies like you can see on t",
+    "This strategy is absolutely rubbish Okay, guys And there is one thing that I did forget to state and that is that we are actually backtesting here The first strategy which was the breakout and we're using this yellow candle and the risk to reward was two There was a second setup I'm not going to go through all of the actual coin pairs because we've already seen that this strategy isn't Great.",
+    "So what I'm going to do is now I'm going to check the I'm going to check very quickly the previous day high So if we go here, we can click take profit on previous day high or low That's going to take our take profit all the way up to here Which allows for the trading strategy to do pretty much the same There's a little bit less drawdown There's one final thing that I can do and that is use the full zone for the stop loss And that may also decrease the drawdown.",
+    "There you go by increasing our stop loss I actually p&l is a lot better, but we're still at minus 31 percent This whizzed through a couple of these other ones here still looking pretty awful to be honest guys We may have had a winner We have actually got a little bit of profit here before actually sloping completely off at 24 percent And that's on the smp and that's that very much similar We had a little bit of profit in this zone here, but we still absolutely Sloped into underwater territory Fi"
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "daily"
+  ],
+  "assets_mentioned": [
+    "GOLD",
+    "NASDAQ"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-7a614ae1578f.raw.txt",
+  "sha256": "87fd563e6c93c03a6266d414b558c1e14915eb4ba4526c52442321a237ae6d93",
+  "truncated": false
+}

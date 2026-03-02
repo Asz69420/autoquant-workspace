@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-mc1h8t3k",
+  "created_at": "2026-03-02T18:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "All 9 MACD ACCEPTs are on 4h timeframe. MACD histogram zero-cross is a discrete momentum regime change signal — the histogram flipping from negative to positive means selling pressure has exhausted and buying pressure has taken over (or vice versa). On 4h, this signal fires relatively rarely (MACD 7:1 produced 161 trades on 4h). On 1h, the same indicator structure produces 3-4x more zero-crosses because intraday momentum shifts are more frequent. The critical insight: with extreme R:R (10:1, 12:1), the high signal frequency becomes an ADVANTAGE, not a liability. Most 1h MACD crosses will produce small moves that hit the stop — that's expected and priced into the R:R. But the ones that catch genuine multi-hour momentum cascades (like liquidation-driven moves or funding rate dislocations on HyperLiquid) will produce massive winners that compensate for the many small losses. This is the 'wide funnel, narrow sieve' approach: cast a wide net with frequent entries, but only keep trades that extend into 10-12x ATR tails. MACD 12:1 on 4h already achieved PF=1.302 with trending PF=2.177. The 1h version should produce 400-600 trades, providing the strongest statistical validation of any strategy in the portfolio. Additionally, testing SOL/1h with MACD explores whether the MACD histogram cross captures SOL's characteristic momentum-driven moves (SOL tends to move in violent bursts, perfect for tail harvesting). The EMA_50 trend confirmation filter (close > EMA_50 for longs) ensures we only take MACD signals in the direction of the intermediate trend. Invalidation: if 1h PF < 1.0 with 10:1 R:R, the 1h MACD crosses are pure noise and the signal only works on 4h's cleaner regime changes.",
+  "regime_assumption": "momentum_regime_change",
+  "target_assets": ["ETH", "SOL"],
+  "target_timeframes": ["1h"],
+  "variants": [
+    {
+      "name": "macd_1h_eth_micro_tail_10to1",
+      "description": "MACD histogram zero-cross on ETH/1h with 10:1 R:R. The first test of MACD on 1h timeframe. On 4h, MACD confirmation is the most consistent ACCEPT producer (9 ACCEPTs). On 1h, the histogram crosses more frequently but each cross represents a smaller momentum shift. The 10:1 R:R (2.0x stop, 20.0x TP) ensures we only profit from trades that extend into significant multi-hour moves — the TP at 20x ATR will only hit during strong trend days or liquidation cascades. Close > EMA_50 trend filter prevents taking counter-trend MACD signals.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-line cross — momentum shifts bullish).",
+        "Close > EMA_50 (intermediate trend is bullish — only trade MACD signals with the trend).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-line cross — momentum shifts bearish).",
+        "Close < EMA_50 (intermediate trend is bearish).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if trade count < 200, 1h MACD crosses are rarer than expected; if PF < 0.9, 1h noise overwhelms signal"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 18.0, "max": 22.0, "step": 2.0, "default": 20.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 — intermediate trend filter, ensures MACD signals align with trend direction"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-line cross — momentum regime change signal, first test on 1h timeframe"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 20.0x TP — 10:1 R:R micro-tail harvester on 1h"}
+      ]
+    },
+    {
+      "name": "macd_1h_eth_extreme_tail_12to1",
+      "description": "MACD histogram zero-cross on ETH/1h with 12:1 R:R — the extreme tail frontier. On 4h, MACD 12:1 achieved PF=1.302 with trending PF=2.177 (the best trending-regime score of any ACCEPT). On 1h with 12:1, only the most extreme moves hit TP — liquidation cascades, funding rate squeezes, or major news-driven momentum. This is a 'lottery ticket' strategy: most trades lose the 2.0x ATR stop, but the rare winners return 12x the risk. If PF > 1.2 with 300+ trades, this becomes the most statistically robust strategy in the portfolio.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-line cross).",
+        "Close > EMA_50 (bullish intermediate trend).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-line cross).",
+        "Close < EMA_50 (bearish intermediate trend).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (24.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 10:1 variant, diminishing returns at extreme R:R — optimal R:R for 1h MACD is below 12:1"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 24.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 22.0, "max": 26.0, "step": 2.0, "default": 24.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 24.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 — trend filter for MACD signal direction"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross — hunting extreme 1h momentum tails"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 24.0x TP — 12:1 R:R extreme tail frontier on 1h"}
+      ]
+    },
+    {
+      "name": "macd_1h_sol_momentum_burst_10to1",
+      "description": "MACD histogram zero-cross on SOL/1h with 10:1 R:R. SOL's price action is characterized by violent momentum bursts — driven by lower market cap, higher retail participation, and concentrated liquidity. MACD histogram crossing zero on SOL/1h should capture the beginning of these bursts. SOL's characteristic: when it moves, it moves FAST. A MACD zero-cross on SOL at 1h granularity catches intraday momentum cascades that can run 5-10% in hours. The 10:1 R:R (2.0x stop, 20.0x TP) is calibrated to capture these burst-to-trend extensions. This is the first MACD test on SOL at any timeframe.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram zero-line cross on SOL).",
+        "Close > EMA_50 (bullish intermediate trend — SOL is moving up).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram zero-line cross on SOL).",
+        "Close < EMA_50 (bearish intermediate trend).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: SOL OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < ETH/1h 10:1 variant, SOL's volatility creates more false MACD crosses — stick with ETH"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 18.0, "max": 22.0, "step": 2.0, "default": 20.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 — trend filter, ensures MACD signals ride SOL's dominant momentum"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-cross — captures SOL's violent momentum bursts, first MACD test on SOL"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 20.0x TP — 10:1 R:R, SOL's high ATR means TP distance scales with burst magnitude"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-e32dfb7638fd",
+  "created_at": "2026-03-01T11:00:10.118826Z",
+  "tv_ref": "tradingview:fb6Yb6Ow",
+  "url": "https://www.tradingview.com/script/fb6Yb6Ow/",
+  "name": "Aegis Triple Strike [wjdtks255]",
+  "author": "wjdtks255",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "c65b388ae526549f7ae2997888d7ab145be1aaba702e4cbc557e6d49e4cc68f9",
+  "truncated": false
+}

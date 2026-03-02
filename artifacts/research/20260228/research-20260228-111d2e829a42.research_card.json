@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260228-111d2e829a42",
+  "created_at": "2026-02-27T23:00:04.814688Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/yrNKuDSK-trend-structure/",
+  "title": "Trend Structure",
+  "author": "MarketStructureLab",
+  "summary_bullets": [
+    "Top catalog indicator: Trend Structure by MarketStructureLab."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Trend Structure by MarketStructureLab.",
+      "note": "Meaning: Top catalog indicator: Trend Structure by MarketStructureLab."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: Trend Structure by MarketStructureLab."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260228/research-20260228-111d2e829a42.raw.txt",
+  "sha256": "edf00436e97150628db6b2719559359a51b59d59ca76a573c95f205964295a07",
+  "truncated": false
+}

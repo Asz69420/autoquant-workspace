@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-rp6t4w9n",
+  "created_at": "2026-03-01T22:05:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The rsi_pullback template has a fragile ACCEPT at PF=1.21 with only 38 trades — the weakest of the 4 viable templates. It has NEVER received the extreme R:R treatment that transformed MACD from PF=1.347 to PF=1.712. The pullback thesis is structurally suited to fat-tail extraction: when price is above EMA_200 (confirmed uptrend) with upward EMA_50 slope (active momentum), and RSI drops to 35-40 (temporary pullback), the subsequent bounce often produces outsized moves because the pullback was a brief deviation from a strong trend. The current rsi_pullback ACCEPT used conservative TP (likely 2-3x ATR). At 6-8x TP, we sacrifice win rate but each winner captures the FULL trend continuation after the pullback — not just the initial bounce. This is a different signal quality than MACD: MACD catches inflection points (momentum shift), while RSI pullback catches CONTINUATION points (temporary weakness in strong trend). Continuation moves may have different tail distributions — they start from a position of established strength, so the base rate of large follow-through could be higher. Critical constraint: RSI_long_max MUST stay at 40 or above. The advisory confirmed RSI<30 produces 0 trades (structurally contradictory: deep oversold in confirmed uptrend). RSI 35-45 is the viable pullback zone. Testing on ETH/1h to generate more signals (38 trades on 4h is fragile). Regime: primarily trending and transitional (the EMA_200+slope filters ARE trend filters). Invalidation: if PF < 1.0 at 6x TP on 1h, the RSI pullback signal doesn't produce fat tails — the bounces are sharp but shallow, making tight TPs optimal.",
+  "regime_assumption": "trending",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h"],
+  "variants": [
+    {
+      "name": "rsi_pullback_tail_6to1_eth1h",
+      "description": "RSI pullback in EMA_200 uptrend with 6:1 R:R on ETH/1h. The baseline extreme R:R variant. RSI≤40 (proven to generate trades, unlike RSI<30). EMA_200 trend + EMA_50 slope confirmation. 2.0x ATR stop provides the safe floor mandated by advisory. 6.0x ATR TP matches the R:R level where Supertrend achieved PF=1.22 (ACCEPT). On 1h, should generate 75-120 trades vs 38 on 4h. This is the 'can pullbacks produce fat tails?' test.",
+      "entry_long": [
+        "Close > EMA_200 confirms established uptrend.",
+        "EMA_50 slope is positive (current > previous bar) — active upward momentum.",
+        "RSI_14 <= 40 — temporary pullback within the uptrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms established downtrend.",
+        "EMA_50 slope is negative (current < previous bar) — active downward momentum.",
+        "RSI_14 >= 60 — temporary bounce within the downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (6.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 1.0, RSI pullback bounces are shallow — tight TPs are optimal for this signal type"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 6.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 5.0, "max": 7.0, "step": 1.0, "default": 6.0},
+        {"name": "rsi_long_max", "min": 35.0, "max": 45.0, "step": 5.0, "default": 40.0},
+        {"name": "rsi_short_min", "min": 55.0, "max": 65.0, "step": 5.0, "default": 60.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend direction + EMA_50 slope for active momentum confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 40 — pullback entry in uptrend, above the dead zone of RSI<30"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 6.0x TP — first extreme R:R test for pullback signal"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_shallow_8to1_eth1h",
+      "description": "Shallower RSI pullback (RSI≤45) with 8:1 R:R on ETH/1h. More permissive RSI threshold means more entries — catching 'mini-pullbacks' that don't dip as deep. The trade-off: more signals but lower average signal quality. At 8:1 R:R, we need fewer trades to hit TP to maintain edge. The shallower pullback may actually produce BETTER tail behavior because the trend is stronger (RSI didn't dip as far), meaning more runway for continuation. If this variant outperforms the RSI≤40 variant at 6:1, it proves that pullback DEPTH doesn't correlate with continuation MAGNITUDE — a key finding for pullback strategies.",
+      "entry_long": [
+        "Close > EMA_200 confirms established uptrend.",
+        "EMA_50 slope is positive — active upward momentum.",
+        "RSI_14 <= 45 — shallow pullback, trend still strong.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms established downtrend.",
+        "EMA_50 slope is negative — active downward momentum.",
+        "RSI_14 >= 55 — shallow bounce in downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < RSI≤40 variant, shallower pullbacks admit noise — deeper dips are better quality signals"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 7.0, "max": 9.0, "step": 1.0, "default": 8.0},
+        {"name": "rsi_long_max", "min": 40.0, "max": 50.0, "step": 5.0, "default": 45.0},
+        {"name": "rsi_short_min", "min": 50.0, "max": 60.0, "step": 5.0, "default": 55.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend + EMA_50 slope — same trend framework as baseline variant"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 45 — shallower pullback threshold, more signals, tests depth-vs-continuation hypothesis"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 8.0x TP — pushing R:R further to extract maximum from stronger-trend entries"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_deep_safe_6to1_eth4h",
+      "description": "Deep RSI pullback (RSI≤35) with 6:1 R:R on ETH/4h — testing the boundary between productive deep-dip and the dead zone at RSI<30. The advisory killed RSI<30 but RSI 30-35 is uncharted territory. At RSI 35, the pullback is deep enough to filter out noise but not so deep that it requires price to be in a structurally contradictory position (oversold in uptrend). Combined with EMA_200 trend + slope, this captures genuinely discounted entries in confirmed trends. 4h timeframe for consistency with prior rsi_pullback data. If this produces viable trades (>30), the RSI 30-35 zone is rehabilitated. If 0 trades, the dead zone extends to RSI<35.",
+      "entry_long": [
+        "Close > EMA_200 confirms established uptrend.",
+        "EMA_50 slope is positive — active upward momentum.",
+        "RSI_14 <= 35 — deep pullback, genuinely discounted entry.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms established downtrend.",
+        "EMA_50 slope is negative — active downward momentum.",
+        "RSI_14 >= 65 — deep bounce in downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (6.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "Hypothesis failure mode: if 0 trades, dead zone extends to RSI<35. If trades but PF<1.0, deep dips in uptrends are reversals not pullbacks."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 6.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 5.0, "max": 7.0, "step": 1.0, "default": 6.0},
+        {"name": "rsi_long_max", "min": 33.0, "max": 38.0, "step": 1.0, "default": 35.0},
+        {"name": "rsi_short_min", "min": 62.0, "max": 67.0, "step": 1.0, "default": 65.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend + EMA_50 slope — established trend required for deep pullback thesis"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 35 — boundary test between productive deep-dip and advisory-confirmed dead zone at RSI<30"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop (floor) / 6.0x TP — tight stop justified by deep discount entry, 4:1 R:R"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

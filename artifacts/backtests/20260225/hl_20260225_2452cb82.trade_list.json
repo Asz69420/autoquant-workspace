@@ -1,0 +1,1 @@
+{"schema_version":"1.0","id":"hl_20260225_2452cb82","created_at":"2026-02-24T14:21:54.509142+00:00","trades":[{"entry_time":"2024-02-26 04:00:00","entry_price":51327.8667,"exit_time":"2024-02-26 12:00:00","exit_price":52242.51900096,"side":"short","qty":1.0,"pnl":-961.25897452,"reason":"sl","bars_held":3}]}

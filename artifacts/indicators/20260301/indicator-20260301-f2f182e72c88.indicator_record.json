@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-f2f182e72c88",
+  "created_at": "2026-03-01T10:34:50.710821Z",
+  "tv_ref": "tradingview:bVIqPFAa",
+  "url": "https://www.tradingview.com/script/bVIqPFAa-Price-Normalized-RSI-Profile-UAlgo/",
+  "name": "Price Normalized RSI Profile [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "7292f1c76b59b3bb2784220e82d841fea16b9ac5ae7e0e7265a739d0db39f295",
+  "truncated": false
+}

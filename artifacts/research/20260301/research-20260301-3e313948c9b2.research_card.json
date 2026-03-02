@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-3e313948c9b2",
+  "created_at": "2026-03-01T10:00:08.970911Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/U2S5LhZD-3D-Money-Flow-Index-UAlgo/",
+  "title": "3D Money Flow Index [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "Top catalog indicator: 3D Money Flow Index [UAlgo] by UAlgo."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: 3D Money Flow Index [UAlgo] by UAlgo.",
+      "note": "Meaning: Top catalog indicator: 3D Money Flow Index [UAlgo] by UAlgo."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-3e313948c9b2.raw.txt",
+  "sha256": "f4779b54550e738a5315589b628234b6f58e2ca94c3d6cd53c4098f129ca96b9",
+  "truncated": false
+}

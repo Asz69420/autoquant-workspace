@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260224-b5be8fb285c2",
+  "created_at": "2026-02-24T11:04:35.969901Z",
+  "source_type": "transcript",
+  "source_ref": "fixture://sample-transcript",
+  "title": "Fixture Transcript",
+  "summary_bullets": [
+    "Today we used Supertrend indicator by Kivanc and RSI divergence on BTC 1h and ETH 4h.",
+    "Rule: wait for trend flip and volume confirmation."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Today we used Supertrend indicator by Kivanc and RSI divergence on BTC 1h and ETH 4h.",
+      "note": "Today we used Supertrend indicator by Kivanc and RSI divergence on BTC 1h and ETH 4h."
+    },
+    {
+      "timestamp": null,
+      "quote": "Rule: wait for trend flip and volume confirmation.",
+      "note": "Rule: wait for trend flip and volume confirmation."
+    }
+  ],
+  "extracted_rules": [
+    "Today we used Supertrend indicator by Kivanc and RSI divergence on BTC 1h and ETH 4h.",
+    "Rule: wait for trend flip and volume confirmation."
+  ],
+  "indicators_mentioned": [
+    "by Kivanc and RSI divergence on BTC 1h and ETH 4h",
+    "Today we used Supertrend"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "by Kivanc and RSI divergence on BTC 1h and ETH 4h",
+      "keywords": [
+        "by",
+        "kivanc",
+        "and",
+        "rsi",
+        "divergence"
+      ],
+      "confidence": 0.75,
+      "author_hint": "Kivanc and RSI divergence on BTC 1h and ETH 4h"
+    },
+    {
+      "name": "Today we used Supertrend",
+      "keywords": [
+        "today",
+        "we",
+        "used",
+        "supertrend"
+      ],
+      "confidence": 0.75,
+      "author_hint": "Kivanc and RSI divergence on BTC 1h and ETH 4h"
+    }
+  ],
+  "timeframes_mentioned": [
+    "1h",
+    "4h"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [
+    "smoke",
+    "pipeline-stage1"
+  ],
+  "raw_pointer": "artifacts/research/20260224/research-20260224-b5be8fb285c2.raw.txt",
+  "sha256": "f13da19c6aae5410142f4ea4af7d7e8400223d7d3edb0ae1e5e8b63ac8edb730",
+  "truncated": false
+}

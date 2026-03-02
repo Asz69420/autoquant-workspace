@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-2dc11df2f23c",
+  "created_at": "2026-02-25T03:21:55.025976Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/muLbjEdA-Casper-SMC-5m-ORB-Retest/",
+  "title": "Casper SMC: 5m ORB + Retest",
+  "author": "hoosn1ck",
+  "summary_bullets": [
+    "Trending catalog indicator: Casper SMC: 5m ORB + Retest by hoosn1ck."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Trending catalog indicator: Casper SMC: 5m ORB + Retest by hoosn1ck.",
+      "note": "Meaning: Trending catalog indicator: Casper SMC: 5m ORB + Retest by hoosn1ck."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Trending catalog indicator: Casper SMC: 5m ORB + Retest by hoosn1ck."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "5m"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-2dc11df2f23c.raw.txt",
+  "sha256": "6ccbfa223f0a99ca8387d4a4d99e8403a88148326ba093e234b98ea3206e53d0",
+  "truncated": false
+}

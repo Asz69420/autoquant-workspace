@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-b1cfed9acbd9",
+  "created_at": "2026-02-25T02:20:02.565465Z",
+  "tv_ref": "tradingview:XqhAMhbS",
+  "url": "https://www.tradingview.com/script/XqhAMhbS-Momentum-Decay-Field-BullByte/",
+  "name": "Momentum Decay Field [BullByte]",
+  "author": "BullByte",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "3ffe69f148b36966696c01dd15faa5422bbc3ee978c7145cb7327549bb8d2633",
+  "truncated": false
+}

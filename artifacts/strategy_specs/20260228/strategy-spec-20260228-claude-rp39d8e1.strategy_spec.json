@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-rp39d8e1",
+  "created_at": "2026-02-28T22:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "RSI pullback showed PF=1.164 with 51 trades (claude-rp6ht5a8) — a promising signal — but was REJECTED due to catastrophic DD=185%. Root cause: 1.0x ATR stop allows single trades to accumulate massive adverse excursion. The advisory explicitly recommends testing RSI pullback with stop >= 2.0x ATR. The signal mechanism (buy dips in EMA_200-confirmed uptrends when RSI shows temporary weakness) is fundamentally sound and DIFFERENT from MACD/supertrend — it enters AFTER pullbacks rather than at momentum shifts. By widening stops to 2.0-2.5x ATR, we give pullback entries room to recover without getting stopped out, while maintaining 1.6-2.0:1 R:R for fee drag management. The shallow pullback zone (RSI 42-45) produced trades while deep (RSI < 35) produced zero — so we keep RSI thresholds at 42-45 for longs. Regime assumption: TRENDING (EMA_200 slope filter baked into template). Invalidation: if DD > 25% on any variant despite 2.0x+ stops, the template's trend filter is insufficient for drawdown control and RSI pullback should be deprioritized.",
+  "regime_assumption": "trending",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "rsi_pullback_safe_moderate",
+      "description": "RSI pullback with 2.0x ATR stop (vs 1.0x that caused 185% DD) and 4.0x TP. Tests the advisory hypothesis that wider stops fix DD while preserving the PF=1.164 signal quality. R:R = 2:1. RSI threshold at 45 captures shallow pullbacks that generate enough trades. EMA_200 structural trend filter ensures we only buy dips in confirmed uptrends.",
+      "entry_long": [
+        "Close > EMA_200 confirms structural uptrend.",
+        "EMA_50 slope is rising (EMA_50 > prev EMA_50) confirms intermediate momentum.",
+        "RSI_14 <= 45 identifies temporary pullback weakness in the trend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms structural downtrend.",
+        "EMA_50 slope is falling (EMA_50 < prev EMA_50) confirms intermediate momentum.",
+        "RSI_14 >= 55 identifies temporary rally weakness in the downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Trend filter: Close must be above/below EMA_200 (structural trend confirmation)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (4.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode guard: if wide stop still produces DD > 25%, the trend filter is too weak"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 4.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.25, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 3.0, "max": 5.0, "step": 0.5, "default": 4.0},
+        {"name": "rsi_long_max", "min": 40, "max": 50, "step": 2.5, "default": 45},
+        {"name": "rsi_short_min", "min": 50, "max": 60, "step": 2.5, "default": 55},
+        {"name": "risk_r", "min": 0.5, "max": 2.0, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 4.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 pullback detection — shallow threshold (45) for trade frequency"},
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 structural trend + EMA_50 slope for intermediate momentum"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 4.0x TP sizing — DD fix variant"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_wide_stop_wide_tp",
+      "description": "Maximum risk buffer variant: 2.5x ATR stop with 5.0x TP (2:1 R:R). If the DD blowout was caused by insufficient stop width, this variant provides the maximum breathing room. At 2:1 R:R with RSI pullback signal quality (PF=1.164 base), even 35% win rate produces positive expectancy. This is the upper bound of the stop width sweep — tests whether MORE room always helps or if there's a point of diminishing returns.",
+      "entry_long": [
+        "Close > EMA_200 confirms structural uptrend.",
+        "EMA_50 slope is rising (EMA_50 > prev EMA_50) confirms intermediate momentum.",
+        "RSI_14 <= 42 identifies moderate pullback (slightly tighter than moderate variant for quality).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms structural downtrend.",
+        "EMA_50 slope is falling (EMA_50 < prev EMA_50) confirms intermediate momentum.",
+        "RSI_14 >= 58 identifies moderate rally weakness in the downtrend.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Trend filter: Close must be above/below EMA_200 (structural trend confirmation)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (5.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.5x ATR).",
+        "Hypothesis failure mode guard: 5.0x TP may rarely be hit on 4h — if win rate drops below 25%, R:R is too wide"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.5x ATR_14 below/above entry.",
+        "Take profit at 5.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 2.0, "max": 3.0, "step": 0.25, "default": 2.5},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 6.0, "step": 0.5, "default": 5.0},
+        {"name": "rsi_long_max", "min": 38, "max": 45, "step": 2, "default": 42},
+        {"name": "rsi_short_min", "min": 55, "max": 62, "step": 2, "default": 58},
+        {"name": "risk_r", "min": 0.5, "max": 2.0, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 5.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 pullback — tighter threshold (42) for quality filtering"},
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 structural trend + EMA_50 slope"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for widest stop/TP (2.5x/5.0x) — maximum DD buffer"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_accept_rr_match",
+      "description": "Matches the MACD ACCEPT winner's proven R:R ratio (1.0:3.5) but with RSI pullback signal. Tests whether the ACCEPT's R:R is universally optimal or MACD-specific. Stop at 1.5x ATR (minimum safe floor per advisory — NOT 1.0x which caused DD blowout) with 3.5x TP (2.33:1 R:R). This is the tightest safe stop in the sweep.",
+      "entry_long": [
+        "Close > EMA_200 confirms structural uptrend.",
+        "EMA_50 slope is rising (EMA_50 > prev EMA_50) confirms intermediate momentum.",
+        "RSI_14 <= 45 identifies shallow pullback.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms structural downtrend.",
+        "EMA_50 slope is falling (EMA_50 < prev EMA_50) confirms intermediate momentum.",
+        "RSI_14 >= 55 identifies shallow rally weakness.",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Trend filter: Close must be above/below EMA_200 (structural trend confirmation)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (3.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "Hypothesis failure mode guard: 1.5x stop is at the advisory minimum floor — if DD > 20%, RSI pullback needs wider stops than MACD"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 3.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 3.0, "max": 4.0, "step": 0.5, "default": 3.5},
+        {"name": "rsi_long_max", "min": 40, "max": 48, "step": 2, "default": 45},
+        {"name": "rsi_short_min", "min": 52, "max": 60, "step": 2, "default": 55},
+        {"name": "risk_r", "min": 0.5, "max": 2.0, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 shallow pullback detection at 45 threshold"},
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 structural trend + EMA_50 slope"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 — ACCEPT R:R match (1.5x stop / 3.5x TP)"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

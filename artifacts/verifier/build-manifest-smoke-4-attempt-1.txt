@@ -1,0 +1,14 @@
+﻿{
+"verdict": "PARTIAL",
+"total_issues_found": 1,
+"issues_returned": 1,
+"issues": [
+{
+"severity": "MAJOR",
+"file": "scripts/tests/run_work_smoke.txt",
+"message": "Smoke validation requires AUTO_FIX_OK=1, but it is not present.",
+"suggested_fix": "Add a line `AUTO_FIX_OK=1` to scripts/tests/run_work_smoke.txt, then rerun verification."
+}
+],
+"manifest_path_used": "artifacts/verification/build-manifest-smoke-4/context_manifest.json"
+}

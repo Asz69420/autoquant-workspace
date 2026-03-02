@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-ec3s7w2k",
+  "created_at": "2026-03-02T18:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The advisory's Promising Direction #7 states: 'If EMA crossover produces PF > 1.2, it proves that signal complexity is irrelevant for tail harvesting — R:R is the only parameter that matters.' The existing diagnostic spec (claude-ec6t4w8m) tests ETH with 7:1, 8:1, and 10:1 R:R. This spec extends the thesis to SOL — a structurally different asset. SOL vs ETH crossover dynamics differ in two important ways: (1) SOL's EMA_9/EMA_21 crossovers are more DECISIVE because SOL trends harder. When SOL's fast EMA crosses the slow EMA, the subsequent move tends to be larger (relative to ATR) than ETH's, meaning the same R:R ratio captures a higher percentage of the post-crossover move. (2) SOL has more WHIPSAWS in ranging periods because its higher volatility causes EMA_9 to oscillate more rapidly around EMA_21. The extreme R:R acts as a natural whipsaw filter — whipsaw entries hit the stop quickly (small loss) while genuine crossovers in trending conditions run to large TP multiples. If SOL's PF on raw EMA crossover exceeds ETH's, it proves that the tail harvesting principle is MORE effective on high-volatility assets. If both SOL and ETH produce PF > 1.2 on the simplest possible signal (two-line crossover), the implication is revolutionary: all the indicator complexity in the pipeline is unnecessary — the edge lives entirely in the exit (R:R ratio), not the entry. This also tests 4h vs 1h on SOL to determine which timeframe produces cleaner EMA crossover signals. Invalidation: if SOL PF < 1.0 on all variants, EMA crossover is too noisy for high-vol assets and signal complexity IS required for SOL.",
+  "regime_assumption": "regime_agnostic",
+  "target_assets": ["SOL"],
+  "target_timeframes": ["4h", "1h"],
+  "variants": [
+    {
+      "name": "sol_ema_cross_4h_8to1",
+      "description": "Raw EMA_9/EMA_21 crossover on SOL/4h with 8:1 R:R. The simplest possible entry signal on the highest-volatility major crypto. If this works, signal complexity is proven irrelevant. SOL/4h produces clean but infrequent crossovers — expect 40-80 trades. The 8:1 R:R (2.0x stop, 16.0x TP) matches the proven Supertrend champion's R:R. No additional filters, no RSI, no ADX, no ATR gate — just raw crossover + extreme R:R. The purity of this test is the point.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (fast EMA crosses above slow EMA — bullish momentum shift).",
+        "No additional filters — testing signal purity.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (fast EMA crosses below slow EMA — bearish momentum shift).",
+        "No additional filters.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: SOL OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (16.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 1.0, SOL's 4h EMA crossovers produce too many false signals; try 1h variant instead"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 16.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 14.0, "max": 18.0, "step": 2.0, "default": 16.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 — fast moving average, crossover signal source"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_21 — slow moving average, crossover signal source. Minimal signal for maximum purity."},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 16.0x TP — 8:1 R:R, SOL purity test"}
+      ]
+    },
+    {
+      "name": "sol_ema_cross_1h_7to1",
+      "description": "Raw EMA_9/EMA_21 crossover on SOL/1h with 7:1 R:R. The 1h timeframe produces many more crossovers than 4h — expect 150-300 trades, providing strong statistical power. 7:1 R:R is slightly lower than the 4h variant because 1h moves are shorter. If PF > 1.2 with 200+ trades on the simplest signal, it proves the tail harvesting thesis at scale. Comparison with the 4h variant reveals the timeframe-signal quality tradeoff for EMA crossover on SOL.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (bullish momentum shift on 1h bars).",
+        "No additional filters — raw crossover signal.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (bearish momentum shift on 1h bars).",
+        "No additional filters.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: SOL OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (14.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 4h variant, 1h crossovers are too noisy for SOL — 4h is the minimum useful timeframe for EMA crossover"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 14.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 16.0, "step": 2.0, "default": 14.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 14.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 — fast EMA crossover signal on SOL/1h"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_21 — slow EMA crossover signal, high-frequency on 1h for statistical power"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 14.0x TP — 7:1 R:R, lower than 4h to account for shorter 1h moves"}
+      ]
+    },
+    {
+      "name": "sol_ema_cross_4h_10to1_frontier",
+      "description": "Raw EMA_9/EMA_21 crossover on SOL/4h with 10:1 R:R — the extreme tail variant. If the 8:1 variant works, this tests whether pushing R:R to 10:1 (2.0x stop, 20.0x TP) further improves PF by only keeping the absolute largest post-crossover moves. On SOL/4h, a 20x ATR TP means the price must move ~3-5% from entry (depending on current ATR). SOL regularly makes 5-10% daily moves, so this TP is achievable on strong trend days. Comparing 8:1 vs 10:1 PF reveals the optimal R:R for EMA crossover on SOL.",
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 (bullish crossover).",
+        "No additional filters.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 (bearish crossover).",
+        "No additional filters.",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: SOL OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 8:1 variant, 10:1 is beyond the optimal R:R for EMA crossover on SOL — stick with 8:1"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 18.0, "max": 22.0, "step": 2.0, "default": 20.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 — fast EMA for crossover signal"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA_21 — slow EMA, testing extreme R:R frontier on the simplest signal"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 20.0x TP — 10:1 R:R extreme tail frontier"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

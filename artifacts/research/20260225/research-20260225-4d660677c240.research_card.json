@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-4d660677c240",
+  "created_at": "2026-02-25T11:31:33.599216Z",
+  "source_type": "manual_insight",
+  "source_ref": "manual_insight:insight-cea296ade605:new",
+  "title": "Partial profit scaling via indicator signals",
+  "summary_bullets": [
+    "Potentially take partial profits based on an indicator rather than full in/out trade management.",
+    "Keep full-close signal capability for exits, but for scaling out, take 10% off position each time the take-profit signal fires while the position is in profit.",
+    "Repeat up to 10 times to fully close the trade.",
+    "This acts as risk mitigation and has shown decent results; need to identify robust concepts/indicators that are suitable for partial profit-taking triggers."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Potentially take partial profits based on an indicator rather than full in/out trade management.",
+      "note": "Meaning: Potentially take partial profits based on an indicator rather than full in/out trade management."
+    },
+    {
+      "timestamp": null,
+      "quote": "Keep full-close signal capability for exits, but for scaling out, take 10% off position each time the take-profit signal fires while the position is in profit.",
+      "note": "Meaning: Keep full-close signal capability for exits, but for scaling out, take 10% off position each time the take-profit signal fires while the position is in"
+    },
+    {
+      "timestamp": null,
+      "quote": "Repeat up to 10 times to fully close the trade.",
+      "note": "Meaning: Repeat up to 10 times to fully close the trade."
+    },
+    {
+      "timestamp": null,
+      "quote": "This acts as risk mitigation and has shown decent results; need to identify robust concepts/indicators that are suitable for partial profit-taking triggers.",
+      "note": "Meaning: This acts as risk mitigation and has shown decent results; need to identify robust concepts/indicators that are suitable for partial profit-taking trig"
+    }
+  ],
+  "extracted_rules": [
+    "This acts as risk mitigation and has shown decent results; need to identify robust concepts/indicators that are suitable for partial profit-taking triggers."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "This acts as risk mitigation and has shown decent results; need to identify robust concepts/indicators that are suitable for partial profit-taking triggers."
+    }
+  ],
+  "explicit_conditions": [
+    "This acts as risk mitigation and has shown decent results; need to identify robust concepts/indicators that are suitable for partial profit-taking triggers."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [
+    "partial-take-profit",
+    "scale-out",
+    "risk-mitigation",
+    "indicator-exit"
+  ],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-4d660677c240.raw.txt",
+  "sha256": "bf0ddf341b787d2c94896ef8ca9715e413958699719631669e2623ada6f72985",
+  "truncated": false
+}

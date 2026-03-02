@@ -1,0 +1,244 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-ea7v3m9k",
+  "created_at": "2026-03-01T20:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ema_rsi_atr has been stagnant at PF ~1.03 because it was ALWAYS tested with conservative R:R (~1.5:1 to 2:1). The validated universal principle — extreme R:R works with quality signals — has never been applied to this template. ema_rsi_atr is uniquely positioned for extreme R:R because it has a BUILT-IN ATR volatility gate (ATR > 20-bar ATR moving average). This gate ensures we only enter when volatility is EXPANDING — exactly when markets make large directional moves. EMA9/EMA21 alignment provides trend confirmation, RSI provides momentum zone filtering, and the ATR expansion gate ensures we're entering during high-energy market conditions. When all three agree AND volatility is above average, the resulting trades should have heavy tails. The hypothesis: applying 6-10x TP to entries that already pass a volatility expansion filter will produce the same PF uplift seen in MACD (1.03→1.46) and Supertrend (1.26→1.91). Win rate will be 15-25% but each winner captures a full volatility expansion wave. Regime assumption: TRENDING (EMA alignment required). Invalidation: if PF < 1.0 even with extreme R:R, the EMA crossover signal lacks the signal quality needed despite the ATR gate — confirming it's structurally weaker than MACD/Supertrend.",
+  "regime_assumption": "trending",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ema_rsi_atr_vol_rider_6to1",
+      "description": "EMA9/21 trend + RSI momentum zone + ATR expansion gate with 6:1 R:R. The conservative extreme variant. RSI bands slightly tightened (42-68 long, 32-58 short) to improve signal quality over default. 2.0x ATR stop provides safe floor per doctrine (>=1.5x mandatory), 6.0x ATR TP matches the R:R that made MACD 1h succeed (PF=1.46). This is the baseline extreme R:R test for ema_rsi_atr.",
+      "entry_long": [
+        "EMA_9 > EMA_21 confirms bullish trend alignment.",
+        "RSI_14 between 42 and 68 confirms bullish momentum without overextension.",
+        "ATR_14 > 20-period ATR moving average confirms volatility expansion.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "EMA_9 < EMA_21 confirms bearish trend alignment.",
+        "RSI_14 between 32 and 58 confirms bearish momentum without oversold bounce risk.",
+        "ATR_14 > 20-period ATR moving average confirms volatility expansion.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (6.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 1.0, ema_rsi_atr signal quality is insufficient even with ATR gate"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 6.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 5.0, "max": 7.0, "step": 1.0, "default": 6.0},
+        {"name": "rsi_long_min", "min": 38, "max": 45, "step": 3, "default": 42},
+        {"name": "rsi_long_max", "min": 65, "max": 72, "step": 3, "default": 68},
+        {"name": "rsi_short_min", "min": 28, "max": 35, "step": 3, "default": 32},
+        {"name": "rsi_short_max", "min": 55, "max": 62, "step": 3, "default": 58},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 vs EMA_21 — trend direction confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in 42-68/32-58 — momentum zone filter, tightened for quality"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 > 20-bar MA — volatility expansion gate + 2.0x stop / 6.0x TP"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_vol_rider_8to1",
+      "description": "EMA9/21 trend + RSI momentum zone + ATR expansion gate with 8:1 R:R. Standard RSI bands (40-70 long, 30-60 short) — same defaults as template but with extreme R:R. This matches the R:R that made Supertrend ultra-relaxed achieve PF=1.91. More permissive RSI generates more trades to offset lower win rate at 8x TP. The 2.0x stop keeps risk bounded.",
+      "entry_long": [
+        "EMA_9 > EMA_21 confirms bullish trend alignment.",
+        "RSI_14 between 40 and 70 confirms bullish momentum (standard range).",
+        "ATR_14 > 20-period ATR moving average confirms volatility expansion.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "EMA_9 < EMA_21 confirms bearish trend alignment.",
+        "RSI_14 between 30 and 60 confirms bearish momentum (standard range).",
+        "ATR_14 > 20-period ATR moving average confirms volatility expansion.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 1.0 at 8:1 but PF > 1.0 at 6:1, the ema_rsi_atr signal tail distribution caps out between 6-8x ATR"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 7.0, "max": 9.0, "step": 1.0, "default": 8.0},
+        {"name": "rsi_long_min", "min": 38, "max": 45, "step": 3, "default": 40},
+        {"name": "rsi_long_max", "min": 65, "max": 72, "step": 3, "default": 70},
+        {"name": "rsi_short_min", "min": 28, "max": 35, "step": 3, "default": 30},
+        {"name": "rsi_short_max", "min": 55, "max": 62, "step": 3, "default": 60},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 vs EMA_21 — trend direction confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in 40-70/30-60 — standard momentum zones, max trade generation"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 > 20-bar MA — volatility expansion gate + 2.0x stop / 8.0x TP (matching supertrend success R:R)"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_precision_10to1",
+      "description": "EMA9/21 trend + TIGHT RSI momentum zone + ATR expansion gate with 10:1 R:R. The precision variant: very tight RSI bands (45-60 long, 40-55 short) ensure only the highest-quality momentum signals pass. At 10:1 R:R, we need each entry to be a genuine trend initiation, not a random fluctuation within the momentum zone. The tight RSI acts as a second quality filter alongside the ATR expansion gate. Wider stop (2.5x) gives more room for 4h bars to develop. Win rate will be ~10-15% but each winner = 10x risk.",
+      "entry_long": [
+        "EMA_9 > EMA_21 confirms bullish trend alignment.",
+        "RSI_14 between 45 and 60 confirms early-stage bullish momentum (tight quality filter).",
+        "ATR_14 > 20-period ATR moving average confirms volatility expansion.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "EMA_9 < EMA_21 confirms bearish trend alignment.",
+        "RSI_14 between 40 and 55 confirms early-stage bearish momentum (tight quality filter).",
+        "ATR_14 > 20-period ATR moving average confirms volatility expansion.",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.5x ATR).",
+        "Hypothesis failure mode: if PF < 1.0 with tight RSI + 10x TP, ema_rsi_atr lacks the tail depth for extreme harvesting — cap R:R at 6-8x"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.5x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 2.0, "max": 3.0, "step": 0.5, "default": 2.5},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 12.0, "step": 1.0, "default": 10.0},
+        {"name": "rsi_long_min", "min": 42, "max": 48, "step": 3, "default": 45},
+        {"name": "rsi_long_max", "min": 58, "max": 65, "step": 3, "default": 60},
+        {"name": "rsi_short_min", "min": 35, "max": 42, "step": 3, "default": 40},
+        {"name": "rsi_short_max", "min": 52, "max": 58, "step": 3, "default": 55},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 vs EMA_21 — trend direction confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in 45-60/40-55 — very tight momentum zones for maximum signal quality"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 > 20-bar MA — volatility expansion gate + 2.5x stop / 10.0x TP (extreme tail harvest)"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

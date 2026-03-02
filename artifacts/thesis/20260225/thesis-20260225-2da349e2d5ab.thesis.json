@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260225-2da349e2d5ab",
+  "created_at": "2026-02-25T11:46:33.917759Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260225/research-20260225-ee3ef035fd42.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": []
+  },
+  "title": "Momentum pullback scale-out",
+  "thesis_bullets": [
+    "Take 10 percent partial profits on repeated momentum exhaustion signals while trade remains in profit, with hard full-close signal preserved."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on 1h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on 1h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "1h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on 1h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "scale-out",
+    "exit",
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "sha256_inputs": "2da349e2d5ab2319e12dbdbc90f59c157459a0d0d0a445e8f9e6176f29d4853d"
+}

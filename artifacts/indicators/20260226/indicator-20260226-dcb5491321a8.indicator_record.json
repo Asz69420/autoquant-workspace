@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-dcb5491321a8",
+  "created_at": "2026-02-25T22:40:12.298445Z",
+  "tv_ref": "tradingview:WCVLJ7O6",
+  "url": "https://www.tradingview.com/script/WCVLJ7O6-ICT-MTF-POI-CISD-Liquidity-Trade-Manager/",
+  "name": "ICT MTF POI - CISD - Liquidity - Trade Manager",
+  "author": "Ekuang",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "d3a9b2841c1aed44bcacb3207e8d1923c451dbdd222cec0b79054152b2b6ecbc",
+  "truncated": false
+}

@@ -1,0 +1,232 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-loop-test",
+  "run_id": "loop-test",
+  "created_at": "2026-02-27T02:28:24.490507+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260227-aca46eedbd4e.strategy_spec",
+  "template": "directive_variant_1_gate_adjust",
+  "metrics": {
+    "profit_factor_after_costs": 0.92023873,
+    "max_drawdown": 981.19936581,
+    "trades": 226,
+    "regime_breakdown": {
+      "trending_trades": 57,
+      "ranging_trades": 114,
+      "transitional_trades": 55
+    },
+    "regime_pf": {
+      "trending": 0.88446154,
+      "ranging": 1.04178841,
+      "transitional": 0.77172553
+    },
+    "regime_wr": {
+      "trending": 0.40350877,
+      "ranging": 0.40350877,
+      "transitional": 0.34545455
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [],
+    "bad_regimes": [
+      "trending",
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 981.199 > 0.30",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_87244f03.backtest_result.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.920",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_87244f03.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "signal_selectivity_increase_pct": 25,
+        "require_trend_alignment": true,
+        "confirmation_bars": 2
+      },
+      "rationale": "PF < 1.0 with 226 trades indicates overtrading of marginal setups; stricter entry quality is the fastest lever to lift average trade expectancy.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "time_stop_bars": 8,
+        "partial_take_profit": {
+          "enabled": true,
+          "at_r_multiple": 1.0,
+          "size_pct": 50
+        },
+        "move_stop_to_breakeven_after_partial": true
+      },
+      "rationale": "At low WR, trade management must protect open winners and cull stale positions quickly; staged exits plus time-stop can improve realized payoff ratio.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "llm",
+  "doctrine_refs": [
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 5,
+    "history_window": [
+      {
+        "id": "outcome-notes-llm-prompt-fix",
+        "created_at": "2026-02-27T02:14:30.269188+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "ENTRY_TIGHTEN",
+          "GATE_ADJUST",
+          "EXIT_CHANGE"
+        ]
+      },
+      {
+        "id": "outcome-notes-llm-parse-fix",
+        "created_at": "2026-02-27T02:04:35.846326+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-llm-session-clear",
+        "created_at": "2026-02-27T02:01:08.509358+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-llm-pipeline-fixed",
+        "created_at": "2026-02-27T01:54:14.100835+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-autopilot-1772156088-backfill-strategy-spec-20260227-aca46eedbd4e.strategy_spec",
+        "created_at": "2026-02-27T01:54:04.251021+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      }
+    ],
+    "directive_type_stats": {
+      "GATE_ADJUST": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 4,
+        "avg_delta_pf": 0.0
+      },
+      "ENTRY_TIGHTEN": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 4,
+        "avg_delta_pf": 0.0
+      },
+      "EXIT_CHANGE": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 4,
+        "avg_delta_pf": 0.0
+      },
+      "PARAM_SWEEP": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 4,
+        "avg_delta_pf": 0.0
+      },
+      "ROLE_SWAP": {
+        "tried": 4,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 4,
+        "avg_delta_pf": 0.0
+      }
+    },
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply ENTRY_TIGHTEN with params={\"confirmation_bars\": 2, \"require_trend_alignment\": true, \"signal_selectivity_increase_pct\": 25}",
+    "Apply EXIT_CHANGE with params={\"move_stop_to_breakeven_after_partial\": true, \"partial_take_profit\": {\"at_r_multiple\": 1.0, \"enabled\": true, \"size_pct\": 50}, \"time_stop_bars\": 8}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260227/batch_20260227_b0872b6a.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260227/refine_20260227_32e51cc5.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "llm_reasoning": "This run is still below profitability with PF 0.9202 across 226 trades, so the edge is not yet positive after costs. WR at 38.94% is workable only if payoff asymmetry is strong, but current PF confirms it is not. The sample size is large enough to treat this as a real weakness, not noise. Keep iterating, but do not deploy in current form.",
+  "llm_confidence": "high",
+  "regime_recommendation": {
+    "add_filter": false,
+    "allowed_regimes": [],
+    "reasoning": "No regime split was provided, so targeted regime gating cannot be validated; next run must include trending/ranging/transitional PF and trade counts."
+  },
+  "edge_assessment": {
+    "type": "statistical",
+    "decay_risk": "medium",
+    "robustness": "fragile"
+  },
+  "doctrine_update": "If PF remains <1.0 after a gate-adjust iteration on >200 trades, prioritize signal quality and exit efficiency over additional gate complexity."
+}

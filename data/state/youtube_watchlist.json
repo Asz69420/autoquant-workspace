@@ -1,0 +1,85 @@
+{
+  "max_new_videos_per_run": 999,
+  "channels": [
+    {
+      "name": "SoheilPKO",
+      "url": "https://m.youtube.com/@SoheilPKO",
+      "enabled": true,
+      "mode": "INDICATORS",
+      "channel_id": "UC7QqMi_dhkGuFaA0TrYJTAw",
+      "last_seen_video_id": "ssu2qDoPyks"
+    },
+    {
+      "name": "PineTrades",
+      "url": "https://m.youtube.com/@pinetrades",
+      "enabled": true,
+      "mode": "INDICATORS",
+      "channel_id": "UCpwDBjHySPPXMoI86xFrHFg",
+      "last_seen_video_id": "89SIqgJIf0c"
+    },
+    {
+      "name": "MichaelIonita",
+      "url": "https://m.youtube.com/@michaelionita/videos",
+      "enabled": true,
+      "mode": "CONCEPTS",
+      "channel_id": "UCC0O5FKSMcjzrvOUa08hS_A",
+      "last_seen_video_id": "77ikjQjdGFg"
+    },
+    {
+      "name": "IntoTheCryptoverse",
+      "url": "https://www.youtube.com/@intothecryptoverse",
+      "enabled": true,
+      "mode": "INDICATORS",
+      "channel_id": "UCRvqjQPSeaWn-uEx-w0XOIg",
+      "last_seen_video_id": "hAFvtCnrJAw"
+    },
+    {
+      "name": "ECKrown",
+      "url": "https://www.youtube.com/@ECKrown",
+      "enabled": true,
+      "mode": "INDICATORS",
+      "channel_id": "UCnwxzpFzZNtLH8NgTeAROFA",
+      "last_seen_video_id": "oiXzKN-4Yus"
+    },
+    {
+      "name": "TradeTravelChill",
+      "url": "https://www.youtube.com/@TradeTravelChill",
+      "enabled": true,
+      "mode": "INDICATORS",
+      "channel_id": "UC8z0A6pWQ4mXucKtEfYiIAA",
+      "last_seen_video_id": "PQaVgnApKqk"
+    },
+    {
+      "name": "DaviddTech",
+      "url": "https://www.youtube.com/@DaviddTech/videos",
+      "enabled": true,
+      "mode": "CONCEPTS",
+      "channel_id": "UC7NJLsf6IonOy8QI8gt5BeA",
+      "last_seen_video_id": "lGtVSCYaRZg"
+    }
+  ],
+  "seen_video_ids": [
+    "Tp7ENo2ii40",
+    "HkMXGqz7MRI",
+    "bB6oo3oJc0k",
+    "77ikjQjdGFg",
+    "qbyQ8322m-M",
+    "whCcobPN71w",
+    "hAFvtCnrJAw",
+    "6Ex-hduaP9A",
+    "fV6NzO02KH4",
+    "QY6t8h7fgVo",
+    "oiXzKN-4Yus",
+    "3pW6m2oTCDE",
+    "0Fpag2wUr-g",
+    "89SIqgJIf0c",
+    "noG7YZlYsm0",
+    "ssu2qDoPyks",
+    "sY-uZnumYXM",
+    "lGtVSCYaRZg",
+    "rh5nqX3tUds",
+    "1yUwwqCsUqc",
+    "pfBjvU0PQSc",
+    "PQaVgnApKqk"
+  ]
+}

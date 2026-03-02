@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-837cc34b0613",
+  "created_at": "2026-03-01T09:34:49.623061Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/C8uvBdNT-Breakout-Pullback-Reload-Continue-BPRC-v2/",
+  "title": "Breakout Pullback Reload Continue (BPRC) v2",
+  "author": "dwatersman",
+  "summary_bullets": [
+    "Top catalog indicator: Breakout Pullback Reload Continue (BPRC) v2 by dwatersman."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Breakout Pullback Reload Continue (BPRC) v2 by dwatersman.",
+      "note": "Meaning: Top catalog indicator: Breakout Pullback Reload Continue (BPRC) v2 by dwatersman."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-837cc34b0613.raw.txt",
+  "sha256": "6053fe11860cb7f00d3dde1dc70cff06cbbe7cbfa13c279dc456f493450d0ceb",
+  "truncated": false
+}

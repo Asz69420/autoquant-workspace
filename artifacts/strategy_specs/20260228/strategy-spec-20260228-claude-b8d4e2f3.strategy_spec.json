@@ -1,0 +1,286 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260228-claude-b8d4e2f3",
+  "created_at": "2026-02-28T12:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Bollinger band breakouts with volume confirmation capture volatility expansion after compression (squeeze) periods. When Bollinger bandwidth contracts then price breaks above/below the bands with above-average volume, the move tends to persist as trapped traders are forced out. This targets regime transitions from ranging to trending. Regime assumption: RANGING-TO-TRENDING transition. Invalidation: if trades < 30 in 90 days or PF < 0.90, the squeeze-breakout pattern is too rare or unreliable on ETH.",
+  "regime_assumption": "ranging_to_trending_transition",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h", "1h"],
+  "variants": [
+    {
+      "name": "bollinger_volume_confirmed_breakout",
+      "description": "Bollinger breakout requiring 1.5x average volume for confirmation. High-conviction entries only. Wide 3:1 R:R to combat fee drag. Tests whether volume-confirmed breakouts have persistent follow-through on ETH.",
+      "entry_long": [
+        "Close breaks above BBU_20_2.0 (upper Bollinger band).",
+        "Volume >= 1.5x 20-period volume SMA confirms institutional participation.",
+        "Bar-close execution only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "entry_short": [
+        "Close breaks below BBL_20_2.0 (lower Bollinger band).",
+        "Volume >= 1.5x 20-period volume SMA confirms institutional participation.",
+        "Bar-close execution only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit long when close crosses back below BBM_20_2.0 (middle band).",
+        "Exit short when close crosses back above BBM_20_2.0 (middle band).",
+        "Exit on ATR-based take profit hit (3.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Hypothesis failure mode guard: False breakout reverses into band, stop hit before momentum develops"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 3.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {
+          "name": "volume_ratio_min",
+          "min": 1.0,
+          "max": 2.5,
+          "step": 0.25,
+          "default": 1.5
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 0.8,
+          "max": 1.5,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 2.0,
+          "max": 4.0,
+          "step": 0.5,
+          "default": 3.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": false
+      },
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bollinger_pure_breakout_tight",
+      "description": "Pure Bollinger breakout without volume filter (volume_ratio_min=1.0 means any volume). More trades but lower conviction. Tighter 2:1 R:R for faster profit-taking. Tests whether the volume filter actually adds value vs pure price breakout.",
+      "entry_long": [
+        "Close breaks above BBU_20_2.0 (upper Bollinger band).",
+        "Volume >= 1.0x 20-period volume SMA (effectively no filter).",
+        "Bar-close execution only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "entry_short": [
+        "Close breaks below BBL_20_2.0 (lower Bollinger band).",
+        "Volume >= 1.0x 20-period volume SMA (effectively no filter).",
+        "Bar-close execution only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit long when close crosses back below BBM_20_2.0 (middle band).",
+        "Exit short when close crosses back above BBM_20_2.0 (middle band).",
+        "Exit on ATR-based take profit hit (2.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Hypothesis failure mode guard: Without volume confirmation, false breakouts may dominate"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 2.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {
+          "name": "volume_ratio_min",
+          "min": 1.0,
+          "max": 1.0,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 0.8,
+          "max": 1.5,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 1.5,
+          "max": 3.0,
+          "step": 0.5,
+          "default": 2.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 2.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": false
+      },
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bollinger_wide_exit_low_frequency",
+      "description": "High volume threshold (2.0x) plus wide 4:1 R:R. Designed for very low trade frequency with high conviction. Tests the extreme end of the fee-drag reduction strategy: only trade the best breakouts with maximum profit targets.",
+      "entry_long": [
+        "Close breaks above BBU_20_2.0 (upper Bollinger band).",
+        "Volume >= 2.0x 20-period volume SMA confirms strong participation.",
+        "Bar-close execution only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "entry_short": [
+        "Close breaks below BBL_20_2.0 (lower Bollinger band).",
+        "Volume >= 2.0x 20-period volume SMA confirms strong participation.",
+        "Bar-close execution only.",
+        "Use signal: bollinger_breakout"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit long when close crosses back below BBM_20_2.0 (middle band).",
+        "Exit short when close crosses back above BBM_20_2.0 (middle band).",
+        "Exit on ATR-based take profit hit (4.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Hypothesis failure mode guard: Too few trades for statistical significance"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 4.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {
+          "name": "volume_ratio_min",
+          "min": 1.5,
+          "max": 3.0,
+          "step": 0.25,
+          "default": 2.0
+        },
+        {
+          "name": "stop_atr_mult",
+          "min": 0.8,
+          "max": 1.5,
+          "step": 0.1,
+          "default": 1.0
+        },
+        {
+          "name": "tp_atr_mult",
+          "min": 3.0,
+          "max": 5.0,
+          "step": 0.5,
+          "default": 4.0
+        }
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 4.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": false
+      },
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

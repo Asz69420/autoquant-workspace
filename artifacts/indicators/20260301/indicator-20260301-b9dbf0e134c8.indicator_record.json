@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-b9dbf0e134c8",
+  "created_at": "2026-02-28T23:00:05.351476Z",
+  "tv_ref": "tradingview:JSULpbV7",
+  "url": "https://www.tradingview.com/script/JSULpbV7-Volume-Divergence-Reversal-Signals-AlgoAlpha/",
+  "name": "Volume Divergence Reversal Signals [AlgoAlpha]",
+  "author": "AlgoAlpha",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "f888ab5911898bd032a0e5253f8ef47e151d46c71bd900b28bbdbec3a3dda097",
+  "truncated": false
+}

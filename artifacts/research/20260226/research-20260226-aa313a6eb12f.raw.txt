@@ -1,0 +1,58 @@
+STRATEGY: Bollinger Squeeze Breakout
+ASSET: BTC, ETH
+TIMEFRAME: 4h
+MARKET CONDITION: Low volatility compression about to expand
+TYPE: Volatility expansion / breakout
+CONCEPT: Markets cycle between low and high volatility. When Bollinger Bands contract to their narrowest point (a “squeeze”), a big move is building. We detect the squeeze using Bollinger Band width, confirm breakout direction using MACD and OBV, and ride the expansion. This catches the start of major moves that other strategies miss because they wait for trend confirmation after the move has already started.
+INDICATORS USED:
+- Bollinger Bands (period 20, std dev 2.0) - squeeze detection and breakout levels
+- Bollinger Band Width: (Upper - Lower) / Middle - measures squeeze tightness
+- MACD (fast 12, slow 26, signal 9) - directional bias during squeeze
+- OBV - volume accumulation/distribution during squeeze reveals hidden intent
+- ADX (period 14) - confirms low volatility (ADX < 20 = squeeze, ADX rising = expansion starting)
+- ATR (period 14) - stop loss sizing
+SQUEEZE DETECTION:
+- Calculate BB Width = (Upper Band - Lower Band) / Middle Band
+- Squeeze is active when current BB Width is in the lowest 20% of its own 100-period range
+- Squeeze has been active for at least 5 bars (sustained compression, not just one narrow bar)
+ENTRY LONG:
+1. Squeeze was active (at least 5 bars of compressed BB Width)
+2. Price closes above upper Bollinger Band (breakout)
+3. MACD histogram is positive (momentum confirms upward direction)
+4. OBV > SMA(OBV, 20) (volume was accumulating during squeeze)
+5. ADX starts rising (current ADX > ADX from 2 bars ago)
+ENTRY SHORT:
+1. Squeeze was active (at least 5 bars of compressed BB Width)
+2. Price closes below lower Bollinger Band (breakdown)
+3. MACD histogram is negative (momentum confirms downward)
+4. OBV < SMA(OBV, 20) (distribution during squeeze)
+5. ADX starts rising
+EXIT RULES:
+- Take profit: 3.0x ATR(14) from entry (squeeze breakouts produce big moves)
+- Stop loss: Middle Bollinger Band (SMA 20) — if price falls back to middle, the breakout failed
+- Alternative stop: 1.5x ATR, whichever is tighter
+- Trailing stop: After 2.0 ATR in profit, trail at 1.5 ATR behind price
+- Time stop: If 3.0 ATR target not reached in 25 candles, exit at market
+- Max hold: 40 candles
+RISK MANAGEMENT:
+- Risk per trade: 1.25% of account (higher conviction setup, slightly larger size)
+- Max concurrent positions: 1 per asset
+- Only take first breakout from each squeeze (don’t re-enter if stopped out)
+- If breakout candle is > 4x ATR, skip (already too extended)
+- Minimum 20 bars between trades (wait for next squeeze cycle)
+RATIONALE:
+Volatility mean-reverts — periods of low volatility are followed by high volatility. The squeeze identifies the compression phase. MACD and OBV during the squeeze reveal which direction smart money is positioning before the breakout. ADX rising confirms the transition from range to trend. The wider take profit (3x ATR) is justified because squeeze breakouts typically produce moves of 3-5x normal volatility. This is one of the highest expectancy setups in technical analysis.
+FALSIFIABLE HYPOTHESIS:
+BTC/ETH 4h Bollinger squeeze breakouts (BB Width in lowest 20% for 5+ bars) with MACD/OBV directional confirmation produce profit factor above 1.4 and average winner size of 3+ ATR, with at least 2-3 trades per month.
+PARAMETER RANGES FOR SWEEP:
+- BB period: 15-25, step 5
+- BB std dev: 1.5-2.5, step 0.5
+- BB Width percentile threshold: 15-30, step 5
+- Min squeeze bars: 3-8, step 1
+- BB Width lookback for percentile: 80-120, step 20
+- MACD fast: 8-12, step 2
+- MACD slow: 21-30, step 3
+- OBV SMA period: 15-25, step 5
+- TP ATR multiplier: 2.5-4.0, step 0.5
+- SL ATR multiplier: 1.0-2.0, step 0.5
+- Min bars between trades: 15-25, step 5

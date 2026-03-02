@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260228-03568a651a0b",
+  "created_at": "2026-02-28T12:42:04.627741Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=ssu2qDoPyks",
+  "title": "This Indicator Deleted Almost All of My False Signals!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "Listen, no matter what trading method you use or what trading strategy you use or what markets you're trading or what time frames you're trading, you always need to analyze volume.",
+    "Taking a trading decision only based on the price is a blind decision.",
+    "So volume analysis should be part of your trading strategy.",
+    "In this video, I want to introduce three volume indicators that are excellent choices to use in your trading strategy.",
+    "All right, let's add the first indicator.",
+    "When it comes to a volume indicator, most of traders use a basic volume indicator like this one.",
+    "But I want to suggest a better version of this indicator which is called heat map volume.",
+    "This one which is an editor specs indicator and written by XDCO if I'm pronouncing it correctly.",
+    "This one which is added here is just a simple volume indicator that you probably know if you have worked with this volume indicator.",
+    "So you know that each bar shows the amount of traded volume in that time period."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Listen, no matter what trading method you use or what trading strategy you use or what markets you're trading or what time frames you're trading, you always need to analyze volume.",
+      "note": "Meaning: Listen, no matter what trading method you use or what trading strategy you use or what markets you're trading or what time frames you're trading, you a"
+    },
+    {
+      "timestamp": null,
+      "quote": "Taking a trading decision only based on the price is a blind decision.",
+      "note": "Meaning: Taking a trading decision only based on the price is a blind decision."
+    },
+    {
+      "timestamp": null,
+      "quote": "So volume analysis should be part of your trading strategy.",
+      "note": "Meaning: So volume analysis should be part of your trading strategy."
+    },
+    {
+      "timestamp": null,
+      "quote": "In this video, I want to introduce three volume indicators that are excellent choices to use in your trading strategy.",
+      "note": "Meaning: In this video, I want to introduce three volume indicators that are excellent choices to use in your trading strategy."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, let's add the first indicator.",
+      "note": "Meaning: All right, let's add the first indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "When it comes to a volume indicator, most of traders use a basic volume indicator like this one.",
+      "note": "Meaning: When it comes to a volume indicator, most of traders use a basic volume indicator like this one."
+    },
+    {
+      "timestamp": null,
+      "quote": "But I want to suggest a better version of this indicator which is called heat map volume.",
+      "note": "Meaning: But I want to suggest a better version of this indicator which is called heat map volume."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one which is an editor specs indicator and written by XDCO if I'm pronouncing it correctly.",
+      "note": "Meaning: This one which is an editor specs indicator and written by XDCO if I'm pronouncing it correctly."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one which is added here is just a simple volume indicator that you probably know if you have worked with this volume indicator.",
+      "note": "Meaning: This one which is added here is just a simple volume indicator that you probably know if you have worked with this volume indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "So you know that each bar shows the amount of traded volume in that time period.",
+      "note": "Meaning: So you know that each bar shows the amount of traded volume in that time period."
+    },
+    {
+      "timestamp": null,
+      "quote": "And the colors which are green and red are actually the color of the candles.",
+      "note": "Meaning: And the colors which are green and red are actually the color of the candles."
+    },
+    {
+      "timestamp": null,
+      "quote": "If the candle is closed green the color of the bar is green.",
+      "note": "Meaning: If the candle is closed green the color of the bar is green."
+    }
+  ],
+  "extracted_rules": [
+    "When it comes to a volume indicator, most of traders use a basic volume indicator like this one.",
+    "This one which is an editor specs indicator and written by XDCO if I'm pronouncing it correctly.",
+    "This one which is added here is just a simple volume indicator that you probably know if you have worked with this volume indicator.",
+    "If the candle is closed green the color of the bar is green.",
+    "And if the candle is closed red, the color of the bar is red.",
+    "When we are using this volume indicator, we don't care about the colors.",
+    "If we go to the settings of the indicator here in this part heat map threshold multipliers you can see that we have four different multipliers which are set at four 2.5 1 and minus.5.",
+    "So for example when volume is at least four standard deviation above the average it is considered extra high and when it is one standard deviation above the average it is considered medium.",
+    "When we have yellow or better than yellow when we have orange, it shows high amount of volume and this gives the probability that the price is going to further go in that direction because as I said it shows high amount of volume which is actually the interest levels of market participants.",
+    "The best situation is when we have a red bar which shows extra high amount of volume and usually considerable price movement happen after them.",
+    "When we have a red bar which shows extra amount of volume in the market.",
+    "When you have a buy or sell signal based on your trading strategy and this volume indicator also shows that there is high or extra high amount of volume in the market.",
+    "And when you hover on them, it gives information.",
+    "During flat market, you may have a label of lowest amount of volume and when there is a breakout, you may have a label of highest amount of volume.",
+    "So when red is higher it shows that we had higher amount of selling volume and when the blue is higher it shows that we had higher amount of buying volume.",
+    "For example, if your trading strategy here says a buy signal and this indicator is showing higher amount of buying volume, you can say with higher probability that the price is going to advance more.",
+    "These information are also reflected on the candles and also two moving average lines are added to the chart which in the settings of the indicator you can remove them if you find them distracting and cluttering your price chart.",
+    "If you have any questions, feel free to ask and leave a comment for me."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Whether a breakout inside a trend or a breakout after a flat market."
+    }
+  ],
+  "indicators_mentioned": [
+    "volume delta this one which is written by HAP harmonic"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "volume delta this one which is written by HAP harmonic",
+      "keywords": [
+        "volume",
+        "delta",
+        "this",
+        "one",
+        "which"
+      ],
+      "confidence": 0.93,
+      "author_hint": "XDCO if I"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260228/research-20260228-03568a651a0b.raw.txt",
+  "sha256": "bb3be964c7b5746ee7dd66c59df1ed53927115a7d7f79a1b3cdc847b1d2778f1",
+  "truncated": false
+}

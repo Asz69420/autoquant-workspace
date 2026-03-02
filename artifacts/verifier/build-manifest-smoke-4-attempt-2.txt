@@ -1,0 +1,7 @@
+﻿{
+"verdict": "PASS",
+"total_issues_found": 0,
+"issues_returned": 0,
+"issues": [],
+"manifest_path_used": "artifacts/verification/build-manifest-smoke-4/context_manifest.json"
+}

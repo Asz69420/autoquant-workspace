@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260301-claude-mc7h1f6p",
+  "created_at": "2026-03-01T22:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD tail harvester 7:1 on 4h is the new MACD champion (PF=1.712, DD=7.5%, 161 trades, ALL regimes profitable). MACD 6:1 on 1h already works (PF=1.460, 170 trades, ALL regimes profitable). Two critical questions: (1) DOES THE 7:1 PEAK REPLICATE ON 1H? On 4h, the MACD R:R curve is: 3.5:1→1.347, 5:1→1.353, 7:1→1.712, 8:1→1.442, 12:1→1.302. The 7:1 peak on 4h significantly outperforms 8:1 (by +0.27 PF). On 1h, only 6:1 has been tested (PF=1.460). If 7:1 on 1h outperforms 6:1 on 1h, the 7:1 peak is timeframe-portable — meaning the MACD histogram cross has a stable, template-intrinsic optimal R:R that doesn't shift with bar size. This would be a significant meta-finding about signal quality vs. R:R optimization. (2) DOES 6:1 WORK ON 4H? There's a gap in the 4h R:R data: 5:1→1.353, then directly to 7:1→1.712. The massive +0.36 PF jump between 5:1 and 7:1 on 4h is suspicious — 6:1 data would reveal whether the improvement is gradual (5:1→6:1→7:1 monotonic) or sudden (flat until 7:1 then a cliff). This shapes how we think about the R:R curve — gradual suggests broad optimum, sudden suggests fragile peak. Regime assumption: ALL (both MACD 7:1/4h and MACD 6:1/1h are all-regimes-profitable). Invalidation: (1) If 7:1 on 1h underperforms 6:1 on 1h, the R:R peak IS timeframe-dependent and each template+timeframe combo needs its own R:R optimization. (2) If 6:1 on 4h is close to 7:1 on 4h (PF > 1.6), the optimal R:R is a broad plateau — more robust. If 6:1 on 4h is close to 5:1 (PF ~1.35), the 7:1 peak is a sharp spike — fragile and possibly overfit.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "macd_1h_tail_harvester_7to1",
+      "description": "MACD histogram zero-line cross on ETH/1h with 7:1 R:R (1.0x ATR stop / 7.0x ATR TP). The R:R peak portability test. MACD 7:1 on 4h = PF 1.712 (champion). MACD 6:1 on 1h = PF 1.460. If 7:1 on 1h > 1.460, the peak transfers across timeframes. The MACDh_12_26_9 histogram captures momentum acceleration — on 1h, this detects intra-day momentum shifts that can produce strong 4-8 hour continuation moves. 7.0x ATR on 1h targets these continuation legs. Breakeven win rate: 12.5%. Expected: ~170 trades (matching 6:1 trade count since entry signal is identical), PF range 1.3-1.8 depending on whether 7:1 is the universal MACD peak.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram bullish zero-line cross).",
+        "Close > EMA_50 (trend confirmation — price above medium-term average).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram bearish zero-line cross).",
+        "Close < EMA_50 (trend confirmation — price below medium-term average).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "MACD histogram: MACDh_12_26_9 zero-line cross",
+        "Trend confirmation: Close > EMA_50 (long), Close < EMA_50 (short)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (7.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 7:1. Needs 12.5% win rate to break even after fees.",
+        "R:R peak portability test: is 7:1 the universal MACD peak across timeframes?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 7.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 5.0, "max": 9.0, "step": 1.0, "default": 7.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend confirmation on 1h — faster than 4h, captures intra-day momentum"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram zero-line cross — testing 7:1 peak portability to 1h"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 7.0x TP — replicating 4h champion R:R on 1h timeframe"}
+      ]
+    },
+    {
+      "name": "macd_4h_tail_harvester_6to1",
+      "description": "MACD histogram zero-line cross on ETH/4h with 6:1 R:R (1.0x ATR stop / 6.0x ATR TP). Fills the gap in the 4h R:R curve between 5:1 (PF=1.353) and 7:1 (PF=1.712). The +0.36 PF jump between 5:1 and 7:1 is the largest single-step improvement in any R:R curve in the system. If 6:1 on 4h produces PF ~1.5 (midpoint), the improvement is gradual and the 7:1 peak is a broad plateau — robust. If 6:1 on 4h produces PF ~1.35 (close to 5:1), the improvement is sudden at 7:1 — a narrow peak that may be fragile/overfit. This single data point reshapes our confidence in the 7:1 peak. Note: 6:1 on 1h achieved PF=1.460, so the 4h version should have comparable or higher PF if the timeframe pattern holds. Breakeven win rate: 14.3%.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram bullish zero-line cross).",
+        "Close > EMA_50 (trend confirmation — price above medium-term average).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram bearish zero-line cross).",
+        "Close < EMA_50 (trend confirmation — price below medium-term average).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "MACD histogram: MACDh_12_26_9 zero-line cross",
+        "Trend confirmation: Close > EMA_50 (long), Close < EMA_50 (short)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (6.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 6:1. Needs 14.3% win rate to break even after fees.",
+        "R:R curve gap fill: resolves the 5:1→7:1 jump — gradual plateau or fragile peak?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 6.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 8.0, "step": 1.0, "default": 6.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend confirmation — standard 4h setup"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram cross — gap-fill data point between 5:1 and 7:1"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 6.0x TP — determines if 7:1 peak is plateau or spike"}
+      ]
+    },
+    {
+      "name": "macd_1h_tail_harvester_8to1_tight",
+      "description": "MACD histogram zero-line cross on ETH/1h with 8:1 R:R (1.0x ATR stop / 8.0x ATR TP). On 4h, MACD declines from 7:1 peak (PF=1.712) to 8:1 (PF=1.442). On 1h, only 6:1 tested (PF=1.460). The 1h MACD 8:1 ultra was tested before but on a different data window — this retests with identical tight-stop parameters (1.0x ATR) to see if the 4h decline pattern (7:1→8:1) holds on 1h or if 1h has a different R:R shape. If 1h MACD performs BETTER at 8:1 than 7:1 (opposite of 4h), it means the shorter timeframe has more extreme tail events relative to noise. This 3-variant design (6:1 existing data + 7:1 new + 8:1 new) fully maps the 1h MACD R:R curve. Breakeven win rate: 11.1%.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses from <= 0 to > 0 (histogram bullish zero-line cross).",
+        "Close > EMA_50 (trend confirmation).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses from >= 0 to < 0 (histogram bearish zero-line cross).",
+        "Close < EMA_50 (trend confirmation).",
+        "Bar-close execution only.",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "MACD histogram: MACDh_12_26_9 zero-line cross",
+        "Trend confirmation: Close > EMA_50 (long), Close < EMA_50 (short)",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "1h R:R curve upper bound: does 1h MACD decline at 8:1 like 4h does?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 10.0, "step": 1.0, "default": 8.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_50 trend confirmation on 1h"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 histogram cross — testing if 4h decline at 8:1 replicates on 1h"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 8.0x TP — 1h R:R curve upper bound test"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

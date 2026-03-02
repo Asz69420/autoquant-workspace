@@ -1,0 +1,148 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772147988-backfill-strategy-spec-20260227-6167b17afa4f.strategy_spec",
+  "run_id": "autopilot-1772147988-backfill-strategy-spec-20260227-6167b17afa4f.strategy_spec",
+  "created_at": "2026-02-26T23:35:54.087817+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260227-6167b17afa4f.strategy_spec",
+  "template": "directive_variant_1_gate_adjust",
+  "metrics": {
+    "profit_factor_after_costs": 0.92023873,
+    "max_drawdown": 981.19936581,
+    "trades": 226,
+    "regime_breakdown": {
+      "trending_trades": 57,
+      "ranging_trades": 114,
+      "transitional_trades": 55
+    },
+    "regime_pf": {
+      "trending": 0.88446154,
+      "ranging": 1.04178841,
+      "transitional": 0.77172553
+    },
+    "regime_wr": {
+      "trending": 0.40350877,
+      "ranging": 0.40350877,
+      "transitional": 0.34545455
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [],
+    "bad_regimes": [
+      "trending",
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 981.199 > 0.30",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_af74c7c3.backtest_result.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.920",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_af74c7c3.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "rationale": "Doctrine: risk gating before complexity on drawdown-heavy strategies.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "confidence_threshold_delta": 0.05
+      },
+      "rationale": "Tighten entry quality to reduce adverse excursions.",
+      "priority": 1
+    },
+    {
+      "id": "d3",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "stop_atr_mult": 1.2,
+        "tp_atr_mult": 1.8
+      },
+      "rationale": "Adjust exits to cap drawdown.",
+      "priority": 2
+    },
+    {
+      "id": "d4",
+      "type": "PARAM_SWEEP",
+      "params": {
+        "parameter": "risk_r",
+        "range": [
+          0.5,
+          1.5
+        ],
+        "step": 0.25
+      },
+      "rationale": "Re-balance payoff profile to improve PF.",
+      "priority": 1
+    },
+    {
+      "id": "d5",
+      "type": "ROLE_SWAP",
+      "params": {
+        "swap": "entry<->confirmation"
+      },
+      "rationale": "Test alternate component role assignment for better edge.",
+      "priority": 3
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+    "Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+    "Apply EXIT_CHANGE with params={\"stop_atr_mult\": 1.2, \"tp_atr_mult\": 1.8}",
+    "Apply PARAM_SWEEP with params={\"parameter\": \"risk_r\", \"range\": [0.5, 1.5], \"step\": 0.25}",
+    "Apply ROLE_SWAP with params={\"swap\": \"entry<->confirmation\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260227/batch_20260227_4bdfa0b7.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260227/refine_20260227_32e51cc5.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-08e0166e664f",
+  "created_at": "2026-02-26T23:00:03.689344Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/1dJQF1QO/",
+  "title": "&quot;TuxAlgo Plus&quot; a SMC and Trap Toolkit (V0.99r1 - Patch 115b3)",
+  "author": "McToGa",
+  "summary_bullets": [
+    "Top catalog indicator: &quot;TuxAlgo Plus&quot; a SMC and Trap Toolkit (V0.99r1 - Patch 115b3) by McToGa."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: &quot;TuxAlgo Plus&quot; a SMC and Trap Toolkit (V0.99r1 - Patch 115b3) by McToGa.",
+      "note": "Meaning: Top catalog indicator: &quot;TuxAlgo Plus&quot; a SMC and Trap Toolkit (V0.99r1 - Patch 115b3) by McToGa."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-08e0166e664f.raw.txt",
+  "sha256": "fca701364af8b759dc216733c09fb1a48379d481bd970650331f0ec9fe35329d",
+  "truncated": false
+}

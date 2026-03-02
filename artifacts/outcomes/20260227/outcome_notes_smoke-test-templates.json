@@ -1,0 +1,136 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-smoke-test-templates",
+  "run_id": "smoke-test-templates",
+  "created_at": "2026-02-27T03:43:54.335677+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "unknown_strategy",
+  "template": "unknown_template",
+  "metrics": {
+    "profit_factor_after_costs": 0.0,
+    "max_drawdown": 1.0,
+    "trades": 0,
+    "regime_breakdown": {},
+    "regime_pf": {},
+    "regime_wr": {},
+    "dominant_regime": ""
+  },
+  "regime_analysis": {
+    "available": false,
+    "good_regimes": [],
+    "bad_regimes": [],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "LOW_TRADE_COUNT",
+      "short": "Trade count below gate: 0 < 20",
+      "evidence_pointer": "artifacts/backtests/20260227/hl_20260227_40930069.backtest_result.json"
+    },
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 1.000 > 0.30",
+      "evidence_pointer": "artifacts/backtests/20260227/hl_20260227_40930069.backtest_result.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.000",
+      "evidence_pointer": "artifacts/backtests/20260227/hl_20260227_40930069.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d2",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "take_profit_atr": 2.5,
+        "time_stop_bars": 18,
+        "break_even_trigger_r": 1.0
+      },
+      "rationale": "With WR 44.83%, profitability depends on payoff efficiency; structured exits can improve realized R and reduce capital tied in stagnant positions.",
+      "priority": 2
+    },
+    {
+      "id": "d3",
+      "type": "THRESHOLD_SWEEP",
+      "params": {
+        "entry_tightness_grid": [
+          10,
+          15,
+          20
+        ],
+        "target_trade_count_range": [
+          220,
+          320
+        ],
+        "selection_metric": "maximize_PF_subject_to_DD_reduction"
+      },
+      "rationale": "406 trades with PF ~1.00 suggests residual overtrading; a controlled sweep to reduce frequency should test whether quality improves enough to create real edge.",
+      "priority": 3
+    }
+  ],
+  "analysis_source": "llm",
+  "doctrine_refs": [
+    {
+      "id": "20260226-06|conf:0.76",
+      "theme": "regime_required",
+      "text": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "id": "20260226-20|conf:0.72",
+      "theme": "regime_required",
+      "text": "Embed concept hook into testable hypothesis design: Session gating before execution enablement"
+    },
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply EXIT_CHANGE with params={\"break_even_trigger_r\": 1.0, \"take_profit_atr\": 2.5, \"time_stop_bars\": 18}",
+    "Apply THRESHOLD_SWEEP with params={\"entry_tightness_grid\": [10, 15, 20], \"selection_metric\": \"maximize_PF_subject_to_DD_reduction\", \"target_trade_count_range\": [220, 320]}"
+  ],
+  "sources_used": [
+    "artifacts/backtests/20260227/hl_20260227_40930069.backtest_result.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260227/refine_20260227_32e51cc5.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "b66ce31a75a776e3",
+  "llm_reasoning": "This variant is effectively flat: PF is only 1.0008 despite 406 trades, so edge is negligible after costs and highly vulnerable to small execution drift. Drawdown is too large for that return profile (DD_abs 55,871.20), which makes the risk-adjusted expectancy unattractive for deployment. The larger sample size increases confidence that this is a weak, not noisy, edge. Keep iterating, but do not ACCEPT in current form.",
+  "llm_confidence": "high",
+  "regime_recommendation": {
+    "add_filter": false,
+    "allowed_regimes": [],
+    "reasoning": "No regime breakdown was provided, so regime-specific filtering cannot be validated; include trend/range/transitional split in next run before deployment decisions."
+  },
+  "edge_assessment": {
+    "type": "statistical",
+    "decay_risk": "high",
+    "robustness": "fragile"
+  },
+  "doctrine_update": "If PF is ~1.00 on large samples (>300 trades), prioritize drawdown compression and trade-quality reduction before any further complexity changes."
+}

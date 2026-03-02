@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-b36fc8590f98",
+  "created_at": "2026-02-25T01:55:31.738751Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/SjQG6XSQ-SMART-SCALPING-Renko-Heikenashi-VWAP-Overlay/",
+  "title": "SMART SCALPING - Renko Heikenashi VWAP Overlay",
+  "author": "sekumar2",
+  "summary_bullets": [
+    "Top catalog indicator: SMART SCALPING - Renko Heikenashi VWAP Overlay by sekumar2."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: SMART SCALPING - Renko Heikenashi VWAP Overlay by sekumar2.",
+      "note": "Meaning: Top catalog indicator: SMART SCALPING - Renko Heikenashi VWAP Overlay by sekumar2."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-b36fc8590f98.raw.txt",
+  "sha256": "389122fc9be62eb28c74eeaa3e088de642efac2cd1b2abd69132874b10315d6e",
+  "truncated": false
+}

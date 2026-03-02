@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-301f7d8b78c3",
+  "created_at": "2026-02-28T22:10:40.328374Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=PQaVgnApKqk",
+  "title": "Адаптация на пазара  Прогнозиране на следващия голям ход",
+  "author": "TradeTravelChill",
+  "summary_bullets": [
+    "But not always what you expect happens, that's why you have to adapt very quickly to the market.",
+    "Drop level 1, drop level 2, and throughout the whole time, even after dropping below 100,000, we were talking about this potential target, which was a one-year heatmap of about 70,000.",
+    "Because while the people were digging the mountains, we were already preparing for what was going on."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "But not always what you expect happens, that's why you have to adapt very quickly to the market.",
+      "note": "Meaning: But not always what you expect happens, that's why you have to adapt very quickly to the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "Drop level 1, drop level 2, and throughout the whole time, even after dropping below 100,000, we were talking about this potential target, which was a one-year heatmap of about 70,000.",
+      "note": "Meaning: Drop level 1, drop level 2, and throughout the whole time, even after dropping below 100,000, we were talking about this potential target, which was a "
+    },
+    {
+      "timestamp": null,
+      "quote": "Because while the people were digging the mountains, we were already preparing for what was going on.",
+      "note": "Meaning: Because while the people were digging the mountains, we were already preparing for what was going on."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-301f7d8b78c3.raw.txt",
+  "sha256": "d32b32d7e553fec2944a4de294df7a4c4b1d56ebb1b25169fd0ca2e71ba93134",
+  "truncated": false
+}

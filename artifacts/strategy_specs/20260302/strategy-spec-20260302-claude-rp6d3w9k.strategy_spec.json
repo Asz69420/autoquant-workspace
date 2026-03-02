@@ -1,0 +1,244 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-rp6d3w9k",
+  "created_at": "2026-03-02T22:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "All existing RSI pullback specs use RSI <= 40 or RSI <= 45 as the pullback threshold. This tests a fundamentally different entry philosophy: DEEP pullback entries at RSI <= 30 — the panic zone within a trend. The hypothesis: in crypto, RSI below 30 within an established uptrend (close > EMA_100) represents a PANIC SELL — institutions liquidating, retail panicking — that temporarily pushes price far below fair value. These are the highest-quality pullback entries because: (1) entry price is at maximum distance from trend EMA, maximizing the snap-back distance, (2) the panic creates a volatility spike (ATR expansion) that provides large absolute-dollar stop/TP distances, (3) at 10:1 R:R, only the explosive snap-back moves reach TP — these are the 'rubber band' trades where price has stretched too far from equilibrium and snaps back violently. The trade-off is DRASTICALLY fewer entries: RSI < 30 in an uptrend is rare (maybe 10-20 times per year on 1h). But each entry is at a point of maximum dislocation — the highest edge per trade. Combined with EMA_100 (17-day trend on 1h) instead of EMA_200 (33 days), we catch trends faster to get more of these rare setups. EMA_21 slope confirmation ensures the short-term trend was rising BEFORE the panic (not entering a genuine trend reversal). Macro alignment: in the current ranging/bear environment, panic dips within range-bound uptrends are exactly the setup that should produce sharp bounces — price dips to range support, RSI tanks, then bounces back to range midpoint/resistance. Invalidation: if trade count < 10 over the backtest period, the signal is too rare to be useful. If PF < 1.0, the RSI < 30 readings in crypto trends are NOT panic — they're genuine trend exhaustion, and the 'snap-back' thesis is wrong.",
+  "regime_assumption": "ranging_primary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "rsi_pullback_1h_deep30_10to1",
+      "description": "RSI pullback on ETH/1h with RSI <= 30 (DEEP panic zone), EMA_100 trend, EMA_21 slope, 10:1 R:R. This is the most extreme pullback depth + R:R combination ever tested. RSI <= 30 in an uptrend is rare — maybe 15-25 entries over a full backtest period. But each entry catches a panic dip at maximum dislocation from trend. At 10:1 R:R (20x ATR TP), only violent snap-backs reach target. Stop at 2.0x ATR provides the STOP_FLOOR mandate. EMA_100 (17 days on 1h) is faster than default EMA_200, catching trends 16 days earlier — critical for getting enough setups at RSI <= 30. This is the frontier test: if PF > 1.5 at 10:1 with deep pullbacks, the system should explore RSI <= 25 and 15:1 R:R. If PF < 1.0, deep pullbacks don't snap back hard enough on 1h — the dislocation is too brief at this timeframe.",
+      "entry_long": [
+        "Close > EMA_100 (price above 100-period EMA — in an established uptrend, fast enough to catch crypto trends).",
+        "EMA_21 slope is rising (EMA_21 now > EMA_21 previous bar — short-term trend was bullish BEFORE the panic dip).",
+        "RSI_14 <= 30 (DEEP oversold — panic pullback within uptrend, maximum dislocation from equilibrium).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (price below 100-period EMA — in an established downtrend).",
+        "EMA_21 slope is falling (EMA_21 now < EMA_21 previous bar — short-term trend was bearish).",
+        "RSI_14 >= 70 (DEEP overbought — panic rally within downtrend, symmetric deep entry).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if trade count < 10, signal is too rare — widen to RSI <= 35. If PF < 1.0, deep pullbacks don't snap back at 1h — test 4h variant."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 18.0, "max": 24.0, "step": 2.0, "default": 20.0},
+        {"name": "ema_trend", "min": 50, "max": 100, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 9, "max": 21, "step": 12, "default": 21},
+        {"name": "rsi_long_max", "min": 28.0, "max": 35.0, "step": 2.0, "default": 30.0},
+        {"name": "rsi_short_min", "min": 65.0, "max": 72.0, "step": 2.0, "default": 70.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 fast trend filter + EMA_21 slope — catches crypto trends 16 days earlier than EMA_200"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 30 — DEEP panic pullback, maximum dislocation from trend equilibrium"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 20.0x TP — 10:1 R:R extreme tail harvesting on panic entries"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_4h_deep30_8to1",
+      "description": "RSI pullback on ETH/4h with RSI <= 30, EMA_100 trend, EMA_21 slope, 8:1 R:R. The 4h timeframe variant. On 4h, RSI <= 30 within uptrend is even rarer — maybe 5-12 entries over backtest period. But each 4h RSI < 30 reading represents a multi-day panic: 14 bars of RSI at 4h = 56 hours of data producing an oversold reading. These are MAJOR dislocations — flash crashes, cascading liquidations, black swan dips within secular trends. At 8:1 R:R (16x ATR), the snap-back from these events needs to cover substantial ground, which major dislocations typically do. Lower R:R than 1h variant (8:1 vs 10:1) because 4h moves are larger in absolute terms but slower to develop. EMA_100 on 4h = 400 hours = 17 days — same real-time period as EMA_100 on 1h but with 4x the information density per bar.",
+      "entry_long": [
+        "Close > EMA_100 (price above 4h 100-period EMA — major uptrend, 17 days of data).",
+        "EMA_21 slope is rising (EMA_21 now > EMA_21 previous bar — medium-term bullish momentum confirmed).",
+        "RSI_14 <= 30 (DEEP oversold on 4h — major multi-day panic within uptrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (price below 4h 100-period EMA — major downtrend).",
+        "EMA_21 slope is falling (EMA_21 now < EMA_21 previous bar — bearish momentum).",
+        "RSI_14 >= 70 (DEEP overbought on 4h — major panic rally in downtrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (16.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if trade count < 5, signal too rare on 4h for statistical validity — rely on 1h variant results instead"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 16.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 14.0, "max": 18.0, "step": 2.0, "default": 16.0},
+        {"name": "ema_trend", "min": 50, "max": 100, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 9, "max": 21, "step": 12, "default": 21},
+        {"name": "rsi_long_max", "min": 28.0, "max": 35.0, "step": 2.0, "default": 30.0},
+        {"name": "rsi_short_min", "min": 65.0, "max": 72.0, "step": 2.0, "default": 70.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 trend filter + EMA_21 slope — 17-day trend on 4h for macro alignment"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 30 — DEEP panic on 4h, multi-day dislocation event"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 16.0x TP — 8:1 R:R on major panic entries"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_1h_moderate35_7to1_control",
+      "description": "Control variant: RSI <= 35 on ETH/1h with EMA_100 trend, EMA_21 slope, 7:1 R:R. This is the middle ground between existing specs (RSI <= 40-45) and the deep panic variant (RSI <= 30). By testing RSI <= 35 at 7:1 R:R (same R:R as MACD champion), we get a clean comparison: (1) vs RSI <= 30 at 10:1 — does deeper entry quality compensate for fewer trades? (2) vs existing rp4f2w8n at RSI <= 45, 7:1 R:R with EMA_100 — does the tighter RSI filter from 45 to 35 improve signal quality enough to increase PF? This triangulation reveals the optimal RSI depth for pullback entries at the 7:1 R:R level.",
+      "entry_long": [
+        "Close > EMA_100 (price above 100-period EMA — fast trend filter).",
+        "EMA_21 slope is rising (EMA_21 now > EMA_21 previous bar — short-term momentum confirmed).",
+        "RSI_14 <= 35 (moderate-deep pullback — tighter than default 40, wider than panic 30).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (price below 100-period EMA — downtrend).",
+        "EMA_21 slope is falling (EMA_21 now < EMA_21 previous bar — bearish momentum).",
+        "RSI_14 >= 65 (moderate-deep overbought — symmetric to long entry).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (14.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF between RSI<=30 variant and this — reveals optimal pullback depth"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 14.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 16.0, "step": 2.0, "default": 14.0},
+        {"name": "ema_trend", "min": 50, "max": 100, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 9, "max": 21, "step": 12, "default": 21},
+        {"name": "rsi_long_max", "min": 32.0, "max": 38.0, "step": 2.0, "default": 35.0},
+        {"name": "rsi_short_min", "min": 62.0, "max": 68.0, "step": 2.0, "default": 65.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 14.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 fast trend + EMA_21 slope — same setup as deep variant for controlled comparison"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 35 — moderate-deep pullback, middle ground between default 40 and panic 30"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 14.0x TP — 7:1 R:R, same as MACD champion for cross-template comparison"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

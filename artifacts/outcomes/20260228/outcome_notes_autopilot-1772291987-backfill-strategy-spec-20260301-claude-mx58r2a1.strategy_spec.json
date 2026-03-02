@@ -1,0 +1,83 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772291987-backfill-strategy-spec-20260301-claude-mx58r2a1.strategy_spec",
+  "run_id": "autopilot-1772291987-backfill-strategy-spec-20260301-claude-mx58r2a1.strategy_spec",
+  "created_at": "2026-02-28T15:23:23.137116+00:00",
+  "verdict": "ACCEPT",
+  "strategy_family": "strategy-spec-20260301-claude-mx58r2a1.strategy_spec",
+  "template": "macd_tail_harvester_8to1_ultra",
+  "metrics": {
+    "profit_factor_after_costs": 1.44198741,
+    "max_drawdown": 0.070521504947,
+    "trades": 156,
+    "regime_breakdown": {
+      "trending_trades": 36,
+      "ranging_trades": 77,
+      "transitional_trades": 43
+    },
+    "regime_pf": {
+      "trending": 1.50485807,
+      "ranging": 1.79471864,
+      "transitional": 0.93008594
+    },
+    "regime_wr": {
+      "trending": 0.22222222,
+      "ranging": 0.20779221,
+      "transitional": 0.11627907
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending",
+      "ranging"
+    ],
+    "bad_regimes": [
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260301/batch_20260301_9cffd1cd.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260228/refine_20260228_89f30db3.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "34990dcbafc59ac8"
+}

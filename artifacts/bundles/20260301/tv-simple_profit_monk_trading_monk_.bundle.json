@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_simple profit mo",
+    "created_at":  "2026-03-01T10:34:50.365386+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260301/research-20260301-efae4de00319.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260301/indicator-20260301-b81f874f2e90.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260301/research-20260301-efae4de00319.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T10:53:33.9933907Z",
+    "attempts":  1,
+    "last_error":  null
+}

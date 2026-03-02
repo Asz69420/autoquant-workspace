@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-7cbae6359077",
+  "created_at": "2026-03-01T10:04:50.517475Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/jdaMnpAT-HTF-Candles/",
+  "title": "HTF Candles",
+  "author": "krish.ahir",
+  "summary_bullets": [
+    "Top catalog indicator: HTF Candles by krish.ahir."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: HTF Candles by krish.ahir.",
+      "note": "Meaning: Top catalog indicator: HTF Candles by krish.ahir."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-7cbae6359077.raw.txt",
+  "sha256": "6c6b9fb09a0289038fb63e91e92b36ec0759cbd3ddcc4a28508498e92fbec6eb",
+  "truncated": false
+}

@@ -1,0 +1,1 @@
+Manual ingest from YouTube URL (transcript unavailable at ingest time). Use source_ref to pull transcript later. video_id=vfLQTrS-gRc

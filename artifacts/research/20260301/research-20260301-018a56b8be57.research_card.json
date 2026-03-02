@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-018a56b8be57",
+  "created_at": "2026-03-01T10:00:09.777447Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/0Obr0hKM-Adaptive-MAD-Supertrend-GForge/",
+  "title": "Adaptive MAD Supertrend | GForge",
+  "author": "GForge",
+  "summary_bullets": [
+    "Top catalog indicator: Adaptive MAD Supertrend | GForge by GForge."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Adaptive MAD Supertrend | GForge by GForge.",
+      "note": "Meaning: Top catalog indicator: Adaptive MAD Supertrend | GForge by GForge."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: Adaptive MAD Supertrend | GForge by GForge."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-018a56b8be57.raw.txt",
+  "sha256": "f23d6949d459d12167152806df1c9f71e1cf0aa36d93c6bd6370ce52d7593759",
+  "truncated": false
+}

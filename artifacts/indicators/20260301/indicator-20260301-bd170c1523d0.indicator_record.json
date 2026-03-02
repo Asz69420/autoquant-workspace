@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-bd170c1523d0",
+  "created_at": "2026-03-01T09:00:09.712903Z",
+  "tv_ref": "tradingview:0NUzqHID",
+  "url": "https://www.tradingview.com/script/0NUzqHID-Planetary-Fan-Array-BlueprintResearch/",
+  "name": "Planetary Fan Array [BlueprintResearch]",
+  "author": "BlueprintResearch",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "e32b933a514bad3774d5164d4ac4d1edf171889d177da806fa1129d37ea4bf64",
+  "truncated": false
+}

@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_market dominance",
+    "created_at":  "2026-03-01T10:04:49.927390+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260301/research-20260301-da3ef57e2ea9.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260301/indicator-20260301-db482bac7ff3.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260301/research-20260301-da3ef57e2ea9.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T10:07:44.2614805Z",
+    "attempts":  1,
+    "last_error":  null
+}

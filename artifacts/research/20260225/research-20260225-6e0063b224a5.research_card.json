@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260225-6e0063b224a5",
+  "created_at": "2026-02-24T23:52:57.126310Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/aucWhLbR-Wolfe-Wave-Pattern-UAlgo/",
+  "title": "Wolfe Wave Pattern [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "Trending catalog indicator: Wolfe Wave Pattern [UAlgo] by UAlgo."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Trending catalog indicator: Wolfe Wave Pattern [UAlgo] by UAlgo.",
+      "note": "Meaning: Trending catalog indicator: Wolfe Wave Pattern [UAlgo] by UAlgo."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Trending catalog indicator: Wolfe Wave Pattern [UAlgo] by UAlgo."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260225/research-20260225-6e0063b224a5.raw.txt",
+  "sha256": "38dbccbd042d5de3c2145be36c69a893ea0dc280870df3257e2902587c048ac3",
+  "truncated": false
+}

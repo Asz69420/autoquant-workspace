@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-c017df177b2e",
+  "created_at": "2026-03-01T13:19:50.938371Z",
+  "tv_ref": "tradingview:WjISTCZp",
+  "url": "https://www.tradingview.com/script/WjISTCZp-Spira-Alligator/",
+  "name": "Spira Alligator",
+  "author": "Spira_Scalper",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "8490cd3124d7d471665e8f8c42e9c9f03241e86383df8f5e844bc9a83b4c993c",
+  "truncated": false
+}

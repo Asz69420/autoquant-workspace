@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-8bcf5dfab015",
+  "created_at": "2026-03-02T01:34:51.392246Z",
+  "tv_ref": "tradingview:rLY5wKXy",
+  "url": "https://www.tradingview.com/script/rLY5wKXy-KDE-Reversals-UAlgo/",
+  "name": "KDE Reversals [UAlgo]",
+  "author": "UAlgo",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "a790bec8272dc3183e5bc6f01523c8ecaf2e5351c03daa7bff0f48a0845ab370",
+  "truncated": false
+}

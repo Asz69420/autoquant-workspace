@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260228-64f99c5346a9",
+  "created_at": "2026-02-27T19:07:31.356346Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=pfBjvU0PQSc",
+  "title": "Пазарът най-накрая удари таргетите ни около 70000$",
+  "author": "TradeTravelChill",
+  "summary_bullets": [
+    "And now, the market is at the end of the day and the targets we would have set up from a long time ago.",
+    "The liquidation of every single bitcoin was more than 30,000, even a little bit.",
+    "The cars are driving on Twitter in panic, and half of the retail is already out of the market.",
+    "Most people at the moment are looking at the market and see that Haos is selling for a long time and are wondering why they didn't take this decision sooner.",
+    "While some are panicking about the red candles, others are baking."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "And now, the market is at the end of the day and the targets we would have set up from a long time ago.",
+      "note": "Meaning: And now, the market is at the end of the day and the targets we would have set up from a long time ago."
+    },
+    {
+      "timestamp": null,
+      "quote": "The liquidation of every single bitcoin was more than 30,000, even a little bit.",
+      "note": "Meaning: The liquidation of every single bitcoin was more than 30,000, even a little bit."
+    },
+    {
+      "timestamp": null,
+      "quote": "The cars are driving on Twitter in panic, and half of the retail is already out of the market.",
+      "note": "Meaning: The cars are driving on Twitter in panic, and half of the retail is already out of the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "Most people at the moment are looking at the market and see that Haos is selling for a long time and are wondering why they didn't take this decision sooner.",
+      "note": "Meaning: Most people at the moment are looking at the market and see that Haos is selling for a long time and are wondering why they didn't take this decision s"
+    },
+    {
+      "timestamp": null,
+      "quote": "While some are panicking about the red candles, others are baking.",
+      "note": "Meaning: While some are panicking about the red candles, others are baking."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260228/research-20260228-64f99c5346a9.raw.txt",
+  "sha256": "324a7559c5cf0a43c74a0cb228ea0590a7808f1f467e382f18139be6b1bea347",
+  "truncated": false
+}

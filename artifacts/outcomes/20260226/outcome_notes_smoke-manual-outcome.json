@@ -1,0 +1,29 @@
+{
+  "id": "outcome-notes-smoke-manual-outcome",
+  "run_id": "smoke-manual-outcome",
+  "created_at": "2026-02-26T03:32:58.611492+00:00",
+  "what_worked": [
+    "insufficient recent signal: maintain conservative baseline",
+    "insufficient recent signal: maintain conservative baseline",
+    "insufficient recent signal: maintain conservative baseline",
+    "insufficient recent signal: maintain conservative baseline",
+    "insufficient recent signal: maintain conservative baseline"
+  ],
+  "what_failed": [
+    "insufficient recent failure detail: keep current guardrails",
+    "insufficient recent failure detail: keep current guardrails",
+    "insufficient recent failure detail: keep current guardrails",
+    "insufficient recent failure detail: keep current guardrails",
+    "insufficient recent failure detail: keep current guardrails"
+  ],
+  "next_hypotheses": [
+    "strategy-spec-20260226-3dd9fca2754a.strategy_spec: repeated weak outcomes: Tighten entry quality or reduce execution churn before further sweeps.",
+    "strategy-spec-20260226-3315d61e42cf.strategy_spec: repeated weak outcomes: Tighten entry quality or reduce execution churn before further sweeps.",
+    "strategy-spec-20260225-2da349e2d5ab.strategy_spec: repeated weak outcomes: Tighten entry quality or reduce execution churn before further sweeps.",
+    "strategy-spec-20260225-b9d78de1d903.strategy_spec: repeated weak outcomes: Tighten entry quality or reduce execution churn before further sweeps.",
+    "strategy-spec-20260225-c01413ceb0b3.strategy_spec: repeated weak outcomes: Tighten entry quality or reduce execution churn before further sweeps."
+  ],
+  "evidence_pointers": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ]
+}

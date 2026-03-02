@@ -1,0 +1,286 @@
+You're going to learn perfect EMA
+settings and then a very accurate
+trading strategy that makes consistent
+profit. Just make sure you watch this
+video until the end and let's get
+started. Before we start, if you like my
+content, please support the channel by
+liking the video and subscribing to my
+channel if you haven't subscribed yet.
+All right, we need to add five
+exponential moving averages with some
+special settings and combination. Here
+we click on indicators and we search
+ribbon. This one moving average ribbon.
+This indicator gives you four moving
+averages and then later I will add
+another EMA. We need to change the
+settings of these moving averages. So
+here we go to the settings of the ribbon
+and first we change the type of moving
+averages to EMA because as I said we
+need exponential moving averages.
+Then here for the first EMA we set the
+length at five. For the second EMA we
+also set the length at five. And for the
+first EMA here for the source of
+calculation we set it to high. And for
+the second EMA it should be based on
+low. So here we have two EMAs with the
+same length of five. One based on high
+and the other based on low. All right.
+For the third EMA we set the length at
+100. And for this EMA, we also set the
+length at 100. For the third EMA here,
+for the source of calculation, we set it
+based on high. And for this one, it
+should be based on low. We need to
+change their colors for better tracking
+them on the price chart. For the EMAs
+with length of five, we set the color to
+white. And for the EMAs with length of
+100, we set the color to green. And
+finally, we go to the style tab and we
+increase the thickness of the moving
+average lines so they will be better
+visible on the price chart.
+All right, we're done with the settings
+of these four exponential moving
+averages. And now we need to add another
+EMA. So here again we click on
+indicators and we search EMA. We add
+this one moving average exponential. And
+for this one we also need to change its
+settings. So here we go to the settings
+of this EMA and first here in the inputs
+tab here for the length we set it at 200
+and then here in the style tab we change
+the color to orange and we also increase
+the thickness of the line so we can
+better see it on the price chart. All
+right, we're also done with the settings
+of this EMA and now let me teach you how
+you can find accurate buy or sell
+signals based on these exponential
+moving averages with the settings that
+we made. But before that, I'm proud to
+announce that I have published a book,
+The Art of Price Action Trading, which
+is a complete guide to price action
+analysis. The link is in the
+description, and you can get it later if
+you want to master price action trading.
+All right, let's see how we trade based
+on these EMAs. First of all, this is a
+reversal trading strategy, which means
+that we are trying to catch the starting
+of a new trend. And these EMAs with the
+settings that we made will help us to
+find the reversal points of the market.
+This orange line here is an EMA with
+length of 200. And we're going to use it
+for trend identification. These two
+green lines here are EMA with length of
+100 based on high and low. And we're
+going to use it for identifying
+pullbacks. From now we call it green
+channel. And these two white lines here
+are EMA with length of five based on
+high and low. And we're going to use
+them for identifying end of the
+pullbacks and buy sell signals. From now
+we call it white channel. All right. Now
+let me explain how we trade based on
+these EMAs.
+In the first step we want crossing of
+the price above or below this orange
+line. So at first our focus is on the
+orange line. For example, here you can
+see that the price from above the orange
+line went below the orange line. As I
+mentioned earlier, we use the orange
+line for trend identification. When the
+price is above the orange line, we
+consider the market as trending up and
+when the price is below the orange line,
+we consider that the market is trending
+down. So the crossing of the price above
+or below the orange line can be a signal
+for starting of a new trend. For
+example, here you can see that the price
+crossed below the orange line. So this
+is a signal that probably a downtrend is
+going to start. But we don't trade only
+based on this. Still too risky to enter
+a trade based on this signal and we need
+more confirmation to have higher
+probability that a downtrend is really
+happening. In the next step, we want the
+white channel to completely go below the
+orange line. For example, at this point
+from here when these candles are closed,
+you can see that the white channel is
+completely below the orange line. In the
+next step, our focus is again on the
+price action on the candles. I mean, we
+want pullback of the price to the green
+channel. So now our focus is on the
+green channel and we want at least
+touching of the price in the green
+channel. So until now after having the
+price below the orange line and also
+having the white channel completely
+below the orange line now we have
+pullback of the price to the green
+channel. In the next step we want to
+know when this pullback is ended so we
+can enter a trade. For this purpose our
+focus would be on the price action the
+candles and the white channel. We wait
+for a candle that has closed below the
+white channel. When this happened, it
+shows that probably the pullback ended
+and there is a possibility for further
+decline of the price. So here the sell
+signal is confirmed and in practice we
+could enter a short position at this
+point with the stop loss above the green
+channel and profit target at
+risk-to-reward ratio of two. This was a
+short position setup where we identified
+starting of a new downtrend. And now let
+me teach you a long position setup which
+is where we identify starting of an
+uptrend.
+All right. Here we want crossing of the
+price above the orange line. This is a
+signal that probably an uptrend is
+forming. But as I said we never trade
+only based on this and we need more
+confirmation that a reversal is really
+happening in the market. In the next
+step, we want crossing of the white
+channel also above the orange line. You
+can see that from here when these
+candles are closed, the white channel is
+completely above the orange line. Now in
+the next step, we want pullback of the
+price to the green channel. We want at
+least touching of the green channel by
+the price. You can see that it didn't
+happen here. So this is not the pullback
+that we want. In practice, this could be
+a pullback and after that advancing of
+the price. But we stick to the rules of
+this trading strategy to decrease our
+risk as much as possible. So in this
+trading strategy, we want a deeper
+pullback where the price at least
+touches the green channel like what
+happened here. So now we can go to the
+next step and wait for a signal that
+shows end of the pullback. In a long
+position setup, we wait for a candle
+that has closed above the white channel.
+When this happened, it shows end of the
+pullback and further advancing of the
+price is probable to happen. So here the
+buy signal is confirmed and in practice,
+we could enter a long position at this
+point with the stop loss below the green
+channel and profit target at
+risk-to-reward ratio of two. And you can
+see that this trade was also a
+profitable trade where the price
+advanced up to this point. Let me show a
+few more examples so you completely
+understand this trading strategy.
+All right. Here you can see that the
+price went below the orange line and
+after that the white channel is also
+completely below the orange line. Now we
+wait for a pullback of the price to the
+green channel. You can see that it
+happened here. And after that you can
+see that this candle is closed below the
+white channel and this shows end of the
+pullback. So the sell signal here is
+confirmed and in practice we could enter
+a short position at this point with the
+stop loss above the green channel and
+profit target at risk to reward ratio of
+two. All right, moving on the chart you
+can see that here the price went above
+the orange line and after that the white
+channel is also completely above the
+orange line and in the next step we wait
+for the pullback of the price to the
+green channel. You can see that it
+happened here and at this point you can
+see that we got a candle that is closed
+above the white channel. So the buy
+signal here is confirmed and in practice
+we could enter a long position at this
+point with the stop loss below the green
+channel and profit target at
+risk-to-reward ratio of two. And this
+trade is also a profitable trade. You
+can see that the price advanced up to
+this point. All right, following this
+uptrend, we're trying to catch a
+downside reversal of the price. Here you
+can see that the price went below the
+orange line. And after that, the white
+channel also below the orange line. And
+here you can see that we got pullback of
+the price to the green channel. And
+after that, at this point, we got a
+candle that has closed below the white
+channel. So the sell signal here is
+confirmed. And we could enter a short
+position at this point with the stop
+loss above the green channel and profit
+target at riskto-reward ratio of two.
+And this is also a profitable trade. As
+you can see following the downtrend here
+you can see that we got crossing of the
+price above the orange line. And after
+that you can see that the white channel
+is also completely above the orange
+line. And here we got pullback of the
+price to the green channel. And now we
+want to wait for a signal that shows end
+of the pullback. Here you can see that
+we got a candle that has closed above
+the white channel. And this shows that
+probably the pullback ended and the
+price is going to advance more. So here
+the buy signal is confirmed and we could
+enter a long position at this point with
+the stop loss below the green channel
+and profit target at risk-to-reward
+ratio of two. Please pay attention that
+this trading strategy will not give you
+guaranteed signals. There is no trading
+strategy with 100% win rate. This is not
+possible and you need to manage your
+risk properly so you can minimize the
+effect of your losing positions. 1% role
+risk management is the best risk
+management strategy that is recommended
+by professional traders. I have a
+complete guide on this. The link is also
+placed in the description and I highly
+recommend you to watch it now because
+without a proper risk management, you
+cannot become a consistently profitable
+trader. All right, that's it. Thank you
+for watching this video. If you have any
+questions, feel free to ask and leave a
+comment for me. I'll answer your
+questions as soon as possible. If you
+haven't subscribed to my channel, please
+subscribe and hit the bell so you get
+the notifications of my new video. See
+you guys in next video and good luck
+with your trading.

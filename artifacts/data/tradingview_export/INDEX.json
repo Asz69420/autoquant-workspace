@@ -1,0 +1,38 @@
+[
+  {
+    "tv_symbol": "BINANCE:ETHUSDTPERP",
+    "tf": "15",
+    "mode": "incremental",
+    "first_ts": "2026-01-24T12:56:00+00:00",
+    "last_ts": "2026-02-24T12:56:00+00:00",
+    "sha256": "acac082a057e7fe3657984c3dd507c1a346bc634e35356621aab621843cbd772",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/tradingview_export/BINANCE__ETHUSDTPERP/15/incremental/20260124T125600Z-20260224T125600Z.csv"
+  },
+  {
+    "tv_symbol": "BINANCE:ETHUSDTPERP",
+    "tf": "15",
+    "mode": "deep",
+    "first_ts": "2022-02-25T12:56:00+00:00",
+    "last_ts": "2026-02-24T12:56:00+00:00",
+    "sha256": "0924d4638a668aaeec3a6d66d7cf5a656650a6093924ad1cdd7fa69258e8f9e6",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/tradingview_export/BINANCE__ETHUSDTPERP/15/deep/20220225T125600Z-20260224T125600Z.csv"
+  },
+  {
+    "tv_symbol": "BINANCE:ETHUSDT.P",
+    "tf": "15",
+    "mode": "incremental",
+    "first_ts": "2026-01-24T12:56:00+00:00",
+    "last_ts": "2026-02-24T12:56:00+00:00",
+    "sha256": "acac082a057e7fe3657984c3dd507c1a346bc634e35356621aab621843cbd772",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/tradingview_export/BINANCE__ETHUSDT.P/15/incremental/20260124T125600Z-20260224T125600Z.csv"
+  },
+  {
+    "tv_symbol": "BINANCE:ETHUSDT.P",
+    "tf": "15",
+    "mode": "incremental",
+    "first_ts": "2026-01-24T12:45:00+00:00",
+    "last_ts": "2026-02-24T12:45:00+00:00",
+    "sha256": "1605668019e2823df3178efc0a8e5cd7415b2701c6c7b0de547fbad2e91a60de",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/tradingview_export/BINANCE__ETHUSDT.P/15/incremental/20260124T124500Z-20260224T124500Z.csv"
+  }
+]

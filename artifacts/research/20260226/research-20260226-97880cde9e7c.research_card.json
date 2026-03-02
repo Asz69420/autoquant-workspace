@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-97880cde9e7c",
+  "created_at": "2026-02-26T12:40:02.296821Z",
+  "source_type": "transcript_drop",
+  "source_ref": "transcript_drop://strategy_006_donchian_breakout_obv_confirmation",
+  "title": "strategy_006_donchian_breakout_obv_confirmation",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "STRATEGY: Donchian Channel Breakout with OBV Volume Confirmation ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Breakout/expansion after consolidation TYPE: Breakout/momentum CONCEPT: Classic turtle trading breakout adapted for crypto.",
+    "Price breaking the 20-period Donchian high/low signals a potential new trend.",
+    "OBV confirmation ensures the breakout has real volume behind it, filtering fake breakouts.",
+    "ADX rising confirms momentum is building.",
+    "Exit uses a shorter 10-period Donchian to capture the meat of the move without giving back too much.",
+    "INDICATORS USED: - Donchian Channels (period 20) - breakout entry signal - Donchian Channels (period 10) - exit signal (shorter period) - OBV - volume confirmation (OBV must be above its own 20-period SMA) - ADX (period 14) - rising ADX confirms building momentum - ATR (period 14) - position sizing and initial stop ENTRY LONG: 1.",
+    "Price closes above 20-period Donchian Channel high (new 20-bar high) 2.",
+    "OBV > SMA(OBV, 20) (volume is supporting the move) 3.",
+    "ADX(14) > 20 (some trend strength exists) 4.",
+    "ADX is rising (current ADX > ADX from 3 bars ago) ENTRY SHORT: 1."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "STRATEGY: Donchian Channel Breakout with OBV Volume Confirmation ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Breakout/expansion after consolidation TYPE: Breakout/momentum CONCEPT: Classic turtle ",
+      "note": "Meaning: STRATEGY: Donchian Channel Breakout with OBV Volume Confirmation ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Breakout/expansion after consolidation"
+    },
+    {
+      "timestamp": null,
+      "quote": "Price breaking the 20-period Donchian high/low signals a potential new trend.",
+      "note": "Meaning: Price breaking the 20-period Donchian high/low signals a potential new trend."
+    },
+    {
+      "timestamp": null,
+      "quote": "OBV confirmation ensures the breakout has real volume behind it, filtering fake breakouts.",
+      "note": "Meaning: OBV confirmation ensures the breakout has real volume behind it, filtering fake breakouts."
+    },
+    {
+      "timestamp": null,
+      "quote": "ADX rising confirms momentum is building.",
+      "note": "Meaning: ADX rising confirms momentum is building."
+    },
+    {
+      "timestamp": null,
+      "quote": "Exit uses a shorter 10-period Donchian to capture the meat of the move without giving back too much.",
+      "note": "Meaning: Exit uses a shorter 10-period Donchian to capture the meat of the move without giving back too much."
+    },
+    {
+      "timestamp": null,
+      "quote": "INDICATORS USED: - Donchian Channels (period 20) - breakout entry signal - Donchian Channels (period 10) - exit signal (shorter period) - OBV - volume confirmation (OBV must be above its own 20-period",
+      "note": "Meaning: INDICATORS USED: - Donchian Channels (period 20) - breakout entry signal - Donchian Channels (period 10) - exit signal (shorter period) - OBV - volume "
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes above 20-period Donchian Channel high (new 20-bar high) 2.",
+      "note": "Meaning: Price closes above 20-period Donchian Channel high (new 20-bar high) 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "OBV > SMA(OBV, 20) (volume is supporting the move) 3.",
+      "note": "Meaning: OBV > SMA(OBV, 20) (volume is supporting the move) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "ADX(14) > 20 (some trend strength exists) 4.",
+      "note": "Meaning: ADX(14) > 20 (some trend strength exists) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "ADX is rising (current ADX > ADX from 3 bars ago) ENTRY SHORT: 1.",
+      "note": "Meaning: ADX is rising (current ADX > ADX from 3 bars ago) ENTRY SHORT: 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes below 20-period Donchian Channel low (new 20-bar low) 2.",
+      "note": "Meaning: Price closes below 20-period Donchian Channel low (new 20-bar low) 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "OBV < SMA(OBV, 20) (volume confirms selling) 3.",
+      "note": "Meaning: OBV < SMA(OBV, 20) (volume confirms selling) 3."
+    }
+  ],
+  "extracted_rules": [
+    "ADX is rising EXIT RULES: - Primary exit long: Price touches 10-period Donchian low (shorter channel catches trend end faster) - Primary exit short: Price touches 10-period Donchian high - Initial stop loss: 2.0x ATR(14) from entry - No take profit target (let winners run, Donchian exit handles it) - Max hold time: 50 candles (200 hours on 4h) RISK MANAGEMENT: - Risk per trade: 1% of account - Max concurrent positions: 1 per asset - If breakout candle is larger than 3x ATR, skip (overextended en"
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "STRATEGY: Donchian Channel Breakout with OBV Volume Confirmation ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Breakout/expansion after consolidation TYPE: Breakout/momentum CONCEPT: Classic turtle trading breakout ada"
+    },
+    {
+      "type": "trend",
+      "description": "Price breaking the 20-period Donchian high/low signals a potential new trend."
+    },
+    {
+      "type": "filter",
+      "description": "OBV confirmation ensures the breakout has real volume behind it, filtering fake breakouts."
+    },
+    {
+      "type": "momentum",
+      "description": "ADX rising confirms momentum is building."
+    },
+    {
+      "type": "momentum",
+      "description": "INDICATORS USED: - Donchian Channels (period 20) - breakout entry signal - Donchian Channels (period 10) - exit signal (shorter period) - OBV - volume confirmation (OBV must be above its own 20-period SMA) - ADX (period "
+    },
+    {
+      "type": "trend",
+      "description": "ADX(14) > 20 (some trend strength exists) 4."
+    },
+    {
+      "type": "risk",
+      "description": "ADX is rising EXIT RULES: - Primary exit long: Price touches 10-period Donchian low (shorter channel catches trend end faster) - Primary exit short: Price touches 10-period Donchian high - Initial stop loss: 2.0x ATR(14)"
+    },
+    {
+      "type": "filter",
+      "description": "The problem with breakout strategies is false breakouts - OBV and ADX filters address this directly."
+    },
+    {
+      "type": "filter",
+      "description": "Using a shorter exit channel (10 vs 20) is the key insight from turtle trading: you want a more sensitive exit to protect profits while keeping a wider entry to avoid noise."
+    },
+    {
+      "type": "trend",
+      "description": "Crypto’s trending nature makes breakout strategies particularly effective."
+    }
+  ],
+  "explicit_conditions": [
+    "ADX is rising EXIT RULES: - Primary exit long: Price touches 10-period Donchian low (shorter channel catches trend end faster) - Primary exit short: Price touches 10-period Donchian high - Initial stop loss: 2.0x ATR(14) from entry - No take profit target (let winners run, Donchian exit handles it) - Max hold time: 50 candles (200 hours on 4h) RISK MANAGEMENT: - Risk per trade: 1% of account - Max concurrent positions: 1 per asset - If breakout candle is larger than 3x ATR, skip (overextended en"
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "SMA",
+    "ATR",
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "4h"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-97880cde9e7c.raw.txt",
+  "sha256": "db673f4094cc4c53fb165c93a9d8d8f2138b8ca77c3cae59bcdbab23dc9cfdc2",
+  "truncated": false
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-2f452ba4d75c",
+  "created_at": "2026-02-25T22:19:00.043325Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/5LGQFStB-phantom-trend-cloud-willyalgotrader/",
+  "title": "Phantom Trend Cloud [WillyAlgoTrader]",
+  "author": "WillyAlgoTrader",
+  "summary_bullets": [
+    "Top catalog indicator: Phantom Trend Cloud [WillyAlgoTrader] by WillyAlgoTrader."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Phantom Trend Cloud [WillyAlgoTrader] by WillyAlgoTrader.",
+      "note": "Meaning: Top catalog indicator: Phantom Trend Cloud [WillyAlgoTrader] by WillyAlgoTrader."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: Phantom Trend Cloud [WillyAlgoTrader] by WillyAlgoTrader."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-2f452ba4d75c.raw.txt",
+  "sha256": "5c9b11bcf164a96b70acdcb91a2a91d1c0080488414ede250586ce69f9b782a9",
+  "truncated": false
+}

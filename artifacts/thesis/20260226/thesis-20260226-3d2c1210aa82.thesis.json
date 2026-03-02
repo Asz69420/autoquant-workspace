@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260226-3d2c1210aa82",
+  "created_at": "2026-02-26T10:59:55.853531Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260225/research-20260225-44bf933c0e4f.research_card.json"
+    ],
+    "indicator_record_paths": [
+      "artifacts/indicators/20260225/indicator-20260225-09e501852a1f.indicator_record.json"
+    ],
+    "linkmap_paths": [
+      "artifacts/links/20260225/research-20260225-44bf933c0e4f.linkmap.json"
+    ]
+  },
+  "title": "MAD RSI ~ CharonQuant",
+  "thesis_bullets": [
+    "Trending catalog indicator: MAD RSI ~ CharonQuant by CharonQuant."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on 1h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on 1h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "MAD RSI ~ CharonQuant"
+      ],
+      "timeframe_bias": "1h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [
+    {
+      "indicator": "MAD RSI ~ CharonQuant",
+      "role": "confirmation",
+      "description": "Confirm long only when MAD RSI ~ CharonQuant bullish pressure is above control level (>=30) on 1h bar close.",
+      "confidence": 0.76,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "MACD-long",
+      "role": "trend",
+      "description": "Use longer MACD side of zero as trend direction gate before entries.",
+      "confidence": 0.71,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "MACD-short",
+      "role": "entry",
+      "description": "Trigger entries when shorter MACD aligns with longer MACD direction.",
+      "confidence": 0.69,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "MAD RSI ~ CharonQuant",
+      "role": "regime_gate",
+      "description": "Gate entries when MAD RSI ~ CharonQuant stays above control threshold to avoid weak-pressure chop.",
+      "confidence": 0.66,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "ATR14",
+      "role": "exit",
+      "description": "Derived idea: use ATR-based stop/TP envelope for deterministic testability of swing-style stops.",
+      "confidence": 0.62,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    }
+  ],
+  "mutation_catalog": [
+    {
+      "type": "threshold",
+      "suggestion": "Sweep TPX control level",
+      "bounds": "20,30,40",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    },
+    {
+      "type": "risk",
+      "suggestion": "Sweep ATR stop/TP multipliers",
+      "bounds": "stop:1.2-2.0,tp:1.8-3.0",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    },
+    {
+      "type": "execution",
+      "suggestion": "Entry fill rule sweep",
+      "bounds": "bar_close|next_open",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    },
+    {
+      "type": "filter",
+      "suggestion": "Role swap TPX confirmation/filter",
+      "bounds": "confirmation|filter|entry",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    }
+  ],
+  "required_data": [
+    "BTC OHLCV on 1h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "3d2c1210aa82c0d221838fa37c84478043b5a7f359fc228a761d482b4b99568d"
+}

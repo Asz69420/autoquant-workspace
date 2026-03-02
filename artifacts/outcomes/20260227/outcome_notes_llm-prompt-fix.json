@@ -1,0 +1,230 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-llm-prompt-fix",
+  "run_id": "llm-prompt-fix",
+  "created_at": "2026-02-27T02:14:30.269188+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260227-aca46eedbd4e.strategy_spec",
+  "template": "directive_variant_1_gate_adjust",
+  "metrics": {
+    "profit_factor_after_costs": 0.92023873,
+    "max_drawdown": 981.19936581,
+    "trades": 226,
+    "regime_breakdown": {
+      "trending_trades": 57,
+      "ranging_trades": 114,
+      "transitional_trades": 55
+    },
+    "regime_pf": {
+      "trending": 0.88446154,
+      "ranging": 1.04178841,
+      "transitional": 0.77172553
+    },
+    "regime_wr": {
+      "trending": 0.40350877,
+      "ranging": 0.40350877,
+      "transitional": 0.34545455
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [],
+    "bad_regimes": [
+      "trending",
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 981.199 > 0.30",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_9563ef8d.backtest_result.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.920",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_9563ef8d.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "reduce_signal_frequency_pct": 20,
+        "require_dual_confirmation": true,
+        "confirmation_window_bars": 2
+      },
+      "rationale": "With PF 0.9202 across 226 trades, the strategy is likely over-participating in marginal setups; tightening entry and requiring stronger confirmation should improve average trade quality.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "GATE_ADJUST",
+      "params": {
+        "trend_strength_threshold_up": 15,
+        "volatility_floor_enable": true,
+        "skip_low_volatility_sessions": true
+      },
+      "rationale": "The current gate variant remains below breakeven, indicating regime/context filters are still too permissive; stricter trend and volatility gating should reduce chop exposure.",
+      "priority": 2
+    },
+    {
+      "id": "d3",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "add_time_stop_bars": 10,
+        "enable_partial_take_profit": true,
+        "partial_tp_at_r": 1.0,
+        "trail_after_partial": true
+      },
+      "rationale": "Low WR strategies need better payoff efficiency; adding a time stop and structured profit handling can reduce dead-time losers and improve realized R-multiples.",
+      "priority": 3
+    }
+  ],
+  "analysis_source": "llm",
+  "doctrine_refs": [
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 4,
+    "history_window": [
+      {
+        "id": "outcome-notes-llm-parse-fix",
+        "created_at": "2026-02-27T02:04:35.846326+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-llm-session-clear",
+        "created_at": "2026-02-27T02:01:08.509358+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-llm-pipeline-fixed",
+        "created_at": "2026-02-27T01:54:14.100835+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      },
+      {
+        "id": "outcome-notes-autopilot-1772156088-backfill-strategy-spec-20260227-aca46eedbd4e.strategy_spec",
+        "created_at": "2026-02-27T01:54:04.251021+00:00",
+        "verdict": "REJECT",
+        "profit_factor_after_costs": 0.92023873,
+        "directive_types": [
+          "GATE_ADJUST",
+          "ENTRY_TIGHTEN",
+          "EXIT_CHANGE",
+          "PARAM_SWEEP",
+          "ROLE_SWAP"
+        ]
+      }
+    ],
+    "directive_type_stats": {
+      "GATE_ADJUST": {
+        "tried": 3,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 3,
+        "avg_delta_pf": 0.0
+      },
+      "ENTRY_TIGHTEN": {
+        "tried": 3,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 3,
+        "avg_delta_pf": 0.0
+      },
+      "EXIT_CHANGE": {
+        "tried": 3,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 3,
+        "avg_delta_pf": 0.0
+      },
+      "PARAM_SWEEP": {
+        "tried": 3,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 3,
+        "avg_delta_pf": 0.0
+      },
+      "ROLE_SWAP": {
+        "tried": 3,
+        "improved": 0,
+        "worsened": 0,
+        "flat": 3,
+        "avg_delta_pf": 0.0
+      }
+    },
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply ENTRY_TIGHTEN with params={\"confirmation_window_bars\": 2, \"reduce_signal_frequency_pct\": 20, \"require_dual_confirmation\": true}",
+    "Apply GATE_ADJUST with params={\"skip_low_volatility_sessions\": true, \"trend_strength_threshold_up\": 15, \"volatility_floor_enable\": true}",
+    "Apply EXIT_CHANGE with params={\"add_time_stop_bars\": 10, \"enable_partial_take_profit\": true, \"partial_tp_at_r\": 1.0, \"trail_after_partial\": true}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260227/batch_20260227_5bedd219.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260227/refine_20260227_32e51cc5.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "llm_reasoning": "This variant is still negative expectancy: PF is 0.9202 over 226 trades with a low WR of 38.94%, so edge has not crossed profitability after costs. Trade count is high relative to performance, which suggests signal quality remains too weak and churn is likely diluting returns. Drawdown (981.20 abs) is not extreme by itself, but it is unacceptable when paired with sub-1.0 PF. The gate adjustment improved structure but did not produce deployable edge.",
+  "llm_confidence": "high",
+  "regime_recommendation": {
+    "add_filter": false,
+    "allowed_regimes": [],
+    "reasoning": "No regime breakdown was provided, so a specific regime whitelist cannot be justified yet; first rerun with full regime PF/WR split to target filters precisely."
+  },
+  "edge_assessment": {
+    "type": "unclear",
+    "decay_risk": "medium",
+    "robustness": "fragile"
+  },
+  "doctrine_update": "When a gate-adjust variant remains below PF 1.0 with >200 trades, priority should shift from further gate micro-tuning to entry selectivity and trade lifecycle control (time-stop + staged exits)."
+}

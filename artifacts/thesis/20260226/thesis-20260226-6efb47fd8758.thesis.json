@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260226-6efb47fd8758",
+  "created_at": "2026-02-26T12:43:25.645530Z",
+  "inputs": {
+    "research_card_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\research\\20260226\\research-20260226-b2e915fe9508.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\links\\20260226\\research-20260226-b2e915fe9508.linkmap.json"
+    ]
+  },
+  "title": "strategy_004_gaussian_channel_trend_pullback",
+  "thesis_bullets": [
+    "STRATEGY: Gaussian Channel Trend Pullback (Approximation) ASSET: BTC, ETH TIMEFRAME: 4h (primary), also test on 1h MARKET CONDITION: Established trends with healthy pullbacks TYPE: Trend pullback (buy the dip / sell the rip) CONCEPT: Inspired by Gaussian channel strategies that perform well on BTC.",
+    "A Gaussian channel is essentially a heavily smoothed moving average with deviation bands that identify trend direction and pullback zones.",
+    "We approximate this using EMA with Bollinger-style ATR bands.",
+    "The key insight is: in a strong trend, pullbacks to the lower channel band are buying opportunities, not reversals.",
+    "We combine with Stochastic to time entries precisely when the pullback is exhausted and momentum is turning back.",
+    "INDICATORS USED: - EMA 25 - center of the Gaussian channel approximation - ATR (period 14) - channel width (2x ATR above and below EMA 25) - Stochastic (K period 14, D period 3, smooth 3) - pullback exhaustion timing - EMA 50 - trend direction confirmation - EMA 200 - major trend filter - ADX (period 14) - trend strength confirmation CHANNEL CONSTRUCTION: - Upper channel: EMA(25) + 2.0 * ATR(14) -",
+    "Channel slope is up (EMA 25 rising over last 5 bars) 2.",
+    "EMA 50 > EMA 200 (major uptrend confirmed) 3.",
+    "Price pulls back to lower half of channel (below EMA 25 but above lower channel) 4.",
+    "Stochastic K crosses above D from below 20 (pullback exhausted, momentum returning) 5."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on 4h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on 4h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "EMA",
+        "ATR",
+        "Stochastic",
+        "ADX"
+      ],
+      "timeframe_bias": "4h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on 4h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "6efb47fd875885ee877b54b19cc7f53361d04855feba7fe15bbea25107d867c0"
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-a64e8dbd723a",
+  "created_at": "2026-03-01T10:19:51.664194Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/Q1zA24li/",
+  "title": "HispanoTrader GOAT",
+  "author": "Javieruizmalgon",
+  "summary_bullets": [
+    "Top catalog indicator: HispanoTrader GOAT by Javieruizmalgon."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: HispanoTrader GOAT by Javieruizmalgon.",
+      "note": "Meaning: Top catalog indicator: HispanoTrader GOAT by Javieruizmalgon."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-a64e8dbd723a.raw.txt",
+  "sha256": "9826362d7ba40d61820bd2ae23c02b8d6a4e73dc71850de379e9dfc850fc5974",
+  "truncated": false
+}

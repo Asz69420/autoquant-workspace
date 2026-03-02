@@ -1,0 +1,1 @@
+Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v=oiXzKN-4Yus title=JOB MARKET REKT, BTC DOWNSIDE, SPX REVERSING, GOLD CONTINUING? reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extension is too long

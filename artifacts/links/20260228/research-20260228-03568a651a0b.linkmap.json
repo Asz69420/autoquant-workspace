@@ -1,0 +1,31 @@
+{
+  "research_card_path": "artifacts/research/20260228/research-20260228-03568a651a0b.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260228/indicator-20260228-917578f78f89.indicator_record.json",
+    "artifacts/indicators/20260226/indicator-20260226-1f74de0928d7.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "volume delta this one which is written by HAP harmonic",
+      "author_hint": "XDCO if I",
+      "keywords": [
+        "volume",
+        "delta",
+        "this",
+        "one",
+        "which"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=ssu2qDoPyks",
+      "video_id": "ssu2qDoPyks",
+      "noted_at": "2026-02-28T12:42:04.908690+00:00"
+    }
+  ]
+}

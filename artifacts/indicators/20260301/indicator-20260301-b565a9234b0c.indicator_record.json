@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-b565a9234b0c",
+  "created_at": "2026-03-01T10:49:50.778251Z",
+  "tv_ref": "tradingview:6Gsj9Jyx",
+  "url": "https://www.tradingview.com/script/6Gsj9Jyx-Adaptive-Momentum-Trend-Arbitrex-Trader/",
+  "name": "Adaptive Momentum Trend [Arbitrex Trader]",
+  "author": "arbitrexnebula",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "63f2fd63003db3630d640ea7b26cd97c1cdef05497459de58344593a6b6b0ae0",
+  "truncated": false
+}

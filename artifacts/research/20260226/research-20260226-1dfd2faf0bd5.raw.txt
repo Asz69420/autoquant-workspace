@@ -1,0 +1,44 @@
+STRATEGY: Bollinger Band Mean Reversion with RSI Confirmation
+ASSET: BTC, ETH
+TIMEFRAME: 1h
+MARKET CONDITION: Ranging/mean-reverting with established trend context
+TYPE: Mean reversion within trend
+CONCEPT: Trade bounces off Bollinger Band extremes but ONLY in the direction of the larger trend. This prevents counter-trend mean reversion trades that get steamrolled. RSI confirms the oversold/overbought condition is genuine. Price targeting the middle band (SMA 20) gives a clear mechanical exit.
+INDICATORS USED:
+- Bollinger Bands (period 20, std dev 2.0) - identify price extremes
+- RSI (period 14) - confirm oversold/overbought
+- EMA 200 - major trend filter (only trade with trend)
+- ATR (period 14) - stop loss sizing
+- SMA 20 - take profit target (Bollinger middle band)
+ENTRY LONG:
+1. Price closes at or below lower Bollinger Band
+2. RSI(14) < 30 (oversold confirmation)
+3. Price is above EMA 200 (we are in an uptrend, this is a pullback)
+4. Previous candle was also below or touching lower BB (sustained touch, not spike)
+ENTRY SHORT:
+1. Price closes at or above upper Bollinger Band
+2. RSI(14) > 70 (overbought confirmation)
+3. Price is below EMA 200 (we are in a downtrend, this is a bounce)
+4. Previous candle was also above or touching upper BB
+EXIT RULES:
+- Take profit: Price reaches SMA 20 (middle Bollinger Band)
+- Stop loss: 2.0x ATR(14) beyond the Bollinger Band that triggered entry
+- Time stop: If middle band not reached within 12 candles (12 hours), exit at market
+- Breakeven: Move stop to entry once price moves 1.0 ATR in favor
+RISK MANAGEMENT:
+- Risk per trade: 0.75% of account (smaller size for mean reversion)
+- Max concurrent positions: 1 per asset
+- Skip entry if Bollinger Band width is expanding rapidly (bands widening = breakout, not mean reversion)
+- Skip if ADX > 30 (strong trend makes mean reversion dangerous)
+RATIONALE:
+Bollinger Band touches in the direction of the major trend are high-probability setups because the trend acts as a magnet pulling price back. RSI confirmation filters out the touches that happen during momentum (which would continue through the band). The middle band target is conservative but consistent.
+FALSIFIABLE HYPOTHESIS:
+BTC/ETH 1h pullbacks to lower Bollinger Band during uptrends (price > EMA 200) with RSI < 30 revert to the middle band within 12 candles at least 55% of the time, producing profit factor above 1.15.
+PARAMETER RANGES FOR SWEEP:
+- BB period: 15-25, step 5
+- BB std dev: 1.5-2.5, step 0.25
+- RSI threshold long: 25-35, step 5
+- RSI threshold short: 65-75, step 5
+- EMA trend filter: 100-200, step 50
+- Stop ATR multiplier: 1.5-2.5, step 0.5
+- Time stop candles: 8-16, step 4

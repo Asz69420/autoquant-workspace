@@ -1,0 +1,46 @@
+STRATEGY: Ichimoku Cloud Trend + CCI Momentum Entry
+ASSET: BTC, ETH
+TIMEFRAME: 4h
+MARKET CONDITION: Trending with momentum confirmation
+TYPE: Trend following with momentum timing
+CONCEPT: Ichimoku Cloud provides one of the most complete trend identification systems - it shows trend direction, strength, support/resistance, and momentum all in one indicator. CCI adds precise entry timing by catching momentum shifts. We enter when CCI shows momentum returning to the trend direction while Ichimoku confirms the trend is strong and price is on the right side of the cloud.
+INDICATORS USED:
+- Ichimoku Cloud (conversion 9, base 26, span B 52, displacement 26)
+- Tenkan-sen (conversion line) - short-term momentum
+- Kijun-sen (base line) - medium-term trend
+- Senkou Span A and B (cloud) - trend direction and S/R
+- CCI (period 20) - momentum entry timing
+- ATR (period 14) - stop loss and position sizing
+ENTRY LONG:
+1. Price is above the Ichimoku Cloud (above both Span A and Span B)
+2. Tenkan-sen > Kijun-sen (short-term momentum aligned with trend)
+3. Cloud is green (Span A > Span B, bullish cloud)
+4. CCI(20) crosses above -100 from below (momentum returning after pullback)
+ENTRY SHORT:
+1. Price is below the Ichimoku Cloud (below both Span A and Span B)
+2. Tenkan-sen < Kijun-sen (bearish momentum)
+3. Cloud is red (Span A < Span B, bearish cloud)
+4. CCI(20) crosses below +100 from above (momentum fading after bounce)
+EXIT RULES:
+- Primary exit: Price closes inside the cloud (trend weakening)
+- Secondary exit: Tenkan crosses Kijun opposite direction (momentum shift)
+- Stop loss: Opposite edge of cloud or 2.0x ATR, whichever is tighter
+- Take profit: 3.0x ATR from entry
+- Trailing stop: Once in 2.0 ATR profit, trail at Kijun-sen level
+RISK MANAGEMENT:
+- Risk per trade: 1% of account
+- Max concurrent positions: 1 per asset
+- Skip entry if cloud is very thin (Span A and Span B within 0.5% of each other - weak trend)
+- Skip if price just broke out of cloud within last 3 candles (wait for confirmation)
+RATIONALE:
+Ichimoku is underused in crypto algo trading but excels because it captures multiple timeframes in one indicator. The cloud acts as dynamic support/resistance that adapts to volatility. CCI entry timing catches the moment momentum returns after a pullback within the trend - much better than entering on the initial breakout. The cloud-based exit is dynamic and gets tighter as trend weakens.
+FALSIFIABLE HYPOTHESIS:
+BTC/ETH 4h trades entered above a green Ichimoku cloud with CCI crossing -100 produce profit factor above 1.25, with the cloud providing effective dynamic stop placement that limits drawdown to under 12%.
+PARAMETER RANGES FOR SWEEP:
+- Ichimoku conversion: 7-12, step 1
+- Ichimoku base: 22-30, step 4
+- Ichimoku span B: 44-60, step 8
+- CCI period: 14-26, step 4
+- CCI entry threshold: -120 to -80, step 20
+- Stop ATR multiplier: 1.5-2.5, step 0.5
+- TP ATR multiplier: 2.5-4.0, step 0.5

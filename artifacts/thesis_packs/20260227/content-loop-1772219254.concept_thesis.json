@@ -1,0 +1,21 @@
+{
+  "id": "concept-thesis-1772219254",
+  "created_at": "2026-02-27T19:07:34.727962+00:00",
+  "source": "analyser_content_worker",
+  "processed_research_cards": [
+    "artifacts/research/20260228/research-20260228-a8937f232297.research_card.json",
+    "artifacts/research/20260228/research-20260228-15bb82628f18.research_card.json"
+  ],
+  "key_ideas": [
+    "Claude AI can NOW Automatically Build and Improve Your TradingView Strategies (while you sleep): extract repeatable concept from source context",
+    "How to trade like a pro (step by step) \ud83e\udd16: extract repeatable concept from source context"
+  ],
+  "trading_relevant_concept_hooks": [
+    "Claude AI can NOW Automatically Build and Improve Your TradingView Strategies (while you sleep): convert concept to testable entry/exit hypothesis",
+    "How to trade like a pro (step by step) \ud83e\udd16: convert concept to testable entry/exit hypothesis"
+  ],
+  "proposed_automation_improvements_for_autoquant": [
+    "Claude AI can NOW Automatically Build and Improve Your TradingView Strategies (while you sleep): record ingestion evidence pointer for doctrine traceability",
+    "How to trade like a pro (step by step) \ud83e\udd16: record ingestion evidence pointer for doctrine traceability"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-37edce8041b8",
+  "created_at": "2026-03-02T07:19:51.129062Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/9z4Y3HQj-SmartTrend-Pro-WillyAlgoTrader/",
+  "title": "SmartTrend Pro [WillyAlgoTrader]",
+  "author": "WillyAlgoTrader",
+  "summary_bullets": [
+    "Top catalog indicator: SmartTrend Pro [WillyAlgoTrader] by WillyAlgoTrader."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: SmartTrend Pro [WillyAlgoTrader] by WillyAlgoTrader.",
+      "note": "Meaning: Top catalog indicator: SmartTrend Pro [WillyAlgoTrader] by WillyAlgoTrader."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: SmartTrend Pro [WillyAlgoTrader] by WillyAlgoTrader."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-37edce8041b8.raw.txt",
+  "sha256": "5808f9032bd64e527968e1f24133064013bdcfbea7fcb5efa1ba6b7a55cd0e4a",
+  "truncated": false
+}

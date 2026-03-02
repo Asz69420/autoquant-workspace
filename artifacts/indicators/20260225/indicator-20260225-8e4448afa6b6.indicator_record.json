@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-8e4448afa6b6",
+  "created_at": "2026-02-25T02:33:50.676277Z",
+  "tv_ref": "tradingview:e3ZnxPpk",
+  "url": "https://www.tradingview.com/script/e3ZnxPpk-Initial-Value-Breakout-OmegaTools/",
+  "name": "Initial Value Breakout [OmegaTools]",
+  "author": "OmegaTools",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending"
+  ],
+  "sha256": "4bac4f41f8a68709519e9a210fb3237a256c9ab5c7783281188876e323efc84f",
+  "truncated": false
+}

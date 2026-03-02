@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-1bce82162a89",
+  "created_at": "2026-02-25T22:20:55.629567Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/A312Ypea/",
+  "title": "ZoneX Vynex",
+  "author": "PrimeVerse_app",
+  "summary_bullets": [
+    "Top catalog indicator: ZoneX Vynex by PrimeVerse_app."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: ZoneX Vynex by PrimeVerse_app.",
+      "note": "Meaning: Top catalog indicator: ZoneX Vynex by PrimeVerse_app."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-1bce82162a89.raw.txt",
+  "sha256": "d6c81ef51640404e65fcc62d3544a140a61c6481e043293f43ea955cfdbb5875",
+  "truncated": false
+}

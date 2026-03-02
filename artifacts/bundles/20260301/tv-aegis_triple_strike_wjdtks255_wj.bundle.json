@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_aegis triple str",
+    "created_at":  "2026-03-01T11:00:10.515211+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260301/research-20260301-274597cd8ece.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260301/indicator-20260301-e32dfb7638fd.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260301/research-20260301-274597cd8ece.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T11:02:07.2620050Z",
+    "attempts":  1,
+    "last_error":  null
+}

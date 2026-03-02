@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-01791f793f41",
+  "created_at": "2026-03-01T09:49:50.429719Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/waMFt43R-OB-Range-Retest-Confirmed/",
+  "title": "OB Range Retest [Confirmed]",
+  "author": "ArisCodes",
+  "summary_bullets": [
+    "Top catalog indicator: OB Range Retest [Confirmed] by ArisCodes."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: OB Range Retest [Confirmed] by ArisCodes.",
+      "note": "Meaning: Top catalog indicator: OB Range Retest [Confirmed] by ArisCodes."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "Top catalog indicator: OB Range Retest [Confirmed] by ArisCodes."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-01791f793f41.raw.txt",
+  "sha256": "b415e71e607a81a7329bd7f75d92271137021e93b976c816085af16036554653",
+  "truncated": false
+}

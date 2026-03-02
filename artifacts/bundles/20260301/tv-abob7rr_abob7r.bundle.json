@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_abob7rr|abob7r",
+    "created_at":  "2026-03-01T11:34:50.206676+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260301/research-20260301-0b173e601ca2.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260301/indicator-20260301-68d2ca3d2ad5.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260301/research-20260301-0b173e601ca2.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-01T11:36:51.1472847Z",
+    "attempts":  1,
+    "last_error":  null
+}

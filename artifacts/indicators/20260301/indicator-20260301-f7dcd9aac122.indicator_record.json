@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-f7dcd9aac122",
+  "created_at": "2026-03-01T11:04:49.363271Z",
+  "tv_ref": "tradingview:HmBrLKfH",
+  "url": "https://www.tradingview.com/script/HmBrLKfH-LiqLines-Pro-Auto-Manual-Percentage-Grid/",
+  "name": "LiqLines Pro: Auto &amp; Manual Percentage Grid",
+  "author": "GeronimoScalper",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "b943aa0037b922cf3156af4d9a6e2b54e7e3c850a11788fa15685996353db1bc",
+  "truncated": false
+}

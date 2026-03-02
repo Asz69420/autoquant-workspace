@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-c84b2f007332",
+  "created_at": "2026-02-25T03:22:25.206927Z",
+  "tv_ref": "tradingview:TBpAmrQl",
+  "url": "https://www.tradingview.com/script/TBpAmrQl-Trend-Channels-Pro-CodedLevels/",
+  "name": "Trend Channels Pro [CodedLevels]",
+  "author": "AhmadSamih",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "ed2d1e125a159d0ea6f55b7ef51d2c731c2b1b2d914708ed8d4a506c3a95c5e8",
+  "truncated": false
+}

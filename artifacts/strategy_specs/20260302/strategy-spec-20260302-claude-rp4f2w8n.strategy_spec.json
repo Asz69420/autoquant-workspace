@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-rp4f2w8n",
+  "created_at": "2026-03-02T18:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Existing RSI pullback specs (rp3w7k9d) use the default ema_trend=200 for trend detection. On 4h, EMA_200 represents ~33 days of price history — it only confirms trends that are already well-established and broadly recognized. But the most profitable pullback entries occur in YOUNG trends (< 2 weeks old) where: (a) the initial impulse move was strong, (b) the first pullback into the trend EMA draws in late sellers who get squeezed on continuation, (c) the trend is not yet crowded. By using ema_trend=100 (half the lookback — ~17 days on 4h), we detect trend changes ~15 days earlier. The trend is 'fresher' and pullbacks into EMA_100 occur closer to the trend's origin, where continuation probability is highest. Combined with ema_slope=21 (faster slope detection via EMA_21 rather than default EMA_50), the entry signal becomes: 'price is above a recently-established trend, the trend is actively accelerating (EMA_21 slope up), AND price has pulled back to a mild oversold condition (RSI ≤ 45).' The wider RSI threshold (45 vs default 40) catches shallower pullbacks — in young trends, deep pullbacks are more likely to be reversals, so we want the SHALLOW pullbacks that indicate trend continuation with a brief pause. At 7-9:1 R:R, we accept low win rates but bet that young-trend pullbacks produce the longest continuation legs. Invalidation: if trade count < 30 on 4h (EMA_100 is still too slow to generate enough young-trend signals) or PF < 1.0 (faster EMA produces too many false trend signals in ranging markets).",
+  "regime_assumption": "trending_transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h", "1h"],
+  "variants": [
+    {
+      "name": "rsi_pullback_fast_trend_4h_7to1",
+      "description": "RSI pullback with fast trend detection (EMA_100 trend, EMA_21 slope) on ETH/4h with 7:1 R:R. The shorter trend EMA catches younger trends where pullback-to-continuation amplitude is largest. RSI ≤ 45 (wider than default 40) captures shallower pullbacks — in young trends, deep pullbacks often signal reversal, not continuation. Stop at 2.0x ATR, TP at 14.0x ATR. Expected: more entries than rp3w7k9d (EMA_100 generates trend signals earlier than EMA_200), with comparable or better PF if the young-trend hypothesis holds.",
+      "entry_long": [
+        "Close > EMA_100 (price above the fast trend EMA — confirms young uptrend).",
+        "EMA_21 slope positive (current EMA_21 > prior EMA_21 — trend is actively accelerating).",
+        "RSI_14 <= 45 (mild pullback — not deep oversold, just a pause in the trend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (price below the fast trend EMA — confirms young downtrend).",
+        "EMA_21 slope negative (current EMA_21 < prior EMA_21 — trend accelerating down).",
+        "RSI_14 >= 55 (mild overbought pullback in downtrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (14.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < PF at default EMA_200 (rp3w7k9d), fast trend detection adds noise not signal quality"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 14.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 16.0, "step": 2.0, "default": 14.0},
+        {"name": "ema_trend", "min": 50, "max": 150, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 14, "max": 50, "step": 7, "default": 21},
+        {"name": "rsi_long_max", "min": 40.0, "max": 50.0, "step": 5.0, "default": 45.0},
+        {"name": "rsi_short_min", "min": 50.0, "max": 60.0, "step": 5.0, "default": 55.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 14.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 fast trend filter (vs default EMA_200) — catches younger trends"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 ≤ 45 pullback detection — wider band for shallow pullbacks in young trends"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 2.0x stop / 14.0x TP — 7:1 R:R tail harvesting on young-trend pullbacks"}
+      ]
+    },
+    {
+      "name": "rsi_pullback_fast_trend_1h_9to1",
+      "description": "RSI pullback with fast trend detection on ETH/1h with extreme 9:1 R:R (1.5x stop, 13.5x TP). On 1h, EMA_100 = ~4 days of trend context — very responsive. Combined with the tightest allowed stop (1.5x ATR per STOP_FLOOR), this variant tests whether ultra-tight stops at pullback points produce the best R:R profile. The thesis: pullbacks to a young trend EMA are natural support/resistance points. A 1.5x ATR stop just below this level means: if price breaks through the trend EMA by 1.5 ATRs, the pullback IS a reversal and we exit with minimum loss. If it bounces (which it should in a valid trend), the 9:1 target captures the full continuation leg.",
+      "entry_long": [
+        "Close > EMA_100 (price above fast trend EMA on 1h).",
+        "EMA_21 slope positive (trend actively accelerating).",
+        "RSI_14 <= 45 (mild pullback — shallow dip in young uptrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_100 (price below fast trend EMA on 1h).",
+        "EMA_21 slope negative (trend accelerating down).",
+        "RSI_14 >= 55 (mild overbought in downtrend).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (13.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "Hypothesis failure mode: if trade count > 200 but PF < 1.0, the fast EMA on 1h generates too many false trends"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 13.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.5, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 15.0, "step": 1.5, "default": 13.5},
+        {"name": "ema_trend", "min": 50, "max": 150, "step": 50, "default": 100},
+        {"name": "ema_slope", "min": 14, "max": 50, "step": 7, "default": 21},
+        {"name": "rsi_long_max", "min": 40.0, "max": 50.0, "step": 5.0, "default": 45.0},
+        {"name": "rsi_short_min", "min": 50.0, "max": 60.0, "step": 5.0, "default": 55.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 13.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_100 fast trend + EMA_21 slope — responsive trend detection on 1h"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 ≤ 45 shallow pullback in young trend"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for tight 1.5x stop / 13.5x TP — 9:1 R:R at natural support level"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

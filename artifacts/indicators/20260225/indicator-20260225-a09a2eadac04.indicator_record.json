@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260225-a09a2eadac04",
+  "created_at": "2026-02-25T03:22:27.329882Z",
+  "tv_ref": "tradingview:1V20Rv3b",
+  "url": "https://www.tradingview.com/script/1V20Rv3b/",
+  "name": "Tectonic [The_lurker]",
+  "author": "The_lurker",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "sha256": "bce747230dc5136d74bd972fb83d4476f0d038bf5bf22d5c59eea1ad7adeffe8",
+  "truncated": false
+}

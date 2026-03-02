@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-89c16ce04f7d",
+  "created_at": "2026-02-26T22:11:52.079471Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=rh5nqX3tUds",
+  "title": "A Useful Chart for Navigating BTC Bear Market (Chart Shown: Year-To-Date ROI)",
+  "author": "IntoTheCryptoverse",
+  "summary_bullets": [
+    "I think this is a really useful chart for navigating Bitcoin bear markets because it helps me to, you know, remain realistic about expectations rather than just race to Twitter to scream, you know, the super cycle or all season or or anything like that.",
+    "Just look at the chart and see that this is exactly how people get sucked in and then end up losing a lot of their money in the midterm year because they try to chase a lot of these rallies that ultimately likely just end up resulting in lower highs that then lead us into lower lows as the year goes on."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "I think this is a really useful chart for navigating Bitcoin bear markets because it helps me to, you know, remain realistic about expectations rather than just race to Twitter to scream, you know, th",
+      "note": "Meaning: I think this is a really useful chart for navigating Bitcoin bear markets because it helps me to, you know, remain realistic about expectations rather "
+    },
+    {
+      "timestamp": null,
+      "quote": "Just look at the chart and see that this is exactly how people get sucked in and then end up losing a lot of their money in the midterm year because they try to chase a lot of these rallies that ultim",
+      "note": "Meaning: Just look at the chart and see that this is exactly how people get sucked in and then end up losing a lot of their money in the midterm year because th"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-89c16ce04f7d.raw.txt",
+  "sha256": "c7c9beb5bc5f1ec05553058102a48b4a981bd2dda27477d0ee93ac9001ff511d",
+  "truncated": false
+}

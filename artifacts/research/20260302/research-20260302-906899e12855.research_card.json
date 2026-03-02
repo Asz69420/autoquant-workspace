@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-906899e12855",
+  "created_at": "2026-03-02T01:19:50.851125Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/HE1tUVdY-Smart-Money-Trades-Pro/",
+  "title": "Smart Money Trades Pro",
+  "author": "anu_s_unnithan",
+  "summary_bullets": [
+    "Top catalog indicator: Smart Money Trades Pro by anu_s_unnithan."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Smart Money Trades Pro by anu_s_unnithan.",
+      "note": "Meaning: Top catalog indicator: Smart Money Trades Pro by anu_s_unnithan."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-906899e12855.raw.txt",
+  "sha256": "2bf307916923c35583957f58bd1d88b8683f4db41684c16498135feeb0daf8fa",
+  "truncated": false
+}

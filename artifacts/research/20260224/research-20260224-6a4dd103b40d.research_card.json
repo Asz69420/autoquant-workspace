@@ -1,0 +1,281 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260224-6a4dd103b40d",
+  "created_at": "2026-02-24T11:26:47.897245Z",
+  "source_type": "youtube_transcript",
+  "source_ref": "https://m.youtube.com/watch?v=RRmHGgO2SD8",
+  "title": "YouTube RRmHGgO2SD8 (rerun)",
+  "summary_bullets": [
+    "This indicator measures pressure, bullish pressure versus bearish pressure.",
+    "This is one of the most powerful indicators on Trading View that can effectively help you know if the price is going to go up or down.",
+    "I will teach you a trading strategy based on this indicator.",
+    "On trading view platform here, click on indicators and search red K trader pressure index.",
+    "This one which is an editor specs indicator and written by red K trader.",
+    "This is the indicator and as you can see it is added here below the chart.",
+    "As I said this indicator measures bullish and bearish pressure in the market.",
+    "As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers push the price down.",
+    "So as a trader if you can determine at any given time who is in control.",
+    "So you would be able to say with high probability which direction the price is likely to go."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This indicator measures pressure, bullish pressure versus bearish pressure.",
+      "note": "Meaning: This indicator measures pressure, bullish pressure versus bearish pressure."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is one of the most powerful indicators on Trading View that can effectively help you know if the price is going to go up or down.",
+      "note": "Meaning: This is one of the most powerful indicators on Trading View that can effectively help you know if the price is going to go up or down."
+    },
+    {
+      "timestamp": null,
+      "quote": "I will teach you a trading strategy based on this indicator.",
+      "note": "Meaning: I will teach you a trading strategy based on this indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "On trading view platform here, click on indicators and search red K trader pressure index.",
+      "note": "Meaning: On trading view platform here, click on indicators and search red K trader pressure index."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one which is an editor specs indicator and written by red K trader.",
+      "note": "Meaning: This one which is an editor specs indicator and written by red K trader."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is the indicator and as you can see it is added here below the chart.",
+      "note": "Meaning: This is the indicator and as you can see it is added here below the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As I said this indicator measures bullish and bearish pressure in the market.",
+      "note": "Meaning: As I said this indicator measures bullish and bearish pressure in the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers push the price down.",
+      "note": "Meaning: As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers p"
+    },
+    {
+      "timestamp": null,
+      "quote": "So as a trader if you can determine at any given time who is in control.",
+      "note": "Meaning: So as a trader if you can determine at any given time who is in control."
+    },
+    {
+      "timestamp": null,
+      "quote": "So you would be able to say with high probability which direction the price is likely to go.",
+      "note": "Meaning: So you would be able to say with high probability which direction the price is likely to go."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator considers this fact to help us know who has the upper hand in the market, buyers or sellers.",
+      "note": "Meaning: This indicator considers this fact to help us know who has the upper hand in the market, buyers or sellers."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is actually what this indicator is trying to tell us.",
+      "note": "Meaning: This is actually what this indicator is trying to tell us."
+    }
+  ],
+  "extracted_rules": [
+    "This is one of the most powerful indicators on Trading View that can effectively help you know if the price is going to go up or down.",
+    "So as a trader if you can determine at any given time who is in control.",
+    "So when we have green area, it tells us that we have more pressure from buyers and when we have red area, it tells us that we have more pressure from sellers.",
+    "When the white line is above zero, there is higher buying pressure in the market.",
+    "When the area passes the 30 level, it shows that now we have considerable pressure in that direction.",
+    "When it is red, the market is trending down and when it is green, the market is trending up.",
+    "But at this point when the longer MACD goes above the center line at that moment we want the shorter MACD to be also above the center line.",
+    "When we have three of these situations at the same time, the starting of an uptrend is confirmed.",
+    "So in practice, we could enter a long position at this point with the stop loss below the previous swing low and profit target at risk-to-reward ratio of two.",
+    "When the histogram goes below the center line and it becomes red, it is a signal that probably a downtrend is forming on the chart.",
+    "When this happened, we want the shorter MACD to also be below the center line.",
+    "When we have three of these situations at the same time, the downtrend is confirmed.",
+    "So in practice, we could enter a short position at this point.",
+    "So the buy signal here is confirmed and in practice we could enter a long position at this point with the stop loss below the previous swing low and profit target at a risk-to-reward ratio of two and you can see that this trade was also a profitable trade where the price advanced up to this point.",
+    "And when we check this indicator, we can see that we have bullish pressure and the line is above 30.",
+    "And in practice, we could enter a long position at this point.",
+    "And when we check this indicator, we can see that the area is red.",
+    "This trading strategy doesn't give you guaranteed signals and losing positions are always part of the game and you need to manage your risk.",
+    "There is a riskmanagement strategy that is called 1% roll and it is one of the best risk management strategy that you can use.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you cannot become a consistently profitable trader."
+  ],
+  "parameters_set": [
+    {
+      "name": "average length",
+      "value": "30",
+      "context": "gs of the indicator. And here for the average length we set it at 30. And then here for smoothing we set it a"
+    },
+    {
+      "name": "smoothing",
+      "value": "15",
+      "context": "e set it at 30. And then here for smoothing we set it at 15. Here for control level 30 is okay. And"
+    },
+    {
+      "name": "fast length",
+      "value": "100",
+      "context": "ere for the longer MACD. Here for the fast length we set it at 100. For the slow length we set it at 200. A"
+    },
+    {
+      "name": "slow length",
+      "value": "200",
+      "context": "fast length we set it at 100. For the slow length we set it at 200. And here for the signal smoothing we se"
+    },
+    {
+      "name": "signal smoothing",
+      "value": "50",
+      "context": "th we set it at 200. And here for the signal smoothing we set it at 50. And then here for the shorter MAC. Here"
+    },
+    {
+      "name": "fast length",
+      "value": "34",
+      "context": "ere for the shorter MAC. Here for the fast length we set it at 34. For the slow length we set it at 144. A"
+    },
+    {
+      "name": "slow length",
+      "value": "144",
+      "context": "fast length we set it at 34. For the slow length we set it at 144. And here for signal smoothing we set it"
+    },
+    {
+      "name": "signal smoothing",
+      "value": "9",
+      "context": "th we set it at 144. And here for signal smoothing we set it at 9. And finally we go to the style tab. And"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "Here for control level 30 is okay."
+    },
+    {
+      "type": "trend",
+      "description": "We use the MAC with longer length for identifying longerterm trend of the market and we use the MACD with shorter length for identifying shorter term trends or momentum changes in the market."
+    },
+    {
+      "type": "momentum",
+      "description": "And here for the shorter MACDI, we change the appearance to histogram."
+    },
+    {
+      "type": "confirmation",
+      "description": "Here we have a dashed line which is at 30 and this is our control level."
+    },
+    {
+      "type": "trend",
+      "description": "We use this MACD for longerterm trends of the market."
+    },
+    {
+      "type": "trend",
+      "description": "And we use this MACD for midterm trends or momentum changes in the market."
+    },
+    {
+      "type": "trend",
+      "description": "In this trading strategy, in the first step, we start with the longer MACD."
+    },
+    {
+      "type": "trend",
+      "description": "As I said, it is used for identifying longerterm trends of the market."
+    },
+    {
+      "type": "trend",
+      "description": "When it is red, the market is trending down and when it is green, the market is trending up."
+    },
+    {
+      "type": "trend",
+      "description": "So the point of histogram changing can be a signal for starting of a new trend."
+    },
+    {
+      "type": "momentum",
+      "description": "In the next step we look at the shorter MACD."
+    },
+    {
+      "type": "trend",
+      "description": "But at this point when the longer MACD goes above the center line at that moment we want the shorter MACD to be also above the center line."
+    },
+    {
+      "type": "trend",
+      "description": "The whole of this situation shows that in a longerterm perspective we have a signal that shows the trend has changed from downtrend to an uptrend and in a shorterterm perspective the midterm trend is also up and we have "
+    },
+    {
+      "type": "confirmation",
+      "description": "Require green area and it should be above 30."
+    },
+    {
+      "type": "trend",
+      "description": "When we have three of these situations at the same time, the starting of an uptrend is confirmed."
+    },
+    {
+      "type": "confirmation",
+      "description": "In other words, the buy signal here is confirmed."
+    },
+    {
+      "type": "risk",
+      "description": "So in practice, Entry: a long position at this point with the Stop: below the previous swing low and Target: 2R."
+    },
+    {
+      "type": "trend",
+      "description": "In the first step, our focus is on longer MACD."
+    },
+    {
+      "type": "trend",
+      "description": "When the histogram goes below the center line and it becomes red, it is a signal that probably a downtrend is forming on the chart."
+    },
+    {
+      "type": "momentum",
+      "description": "When this happened, we want the shorter MACD to also be below the center line."
+    }
+  ],
+  "explicit_conditions": [
+    "But at this point when the longer MACD goes above the center line at that moment we want the shorter MACD to be also above the center line.",
+    "When we have three of these situations at the same time, the starting of an uptrend is confirmed.",
+    "When the histogram goes below the center line and it becomes red, it is a signal that probably a downtrend is forming on the chart.",
+    "When this happened, we want the shorter MACD to also be below the center line.",
+    "When we have three of these situations at the same time, the downtrend is confirmed.",
+    "So the buy signal here is confirmed and in practice Entry: a long position at this point with the Stop: below the previous swing low and profit target at a risk-to-reward ratio of two and you can see that this trade was also a profitable trade where the price advanced up to this point.",
+    "And when we check this indicator, we can see that we have bullish pressure and the line is above 30.",
+    "This trading strategy doesn't give you guaranteed signals and losing positions are always part of the game and you need to manage your risk.",
+    "There is a riskmanagement strategy that is called 1% roll and it is one of the best risk management strategy that you can use.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you cannot become a consistently profitable trader."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "red K trader pressure index",
+    "and search red K trader pressure index"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "red K trader pressure index",
+      "keywords": [
+        "red",
+        "k",
+        "trader",
+        "pressure",
+        "index"
+      ],
+      "confidence": 0.93,
+      "author_hint": "red K trader"
+    },
+    {
+      "name": "and search red K trader pressure index",
+      "keywords": [
+        "and",
+        "search",
+        "red",
+        "k",
+        "trader"
+      ],
+      "confidence": 0.88,
+      "author_hint": "red K trader"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260224/research-20260224-6a4dd103b40d.raw.txt",
+  "sha256": "3edc897f0fa10a118666d57351b44b01670710e5aa29af7661b8cfecdb59029c",
+  "truncated": false
+}

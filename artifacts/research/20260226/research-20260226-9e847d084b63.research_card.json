@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-9e847d084b63",
+  "created_at": "2026-02-26T03:19:40.610220Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=ydjTTG7Ik5U",
+  "title": "ydjTTG7Ik5U",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=ydjTTG7Ik5U."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=ydjTTG7Ik5U.",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=ydjTTG7Ik5U."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-9e847d084b63.raw.txt",
+  "sha256": "bf6d4f2a5c29b40be0dfdb795ca4657a7111d7fd49a1be9d2e466791b8298494",
+  "truncated": false
+}

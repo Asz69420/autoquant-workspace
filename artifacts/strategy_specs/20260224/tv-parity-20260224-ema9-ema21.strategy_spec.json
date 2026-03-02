@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "tv-parity-20260224-ema9-ema21",
+  "created_at": "2026-02-24T12:56:42.739756+00:00",
+  "source_thesis_path": "generated://tv_parity",
+  "variants": [
+    {
+      "name": "ema_atr_parity",
+      "description": "EMA9/EMA21 crossover with ATR14 exits",
+      "entry_long": [
+        "close_gt_open"
+      ],
+      "entry_short": [
+        "close_lt_open"
+      ],
+      "filters": [],
+      "exit_rules": [],
+      "risk_rules": [
+        "stop_loss_pct=0.015",
+        "take_profit_pct=0.02"
+      ],
+      "parameters": [],
+      "constraints": []
+    }
+  ]
+}

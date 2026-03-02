@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-6f1c3d49e61f",
+  "created_at": "2026-03-01T09:34:50.420959Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/wriGyhnU-Institutional-Liquidity-Flow-Engine-JOAT/",
+  "title": "Institutional Liquidity Flow Engine [JOAT]",
+  "author": "officialjackofalltrades",
+  "summary_bullets": [
+    "Top catalog indicator: Institutional Liquidity Flow Engine [JOAT] by officialjackofalltrades."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Institutional Liquidity Flow Engine [JOAT] by officialjackofalltrades.",
+      "note": "Meaning: Top catalog indicator: Institutional Liquidity Flow Engine [JOAT] by officialjackofalltrades."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-6f1c3d49e61f.raw.txt",
+  "sha256": "d9f53c32abb8ac530bd0ac81d3c2e7f83e9f68e2b9ea207199d45295d677f19c",
+  "truncated": false
+}

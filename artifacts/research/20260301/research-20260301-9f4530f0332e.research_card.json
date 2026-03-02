@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-9f4530f0332e",
+  "created_at": "2026-03-01T09:19:50.752571Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/sV13OnrU-Segmented-Regression-Breakout-TP-SL/",
+  "title": "Segmented Regression Breakout + TP/SL",
+  "author": "Uncle_the_shooter",
+  "summary_bullets": [
+    "Top catalog indicator: Segmented Regression Breakout + TP/SL by Uncle_the_shooter."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Segmented Regression Breakout + TP/SL by Uncle_the_shooter.",
+      "note": "Meaning: Top catalog indicator: Segmented Regression Breakout + TP/SL by Uncle_the_shooter."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-9f4530f0332e.raw.txt",
+  "sha256": "ff435f192a96d464e11f52f63100aaebaa5685382a299032c0fb0541f3639727",
+  "truncated": false
+}

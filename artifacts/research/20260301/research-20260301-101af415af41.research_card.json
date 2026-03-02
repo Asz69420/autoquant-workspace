@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-101af415af41",
+  "created_at": "2026-03-01T09:19:49.899883Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/QC7d4vmv-Market-Structure-CHoCH-BOS-Monk/",
+  "title": "Market Structure CHoCH/BOS Monk",
+  "author": "Monk_Trading",
+  "summary_bullets": [
+    "Top catalog indicator: Market Structure CHoCH/BOS Monk by Monk_Trading."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Market Structure CHoCH/BOS Monk by Monk_Trading.",
+      "note": "Meaning: Top catalog indicator: Market Structure CHoCH/BOS Monk by Monk_Trading."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-101af415af41.raw.txt",
+  "sha256": "8ad85f9861d725618a29bda611a3874724a27890ba173ac5b0224e779a762122",
+  "truncated": false
+}

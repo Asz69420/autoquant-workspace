@@ -1,0 +1,17 @@
+{
+  "id": "concept-thesis-1772304131",
+  "created_at": "2026-02-28T18:42:11.333095+00:00",
+  "source": "analyser_content_worker",
+  "processed_research_cards": [
+    "artifacts/research/20260301/research-20260301-a0a1f19272e8.research_card.json"
+  ],
+  "key_ideas": [
+    "A trader\u2019s nightmare: when an influencer can\u2019t explain their edge\u2026: extract repeatable concept from source context"
+  ],
+  "trading_relevant_concept_hooks": [
+    "A trader\u2019s nightmare: when an influencer can\u2019t explain their edge\u2026: convert concept to testable entry/exit hypothesis"
+  ],
+  "proposed_automation_improvements_for_autoquant": [
+    "A trader\u2019s nightmare: when an influencer can\u2019t explain their edge\u2026: record ingestion evidence pointer for doctrine traceability"
+  ]
+}

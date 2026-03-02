@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-a5e3e6eef132",
+  "created_at": "2026-03-01T09:49:49.643463Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/l4Y1ycfk/",
+  "title": "Pro Trader Checklist &amp; BIAS by Capitan-Trading",
+  "author": "capitan-trading",
+  "summary_bullets": [
+    "Top catalog indicator: Pro Trader Checklist &amp; BIAS by Capitan-Trading by capitan-trading."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Pro Trader Checklist &amp; BIAS by Capitan-Trading by capitan-trading.",
+      "note": "Meaning: Top catalog indicator: Pro Trader Checklist &amp; BIAS by Capitan-Trading by capitan-trading."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-a5e3e6eef132.raw.txt",
+  "sha256": "f2539c717ba63ca07a26d88033b744c14421b1300b98417fe51b4d8bc9450cb4",
+  "truncated": false
+}

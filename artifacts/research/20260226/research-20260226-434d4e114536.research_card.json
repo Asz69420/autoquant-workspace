@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-434d4e114536",
+  "created_at": "2026-02-26T12:40:02.775863Z",
+  "source_type": "transcript_drop",
+  "source_ref": "transcript_drop://strategy_007_adx_filter_supertrend_entry",
+  "title": "strategy_007_adx_filter_supertrend_entry",
+  "author": "manual-transcript-drop",
+  "summary_bullets": [
+    "STRATEGY: ADX Trend Filter + Supertrend Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Strong trending markets TYPE: Trend following CONCEPT: Only take trades when the market is confirmed trending using ADX.",
+    "Use Supertrend indicator for precise entry and exit timing.",
+    "This avoids choppy sideways markets where most strategies bleed out from false signals.",
+    "INDICATORS USED: - ADX (period 14) - trend strength filter, must be above 25 - Supertrend (period 10, multiplier 3.0) - entry/exit signal - EMA 50 - medium trend direction - EMA 200 - major trend direction - ATR (period 14) - stop loss and position sizing ENTRY LONG: 1.",
+    "ADX(14) > 25 (confirmed trend exists) 2.",
+    "EMA 50 > EMA 200 (uptrend confirmed) 3.",
+    "Supertrend flips from red to green (buy signal) 4.",
+    "Price closes above Supertrend line All conditions must be true on the same candle close.",
+    "EMA 50 < EMA 200 (downtrend confirmed) 3.",
+    "EXIT RULES: - Primary exit: Supertrend flips opposite direction - Stop loss: 1.5x ATR(14) from entry price - Take profit: 3.0x ATR(14) from entry price (2:1 reward-risk) - Trailing stop: Once in 1.5 ATR profit, trail stop at 1.0 ATR behind price - Max hold time: 30 candles (120 hours on 4h) RISK MANAGEMENT: - Risk per trade: 1% of account - Max concurrent positions: 1 per asset - No new entries if ADX drops below 20 while in trade (tighten stop to breakeven) RATIONALE: ADX filter eliminates the "
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "STRATEGY: ADX Trend Filter + Supertrend Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Strong trending markets TYPE: Trend following CONCEPT: Only take trades when the market is confirmed trend",
+      "note": "Meaning: STRATEGY: ADX Trend Filter + Supertrend Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Strong trending markets TYPE: Trend following CONCEPT: On"
+    },
+    {
+      "timestamp": null,
+      "quote": "Use Supertrend indicator for precise entry and exit timing.",
+      "note": "Meaning: Use Supertrend indicator for precise entry and exit timing."
+    },
+    {
+      "timestamp": null,
+      "quote": "This avoids choppy sideways markets where most strategies bleed out from false signals.",
+      "note": "Meaning: This avoids choppy sideways markets where most strategies bleed out from false signals."
+    },
+    {
+      "timestamp": null,
+      "quote": "INDICATORS USED: - ADX (period 14) - trend strength filter, must be above 25 - Supertrend (period 10, multiplier 3.0) - entry/exit signal - EMA 50 - medium trend direction - EMA 200 - major trend dire",
+      "note": "Meaning: INDICATORS USED: - ADX (period 14) - trend strength filter, must be above 25 - Supertrend (period 10, multiplier 3.0) - entry/exit signal - EMA 50 - me"
+    },
+    {
+      "timestamp": null,
+      "quote": "ADX(14) > 25 (confirmed trend exists) 2.",
+      "note": "Meaning: ADX(14) > 25 (confirmed trend exists) 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "EMA 50 > EMA 200 (uptrend confirmed) 3.",
+      "note": "Meaning: EMA 50 > EMA 200 (uptrend confirmed) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "Supertrend flips from red to green (buy signal) 4.",
+      "note": "Meaning: Supertrend flips from red to green (buy signal) 4."
+    },
+    {
+      "timestamp": null,
+      "quote": "Price closes above Supertrend line All conditions must be true on the same candle close.",
+      "note": "Meaning: Price closes above Supertrend line All conditions must be true on the same candle close."
+    },
+    {
+      "timestamp": null,
+      "quote": "EMA 50 < EMA 200 (downtrend confirmed) 3.",
+      "note": "Meaning: EMA 50 < EMA 200 (downtrend confirmed) 3."
+    },
+    {
+      "timestamp": null,
+      "quote": "EXIT RULES: - Primary exit: Supertrend flips opposite direction - Stop loss: 1.5x ATR(14) from entry price - Take profit: 3.0x ATR(14) from entry price (2:1 reward-risk) - Trailing stop: Once in 1.5 A",
+      "note": "Meaning: EXIT RULES: - Primary exit: Supertrend flips opposite direction - Stop loss: 1.5x ATR(14) from entry price - Take profit: 3.0x ATR(14) from entry price"
+    },
+    {
+      "timestamp": null,
+      "quote": "Supertrend provides clean mechanical entries that are easy to backtest.",
+      "note": "Meaning: Supertrend provides clean mechanical entries that are easy to backtest."
+    },
+    {
+      "timestamp": null,
+      "quote": "EMA cross ensures we trade with the major trend, not against it.",
+      "note": "Meaning: EMA cross ensures we trade with the major trend, not against it."
+    }
+  ],
+  "extracted_rules": [
+    "STRATEGY: ADX Trend Filter + Supertrend Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Strong trending markets TYPE: Trend following CONCEPT: Only take trades when the market is confirmed trending using ADX.",
+    "INDICATORS USED: - ADX (period 14) - trend strength filter, must be above 25 - Supertrend (period 10, multiplier 3.0) - entry/exit signal - EMA 50 - medium trend direction - EMA 200 - major trend direction - ATR (period 14) - stop loss and position sizing ENTRY LONG: 1.",
+    "EXIT RULES: - Primary exit: Supertrend flips opposite direction - Stop loss: 1.5x ATR(14) from entry price - Take profit: 3.0x ATR(14) from entry price (2:1 reward-risk) - Trailing stop: Once in 1.5 ATR profit, trail stop at 1.0 ATR behind price - Max hold time: 30 candles (120 hours on 4h) RISK MANAGEMENT: - Risk per trade: 1% of account - Max concurrent positions: 1 per asset - No new entries if ADX drops below 20 while in trade (tighten stop to breakeven) RATIONALE: ADX filter eliminates the "
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "STRATEGY: ADX Trend Filter + Supertrend Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Strong trending markets TYPE: Trend following CONCEPT: Only take trades when the market is confirmed trending using ADX."
+    },
+    {
+      "type": "trend",
+      "description": "Use Supertrend indicator for precise entry and exit timing."
+    },
+    {
+      "type": "filter",
+      "description": "This avoids choppy sideways markets where most strategies bleed out from false signals."
+    },
+    {
+      "type": "risk",
+      "description": "INDICATORS USED: - ADX (period 14) - trend strength filter, must be above 25 - Supertrend (period 10, multiplier 3.0) - entry/exit signal - EMA 50 - medium trend direction - EMA 200 - major trend direction - ATR (period "
+    },
+    {
+      "type": "trend",
+      "description": "ADX(14) > 25 (confirmed trend exists) 2."
+    },
+    {
+      "type": "trend",
+      "description": "EMA 50 > EMA 200 (uptrend confirmed) 3."
+    },
+    {
+      "type": "trend",
+      "description": "Supertrend flips from red to green (buy signal) 4."
+    },
+    {
+      "type": "trend",
+      "description": "Price closes above Supertrend line All conditions must be true on the same candle close."
+    },
+    {
+      "type": "trend",
+      "description": "EMA 50 < EMA 200 (downtrend confirmed) 3."
+    },
+    {
+      "type": "risk",
+      "description": "Stop: below previous swing low."
+    },
+    {
+      "type": "trend",
+      "description": "Supertrend provides clean mechanical entries that are easy to backtest."
+    },
+    {
+      "type": "trend",
+      "description": "EMA cross ensures we trade with the major trend, not against it."
+    },
+    {
+      "type": "trend",
+      "description": "FALSIFIABLE HYPOTHESIS: In trending BTC/ETH 4h markets (ADX > 25), Supertrend signals aligned with EMA 50/200 direction produce a profit factor above 1.2 with max drawdown under 15%."
+    },
+    {
+      "type": "trend",
+      "description": "PARAMETER RANGES FOR SWEEP: - ADX threshold: 20-30, step 5 - Supertrend period: 7-14, step 1 - Supertrend multiplier: 2.0-4.0, step 0.5 - EMA fast: 20-50, step 10 - EMA slow: 100-200, step 50 - Stop ATR multiplier: 1.0-2"
+    }
+  ],
+  "explicit_conditions": [
+    "STRATEGY: ADX Trend Filter + Supertrend Entry ASSET: BTC, ETH TIMEFRAME: 4h MARKET CONDITION: Strong trending markets TYPE: Trend following CONCEPT: Only take trades when the market is confirmed trending using ADX.",
+    "INDICATORS USED: - ADX (period 14) - trend strength filter, must be above 25 - Supertrend (period 10, multiplier 3.0) - entry/exit signal - EMA 50 - medium trend direction - EMA 200 - major trend direction - ATR (period 14) - stop loss and position sizing ENTRY LONG: 1.",
+    "EXIT RULES: - Primary exit: Supertrend flips opposite direction - Stop loss: 1.5x ATR(14) from entry price - Take profit: 3.0x ATR(14) from entry price (2:1 reward-risk) - Trailing stop: Once in 1.5 ATR profit, trail stop at 1.0 ATR behind price - Max hold time: 30 candles (120 hours on 4h) RISK MANAGEMENT: - Risk per trade: 1% of account - Max concurrent positions: 1 per asset - No new entries if ADX drops below 20 while in trade (tighten stop to breakeven) RATIONALE: ADX filter eliminates the."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "ATR",
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "4h"
+  ],
+  "assets_mentioned": [
+    "BTC",
+    "ETH"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-434d4e114536.raw.txt",
+  "sha256": "95797e3b5d455b2681bdd1e4cafa45ef67d36fa92a1b8934ab2458740692a23b",
+  "truncated": false
+}

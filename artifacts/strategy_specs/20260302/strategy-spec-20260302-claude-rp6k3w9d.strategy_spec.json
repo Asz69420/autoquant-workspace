@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-rp6k3w9d",
+  "created_at": "2026-03-02T18:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "RSI shallow-dip at 7:1 ACCEPTed with PF=1.333 and an extraordinary transitional PF=5.568. The shallow-dip thesis: RSI 50-55 entries catch brief momentum pauses in an ongoing trend, not deep exhaustion pullbacks. These are higher-probability continuation signals. At 7:1, this already works. But the Supertrend champion (PF=1.921) proves that extreme R:R dramatically improves PF on crypto. This spec tests the shallow-dip signal at 10:1 and 12:1 R:R — keeping only the most explosive continuation moves. Key insight: shallow pullbacks (RSI just below 55) mean the trend is barely pausing, which is exactly when the continuation probability is highest. Combining this with extreme R:R creates a 'momentum slingshot' — enter when momentum briefly dips, hold for massive extension. Invalidation: if PF < 0.9 at 10:1 across 50+ trades, the shallow dip doesn't produce enough extreme continuations to justify the higher R:R.",
+  "regime_assumption": "transitional_primary_ranging_secondary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h", "1h"],
+  "variants": [
+    {
+      "name": "rsi_shallow_slingshot_10to1",
+      "description": "RSI pullback with shallow-dip entry (RSI <= 55 for long, >= 45 for short) at 10:1 R:R. The shallow RSI threshold captures momentum pauses in strong trends — price hasn't fallen far, just taken a breath. Combined with 10:1 R:R, we only hold winners that extend massively. Stop at 1.0x ATR.",
+      "entry_long": [
+        "Close > EMA_200 confirms bullish trend.",
+        "EMA_50 slope is rising (momentum intact).",
+        "RSI_14 <= 55 (shallow pullback, not deep exhaustion).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms bearish trend.",
+        "EMA_50 slope is falling (momentum intact).",
+        "RSI_14 >= 45 (shallow pullback from oversold, not recovery).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Exit if EMA_200 trend reverses (close crosses below EMA_200 for longs).",
+        "Hypothesis failure mode guard: Shallow RSI threshold generates too many signals in choppy trending markets, diluting win rate"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 12%."
+      ],
+      "parameters": [
+        {"name": "rsi_long_max", "min": 50, "max": 60, "step": 5, "default": 55},
+        {"name": "rsi_short_min", "min": 40, "max": 50, "step": 5, "default": 45},
+        {"name": "stop_atr_mult", "min": 0.8, "max": 1.2, "step": 0.1, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 11.0, "step": 0.5, "default": 10.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.12
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_200 trend direction, EMA_50 slope momentum"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 shallow pullback threshold at 55/45"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "rsi_shallow_slingshot_12to1",
+      "description": "Same shallow-dip thesis pushed to 12:1 R:R. At 12:1, we need ~9% win rate to break even. Shallow pullbacks in confirmed trends should sustain this. Tests whether the momentum slingshot effect gets stronger at higher R:R by selecting only for the most extreme continuation moves.",
+      "entry_long": [
+        "Close > EMA_200 confirms bullish trend.",
+        "EMA_50 slope is rising (momentum intact).",
+        "RSI_14 <= 55 (shallow pullback, not deep exhaustion).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms bearish trend.",
+        "EMA_50 slope is falling (momentum intact).",
+        "RSI_14 >= 45 (shallow pullback from oversold, not recovery).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Exit if EMA_200 trend reverses (close crosses below EMA_200 for longs).",
+        "Hypothesis failure mode guard: 12:1 target on 4h may exceed typical directional leg length, producing almost no winners"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 15%."
+      ],
+      "parameters": [
+        {"name": "rsi_long_max", "min": 50, "max": 60, "step": 5, "default": 55},
+        {"name": "rsi_short_min", "min": 40, "max": 50, "step": 5, "default": 45},
+        {"name": "stop_atr_mult", "min": 0.8, "max": 1.2, "step": 0.1, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 14.0, "step": 1.0, "default": 12.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.15
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_200 trend direction, EMA_50 slope momentum"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 shallow pullback threshold at 55/45"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "rsi_shallow_slingshot_10to1_1h",
+      "description": "Shallow-dip 10:1 on 1h timeframe. More frequent entries, smaller ATR stops. Tests whether the momentum slingshot scales to higher frequency — 1h pullbacks are brief, sharp dips that resolve quickly in trending markets.",
+      "entry_long": [
+        "Close > EMA_200 confirms bullish trend.",
+        "EMA_50 slope is rising (momentum intact).",
+        "RSI_14 <= 55 (shallow pullback, not deep exhaustion).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "entry_short": [
+        "Close < EMA_200 confirms bearish trend.",
+        "EMA_50 slope is falling (momentum intact).",
+        "RSI_14 >= 45 (shallow pullback from oversold, not recovery).",
+        "Bar-close execution only.",
+        "Use signal: rsi_pullback"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "Exit if EMA_200 trend reverses.",
+        "Hypothesis failure mode guard: 1h noise may cause too many false shallow-dip signals in ranging markets"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 12%."
+      ],
+      "parameters": [
+        {"name": "rsi_long_max", "min": 50, "max": 60, "step": 5, "default": 55},
+        {"name": "rsi_short_min", "min": 40, "max": 50, "step": 5, "default": 45},
+        {"name": "stop_atr_mult", "min": 0.8, "max": 1.2, "step": 0.1, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 11.0, "step": 0.5, "default": 10.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.12
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_200 trend direction, EMA_50 slope momentum"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 shallow pullback threshold at 55/45"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

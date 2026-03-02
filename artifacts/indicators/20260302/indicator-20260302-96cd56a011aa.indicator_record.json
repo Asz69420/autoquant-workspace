@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-96cd56a011aa",
+  "created_at": "2026-03-01T15:19:49.108009Z",
+  "tv_ref": "tradingview:Erc9h2dj",
+  "url": "https://www.tradingview.com/script/Erc9h2dj/",
+  "name": "MSNR Structure Pro -",
+  "author": "fabio-ict",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "89d72d063750c9aaf202cfbacc7e3a20fa8c454e13dad107882e9b14c4ad27e3",
+  "truncated": false
+}

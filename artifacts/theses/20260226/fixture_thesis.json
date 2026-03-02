@@ -1,0 +1,15 @@
+{
+  "id": "fixture_same_family",
+  "strategy_family": "fixture_same_family",
+  "template": "TemplateA",
+  "constraints": [],
+  "required_data": [
+    "ohlcv"
+  ],
+  "candidate_signals": [
+    {
+      "name": "sigA"
+    }
+  ],
+  "hypotheses": []
+}

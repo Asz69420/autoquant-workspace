@@ -1,0 +1,150 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-llm-shared-test",
+  "run_id": "llm-shared-test",
+  "created_at": "2026-02-26T21:50:56.582771+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260227-refine-6f595d99.strategy_spec",
+  "template": "directive_variant_1_gate_adjust_exploit_7",
+  "metrics": {
+    "profit_factor_after_costs": 0.83707331,
+    "max_drawdown": 24188.13047988,
+    "trades": 173,
+    "regime_breakdown": {
+      "trending_trades": 44,
+      "ranging_trades": 90,
+      "transitional_trades": 39
+    },
+    "regime_pf": {
+      "trending": 0.83088652,
+      "ranging": 0.91598694,
+      "transitional": 0.68415137
+    },
+    "regime_wr": {
+      "trending": 0.40909091,
+      "ranging": 0.42222222,
+      "transitional": 0.35897436
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [],
+    "bad_regimes": [
+      "trending",
+      "ranging",
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": true,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 24188.130 > 0.30",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_75657459.backtest_result.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.837",
+      "evidence_pointer": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260227\\hl_20260227_75657459.backtest_result.json"
+    },
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "rationale": "Doctrine: risk gating before complexity on drawdown-heavy strategies.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_TREND",
+        "reason": "all_regimes_underperform"
+      },
+      "rationale": "Regime-aware: underperforms across all regimes; pivot to fundamentally different structure.",
+      "priority": 1
+    },
+    {
+      "id": "d3",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "confidence_threshold_delta": 0.05
+      },
+      "rationale": "Tighten entry quality to reduce adverse excursions.",
+      "priority": 1
+    },
+    {
+      "id": "d4",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "stop_atr_mult": 1.2,
+        "tp_atr_mult": 1.8
+      },
+      "rationale": "Adjust exits to cap drawdown.",
+      "priority": 2
+    },
+    {
+      "id": "d5",
+      "type": "PARAM_SWEEP",
+      "params": {
+        "parameter": "risk_r",
+        "range": [
+          0.5,
+          1.5
+        ],
+        "step": 0.25
+      },
+      "rationale": "Re-balance payoff profile to improve PF.",
+      "priority": 1
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+    "Apply TEMPLATE_SWITCH with params={\"reason\": \"all_regimes_underperform\", \"target\": \"FALLBACK_TEMPLATE_TREND\"}",
+    "Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+    "Apply EXIT_CHANGE with params={\"stop_atr_mult\": 1.2, \"tp_atr_mult\": 1.8}",
+    "Apply PARAM_SWEEP with params={\"parameter\": \"risk_r\", \"range\": [0.5, 1.5], \"step\": 0.25}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260227/batch_20260227_71f51117.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260227/refine_20260227_f4fe959e.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ]
+}

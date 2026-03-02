@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260301-0b173e601ca2",
+  "created_at": "2026-03-01T11:34:50.044395Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/yj1KKxkh-AboB7rr/",
+  "title": "AboB7rr",
+  "author": "AboB7r",
+  "summary_bullets": [
+    "Top catalog indicator: AboB7rr by AboB7r."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: AboB7rr by AboB7r.",
+      "note": "Meaning: Top catalog indicator: AboB7rr by AboB7r."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260301/research-20260301-0b173e601ca2.raw.txt",
+  "sha256": "48e5a49751658115228e5f828a44f59c8c1589d180f7e3e16618b67b4c428485",
+  "truncated": false
+}

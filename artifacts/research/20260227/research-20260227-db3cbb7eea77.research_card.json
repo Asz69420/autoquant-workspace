@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260227-db3cbb7eea77",
+  "created_at": "2026-02-26T21:41:02.833914Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=t9v32eQ5qcE",
+  "title": "Crypto Trading Made Super Easy!",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "So if you're like me and absolutely love spending time with your crypto bros on Telegram, but absolutely hate all of the garbage you get from non-verified world trades from influencers, which just keep losing money time after time.",
+    "Well, I may have a solution for you today in the form of a Telegram bot.",
+    "So if that sounds good to you, let's get straight to it.",
+    "Hey, traders, I hope you're going extremely well.",
+    "My name's David and welcome to my weekly segment on banter where I go through proven and profitable trading strategies.",
+    "Today, we're going to be talking about Telegram bots and I've got a really exciting announcement to share with you.",
+    "Now, like I said earlier, I've been a user of Telegram for absolutely years and I use many of these bots for my daily trading on Telegram.",
+    "They make things so, so much easier, allowing us to enter into DeFi without having to have heavy apps on our computer and allows us to make easy trades on the go.",
+    "We can do loads of special things like verifying transactions.",
+    "We can copy other traders thanks to some copy trading functions."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "So if you're like me and absolutely love spending time with your crypto bros on Telegram, but absolutely hate all of the garbage you get from non-verified world trades from influencers, which just kee",
+      "note": "Meaning: So if you're like me and absolutely love spending time with your crypto bros on Telegram, but absolutely hate all of the garbage you get from non-verif"
+    },
+    {
+      "timestamp": null,
+      "quote": "Well, I may have a solution for you today in the form of a Telegram bot.",
+      "note": "Meaning: Well, I may have a solution for you today in the form of a Telegram bot."
+    },
+    {
+      "timestamp": null,
+      "quote": "So if that sounds good to you, let's get straight to it.",
+      "note": "Meaning: So if that sounds good to you, let's get straight to it."
+    },
+    {
+      "timestamp": null,
+      "quote": "Hey, traders, I hope you're going extremely well.",
+      "note": "Meaning: Hey, traders, I hope you're going extremely well."
+    },
+    {
+      "timestamp": null,
+      "quote": "My name's David and welcome to my weekly segment on banter where I go through proven and profitable trading strategies.",
+      "note": "Meaning: My name's David and welcome to my weekly segment on banter where I go through proven and profitable trading strategies."
+    },
+    {
+      "timestamp": null,
+      "quote": "Today, we're going to be talking about Telegram bots and I've got a really exciting announcement to share with you.",
+      "note": "Meaning: Today, we're going to be talking about Telegram bots and I've got a really exciting announcement to share with you."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now, like I said earlier, I've been a user of Telegram for absolutely years and I use many of these bots for my daily trading on Telegram.",
+      "note": "Meaning: Now, like I said earlier, I've been a user of Telegram for absolutely years and I use many of these bots for my daily trading on Telegram."
+    },
+    {
+      "timestamp": null,
+      "quote": "They make things so, so much easier, allowing us to enter into DeFi without having to have heavy apps on our computer and allows us to make easy trades on the go.",
+      "note": "Meaning: They make things so, so much easier, allowing us to enter into DeFi without having to have heavy apps on our computer and allows us to make easy trades"
+    },
+    {
+      "timestamp": null,
+      "quote": "We can do loads of special things like verifying transactions.",
+      "note": "Meaning: We can do loads of special things like verifying transactions."
+    },
+    {
+      "timestamp": null,
+      "quote": "We can copy other traders thanks to some copy trading functions.",
+      "note": "Meaning: We can copy other traders thanks to some copy trading functions."
+    },
+    {
+      "timestamp": null,
+      "quote": "They allow us to snipe tokens much faster and hopefully making us even more profit.",
+      "note": "Meaning: They allow us to snipe tokens much faster and hopefully making us even more profit."
+    },
+    {
+      "timestamp": null,
+      "quote": "I absolutely love these Telegram bots and there's many, many users that love them as well, but there is one thing that I don't love about them and that is the opaqueness of the strategies that they ac",
+      "note": "Meaning: I absolutely love these Telegram bots and there's many, many users that love them as well, but there is one thing that I don't love about them and that"
+    }
+  ],
+  "extracted_rules": [
+    "So if you're like me and absolutely love spending time with your crypto bros on Telegram, but absolutely hate all of the garbage you get from non-verified world trades from influencers, which just keep losing money time after time.",
+    "So if that sounds good to you, let's get straight to it.",
+    "I really do feel as though if everybody's talking about it we should be able to code it and we should be able to trade it automatically."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Whether it's a grid bot, whether it's a trend following bot, a sniper bot, there is really very little information."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "weekly",
+    "daily"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260227/research-20260227-db3cbb7eea77.raw.txt",
+  "sha256": "2df3327b2c44af3ea7209a0bd1f6b9a29eb27af3ba1a82ef9a3d720c927eb3ab",
+  "truncated": false
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260301-b81f874f2e90",
+  "created_at": "2026-03-01T10:34:49.892306Z",
+  "tv_ref": "tradingview:62mMrCyO",
+  "url": "https://www.tradingview.com/script/62mMrCyO-Simple-Profit-monk-trading/",
+  "name": "Simple Profit monk trading",
+  "author": "Monk_Trading",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "e9026de1d8e2379567832baf7093bf618ebb56f8cafd5c8c467815f7e1f2bd8b",
+  "truncated": false
+}

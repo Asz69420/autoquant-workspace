@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260226-5d1bf811ad9a",
+  "created_at": "2026-02-25T22:33:42.713479Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/BgfMNDGT-Breakout-Vault-Confirmed/",
+  "title": "Breakout Vault [Confirmed]",
+  "author": "ArisCodes",
+  "summary_bullets": [
+    "Top catalog indicator: Breakout Vault [Confirmed] by ArisCodes."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Breakout Vault [Confirmed] by ArisCodes.",
+      "note": "Meaning: Top catalog indicator: Breakout Vault [Confirmed] by ArisCodes."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "Top catalog indicator: Breakout Vault [Confirmed] by ArisCodes."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260226/research-20260226-5d1bf811ad9a.raw.txt",
+  "sha256": "81949fa1dab64fab5ed5af3c2333b30730196079ec10884f347994c46a84e7b6",
+  "truncated": false
+}

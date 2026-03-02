@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260226-f26e9e9fa75a",
+  "created_at": "2026-02-25T22:18:59.389320Z",
+  "tv_ref": "tradingview:5LGQFStB",
+  "url": "https://www.tradingview.com/script/5LGQFStB-phantom-trend-cloud-willyalgotrader/",
+  "name": "Phantom Trend Cloud [WillyAlgoTrader]",
+  "author": "WillyAlgoTrader",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "a08b6e6e31be06079b83e4766856315480d881d06e35d0f885abf582654b5775",
+  "truncated": false
+}

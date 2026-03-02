@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-0bfc478b8377",
+  "created_at": "2026-03-02T01:49:50.613531Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/5zAdLu8t-Smart-Money-Gold-Map-XAUUSD-Kill-Zones-Liquidity-Sweeps/",
+  "title": "Smart Money Gold Map [XAUUSD Kill Zones + Liquidity Sweeps]",
+  "author": "DefinedEdge",
+  "summary_bullets": [
+    "Top catalog indicator: Smart Money Gold Map [XAUUSD Kill Zones + Liquidity Sweeps] by DefinedEdge."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Smart Money Gold Map [XAUUSD Kill Zones + Liquidity Sweeps] by DefinedEdge.",
+      "note": "Meaning: Top catalog indicator: Smart Money Gold Map [XAUUSD Kill Zones + Liquidity Sweeps] by DefinedEdge."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "GOLD",
+    "XAUUSD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-0bfc478b8377.raw.txt",
+  "sha256": "e793a0b9c6198769d2b38ef09a4705c834af26141c19da59e8c6a865b1a11a9b",
+  "truncated": false
+}

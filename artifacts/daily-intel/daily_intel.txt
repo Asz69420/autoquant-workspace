@@ -1,0 +1,24 @@
+﻿○────────────────────────────────────────────────────────────○
+DAILY INTEL — 2026-02-27 05:44 AEST
+○────────────────────────────────────────────────────────────○
+
+RUN STATUS
+- status: FAIL
+- promoted_count: 0
+- compat_status: UNKNOWN
+- reason_code: RETRIEVAL_FAIL
+
+NAME SOURCE FIELD ORDER (LOCKED)
+1) thesis.title OR spec.description
+2) spec.strategy_family OR thesis.strategy_family
+3) fallback: spec filename stem token (e.g., 6efb_Spec)
+
+TIMEFRAME TABLE FORMAT
+- separator lines start with: ○
+- separator width matches full table width
+
+NOTES
+- Configured path scripts/keeper/runner.py not found in workspace.
+- Fallback scripts/keeper/legacy/runner.py executed and returned RETRIEVAL_FAIL.
+
+○────────────────────────────────────────────────────────────○

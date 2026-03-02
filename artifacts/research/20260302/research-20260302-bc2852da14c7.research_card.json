@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-bc2852da14c7",
+  "created_at": "2026-03-01T18:42:08.079938Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=lGtVSCYaRZg",
+  "title": "Average day as an automated trader 🤖",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "Okay, so being a trader who uses automation, my days vary quite a lot, one from another, but I guess that's part of the fun and kind of the point.",
+    "Typically, my day starts before the whole of my house awakes.",
+    "I barely sleep, and my brain has the habit of turning on early, whether I want it to or not.",
+    "I make coffee and sit down quietly so I don't wake everybody else up.",
+    "First thing I do is check my systems just to confirm everything is running the way it's supposed to.",
+    "If something needs attention, I'll note it for a bit later.",
+    "Once the family's up, I step away from work so I can get breakfast and get the kids ready for school.",
+    "This part of spending family means a lot to me.",
+    "After that, I'm back at my desk.",
+    "Then the hours are for building, testing, and reviewing data."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Okay, so being a trader who uses automation, my days vary quite a lot, one from another, but I guess that's part of the fun and kind of the point.",
+      "note": "Meaning: Okay, so being a trader who uses automation, my days vary quite a lot, one from another, but I guess that's part of the fun and kind of the point."
+    },
+    {
+      "timestamp": null,
+      "quote": "Typically, my day starts before the whole of my house awakes.",
+      "note": "Meaning: Typically, my day starts before the whole of my house awakes."
+    },
+    {
+      "timestamp": null,
+      "quote": "I barely sleep, and my brain has the habit of turning on early, whether I want it to or not.",
+      "note": "Meaning: I barely sleep, and my brain has the habit of turning on early, whether I want it to or not."
+    },
+    {
+      "timestamp": null,
+      "quote": "I make coffee and sit down quietly so I don't wake everybody else up.",
+      "note": "Meaning: I make coffee and sit down quietly so I don't wake everybody else up."
+    },
+    {
+      "timestamp": null,
+      "quote": "First thing I do is check my systems just to confirm everything is running the way it's supposed to.",
+      "note": "Meaning: First thing I do is check my systems just to confirm everything is running the way it's supposed to."
+    },
+    {
+      "timestamp": null,
+      "quote": "If something needs attention, I'll note it for a bit later.",
+      "note": "Meaning: If something needs attention, I'll note it for a bit later."
+    },
+    {
+      "timestamp": null,
+      "quote": "Once the family's up, I step away from work so I can get breakfast and get the kids ready for school.",
+      "note": "Meaning: Once the family's up, I step away from work so I can get breakfast and get the kids ready for school."
+    },
+    {
+      "timestamp": null,
+      "quote": "This part of spending family means a lot to me.",
+      "note": "Meaning: This part of spending family means a lot to me."
+    },
+    {
+      "timestamp": null,
+      "quote": "After that, I'm back at my desk.",
+      "note": "Meaning: After that, I'm back at my desk."
+    },
+    {
+      "timestamp": null,
+      "quote": "Then the hours are for building, testing, and reviewing data.",
+      "note": "Meaning: Then the hours are for building, testing, and reviewing data."
+    },
+    {
+      "timestamp": null,
+      "quote": "It's a bit repetitive, but that's what makes this work.",
+      "note": "Meaning: It's a bit repetitive, but that's what makes this work."
+    },
+    {
+      "timestamp": null,
+      "quote": "It doesn't look exciting, but I've been a developer since the age of 13, so this kind of work feels natural to me.",
+      "note": "Meaning: It doesn't look exciting, but I've been a developer since the age of 13, so this kind of work feels natural to me."
+    }
+  ],
+  "extracted_rules": [
+    "If something needs attention, I'll note it for a bit later.",
+    "And if you want to see more trading content, make sure you hit."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-bc2852da14c7.raw.txt",
+  "sha256": "8f81fa8263f08f2f3426bf1304081a8452f99cdcc67b27ece76a80660494e450",
+  "truncated": false
+}
