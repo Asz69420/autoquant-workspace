@@ -49,6 +49,7 @@ $body = @{
   text = $renderedMessage
   parse_mode = "HTML"
 } | ConvertTo-Json -Compress
+$body = $body -replace '\\u003c', '<' -replace '\\u003e', '>'
 
 try {
   $response = Invoke-RestMethod -Uri $url -Method Post -Body $body -ContentType "application/json"
