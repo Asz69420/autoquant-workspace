@@ -1,0 +1,42 @@
+[
+  {
+    "strategy": "cci_chop_fade_v2",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_b0ac1096.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_b0ac1096.trade_list.json",
+    "profit_factor": 1.25463361,
+    "win_rate": 0.36871508,
+    "max_drawdown_pct": 16.3846,
+    "net_profit_pct": 28.9503,
+    "total_trades": 179,
+    "total_return_on_capital_pct": 28.9503,
+    "regime_pf": {
+      "trending": 1.13157107,
+      "ranging": 1.42954004,
+      "transitional": 1.52054823
+    },
+    "gate_pass": true,
+    "gate_reason": "OK",
+    "min_trades_required": 10
+  },
+  {
+    "strategy": "cci_adx_chop_fade_v1",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_a6a8c49b.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_a6a8c49b.trade_list.json",
+    "profit_factor": 1.05333844,
+    "win_rate": 0.25,
+    "max_drawdown_pct": 17.404,
+    "net_profit_pct": 3.8982,
+    "total_trades": 104,
+    "total_return_on_capital_pct": 3.8982,
+    "regime_pf": {
+      "trending": 0.0,
+      "ranging": 0.83784658,
+      "transitional": 1.31978239
+    },
+    "gate_pass": true,
+    "gate_reason": "OK",
+    "min_trades_required": 10
+  }
+]

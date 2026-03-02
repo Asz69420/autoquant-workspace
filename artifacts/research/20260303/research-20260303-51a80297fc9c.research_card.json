@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-51a80297fc9c",
+  "created_at": "2026-03-02T21:19:51.678350Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/yjkYEJS3/",
+  "title": "Footprint Delta Divergence",
+  "author": "Bying369",
+  "summary_bullets": [
+    "Top catalog indicator: Footprint Delta Divergence by Bying369."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Footprint Delta Divergence by Bying369.",
+      "note": "Meaning: Top catalog indicator: Footprint Delta Divergence by Bying369."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-51a80297fc9c.raw.txt",
+  "sha256": "0972b95d0c3babdc816ca7b6a2eeea7043ce7253cc999a7b11602380b4fb736f",
+  "truncated": false
+}

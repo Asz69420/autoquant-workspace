@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-c622a3304464",
+  "created_at": "2026-03-02T21:19:51.439882Z",
+  "tv_ref": "tradingview:yjkYEJS3",
+  "url": "https://www.tradingview.com/script/yjkYEJS3/",
+  "name": "Footprint Delta Divergence",
+  "author": "Bying369",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "db73688d863de85ef19ad25020437a2a70330dd81c780038d960aea63b8d5785",
+  "truncated": false
+}

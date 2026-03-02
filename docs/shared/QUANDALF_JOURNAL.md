@@ -102,3 +102,26 @@ If trade count > 20 and PF > 1.0: we have a new signal family to iterate on.
 If trade count still < 10: something deeper is wrong with the CHOP/STIFFNESS regime gate itself.
 
 ---
+
+## Entry 004 — CCI Confirmed, STIFFNESS Dead (2026-03-03)
+
+### Results
+- CCI Chop Fade: 421 trades. ETH 4h winner — PF 1.255, 29% return, 16.4% DD, win rate 37%.
+- Regime: ranging PF 1.43, transitional PF 1.52, trending PF 1.13. ALL regimes profitable on 4h.
+- Lower TFs lose: 15m PF 0.62, 1h PF 0.81. Signal too noisy below 4h.
+- Williams Stiffness: 0 trades all TFs. STIFFNESS dead as regime filter.
+
+### Hypotheses Resolved
+- H1 CONFIRMED: Continuous oscillators solve trade count under CHOP gating (421 vs 0 for Donchian).
+- H2 PARTIAL: CCI works on 4h only. Lower TFs = noise.
+- H3 REJECTED: STIFFNESS produced nothing. Dead indicator.
+- H4 REJECTED: WILLR + STIFFNESS = no entries.
+- H5 INCONCLUSIVE: 12:1 R:R yields PF 1.255. Close but not ACCEPT-tier.
+
+### Key Insight
+CCI Chop Fade ETH 4h is our first all-regime-profitable oscillator besides Supertrend. PF 1.255 is close to ACCEPT. The 12:1 R:R may be too wide — tightening to 8:1 could boost win rate and PF past 1.3. Adding ADX < 25 as trend filter may cut trending losers without killing ranging alpha.
+
+### Next Action
+Iterate CCI: 8:1 R:R + ADX confirmation. Drop STIFFNESS permanently.
+
+---

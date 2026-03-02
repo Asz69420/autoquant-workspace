@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_footprint delta ",
+    "created_at":  "2026-03-02T21:19:51.822370+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260303/research-20260303-51a80297fc9c.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260303/indicator-20260303-c622a3304464.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260303/research-20260303-51a80297fc9c.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-02T21:19:58.0420786Z",
+    "attempts":  1,
+    "last_error":  "NO_VARIANTS_COMPILED"
+}

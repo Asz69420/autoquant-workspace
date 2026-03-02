@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-wr7s3f5t",
+  "created_at": "2026-03-03T12:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Williams %R and STIFFNESS are two indicator families with ZERO representation in any ACCEPT across 706+ outcomes. This spec tests them TOGETHER as a mean-reversion system. The thesis: Williams %R (oscillator from -100 to 0) at extreme readings (<-80 oversold, >-20 overbought) signals that price has stretched beyond its recent range. STIFFNESS measures how rigidly price follows its SMA — LOW stiffness (< 50) means price is NOT trending (it's wobbling around the mean), confirming mean-reversion conditions. This is a NOVEL regime filter: where CHOP measures bar-level choppiness, STIFFNESS measures price-to-SMA adherence. A mean-reversion signal (WILLR extreme) paired with a mean-reversion regime filter (low STIFFNESS) should COMPOUND: both independently indicate that price will revert, and together they should filter out false signals where WILLR is extreme but a genuine trend is in progress. KEY DIFFERENCE from CCI spec: WILLR is bounded (-100 to 0) while CCI is unbounded. WILLR extremes are more clearly defined. STIFFNESS is a completely different regime filter from CHOP — if one works and the other doesn't, we learn something about which regime detection method suits mean-reversion strategies. THREE OUTCOMES: (1) PF > 1.2 with 40+ trades: WILLR + STIFFNESS is a viable new signal family. (2) PF 0.8-1.2: marginal — WILLR signals have some predictive power but STIFFNESS filtering needs calibration. (3) PF < 0.8: WILLR extremes don't predict reversion direction OR STIFFNESS threshold is wrong. INVALIDATION: If both WILLR specs produce PF < 0.7, Williams %R is not a useful entry signal for crypto mean-reversion.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "willr_stiffness_fade_1h_8to1",
+      "description": "Williams %R at extremes with STIFFNESS regime gate on ETH/1h. Entry when WILLR hits oversold/overbought in a non-stiff (mean-reverting) market. 8:1 R:R. First-ever test of BOTH Williams %R and STIFFNESS in any strategy. WILLR < -80 = oversold (price at bottom of recent range). STIFFNESS < 50 = price is NOT adhering to trend (likely to revert). Expected: 40-100 trades.",
+      "entry_long": [
+        "WILLR_14 < -80",
+        "STIFFNESS_20_3_100 < 50"
+      ],
+      "entry_short": [
+        "WILLR_14 > -20",
+        "STIFFNESS_20_3_100 < 50"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "WILLR extreme: WILLR_14 < -80 (oversold) or > -20 (overbought)",
+        "STIFFNESS regime gate: STIFFNESS_20_3_100 < 50 = price not trending",
+        "Novel regime filter: STIFFNESS measures SMA adherence, not bar choppiness",
+        "First-ever test of WILLR and STIFFNESS indicators",
+        "RoleFramework[baseline]=Williams %R",
+        "RoleFramework[confirmation]=Stiffness",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Williams %R", "role": "baseline", "notes": "WILLR_14 at extremes (<-80 / >-20). First-ever Williams %R test."},
+        {"indicator": "Stiffness", "role": "confirmation", "notes": "STIFFNESS_20_3_100 < 50 = price not trending. Novel regime filter."},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."}
+      ]
+    },
+    {
+      "name": "willr_stiffness_fade_4h_8to1",
+      "description": "Williams %R + STIFFNESS fade on ETH/4h. Same thesis on higher timeframe. 4h WILLR extremes represent larger-scale oversold/overbought conditions. Expected: 15-40 trades. Diagnostic: does 4h produce higher PF than 1h for this signal type?",
+      "entry_long": [
+        "WILLR_14 < -80",
+        "STIFFNESS_20_3_100 < 50"
+      ],
+      "entry_short": [
+        "WILLR_14 > -20",
+        "STIFFNESS_20_3_100 < 50"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "WILLR extreme: WILLR_14 < -80 / > -20 on 4h",
+        "STIFFNESS regime gate: STIFFNESS_20_3_100 < 50",
+        "4h timeframe: larger-scale exhaustion signals",
+        "RoleFramework[baseline]=Williams %R",
+        "RoleFramework[confirmation]=Stiffness",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Williams %R", "role": "baseline", "notes": "WILLR_14 extremes on 4h — larger-scale reversion signals."},
+        {"indicator": "Stiffness", "role": "confirmation", "notes": "STIFFNESS_20_3_100 < 50 = not trending."},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."}
+      ]
+    },
+    {
+      "name": "willr_stiffness_fade_1h_tight_5to1",
+      "description": "Williams %R + STIFFNESS with TIGHTER WILLR bands (-90/-10) and 5:1 R:R. The HIGH-CONVICTION variant. WILLR < -90 means price is at the EXTREME bottom of its recent range (bottom 10%). This should fire less often but with higher reversion probability. Combined with STIFFNESS < 40 (even less trending), this is the strictest possible mean-reversion filter using these two indicators. 5:1 R:R (1.5x / 7.5x) captures shorter reversion moves. Expected: 15-40 trades. If PF > 1.3 despite fewer trades: extreme WILLR readings PLUS strict STIFFNESS produce very high-quality signals. Compare to base variant to measure conviction improvement.",
+      "entry_long": [
+        "WILLR_14 < -90",
+        "STIFFNESS_20_3_100 < 40"
+      ],
+      "entry_short": [
+        "WILLR_14 > -10",
+        "STIFFNESS_20_3_100 < 40"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "WILLR EXTREME: WILLR_14 < -90 / > -10 (top/bottom 10% of range)",
+        "STIFFNESS strict gate: STIFFNESS_20_3_100 < 40 (strongly non-trending)",
+        "High-conviction variant: strictest filters, fewer but higher-quality signals",
+        "RoleFramework[baseline]=Williams %R",
+        "RoleFramework[confirmation]=Stiffness",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (7.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 5:1. Needs 16.7% win rate to break even after fees.",
+        "Shorter TP targets moderate reversion moves from extreme WILLR readings."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 7.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 7.5, "max": 10.0, "step": 1.25, "default": 7.5},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Williams %R", "role": "baseline", "notes": "WILLR_14 < -90 / > -10 — extreme conviction entries."},
+        {"indicator": "Stiffness", "role": "confirmation", "notes": "STIFFNESS_20_3_100 < 40 — strictly non-trending."},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 7.5x TP = 5:1 R:R."}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}
