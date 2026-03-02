@@ -14,7 +14,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 MEMORY = ROOT / "MEMORY.md"
 HANDOFF_GLOB = str(ROOT / "docs" / "HANDOFFS" / "handoff-*.md")
 LOG_EVENT = ROOT / "scripts" / "log_event.py"
