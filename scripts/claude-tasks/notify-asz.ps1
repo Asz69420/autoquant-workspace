@@ -34,7 +34,7 @@ $url = "https://api.telegram.org/bot$token/sendMessage"
 $body = @{
   chat_id = $chatId
   text = $Message
-  parse_mode = "Markdown"
+  parse_mode = "HTML"
 } | ConvertTo-Json -Compress
 
 try {
