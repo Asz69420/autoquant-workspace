@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-b4b308e7758f",
+  "created_at": "2026-03-02T11:19:50.833727Z",
+  "tv_ref": "tradingview:dx95Np9f",
+  "url": "https://www.tradingview.com/script/dx95Np9f-Stochastic-Buy-Sell-Signal/",
+  "name": "Stochastic Buy/Sell Signal",
+  "author": "Nathanl19",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "9f149650abd124ce31388a0e1cf057d1654bd0a7a52dd81d576582a2bf1c838a",
+  "truncated": false
+}

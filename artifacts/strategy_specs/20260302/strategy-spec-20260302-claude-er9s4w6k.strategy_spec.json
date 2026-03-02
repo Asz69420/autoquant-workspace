@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-er9s4w6k",
+  "created_at": "2026-03-02T19:30:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ema_rsi_atr is the system's rising star: 2 ACCEPTs, ranging PF=2.864 (nearly matching champion Supertrend at 2.914). Both ACCEPTs use narrow RSI bands — the precision_10to1 variant uses 50-65 range, ea9p5k2m uses narrow bands too. This spec pushes in TWO unexplored directions simultaneously: (1) Ultra-narrow RSI bands (48-62 long, 38-52 short) to catch the very START of momentum shifts when RSI is near neutral — before other indicators react. The thesis: when EMA9>EMA21 (trend established) and RSI is near 50 (no extreme yet) and ATR is elevated (volatility present), a new momentum wave is just beginning. (2) SOL as test asset — completely untested on ANY template. SOL has higher beta than ETH, more frequent ranging periods, and wider price swings. The ATR volatility gate (ATR > 20-bar ATR MA) should be especially discriminating on SOL where volatility spikes are sharper. If ema_rsi_atr works on SOL, we double our addressable market without changing signal logic. If ultra-narrow bands work, it validates the 'catch it early' thesis and could be applied to all templates. Invalidation: PF < 1.0 on SOL = asset doesn't suit the EMA/RSI/ATR combo. PF < 1.0 with narrow bands on ETH = bands are too narrow and catch noise, not signal.",
+  "regime_assumption": "ranging",
+  "target_assets": ["SOL", "ETH"],
+  "target_timeframes": ["4h", "1h"],
+  "variants": [
+    {
+      "name": "ema_rsi_cascade_sol_8to1",
+      "description": "ema_rsi_atr on SOL/4h with ultra-narrow RSI bands (48-62 long, 38-52 short) and 8:1 R:R. First-ever ema_rsi_atr test on SOL. The ultra-narrow bands (RSI 48-62) target entries when RSI is near neutral — the very beginning of a momentum shift. Combined with EMA9>EMA21 (trend direction) and ATR > ATR_MA_20 (volatility present), this catches early momentum cascades. SOL's higher beta should produce more volatile continuations from these early entries.",
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: SOL OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (16.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 1.0 on SOL, the asset's microstructure doesn't suit EMA/RSI/ATR signals — stick to ETH"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 16.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 14.0, "max": 18.0, "step": 2.0, "default": 16.0},
+        {"name": "rsi_long_min", "min": 45.0, "max": 50.0, "step": 2.5, "default": 48.0},
+        {"name": "rsi_long_max", "min": 58.0, "max": 65.0, "step": 2.0, "default": 62.0},
+        {"name": "rsi_short_min", "min": 35.0, "max": 42.0, "step": 2.0, "default": 38.0},
+        {"name": "rsi_short_max", "min": 50.0, "max": 55.0, "step": 2.5, "default": 52.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 > EMA_21 for trend direction on SOL — first SOL test for this template"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in ultra-narrow band 48-62 (long) / 38-52 (short) — catches early momentum before RSI reaches extremes"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 > 20-bar ATR MA volatility gate + 2.0x stop / 16.0x TP for 8:1 R:R"}
+      ]
+    },
+    {
+      "name": "ema_rsi_cascade_sol_10to1",
+      "description": "ema_rsi_atr on SOL/4h with moderately narrow RSI bands (45-58 long, 42-55 short) and 10:1 R:R. Slightly wider bands than the ultra variant for more entries. 10:1 R:R (2.0x stop, 20.0x TP) captures the full SOL volatility tail. If SOL's higher beta produces longer momentum runs, 10:1 should outperform 8:1 on this asset even if it underperforms on ETH.",
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: SOL OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < ema_rsi_cascade_sol_8to1, SOL doesn't produce long enough tails for 10:1 — keep 8:1"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 18.0, "max": 22.0, "step": 2.0, "default": 20.0},
+        {"name": "rsi_long_min", "min": 42.0, "max": 48.0, "step": 2.0, "default": 45.0},
+        {"name": "rsi_long_max", "min": 55.0, "max": 62.0, "step": 2.0, "default": 58.0},
+        {"name": "rsi_short_min", "min": 38.0, "max": 45.0, "step": 2.0, "default": 42.0},
+        {"name": "rsi_short_max", "min": 52.0, "max": 58.0, "step": 2.0, "default": 55.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 > EMA_21 trend direction — same as ultra variant"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in moderately narrow band 45-58 (long) / 42-55 (short) — slightly wider for more entries"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 volatility gate + 2.0x stop / 20.0x TP — 10:1 R:R to capture SOL's longer volatility tails"}
+      ]
+    },
+    {
+      "name": "ema_rsi_cascade_eth_1h_7to1",
+      "description": "ema_rsi_atr on ETH/1h with ultra-narrow RSI bands (48-62 long, 38-52 short) and 7:1 R:R. Both existing ACCEPTs are on ETH/4h. This tests ultra-narrow bands on 1h for higher trade frequency. 1h should produce 3-4x more entries than 4h, giving a larger sample. 7:1 R:R (1.5x stop, 10.5x TP) is calibrated for 1h noise — tighter stop to cut losers fast, wide enough TP to capture intraday momentum cascades.",
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "Hypothesis failure mode: if PF < existing 4h ACCEPTs (1.288-1.327), 1h degrades ema_rsi_atr signal quality — stay on 4h"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 10.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.5, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 12.0, "step": 1.5, "default": 10.5},
+        {"name": "rsi_long_min", "min": 45.0, "max": 50.0, "step": 2.5, "default": 48.0},
+        {"name": "rsi_long_max", "min": 58.0, "max": 65.0, "step": 2.0, "default": 62.0},
+        {"name": "rsi_short_min", "min": 35.0, "max": 42.0, "step": 2.0, "default": 38.0},
+        {"name": "rsi_short_max", "min": 50.0, "max": 55.0, "step": 2.5, "default": 52.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 > EMA_21 on 1h — higher frequency trend detection"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 ultra-narrow 48-62 (long) / 38-52 (short) — same thesis as SOL variant, tested on proven ETH at 1h"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 volatility gate + 1.5x stop / 10.5x TP — 7:1 R:R calibrated for 1h noise"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

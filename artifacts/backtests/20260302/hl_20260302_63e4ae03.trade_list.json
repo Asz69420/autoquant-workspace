@@ -1,0 +1,1 @@
+{"schema_version":"1.0","id":"hl_20260302_63e4ae03","created_at":"2026-03-02T11:25:54.088926+00:00","trades":[{"entry_time":"2026-01-13 12:00:00","entry_price":93424.6566,"exit_time":"2026-01-13 20:00:00","exit_price":95062.37013857,"side":"short","qty":0.07001602,"pnl":-120.60488402,"pnl_pct":-1.8438,"reason":"sl","bars_held":3,"entry_regime":"ranging","entry_adx":17.2771795}]}

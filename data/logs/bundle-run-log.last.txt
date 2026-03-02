@@ -1,4 +1,4 @@
-﻿⚠️ Frodex ⏱ 7s GPT5.3
+﻿⚠️ Frodex ⏱ 4m 52s GPT5.3
 ○───activity─────────────────────
 Grabbed : 0 videos
 Ingested : 0 specs
@@ -7,4 +7,4 @@ Variants : 1 new + 0 explore
 Refined : 0 iterations
 Promoted : 0 strategies
 ○───note─────────────────────────
-I am input-starved for 92 cycles, so throughput is constrai
+I am input-starved for 94 cycles, so throughput is constrained.

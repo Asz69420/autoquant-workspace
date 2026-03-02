@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.1",
+  "id": "quandalf-order-20260302-chop-donchian-fade-v1",
+  "created_at": "2026-03-02T10:00:00Z",
+  "variants": [
+    {
+      "name": "chop_donchian_fade_v1",
+      "template_name": "choppiness_donchian_fade",
+      "entry_long": [
+        "CHOP_14_1_100 > 61.8",
+        "close <= DCL_20_20",
+        "RSI_14 < 35"
+      ],
+      "entry_short": [
+        "CHOP_14_1_100 > 61.8",
+        "close >= DCU_20_20",
+        "RSI_14 > 65"
+      ],
+      "parameters": [],
+      "risk_rules": [],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 3.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

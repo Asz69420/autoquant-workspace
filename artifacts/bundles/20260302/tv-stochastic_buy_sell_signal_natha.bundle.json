@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_stochastic buy/s",
+    "created_at":  "2026-03-02T11:19:51.238609+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260302/research-20260302-a7d53e894c3b.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260302/indicator-20260302-b4b308e7758f.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260302/research-20260302-a7d53e894c3b.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-02T11:19:54.5800560Z",
+    "attempts":  1,
+    "last_error":  "NO_VARIANTS_COMPILED"
+}

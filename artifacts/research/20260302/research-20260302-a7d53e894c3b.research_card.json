@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-a7d53e894c3b",
+  "created_at": "2026-03-02T11:19:51.092967Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/dx95Np9f-Stochastic-Buy-Sell-Signal/",
+  "title": "Stochastic Buy/Sell Signal",
+  "author": "Nathanl19",
+  "summary_bullets": [
+    "Top catalog indicator: Stochastic Buy/Sell Signal by Nathanl19."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Stochastic Buy/Sell Signal by Nathanl19.",
+      "note": "Meaning: Top catalog indicator: Stochastic Buy/Sell Signal by Nathanl19."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-a7d53e894c3b.raw.txt",
+  "sha256": "7f7d20d70c00c0817502683b5ffabfe29a3c2c81c8ed61874a7b1018788aacf8",
+  "truncated": false
+}
