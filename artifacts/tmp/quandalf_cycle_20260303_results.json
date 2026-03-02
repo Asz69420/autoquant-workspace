@@ -1,0 +1,128 @@
+[
+  {
+    "strategy": "cci_chop_fade_v1",
+    "timeframe": "15m",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_1377f88e.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_1377f88e.trade_list.json",
+    "profit_factor": 0.61733622,
+    "win_rate": 0.10619469,
+    "max_drawdown_pct": 35.5475,
+    "net_profit_pct": -25.1388,
+    "total_trades": 113,
+    "total_return_on_capital_pct": -25.1388,
+    "regime_pf": {
+      "trending": 0.91756399,
+      "ranging": 0.0,
+      "transitional": 0.16037664
+    },
+    "gate_pass": true,
+    "gate_reason": "OK",
+    "min_trades_required": 0
+  },
+  {
+    "strategy": "cci_chop_fade_v1",
+    "timeframe": "1h",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_447a5294.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_447a5294.trade_list.json",
+    "profit_factor": 0.80811959,
+    "win_rate": 0.15503876,
+    "max_drawdown_pct": 51.1917,
+    "net_profit_pct": -22.31,
+    "total_trades": 129,
+    "total_return_on_capital_pct": -22.31,
+    "regime_pf": {
+      "trending": 0.87068905,
+      "ranging": 0.48434997,
+      "transitional": 0.83845004
+    },
+    "gate_pass": true,
+    "gate_reason": "OK",
+    "min_trades_required": 0
+  },
+  {
+    "strategy": "cci_chop_fade_v1",
+    "timeframe": "4h",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_d64eef4a.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_d64eef4a.trade_list.json",
+    "profit_factor": 1.25463361,
+    "win_rate": 0.36871508,
+    "max_drawdown_pct": 16.3846,
+    "net_profit_pct": 28.9503,
+    "total_trades": 179,
+    "total_return_on_capital_pct": 28.9503,
+    "regime_pf": {
+      "trending": 1.13157107,
+      "ranging": 1.42954004,
+      "transitional": 1.52054823
+    },
+    "gate_pass": true,
+    "gate_reason": "OK",
+    "min_trades_required": 10
+  },
+  {
+    "strategy": "willr_stiffness_fade_v1",
+    "timeframe": "15m",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_59c883c8.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_59c883c8.trade_list.json",
+    "profit_factor": 0.0,
+    "win_rate": 0.0,
+    "max_drawdown_pct": 0.0,
+    "net_profit_pct": 0.0,
+    "total_trades": 0,
+    "total_return_on_capital_pct": 0.0,
+    "regime_pf": {
+      "trending": 0.0,
+      "ranging": 0.0,
+      "transitional": 0.0
+    },
+    "gate_pass": true,
+    "gate_reason": "OK",
+    "min_trades_required": 0
+  },
+  {
+    "strategy": "willr_stiffness_fade_v1",
+    "timeframe": "1h",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_b62ff493.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_b62ff493.trade_list.json",
+    "profit_factor": 0.0,
+    "win_rate": 0.0,
+    "max_drawdown_pct": 0.0,
+    "net_profit_pct": 0.0,
+    "total_trades": 0,
+    "total_return_on_capital_pct": 0.0,
+    "regime_pf": {
+      "trending": 0.0,
+      "ranging": 0.0,
+      "transitional": 0.0
+    },
+    "gate_pass": true,
+    "gate_reason": "OK",
+    "min_trades_required": 0
+  },
+  {
+    "strategy": "willr_stiffness_fade_v1",
+    "timeframe": "4h",
+    "ok": true,
+    "backtest_result_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_82682035.backtest_result.json",
+    "trade_list_path": "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\backtests\\20260303\\hl_20260303_82682035.trade_list.json",
+    "profit_factor": 0.0,
+    "win_rate": 0.0,
+    "max_drawdown_pct": 0.0,
+    "net_profit_pct": 0.0,
+    "total_trades": 0,
+    "total_return_on_capital_pct": 0.0,
+    "regime_pf": {
+      "trending": 0.0,
+      "ranging": 0.0,
+      "transitional": 0.0
+    },
+    "gate_pass": false,
+    "gate_reason": "INSUFFICIENT_TRADES",
+    "min_trades_required": 10
+  }
+]
