@@ -290,7 +290,9 @@ async def cmd_write(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     # Build allowed tools with path-restricted Write/Edit
     write_rules = ",".join(f"Write({p}*)" for p in ALLOWED_WRITE_PATHS)
-    allowed = f"Read,Glob,Grep,Bash(scripts/tg_notify.py*),{write_rules}"
+    edit_rules = ",".join(f"Edit({p}*)" for p in ALLOWED_WRITE_PATHS)
+    multiedit_rules = ",".join(f"MultiEdit({p}*)" for p in ALLOWED_WRITE_PATHS)
+    allowed = f"Read,Glob,Grep,Bash(scripts/tg_notify.py*),{write_rules},{edit_rules},{multiedit_rules}"
 
     await update.message.reply_text("✏️ Running Claude with write access…")
     loop = asyncio.get_running_loop()
