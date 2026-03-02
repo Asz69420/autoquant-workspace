@@ -57,9 +57,7 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 TASK_DIR = WORKSPACE / "scripts" / "claude-tasks"
 
 ALLOWED_WRITE_PATHS = [
-    "docs/claude-reports/",
-    "artifacts/claude-specs/",
-    "docs/shared/",
+    "",
 ]
 
 # Patterns that must never appear in any user-supplied query
@@ -438,8 +436,8 @@ async def handle_plain_dm(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
     await update.message.reply_text("🔍 Querying Claude (DM mode)…")
     loop = asyncio.get_running_loop()
-    # DM mode: allow writes only under docs/shared/
-    dm_allowed = "Read,Glob,Grep,Write(docs/shared/*)"
+    # DM mode: full write access (requested)
+    dm_allowed = "Read,Glob,Grep,Write(*)"
     output = await loop.run_in_executor(None, run_claude, query, dm_allowed)
     log_command(USER_ID, "/cli(dm)", query, output, True)
     await update.message.reply_text(truncate(output))
