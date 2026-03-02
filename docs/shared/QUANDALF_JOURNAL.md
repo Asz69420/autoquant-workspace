@@ -125,3 +125,51 @@ CCI Chop Fade ETH 4h is our first all-regime-profitable oscillator besides Super
 Iterate CCI: 8:1 R:R + ADX confirmation. Drop STIFFNESS permanently.
 
 ---
+
+## Entry 005 — CCI Iteration Dead End, Pivot to QQE (2026-03-03)
+
+### Results
+- cci_chop_fade_v2 (intended 8:1 R:R): PF 1.255 — identical to v1. TP was still 12.0 (order error). No actual change tested.
+- cci_adx_chop_fade_v1 (ADX < 25 filter): PF 1.053, -75 trades. ADX killed ranging alpha (ranging PF dropped 1.43 → 0.84). Trending PF = 0.000 (no trades at all).
+
+### Lessons
+- **ADX filter is destructive for mean-reversion strategies.** It removes ranging trades along with trending ones because ADX < 25 doesn't distinguish "ranging" from "quiet/no-signal." CHOP alone is a better regime gate.
+- CCI Chop Fade is plateaued at PF 1.255. Two iterations, zero improvement. Diminishing returns — pivot to new signal family.
+- **Dead indicator list:** STIFFNESS, ADX-as-filter-for-oscillators.
+
+### New Thesis: QQE Momentum Exhaustion
+QQE_14_5_4.236 is a smoothed RSI with dynamic bands. Never tested. Hypothesis: QQE extremes signal momentum exhaustion more reliably than raw CCI because QQE has built-in smoothing that filters noise (explaining why CCI failed on 1h/15m).
+
+Test: QQE crossing back from extremes under CHOP ranging gate = mean-reversion entry on ETH 4h.
+
+### What I Expect
+- QQE smoothing → cleaner signals than CCI on lower TFs too
+- If PF > 1.3 on 4h: iterate with tighter R:R
+- If 4h works but 1h doesn't: confirms 4h is the only viable mean-reversion TF
+
+---
+
+## Entry 006 — QQE Dead, STC Transitional Signal Only (2026-03-03)
+
+### Results
+- QQE Chop Fade: 33 trades both TFs. ETH 4h PF 0.116 (catastrophic). ETH 1h PF 0.993 (breakeven). QQE extremes too rare under CHOP gate — low trade count + no edge.
+- STC Cycle Fade: 475 trades. ETH 4h PF 1.012, DD 33.8%. ETH 1h PF 0.809.
+- STC regime breakdown: transitional PF 1.28 (4h) and 1.246 (1h) — ONLY profitable regime. Ranging barely breakeven, trending loses.
+
+### Hypotheses Resolved
+- QQE as mean-reversion oscillator: **REJECTED.** 33 trades = QQE rarely hits 30/70 under ranging conditions. Smoothing that was supposed to help actually kills signal frequency.
+- STC as mean-reversion oscillator: **PARTIAL.** Generates trades (215 on 4h) but no edge in ranging (PF 1.038). Only works in transitions.
+- 4h superiority: **CONFIRMED again.** Every oscillator tested loses on 1h.
+
+### Key Insight
+**Transitional regime is the untapped alpha.** STC PF 1.28 in transitional, CCI PF 1.52 in transitional (Entry 004). Our ACCEPTs dominate ranging — but transitional is where the NEXT edge lives. Problem: we have no regime-isolation gate. CHOP > 50 gates for ranging, but what gates for transitional?
+
+Transitional = market shifting between states. Vortex crossover (VTXP crossing VTXM) detects exactly this. CHOP falling from high to low = leaving range = entering transition.
+
+### Dead Indicator List (cumulative)
+STIFFNESS, ADX-as-filter, QQE (as mean-reversion signal), Donchian touches
+
+### Next Action
+Abandon oscillator mean-reversion thesis — 4 oscillators tested (CCI, WILLR, QQE, STC), best was CCI at PF 1.255. Pivot to transition-detection: Vortex crossover + falling CHOP.
+
+---

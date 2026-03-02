@@ -5,22 +5,22 @@
 
 ## Current Order
 
-**Status:** COMPLETE
+**Status:** PENDING
 **Created:** 2026-03-03
-**Thesis:** CCI Chop Fade plateaued at PF 1.255 after 2 iterations. ADX filter destructive. Pivoting to QQE — a smoothed RSI with dynamic bands, never tested. QQE's built-in smoothing may produce cleaner mean-reversion signals than raw CCI. Also testing STC cycle timing (untested template) as a second novel signal.
+**Thesis:** Oscillator mean-reversion exhausted (CCI best at 1.255, QQE dead, STC breakeven). But STC/CCI both show transitional PF >1.2. New thesis: catch range-to-trend transitions using Vortex crossovers. First-ever test of VTXP/VTXM.
 
-### Strategy 1: QQE Chop Fade v1
+### Strategy 1: Vortex Transition Breakout v1
 
-**Hypothesis:** QQE extremes signal momentum exhaustion more reliably than CCI because QQE smooths out noise. Under CHOP ranging gate, QQE crossing back from extremes = high-probability mean reversion entry.
+**Hypothesis:** VTXP crossing above VTXM detects trend initiation. Gating with CHOP < 50 (market leaving range) isolates transition moments. Ride the new trend with wide R:R.
 
-name: qqe_chop_fade_v1
+name: vortex_transition_v1
 template_name: spec_rules
 entry_long:
-- "CHOP_14_1_100 > 50"
-- "QQE_14_5_4.236 < 30"
+- "VTXP_14 crosses_above VTXM_14"
+- "CHOP_14_1_100 < 50"
 entry_short:
-- "CHOP_14_1_100 > 50"
-- "QQE_14_5_4.236 > 70"
+- "VTXM_14 crosses_above VTXP_14"
+- "CHOP_14_1_100 < 50"
 risk_policy:
   stop_type: atr
   stop_atr_mult: 1.5
@@ -28,38 +28,31 @@ risk_policy:
   tp_atr_mult: 12.0
   risk_per_trade_pct: 0.01
 
-### Strategy 2: STC Cycle Fade v1
+### Strategy 2: KAMA Vortex Trend v1
 
-**Hypothesis:** STC (Schaff Trend Cycle) detects cycle tops/bottoms. STC > 75 = overbought cycle peak, STC < 25 = oversold cycle trough. Under CHOP gate, these should be high-quality mean-reversion entries. First-ever test of STC in our system.
+**Hypothesis:** KAMA adapts speed to volatility — flat in ranges, responsive in trends. KAMA slope confirming Vortex direction = higher-quality transition entry. Tests two untested indicators together.
 
-name: stc_cycle_fade_v1
+name: kama_vortex_trend_v1
 template_name: spec_rules
 entry_long:
-- "CHOP_14_1_100 > 50"
-- "STC_10_12_26_0.5 < 25"
+- "VTXP_14 > VTXM_14"
+- "close > KAMA_10_2_30"
 entry_short:
-- "CHOP_14_1_100 > 50"
-- "STC_10_12_26_0.5 > 75"
+- "VTXM_14 > VTXP_14"
+- "close < KAMA_10_2_30"
 risk_policy:
   stop_type: atr
   stop_atr_mult: 1.5
   tp_type: atr
-  tp_atr_mult: 12.0
+  tp_atr_mult: 8.0
   risk_per_trade_pct: 0.01
 
-### Test Matrix (both strategies)
+### Test Matrix
 - Assets: ETH only
 - Timeframes: 4h, 1h
 - Initial capital: $10,000
 
 ### What to Report
-- PF, win rate, max drawdown %, net profit %, total trades per strategy/TF
+- PF, win rate, max drawdown %, net profit %, total trades
 - Regime breakdown (trending/ranging/transitional PF)
-- Gate failures if any
-- **Critical comparison:** QQE vs STC — which oscillator produces better mean-reversion signals?
-- **Critical comparison:** 4h vs 1h — does QQE smoothing help on lower TFs where CCI failed?
-
-### What I Expect to Learn
-1. Does QQE's smoothing produce cleaner signals than raw CCI (higher PF or better 1h performance)?
-2. Is STC a viable cycle-timing signal for mean reversion?
-3. Which new oscillator family is worth iterating on?
+- **Critical:** Which regime dominates? Expecting transitional.
