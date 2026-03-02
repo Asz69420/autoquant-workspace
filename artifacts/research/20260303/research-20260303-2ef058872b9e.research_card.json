@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-2ef058872b9e",
+  "created_at": "2026-03-02T17:19:51.740629Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/i982BHoQ-BK-AK-Iron-Dome/",
+  "title": "BK AK-Iron Dome",
+  "author": "Ki11a_B",
+  "summary_bullets": [
+    "Top catalog indicator: BK AK-Iron Dome by Ki11a_B."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: BK AK-Iron Dome by Ki11a_B.",
+      "note": "Meaning: Top catalog indicator: BK AK-Iron Dome by Ki11a_B."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-2ef058872b9e.raw.txt",
+  "sha256": "9cdb2fafcf37fe1948349be3900e0fd117a58d7fe4a7bcf9da4fb1190946a4fa",
+  "truncated": false
+}

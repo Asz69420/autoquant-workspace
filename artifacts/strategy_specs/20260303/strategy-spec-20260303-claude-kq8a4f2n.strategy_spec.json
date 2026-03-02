@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-kq8a4f2n",
+  "name": "QQE Stiffness Conviction Momentum",
+  "source": "claude-advisor",
+  "created": "2026-03-03T12:35:00Z",
+  "edge_hypothesis": "QQE (Quantitative Qualitative Estimation) smooths RSI to eliminate noise — when QQE > 0, underlying momentum is genuinely bullish, not just a random RSI spike. STIFFNESS measures how consistently price stays above its moving average (0-100 scale). High stiffness = price is RELIABLY directional, not oscillating. Neither indicator has EVER been tested. The thesis: when smoothed momentum (QQE) and behavioral consistency (STIFFNESS) agree with trend structure (EMA_50), the signal has triple-confirmed conviction. This should work across regimes because it measures signal QUALITY rather than regime type.",
+  "variants": [
+    {
+      "name": "qqe_stiff_1h_8to1",
+      "template_name": "spec_rules",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "entry_long": [
+        "QQE_14_5_4.236 > 0",
+        "STIFFNESS_20_3_100 > 60",
+        "close > EMA_50"
+      ],
+      "entry_short": [
+        "QQE_14_5_4.236 < 0",
+        "STIFFNESS_20_3_100 < 40",
+        "close < EMA_50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "QQE > 0 filters out noisy RSI signals. STIFFNESS > 60 means price has been above its MA for 12+ of the last 20 bars — consistent bullish behavior, not a one-bar spike. Combined with close > EMA_50 trend filter, this is a high-conviction directional entry. No regime gate — the conviction filters themselves act as quality control."
+    },
+    {
+      "name": "qqe_stiff_4h_10to1",
+      "template_name": "spec_rules",
+      "timeframe": "4h",
+      "asset": "ETH",
+      "entry_long": [
+        "QQE_14_5_4.236 > 0",
+        "STIFFNESS_20_3_100 > 60",
+        "close > EMA_50"
+      ],
+      "entry_short": [
+        "QQE_14_5_4.236 < 0",
+        "STIFFNESS_20_3_100 < 40",
+        "close < EMA_50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "4h QQE + STIFFNESS should produce fewer but higher-quality signals. 4h STIFFNESS > 60 means multi-day consistent behavior — very high conviction. 10:1 R:R captures larger moves. If this generates trades, it tests whether conviction-based filtering outperforms regime-based gating."
+    },
+    {
+      "name": "qqe_stiff_1h_12to1",
+      "template_name": "spec_rules",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "entry_long": [
+        "QQE_14_5_4.236 > 0",
+        "STIFFNESS_20_3_100 > 70",
+        "close > EMA_50"
+      ],
+      "entry_short": [
+        "QQE_14_5_4.236 < 0",
+        "STIFFNESS_20_3_100 < 30",
+        "close < EMA_50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "12:1 R:R with tighter STIFFNESS gate (70/30 vs 60/40). STIFFNESS > 70 = 14+ of 20 bars consistently directional — extreme conviction filter. Fewer entries but each should be a high-probability trend continuation. Tests whether ultra-high conviction + ultra-high R:R can ACCEPT like RSI slingshot 12:1 did."
+    }
+  ]
+}

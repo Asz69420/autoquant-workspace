@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-ik7m3p5q",
+  "name": "Kijun Equilibrium Mean Reversion",
+  "source": "claude-advisor",
+  "created": "2026-03-03T12:30:00Z",
+  "edge_hypothesis": "Kijun-sen (IKS_26) is the 26-period midpoint of the high-low range — a natural equilibrium price. In ranging markets (ADX < 25), price oscillates around this equilibrium and deviations should revert. No Ichimoku indicator has EVER appeared in any strategy spec. By combining Kijun distance with RSI confirmation, we catch mean-reversion entries at statistically significant displacements from equilibrium. This is distinct from Bollinger/Donchian approaches because Kijun adapts to the midpoint of the actual range, not a statistical band or fixed lookback channel.",
+  "variants": [
+    {
+      "name": "kijun_mr_1h_8to1",
+      "template_name": "spec_rules",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "entry_long": [
+        "close < IKS_26",
+        "RSI_14 < 35",
+        "ADX_14 < 25"
+      ],
+      "entry_short": [
+        "close > IKS_26",
+        "RSI_14 > 65",
+        "ADX_14 < 25"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "1h ETH ranging mean-reversion. Price below Kijun equilibrium + RSI oversold + low ADX = classic ranging snap-back setup. 8:1 R:R is the proven ACCEPT floor. 3 conditions should fire regularly in ranging ETH (Kijun displacement + RSI < 35 co-occur naturally at swing lows)."
+    },
+    {
+      "name": "kijun_mr_4h_10to1",
+      "template_name": "spec_rules",
+      "timeframe": "4h",
+      "asset": "ETH",
+      "entry_long": [
+        "close < IKS_26",
+        "RSI_14 < 35",
+        "ADX_14 < 25"
+      ],
+      "entry_short": [
+        "close > IKS_26",
+        "RSI_14 > 65",
+        "ADX_14 < 25"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "4h Kijun displacement is rarer but higher conviction — a 4h close below the 26-bar midpoint with RSI < 35 represents a significant deviation. Wider 2.0x ATR stop accommodates 4h noise. 10:1 R:R captures the larger expected reversion move on higher timeframe."
+    }
+  ]
+}

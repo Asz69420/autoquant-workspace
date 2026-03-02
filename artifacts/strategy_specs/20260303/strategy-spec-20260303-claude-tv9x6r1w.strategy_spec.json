@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-tv9x6r1w",
+  "name": "ALMA Vortex Transitional Trend Detection",
+  "source": "claude-advisor",
+  "created": "2026-03-03T12:40:00Z",
+  "edge_hypothesis": "ALMA (Arnaud Legoux MA) is designed for minimal lag with Gaussian smoothing — it detects trend shifts faster than EMA while being smoother than SMA. Vortex Indicator (VTXP/VTXM) independently measures trend direction using True Range geometry, completely uncorrelated with moving average calculations. Neither ALMA nor Vortex has EVER been tested. The thesis: when a fast-adaptive MA (ALMA) crosses a slow MA (SMA_50) AND an independent directional measure (Vortex) confirms, we catch genuine regime transitions early. ADX 15-30 gate targets the transitional regime where 4 strategies show PF 1.8-5.6 — an underexplored edge zone between ranging and trending.",
+  "variants": [
+    {
+      "name": "alma_vortex_1h_10to1",
+      "template_name": "spec_rules",
+      "timeframe": "1h",
+      "asset": "ETH",
+      "entry_long": [
+        "ALMA_9_6.0_0.85 crosses_above SMA_50",
+        "VTXP_14 > VTXM_14",
+        "ADX_14 > 15",
+        "ADX_14 < 30"
+      ],
+      "entry_short": [
+        "ALMA_9_6.0_0.85 crosses_below SMA_50",
+        "VTXM_14 > VTXP_14",
+        "ADX_14 > 15",
+        "ADX_14 < 30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "ALMA crossing SMA_50 fires exactly at trend transition moments — ALMA's Gaussian smoothing means this cross has less noise than EMA/EMA crosses. Vortex confirmation eliminates false crosses (VTXP > VTXM = genuine upward pressure). ADX 15-30 band targets transitional regime — enough direction to sustain a move but early enough to capture the full swing. 10:1 R:R for the expected transitional-to-trending continuation."
+    },
+    {
+      "name": "alma_vortex_4h_12to1",
+      "template_name": "spec_rules",
+      "timeframe": "4h",
+      "asset": "ETH",
+      "entry_long": [
+        "ALMA_9_6.0_0.85 crosses_above SMA_50",
+        "VTXP_14 > VTXM_14",
+        "ADX_14 > 15",
+        "ADX_14 < 30"
+      ],
+      "entry_short": [
+        "ALMA_9_6.0_0.85 crosses_below SMA_50",
+        "VTXM_14 > VTXP_14",
+        "ADX_14 > 15",
+        "ADX_14 < 30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 24.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "execution_policy": {
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "edge_hypothesis": "4h ALMA/SMA cross is a rare, high-conviction regime transition signal. At 4h, the ADX 15-30 transitional window represents multi-day regime shifts. 12:1 R:R captures the full expected trend development from transitional into trending. Wider 2.0x stop for 4h volatility. If transitional regime is truly an edge zone (4 strategies show PF 1.8-5.6), this should outperform pure trend-following by entering earlier."
+    }
+  ]
+}

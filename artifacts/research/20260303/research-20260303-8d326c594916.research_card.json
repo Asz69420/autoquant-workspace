@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-8d326c594916",
+  "created_at": "2026-03-02T17:19:52.599003Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/xRTCD470/",
+  "title": "ZUMIKO FX - EMA 9/21 + CCI | GOLD M1 PRO",
+  "author": "kodik19788",
+  "summary_bullets": [
+    "Top catalog indicator: ZUMIKO FX - EMA 9/21 + CCI | GOLD M1 PRO by kodik19788."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: ZUMIKO FX - EMA 9/21 + CCI | GOLD M1 PRO by kodik19788.",
+      "note": "Meaning: Top catalog indicator: ZUMIKO FX - EMA 9/21 + CCI | GOLD M1 PRO by kodik19788."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-8d326c594916.raw.txt",
+  "sha256": "49134111dd6254b6f3ff6e7db53fe4818afb0c028e2366e50db956dc5abf39ff",
+  "truncated": false
+}

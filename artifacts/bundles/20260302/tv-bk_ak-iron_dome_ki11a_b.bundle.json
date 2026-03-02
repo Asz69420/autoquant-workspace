@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_bk ak-iron dome|",
+    "created_at":  "2026-03-02T17:19:51.923906+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260303/research-20260303-2ef058872b9e.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260303/indicator-20260303-ae920c6a97a8.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260303/research-20260303-2ef058872b9e.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-02T17:19:58.0217885Z",
+    "attempts":  1,
+    "last_error":  "NO_VARIANTS_COMPILED"
+}
