@@ -46,7 +46,7 @@ try {
 
   $msg = "🧙‍♂️ Quandalf ${TaskLabel}: $effectiveSummary"
 
-  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg | Out-Null
+  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
   Write-Host "Quandalf DM summary sent"
 }
 catch {
