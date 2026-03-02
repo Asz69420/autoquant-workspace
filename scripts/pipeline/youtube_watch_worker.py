@@ -22,6 +22,7 @@ MAX_NEW = 2
 MAX_RETRY_ATTEMPTS = 5
 BACKOFF_BASE_SECONDS = [15 * 60, 30 * 60, 60 * 60, 2 * 60 * 60, 4 * 60 * 60]
 JITTER_MAX_SECONDS = 10 * 60
+SHORTS_MAX_SECONDS = 90
 
 
 def _j(path: Path, default):
@@ -99,6 +100,37 @@ def _fetch_latest(channel_id: str):
             continue
         items.append({'video_id': vid.text, 'title': title.text if title is not None else vid.text})
     return items
+
+
+def _fetch_video_duration_seconds(video_id: str) -> int | None:
+    """Return video duration in seconds via yt-dlp metadata, or None if unavailable."""
+    url = f'https://www.youtube.com/watch?v={video_id}'
+    try:
+        import yt_dlp
+
+        with yt_dlp.YoutubeDL({'quiet': True, 'skip_download': True, 'no_warnings': True}) as ydl:
+            info = ydl.extract_info(url, download=False)
+        d = info.get('duration')
+        if d is None:
+            return None
+        return int(d)
+    except Exception:
+        return None
+
+
+def _notify_transcript_failure(video_id: str, title: str, detail: str):
+    """Send a best-effort Telegram log-channel alert for transcript failures."""
+    msg = f"YT transcript failed: {title} ({video_id})\n{str(detail)[:400]}"
+    try:
+        subprocess.run(
+            [PY, 'scripts/tg_notify.py', msg, '--reason-code', 'YT_TRANSCRIPT_FAIL'],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception:
+        pass
 
 
 def _resolve_existing_indicators(rc_path: str, ind_idx: list[dict]) -> list[str]:
@@ -290,6 +322,13 @@ def main() -> int:
             if vid in seen_videos:
                 dedup += 1
                 continue
+
+            duration_s = _fetch_video_duration_seconds(vid)
+            if duration_s is not None and duration_s < SHORTS_MAX_SECONDS:
+                _log('YT_VIDEO_SKIPPED_SHORT', 'SKIPPED_SHORT', f"SKIPPED_SHORT: {item['title']} ({duration_s}s)", 'INFO')
+                seen_videos.add(vid)
+                continue
+
             if not _retry_allowed_now(retry_queue, vid):
                 continue
             try:
@@ -297,6 +336,7 @@ def main() -> int:
                 if str(tr.get('status', 'OK')).upper() == 'RETRY_LATER':
                     row = _queue_retry(retry_queue, vid, 'YOUTUBE_RATE_LIMIT', int(tr.get('retry_after_seconds') or 0))
                     _log('YT_TRANSCRIPT_RETRY', 'YT_TRANSCRIPT_RETRY', f"video_id={vid} attempts={row.get('attempts')} next_retry_at={row.get('next_retry_at')} status={row.get('status')}", 'WARN')
+                    _notify_transcript_failure(vid, item['title'], f"RETRY_LATER: attempts={row.get('attempts')} next_retry_at={row.get('next_retry_at')}")
                     continue
                 txt = tr.get('text', '')
                 source_type = 'transcript' if tr.get('quality') == 'caption' else ('auto_transcript' if tr.get('quality') == 'auto_caption' else 'asr_transcript')
@@ -305,6 +345,7 @@ def main() -> int:
                 if vid in retry_queue:
                     del retry_queue[vid]
             except Exception as e:
+                _notify_transcript_failure(vid, item['title'], str(e))
                 # fallback ingest so content-loop can still learn when transcript endpoint is unavailable for non-rate-limit reasons
                 try:
                     raw = f"Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v={vid} title={item['title']} reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail={str(e)[:280]}"
