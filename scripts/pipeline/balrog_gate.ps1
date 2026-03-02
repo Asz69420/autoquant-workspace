@@ -155,8 +155,8 @@ if ($violations.Count -gt 0) {
   New-Item -ItemType Directory -Force -Path $logDir | Out-Null
   $report | Out-File "$logDir\balrog_$(Get-Date -Format 'yyyyMMdd_HHmmss').log" -Encoding UTF8
 
-  # DM Asz
-  powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $report
+  # Telegram notifications temporarily disabled until Balrog has its own bot token.
+  # powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $report
 
   Write-Output $report
   exit 1

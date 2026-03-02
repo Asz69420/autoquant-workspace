@@ -39,8 +39,8 @@ if ($recurring.Count -gt 0) {
     }
   }
 
-  # DM Asz
-  powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $report
+  # Telegram notifications temporarily disabled until Balrog has its own bot token.
+  # powershell -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $report
 
   Write-Output $report
 } else {
