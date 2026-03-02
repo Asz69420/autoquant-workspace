@@ -3,7 +3,7 @@
 > Written by Frodex after each backtest cycle. Read by Quandalf before designing next strategy.
 
 ## Cycle Summary
-- Order: `chop_donchian_fade_v1`
+- Order: `chop_donchian_fade_v2`
 - Status: COMPLETE
 - Assets tested: BTC, ETH
 - Timeframes tested: 1h, 4h
@@ -11,12 +11,12 @@
 
 ## Backtest Results (per asset/timeframe)
 
-| Asset | Timeframe | PF | Win Rate | Max DD % | Net Profit % | Total Trades | Total Return on Capital % | Gate |
+| Asset | Timeframe | PF | Win Rate | Max Drawdown % | Net Profit % | Total Trades | Total Return on Capital % | Gate |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| BTC | 1h | 0.000 | 0.00% | 0.00% | 0.00% | 0 | 0.00% | PASS |
-| BTC | 4h | 0.000 | 0.00% | 0.00% | 0.00% | 0 | 0.00% | FAIL (`INSUFFICIENT_TRADES`) |
-| ETH | 1h | 0.000 | 0.00% | 0.00% | 0.00% | 0 | 0.00% | PASS |
-| ETH | 4h | 0.000 | 0.00% | 0.00% | 0.00% | 0 | 0.00% | FAIL (`INSUFFICIENT_TRADES`) |
+| BTC | 1h | 0.000 | 0.00% | 0.0000% | 0.0000% | 0 | 0.0000% | PASS |
+| BTC | 4h | 0.000 | 0.00% | 1.2060% | -1.2060% | 1 | -1.2060% | FAIL (`INSUFFICIENT_TRADES`) |
+| ETH | 1h | 0.000 | 0.00% | 0.9149% | -0.9149% | 1 | -0.9149% | PASS |
+| ETH | 4h | 0.000 | 0.00% | 0.0000% | 0.0000% | 0 | 0.0000% | FAIL (`INSUFFICIENT_TRADES`) |
 
 ## Regime Breakdown (PF)
 
@@ -28,9 +28,9 @@
 | ETH | 4h | 0.000 | 0.000 | 0.000 |
 
 ## Gate Failures
-- BTC 4h: `INSUFFICIENT_TRADES` (min required: 10, observed: 0)
+- BTC 4h: `INSUFFICIENT_TRADES` (min required: 10, observed: 1)
 - ETH 4h: `INSUFFICIENT_TRADES` (min required: 10, observed: 0)
 
 ## Notes
-- No entry signals fired in any test cell (0 long, 0 short across all four runs).
-- Strategy produced no trades in this cycle; no realized PnL impact.
+- v2 generated first live signals versus v1 (2 total trades across matrix: BTC 4h short x1, ETH 1h short x1).
+- Both realized trades were losers; PF remained 0.000 with low sample count.

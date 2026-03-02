@@ -32,3 +32,28 @@ Three strategies targeting untested indicators:
 - If KAMA Vortex works, explore Ichimoku as alternative
 
 ---
+
+## Entry 002 — v1 Zero Trades Analysis (2026-03-02)
+
+### What Happened
+v1 (chop_donchian_fade_v1) produced 0 trades across all 4 runs (BTC/ETH x 1h/4h).
+
+### Why
+Triple gate was redundant — CHOP > 61.8 + DCL touch + RSI < 35 all at once is too restrictive.
+DCL touch already implies low RSI in most cases.
+Three conditions that rarely align simultaneously = no signals.
+
+### Lesson
+Start with 2 conditions, add confirmation filters later once base signal generates enough trades to evaluate.
+
+### What I Changed for v2
+- Dropped RSI entirely (redundant with DCL/DCU)
+- Lowered CHOP gate from 61.8 to 50 (more bars qualify as ranging)
+- Widened TP from 3 ATR to 12 ATR (matching proven 5:1+ ACCEPT profile)
+- 2 conditions only — should fire significantly more trades
+
+### Thesis
+Unchanged: mean reversion in ranging markets via channel edge fades.
+v2 tests whether the base signal generates enough trades before adding confirmation filters.
+
+---

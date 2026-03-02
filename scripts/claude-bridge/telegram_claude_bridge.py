@@ -59,6 +59,7 @@ TASK_DIR = WORKSPACE / "scripts" / "claude-tasks"
 ALLOWED_WRITE_PATHS = [
     "docs/claude-reports/",
     "artifacts/claude-specs/",
+    "docs/shared/",
 ]
 
 # Patterns that must never appear in any user-supplied query
@@ -158,12 +159,21 @@ async def deny(update: Update) -> None:
     await update.message.reply_text("⛔ Not authorised.")
 
 
-def run_claude(prompt: str, allowed_tools: str, timeout: int = 300) -> str:
-    """Run `claude -p` as a subprocess and return stdout."""
+def run_claude(prompt: str, allowed_tools: str, timeout: int = 600) -> str:
+    """Run `claude -p` as a subprocess and return stdout.
+
+    Saves output to docs/shared/QUANDALF_LATEST_RESPONSE.md before returning,
+    so Opus reasoning is never lost to Telegram timeouts or truncation.
+    """
     cmd = [
-        "claude", "-p", prompt,
-        "--allowedTools", allowed_tools,
+        "claude",
+        "-p",
+        prompt,
+        "--allowedTools",
+        allowed_tools,
     ]
+    response_file = WORKSPACE / "docs" / "shared" / "QUANDALF_LATEST_RESPONSE.md"
+
     try:
         result = subprocess.run(
             cmd,
@@ -175,13 +185,42 @@ def run_claude(prompt: str, allowed_tools: str, timeout: int = 300) -> str:
         output = result.stdout.strip()
         if result.returncode != 0 and result.stderr.strip():
             output += f"\n\n[stderr] {result.stderr.strip()}"
-        return output if output else "(no output)"
+
+        output = output if output else "(no output)"
+
+        try:
+            response_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(response_file, "w", encoding="utf-8") as f:
+                f.write(f"# Quandalf Latest Response\n\n")
+                f.write(f"**Timestamp:** {now_aest()}\n")
+                f.write(f"**Prompt:** {prompt[:200]}...\n")
+                f.write(f"**Status:** COMPLETE\n\n---\n\n")
+                f.write(output)
+        except Exception:
+            pass
+
+        return output
+
     except subprocess.TimeoutExpired:
-        return "⏱ Claude timed out after {}s.".format(timeout)
+        timeout_msg = "\u23f1 Claude timed out after {}s. Check docs/shared/QUANDALF_LATEST_RESPONSE.md for any partial output.".format(timeout)
+
+        try:
+            response_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(response_file, "w", encoding="utf-8") as f:
+                f.write(f"# Quandalf Latest Response\n\n")
+                f.write(f"**Timestamp:** {now_aest()}\n")
+                f.write(f"**Prompt:** {prompt[:200]}...\n")
+                f.write(f"**Status:** TIMED OUT after {timeout}s\n\n---\n\n")
+                f.write("(Response timed out — Opus may have been mid-reasoning)\n")
+        except Exception:
+            pass
+
+        return timeout_msg
+
     except FileNotFoundError:
-        return "❌ `claude` CLI not found on PATH."
+        return "\u274c `claude` CLI not found on PATH."
     except Exception as e:
-        return f"❌ Error: {e}"
+        return f"\u274c Error: {e}"
 
 
 def run_task_script(script_name: str, timeout: int = 300) -> str:

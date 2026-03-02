@@ -7,25 +7,23 @@
 
 **Status:** COMPLETE
 **Created:** 2026-03-02
-**Thesis:** Mean-reversion in confirmed ranges — Choppiness Index gates Donchian channel fades with RSI confirmation. Hypothesis: ranging markets (CHOP > 61.8) produce reliable mean-reversion when price hits channel edges.
+**Thesis:** Mean reversion in ranging markets — simplified to 2 conditions. Testing if base signal generates enough trades before adding filters.
 
 ### Strategy Spec
 
-name: chop_donchian_fade_v1
-template_name: choppiness_donchian_fade
+name: chop_donchian_fade_v2
+template_name: spec_rules
 entry_long:
-- CHOP_14_1_100 > 61.8
-- close <= DCL_20_20
-- RSI_14 < 35
+- "CHOP_14_1_100 > 50"
+- "close <= DCL_20_20"
 entry_short:
-- CHOP_14_1_100 > 61.8
-- close >= DCU_20_20
-- RSI_14 > 65
+- "CHOP_14_1_100 > 50"
+- "close >= DCU_20_20"
 risk_policy:
   stop_type: atr
   stop_atr_mult: 1.5
   tp_type: atr
-  tp_atr_mult: 3.0
+  tp_atr_mult: 12.0
   risk_per_trade_pct: 0.01
 
 ### Test Matrix
@@ -36,6 +34,6 @@ risk_policy:
 ### What to Report
 Write to LAST_CYCLE_RESULTS.md:
 - PF, win rate, max drawdown %, net profit %, total trades per asset/timeframe
-- Regime breakdown (trending/ranging/transitional PF)
+- Regime breakdown if available
 - Gate failures if any
 - Total return on capital %
