@@ -266,23 +266,18 @@ $headerLine = ($headerParts -join ' ').Trim()
 $lines = @()
 $lines += $headerLine
 
-if (-not $isOragornSubagentNoteOnly) {
+$strategyGenerateCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
+$strategyResearchCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
+$doctrineSynthesisCount = @($mainEvents | Where-Object { [string]$_.action -eq 'doctrine_synthesis' }).Count
+$backtestAuditCount = @($mainEvents | Where-Object { [string]$_.action -eq 'backtest_audit' }).Count
+$totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
+
+if ($mode -eq 'quandalf') {
+  $lines += "Quandalf ran: research=$strategyResearchCount generate=$strategyGenerateCount doctrine=$doctrineSynthesisCount audit=$backtestAuditCount"
+} elseif (-not $isOragornSubagentNoteOnly) {
   $lines += "○───activity─────────────────────"
 
-  if ($mode -eq 'quandalf') {
-    # Strict action-mode metrics only (no inferred/regex-derived counts)
-    $strategyGenerateCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
-    $strategyResearchCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
-    $doctrineSynthesisCount = @($mainEvents | Where-Object { [string]$_.action -eq 'doctrine_synthesis' }).Count
-    $backtestAuditCount = @($mainEvents | Where-Object { [string]$_.action -eq 'backtest_audit' }).Count
-    $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
-
-    $lines += "Generated : $strategyGenerateCount runs"
-    $lines += "Researched: $strategyResearchCount runs"
-    $lines += "Doctrine : $doctrineSynthesisCount runs"
-    $lines += "Audited : $backtestAuditCount runs"
-    $lines += "Total    : $totalStrictRuns runs"
-  } elseif ($mode -eq 'oragorn') {
+  if ($mode -eq 'oragorn') {
     $delegated = @($mainEvents | Where-Object { [string]$_.action -eq 'DELEGATION_SENT' }).Count
     $spawned = @($mainEvents | Where-Object { @('SUBAGENT_SPAWN','SUBAGENT_SPAWNED') -contains ([string]$_.action) }).Count
     $completed = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
@@ -307,107 +302,96 @@ if (-not $isOragornSubagentNoteOnly) {
     if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
   }
 }
-
 # Shared bottom note block (up to 3 lines)
-$topWarning = $null
-if ($warnings.Count -gt 0) {
-  $uniqueWarnings = @{}
-  foreach ($w in $warnings) {
-    $cur = if ($uniqueWarnings.ContainsKey($w)) { $uniqueWarnings[$w] } else { 0 }
-    $uniqueWarnings[$w] = $cur + 1
-  }
-  $topWarningEntry = @($uniqueWarnings.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 1)
-  if ($topWarningEntry.Count -gt 0) {
-    $tw = $topWarningEntry[0]
-    $suffix = if ($tw.Value -gt 1) { " x$($tw.Value)" } else { "" }
-    $topWarning = "$($tw.Key)$suffix"
-  }
-}
-
-$noteText = $null
-
-if ($isOragornSubagentNoteOnly) {
-  $finishedCount = @($oragornSubagentCompletionEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
-  $failedCount = @($oragornSubagentCompletionEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FAIL' }).Count
-
-  if ($finishedCount -gt 0 -and $failedCount -eq 0) {
-    if ($finishedCount -eq 1) {
-      $noteText = "A sub-agent just finished successfully and I logged the completion."
-    } else {
-      $noteText = "$finishedCount sub-agents finished successfully and I logged their completions."
+if ($mode -ne 'quandalf') {
+  $topWarning = $null
+  if ($warnings.Count -gt 0) {
+    $uniqueWarnings = @{}
+    foreach ($w in $warnings) {
+      $cur = if ($uniqueWarnings.ContainsKey($w)) { $uniqueWarnings[$w] } else { 0 }
+      $uniqueWarnings[$w] = $cur + 1
     }
-  } elseif ($failedCount -gt 0 -and $finishedCount -eq 0) {
-    if ($failedCount -eq 1) {
-      $noteText = "A sub-agent run failed and I logged it for follow-up."
-    } else {
-      $noteText = "$failedCount sub-agent runs failed and I logged them for follow-up."
+    $topWarningEntry = @($uniqueWarnings.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 1)
+    if ($topWarningEntry.Count -gt 0) {
+      $tw = $topWarningEntry[0]
+      $suffix = if ($tw.Value -gt 1) { " x$($tw.Value)" } else { "" }
+      $topWarning = "$($tw.Key)$suffix"
     }
-  } else {
-    $noteText = "$finishedCount sub-agents finished and $failedCount failed; all outcomes were logged for follow-up."
   }
-} elseif ($errors -gt 0) {
-  $noteText = "I hit $errors issue(s) in this window and need a quick review."
-} elseif ($stall -gt 5) {
-  $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
-} elseif ($starvation -gt 10) {
-  $noteText = "I am input-starved for $starvation cycles, so throughput is constrained."
-} elseif ($topWarning) {
-  $noteText = "I flagged a warning to watch: $topWarning"
-} else {
-  if ($mode -eq 'quandalf') {
-    if ($strategyGenerateCount -gt 0 -and $strategyResearchCount -eq 0 -and $doctrineSynthesisCount -eq 0 -and $backtestAuditCount -eq 0) {
-      $noteText = "I focused on strategy generation this window and completed it cleanly."
-    } elseif ($strategyResearchCount -gt 0 -and $strategyGenerateCount -eq 0) {
-      $noteText = "I focused on research updates this window and completed them cleanly."
-    } elseif ($totalStrictRuns -gt 0) {
-      $noteText = "I completed planned Claude runs cleanly across generation/research/doctrine/audit."
-    } else {
-      $noteText = "No Claude runs were recorded in this window."
-    }
-  } elseif ($mode -eq 'oragorn') {
-    $subagentSummaries = @(
-      $mainEvents |
-      Where-Object { @('SUBAGENT_SPAWNED','SUBAGENT_SPAWN','SUBAGENT_FINISH','SUBAGENT_FAIL') -contains ([string]$_.action) } |
-      ForEach-Object {
-        $s = [string]$_.summary
-        if ([string]::IsNullOrWhiteSpace($s)) { $null } else { $s.Trim() }
-      } |
-      Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-    )
 
-    if ($subagentSummaries.Count -gt 0) {
-      $uniqueSummaries = @{}
-      foreach ($s in $subagentSummaries) {
-        if (-not $uniqueSummaries.ContainsKey($s)) { $uniqueSummaries[$s] = $true }
+  $noteText = $null
+
+  if ($isOragornSubagentNoteOnly) {
+    $finishedCount = @($oragornSubagentCompletionEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
+    $failedCount = @($oragornSubagentCompletionEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FAIL' }).Count
+
+    if ($finishedCount -gt 0 -and $failedCount -eq 0) {
+      if ($finishedCount -eq 1) {
+        $noteText = "A sub-agent just finished successfully and I logged the completion."
+      } else {
+        $noteText = "$finishedCount sub-agents finished successfully and I logged their completions."
       }
-      $summaryList = @($uniqueSummaries.Keys | Select-Object -Last 3)
-      $noteText = "Sub-agent tasks this window: " + ($summaryList -join ' | ')
-    } elseif ($totalActions -gt 0) {
-      $noteText = "I coordinated $totalActions command action(s) this window with clean telemetry."
+    } elseif ($failedCount -gt 0 -and $finishedCount -eq 0) {
+      if ($failedCount -eq 1) {
+        $noteText = "A sub-agent run failed and I logged it for follow-up."
+      } else {
+        $noteText = "$failedCount sub-agent runs failed and I logged them for follow-up."
+      }
     } else {
-      $noteText = "No Oragorn command actions were recorded in this window."
+      $noteText = "$finishedCount sub-agents finished and $failedCount failed; all outcomes were logged for follow-up."
     }
+  } elseif ($errors -gt 0) {
+    $noteText = "I hit $errors issue(s) in this window and need a quick review."
+  } elseif ($stall -gt 5) {
+    $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
+  } elseif ($starvation -gt 10) {
+    $noteText = "I am input-starved for $starvation cycles, so throughput is constrained."
+  } elseif ($topWarning) {
+    $noteText = "I flagged a warning to watch: $topWarning"
   } else {
-    if ($btExecuted -gt 0) {
-      $noteText = "I advanced $btExecuted backtest run(s) this cycle and kept the pipeline stable."
-    } elseif ($ingested -gt 0) {
-      $noteText = "I ingested $ingested new item(s) this cycle; backtests will follow next stages."
-    } elseif ($dirVariants -gt 0) {
-      $noteText = "I emitted $dirVariants new variant(s) this cycle to keep exploration moving."
+    if ($mode -eq 'oragorn') {
+      $subagentSummaries = @(
+        $mainEvents |
+        Where-Object { @('SUBAGENT_SPAWNED','SUBAGENT_SPAWN','SUBAGENT_FINISH','SUBAGENT_FAIL') -contains ([string]$_.action) } |
+        ForEach-Object {
+          $s = [string]$_.summary
+          if ([string]::IsNullOrWhiteSpace($s)) { $null } else { $s.Trim() }
+        } |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+      )
+
+      if ($subagentSummaries.Count -gt 0) {
+        $uniqueSummaries = @{}
+        foreach ($s in $subagentSummaries) {
+          if (-not $uniqueSummaries.ContainsKey($s)) { $uniqueSummaries[$s] = $true }
+        }
+        $summaryList = @($uniqueSummaries.Keys | Select-Object -Last 3)
+        $noteText = "Sub-agent tasks this window: " + ($summaryList -join ' | ')
+      } elseif ($totalActions -gt 0) {
+        $noteText = "I coordinated $totalActions command action(s) this window with clean telemetry."
+      } else {
+        $noteText = "No Oragorn command actions were recorded in this window."
+      }
     } else {
-      $noteText = "This cycle was quiet, but the pipeline remained healthy."
+      if ($btExecuted -gt 0) {
+        $noteText = "I advanced $btExecuted backtest run(s) this cycle and kept the pipeline stable."
+      } elseif ($ingested -gt 0) {
+        $noteText = "I ingested $ingested new item(s) this cycle; backtests will follow next stages."
+      } elseif ($dirVariants -gt 0) {
+        $noteText = "I emitted $dirVariants new variant(s) this cycle to keep exploration moving."
+      } else {
+        $noteText = "This cycle was quiet, but the pipeline remained healthy."
+      }
     }
   }
+
+  $noteText = ($noteText -replace '\s+', ' ').Trim()
+  if ($noteText.Length -gt 400) { $noteText = $noteText.Substring(0, 400) }
+  if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
+
+  $lines += "○───note─────────────────────────"
+  $lines += $noteText
 }
-
-$noteText = ($noteText -replace '\s+', ' ').Trim()
-# Keep note as one continuous paragraph (no manual line-wrapping).
-if ($noteText.Length -gt 400) { $noteText = $noteText.Substring(0, 400) }
-if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
-
-$lines += "○───note─────────────────────────"
-$lines += $noteText
-
 $messageBody = ($lines -join "`n").TrimEnd()
 $caption = "``````" + "`n" + $messageBody + "`n" + "``````"
 
@@ -449,3 +433,4 @@ if ($bannerPath) {
 
 $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8
 Write-Host "Done"
+

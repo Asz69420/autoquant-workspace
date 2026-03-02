@@ -44,7 +44,7 @@ try {
     $effectiveSummary = "Cycle completed."
   }
 
-  $msg = "🧙‍♂️ Quandalf $TaskLabel: $effectiveSummary"
+  $msg = "🧙‍♂️ Quandalf ${TaskLabel}: $effectiveSummary"
 
   powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg | Out-Null
   Write-Host "Quandalf DM summary sent"
