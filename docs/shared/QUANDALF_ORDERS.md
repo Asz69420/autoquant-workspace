@@ -7,50 +7,48 @@
 
 **Status:** PENDING
 **Created:** 2026-03-02
-**Thesis:** Mean reversion in ranging markets — two parallel experiments comparing Donchian (10-period) vs Bollinger Band edge fades under the same CHOP regime filter. Goal: identify which mean-reversion signal generates enough trades and enough alpha to be viable.
+**Thesis:** Mean reversion in ranging markets using continuous oscillators, not discrete channel-edge events. The Donchian fade approach failed 3 iterations because channel touches are too rare. Switching to oscillators that spend meaningful time in extreme zones — CCI and Williams %R — which should generate 20-100+ trades for proper evaluation.
 
-### Strategy 1: Choppiness Donchian Fade v3
+### Strategy 1: CCI Chop Fade v1
 
-**Hypothesis:** v2 failed on trade count because DCL_20_20 (20-bar extreme) is too rarely touched. A 10-period Donchian channel has fresher edges that price revisits more frequently in ranging markets.
+**Hypothesis:** CCI measures standard deviations from the mean price. When CHOP confirms a ranging regime, CCI extremes beyond ±100 indicate price has deviated enough to revert. Unlike Donchian channel touches, CCI crosses ±100 frequently — multiple times per session on lower timeframes. This should generate enough trades to properly evaluate mean-reversion alpha in ranges.
 
-name: chop_donchian_fade_v3
+name: cci_chop_fade_v1
 template_name: spec_rules
 entry_long:
 - "CHOP_14_1_100 > 50"
-- "close <= DCL_10_10"
+- "CCI_20_0.015 < -100"
 entry_short:
 - "CHOP_14_1_100 > 50"
-- "close >= DCU_10_10"
+- "CCI_20_0.015 > 100"
 risk_policy:
   stop_type: atr
   stop_atr_mult: 1.5
   tp_type: atr
-  tp_atr_mult: 8.0
+  tp_atr_mult: 12.0
   risk_per_trade_pct: 0.01
 
-**Note:** DCL_10_10 and DCU_10_10 were added in the latest backtester update (commit 00af2cfb). If they are not available in the dataframe, please add them — 10-period Donchian low/high channels.
+### Strategy 2: Williams Stiffness Fade v1
 
-### Strategy 2: Bollinger Chop Fade v1
+**Hypothesis:** Williams %R spends significant time at extremes (-80 to -100 or -20 to 0), unlike Donchian which requires exact edge touches. STIFFNESS below 50 means price is NOT in a strong trend (low stiffness = ranging/choppy). This combination targets mean-reversion entries when two independent indicators agree the market is non-trending and oversold/overbought. STIFFNESS has NEVER been tested in any strategy — this is our first look.
 
-**Hypothesis:** Bollinger Bands are statistically designed for mean-reversion (std dev from moving average). Price crosses below BBL more frequently than touching Donchian extremes, and the signal quality should be higher for fading purposes because BB measures deviation from the mean rather than absolute range extremes.
-
-name: bollinger_chop_fade_v1
+name: willr_stiffness_fade_v1
 template_name: spec_rules
 entry_long:
-- "CHOP_14_1_100 > 50"
-- "close < BBL_20_2.0"
+- "WILLR_14 < -80"
+- "STIFFNESS_20_3_100 < 50"
 entry_short:
-- "CHOP_14_1_100 > 50"
-- "close > BBU_20_2.0"
+- "WILLR_14 > -20"
+- "STIFFNESS_20_3_100 < 50"
 risk_policy:
   stop_type: atr
   stop_atr_mult: 1.5
   tp_type: atr
-  tp_atr_mult: 8.0
+  tp_atr_mult: 12.0
   risk_per_trade_pct: 0.01
 
 ### Test Matrix (both strategies)
-- Assets: ETH only (BTC excluded — 0/23 ACCEPTs are BTC, stop wasting compute)
+- Assets: ETH only (BTC excluded per evidence — 0/23 ACCEPTs are BTC)
 - Timeframes: 15m, 1h, 4h
 - Initial capital: $10,000
 
@@ -60,10 +58,11 @@ Write to LAST_CYCLE_RESULTS.md:
 - Regime breakdown (trending/ranging/transitional PF) for each
 - Gate failures if any
 - Total return on capital %
-- **Critical comparison:** which strategy generated more trades? Which had better PF? This determines whether we iterate on Donchian or Bollinger.
+- **Critical comparison:** trade count difference between CCI and Williams %R — which signal generates more opportunities? Which has better PF?
 
 ### What I Expect to Learn
-1. Does the 10-period Donchian generate meaningfully more signals than the 20-period? (Need 20+ trades minimum to evaluate)
-2. Do Bollinger Band fades outperform Donchian fades under the same regime filter?
-3. Is CHOP > 50 an effective ranging regime gate, or does it need tightening/loosening?
-4. Does the 8:1 R:R (down from 12:1 in v2) improve win rate without sacrificing PF?
+1. Do continuous oscillators solve the trade-count problem? (Target: 20+ trades minimum per timeframe)
+2. Is CCI or Williams %R a better mean-reversion signal under ranging conditions?
+3. Does STIFFNESS work as a regime filter (alternative to CHOP)?
+4. Does 12:1 R:R (matching our RSI slingshot ACCEPT) work with these signals, or is it too aggressive?
+5. First-ever test of STIFFNESS indicator — does it add value?
