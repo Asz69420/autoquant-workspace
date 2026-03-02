@@ -1,16 +1,16 @@
 ﻿{
     "directive_loop_stall_cycles":  0,
     "recent_backfill_specs":  [
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-a30-fff5f56e-de827852.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-798-84d4674b-82edf802.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-5e5-c60fd07d-f4c10886.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-30e-27ef85e5-c60fd07d.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-eff-66b3f798-84d4674b.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-19a-68774a30-fff5f56e.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-e5d-eebab19a-68774a30.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-e27-509d0eff-66b3f798.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-7fa-feacd30e-27ef85e5.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-d7e-f001f7fa-feacd30e.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-046-1d57747d-461f063e.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-eb7-afbb171b-a2265ba6.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-102-adef2a37-11781fdb.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-852-30266102-adef2a37.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-802-1ea0ceb7-afbb171b.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-886-ae1c6046-1d57747d.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-07d-f4c10886-ae1c6046.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-74b-82edf802-1ea0ceb7.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-56e-de827852-30266102.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260302/strategy-spec-20260302-a30-fff5f56e-de827852.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-02T09:55:17.9036940Z"
+    "updated_at":  "2026-03-02T10:25:22.1912559Z"
 }
