@@ -7,4 +7,4 @@ Variants : 0 new + 0 explore
 Refined : 0 iterations
 Promoted : 0 strategies
 ○───note─────────────────────────
-I am input-starved for 100 cycles, so throughput is constrained.
+I am input-starved for 102 cycles, so throughput is constrained.
