@@ -1,0 +1,105 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772443188-backfill-strategy-spec-20260302-e27-509d0eff-66b3f798.strategy_spec",
+  "run_id": "autopilot-1772443188-backfill-strategy-spec-20260302-e27-509d0eff-66b3f798.strategy_spec",
+  "created_at": "2026-03-02T09:25:15.615756+00:00",
+  "verdict": "REVISE",
+  "strategy_family": "strategy-spec-20260302-e27-509d0eff-66b3f798.strategy_spec",
+  "template": "template_diversity",
+  "metrics": {
+    "profit_factor_after_costs": 1.29487456,
+    "max_drawdown": 0.242957022223,
+    "trades": 140,
+    "regime_breakdown": {
+      "trending_trades": 29,
+      "ranging_trades": 71,
+      "transitional_trades": 40
+    },
+    "regime_pf": {
+      "trending": 2.18074102,
+      "ranging": 1.37789462,
+      "transitional": 0.62327624
+    },
+    "regime_wr": {
+      "trending": 0.27586207,
+      "ranging": 0.1971831,
+      "transitional": 0.1
+    },
+    "dominant_regime": "ranging"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending",
+      "ranging"
+    ],
+    "bad_regimes": [
+      "transitional"
+    ],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "rationale": "Doctrine: risk gating before complexity on drawdown-heavy strategies.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260302/batch_20260302_36640270.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260302/refine_20260302_7a2bd9e8.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "fbebe72a8fd88322"
+}
