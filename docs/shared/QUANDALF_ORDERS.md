@@ -7,20 +7,20 @@
 
 **Status:** COMPLETE
 **Created:** 2026-03-03
-**Thesis:** CCI Chop Fade ETH 4h hit PF 1.255 with all regimes profitable — close to ACCEPT. Two refinements: (1) tighten R:R from 12:1 to 8:1 to boost win rate, (2) add ADX < 25 to filter out trending bars where mean reversion fails.
+**Thesis:** CCI Chop Fade plateaued at PF 1.255 after 2 iterations. ADX filter destructive. Pivoting to QQE — a smoothed RSI with dynamic bands, never tested. QQE's built-in smoothing may produce cleaner mean-reversion signals than raw CCI. Also testing STC cycle timing (untested template) as a second novel signal.
 
-### Strategy 1: CCI Chop Fade v2 (tighter R:R)
+### Strategy 1: QQE Chop Fade v1
 
-**Hypothesis:** 12:1 R:R requires massive moves to hit TP. At 8:1 (matching our Supertrend champion), more winners should close profitably, pushing PF above 1.3.
+**Hypothesis:** QQE extremes signal momentum exhaustion more reliably than CCI because QQE smooths out noise. Under CHOP ranging gate, QQE crossing back from extremes = high-probability mean reversion entry.
 
-name: cci_chop_fade_v2
+name: qqe_chop_fade_v1
 template_name: spec_rules
 entry_long:
 - "CHOP_14_1_100 > 50"
-- "CCI_20_0.015 < -100"
+- "QQE_14_5_4.236 < 30"
 entry_short:
 - "CHOP_14_1_100 > 50"
-- "CCI_20_0.015 > 100"
+- "QQE_14_5_4.236 > 70"
 risk_policy:
   stop_type: atr
   stop_atr_mult: 1.5
@@ -28,40 +28,38 @@ risk_policy:
   tp_atr_mult: 12.0
   risk_per_trade_pct: 0.01
 
-### Strategy 2: CCI ADX Chop Fade v1 (ADX confirmation)
+### Strategy 2: STC Cycle Fade v1
 
-**Hypothesis:** Adding ADX < 25 as a trend-absence filter should cut entries during trending bars (where v1 had weakest PF 1.13) while preserving ranging/transitional alpha.
+**Hypothesis:** STC (Schaff Trend Cycle) detects cycle tops/bottoms. STC > 75 = overbought cycle peak, STC < 25 = oversold cycle trough. Under CHOP gate, these should be high-quality mean-reversion entries. First-ever test of STC in our system.
 
-name: cci_adx_chop_fade_v1
+name: stc_cycle_fade_v1
 template_name: spec_rules
 entry_long:
 - "CHOP_14_1_100 > 50"
-- "ADX_14 < 25"
-- "CCI_20_0.015 < -100"
+- "STC_10_12_26_0.5 < 25"
 entry_short:
 - "CHOP_14_1_100 > 50"
-- "ADX_14 < 25"
-- "CCI_20_0.015 > 100"
+- "STC_10_12_26_0.5 > 75"
 risk_policy:
   stop_type: atr
   stop_atr_mult: 1.5
   tp_type: atr
-  tp_atr_mult: 8.0
+  tp_atr_mult: 12.0
   risk_per_trade_pct: 0.01
 
 ### Test Matrix (both strategies)
 - Assets: ETH only
-- Timeframes: 4h only (lower TFs confirmed losers)
+- Timeframes: 4h, 1h
 - Initial capital: $10,000
 
 ### What to Report
-- PF, win rate, max drawdown %, net profit %, total trades per strategy
+- PF, win rate, max drawdown %, net profit %, total trades per strategy/TF
 - Regime breakdown (trending/ranging/transitional PF)
 - Gate failures if any
-- **Critical comparison:** v2 (8:1 R:R) vs v1 baseline (PF 1.255). Did tighter R:R boost PF?
-- **Critical comparison:** ADX-filtered vs unfiltered. Did ADX cut trending losers without killing trade count?
+- **Critical comparison:** QQE vs STC — which oscillator produces better mean-reversion signals?
+- **Critical comparison:** 4h vs 1h — does QQE smoothing help on lower TFs where CCI failed?
 
 ### What I Expect to Learn
-1. Does 8:1 R:R push CCI Chop Fade past ACCEPT threshold (PF > 1.3)?
-2. Does ADX < 25 improve regime selectivity without over-filtering?
-3. Which refinement path is more promising for v3?
+1. Does QQE's smoothing produce cleaner signals than raw CCI (higher PF or better 1h performance)?
+2. Is STC a viable cycle-timing signal for mean reversion?
+3. Which new oscillator family is worth iterating on?
