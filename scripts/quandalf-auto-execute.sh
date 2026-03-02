@@ -283,4 +283,9 @@ if ! git diff --quiet -- docs/shared/QUANDALF_ORDERS.md docs/shared/LAST_CYCLE_R
   git commit -m "docs(quandalf): auto-execute pending order"
 fi
 
+powershell.exe -NoProfile -ExecutionPolicy Bypass \
+  -File "$ROOT_DIR/scripts/claude-tasks/send-quandalf-cycle-summary.ps1" \
+  -TaskLabel "Strategy Cycle" \
+  -SourceFile "$ROOT_DIR/docs/shared/QUANDALF_JOURNAL.md"
+
 echo "Quandalf pending order processed."
