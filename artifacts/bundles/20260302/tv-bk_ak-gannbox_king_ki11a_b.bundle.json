@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_bk ak-gannbox ki",
+    "created_at":  "2026-03-02T19:34:52.354431+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260303/research-20260303-c7d35bd8c39e.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260303/indicator-20260303-fa25a4c18bfa.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260303/research-20260303-c7d35bd8c39e.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-02T19:34:58.7888362Z",
+    "attempts":  1,
+    "last_error":  "NO_VARIANTS_COMPILED"
+}

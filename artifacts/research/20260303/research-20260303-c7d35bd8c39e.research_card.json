@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-c7d35bd8c39e",
+  "created_at": "2026-03-02T19:34:52.214871Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/H8I1ixqN-BK-AK-GannBox-King/",
+  "title": "BK AK-GannBox King",
+  "author": "Ki11a_B",
+  "summary_bullets": [
+    "Top catalog indicator: BK AK-GannBox King by Ki11a_B."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: BK AK-GannBox King by Ki11a_B.",
+      "note": "Meaning: Top catalog indicator: BK AK-GannBox King by Ki11a_B."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-c7d35bd8c39e.raw.txt",
+  "sha256": "1a5c748bd2a6c5110032ca98313aa6350b7fd3b13182560369fcce2156a2d0db",
+  "truncated": false
+}

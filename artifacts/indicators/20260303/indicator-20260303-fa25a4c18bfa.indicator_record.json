@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-fa25a4c18bfa",
+  "created_at": "2026-03-02T19:34:51.928890Z",
+  "tv_ref": "tradingview:H8I1ixqN",
+  "url": "https://www.tradingview.com/script/H8I1ixqN-BK-AK-GannBox-King/",
+  "name": "BK AK-GannBox King",
+  "author": "Ki11a_B",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "bc56e4b0c835f3eaed74f2909d44e7878fcd18c54dafe996ce8971176e8cea63",
+  "truncated": false
+}

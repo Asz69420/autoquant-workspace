@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-4de6510fe372",
+  "created_at": "2026-03-02T19:34:53.070837Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/CCndHaaT-Polymarket-Smart-Money-5m-Madrimov/",
+  "title": "Polymarket Smart Money 5m (Madrimov)",
+  "author": "Madrimov_trade",
+  "summary_bullets": [
+    "Top catalog indicator: Polymarket Smart Money 5m (Madrimov) by Madrimov_trade."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Polymarket Smart Money 5m (Madrimov) by Madrimov_trade.",
+      "note": "Meaning: Top catalog indicator: Polymarket Smart Money 5m (Madrimov) by Madrimov_trade."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "5m"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-4de6510fe372.raw.txt",
+  "sha256": "b1726f1751107c6188b0b10d1eae806a9881333b2352c5b1373c741653d78ad7",
+  "truncated": false
+}
