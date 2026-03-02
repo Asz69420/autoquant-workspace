@@ -34,6 +34,15 @@ function Convert-MarkupToHtml([string]$text) {
   if ([string]::IsNullOrWhiteSpace($text)) { return "" }
 
   $text = $text -replace '`', ''
+
+  # Header conversion
+  $text = $text -replace '(?m)^###\s+(.+)$', '<b>$1</b>'
+  $text = $text -replace '(?m)^##\s+(.+)$', '<b>$1</b>'
+  $text = $text -replace '(?m)^#\s+(.+)$', '<b>$1</b>'
+
+  # Remove markdown table separator rows like |---|---|---|
+  $text = $text -replace '(?m)^\|(?:\s*:?-{3,}:?\s*\|)+\s*$', ''
+
   $text = $text -replace '\*\*(.+?)\*\*', '<b>$1</b>'
   $text = $text -replace '__(.+?)__', '<b>$1</b>'
   $text = $text -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
