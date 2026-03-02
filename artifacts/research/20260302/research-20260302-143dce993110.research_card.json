@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-143dce993110",
+  "created_at": "2026-03-02T11:34:51.221390Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/RnUblmpw-BBR2-1/",
+  "title": "BBR2.1",
+  "author": "junjunms",
+  "summary_bullets": [
+    "Top catalog indicator: BBR2.1 by junjunms."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: BBR2.1 by junjunms.",
+      "note": "Meaning: Top catalog indicator: BBR2.1 by junjunms."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-143dce993110.raw.txt",
+  "sha256": "88e3f6068693225439a0672e878fe95d266cd6e4431930b35563ddd046a2ef62",
+  "truncated": false
+}
