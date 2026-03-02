@@ -43,7 +43,7 @@ INDICATOR_REGISTRY: dict[str, dict] = {
     'VWAP': {'engine': 'pandas_ta', 'columns': ['VWAP_D']},
     'Ichimoku': {'engine': 'pandas_ta', 'columns': ['ISA_9', 'ISB_26', 'ITS_9', 'IKS_26']},
     'Supertrend': {'engine': 'pandas_ta', 'columns': ['SUPERT_7_3.0', 'SUPERTd_7_3.0']},
-    'Donchian Channels': {'engine': 'pandas_ta', 'columns': ['DCL_20_20', 'DCM_20_20', 'DCU_20_20']},
+    'Donchian Channels': {'engine': 'pandas_ta', 'columns': ['DCL_20_20', 'DCM_20_20', 'DCU_20_20', 'DCL_10_10', 'DCM_10_10', 'DCU_10_10']},
 }
 
 
@@ -94,6 +94,7 @@ def build_indicator_frame(df: pd.DataFrame) -> pd.DataFrame:
     _safe_apply('ICHIMOKU', lambda: pta.ichimoku(out['high'], out['low'], out['close'])[0] if isinstance(pta.ichimoku(out['high'], out['low'], out['close']), tuple) else None)
     _safe_apply('SUPERTREND', lambda: pta.supertrend(out['high'], out['low'], out['close'], length=7, multiplier=3.0))
     _safe_apply('DONCHIAN', lambda: pta.donchian(out['high'], out['low'], lower_length=20, upper_length=20))
+    _safe_apply('DONCHIAN_10', lambda: pta.donchian(out['high'], out['low'], lower_length=10, upper_length=10))
     return out
 
 
