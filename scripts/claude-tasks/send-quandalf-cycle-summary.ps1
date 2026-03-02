@@ -34,7 +34,21 @@ try {
     if (Test-Path $SourceFile) {
       $raw = Get-Content -Path $SourceFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
       if (-not [string]::IsNullOrWhiteSpace($raw)) {
-        $effectiveSummary = $raw.Substring(0, [Math]::Min(1600, $raw.Length))
+        $entrySections = @($raw -split '(?m)^## Entry\b')
+        $lastSection = $null
+        for ($i = $entrySections.Count - 1; $i -ge 0; $i--) {
+          $candidate = [string]$entrySections[$i]
+          if (-not [string]::IsNullOrWhiteSpace($candidate)) {
+            $lastSection = $candidate.Trim()
+            break
+          }
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace($lastSection)) {
+          $effectiveSummary = $lastSection.Substring(0, [Math]::Min(1600, $lastSection.Length))
+        } else {
+          $effectiveSummary = $raw.Substring(0, [Math]::Min(1600, $raw.Length))
+        }
       }
     }
   }
@@ -44,7 +58,7 @@ try {
     $effectiveSummary = "Cycle completed."
   }
 
-  $msg = "🧙‍♂️ Quandalf ${TaskLabel}: $effectiveSummary"
+  $msg = "Quandalf ${TaskLabel}: $effectiveSummary"
 
   powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
   Write-Host "Quandalf DM summary sent"
