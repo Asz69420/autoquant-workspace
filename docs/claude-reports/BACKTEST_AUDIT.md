@@ -1,231 +1,271 @@
-# Backtest Quality Audit — 2026-03-02 (Update 3)
+# Backtest Quality Audit — 2026-03-03 (Update 4)
 
 **Author:** claude-auditor | **Mode:** BACKTEST_AUDITOR
-**Scope:** 1,556 backtests across 20260301 (1,121) and 20260302 (435)
-**Prior advisory context:** STRATEGY_ADVISORY Update 8 (2026-03-02)
-**Prior audit:** 2026-03-01 Update 2 (2,621 backtests, 8 issues flagged)
+**Scope:** ~2,323 backtests across 20260301 (1,121) and 20260302 (1,202)
+**Prior advisory context:** STRATEGY_ADVISORY Update 14 (2026-03-03)
+**Prior audit:** 2026-03-02 Update 3 (1,556 backtests, 11 issues flagged)
 
 ---
 
 ## Summary
 
-**1,556 backtests reviewed. 11 issues flagged across 3 categories.**
+**~2,323 backtests reviewed. 14 issues flagged across 3 categories.**
 
 | Category | Flagged Items | Severity |
 |---|---|---|
-| Overfitting | 5 overfit suspects (1 confirmed unprofitable), 3 profit-concentration warnings, 1 time-clustering alert | HIGH |
-| Data Quality | 6 distinct issues (gate bug worsening, duplication epidemic, zero-trade acceleration, DD% bug unfixed, BTC leakage, refinement triplication) | CRITICAL |
-| Regime Bias | Trending-only overfit cluster, universal Supertrend crash-dependency | MEDIUM |
+| Overfitting | 3 profit-concentration warnings (unchanged), 1 time-clustering alert (unchanged), 1 new single-trade dependency | HIGH |
+| Data Quality | 8 distinct issues (gate bug WORSENING, duplication epidemic WORSENING, zero-trade from Claude specs NEW, DD% bug 4TH AUDIT, BTC leakage UNCHANGED, refinement triplication UNCHANGED, Claude template routing NEW, max_dd_pct impossible values NEW) | CRITICAL |
+| Regime Bias | Trending profit destruction confirmed with fresh data, single-regime-only strategies flagged | MEDIUM |
 
 **Key numbers:**
-- Zero-trade results: **129** (8.3%) — 105 on Mar 1, 24 on Mar 2
-- Gate bug (min_trades_required=0): **392 results** (25.2%) — worsening from 279 in prior audit
-- Duplicate fingerprints: **~600-700 estimated wasted backtests** across both days
-- Mar 2 best PF: **1.236** — dramatic collapse from Mar 1 best of 1.921
-- Confirmed overfit: `39ec9668` (PF=1.916, 23 trades) — PF drops to **0.83 without top 2 trades**
-- Prior audit CRITICALs fixed: **0 of 3**
-- Compute waste rate: **~85-90%** (unchanged)
+- Zero-trade results: **129+ estimated** — Claude spec 0-trade rate now 60% (3/5 newest specs)
+- Gate bug (min_trades_required=0): **500+ results estimated** — worsening from 392 in prior audit
+- Duplicate fingerprints: **~1,400-1,600 estimated wasted backtests** across both days
+- Best PF in 48h window: **1.712** (MACD 1h 7:1, flagged for time clustering in prior audit)
+- DD% bug: **max_drawdown_pct=0.0** on 6+ sampled results despite DD >$73K; also **max_drawdown_pct >4,000%** on others
+- Identical-result duplication: **5+ copies** of PF=1.001 / 406 trades / DD=217% (BTC 4h gate_adjust)
+- Prior audit CRITICALs fixed: **0 of 4**
+- Compute waste rate: **~87-93%** (worsening from 85-90%)
 
 ---
 
 ## Overfit Suspects
 
-### A. Confirmed Overfit — REJECT
+### A. Prior Confirmed Overfit — STILL IN SYSTEM
 
-| ID | Date | Variant | PF | Trades | WR% | DD% | Flag | PF w/o Top 2 |
-|---|---|---|---|---|---|---|---|---|
-| `39ec9668` | 0301 | supertrend_conviction_tight_stop | **1.916** | **23** | 21.7 | 30.4 | PF~2, trades<30, 100% trending, top 1 = 79.5% of net | **0.829** |
+| ID | Variant | PF | Trades | Flag | Status |
+|---|---|---|---|---|---|
+| `39ec9668` | supertrend_conviction_tight_stop | 1.916 | 23 | PF→0.83 w/o top 2, 100% trending, single crash trade = 79.5% of net | **UNFIXED — 2nd audit flagging** |
 
-**Verdict: REJECT.** This is the clearest overfit in the system. 23 trades over 2 years, all in trending regime, single crash trade ($1,030.73) provides 79.5% of net profit. Without the top 2 winners, the strategy is a net loser (PF=0.83). This should never have passed the gate — it did because of the min_trades_required=0 bug.
+**Not removed from system.** This confirmed overfit was flagged in Update 3. No action taken.
 
-### B. Severe Profit Concentration — REVISE WITH CAUTION
+### B. Severe Profit Concentration — UNCHANGED
 
-| ID | Date | Variant | PF | Trades | Top 2 % of Net | PF w/o Top 2 | Flag |
-|---|---|---|---|---|---|---|---|
-| `5623e97b` | 0301 | supertrend_tail_harvester_8to1 | **1.921** | 85 | **70.8%** | **1.18** | Crash-dependent, ranging PF=2.91 |
-| `54d2de29` | 0301 | supertrend_no_adx_gate_8to1 | **1.907** | 99 | **70.8%** | **1.16** | Same crash trades as above |
-| `199a8350` | 0301 | supertrend_ultra_tight_7to1 | **1.878** | 85 | **69.2%** | **1.14** | Same crash trades as above |
+| ID | Variant | PF | Trades | Top 2 % of Net | PF w/o Top 2 | Flag |
+|---|---|---|---|---|---|---|
+| `5623e97b` | supertrend_tail_harvester_8to1 | 1.921 | 85 | 70.8% | 1.18 | Crash-dependent |
+| `54d2de29` | supertrend_no_adx_gate_8to1 | 1.907 | 99 | 70.8% | 1.16 | Same crash trades |
+| `199a8350` | supertrend_ultra_tight_7to1 | 1.878 | 85 | 69.2% | 1.14 | Same crash trades |
 
-**Verdict: REVISE.** These three Supertrend variants share the same two monster crash trades (Oct 2025 $1,178 and Jul 2024 $910). They are not independent strategies — they are the same signal with minor parameter tweaks. The "normal operating" PF (excluding rare crash captures) is only 1.14-1.18. Reported PFs of 1.88-1.92 are misleading. Forward testing is mandatory before promotion.
+**Verdict: STILL REVISE.** These remain unflagged in the pipeline. Forward-testing has been requested for 8 cycles with zero action.
 
-### C. MACD 1h 7:1 Duplicate Cluster — TIME CLUSTERING ALERT (NEW)
+### C. MACD 1h 7:1 — TIME CLUSTERING + SINGLE-TRADE DEPENDENCY (NEW FINDING)
 
-| ID | Date | Variant | PF | Trades | Top 2 % of Net | PF w/o Top 2 | Flag |
-|---|---|---|---|---|---|---|---|
-| `85409ce4` | 0301 | macd_tight_stop_1h_7to1 | **1.712** | 161 | **44.5%** | **1.21** | 5 identical copies, 7-month trade window |
+| ID | Variant | PF | Trades | Window | Top Trade | Flag |
+|---|---|---|---|---|---|---|
+| `0537219a` | rsi_pullback_1h_tail_harvester_7to1 | 1.712 | 161 | 7 months only | $757.65 (18.5% PnL, one trade) = 24% of total net | Time clustering + single-trade dependency |
 
-**Critical finding: All 161 trades occur between Aug 2025 and Feb 2026 — only 7 months.** This means the strategy has ZERO exposure to pre-Aug-2025 market conditions (including the 2024 bull run, early-2025 consolidation, and multiple regime changes). A 7-month window is not a valid multi-cycle test. The PF=1.712 may reflect a regime-specific edge that disappears in different market conditions.
+**Trade list analysis (161 trades, Aug 2025 — Feb 2026):**
+- Win rate: 19.9% (32 winners, 129 losers)
+- Winning trades distributed: Aug(4), Sep(3), Oct(4), Nov(3), Dec(3), Jan(5), Feb(2) — reasonably even monthly distribution
+- **BUT**: Single largest trade = $757.65 short on Oct 10 (ETH $4100→$3339 in 7 bars). This one trade = **24% of total $3,159.62 net profit**
+- Second largest: $399.23 short on Jan 31 (ETH $2643→$2242). Top 2 trades combined = **37% of net profit**
+- Third largest: $380.25 short on Nov 19 (ETH $3067→$2685). Top 3 = **49% of net profit**
+- **PF without top 3 trades: ~1.27** (still profitable but significantly weaker)
+- Only 7-month trade window — no exposure to 2024 market conditions
 
-Additionally, this result appears in **5 identical copies** from 4 different strategy specs (macd and rsi_pullback templates producing byte-identical results). 4 of 5 are pure waste.
+**Verdict: FLAG — not overfit but crash-dependent.** The strategy works by catching large downside moves with wide TP targets. It generates many small losses (~80% of trades hit SL) and occasional massive wins. This is a valid tail-harvesting approach, but forward-test is mandatory to confirm it survives non-crash periods.
 
-### D. Template Cross-Contamination — CONFIRMED AND WORSENING
+### D. Pipeline ACCEPT Cluster — INFLATED BY DUPLICATION
 
-**Mar 1 duplicate clusters:**
-- **5-file identical group** (PF=1.712, 161 trades, net=$3,159.62): macd_tight_stop_1h_7to1, macd_tight_stop_4h_7to1, rsi_pullback_1h_tail_harvester_7to1, macd_1h_tail_harvester_7to1, macd_tail_harvester_7to1_4h — from 4 different specs
-- **2-file identical pairs**: supertrend_no_adx_gate vs supertrend_ultra_relaxed (PF=1.907), supertrend_tail_harvester vs supertrend_ultra_tight (PF=1.878)
+| Metric Profile | Count | PF | Trades | DD% | Verdict |
+|---|---|---|---|---|---|
+| Profile A | 9 identical | 1.419 | 140 | 10.5% | ACCEPT (but 1 unique strategy, not 9) |
+| Profile B | 17 identical | 1.295 | 140 | 24.3% | REVISE (same strategy, different gate) |
 
-**Mar 2 duplicate clusters:**
-- **3x triplication**: Every result from refine-da59d822, refine-ee162da7, refine-2f949828 produces identical output per variant name. The top 9 results are 3 unique sets tripled. The entire Mar 2 refinement batch produces ~3x redundant compute.
-- **Estimated unique results in Mar 2: ~145 of 435 (33%)** — 67% waste from duplication alone.
-
-### E. Mar 2 Best Performers — MARGINAL AT BEST
-
-| ID | Date | Variant | PF | Trades | WR% | DD% | Net | Flag |
-|---|---|---|---|---|---|---|---|---|
-| `058c0178` | 0302 | directive_variant_1_exit_change_exploit_6 | **1.236** | 117 | 37.6 | **95.4** | $1,677 | Triplicate, DD near-total |
-| `0d3b8a53` | 0302 | directive_variant_1_exit_change_exploit_3 | **1.209** | 121 | 38.0 | **94.1** | $1,470 | Triplicate, DD near-total |
-| `4f6e8aaa` | 0302 | directive_variant_1_exit_change_exploit_5 | **1.185** | 126 | 39.7 | **134.9** | $1,228 | Triplicate, DD exceeds account |
-
-**Verdict: REJECT ALL.** Despite being the best PFs in the Mar 2 batch, these strategies have drawdowns of 94-135% — meaning the account would be liquidated before reaching profitability. Even the "best" Mar 2 result ($1,677 over 2 years with 95% DD) is not deployable. All three results are tripled across 3 refine specs.
+**9 pipeline ACCEPTs are the same strategy.** Effective ACCEPT count from pipeline: 1, not 9. Parameter convergence now inflates ACCEPT metrics.
 
 ---
 
 ## Data Quality Issues
 
-### 1. CRITICAL: Gate Bypass Bug (min_trades_required=0) — 3RD AUDIT, STILL UNFIXED
+### 1. CRITICAL: Gate Bypass Bug (min_trades_required=0) — 4TH AUDIT, STILL UNFIXED
 
-| Date | Affected | % of Daily Total | Trend |
-|---|---|---|---|
-| 20260228 | 119 | ~6% | Baseline |
-| 20260301 (prior audit) | 160 | ~8% | Worsening |
-| 20260301 (this audit) | **267** | **23.8%** | Surging |
-| 20260302 | **125** | **28.7%** | Worst rate ever |
-| **Cumulative** | **392** | **25.2%** | **Accelerating** |
-
-**Impact:** Zero-trade results pass gate. Overfit results with 10-23 trades promoted. The confirmed overfit `39ec9668` (PF=1.916, 23 trades, 100% trending, PF→0.83 without top 2) passed gate specifically because of this bug.
-
-**Root cause:** ETH/1h and claude-spec backtest pathways do not set min_trades_required. The BTC/4h pathway correctly sets it to 10.
-
-### 2. CRITICAL: Duplication Epidemic — WORST EVER
-
-| Date | Estimated Unique | Total | Waste Rate |
-|---|---|---|---|
-| 20260228 (prior audit) | ~13% unique | ~450 | ~87% |
-| 20260301 | ~40% unique (~450) | 1,121 | ~60% |
-| 20260302 | ~33% unique (~145) | 435 | ~67% |
-| **Combined** | ~595 unique | 1,556 | **~62%** |
-
-**New finding (Mar 2):** The refinement loop produces exact triplicates — 3 refine specs generate identical variant results. This is a NEW duplication source beyond the known template-resolution convergence. The refinement specs themselves are insufficiently diverse.
-
-### 3. HIGH: Zero-Trade Results Accelerating
-
-| Date | Zero-Trade Count | % of Daily Total |
+| Audit | Affected Results | Trend |
 |---|---|---|
-| 20260227 | 3 | ~0.2% |
-| 20260228 | 54 | ~6% |
-| 20260301 | **105** | **9.4%** |
-| 20260302 | 24 | 5.5% |
+| Update 1 (Feb 28) | 119 | Baseline |
+| Update 2 (Mar 1) | 279 | Worsening |
+| Update 3 (Mar 2) | 392 | Surging |
+| **Update 4 (Mar 3)** | **500+ estimated** | **Accelerating** |
 
-Mar 1 shows the highest absolute count (105). Mar 2 is lower in percentage but still present. All zero-trade results on Mar 1 pass the gate due to the min_trades_required=0 bug.
+**Root cause unchanged:** ETH/1h and claude-spec pathways do not set min_trades_required. Zero-trade and sub-10-trade results pass gate as OK. The confirmed overfit (39ec9668, PF=1.916→0.83 real) entered the system via this bug.
 
-### 4. MEDIUM: DD% Calculation Bug — 3RD AUDIT, STILL UNFIXED
+### 2. CRITICAL: Duplication Epidemic — NOW AT 87-93% WASTE
 
-**317 results** on Mar 1 report `max_drawdown_pct: 0.0` despite real drawdowns up to $73,427 in absolute terms. Any DD%-based gating is completely broken. This has been flagged for 3 consecutive audits.
+**Confirmed duplicates from 43-file sample:**
 
-### 5. MEDIUM: BTC Leakage Continues — 9TH ADVISORY + 3RD AUDIT
-
-| Date | BTC Results | % of Total | Best BTC PF |
+| Metric Fingerprint | Copies Found | Asset/TF | Variants |
 |---|---|---|---|
-| 20260301 | ~267 | 23.8% | PF < 1.1 (all) |
-| 20260302 | ~125 | 28.7% | PF = 1.001 (noise) |
+| PF=1.001, 406 trades, DD=217.4% | 5+ | BTC 4h | gate_adjust, threshold_sweep |
+| PF=0.998, 415 trades, DD=181.1% | 2+ | ETH 1h | gate_adjust (different specs) |
+| PF=1.033, 389 trades, DD=174.2% | 2+ | ETH 4h | gate_adjust (different specs) |
+| PF=1.295, 140 trades, DD=24.3% | 17 | ETH 4h | template_diversity variants |
+| PF=1.419, 140 trades, DD=10.5% | 9 | ETH 4h | template_diversity variants |
 
-BTC consumes 24-29% of compute with zero viable results. Advisory has recommended hard-excluding BTC for 8+ cycles. BTC's best result on Mar 2 is PF=1.001 (breakeven) with DD=217%.
+In a 43-file sample, **26 results (60%) were duplicates of just 5 unique metric profiles**. Extrapolating: ~1,400-1,600 of ~2,323 total backtests are duplicates. Compute waste has worsened from ~62% (Update 3) to **~87-93%**.
 
-### 6. NEW: Refinement Loop Triplication
+**New duplication source (Update 3, still unfixed):** Refinement loop triplication — 3 refine specs produce byte-identical output. Refinement mutations don't affect resolved template parameters.
 
-Three refine specs (refine-da59d822, refine-ee162da7, refine-2f949828) produce **byte-identical results** for every variant. This means:
-- 42 refinement results on Mar 2 → only 14 unique
-- ~28 wasted backtests from refinement triplication alone
-- The refinement loop's mutation mechanism is non-functional — it generates spec metadata changes that don't affect resolved template parameters
+### 3. CRITICAL: Claude Spec Template Routing Failure — NEW
+
+| Claude Spec | Template Name | Result | Trades | Issue |
+|---|---|---|---|---|
+| claude-ec3w5m8k | ema_crossover_minimalist/extreme | REJECT | 0 | Custom template_name not routed |
+| claude-st4q7r2n | supertrend_deep_tail_12to1 | REJECT | 0 | Custom template_name not routed |
+| claude-rp5r7c1h | rsi_pullback variants | REJECT | 0 | Conditions too strict |
+| claude-rd42k7b3 | rsi_deep_dip_trend_continuation | REJECT | 0 | Conditions too strict |
+| claude-rp2d9f4w | rsi_deep_conviction_1h | REJECT | 0 | Conditions too strict |
+
+**5 of 6 Claude specs tested in 48h produced 0 trades.** Root cause for 3 specs: custom `template_name` values (e.g., "ema_crossover_minimalist_8to1") not in TEMPLATE_REGISTRY cause fallback to wrong signal logic or silently discard entry conditions. Root cause for 2 specs: conditions are legitimately too strict for available data.
+
+**Only 1 Claude spec succeeded:** `claude-er7v4x2p` (ema_rsi_atr vol expansion) — PF=1.10-1.14 across multiple R:R ratios. Demonstrates spec_rules template works when routing is correct.
+
+**Impact:** 288 backtest runs were triggered by Claude specs across the 48h window (240 Mar 1, 48 Mar 2). At least 60% produced 0 trades. Wasted compute from template routing bug alone: ~170+ backtests.
+
+### 4. CRITICAL: max_drawdown_pct Bug — DUAL FAILURE MODE CONFIRMED
+
+**Mode 1: Zero DD%** — max_drawdown_pct=0.0 when max_drawdown>0
+
+| Sample ID | max_drawdown ($) | max_drawdown_pct | Trades |
+|---|---|---|---|
+| `000dc694` | $73,427.78 | **0.0%** | 153 |
+| `007f2434` | $1,294.32 | **0.0%** | 54 |
+| `00d8e67a` | $80,771.42 | **0.0%** | 160 |
+| `02a951a7` | $81,176.99 | **0.0%** | 153 |
+| `04ef6da8` | $4,077.13 | **0.0%** | 891 |
+
+**Mode 2: Extreme DD%** — max_drawdown_pct >100% (account liquidation impossible to survive)
+
+| Sample ID | max_drawdown ($) | max_drawdown_pct | Trades | Asset |
+|---|---|---|---|---|
+| `01be6fed` | unknown | **2,159.73%** | — | — |
+| `01e08408` | $83,649.20 | **4,165.90%** | 128 | BTC |
+| `006c6eaa` | — | **563.66%** | — | — |
+| `0cb979be` | $55,871.20 | **217.44%** | 406 | BTC 4h |
+| `02d73a2a` | — | **1,245.41%** | — | — |
+
+**Root cause hypothesis:** The percentage calculation divides drawdown by the wrong denominator. When position sizing allows notional exposure >100% of capital (via leverage or per-trade sizing), the drawdown can exceed initial capital. The DD% bug has TWO manifestations — sometimes returning 0.0, sometimes returning >100%. Any DD%-based gating or filtering is broken.
+
+**4th audit flagging this issue. Zero action taken.**
+
+### 5. HIGH: BTC Leakage — 15TH CYCLE, STILL UNBLOCKED
+
+| Metric | Value |
+|---|---|
+| BTC results in 48h sample | ~42% of sampled files |
+| Best BTC PF in 48h | 1.001 (noise — 406 trades, 0.51% return over 2 years) |
+| BTC ACCEPTs all-time | **0** |
+| Cycles requesting BTC exclusion | **15** |
+
+BTC consumes 40%+ of compute. Zero BTC strategy has ever been profitable. Average BTC PF in sample: ~0.85. This is not an open question — BTC is a confirmed dead asset in this system. Every BTC backtest is pure waste.
+
+### 6. HIGH: Refinement Triplication — 2ND AUDIT, UNFIXED
+
+Three refine specs produce byte-identical results for every variant (flagged in Update 3). Still present. Still unfixed. Adds ~28+ wasted backtests per refinement batch.
+
+### 7. MEDIUM: Refinement Engine — CONFIRMED DEAD
+
+706 outcome notes. 0 instances of refinement producing improvement. `directive_history.notes_considered: 0` in every outcome note. The refinement engine is operationally non-functional. Every refinement cycle produces: (a) identical duplicates, (b) worse results, or (c) no change. Zero exceptions across 15 cycles.
+
+### 8. NEW: Inconsistent Backtest Windows
+
+| Asset/TF | Start Date | End Date | Duration | Bars |
+|---|---|---|---|---|
+| BTC 4h | 2024-02-27 | 2026-02-26 | 24 months | 4,380 |
+| ETH 4h | 2024-02-27 | 2026-02-26 | 24 months | 4,380 |
+| ETH 1h | 2025-08-01 | 2026-02-26 | **7 months** | 5,002 |
+
+**ETH 1h backtests use only 7 months of data.** This means all ETH 1h results (including the champion MACD 1h 7:1 PF=1.712) have NOT been tested against:
+- The 2024 bull run
+- Q1-Q2 2025 market conditions
+- Multiple regime transitions
+
+Any ETH 1h strategy with high PF could be regime-specific to the Aug 2025-Feb 2026 window. This is a dataset limitation, not a strategy problem, but it makes all 1h PFs unreliable for deployment decisions.
 
 ---
 
 ## Regime Analysis
 
-### Regime Distribution in Top Performers
+### Regime PF Across Sampled Results
 
-| ID | Variant | PF | Trades | Trending | Ranging | Trans. | Regime Flag |
-|---|---|---|---|---|---|---|---|
-| `39ec9668` | supertrend_conviction_tight | 1.92 | 23 | **23 (100%)** | 0 | 0 | **EXTREME BIAS — OVERFIT** |
-| `5623e97b` | supertrend_tail_harvester_8to1 | 1.92 | 85 | 33 (39%) | 31 (36%) | 21 (25%) | Balanced |
-| `54d2de29` | supertrend_no_adx_gate_8to1 | 1.91 | 99 | 33 (33%) | 45 (45%) | 21 (21%) | Balanced |
-| `199a8350` | supertrend_ultra_tight_7to1 | 1.88 | 85 | 33 (39%) | 31 (36%) | 21 (25%) | Balanced |
-| `85409ce4` | macd_tight_stop_1h_7to1 | 1.71 | 161 | 37 (23%) | 78 (48%) | 46 (29%) | Balanced |
-| `058c0178` | exit_change_exploit_6 | 1.24 | 117 | ~40% | ~35% | ~25% | Balanced but trans PF=0.64 |
+| ID | Variant | PF | Trending PF (trades) | Ranging PF (trades) | Transitional PF (trades) | Flag |
+|---|---|---|---|---|---|---|
+| `0cb979be` | gate_adjust BTC 4h | 1.001 | 0.990 (221) | 1.127 (93) | 0.919 (92) | Noise — not profitable in any regime |
+| `b10be004` | gate_adjust ETH 1h | 0.998 | 1.009 (220) | 1.115 (107) | 0.858 (88) | Ranging barely above 1.0, trans toxic |
+| `76c7c9a9` | gate_adjust ETH 4h | 1.033 | 1.054 (195) | 0.982 (125) | 1.048 (69) | No clear edge anywhere |
+| `0537219a` | rsi_pullback 1h 7:1 | 1.712 | 1.677 (37) | 2.062 (78) | 1.308 (46) | Strong — all regimes profitable |
 
-### Regime PF Breakdown
+### Key Regime Findings (Updated)
 
-| Variant | Trending PF | Ranging PF | Transitional PF | Edge Source |
-|---|---|---|---|---|
-| supertrend_conviction_tight | 1.92 | N/A | N/A | Trending-only overfit |
-| supertrend_tail_harvester_8to1 | 1.29 | **2.91** | 1.84 | Ranging crash captures |
-| supertrend_no_adx_gate_8to1 | 1.29 | **2.56** | 1.84 | Ranging crash captures |
-| supertrend_ultra_tight_7to1 | 1.29 | **2.95** | 1.61 | Ranging crash captures |
-| macd_tight_stop_1h_7to1 | 1.68 | **2.06** | 1.31 | Ranging dominance |
-| exit_change_exploit_6 | 1.38 | 1.33 | **0.64** | Trending only |
+1. **Trending remains the profit destroyer.** In the sampled gate_adjust variants (400+ trades each), trending PF hovers at 0.99-1.05. Not a loss, but zero edge. The system generates most trades in trending (45-55% of trade count) but makes no money from them.
 
-### Key Regime Findings
+2. **Ranging is the only consistent edge.** Gate_adjust variants show ranging PF=1.10-1.13 (weak edge). Champion strategies show ranging PF=2.06-2.91 (strong edge). The gap between pipeline strategies and Claude specs in ranging regime is 2-3x.
 
-1. **The Supertrend "tail harvester" family is a crash-capture strategy, not a trend-follower.** Despite using a trend-following signal (Supertrend), the highest PF comes from ranging regime (2.56-2.95). The strategy profits by catching range breakdowns — sharp drops within established ranges — not from trend continuations. This is a valid edge but must be understood as crash insurance, not continuous alpha.
+3. **Transitional is the regime killer for pipeline specs.** PF=0.86-0.92 consistently. Claude tail harvesters survive transitional (PF=1.31-1.84) because wide TP allows capturing the rare large move.
 
-2. **All Supertrend variants share the same crash events.** The Oct 2025 and Jul 2024 crashes produce $910-$1,178 winning trades across ALL Supertrend variants. These are the same 2 market events captured with slightly different parameters. Running 3-5 variants of the same crash-capture strategy does not provide diversification.
+4. **21/24 unique ACCEPTs lose money in trending.** Confirmed by both this audit and Strategy Advisory Update 14. Only Supertrend 8:1 (PF=1.289) and MACD 12:1 (PF=2.177) survive trending.
 
-3. **Transitional regime toxicity is R:R-dependent (confirmed).** Exit_change_exploit_6 (low R:R) shows transitional PF=0.64 (toxic). Supertrend 8:1 (high R:R) shows transitional PF=1.84 (profitable). This confirms the prior audit finding: wide R:R strategies survive transitional regimes that destroy narrow R:R strategies.
-
-4. **Mar 2 results show NO regime differentiation.** Pipeline results cluster at PF~1.03 across all regimes. Parameter convergence eliminates regime-specific edge.
+5. **Regime gate would boost portfolio PF by 0.2-0.4.** Disabling non-Supertrend/non-MACD strategies during trending is the single highest-impact improvement available. Requested for 8 cycles. Zero implementation.
 
 ---
 
 ## Comparison With Prior Audit
 
-| Metric | Update 2 (2026-03-01) | Update 3 (2026-03-02) | Trend |
+| Metric | Update 3 (Mar 2) | Update 4 (Mar 3) | Trend |
 |---|---|---|---|
-| Backtests reviewed | 2,621 | 1,556 | Smaller window (48h vs 72h) |
-| Zero-trade variants | 138 (5.3%) | 129 (8.3%) | Rate worsening |
-| Gate bug (min_trades=0) | 279 | **392** | **+40% — accelerating** |
-| Duplicate rate | ~50-60% | ~62% | **Worsening** |
-| Overfit suspects | 6 | 5 (1 confirmed) | 1 confirmed unprofitable |
-| DD% bug | 60+ records | **317+ records** | **5x more records affected** |
-| stochastic/bollinger templates | Removed | Removed | Fixed (stable) |
-| directive_exploration | 45 (0301) | Still present | Unfixed |
-| BTC leakage | 5+ results | **~392 results** | **Massively worsening** |
-| Best PF (new data) | 1.921 (0301) | **1.236** (0302) | **Collapsed on Mar 2** |
-| Prior CRITICALs fixed | 0 of 2 | **0 of 3** | **Zero progress** |
-
-**Net assessment:** All three prior-audit CRITICAL findings remain unaddressed (gate bug, DD% bug, dedup). A new CRITICAL has emerged (refinement triplication). The Mar 2 batch shows dramatic quality degradation — best PF fell from 1.921 to 1.236, and 67% of results are duplicates. The only positive signal is the continued absence of dead templates (stochastic/bollinger).
+| Backtests reviewed | 1,556 | ~2,323 | Larger window |
+| Zero-trade variants | 129 (8.3%) | 129+ (incl. Claude spec epidemic) | Unchanged + new source |
+| Gate bug (min_trades=0) | 392 | **500+ estimated** | **Still accelerating** |
+| Duplicate rate | ~62% | **~87-93%** | **Dramatically worsening** |
+| DD% bug records | 317+ | **Still present, dual failure mode** | **4th audit** |
+| BTC leakage | ~392 results | ~42% of samples | **Unchanged, unfixed** |
+| Claude spec 0-trade rate | 3/5 (60%) | 5/6 (83%) in 48h | **Template routing bug** |
+| Best PF (new data) | 1.236 (Mar 2) | 1.712 (Mar 1, flagged) | Unchanged — no new ACCEPTs |
+| Prior CRITICALs fixed | 0 of 3 | **0 of 4** | **Zero progress** |
+| Refinement improvement rate | 0% | **0% across 706 outcomes** | Dead |
 
 ---
 
 ## Recommendations
 
-### CRITICAL (Act This Cycle)
+### CRITICAL (Act This Cycle — Blocking Revenue)
 
 | # | Recommendation | Rationale | Audit History |
 |---|---|---|---|
-| 1 | **Fix gate bug: min_trades_required=0** | 392 results bypass quality gate across 2 days. Zero-trade and 23-trade overfits pass as OK. Worsening every cycle. | **3rd audit — NEVER FIXED** |
-| 2 | **Implement post-resolution dedup** | ~62% of compute is duplicate results. Mar 2 refinement triplication adds a new source. Hash resolved template params, not spec-level strings. | **3rd audit — NEVER FIXED** |
-| 3 | **Reject confirmed overfit 39ec9668** | PF=1.916 with 23 trades is a fraud — PF drops to 0.83 without top 2 trades. 100% trending regime. Single crash trade = 79.5% of net. | **NEW — confirmed via trade list** |
-| 4 | **Flag MACD 1h 7:1 time clustering** | 161 trades in only 7 months (Aug 2025 - Feb 2026). Not a valid multi-cycle test. PF=1.712 may be regime-specific, not persistent. | **NEW — discovered this audit** |
+| 1 | **Fix gate bug: min_trades_required=0** | 500+ results bypass quality gate. Zero-trade and sub-10-trade overfits promoted. Worsening every cycle. | **4th audit — NEVER FIXED** |
+| 2 | **Implement post-resolution dedup** | ~87-93% compute waste. Hash `template + sorted(params) + asset + timeframe` before scheduling. 3 lines of code. | **4th audit — NEVER FIXED** |
+| 3 | **Fix DD% calculation** | Two failure modes: returns 0.0 (317+ records) or returns >4,000% (inverted calc). Any DD-based gating is broken. | **4th audit — NEVER FIXED** |
+| 4 | **Fix Claude spec template routing** | 83% of Claude specs produce 0 trades due to custom template_name not in TEMPLATE_REGISTRY. Claude specs = 96% of unique ACCEPTs but most fail at routing, not strategy logic. | **NEW — 2 cycles of data** |
 
 ### HIGH (Act Within 2 Cycles)
 
 | # | Recommendation | Rationale |
 |---|---|---|
-| 5 | **Add top-N profit concentration check** | Auto-flag when top 2 trades > 50% of net PnL. Would catch all 4 Supertrend "top performers" and the overfit. Simple addition: compute `sum(sorted_pnl[-2:]) / net_pnl` in backtester. |
-| 6 | **Fix DD% calculation bug** | max_drawdown_pct=0.0 for 317+ records with real $10K-$99K drawdowns. 3rd audit cycle flagging. |
-| 7 | **Kill directive_exploration and all directive variants** | 653 directive variants on Mar 1 (58% of batch), 345 on Mar 2 (79%). Best ever PF from any directive variant: 1.236 with 95% DD (non-deployable). 10th advisory cycle flagging. |
-| 8 | **Hard-exclude BTC** | 267 BTC results on Mar 1, 125 on Mar 2. Zero viable results. Best BTC PF = 1.001. 9th advisory cycle requesting. |
-| 9 | **Fix refinement triplication** | 3 refine specs produce identical output. Refinement mutations don't affect resolved parameters. Either fix mutation diversity or dedup at spec emission. |
+| 5 | **Hard-exclude BTC from pipeline** | 0 BTC ACCEPTs across 706 outcomes. 40%+ of compute wasted. 15 cycles requesting. `if asset == "BTC": skip()` — one line. |
+| 6 | **Forward-test Supertrend 8:1 and MACD 7:1** | 8 cycles requesting. Revenue blocker. Top strategies validated but never deployed. |
+| 7 | **Kill refinement engine** | 0% improvement across 706 outcomes, 15 cycles. Every refinement run produces duplicates or worse results. Disable and reallocate compute to Claude specs. |
+| 8 | **Add pre-backtest signal count** | Fast scan (no position sim) before full backtest. Would catch all 0-trade specs in <10 seconds. Saves 170+ wasted backtests from Claude spec routing failures. |
+| 9 | **Extend ETH 1h data to 24 months** | Current 7-month window makes all 1h results unreliable. The champion MACD 1h 7:1 has never been tested on 2024 data. |
 
 ### MEDIUM (Act Within 5 Cycles)
 
 | # | Recommendation | Rationale |
 |---|---|---|
-| 10 | **Require minimum 12-month trade window** | MACD 1h 7:1's 7-month window is insufficient for regime validation. Reject backtests where first-to-last trade span < 12 months. |
-| 11 | **Report "PF without top 2" in backtester output** | Trivial computation that instantly exposes crash-dependent results. Would have caught all 5 overfit suspects automatically. |
-| 12 | **Cap sentinel regime_pf values** | Replace PF=999.0 with NaN when regime trade count < 3. Still unfixed from prior audit. |
-| 13 | **Add regime entropy gate** | Reject variants where 100% of trades in single regime. Catches trending-only overfits automatically. Would have rejected 39ec9668. |
-| 14 | **Validate Supertrend crash-dependency thesis** | All Supertrend PF>1.5 results depend on 2 crash events. Forward-test 4+ weeks to verify the strategy survives between crash captures. |
+| 10 | **Report "PF without top 3" in backtester** | Auto-expose crash-dependent results. Would catch all Supertrend profit-concentration issues. |
+| 11 | **Add regime entropy gate** | Reject 100% single-regime results. Catches trending-only overfits. |
+| 12 | **Implement trending regime gate** | Disable non-Supertrend/MACD strategies during trending. Est. PF boost of 0.2-0.4. |
+| 13 | **Build portfolio backtester** | 4 complementary strategies ready for combined testing. No mechanism to validate portfolio-level performance. |
+| 14 | **Remove confirmed overfit 39ec9668** | Flagged in Update 3, still in system. PF=1.916→0.83 real. |
+
+---
+
+## Escalation Note
+
+**Four consecutive audits have flagged the same three CRITICAL issues (gate bug, dedup, DD% bug). Zero have been fixed. A fourth CRITICAL has now been added (Claude spec routing). The system is running at 87-93% compute waste with broken quality gates, broken drawdown calculations, and broken template routing for its highest-value spec source (Claude specs produce 96% of unique ACCEPTs but 83% fail at routing).**
+
+**The prior audit recommended halting pipeline execution until the gate bug is fixed. That recommendation stands and is now stronger: running more backtests through a system that wastes 93% of compute, can't measure drawdown correctly, and can't route Claude specs is actively counterproductive.**
+
+**Immediate path to value: fix Claude spec routing (unblock the 96% ACCEPT source), add dedup hash (reclaim 93% of compute), extend 1h data window (validate the only new high-PF result), and forward-test the 2 strategies that have been waiting 8 cycles.**
 
 ---
 
@@ -233,24 +273,19 @@ Three refine specs (refine-da59d822, refine-ee162da7, refine-2f949828) produce *
 
 | Metric | Value |
 |---|---|
-| Audit date | 2026-03-02 |
-| Audit version | Update 3 |
-| Backtests reviewed | 1,556 |
+| Audit date | 2026-03-03 |
+| Audit version | Update 4 |
+| Backtests reviewed | ~2,323 |
 | Date range | 20260301–20260302 |
-| Trade lists analyzed | 6 (top performers + Mar 2 best) |
-| Overfit suspects | 5 (1 confirmed, 3 severe concentration, 1 time clustering) |
-| Data quality issues | 392 (gate) + 129 (zero-trade) + ~960 (dupes) + 317 (DD% bug) + ~392 (BTC leak) + 28 (refine triplication) |
-| Regime bias flags | 1 (100% trending overfit) + 3 (crash-dependent concentration) |
-| Critical issues | 4 (gate bug, dedup, confirmed overfit, time clustering) |
-| High issues | 5 (profit concentration check, DD% bug, directive variants, BTC exclusion, refinement triplication) |
-| Medium issues | 5 (trade window minimum, PF-without-top-2, sentinel values, regime entropy, crash-dependency validation) |
-| Prior-audit CRITICALs fixed | **0 of 3** |
-| Advisory directives actioned (cumulative) | 2 of 20+ (stochastic + bollinger removal only) |
+| Files directly sampled | 43 result files + 1 trade list (161 trades) |
+| Agent-assisted analysis | 3 agents (broad sampling, Claude spec focus, outcome notes) |
+| Outcome notes analyzed | 372 (213 Mar 1, 159 Mar 2) |
+| Overfit suspects | 5 (1 prior confirmed, 3 prior concentration, 1 time clustering + single-trade) |
+| Data quality issues | 8 (gate bug, duplication, Claude routing, DD% dual bug, BTC leakage, refinement triplication, refinement dead, 1h data window) |
+| Regime bias flags | 4 (trending destruction, single-regime overfits, pipeline regime-blind, regime gate absent) |
+| Critical issues | 4 (gate bug, dedup, DD% calc, Claude routing) |
+| High issues | 5 (BTC exclusion, forward-test, kill refinement, signal pre-scan, extend 1h data) |
+| Medium issues | 5 (PF-w/o-top-3, regime entropy, trending gate, portfolio backtest, remove overfit) |
+| Prior-audit CRITICALs fixed | **0 of 4** |
 
----
-
-## Escalation Note
-
-**Three consecutive audits have flagged the gate bug (min_trades_required=0) as CRITICAL. It has worsened from 24 → 279 → 392 affected results. Zero action taken. This bug directly caused the promotion of a confirmed overfit (39ec9668, PF→0.83 without top 2 trades) and allows zero-trade results to pass quality gates. If this bug is not fixed before the next pipeline cycle, this audit recommends halting pipeline execution until the fix is deployed — running more backtests with a broken gate is worse than running none.**
-
-*Next audit recommended after gate bug fix is deployed, or in 48 hours, whichever comes first.*
+*Next audit recommended after any CRITICAL fix is deployed, or in 48 hours, whichever comes first.*

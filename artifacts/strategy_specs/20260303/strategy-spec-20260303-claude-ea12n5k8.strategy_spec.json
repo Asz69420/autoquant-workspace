@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-ea12n5k8",
+  "created_at": "2026-03-03T14:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ema_rsi_atr precision variant (RSI 50-65) achieved PF=1.327 with the system's best ranging PF (2.864). The 'precision' thesis proved that NARROWING the RSI band INCREASES profit factor by filtering to higher-quality entries. This spec pushes that thesis further: what is the OPTIMAL center point? RSI 48-62 targets the equilibrium zone where momentum is perfectly balanced. In a confirmed trend (EMA_9 > EMA_21) with vol expansion (ATR > ATR_MA20), balanced RSI means the trend hasn't overheated — maximum acceleration potential remains. This is the opposite of traditional oversold/overbought RSI usage. We want RSI in the MIDDLE because that's where trend acceleration begins, not where it exhausts. The narrow band (14-point width vs default 30-point) produces fewer but theoretically higher-quality entries. At 12:1 R:R, we only need ~8% win rate — and center-band entries during confirmed trends should produce disproportionately large winners because we're catching the trend at its most elastic point. The asymmetric short bands (38-52) compensate for crypto's natural long bias — shorts need RSI closer to center because the long-bias drift means RSI spends less time in the lower-center zone. Invalidation: if total trades < 25, the center band is too narrow. If win rate < 5%, we're catching indecision (range-bound RSI) not pre-acceleration.",
+  "regime_assumption": "ranging_transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h", "1h"],
+  "variants": [
+    {
+      "name": "ema_rsi_atr_center_sniper_12to1_4h",
+      "template_name": "ema_rsi_atr",
+      "description": "Center-band RSI sniper on ETH/4h with 12:1 R:R. RSI 48-62 for longs (equilibrium zone in uptrend), RSI 38-52 for shorts (equilibrium in downtrend). EMA_9 > EMA_21 + ATR > ATR_MA20 provides trend + vol confirmation. 24.0x ATR TP captures the full acceleration move from equilibrium. Fewer trades than precision variant but each entry is at the theoretical maximum-potential point.",
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (24.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < precision_10to1 (1.327), narrower band reduces quality not noise — center-band thesis is wrong"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 24.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "min": 45.0, "max": 50.0, "step": 5.0, "default": 48.0},
+        {"name": "rsi_long_max", "min": 58.0, "max": 65.0, "step": 3.0, "default": 62.0},
+        {"name": "rsi_short_min", "min": 35.0, "max": 42.0, "step": 3.0, "default": 38.0},
+        {"name": "rsi_short_max", "min": 48.0, "max": 55.0, "step": 3.0, "default": 52.0},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 20.0, "max": 28.0, "step": 4.0, "default": 24.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 24.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 / EMA_21 crossover — confirmed trend direction"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 center-band 48-62 longs / 38-52 shorts — equilibrium zone for maximum acceleration potential"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 vol expansion gate + 2.0x stop / 24.0x TP — 12:1 R:R"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_center_sniper_10to1_4h",
+      "template_name": "ema_rsi_atr",
+      "description": "Center-band RSI sniper on ETH/4h with 10:1 R:R. Same center-band thesis at slightly conservative R:R. The precision variant was ACCEPT at 10:1 (PF=1.327), so 10:1 is a proven sweet spot for ema_rsi_atr. If center-band (48-62) outperforms precision (50-65) at the same 10:1, the equilibrium thesis is validated — the narrower symmetric band produces better entries than the wider asymmetric one.",
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < precision_10to1 (1.327) at same R:R, center band is not better than precision band"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "min": 45.0, "max": 50.0, "step": 5.0, "default": 48.0},
+        {"name": "rsi_long_max", "min": 58.0, "max": 65.0, "step": 3.0, "default": 62.0},
+        {"name": "rsi_short_min", "min": 35.0, "max": 42.0, "step": 3.0, "default": 38.0},
+        {"name": "rsi_short_max", "min": 48.0, "max": 55.0, "step": 3.0, "default": 52.0},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 18.0, "max": 22.0, "step": 2.0, "default": 20.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 / EMA_21 crossover — trend confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 center-band 48-62 longs / 38-52 shorts — head-to-head test vs precision band (50-65)"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 vol expansion gate + 2.0x stop / 20.0x TP — 10:1 R:R (same as precision ACCEPT)"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_center_sniper_12to1_1h",
+      "template_name": "ema_rsi_atr",
+      "description": "Center-band RSI sniper on ETH/1h with 12:1 R:R. The 1h timeframe produces more EMA crossovers and more RSI readings in the center band, generating more trade candidates. Tests whether the center-band equilibrium thesis scales to faster timeframes. More data points = more statistical power to validate or reject the hypothesis.",
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (24.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "Hypothesis failure mode: if PF < 1.0 on 1h, center-band entries on faster timeframe catch noise not acceleration"
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 24.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "min": 45.0, "max": 50.0, "step": 5.0, "default": 48.0},
+        {"name": "rsi_long_max", "min": 58.0, "max": 65.0, "step": 3.0, "default": 62.0},
+        {"name": "rsi_short_min", "min": 35.0, "max": 42.0, "step": 3.0, "default": 38.0},
+        {"name": "rsi_short_max", "min": 48.0, "max": 55.0, "step": 3.0, "default": 52.0},
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.5, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 20.0, "max": 28.0, "step": 4.0, "default": 24.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 24.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_9 / EMA_21 crossover — 1h trend direction"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 center-band 48-62 longs / 38-52 shorts — equilibrium thesis on 1h for more data"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 vol expansion gate + 2.0x stop / 24.0x TP — 12:1 R:R"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema"],
+    "confirmation": ["rsi"],
+    "volume_volatility": ["atr"]
+  }
+}
