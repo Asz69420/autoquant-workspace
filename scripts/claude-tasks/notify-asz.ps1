@@ -33,18 +33,13 @@ if (-not $token -or -not $chatId) {
 function Convert-MarkupToHtml([string]$text) {
   if ([string]::IsNullOrWhiteSpace($text)) { return "" }
 
-  $escaped = [System.Security.SecurityElement]::Escape($text)
-  $escaped = $escaped -replace '`', ''
+  $text = $text -replace '`', ''
+  $text = $text -replace '\*\*(.+?)\*\*', '<b>$1</b>'
+  $text = $text -replace '__(.+?)__', '<b>$1</b>'
+  $text = $text -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
+  $text = $text -replace '(?<!_)_(.+?)(?<!_)_', '<i>$1</i>'
 
-  # Bold markers
-  $escaped = $escaped -replace '\*\*(.+?)\*\*', '<b>$1</b>'
-  $escaped = $escaped -replace '__(.+?)__', '<b>$1</b>'
-
-  # Italic markers
-  $escaped = $escaped -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
-  $escaped = $escaped -replace '(?<!_)_(.+?)(?<!_)_', '<i>$1</i>'
-
-  return $escaped
+  return $text
 }
 
 $url = "https://api.telegram.org/bot$token/sendMessage"
