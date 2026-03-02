@@ -1,5 +1,5 @@
 {
-  "top_cursor": 2528,
+  "top_cursor": 2588,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -85,7 +85,8 @@
     "rsi divergence (regular + hidden + live) - stablelogic|stable_logic",
     "smarttrend pro [willyalgotrader]|willyalgotrader",
     "stochastic buy/sell signal|nathanl19",
-    "bbr2.1|junjunms"
+    "bbr2.1|junjunms",
+    "swing profile [bigbeluga]|bigbeluga"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -172,7 +173,8 @@
     "9QMDACW3",
     "9z4Y3HQj",
     "dx95Np9f",
-    "RnUblmpw"
+    "RnUblmpw",
+    "gFlv7t7R"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

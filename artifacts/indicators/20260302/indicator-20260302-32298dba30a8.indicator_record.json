@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260302-32298dba30a8",
+  "created_at": "2026-03-02T13:19:51.565097Z",
+  "tv_ref": "tradingview:gFlv7t7R",
+  "url": "https://www.tradingview.com/script/gFlv7t7R-Swing-Profile-BigBeluga/",
+  "name": "Swing Profile [BigBeluga]",
+  "author": "BigBeluga",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "e66500ca2f0919d00ce043726d0362e79c2c2d972e4a31ee92636145156afebb",
+  "truncated": false
+}

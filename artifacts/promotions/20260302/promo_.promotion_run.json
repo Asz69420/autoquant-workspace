@@ -1,12 +1,12 @@
 ﻿{
     "schema_version":  "1.0",
     "id":  "promo_",
-    "created_at":  "2026-03-02T11:34:55.2243287Z",
+    "created_at":  "2026-03-02T13:19:55.9740048Z",
     "status":  "BLOCKED",
     "reason_code":  "NO_VARIANTS_COMPILED",
     "suggestion":  "Indicator not mapped to executable signals yet; needs rule extraction or builtin mapping.",
-    "input_linkmap_path":  "artifacts/links/20260302/research-20260302-143dce993110.linkmap.json",
-    "thesis_artifact_path":  "artifacts/thesis/20260302/thesis-20260302-b07ba19d222c.thesis.json",
+    "input_linkmap_path":  "artifacts/links/20260302/research-20260302-c51196037dc5.linkmap.json",
+    "thesis_artifact_path":  "artifacts/thesis/20260302/thesis-20260302-2d04a74df7cc.thesis.json",
     "strategy_spec_artifact_path":  "",
     "batch_backtest_artifact_path":  "",
     "experiment_plan_artifact_path":  ""

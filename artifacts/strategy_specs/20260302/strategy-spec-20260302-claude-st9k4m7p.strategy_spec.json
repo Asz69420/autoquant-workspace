@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-st9k4m7p",
+  "created_at": "2026-03-02T21:30:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend 8:1 is the all-weather champion (PF=1.921) on 1h/4h — but 15m has NEVER been tested with supertrend_follow. The core mechanism is SUPERTd direction flip = trend start. On 1h, this produces ~85 trades. On 15m, Supertrend flips happen ~4x more frequently (every 2-6 hours vs every 8-24 hours), potentially yielding 300-500 trades. The FREQUENCY THESIS: if Supertrend's signal quality per flip is similar across timeframes, then 15m produces MORE signals at comparable quality. At extreme R:R, each wrong flip is a cheap 1.5x ATR loss, while each correct flip riding a 4-12 hour momentum wave produces 9-15x ATR gains. The counter-argument: 15m Supertrend flips are noisier — intraday whipsaws produce false flips that 1h smooths out. If this is dominant, PF will be < 1.0 regardless of R:R. THREE OUTCOMES: (1) PF > 1.3 with 200+ trades = 15m is a high-frequency diversification layer (uncorrelated to 1h timing), add to portfolio. (2) PF 1.0-1.2 = 15m captures some edge but noise degrades it — only viable at the highest R:R. (3) PF < 0.9 = 15m flip quality is fundamentally inferior, confirming 1h as Supertrend's resolution floor. Regime assumption: ALL (matching the champion — Supertrend is all-regimes profitable). ADX > 20 gate filters the worst noise on 15m. Invalidation: If PF < 0.8 across all 3 R:R variants with 300+ trades, 15m is too fast for Supertrend — close the micro-timeframe chapter.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["15m", "1h"],
+  "variants": [
+    {
+      "name": "supertrend_15m_micro_6to1",
+      "description": "Supertrend direction flip on ETH/15m with 6:1 R:R (1.5x ATR stop / 9.0x ATR TP). The CONSERVATIVE micro-variant. 6:1 is the R:R floor — the minimum that produces ACCEPTs across templates. On 15m, ATR is ~0.3-0.5% of price (vs ~1.0-1.5% on 1h), meaning tighter absolute stops and TPs. Expected 400-600 trades over the backtest period. Breakeven win rate: 14.3%. If 15m signal quality matches 1h (~20% win rate), PF should be ~1.5. If noise degrades win rate to 15-16%, still marginally profitable. This is the safety variant — if even 6:1 fails on 15m, higher R:R won't save it.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from -1 to 1 (Supertrend direction flip bullish).",
+        "ADX_14 > 20 (minimum trend strength filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from 1 to -1 (Supertrend direction flip bearish).",
+        "ADX_14 > 20 (minimum trend strength filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 15m",
+        "Supertrend: SUPERTd_7_3.0 direction flip",
+        "ADX gate: ADX_14 > 20 — filters whipsaw noise on 15m",
+        "15m micro-trend test: does the champion signal work at 4x frequency?",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (9.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 6:1. Needs 14.3% win rate to break even after fees.",
+        "Safety variant: if 6:1 fails on 15m, the micro-timeframe thesis is dead"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 9.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 12.0, "step": 1.5, "default": 9.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip on 15m — testing micro-timeframe viability"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 20 trend quality gate — critical noise filter on 15m"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 9.0x TP — 6:1 R:R conservative, STOP_FLOOR compliant"}
+      ]
+    },
+    {
+      "name": "supertrend_15m_micro_8to1",
+      "description": "Supertrend direction flip on ETH/15m with 8:1 R:R (1.5x ATR stop / 12.0x ATR TP). The CHAMPION-MATCHED variant — same R:R as the 1h champion. Direct A/B test of timeframe effect: if 15m/8:1 produces PF > 1.5 (comparable to champion's 1.921), 15m Supertrend flips capture genuine micro-trends. If PF < 1.0, the 1h smoothing is essential and 15m noise overwhelms the signal. At 8:1, breakeven is 11.1% win rate. With 300-500 trades, even marginal edge (12-13% win rate) produces measurable PF. This variant is the centerpiece diagnostic.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from -1 to 1 (Supertrend direction flip bullish).",
+        "ADX_14 > 20 (minimum trend strength filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from 1 to -1 (Supertrend direction flip bearish).",
+        "ADX_14 > 20 (minimum trend strength filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 15m",
+        "Supertrend: SUPERTd_7_3.0 direction flip",
+        "ADX gate: ADX_14 > 20",
+        "Champion-matched R:R: 8:1 on 15m vs champion's 8:1 on 1h — isolating timeframe effect",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees.",
+        "Centerpiece: same R:R as champion, different timeframe — pure timeframe A/B test"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 16.0, "step": 2.0, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip on 15m — champion R:R on faster timeframe"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 20 — standard trend quality gate"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 12.0x TP — 8:1 R:R matching champion, STOP_FLOOR compliant"}
+      ]
+    },
+    {
+      "name": "supertrend_15m_micro_10to1",
+      "description": "Supertrend direction flip on ETH/15m with 10:1 R:R (1.5x ATR stop / 15.0x ATR TP). The EXTREME stress test. On 15m, 15x ATR TP means riding a move for ~4-8% of price (on ETH that's $100-250+ at current levels). This requires catching multi-hour directional moves that START with a Supertrend flip on 15m. If such moves exist at sufficient frequency (win rate > 9.1%), this variant will be profitable. The hypothesis: 15m Supertrend catches the VERY START of intraday momentum waves — the ones that last 4-12 hours. At 10:1, we need only 1 in 10 flips to produce a sustained move. Expected: 300-500 trades, PF target > 1.1.",
+      "entry_long": [
+        "SUPERTd_7_3.0 flips from -1 to 1 (Supertrend direction flip bullish).",
+        "ADX_14 > 20 (minimum trend strength filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 flips from 1 to -1 (Supertrend direction flip bearish).",
+        "ADX_14 > 20 (minimum trend strength filter).",
+        "Bar-close execution only.",
+        "Use signal: supertrend_follow"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 15m",
+        "Supertrend: SUPERTd_7_3.0 direction flip",
+        "ADX gate: ADX_14 > 20",
+        "Extreme R:R stress test: 10:1 on 15m — can micro-flips catch 4-12 hour momentum waves?",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (15.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees.",
+        "Stress test: does 15m Supertrend capture multi-hour momentum waves?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 15.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 20.0, "step": 2.5, "default": 15.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip on 15m — extreme R:R stress test"},
+        {"indicator": "ADX", "role": "confirmation", "notes": "ADX_14 > 20 — noise gate essential at 15m resolution"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 15.0x TP — 10:1 R:R extreme, STOP_FLOOR compliant"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

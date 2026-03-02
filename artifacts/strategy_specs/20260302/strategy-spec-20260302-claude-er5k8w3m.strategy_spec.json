@@ -1,0 +1,253 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260302-claude-er5k8w3m",
+  "created_at": "2026-03-02T21:30:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ema_rsi_atr has 2 ACCEPTs (PF=1.327 and PF=1.270), both at 10:1 R:R with narrow RSI bands near 50. The R:R CEILING for this template is UNKNOWN — nobody has tested beyond 10:1. The underlying mechanism is COMPRESSION ENTRY: when RSI is near 50 during an EMA uptrend, price is consolidated, volatility is contracted, and the ATR gate confirms above-average volatility is beginning (the breakout from compression). These entries SHOULD produce outsized tails because compressed price action resolves into multi-ATR directional moves. At 12:1 R:R, the TP is 18.0x ATR — this requires catching the full extent of a compression breakout that travels 18+ ATR units. On 1h ETH, that's a 3-5% move. On 4h ETH, that's a 5-10% move. Crypto regularly produces these moves after consolidation. THREE HYPOTHESES: (1) R:R SCALES: If PF > 1.2 at 12:1 (vs PF=1.327 at 10:1), compression entries have deep tails and ema_rsi_atr's R:R peak is above 10:1. This would make ema_rsi_atr the system's HIGHEST VIABLE R:R template. (2) R:R PEAKED: If PF drops to 1.0-1.1 at 12:1, the 10:1 peak is confirmed — tails beyond 15x ATR are too rare for this signal. The template is optimized and should be deployed at 10:1. (3) R:R COLLAPSED: If PF < 0.9 at 12:1, compression breakouts have a hard tail limit around 15x ATR — the market rarely sustains moves beyond this from a compressed state. Stop testing higher R:R for ema_rsi_atr. Also testing a 1.25x TIGHT STOP variant — if compression entries have high directional conviction, tighter stops should HELP (faster cut on wrong entries, more capital for winners). Invalidation: If PF < 0.8 at 12:1 with tight stops across all variants, 10:1 is the confirmed ceiling.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["1h", "4h"],
+  "variants": [
+    {
+      "name": "ema_rsi_atr_ceiling_1h_12to1",
+      "description": "ema_rsi_atr on ETH/1h with 12:1 R:R (1.5x ATR stop / 18.0x ATR TP). The flagship R:R ceiling test. The existing ACCEPT at 10:1 had PF=1.327 with 162 trades. At 12:1, TP moves from 15.0x to 18.0x ATR — an additional 3x ATR distance. The question: what fraction of 10:1 winners ALSO travel an extra 3x ATR? If the compression-breakout mechanism produces fat-tailed returns (which it should, since compression resolves into trending), many 10:1 winners should ALSO be 12:1 winners. Breakeven: 7.7% win rate. Expected: 162 trades (same entry signal), win rate 8-12%. PF target > 1.2.",
+      "entry_long": [
+        "Close > EMA_200 (trend confirmation — established uptrend).",
+        "EMA_50 slope is positive (current EMA_50 > previous bar EMA_50).",
+        "RSI_14 <= 50 (momentum not overbought — compression/pullback entry).",
+        "ATR_14 > rolling 50-bar ATR mean (volatility expanding — breakout beginning).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "Close < EMA_200 (trend confirmation — established downtrend).",
+        "EMA_50 slope is negative (current EMA_50 < previous bar EMA_50).",
+        "RSI_14 >= 50 (momentum not oversold — compression/pullback entry).",
+        "ATR_14 > rolling 50-bar ATR mean (volatility expanding).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "EMA trend: Close > EMA_200, EMA_50 slope positive",
+        "RSI compression: RSI_14 <= 50 (near midline = consolidated momentum)",
+        "ATR breakout: ATR_14 > 50-bar rolling mean (volatility expansion starting)",
+        "R:R ceiling test: 12:1 — does the compression tail extend beyond 10:1?",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 12:1. Needs 7.7% win rate to break even after fees.",
+        "Ceiling test: do compression breakouts produce 18x ATR tails?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 24.0, "step": 3.0, "default": 18.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend + EMA_50 slope — standard ema_rsi_atr baseline"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 50 compression entry — near-midline = consolidated price action"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 18.0x TP — 12:1 R:R ceiling test, STOP_FLOOR compliant"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_ceiling_4h_12to1",
+      "description": "ema_rsi_atr on ETH/4h with 12:1 R:R (1.5x ATR stop / 18.0x ATR TP). The 4h variant of the R:R ceiling test. On 4h, the ATR represents larger absolute price moves — 18x ATR on 4h means targeting 5-10% directional moves from compression. ETH regularly produces 5-10% moves over 2-5 day periods following consolidation. The 4h timeframe should FAVOR higher R:R because larger timeframe = larger moves = deeper tails. If 4h/12:1 produces higher PF than 1h/12:1, it confirms that timeframe amplifies tail depth for compression entries. Expected: 50-80 trades (4h reduces frequency), PF target > 1.3.",
+      "entry_long": [
+        "Close > EMA_200 (trend confirmation — established uptrend).",
+        "EMA_50 slope is positive (current EMA_50 > previous bar EMA_50).",
+        "RSI_14 <= 50 (compression entry — momentum consolidated).",
+        "ATR_14 > rolling 50-bar ATR mean (volatility expanding).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "Close < EMA_200 (trend confirmation — established downtrend).",
+        "EMA_50 slope is negative (current EMA_50 < previous bar EMA_50).",
+        "RSI_14 >= 50 (compression entry — momentum consolidated).",
+        "ATR_14 > rolling 50-bar ATR mean (volatility expanding).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "EMA trend: Close > EMA_200, EMA_50 slope positive",
+        "RSI compression: RSI_14 <= 50",
+        "ATR breakout gate: ATR_14 > 50-bar rolling mean",
+        "4h ceiling test: do 4h compression breakouts produce deeper tails than 1h?",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (18.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 12:1. Needs 7.7% win rate to break even after fees.",
+        "4h timeframe hypothesis: larger timeframe = deeper compression tails"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 18.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 24.0, "step": 3.0, "default": 18.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend + EMA_50 slope on 4h — larger timeframe for deeper tail capture"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 50 compression — same entry quality, 4h trade frequency"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.5x stop / 18.0x TP — 12:1 R:R on 4h, targeting 5-10% moves"}
+      ]
+    },
+    {
+      "name": "ema_rsi_atr_tightstop_1h_10to1",
+      "description": "ema_rsi_atr on ETH/1h with TIGHT stop: 1.25x ATR stop / 12.5x ATR TP (10:1 R:R). Same R:R as the existing ACCEPT (10:1) but with a tighter stop (1.25x vs 1.5x). The CONVICTION thesis: compression entries have high directional conviction at the moment of entry — if RSI is near 50 and ATR is expanding and the EMA trend is established, the breakout direction should be correct more often than random. A tighter stop at 1.25x ATR captures this conviction: wrong entries are cut 17% faster (1.25 vs 1.5), preserving capital. Right entries proceed unchanged since they move AWAY from the stop immediately. If PF > 1.4 (vs existing 1.327 at 1.5x/10:1), tighter stops improve ema_rsi_atr. If PF < 1.2, the 1.5x standard stop is needed — some compression entries initially dip before resolving.",
+      "entry_long": [
+        "Close > EMA_200 (trend confirmation).",
+        "EMA_50 slope is positive.",
+        "RSI_14 <= 50 (compression entry).",
+        "ATR_14 > rolling 50-bar ATR mean (volatility expanding).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "Close < EMA_200 (trend confirmation).",
+        "EMA_50 slope is negative.",
+        "RSI_14 >= 50 (compression entry).",
+        "ATR_14 > rolling 50-bar ATR mean (volatility expanding).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 1h",
+        "EMA trend: Close > EMA_200, EMA_50 slope positive",
+        "RSI compression: RSI_14 <= 50",
+        "ATR breakout: ATR_14 > 50-bar rolling mean",
+        "Tight stop test: 1.25x ATR (vs standard 1.5x) — conviction-based stop width",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.5x ATR).",
+        "Exit on ATR-based stop loss hit (1.25x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees.",
+        "Conviction test: do compression entries have enough directional accuracy for tighter stops?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.25x ATR_14 below/above entry.",
+        "Take profit at 12.5x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.0, "max": 1.75, "step": 0.25, "default": 1.25},
+        {"name": "tp_atr_mult", "min": 10.0, "max": 17.5, "step": 2.5, "default": 12.5},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.25,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 trend + EMA_50 slope — standard baseline, unchanged"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 <= 50 — standard compression entry"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.25x TIGHT stop / 12.5x TP — 10:1 R:R, conviction-based stop width"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

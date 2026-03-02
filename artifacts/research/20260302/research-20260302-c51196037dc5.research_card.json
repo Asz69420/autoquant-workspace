@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260302-c51196037dc5",
+  "created_at": "2026-03-02T13:19:51.911419Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/gFlv7t7R-Swing-Profile-BigBeluga/",
+  "title": "Swing Profile [BigBeluga]",
+  "author": "BigBeluga",
+  "summary_bullets": [
+    "Top catalog indicator: Swing Profile [BigBeluga] by BigBeluga."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Swing Profile [BigBeluga] by BigBeluga.",
+      "note": "Meaning: Top catalog indicator: Swing Profile [BigBeluga] by BigBeluga."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260302/research-20260302-c51196037dc5.raw.txt",
+  "sha256": "a2cc646c30f45ac613e6c34216673c8e87c8516861639813267c3045c6a056e9",
+  "truncated": false
+}
