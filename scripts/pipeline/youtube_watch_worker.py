@@ -25,7 +25,8 @@ BACKOFF_BASE_SECONDS = [15 * 60, 30 * 60, 60 * 60, 2 * 60 * 60, 4 * 60 * 60]
 JITTER_MAX_SECONDS = 10 * 60
 SHORTS_MAX_SECONDS = 90
 MAX_VIDEO_SECONDS = 3600
-ENABLE_DURATION_CHECK = (os.getenv('YT_ENABLE_DURATION_CHECK', '0').strip() == '1')
+ENABLE_DURATION_CHECK = (os.getenv('YT_ENABLE_DURATION_CHECK', '1').strip() == '1')
+ENABLE_DIRECT_TELEGRAM_ALERTS = (os.getenv('YT_ENABLE_DIRECT_ALERTS', '0').strip() == '1')
 CATEGORY_CONFIG_PATH = ROOT / 'data' / 'state' / 'youtube_channel_categories.json'
 CONCEPT_CATEGORIES = {'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT'}
 AUTO_CLASSIFY_CATEGORIES = ['INDICATOR_CONCEPT', 'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT']
@@ -135,7 +136,9 @@ def _fetch_video_duration_seconds(video_id: str) -> int | None:
 
 
 def _notify_transcript_failure(video_id: str, title: str, detail: str):
-    """Send a best-effort Telegram log-channel alert for transcript failures."""
+    """Send optional direct Telegram alert for transcript failures (disabled by default)."""
+    if not ENABLE_DIRECT_TELEGRAM_ALERTS:
+        return
     msg = f"YT transcript failed: {title} ({video_id})\n{str(detail)[:400]}"
     try:
         subprocess.run(
@@ -150,7 +153,9 @@ def _notify_transcript_failure(video_id: str, title: str, detail: str):
 
 
 def _notify_watch_skip(reason_code: str, title: str, duration_s: int):
-    """Send best-effort Telegram log-channel alert for watch-list skips."""
+    """Send optional direct Telegram alert for watch-list skips (disabled by default)."""
+    if not ENABLE_DIRECT_TELEGRAM_ALERTS:
+        return
     msg = f"{reason_code}: {title} ({duration_s}s)"
     try:
         subprocess.run(
@@ -165,6 +170,8 @@ def _notify_watch_skip(reason_code: str, title: str, duration_s: int):
 
 
 def _notify_category_review(channel_name: str, title: str, video_id: str, top1: str, top2: str):
+    if not ENABLE_DIRECT_TELEGRAM_ALERTS:
+        return
     url = f"https://www.youtube.com/watch?v={video_id}"
     msg = f"⚙️ Frodex review needed: {channel_name} | {title}\nTop candidates: {top1}, {top2}\nVideo: {url}"
     try:
