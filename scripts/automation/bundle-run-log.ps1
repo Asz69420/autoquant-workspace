@@ -172,6 +172,11 @@ $stall = 0; $starvation = 0
 $warnings = @()
 $forwardRuns = 0; $forwardEntries = 0; $forwardCloses = 0; $forwardSignalEvals = 0; $forwardOpenPositions = 0
 $delegated = 0; $spawned = 0; $completed = 0; $failed = 0; $totalActions = 0
+$bundlesScanned = 0; $bundlesSelected = 0; $bundleStarts = 0
+$specOk = 0; $specBlocked = 0; $specReview = 0
+$batchAttempts = 0; $batchExecutedTotal = 0; $batchSkippedTotal = 0; $batchBlockedPromotion = 0; $batchNoVariants = 0
+$promotionChecks = 0; $promotionOk = 0; $promotionBlocked = 0; $promotionSkipped = 0
+$outboxLag = 0
 
 foreach ($e in $mainEvents) {
   $sum = if ($e.summary) { $e.summary } else { "" }
@@ -183,10 +188,38 @@ foreach ($e in $mainEvents) {
       if ($sum -match 'fetched=(\d+)') { $grabbed = [int]$matches[1] }
       if ($sum -match 'failed=(\d+)') { $grabFailed = [int]$matches[1] }
     }
+    "BUNDLE_SCAN_DIAG" {
+      if ($sum -match 'new=(\d+)') { $bundlesScanned = [int]$matches[1] }
+      elseif ($sum -match 'total=(\d+)') { $bundlesScanned = [int]$matches[1] }
+    }
+    "BUNDLE_SELECT_DIAG" {
+      if ($sum -match 'selected=(\d+)') { $bundlesSelected = [int]$matches[1] }
+      elseif ($sum -match 'processable=(\d+)') { $bundlesSelected = [int]$matches[1] }
+    }
+    "BUNDLE_PROCESS_START" {
+      $bundleStarts++
+    }
+    "BUNDLE_SPEC_RESULT" {
+      if ($sum -match 'spec_status=([A-Z_]+)') {
+        $sst = [string]$matches[1]
+        if ($sst -eq 'OK') { $specOk++ }
+        elseif ($sst -eq 'BLOCKED') { $specBlocked++ }
+        elseif ($sst -eq 'REVIEW_REQUIRED') { $specReview++ }
+      }
+    }
     "BATCH_BACKTEST_SUMMARY" {
+      $batchAttempts++
       if ($sum -match 'runs=(\d+)') { $btRuns = [int]$matches[1] }
-      if ($sum -match 'executed=(\d+)') { $btExecuted = [int]$matches[1] }
-      if ($sum -match 'skipped=(\d+)') { $btSkipped = [int]$matches[1] }
+      if ($sum -match 'executed=(\d+)') {
+        $btExecuted = [int]$matches[1]
+        $batchExecutedTotal += [int]$matches[1]
+      }
+      if ($sum -match 'skipped=(\d+)') {
+        $btSkipped = [int]$matches[1]
+        $batchSkippedTotal += [int]$matches[1]
+      }
+      if ($sum -match 'blocked promotion') { $batchBlockedPromotion++ }
+      if ($sum -match 'no variants') { $batchNoVariants++ }
     }
     "LIBRARIAN_SUMMARY" {
       if ($sum -match 'run=(\d+)') { $librarySize = [int]$matches[1] }
@@ -194,7 +227,14 @@ foreach ($e in $mainEvents) {
       if ($sum -match 'lessons=(\d+)') { $libLessons = [int]$matches[1] }
     }
     "PROMOTION_SUMMARY" {
+      $promotionChecks++
       if ($sum -match 'variants=(\d+)') { $promoted = [int]$matches[1] }
+      if ($sum -match 'status=([A-Z_]+)') {
+        $pstat = [string]$matches[1]
+        if ($pstat -eq 'OK') { $promotionOk++ }
+        elseif ($pstat -eq 'BLOCKED' -or $pstat -eq 'REVIEW_REQUIRED') { $promotionBlocked++ }
+        elseif ($pstat -eq 'SKIPPED') { $promotionSkipped++ }
+      }
     }
     "REFINEMENT_SUMMARY" {
       if ($sum -match 'iters=(\d+)') { $refined = [int]$matches[1] }
@@ -211,10 +251,15 @@ foreach ($e in $mainEvents) {
       if ($sum -match 'starvation[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
       elseif ($sum -match '(\d+)') { $starvation = [int]$matches[1] }
     }
+    "LAB_THROUGHPUT_DROUGHT_WARN" {
+      if ($sum -match 'throughput_drought_cycles[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
+      elseif ($sum -match '(\d+)') { $starvation = [int]$matches[1] }
+    }
     "LAB_SUMMARY" {
       if ($sum -match 'ingested=(\d+)') { $ingested = [int]$matches[1] }
       if ($sum -match 'errors=(\d+)') { $errors = [int]$matches[1] }
-      if ($sum -match 'starvation[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
+      if ($sum -match 'throughput_drought_cycles[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
+      elseif ($sum -match 'starvation[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
     }
     "INSIGHT_SUMMARY" {
       if ($sum -match 'new_processed=(\d+)') { $insightNew = [int]$matches[1] }
@@ -239,7 +284,7 @@ foreach ($e in $mainEvents) {
 
     $agentName = if ($e.agent) { [string]$e.agent } else { "Pipeline" }
     $wKey = "${agentName}: $reasonLabel"
-    if ($reasonCode -notmatch "STALL|STARVATION") { $warnings += $wKey }
+    if ($reasonCode -notmatch "STALL|STARVATION|THROUGHPUT_DROUGHT") { $warnings += $wKey }
   }
 }
 
@@ -276,6 +321,13 @@ if ($mode -eq 'frodex') {
         }
       }
     } catch {}
+  }
+}
+
+if ($mode -eq 'frodex') {
+  $outboxPath = "$ROOT\data\logs\outbox"
+  if (Test-Path $outboxPath) {
+    try { $outboxLag = @((Get-ChildItem -Path $outboxPath -File -ErrorAction SilentlyContinue)).Count } catch { $outboxLag = 0 }
   }
 }
 
@@ -348,10 +400,13 @@ if ($mode -eq 'quandalf') {
     $lines += "Sub-agents failed: $failed"
   } else {
     $lines += "Data ingested: $ingested"
-    $lines += "Backtests completed: $btExecuted"
-    $lines += "Promotions: $promoted"
+    $lines += "Bundles scanned/selected: $bundlesScanned/$bundlesSelected"
+    $lines += "Specs (OK/Blocked/Review): $specOk/$specBlocked/$specReview"
+    $lines += "Backtests executed: $batchExecutedTotal (attempts: $batchAttempts)"
+    $lines += "Promotions (OK/Blocked): $promotionOk/$promotionBlocked"
     if ($dirVariants -gt 0) { $lines += "New variants: $dirVariants" }
     if ($forwardRuns -gt 0) { $lines += "Forward checks: $forwardRuns" }
+    if ($outboxLag -gt 0) { $lines += "Queue lag: $outboxLag" }
   }
 }
 # Shared bottom note block (up to 3 lines)
@@ -493,7 +548,11 @@ $reportState = @{}
 try {
   if (Test-Path -LiteralPath $reportStatePath) {
     $loaded = Get-Content -LiteralPath $reportStatePath -Raw | ConvertFrom-Json
-    if ($loaded) { $reportState = $loaded }
+    if ($loaded) {
+      foreach ($prop in $loaded.PSObject.Properties) {
+        $reportState[[string]$prop.Name] = $prop.Value
+      }
+    }
   }
 } catch { $reportState = @{} }
 
