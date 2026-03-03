@@ -1,0 +1,267 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-a7c3e1f9",
+  "name": "Ichimoku TK Cross CHOP Gate",
+  "created_at": "2026-03-03T14:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The Tenkan-Kijun crossover uses midpoint calculations (highest-high + lowest-low / 2) rather than exponential weighting, providing a mathematically distinct signal from all EMA-based strategies. Institutional traders use TK crosses as primary directional signals. In ranging markets (CHOP > 50), TK crosses should capture mean-reversion turns earlier than EMAs because midpoint calculations respond to range extremes rather than weighted closes. This tests whether a fundamentally different MA construction (midpoint vs exponential) produces superior signals in our best-performing regime. ITS_9 and IKS_26 have NEVER been tested in any strategy — this is first-contact with Ichimoku indicators.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ichimoku_tk_chop_v1_8to1",
+      "description": "Tenkan-Kijun crossover gated by CHOP ranging filter. 8:1 R:R with standard 1.5x ATR stop. Tests the base TK cross signal quality in ranging markets.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "TK crossover: ITS_9 crosses_above/below IKS_26",
+        "CHOP ranging gate: CHOP_14_1_100 > 50",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CHOP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "Ichimoku Tenkan-sen",
+          "role": "baseline",
+          "notes": "ITS_9 — 9-period midpoint line. Crosses with Kijun-sen generate directional signals using midpoint math (not EMA)."
+        },
+        {
+          "indicator": "Ichimoku Kijun-sen",
+          "role": "baseline",
+          "notes": "IKS_26 — 26-period midpoint line. Slower reference for Tenkan crossover."
+        },
+        {
+          "indicator": "Choppiness Index",
+          "role": "confirmation",
+          "notes": "CHOP_14_1_100 > 50 = ranging market gate. Proven regime filter across 19/24 legacy ACCEPTs."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichimoku_tk_chop_v2_6to1",
+      "description": "Same TK cross + CHOP gate but with wider 2.0x ATR stop for more breathing room. 6:1 R:R. Tests whether the TK signal needs more stop distance due to midpoint volatility.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "TK crossover: ITS_9 crosses_above/below IKS_26",
+        "CHOP ranging gate: CHOP_14_1_100 > 50",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CHOP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "R:R = 6:1. Needs 14.3% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.25, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "Ichimoku Tenkan-sen",
+          "role": "baseline",
+          "notes": "ITS_9 — 9-period midpoint. Faster line of the TK cross."
+        },
+        {
+          "indicator": "Ichimoku Kijun-sen",
+          "role": "baseline",
+          "notes": "IKS_26 — 26-period midpoint. Slower reference."
+        },
+        {
+          "indicator": "Choppiness Index",
+          "role": "confirmation",
+          "notes": "CHOP_14_1_100 > 50 = ranging gate."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 2.0x stop / 12.0x TP = 6:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichimoku_tk_cloud_v3_8to1",
+      "description": "TK cross with Ichimoku cloud confirmation instead of CHOP. Entry requires price to be inside the cloud (between ISA and ISB) — the transition zone. Tests whether cloud position adds value over CHOP gating.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "close > ISB_26",
+        "close < ISA_9"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "close < ISB_26",
+        "close > ISA_9"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "TK crossover: ITS_9 crosses_above/below IKS_26",
+        "Cloud position: price inside Ichimoku cloud (ISA/ISB)",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Ichimoku Cloud",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "Ichimoku Tenkan-sen",
+          "role": "baseline",
+          "notes": "ITS_9 — 9-period midpoint. Primary crossover signal."
+        },
+        {
+          "indicator": "Ichimoku Kijun-sen",
+          "role": "baseline",
+          "notes": "IKS_26 — 26-period midpoint. Reference for crossover."
+        },
+        {
+          "indicator": "Ichimoku Cloud (ISA/ISB)",
+          "role": "confirmation",
+          "notes": "Price must be inside cloud (between ISA_9 and ISB_26) — transition zone where direction is undecided."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ITS_9", "IKS_26", "ISA_9", "ISB_26", "CHOP_14_1_100", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "Ichimoku (ITS_9 / IKS_26 midpoint crossover)",
+    "confirmation": "CHOP_14_1_100 ranging gate (v1/v2) or Ichimoku Cloud position (v3)",
+    "volume_volatility": "ATR_14 for position sizing and R:R"
+  }
+}

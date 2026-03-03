@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-d8011371510d",
+  "created_at": "2026-03-03T01:19:52.233828Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/ybcd6z3h-CISD-Reversal-Multi-Liquidity-Mode-with-Alerts/",
+  "title": "CISD Reversal: Multi-Liquidity Mode with Alerts",
+  "author": "sabril777",
+  "summary_bullets": [
+    "Top catalog indicator: CISD Reversal: Multi-Liquidity Mode with Alerts by sabril777."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: CISD Reversal: Multi-Liquidity Mode with Alerts by sabril777.",
+      "note": "Meaning: Top catalog indicator: CISD Reversal: Multi-Liquidity Mode with Alerts by sabril777."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-d8011371510d.raw.txt",
+  "sha256": "710848ccc9b5a81a21a9604165d147d4547e8a07c0627f30b527de8851f5cef0",
+  "truncated": false
+}

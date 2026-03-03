@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-7166e2f3343b",
+  "created_at": "2026-03-03T01:19:51.908146Z",
+  "tv_ref": "tradingview:ybcd6z3h",
+  "url": "https://www.tradingview.com/script/ybcd6z3h-CISD-Reversal-Multi-Liquidity-Mode-with-Alerts/",
+  "name": "CISD Reversal: Multi-Liquidity Mode with Alerts",
+  "author": "sabril777",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "38a78bb969dbe69afedacc212d45a7936ce67a3efa356e07d76685c354a4f4c4",
+  "truncated": false
+}

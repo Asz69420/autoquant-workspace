@@ -1,0 +1,265 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-c5e9a3b7",
+  "name": "T3 ALMA Smooth Crossover",
+  "created_at": "2026-03-03T14:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "T3 (Tillson triple-smoothed EMA with volume factor 0.7) and ALMA (Arnaud Legoux with Gaussian offset 6.0 and sigma 0.85) are mathematically distinct smoothing approaches that have NEVER been tested in any strategy. T3 prioritizes lag reduction through triple exponential smoothing with a volume factor that controls overshoot. ALMA applies a Gaussian distribution centered on recent prices, rejecting outlier noise without the lag penalty of longer EMAs. When these two advanced MAs cross, it should produce fewer false signals than EMA_9/EMA_21 crossovers because both independently filter noise through fundamentally different mathematical mechanisms. The key test: does superior smoothing math translate to superior trading signals? Stochastic confirmation (STOCHk < 50 for longs, > 50 for shorts) ensures momentum alignment without being restrictive.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "t3_alma_stoch_v1_8to1",
+      "description": "T3 crosses above ALMA with Stochastic confirmation that momentum isn't already extended. No explicit regime gate — testing raw signal quality of smooth crossover across all regimes. 8:1 R:R.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "T3_10_0.7 crosses_above ALMA_9_6.0_0.85",
+        "STOCHk_14_3_3 < 50"
+      ],
+      "entry_short": [
+        "T3_10_0.7 crosses_below ALMA_9_6.0_0.85",
+        "STOCHk_14_3_3 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "T3/ALMA smooth crossover: T3_10_0.7 crosses ALMA_9_6.0_0.85",
+        "Stochastic momentum: STOCHk_14_3_3 confirms direction room",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "T3",
+          "role": "baseline",
+          "notes": "T3_10_0.7 — triple-smoothed EMA with volume factor 0.7. Low lag, smooth response. NEVER tested."
+        },
+        {
+          "indicator": "ALMA",
+          "role": "baseline",
+          "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted MA. Noise rejection via distribution weighting. NEVER tested."
+        },
+        {
+          "indicator": "Stochastic",
+          "role": "confirmation",
+          "notes": "STOCHk_14_3_3 < 50 (long) / > 50 (short). Confirms momentum has room to run."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_alma_chop_v2_8to1",
+      "description": "Same smooth crossover but with CHOP ranging gate. Tests whether the T3/ALMA crossover benefits from regime filtering like other strategies do.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "T3_10_0.7 crosses_above ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "T3_10_0.7 crosses_below ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "T3/ALMA smooth crossover: T3_10_0.7 crosses ALMA_9_6.0_0.85",
+        "CHOP ranging gate: CHOP_14_1_100 > 50",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=CHOP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "T3",
+          "role": "baseline",
+          "notes": "T3_10_0.7 — triple-smoothed EMA. Faster crossover line."
+        },
+        {
+          "indicator": "ALMA",
+          "role": "baseline",
+          "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted MA. Slower reference."
+        },
+        {
+          "indicator": "Choppiness Index",
+          "role": "confirmation",
+          "notes": "CHOP_14_1_100 > 50 = ranging gate. Tests if smooth crossover benefits from regime filtering."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_alma_vortex_v3_8to1",
+      "description": "T3/ALMA crossover with Vortex directional confirmation instead of Stochastic. Tests whether combining smooth-MA crossover with our best directional indicator (Vortex) creates synergy. Vortex confirms the crossover direction is backed by genuine directional momentum.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "T3_10_0.7 crosses_above ALMA_9_6.0_0.85",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "T3_10_0.7 crosses_below ALMA_9_6.0_0.85",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "T3/ALMA smooth crossover: T3_10_0.7 crosses ALMA_9_6.0_0.85",
+        "Vortex directional: VTXP_14 vs VTXM_14 confirms direction",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "T3",
+          "role": "baseline",
+          "notes": "T3_10_0.7 — triple-smoothed EMA. Faster crossover signal."
+        },
+        {
+          "indicator": "ALMA",
+          "role": "baseline",
+          "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted MA. Slower reference."
+        },
+        {
+          "indicator": "Vortex",
+          "role": "confirmation",
+          "notes": "VTXP_14 > VTXM_14 (long) / VTXM_14 > VTXP_14 (short). Proven directional indicator — confirms crossover direction."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["T3_10_0.7", "ALMA_9_6.0_0.85", "STOCHk_14_3_3", "CHOP_14_1_100", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 / ALMA_9_6.0_0.85 smooth crossover (both NEVER tested)",
+    "confirmation": "STOCHk (v1) / CHOP (v2) / Vortex (v3) — three different confirmation philosophies",
+    "volume_volatility": "ATR_14 for position sizing and R:R"
+  }
+}
