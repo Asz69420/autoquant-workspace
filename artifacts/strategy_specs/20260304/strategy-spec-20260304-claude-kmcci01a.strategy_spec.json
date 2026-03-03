@@ -1,0 +1,189 @@
+{
+  "spec_id": "strategy-spec-20260304-claude-kmcci01a",
+  "schema_version": 1.1,
+  "source": "claude-advisor",
+  "created_at": "2026-03-04T07:30:00Z",
+  "template_name": "ema_rsi_atr",
+  "signal_pattern": "kama_cci_pullback",
+  "target_asset": "ETH",
+  "target_tf": "4h",
+  "edge_hypothesis": "KAMA adaptive speed provides trend context that adjusts to market conditions. CCI crossing back from oversold/overbought zones times pullback entries within the KAMA-defined trend. Combines two independently validated signal families: KAMA architecture (KAMA Stoch v1 PF=1.857, ranging PF=4.87) and CCI oscillator dynamics (CCI Chop Fade v2 PF=1.255, all-regime). Hypothesis: KAMA trend filter + CCI pullback timing should outperform either alone because KAMA eliminates counter-trend CCI signals while CCI provides precise entry timing that raw KAMA lacks.",
+  "RoleFramework": {
+    "baseline": "KAMA",
+    "confirmation": "CCI",
+    "volume_volatility": "ATR"
+  },
+  "risk_policy": {
+    "stop_type": "atr",
+    "stop_atr_mult": 1.5,
+    "tp_type": "atr",
+    "tp_atr_mult": 12.0,
+    "risk_per_trade_pct": 0.01
+  },
+  "variants": [
+    {
+      "variant_id": "baseline",
+      "label": "KAMA CCI Pullback baseline 8:1",
+      "mutation_type": "none",
+      "RoleFramework": {
+        "baseline": "KAMA",
+        "confirmation": "CCI",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "kama_period": "10_2_30",
+        "cci_period": "20_0.015",
+        "cci_os": -100,
+        "cci_ob": 100
+      },
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "filters": [
+        "bar-close execution",
+        "no repaint",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12.0x ATR)",
+        "Exit on ATR stop hit (1.5x ATR)"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR",
+        "TP: 12.0x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "tight_geometry",
+      "label": "KAMA CCI Pullback tight 8:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "KAMA",
+        "confirmation": "CCI",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.6,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "kama_period": "10_2_30",
+        "cci_period": "20_0.015",
+        "cci_os": -100,
+        "cci_ob": 100
+      },
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "filters": [
+        "bar-close execution",
+        "no repaint",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (9.6x ATR)",
+        "Exit on ATR stop hit (1.2x ATR)"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.2x ATR",
+        "TP: 9.6x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "chop_gated",
+      "label": "KAMA CCI Pullback chop-gated ranging",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "KAMA",
+        "confirmation": "CCI",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "kama_period": "10_2_30",
+        "cci_period": "20_0.015",
+        "cci_os": -100,
+        "cci_ob": 100,
+        "chop_min": 50
+      },
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above -100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "filters": [
+        "bar-close execution",
+        "no repaint",
+        "CHOP > 50 ranging gate",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12.0x ATR)",
+        "Exit on ATR stop hit (1.5x ATR)"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR",
+        "TP: 12.0x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ],
+  "advisory_context": {
+    "prefer_templates": ["ema_rsi_atr"],
+    "design_rationale": "Extends proven KAMA architecture with CCI oscillator. KAMA Stoch v1 achieved PF=1.857 using KAMA+Stochastic; this tests whether CCI (which has shown independent alpha at PF=1.255) provides better pullback timing than Stochastic. Chop-gated variant tests whether restricting to ranging regime amplifies CCI's known ranging edge (PF=1.43 in CCI Chop Fade)."
+  }
+}

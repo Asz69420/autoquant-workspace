@@ -1,0 +1,1 @@
+{"ts_iso": "2026-03-03T21:02:40.595031Z", "ts_local": "4 Mar 7:02 AM AEST", "ts_file": "20260303T210240Z", "run_id": "test-run", "agent": "TV Catalog", "model_id": "openai-codex/gpt-5.3-codex", "action": "TEST", "status_word": "WARN", "status_emoji": "WARN", "reason_code": null, "summary": "sanity", "inputs": [], "outputs": [], "attempt": null, "error": null}

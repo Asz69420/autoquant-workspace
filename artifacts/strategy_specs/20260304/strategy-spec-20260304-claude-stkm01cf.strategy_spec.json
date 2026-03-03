@@ -1,0 +1,183 @@
+{
+  "spec_id": "strategy-spec-20260304-claude-stkm01cf",
+  "schema_version": 1.1,
+  "source": "claude-advisor",
+  "created_at": "2026-03-04T07:30:00Z",
+  "template_name": "supertrend_follow",
+  "signal_pattern": "supertrend_kama_confluence",
+  "target_asset": "ETH",
+  "target_tf": "4h",
+  "edge_hypothesis": "Supertrend and KAMA are both adaptive indicators but detect trends through fundamentally different mechanisms: Supertrend uses ATR-based trailing stops to define trend direction, KAMA uses efficiency ratio to adjust its own speed. When both agree on a direction change, the entry has dual-adaptive conviction. This tests whether confluence of independent adaptive signals produces higher PF than either alone (Supertrend 8:1 PF=1.921, KAMA Stoch v1 PF=1.857). If successful, confirms the brain rule that adaptive indicator agreement is a general architecture for all-regime profitability.",
+  "RoleFramework": {
+    "baseline": "Supertrend",
+    "confirmation": "KAMA",
+    "volume_volatility": "ATR"
+  },
+  "risk_policy": {
+    "stop_type": "atr",
+    "stop_atr_mult": 1.5,
+    "tp_type": "atr",
+    "tp_atr_mult": 12.0,
+    "risk_per_trade_pct": 0.01
+  },
+  "variants": [
+    {
+      "variant_id": "baseline",
+      "label": "Supertrend KAMA Confluence baseline 8:1",
+      "mutation_type": "none",
+      "RoleFramework": {
+        "baseline": "Supertrend",
+        "confirmation": "KAMA",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "supertrend_period": "7_3.0",
+        "kama_period": "10_2_30"
+      },
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "bar-close execution",
+        "no repaint",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12.0x ATR)",
+        "Exit on ATR stop hit (1.5x ATR)"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR",
+        "TP: 12.0x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "tight_vortex_geometry",
+      "label": "Supertrend KAMA tight geometry 10:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "Supertrend",
+        "confirmation": "KAMA",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "supertrend_period": "7_3.0",
+        "kama_period": "10_2_30"
+      },
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "bar-close execution",
+        "no repaint",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10.0x ATR)",
+        "Exit on ATR stop hit (1.0x ATR)"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.0x ATR",
+        "TP: 10.0x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "triple_adaptive",
+      "label": "Supertrend KAMA Vortex triple-adaptive",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "Supertrend",
+        "confirmation": "KAMA",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "supertrend_period": "7_3.0",
+        "kama_period": "10_2_30",
+        "vortex_confirm": true
+      },
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > KAMA_10_2_30",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < KAMA_10_2_30",
+        "VTXM_14 > VTXP_14"
+      ],
+      "filters": [
+        "bar-close execution",
+        "no repaint",
+        "Vortex directional confirmation",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12.0x ATR)",
+        "Exit on ATR stop hit (1.5x ATR)"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR",
+        "TP: 12.0x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ],
+  "advisory_context": {
+    "prefer_templates": ["supertrend_follow"],
+    "design_rationale": "Tests dual-adaptive confluence architecture. Supertrend (PF=1.921) and KAMA (PF=1.857) are the two strongest independent adaptive signal families. The baseline variant requires both to agree on direction change. The tight variant mimics Vortex v3a geometry (stop 1.0, TP 10) that produced PF=2.034. The triple-adaptive variant adds Vortex directional confirmation — if this works but the baseline does not, the third adaptive signal was the missing filter. Caution: triple AND-chain may produce 0 trades (signal bottleneck risk). Baseline and tight variants use only 2 conditions to mitigate."
+  }
+}
