@@ -14,43 +14,46 @@
       "name": "SoheilPKO",
       "channel_id": "UC7QqMi_dhkGuFaA0TrYJTAw",
       "active_category": "INDICATOR_CONCEPT",
-      "notes": "Default from mode=INDICATORS"
+      "notes": "User-set"
     },
     {
       "name": "PineTrades",
       "channel_id": "UCpwDBjHySPPXMoI86xFrHFg",
       "active_category": "INDICATOR_CONCEPT",
-      "notes": "Default from mode=INDICATORS"
+      "notes": "User-set"
     },
     {
       "name": "MichaelIonita",
       "channel_id": "UCC0O5FKSMcjzrvOUa08hS_A",
-      "active_category": "TRADING_CONCEPT",
-      "notes": "Default from mode=CONCEPTS"
+      "active_category": "NUANCED_CONCEPT",
+      "notes": "User-set"
     },
     {
       "name": "IntoTheCryptoverse",
       "channel_id": "UCRvqjQPSeaWn-uEx-w0XOIg",
-      "active_category": "INDICATOR_CONCEPT",
-      "notes": "Default from mode=INDICATORS"
+      "active_category": "MACRO_CONTEXT",
+      "notes": "User-set"
     },
     {
       "name": "ECKrown",
       "channel_id": "UCnwxzpFzZNtLH8NgTeAROFA",
-      "active_category": "INDICATOR_CONCEPT",
-      "notes": "Default from mode=INDICATORS"
+      "active_category": "MACRO_CONTEXT",
+      "notes": "User-set"
     },
     {
       "name": "TradeTravelChill",
       "channel_id": "UC8z0A6pWQ4mXucKtEfYiIAA",
-      "active_category": "INDICATOR_CONCEPT",
-      "notes": "Default from mode=INDICATORS"
+      "active_category": "MACRO_CONTEXT",
+      "notes": "User-set"
     },
     {
       "name": "DaviddTech",
       "channel_id": "UC7NJLsf6IonOy8QI8gt5BeA",
-      "active_category": "TRADING_CONCEPT",
-      "notes": "Default from mode=CONCEPTS"
+      "active_category": "NUANCED_CONCEPT",
+      "secondary_categories": [
+        "INDICATOR_CONCEPT"
+      ],
+      "notes": "User-set mixed: indicator + nuanced"
     }
   ]
 }
