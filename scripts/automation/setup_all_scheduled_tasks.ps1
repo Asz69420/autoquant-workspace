@@ -51,9 +51,10 @@ function New-LoopTrigger {
         [int]$StartDelayMinutes = 1
     )
 
-    $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes($StartDelayMinutes)
-    $trigger.Repetition.Interval = $Interval
-    $trigger.Repetition.Duration = (New-TimeSpan -Days 3650)
+    # Use explicit repetition parameters for broad compatibility (WinPS 5.1 / SchTasks CIM differences)
+    $startAt = (Get-Date).AddMinutes($StartDelayMinutes)
+    $duration = New-TimeSpan -Days 3650
+    $trigger = New-ScheduledTaskTrigger -Once -At $startAt -RepetitionInterval $Interval -RepetitionDuration $duration
     return $trigger
 }
 
