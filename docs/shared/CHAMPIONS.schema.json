@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Forward Test Champions",
+  "type": "object",
+  "required": ["schema_version", "timezone", "runner", "champions"],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "timezone": { "type": "string" },
+    "runner": {
+      "type": "object",
+      "required": ["schedule", "health", "risk"],
+      "properties": {
+        "schedule": {
+          "type": "object",
+          "required": ["cron_local", "run_minutes_after_close"],
+          "properties": {
+            "cron_local": { "type": "string" },
+            "run_minutes_after_close": { "type": "integer" }
+          }
+        },
+        "health": {
+          "type": "object",
+          "required": ["missed_cycles_alert_after", "api_retry_once"],
+          "properties": {
+            "missed_cycles_alert_after": { "type": "integer", "minimum": 1 },
+            "api_retry_once": { "type": "boolean" }
+          }
+        },
+        "risk": {
+          "type": "object",
+          "required": ["watch_drawdown_pct", "watch_pf_30d", "demote_watch_weeks"],
+          "properties": {
+            "watch_drawdown_pct": { "type": "number" },
+            "watch_pf_30d": { "type": "number" },
+            "demote_watch_weeks": { "type": "integer" }
+          }
+        }
+      }
+    },
+    "champions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id", "status", "strategy_name", "template_name", "asset", "timeframe",
+          "entry_long", "entry_short", "risk_policy", "execution_policy", "canonical_backtest"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "watch", "pending_validation", "demoted"] },
+          "strategy_name": { "type": "string" },
+          "template_name": { "type": "string" },
+          "asset": { "type": "string" },
+          "timeframe": { "type": "string" },
+          "entry_long": { "type": "array", "items": { "type": "string" } },
+          "entry_short": { "type": "array", "items": { "type": "string" } },
+          "exit_rules": { "type": "array", "items": { "type": "string" } },
+          "filters_constraints": { "type": "array", "items": { "type": "string" } },
+          "risk_policy": {
+            "type": "object",
+            "required": ["stop_type", "stop_atr_mult", "tp_type", "tp_atr_mult", "risk_per_trade_pct"],
+            "properties": {
+              "stop_type": { "type": "string" },
+              "stop_atr_mult": { "type": "number" },
+              "tp_type": { "type": "string" },
+              "tp_atr_mult": { "type": "number" },
+              "risk_per_trade_pct": { "type": "number" }
+            }
+          },
+          "execution_policy": {
+            "type": "object",
+            "required": ["entry_fill", "tie_break", "allow_reverse"],
+            "properties": {
+              "entry_fill": { "type": "string" },
+              "tie_break": { "type": "string" },
+              "allow_reverse": { "type": "boolean" }
+            }
+          },
+          "canonical_backtest": {
+            "type": "object",
+            "required": ["asset", "timeframe", "pf", "trade_count"],
+            "properties": {
+              "asset": { "type": "string" },
+              "timeframe": { "type": "string" },
+              "pf": { "type": "number" },
+              "trade_count": { "type": "integer" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0",
+  "timezone": "Australia/Brisbane",
+  "runner": {
+    "schedule": {
+      "cron_local": "00:05,04:05,08:05,12:05,16:05,20:05",
+      "run_minutes_after_close": 5
+    },
+    "health": {
+      "missed_cycles_alert_after": 2,
+      "api_retry_once": true
+    },
+    "risk": {
+      "watch_drawdown_pct": 25.0,
+      "watch_pf_30d": 1.2,
+      "demote_watch_weeks": 2
+    }
+  },
+  "champions": [
+    {
+      "id": "vortex_v3a_eth_4h",
+      "status": "active",
+      "strategy_name": "vortex_transition_v3a",
+      "template_name": "spec_rules",
+      "asset": "ETH",
+      "timeframe": "4h",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "CHOP_14_1_100 < 50"
+      ],
+      "exit_rules": [
+        "Exit when price hits stop loss at 0.75x ATR_14 from entry",
+        "Exit when price hits take profit at 10.0x ATR_14 from entry"
+      ],
+      "filters_constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 0.75,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "canonical_backtest": {
+        "asset": "ETH",
+        "timeframe": "4h",
+        "pf": 2.034,
+        "trade_count": 84,
+        "max_drawdown_pct": 12.3
+      }
+    },
+    {
+      "id": "supertrend_8to1_eth_4h",
+      "status": "active",
+      "strategy_name": "supertrend_tail_harvester_8to1",
+      "template_name": "supertrend_follow",
+      "asset": "ETH",
+      "timeframe": "4h",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "ADX_14 > 10"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "ADX_14 > 10"
+      ],
+      "exit_rules": [
+        "Exit when price hits stop loss at 1.0x ATR_14 from entry",
+        "Exit when price hits take profit at 8.0x ATR_14 from entry"
+      ],
+      "filters_constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "canonical_backtest": {
+        "asset": "ETH",
+        "timeframe": "4h",
+        "pf": 1.921,
+        "trade_count": 85,
+        "max_drawdown_pct": 10.9
+      }
+    },
+    {
+      "id": "macd_7to1_eth_4h",
+      "status": "pending_validation",
+      "strategy_name": "macd_tail_harvester_7to1_4h",
+      "template_name": "spec_rules",
+      "asset": "ETH",
+      "timeframe": "4h",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "close > EMA_50"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "close < EMA_50"
+      ],
+      "exit_rules": [
+        "Exit when price hits stop loss at 1.0x ATR_14 from entry",
+        "Exit when price hits take profit at 7.0x ATR_14 from entry",
+        "No trailing stop. No time-based exit. Pure SL/TP exits."
+      ],
+      "filters_constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "canonical_backtest": {
+        "spec_path": "artifacts/strategy_specs/20260301/strategy-spec-20260301-claude-mc6r4w8n.strategy_spec.json",
+        "variant_name": "macd_tail_harvester_7to1_4h",
+        "asset": "ETH",
+        "timeframe": "1h",
+        "pf": 1.712,
+        "trade_count": 161,
+        "max_drawdown_pct": 21.29,
+        "net_profit_pct": 31.6
+      }
+    }
+  ]
+}

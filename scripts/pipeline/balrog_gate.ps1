@@ -75,6 +75,15 @@ if ($Mode -eq "health" -or $Mode -eq "pre-backtest") {
   if (-not (Test-Path $logPath)) {
     $violations += "LOG_MISSING: actions.ndjson not found"
   }
+
+  # Check: forward champions config validates
+  $championsPath = "$ROOT\docs\shared\CHAMPIONS.json"
+  if (Test-Path $championsPath) {
+    $validateOut = & python "$ROOT\scripts\forward\validate_champions.py" --file "$championsPath" 2>&1
+    if ($LASTEXITCODE -ne 0) {
+      $violations += "CHAMPIONS_INVALID: $([string]($validateOut -join ' '))"
+    }
+  }
 }
 
 # --- PRE-BACKTEST (validate specs before running) ---
