@@ -100,7 +100,7 @@ def via_ytdlp(url: str) -> dict:
         "quiet": True,
         "skip_download": True,
         "no_warnings": True,
-        "js_runtimes": {"node": _node_path()},
+        "js_runtimes": {"node": {"path": _node_path()}},
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)

@@ -123,7 +123,7 @@ def _fetch_video_duration_seconds(video_id: str) -> int | None:
             'quiet': True,
             'skip_download': True,
             'no_warnings': True,
-            'js_runtimes': {'node': node_path},
+            'js_runtimes': {'node': {'path': node_path}},
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
