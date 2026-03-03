@@ -44,6 +44,15 @@ function Convert-MarkupToHtml([string]$text) {
 
     $line = [string]$rawLine
     $line = $line -replace '`', ''
+
+    # Markdown table row -> readable bullet row
+    if ($line -match '^\s*\|.*\|\s*$') {
+      $cells = @($line.Trim() -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
+      if ($cells.Count -gt 0) {
+        $line = '• ' + ($cells -join '  |  ')
+      }
+    }
+
     $line = [System.Net.WebUtility]::HtmlEncode($line)
 
     # Header conversion
