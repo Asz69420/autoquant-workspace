@@ -25,20 +25,25 @@ function Ensure-Task($Name, $Trigger, $Command) {
 }
 
 $triggers4h = @(
-  New-ScheduledTaskTrigger -Daily -At 12:05AM,
-  New-ScheduledTaskTrigger -Daily -At 4:05AM,
-  New-ScheduledTaskTrigger -Daily -At 8:05AM,
-  New-ScheduledTaskTrigger -Daily -At 12:05PM,
-  New-ScheduledTaskTrigger -Daily -At 4:05PM,
-  New-ScheduledTaskTrigger -Daily -At 8:05PM
+  (New-ScheduledTaskTrigger -Daily -At "12:05AM")
+  (New-ScheduledTaskTrigger -Daily -At "4:05AM")
+  (New-ScheduledTaskTrigger -Daily -At "8:05AM")
+  (New-ScheduledTaskTrigger -Daily -At "12:05PM")
+  (New-ScheduledTaskTrigger -Daily -At "4:05PM")
+  (New-ScheduledTaskTrigger -Daily -At "8:05PM")
 )
 
-$healthTrigger = New-ScheduledTaskTrigger -Once -At (Get-Date).Date.AddMinutes(15)
-$healthTrigger.RepetitionInterval = "PT1H"
-$healthTrigger.RepetitionDuration = "P1D"
+$healthTriggers = @(
+  (New-ScheduledTaskTrigger -Daily -At "12:25AM")
+  (New-ScheduledTaskTrigger -Daily -At "4:25AM")
+  (New-ScheduledTaskTrigger -Daily -At "8:25AM")
+  (New-ScheduledTaskTrigger -Daily -At "12:25PM")
+  (New-ScheduledTaskTrigger -Daily -At "4:25PM")
+  (New-ScheduledTaskTrigger -Daily -At "8:25PM")
+)
 
-$weeklyTrigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 7:00AM
+$weeklyTrigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At "7:00AM"
 
 Ensure-Task -Name "AutoQuant-Forward-Runner" -Trigger $triggers4h -Command $runnerCmd
-Ensure-Task -Name "AutoQuant-Forward-Health" -Trigger $healthTrigger -Command $healthCmd
+Ensure-Task -Name "AutoQuant-Forward-Health" -Trigger $healthTriggers -Command $healthCmd
 Ensure-Task -Name "AutoQuant-Forward-Weekly" -Trigger $weeklyTrigger -Command $weeklyCmd

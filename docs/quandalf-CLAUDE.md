@@ -111,6 +111,7 @@ Challenge them as you gather more data.
 
 ## Scope
 
-Primary assets: ETH, SOL (primary), BTC (validation only) on 15m, 1h, 4h
+Primary assets: ETH (forward-test baseline), SOL (after baseline qualification), BTC (validation only)
+Forward-test cadence: 4h bar-close paper validation on active champions listed in `docs/shared/CHAMPIONS.json`
 Data source: HyperLiquid historical candles
 Backtester: Python engine with full indicator computation, position sizing, fee and slippage modeling

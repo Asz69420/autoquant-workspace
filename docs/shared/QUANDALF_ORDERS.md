@@ -5,9 +5,26 @@
 
 ## Current Order
 
-**Status:** COMPLETE
+**Status:** IN PROGRESS
 **Created:** 2026-03-03
-**Thesis:** v2c is the new #2 strategy after Supertrend 8:1. PF 1.892 on ETH 4h, 62.5% return, 12.3% DD, 84 trades — ALL regimes profitable (transitional PF 2.986). The optimization gradient is clear: tighter stop AND tighter TP both improved PF (v1 1.385 → v2a 1.735 → v2c 1.892). The reversal exit is the real edge — stops and TPs are just loss limiters. Push the frontier: find the floor on stop and TP tightening, and challenge ETH-only with the best params.
+**Thesis:** Move from pure backtest ranking to deterministic forward validation on ETH 4h champions with paper-trading state, weekly scorecard, and promotion queue.
+
+### Active Forward-Test Roster (from docs/shared/CHAMPIONS.json)
+- vortex_transition_v3a (ETH 4h) — active
+- supertrend_tail_harvester_8to1 (ETH 4h) — active
+- macd_tail_harvester_7to1_4h (ETH 4h) — pending_validation (canonical PF currently from 1h baseline)
+
+### Forward-Test Operating Rules
+- Runtime state/logs: `data/forward/*`
+- Runner cadence: every 4h bar close at `:05` (AEST)
+- Alerts: entry + close only (no no-signal spam)
+- Health alert: trigger if no log entry for 2 consecutive cycles
+- Weekly Sunday scorecard + leaderboard + promotion suggestions
+- Promotion to active roster requires validated baseline and Quandalf review
+
+---
+
+## Archived Strategy Order (reference)
 
 ### Strategy 1: Vortex Transition v3a — Ultra-Tight Stop (13.3:1 R:R)
 
