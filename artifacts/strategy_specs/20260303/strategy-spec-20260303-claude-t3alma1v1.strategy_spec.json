@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-t3alma1v1",
+  "created_at": "2026-03-03T16:30:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "T3_10_0.7 and ALMA_9_6.0_0.85 are both computed every bar but NEVER tested in any strategy. Both are designed to reduce lag vs standard EMAs — T3 via triple smoothing, ALMA via Gaussian weighting. When two lag-reduced MAs cross, the signal should detect trend changes EARLIER than EMA_9/EMA_21 crossover, with fewer false signals because both indicators have built-in noise filtering. ema_crossover has 0 ACCEPTs ever — this tests whether the problem was the EMA math (too laggy, too noisy) rather than the crossover concept itself. CHOP gate filters deep-range noise where crossovers whipsaw.",
+  "target_regime": "transitional (cross fires when trend is forming — CHOP < 61.8 confirms market leaving range) + trending continuation",
+  "variants": [
+    {
+      "name": "t3_alma_crossover_trend_8to1",
+      "description": "T3 crosses ALMA with loose CHOP gate (< 61.8) at 8:1 R:R. Tests whether lag-reduced crossovers generate viable signals where standard EMA crossovers failed. CHOP < 61.8 allows both trending and transitional entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "T3_10_0.7 crosses_above ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 < 61.8"
+      ],
+      "entry_short": [
+        "T3_10_0.7 crosses_below ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 < 61.8"
+      ],
+      "components": [
+        {"indicator": "T3", "role": "baseline", "notes": "T3_10_0.7 — triple-smoothed EMA, low lag trend direction. NEVER TESTED."},
+        {"indicator": "ALMA", "role": "confirmation", "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted MA, lag-reduced crossover partner. NEVER TESTED."},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 < 61.8 filters deep-range whipsaw"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=ALMA",
+        "RoleFramework[volume_volatility]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "t3_alma_crossover_transition_10to1",
+      "description": "T3 crosses ALMA with tight CHOP gate (< 50) at 10:1 R:R matching Vortex v3a geometry. CHOP < 50 means market is actively trending or just entered a trend — targets transition/trending entries only. Tighter stop (1.0 ATR) because signals at CHOP < 50 have stronger conviction.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "T3_10_0.7 crosses_above ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "T3_10_0.7 crosses_below ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 < 50"
+      ],
+      "components": [
+        {"indicator": "T3", "role": "baseline", "notes": "T3_10_0.7 — triple-smoothed EMA, low lag trend direction"},
+        {"indicator": "ALMA", "role": "confirmation", "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted crossover partner"},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 < 50 selects strong trending/transitional bars only"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=ALMA",
+        "RoleFramework[volume_volatility]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

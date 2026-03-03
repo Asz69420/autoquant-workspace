@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-stchfx01",
+  "created_at": "2026-03-03T16:30:02Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "stochastic_reversal template has a confirmed bug (line 174-175: short side checks k_now > 80 instead of k_prev > 80, making shorts nearly impossible). This means stochastic reversal has NEVER been properly tested — 0 trades across 17+ cycles is a bug artifact, not a signal failure. Stochastic K/D crossover in extreme zones is one of the most widely-used reversal signals in traditional trading. By implementing the correct symmetric logic via spec_rules (bypassing the buggy template), we can finally test whether stochastic reversals have edge in crypto. CHOP > 50 gates for ranging markets where mean-reversion works. This is the first proper test of Stochastic as an entry signal in our system.",
+  "target_regime": "ranging (CHOP > 50 confirms range-bound market) where mean-reversion signals have historically worked (ranging PF > 1.0 for RSI, CCI)",
+  "variants": [
+    {
+      "name": "stoch_chop_reversal_tight_8to1",
+      "description": "Stochastic K/D crossover in extreme zones (K < 25 for long, K > 75 for short) under CHOP ranging gate. Tight zones = fewer but higher-conviction mean-reversion entries. Bypasses the buggy stochastic_reversal template with correct symmetric logic via spec_rules.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "STOCHk_14_3_3 crosses_above STOCHd_14_3_3",
+        "STOCHk_14_3_3 < 25",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "STOCHk_14_3_3 crosses_below STOCHd_14_3_3",
+        "STOCHk_14_3_3 > 75",
+        "CHOP_14_1_100 > 50"
+      ],
+      "components": [
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "STOCHk_14_3_3 / STOCHd_14_3_3 crossover in OS/OB zones — correct symmetric logic (bug fix of template)"},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 > 50 confirms ranging market where mean-reversion has proven edge"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Stochastic",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "stoch_chop_reversal_wide_7to1",
+      "description": "Stochastic K/D crossover with wider zones (K < 30 for long, K > 70 for short) for more trades. 7:1 R:R to capture shorter mean-reversion moves. Tests whether relaxing the OS/OB threshold increases trade count enough to compensate for lower conviction per trade.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "STOCHk_14_3_3 crosses_above STOCHd_14_3_3",
+        "STOCHk_14_3_3 < 30",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "STOCHk_14_3_3 crosses_below STOCHd_14_3_3",
+        "STOCHk_14_3_3 > 70",
+        "CHOP_14_1_100 > 50"
+      ],
+      "components": [
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "STOCHk_14_3_3 / STOCHd_14_3_3 crossover in wider OS/OB zones (30/70)"},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 > 50 confirms ranging regime"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Stochastic",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "stoch_ema200_reversal_8to1",
+      "description": "Stochastic K/D crossover in extreme zones with EMA_200 trend filter instead of CHOP gate. Long only above EMA_200 (uptrend pullback), short only below (downtrend rally). Tests stochastic reversal as a pullback entry in trends rather than mean-reversion in ranges — a fundamentally different use case that diversifies the hypothesis.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "STOCHk_14_3_3 crosses_above STOCHd_14_3_3",
+        "STOCHk_14_3_3 < 25",
+        "close > EMA_200"
+      ],
+      "entry_short": [
+        "STOCHk_14_3_3 crosses_below STOCHd_14_3_3",
+        "STOCHk_14_3_3 > 75",
+        "close < EMA_200"
+      ],
+      "components": [
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "STOCHk_14_3_3 / STOCHd_14_3_3 crossover in extreme zones — pullback entry signal"},
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA_200 as trend direction filter — only trade pullbacks in the direction of the major trend"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

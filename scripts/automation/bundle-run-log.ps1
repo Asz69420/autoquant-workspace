@@ -70,10 +70,14 @@ $mainEvents = @($events | Where-Object {
   # Frodex-owned stream: explicitly exclude Claude/Quandalf/Oragorn entries
   return -not ($a -match '(?i)claude|quandalf|oragorn')
 })
-if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events for pipeline=$mode"; exit 0 }
+$noEventsWindow = $false
+if ($mainEvents.Count -eq 0) {
+  $noEventsWindow = $true
+  Write-Host "No meaningful events for pipeline=$mode (sending heartbeat bundle)"
+}
 
 # Suppress sync-only windows (prevents duplicate standalone repo-sync style pings)
-if ($mode -eq 'frodex') {
+if (-not $noEventsWindow -and $mode -eq 'frodex') {
   $nonRepoEvents = @($mainEvents | Where-Object { [string]$_.action -ne 'REPO_HYGIENE_GATE' })
   $repoInfoOnly = @($mainEvents | Where-Object { ([string]$_.action -eq 'REPO_HYGIENE_GATE') -and ([string]$_.status_word -eq 'INFO') })
   if ($nonRepoEvents.Count -eq 0 -and $repoInfoOnly.Count -gt 0) {

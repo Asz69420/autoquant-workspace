@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-ichtk1v1",
+  "created_at": "2026-03-03T16:30:01Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Vortex transition is the champion family (PF=2.034) because it detects regime transitions via directional-movement crossover. But is transition detection a GENERAL alpha source, or a Vortex-specific artifact? Ichimoku Tenkan-Kijun (ITS_9/IKS_26) is a DIFFERENT transition signal — median-price lookbacks over 9/26 bars vs Vortex's directional-movement ratio. If Ichimoku TK transition also works, it CONFIRMS that 'regime transition detection' is a universal edge mechanism, not indicator-specific. This would be the most important finding since discovering Vortex — it would mean we can mine MORE transition signals from other indicator families. Supertrend direction confirms the transition is aligned with the broader trend structure, filtering counter-trend whipsaws.",
+  "target_regime": "transitional (TK cross fires at regime changes) + trending (Supertrend confirmation filters for trend alignment)",
+  "variants": [
+    {
+      "name": "ichimoku_tk_supertrend_10to1",
+      "description": "Tenkan-Kijun cross confirmed by Supertrend direction at 10:1 R:R. Direct test of whether transition detection generalizes beyond Vortex. Uses Vortex v3a stop/TP geometry (1.0/10) since we're testing the same regime-transition hypothesis.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "SUPERTd_7_3.0 > 0"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "SUPERTd_7_3.0 < 0"
+      ],
+      "components": [
+        {"indicator": "Ichimoku", "role": "baseline", "notes": "ITS_9 (Tenkan) crosses IKS_26 (Kijun) — median-price transition signal. NEVER TESTED in any strategy."},
+        {"indicator": "Supertrend", "role": "confirmation", "notes": "SUPERTd_7_3.0 direction confirms trend alignment, filters counter-trend whipsaws"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Supertrend",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "ichimoku_tk_cloud_8to1",
+      "description": "Tenkan-Kijun cross confirmed by cloud position (close above Senkou A for long, below Senkou B for short) at 8:1 R:R. Pure Ichimoku strategy — no Supertrend dependency. Tests whether Ichimoku's internal cloud confirmation is sufficient without external indicator. Wider stop (1.5 ATR) because cloud entries are slightly later than raw TK cross.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "close > ISA_9"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "close < ISB_26"
+      ],
+      "components": [
+        {"indicator": "Ichimoku", "role": "baseline", "notes": "ITS_9 (Tenkan) crosses IKS_26 (Kijun) — transition signal"},
+        {"indicator": "Ichimoku", "role": "confirmation", "notes": "Close vs Senkou Span A/B (ISA_9/ISB_26) — Ichimoku cloud as trend direction filter"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Ichimoku",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "ichimoku_tk_chop_transition_10to1",
+      "description": "Tenkan-Kijun cross with CHOP < 50 gate at 10:1 R:R. CHOP < 50 selects bars where a trend is actively forming. Combined with TK cross, this should capture the exact moment a ranging market breaks into a trend — the transition sweet spot. Control variant against Supertrend-confirmed version.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "CHOP_14_1_100 < 50"
+      ],
+      "components": [
+        {"indicator": "Ichimoku", "role": "baseline", "notes": "ITS_9/IKS_26 — Tenkan-Kijun transition signal"},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 < 50 confirms trending/transitional regime"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

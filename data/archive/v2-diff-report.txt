@@ -1,0 +1,32 @@
+﻿MISSING_FROM_CURRENT:
+
+NEW_IN_CURRENT:
+frodex-bundle-log-15m
+frodex-daily-intel-0530
+frodex-forward-health-4h
+frodex-forward-runner-4h
+frodex-forward-weekly-sun0700
+frodex-ops-loop-15m
+frodex-transcript-ingest-0930
+frodex-youtube-watch-6h
+oragorn-context-sync-daily
+quandalf-auditor-daily-0500
+quandalf-bundle-log-2h
+quandalf-doctrine-daily-0400
+quandalf-generate-2h
+quandalf-research-4h
+
+CHANGED_COMMON:
+AutoQuant-autopilot-user :: action,trigger
+AutoQuant-bundle-run-log-quandalf-user :: action,trigger
+AutoQuant-Claude-Auditor :: action,trigger
+AutoQuant-Claude-Doctrine :: action,trigger
+AutoQuant-Claude-Generator :: action,trigger
+AutoQuant-Claude-Researcher :: action,trigger
+AutoQuant-daily-intel-user :: action,trigger
+AutoQuant-Forward-Health :: action,trigger
+AutoQuant-Forward-Runner :: action,trigger
+AutoQuant-Forward-Weekly :: action,trigger
+AutoQuant-Oragorn-ContextSync :: action,trigger
+AutoQuant-transcript-ingest-user :: action,trigger
+AutoQuant-youtube-watch-user :: action,trigger
