@@ -33,22 +33,35 @@ if (-not $token -or -not $chatId) {
 function Convert-MarkupToHtml([string]$text) {
   if ([string]::IsNullOrWhiteSpace($text)) { return "" }
 
-  $text = $text -replace '`', ''
+  $rawLines = $text -split "`r?`n"
+  $outLines = New-Object System.Collections.Generic.List[string]
 
-  # Header conversion
-  $text = $text -replace '(?m)^###\s+(.+)$', '<b>$1</b>'
-  $text = $text -replace '(?m)^##\s+(.+)$', '<b>$1</b>'
-  $text = $text -replace '(?m)^#\s+(.+)$', '<b>$1</b>'
+  foreach ($rawLine in $rawLines) {
+    if ($rawLine -match '^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$') {
+      continue
+    }
 
-  # Remove markdown table separator rows like |---|---|---|
-  $text = $text -replace '(?m)^\|(?:\s*:?-{3,}:?\s*\|)+\s*$', ''
+    $line = [string]$rawLine
+    $line = $line -replace '`', ''
+    $line = [System.Net.WebUtility]::HtmlEncode($line)
 
-  $text = $text -replace '\*\*(.+?)\*\*', '<b>$1</b>'
-  $text = $text -replace '__(.+?)__', '<b>$1</b>'
-  $text = $text -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
-  $text = $text -replace '(?<!_)_(.+?)(?<!_)_', '<i>$1</i>'
+    # Header conversion
+    $line = $line -replace '^###\s+(.+)$', '<b>$1</b>'
+    $line = $line -replace '^##\s+(.+)$', '<b>$1</b>'
+    $line = $line -replace '^#\s+(.+)$', '<b>$1</b>'
 
-  return $text
+    # Lightweight markdown support
+    $line = $line -replace '\*\*(.+?)\*\*', '<b>$1</b>'
+    $line = $line -replace '__(.+?)__', '<b>$1</b>'
+    $line = $line -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
+
+    # Normalize bullets for cleaner Telegram rendering
+    $line = $line -replace '^\s*[-*]\s+', '• '
+
+    [void]$outLines.Add($line)
+  }
+
+  return ($outLines -join "`n")
 }
 
 $url = "https://api.telegram.org/bot$token/sendMessage"
@@ -63,8 +76,14 @@ $body = $body -replace '\\u003c', '<' -replace '\\u003e', '>'
 try {
   $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
   $response = Invoke-RestMethod -Uri $url -Method Post -Body $bodyBytes -ContentType "application/json; charset=utf-8"
+
+  if ($null -eq $response -or $response.ok -ne $true) {
+    throw "Telegram API returned non-OK response."
+  }
+
   Write-Output $response
   Write-Host "DM sent to Asz"
-} catch {
-  Write-Host "Failed to send DM: $_"
+}
+catch {
+  throw "Failed to send DM: $($_.Exception.Message)"
 }
