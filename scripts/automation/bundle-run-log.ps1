@@ -588,7 +588,7 @@ function Send-TextMessage {
 }
 
 if ($skipDuplicateSend) {
-  Write-Host "Skipped duplicate bundle send (same payload within 10m)"
+  Write-Host "Skipped duplicate bundle send (within min interval or repeated payload)"
 } else {
   if ($bannerPath) {
     $uri = "https://api.telegram.org/bot$telegramSendToken/sendPhoto"
