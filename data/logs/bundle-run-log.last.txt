@@ -1,11 +1,7 @@
-﻿⚠️ Frodex ⏱ 2m 27s GPT5.3
+﻿⚠️ Frodex ⏱ 4m 52s GPT5.3
 ○───activity─────────────────────
-Grabbed : 2 videos
-Ingested : 2 specs
-Backtested: 0 (no variants)
-Variants : 0 new + 0 explore
-Refined : 0 iterations
-Promoted : 0 strategies
-Forward : runs=0 signals=0 entries=0 closes=0 open=0
+Data ingested: 0
+Backtests completed: 0
+Promotions: 0
 ○───note─────────────────────────
 I did not produce new variants for 12 cycles, so exploration is stalled.
