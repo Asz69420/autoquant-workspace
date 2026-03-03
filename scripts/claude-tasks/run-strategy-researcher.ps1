@@ -53,8 +53,13 @@ python scripts/log_event.py --agent "claude-advisor" --action "strategy_research
 Write-Output "[$timestamp] Starting Strategy Researcher..." | Tee-Object -FilePath $logFile -Append
 claude -p $prompt --allowedTools "Read,Write,Bash(python scripts/log_event.py*)" 2>&1 | Tee-Object -FilePath $logFile -Append
 
+$journal = "$ROOT\docs\shared\QUANDALF_JOURNAL.md"
 $advisory = "$ROOT\docs\claude-reports\STRATEGY_ADVISORY.md"
-if (Test-Path $advisory) {
+if (Test-Path $journal) {
+  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+    -TaskLabel "journal cycle" `
+    -SourceFile $journal | Out-Null
+} elseif (Test-Path $advisory) {
   powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
     -TaskLabel "research cycle" `
     -SourceFile $advisory | Out-Null
