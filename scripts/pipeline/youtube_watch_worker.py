@@ -297,10 +297,10 @@ def _queue_retry(q: dict[str, dict], video_id: str, err: str, retry_after_hint: 
     return row
 
 
-def _load_channel_categories() -> tuple[dict[str, str], dict[str, str]]:
+def _load_channel_categories() -> tuple[dict[str, dict], dict[str, dict]]:
     cfg = _j(CATEGORY_CONFIG_PATH, {})
-    by_id: dict[str, str] = {}
-    by_name: dict[str, str] = {}
+    by_id: dict[str, dict] = {}
+    by_name: dict[str, dict] = {}
     rows = cfg.get('channels', []) if isinstance(cfg, dict) else []
     for r in rows:
         if not isinstance(r, dict):
@@ -308,12 +308,17 @@ def _load_channel_categories() -> tuple[dict[str, str], dict[str, str]]:
         cat = str(r.get('active_category') or '').strip().upper()
         if not cat:
             continue
+        secondaries = [str(x).strip().upper() for x in (r.get('secondary_categories') or []) if str(x).strip()]
+        row = {
+            'active_category': cat,
+            'secondary_categories': secondaries,
+        }
         cid = str(r.get('channel_id') or '').strip()
         name = str(r.get('name') or '').strip().lower()
         if cid:
-            by_id[cid] = cat
+            by_id[cid] = row
         if name:
-            by_name[name] = cat
+            by_name[name] = row
     return by_id, by_name
 
 
@@ -326,14 +331,68 @@ def _default_category_from_mode(mode: str) -> str:
     return 'REVIEW'
 
 
-def _resolve_content_category(ch: dict, by_id: dict[str, str], by_name: dict[str, str]) -> str:
+def _resolve_channel_category_config(ch: dict, by_id: dict[str, dict], by_name: dict[str, dict]) -> dict:
     cid = str(ch.get('channel_id') or '').strip()
     nm = str(ch.get('name') or '').strip().lower()
     if cid and cid in by_id:
-        return by_id[cid]
+        return dict(by_id[cid])
     if nm and nm in by_name:
-        return by_name[nm]
-    return _default_category_from_mode(str(ch.get('mode') or ''))
+        return dict(by_name[nm])
+    return {
+        'active_category': _default_category_from_mode(str(ch.get('mode') or '')),
+        'secondary_categories': [],
+    }
+
+
+def _classify_video_category(title: str, rc_path: str, cfg: dict) -> str:
+    active = str(cfg.get('active_category') or 'REVIEW').upper()
+    secondaries = [str(x).upper() for x in (cfg.get('secondary_categories') or []) if str(x)]
+    allowed = [active] + [x for x in secondaries if x != active]
+    if len(allowed) <= 1:
+        return active
+
+    text_parts = [str(title or '')]
+    card = _j(Path(rc_path), {})
+    if isinstance(card, dict):
+        for k in ['summary_bullets', 'extracted_rules', 'creator_notes', 'strategy_components']:
+            v = card.get(k)
+            if isinstance(v, list):
+                for it in v:
+                    if isinstance(it, dict):
+                        text_parts.append(str(it.get('quote') or ''))
+                        text_parts.append(str(it.get('note') or ''))
+                        text_parts.append(str(it.get('description') or ''))
+                    else:
+                        text_parts.append(str(it))
+        inds = card.get('indicators_mentioned')
+        if isinstance(inds, list):
+            text_parts.extend([str(x) for x in inds])
+
+    blob = ' '.join(text_parts).lower()
+
+    scores = {c: 0 for c in allowed}
+    scores[active] += 1
+
+    indicator_keywords = ['indicator', 'tradingview', 'pine', 'ema', 'rsi', 'macd', 'stoch', 'adx', 'atr', 'supertrend', 'vortex']
+    nuanced_keywords = ['mindset', 'psychology', 'thesis', 'framework', 'process', 'narrative', 'behavior', 'edge']
+    macro_keywords = ['macro', 'liquidity', 'fomc', 'cpi', 'rates', 'yield', 'dxy', 'economy']
+    risk_keywords = ['risk', 'execution', 'slippage', 'fees', 'position sizing', 'drawdown']
+
+    if 'INDICATOR_CONCEPT' in scores:
+        if any(k in blob for k in indicator_keywords):
+            scores['INDICATOR_CONCEPT'] += 3
+    if 'NUANCED_CONCEPT' in scores:
+        if any(k in blob for k in nuanced_keywords):
+            scores['NUANCED_CONCEPT'] += 2
+    if 'MACRO_CONTEXT' in scores:
+        if any(k in blob for k in macro_keywords):
+            scores['MACRO_CONTEXT'] += 3
+    if 'RISK_EXECUTION' in scores:
+        if any(k in blob for k in risk_keywords):
+            scores['RISK_EXECUTION'] += 3
+
+    best = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)[0][0]
+    return best
 
 
 def main() -> int:
@@ -361,7 +420,7 @@ def main() -> int:
             failed += 1
             continue
         ch['channel_id'] = channel_id
-        content_category = _resolve_content_category(ch, category_by_id, category_by_name)
+        category_cfg = _resolve_channel_category_config(ch, category_by_id, category_by_name)
         channels_checked += 1
         latest = _fetch_latest(channel_id)
         if latest and not ch.get('last_seen_video_id'):
@@ -424,6 +483,9 @@ def main() -> int:
                 seen_videos.add(vid)
                 continue
 
+            content_category = _classify_video_category(item.get('title', ''), rc['research_card_path'], category_cfg)
+            if content_category != str(category_cfg.get('active_category') or '').upper():
+                _log('YT_CATEGORY_OVERRIDE', 'YT_CATEGORY_OVERRIDE', f"video_id={vid} from={category_cfg.get('active_category')} to={content_category}", 'INFO')
             linked = _resolve_existing_indicators(rc['research_card_path'], ind_idx)
 
             lm = _run('scripts/pipeline/link_research_indicators.py', '--research-card-path', rc['research_card_path'], '--indicator-record-paths', json.dumps(linked[:2]))
