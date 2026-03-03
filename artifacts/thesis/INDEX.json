@@ -1,4 +1,7 @@
 [
+  "artifacts/thesis/20260304/thesis-20260304-2e7ee0a966c2.thesis.json",
+  "artifacts/thesis/20260304/thesis-20260304-3f6eee0d3ef8.thesis.json",
+  "artifacts/thesis/20260304/thesis-20260304-62980b2fa6f6.thesis.json",
   "artifacts/thesis/20260303/thesis-20260303-ecb210c0d5f8.thesis.json",
   "artifacts/thesis/20260303/thesis-20260303-ec4ba2326551.thesis.json",
   "artifacts/thesis/20260303/thesis-20260303-f8693eac71c6.thesis.json",
@@ -195,8 +198,5 @@
   "fake/39.json",
   "fake/40.json",
   "fake/41.json",
-  "fake/42.json",
-  "fake/43.json",
-  "fake/44.json",
-  "fake/45.json"
+  "fake/42.json"
 ]

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260304-d2787f627783",
+  "created_at": "2026-03-03T14:00:13.937310Z",
+  "tv_ref": "tradingview:mLVUH2V8",
+  "url": "https://www.tradingview.com/script/mLVUH2V8-Adaptive-Momentum-Ribbon/",
+  "name": "Adaptive Momentum Ribbon",
+  "author": "ZakAlgoTrade",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "529d1f14636a626892b531c8a91e2861e35544663fab2c07522840b49426218b",
+  "truncated": false
+}
