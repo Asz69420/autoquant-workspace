@@ -95,13 +95,26 @@ Rules for BRAIN updates:
 - Update with concrete evidence and confidence
 - Prefer evidence bullets with metrics when available
 
-C) Append exactly one concise pointer-first journal entry to:
+C) Append exactly one concise pointer-first brain journal entry to:
 brain/journal/
 
 Journal entry minimum:
 - id
 - ts
 - pointers (object ids and/or evidence paths)
+
+D) Append/update one human-readable operator journal entry to:
+docs/shared/QUANDALF_JOURNAL.md
+
+Operator journal format:
+- What I learned this cycle
+- What changed in my thinking
+- What I’m testing next
+- Suggestions for Asz (if any)
+
+IMPORTANT:
+- Do NOT include machine-directive JSON in operator journal content.
+- Keep it readable and concise.
 
 After writing, run:
 python scripts/quandalf/build_index.py
@@ -114,6 +127,7 @@ Write-Output "[$timestamp] Starting Strategy Researcher..." | Tee-Object -FilePa
 $taskExit = Invoke-ClaudeWithRetry -promptText $prompt -logPath $logFile -maxAttempts 2
 
 $advisory = "$ROOT\docs\claude-reports\STRATEGY_ADVISORY.md"
+$journal = "$ROOT\docs\shared\QUANDALF_JOURNAL.md"
 if ($taskExit -eq 0) {
   $indexOut = & python scripts/quandalf/build_index.py 2>&1 | Tee-Object -FilePath $logFile -Append | Out-String
   if ($LASTEXITCODE -ne 0) {
@@ -123,7 +137,11 @@ if ($taskExit -eq 0) {
 }
 
 if ($taskExit -eq 0) {
-  if (Test-Path $advisory) {
+  if (Test-Path $journal) {
+    powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+      -TaskLabel "journal cycle" `
+      -SourceFile $journal | Out-Null
+  } elseif (Test-Path $advisory) {
     powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
       -TaskLabel "research cycle" `
       -SourceFile $advisory | Out-Null
