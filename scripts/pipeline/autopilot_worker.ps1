@@ -633,7 +633,8 @@ try {
     $prevCountersPath = 'data/state/autopilot_counters.json'
     if (Test-Path $prevCountersPath) {
       $prevCounters = Get-Content $prevCountersPath -Raw | ConvertFrom-Json
-      if ($null -ne $prevCounters.starvation_cycles) { $starvationCyclesPrev = [int]$prevCounters.starvation_cycles }
+      if ($null -ne $prevCounters.throughput_drought_cycles) { $starvationCyclesPrev = [int]$prevCounters.throughput_drought_cycles }
+      elseif ($null -ne $prevCounters.starvation_cycles) { $starvationCyclesPrev = [int]$prevCounters.starvation_cycles }
     }
   } catch {}
 
@@ -885,8 +886,8 @@ try {
           if ($variantCount -eq 0) { $promoStatus = 'BLOCKED' }
 
           if ($promoStatus -eq 'BLOCKED') {
-            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=BLOCKED' 'WARN' 'Promotion'
-            Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'NO_VARIANTS_COMPILED' -incrementAttempt $false
+            Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=REVIEW_REQUIRED' 'WARN' 'Promotion'
+            Set-BundleState -bundlePath $bp -status 'REVIEW_REQUIRED' -lastError 'NO_VARIANTS_COMPILED' -incrementAttempt $false
           } else {
             Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'OK' 'Promotion'
           }
@@ -970,7 +971,7 @@ try {
                     $promoStatus = 'BLOCKED'
                     $promoBlockedByAdaptiveGate = $true
                     Emit-Summary 'PROMOTION_ADAPTIVE_GATE' $gateSummary 'WARN' 'Promotion'
-                    Set-BundleState -bundlePath $bp -status 'BLOCKED' -lastError 'ADAPTIVE_PROMOTION_GATE' -incrementAttempt $false
+                    Set-BundleState -bundlePath $bp -status 'REVIEW_REQUIRED' -lastError 'ADAPTIVE_PROMOTION_GATE' -incrementAttempt $false
                   } else {
                     Emit-InfoSummary 'PROMOTION_ADAPTIVE_GATE' $gateSummary 'Promotion'
                   }
@@ -1443,21 +1444,25 @@ $stateDir = 'data/state'
 if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir | Out-Null }
 
 $countersPath = Join-Path $stateDir 'autopilot_counters.json'
-$counters = [ordered]@{ starvation_cycles = 0; drought_cycles = 0; updated_at = [DateTime]::UtcNow.ToString('o') }
+$counters = [ordered]@{ throughput_drought_cycles = 0; drought_cycles = 0; updated_at = [DateTime]::UtcNow.ToString('o') }
 if (Test-Path $countersPath) {
   try {
     $prev = Get-Content $countersPath -Raw | ConvertFrom-Json
-    if ($null -ne $prev.starvation_cycles) { $counters.starvation_cycles = [int]$prev.starvation_cycles }
+    if ($null -ne $prev.throughput_drought_cycles) { $counters.throughput_drought_cycles = [int]$prev.throughput_drought_cycles }
+    elseif ($null -ne $prev.starvation_cycles) { $counters.throughput_drought_cycles = [int]$prev.starvation_cycles }
     if ($null -ne $prev.drought_cycles) { $counters.drought_cycles = [int]$prev.drought_cycles }
   } catch {}
 }
 
-if ([int]$candidatesReachingRefinement -eq 0) { $counters.starvation_cycles = [int]$counters.starvation_cycles + 1 } else { $counters.starvation_cycles = 0 }
+if ([int]$candidatesReachingRefinement -eq 0) { $counters.throughput_drought_cycles = [int]$counters.throughput_drought_cycles + 1 } else { $counters.throughput_drought_cycles = 0 }
 if ([int]$candidatesPassingGate -eq 0) { $counters.drought_cycles = [int]$counters.drought_cycles + 1 } else { $counters.drought_cycles = 0 }
 $counters.updated_at = [DateTime]::UtcNow.ToString('o')
+# backward-compat alias for existing readers
+$counters.starvation_cycles = [int]$counters.throughput_drought_cycles
 ($counters | ConvertTo-Json -Depth 5) | Set-Content -Path $countersPath -Encoding utf8
 
-$summary.starvation_cycles = [int]$counters.starvation_cycles
+$summary.throughput_drought_cycles = [int]$counters.throughput_drought_cycles
+$summary.starvation_cycles = [int]$counters.throughput_drought_cycles
 $summary.drought_cycles = [int]$counters.drought_cycles
 
 $labCountersPath = Join-Path $stateDir 'lab_counters.json'
@@ -1485,8 +1490,10 @@ $summary.directive_loop_stall_cycles = [int]$labCounters.directive_loop_stall_cy
 ($summary | ConvertTo-Json -Depth 5) | Set-Content -Path 'data/state/autopilot_summary.json' -Encoding utf8
 
 if (-not $DryRun) {
-  if ([int]$counters.starvation_cycles -ge 12) {
-    Emit-Summary 'LAB_STARVATION_WARN' ("Autopilot starvation: starvation_cycles=" + $counters.starvation_cycles + " candidates_reaching_refinement=" + $candidatesReachingRefinement) 'WARN' 'oQ'
+  if ([int]$counters.throughput_drought_cycles -ge 12) {
+    Emit-Summary 'LAB_THROUGHPUT_DROUGHT_WARN' ("Autopilot throughput drought: throughput_drought_cycles=" + $counters.throughput_drought_cycles + " candidates_reaching_refinement=" + $candidatesReachingRefinement) 'WARN' 'oQ'
+    # backward-compat mirror
+    Emit-Summary 'LAB_STARVATION_WARN' ("Autopilot throughput drought: starvation_cycles=" + $counters.throughput_drought_cycles + " candidates_reaching_refinement=" + $candidatesReachingRefinement) 'WARN' 'oQ'
   }
   if ([int]$counters.drought_cycles -ge 30) {
     Emit-Summary 'LAB_DROUGHT_WARN' ("Autopilot drought: drought_cycles=" + $counters.drought_cycles + " candidates_passing_gate=" + $candidatesPassingGate) 'WARN' 'oQ'
@@ -1500,7 +1507,7 @@ if (-not $DryRun) {
   }
 
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)

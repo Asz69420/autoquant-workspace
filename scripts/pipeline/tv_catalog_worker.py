@@ -15,6 +15,9 @@ PY = sys.executable
 STATE_PATH = ROOT / 'data' / 'state' / 'tv_catalog_state.json'
 BUNDLE_INDEX = ROOT / 'artifacts' / 'bundles' / 'INDEX.json'
 INDICATOR_INDEX = ROOT / 'artifacts' / 'library' / 'INDICATOR_INDEX.json'
+INDICATOR_ARCHIVE_INDEX = ROOT / 'artifacts' / 'library' / 'INDICATOR_ARCHIVE_INDEX.json'
+HOT_LIBRARY_CAP = 500
+ARCHIVE_LIBRARY_CAP = 10000
 
 
 def _j(path: Path, default):
@@ -162,10 +165,10 @@ def main() -> int:
     max_new_indicators_per_run = max(1, int(args.max_new_indicators_per_run))
     max_candidates_evaluated = max(1, int(args.max_candidates_evaluated))
 
-    st = _j(STATE_PATH, {'top_cursor': 0, 'seen_tv_keys': [], 'seen_script_ids': [], 'last_trending_seen': []})
+    st = _j(STATE_PATH, {'top_cursor': 0, 'trending_cursor': 0, 'seen_tv_keys': [], 'seen_script_ids': [], 'last_trending_seen': []})
     bundles = _j(BUNDLE_INDEX, [])
     idx = _j(INDICATOR_INDEX, [])
-    by_key = {x.get('tv_key'): x for x in idx if isinstance(x, dict)}
+    archive_idx = _j(INDICATOR_ARCHIVE_INDEX, [])
 
     created = []
     added = 0
@@ -221,6 +224,7 @@ def main() -> int:
 
             row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['top']}
             idx = [row] + [x for x in idx if x.get('tv_key') != key]
+            archive_idx = [row] + [x for x in archive_idx if x.get('tv_key') != key]
             st['seen_tv_keys'].append(key)
             st['seen_script_ids'].append(cand['script_id'])
             added += 1
@@ -228,50 +232,59 @@ def main() -> int:
 
     tr = _fetch_mode('trending')
     _log('TV_CATALOG_CHECK', 'TV_CATALOG_CHECK', f'mode=TRENDING candidates={len(tr)}', 'INFO')
-    for cand in tr[:8]:
-        if added >= max_new_indicators_per_run:
-            break
-        key = _tv_key(cand['name'], cand['author'])
-        if _is_invalid_candidate(cand['name'], cand['author']):
-            _log('TV_CATALOG_PARSE_INVALID', 'TV_CATALOG_PARSE_INVALID', f"skip trending candidate name={cand['name']} author={cand['author']}", 'WARN')
-            skipped += 1
-            invalid += 1
-            continue
-        if key in st['seen_tv_keys']:
-            skipped += 1
-            continue
-        context_text = _fetch_script_context(cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), cand['name'], cand['author'])
-        hint_list = _infer_indicator_hints(cand['name'])
-        try:
-            ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps(hint_list), '--signals', json.dumps(hint_list), '--notes', json.dumps(['catalog_trending', 'source=tv_page_context']))
-            _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
-            grabber_ok += 1
-        except Exception:
-            _log('GRABBER_FETCH_FAIL', 'GRABBER_FETCH_FAIL', f"script_id={cand['script_id']} name={cand['name']}", 'WARN')
-            skipped += 1
-            grabber_fail += 1
-            continue
-        ir_meta = _ir_meta(ir['indicator_record_path'])
-        if ir_meta.get('pine_too_large') is True:
-            too_large_skipped_count += 1
-            _log('COMPONENT_TOO_LARGE', 'COMPONENT_TOO_LARGE', 'Component too large; skipped', 'WARN', outputs=[ir['indicator_record_path']])
-        else:
-            rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', context_text, '--title', cand['name'], '--author', cand['author'])
-            bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
-            created.append(bp)
-            _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
-            _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=trending tv_key={key}", 'INFO', outputs=[bp])
-        row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['trending']}
-        idx = [row] + [x for x in idx if x.get('tv_key') != key]
-        st['seen_tv_keys'].append(key)
-        st['seen_script_ids'].append(cand['script_id'])
-        st['last_trending_seen'].append(key)
-        added += 1
-        if len(st['last_trending_seen']) >= 2:
-            break
+    trending_evaluated = 0
+    if tr:
+        while trending_evaluated < min(len(tr), max_candidates_evaluated) and added < max_new_indicators_per_run:
+            trending_cursor = int(st.get('trending_cursor', 0))
+            idx_sel = trending_cursor % len(tr)
+            cand = tr[idx_sel]
+            st['trending_cursor'] = trending_cursor + 1
+            trending_evaluated += 1
 
-    _w(INDICATOR_INDEX, idx[:500])
-    _w(STATE_PATH, {**st, 'seen_tv_keys': st['seen_tv_keys'][-1000:], 'seen_script_ids': st['seen_script_ids'][-1000:], 'last_trending_seen': st['last_trending_seen'][-50:]})
+            key = _tv_key(cand['name'], cand['author'])
+            if _is_invalid_candidate(cand['name'], cand['author']):
+                _log('TV_CATALOG_PARSE_INVALID', 'TV_CATALOG_PARSE_INVALID', f"skip trending candidate name={cand['name']} author={cand['author']}", 'WARN')
+                skipped += 1
+                invalid += 1
+                continue
+            if key in st['seen_tv_keys']:
+                skipped += 1
+                continue
+
+            context_text = _fetch_script_context(cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), cand['name'], cand['author'])
+            hint_list = _infer_indicator_hints(cand['name'])
+            try:
+                ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps(hint_list), '--signals', json.dumps(hint_list), '--notes', json.dumps(['catalog_trending', 'source=tv_page_context']))
+                _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
+                grabber_ok += 1
+            except Exception:
+                _log('GRABBER_FETCH_FAIL', 'GRABBER_FETCH_FAIL', f"script_id={cand['script_id']} name={cand['name']}", 'WARN')
+                skipped += 1
+                grabber_fail += 1
+                continue
+
+            ir_meta = _ir_meta(ir['indicator_record_path'])
+            if ir_meta.get('pine_too_large') is True:
+                too_large_skipped_count += 1
+                _log('COMPONENT_TOO_LARGE', 'COMPONENT_TOO_LARGE', 'Component too large; skipped', 'WARN', outputs=[ir['indicator_record_path']])
+            else:
+                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', context_text, '--title', cand['name'], '--author', cand['author'])
+                bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
+                created.append(bp)
+                _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
+                _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=trending tv_key={key}", 'INFO', outputs=[bp])
+
+            row = {'tv_key': key, 'script_id': cand['script_id'], 'name': cand['name'], 'author': cand['author'], 'indicator_record_path': ir['indicator_record_path'], 'first_seen_ts': datetime.now(UTC).isoformat(), 'sources': ['trending']}
+            idx = [row] + [x for x in idx if x.get('tv_key') != key]
+            archive_idx = [row] + [x for x in archive_idx if x.get('tv_key') != key]
+            st['seen_tv_keys'].append(key)
+            st['seen_script_ids'].append(cand['script_id'])
+            st['last_trending_seen'].append(key)
+            added += 1
+
+    _w(INDICATOR_INDEX, idx[:HOT_LIBRARY_CAP])
+    _w(INDICATOR_ARCHIVE_INDEX, archive_idx[:ARCHIVE_LIBRARY_CAP])
+    _w(STATE_PATH, {**st, 'top_cursor': int(st.get('top_cursor', 0)), 'trending_cursor': int(st.get('trending_cursor', 0)), 'seen_tv_keys': st['seen_tv_keys'][-1000:], 'seen_script_ids': st['seen_script_ids'][-1000:], 'last_trending_seen': st['last_trending_seen'][-50:]})
     _w(BUNDLE_INDEX, (created + bundles)[:500])
     g_status = 'OK'
     if grabber_fail > 0 and grabber_ok == 0:
