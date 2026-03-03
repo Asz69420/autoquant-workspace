@@ -8,6 +8,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
+$bridgeEnv = "$ROOT\scripts\claude-bridge\.env"
 
 function Convert-ToCompactText([string]$rawText, [int]$maxChars = 3500) {
   if ([string]::IsNullOrWhiteSpace($rawText)) { return "" }
@@ -72,6 +73,64 @@ function Normalize-JournalEntry([string]$text) {
   return $normalized.Trim()
 }
 
+function Get-BridgeVar([string]$key) {
+  if (-not (Test-Path $bridgeEnv)) { return "" }
+
+  foreach ($line in (Get-Content -Path $bridgeEnv -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+    if ($line -match ('^' + [regex]::Escape($key) + '=(.*)$')) {
+      return [string]$matches[1].Trim()
+    }
+  }
+
+  return ""
+}
+
+function Send-QuandalfBannerPhoto([string]$captionText) {
+  $token = Get-BridgeVar -key 'CLAUDE_BRIDGE_BOT_TOKEN'
+  $chatId = Get-BridgeVar -key 'CLAUDE_BRIDGE_USER_ID'
+  if ([string]::IsNullOrWhiteSpace($token) -or [string]::IsNullOrWhiteSpace($chatId)) { return }
+
+  $bannerPath = ""
+  $bannerDir = "$ROOT\assets\banners"
+  if (Test-Path $bannerDir) {
+    $candidate = Get-ChildItem -Path $bannerDir -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^quandalf_banner\.' } | Select-Object -First 1
+    if ($candidate) { $bannerPath = [string]$candidate.FullName }
+  }
+
+  if ([string]::IsNullOrWhiteSpace($bannerPath) -or -not (Test-Path $bannerPath)) { return }
+
+  $caption = [string]$captionText
+  if ([string]::IsNullOrWhiteSpace($caption)) { $caption = 'Quandalf journal cycle' }
+  if ($caption.Length -gt 120) { $caption = $caption.Substring(0, 120) }
+
+  $env:QB_TOKEN = $token
+  $env:QB_CHAT = $chatId
+  $env:QB_CAPTION = $caption
+  $env:QB_PHOTO = $bannerPath
+
+  $py = @'
+import os
+import requests
+
+token = (os.getenv("QB_TOKEN") or "").strip()
+chat = (os.getenv("QB_CHAT") or "").strip()
+caption = (os.getenv("QB_CAPTION") or "").strip()
+photo = (os.getenv("QB_PHOTO") or "").strip()
+
+if token and chat and photo:
+    with open(photo, "rb") as fh:
+        r = requests.post(
+            f"https://api.telegram.org/bot{token}/sendPhoto",
+            data={"chat_id": chat, "caption": caption},
+            files={"photo": fh},
+            timeout=60,
+        )
+        r.raise_for_status()
+'@
+
+  $null = $py | python -
+}
+
 try {
   $effectiveSummary = $Summary
   $isJournalEntry = $false
@@ -120,6 +179,7 @@ try {
     }
 
     & "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
+    Send-QuandalfBannerPhoto -captionText "Quandalf journal cycle"
     Set-Content -Path $statePath -Value $currentHash -Encoding UTF8
     Write-Host "Quandalf DM summary sent"
     return
