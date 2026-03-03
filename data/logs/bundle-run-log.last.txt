@@ -3,6 +3,5 @@
 Data ingested: 0
 Backtests completed: 0
 Promotions: 0
-Forward checks: 1
 ○───note─────────────────────────
-Utility forward checks are active and healthy.
+Utility cycle was quiet; no actionable changes this window.
