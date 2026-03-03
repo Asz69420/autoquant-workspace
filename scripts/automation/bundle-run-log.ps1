@@ -154,6 +154,7 @@ $ingested = 0; $errors = 0
 $insightNew = 0
 $stall = 0; $starvation = 0
 $warnings = @()
+$forwardRuns = 0; $forwardEntries = 0; $forwardCloses = 0; $forwardSignalEvals = 0; $forwardOpenPositions = 0
 
 foreach ($e in $mainEvents) {
   $sum = if ($e.summary) { $e.summary } else { "" }
@@ -222,6 +223,42 @@ foreach ($e in $mainEvents) {
     $agentName = if ($e.agent) { [string]$e.agent } else { "Pipeline" }
     $wKey = "${agentName}: $reasonLabel"
     if ($reasonCode -notmatch "STALL|STARVATION") { $warnings += $wKey }
+  }
+}
+
+# --- Forward-test bridge (data/forward) ---
+if ($mode -eq 'frodex') {
+  $forwardLogPath = "$ROOT\data\forward\FORWARD_LOG.ndjson"
+  if (Test-Path $forwardLogPath) {
+    foreach ($line in (Get-Content $forwardLogPath -Encoding UTF8 -Tail 1200)) {
+      try {
+        $entry = $line | ConvertFrom-Json
+        if (-not $entry.ts_iso) { continue }
+        $fts = [DateTime]::Parse([string]$entry.ts_iso).ToUniversalTime()
+        if ($fts -lt $cutoff) { continue }
+
+        $evt = [string]$entry.event
+        switch ($evt) {
+          'RUN_OK' { $forwardRuns++ }
+          'POSITION_OPEN' { $forwardEntries++ }
+          'POSITION_CLOSE' { $forwardCloses++ }
+          'SIGNAL_EVAL' { $forwardSignalEvals++ }
+        }
+      } catch { continue }
+    }
+  }
+
+  $forwardStatePath = "$ROOT\data\forward\PAPER_POSITIONS.json"
+  if (Test-Path $forwardStatePath) {
+    try {
+      $st = Get-Content $forwardStatePath -Raw -Encoding UTF8 | ConvertFrom-Json
+      if ($st -and $st.lanes) {
+        foreach ($lane in $st.lanes.PSObject.Properties) {
+          $v = $lane.Value
+          if ($v -and $v.open_position) { $forwardOpenPositions++ }
+        }
+      }
+    } catch {}
   }
 }
 
@@ -299,6 +336,7 @@ if ($mode -eq 'quandalf') {
     $lines += "Variants : $dirVariants new + $dirExplore explore"
     $lines += "Refined : $refined iterations"
     $lines += "Promoted : $promoted strategies"
+    $lines += "Forward : runs=$forwardRuns signals=$forwardSignalEvals entries=$forwardEntries closes=$forwardCloses open=$forwardOpenPositions"
     if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
   }
 }
@@ -343,7 +381,11 @@ if ($mode -ne 'quandalf') {
   } elseif ($errors -gt 0) {
     $noteText = "I hit $errors issue(s) in this window and need a quick review."
   } elseif ($stall -gt 5) {
-    $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
+    if ($forwardRuns -gt 0 -or $forwardSignalEvals -gt 0) {
+      $noteText = "Strategy generation is stalled ($stall cycles), but forward-testing is active (runs=$forwardRuns signals=$forwardSignalEvals)."
+    } else {
+      $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
+    }
   } elseif ($starvation -gt 10) {
     $noteText = "I am input-starved for $starvation cycles, so throughput is constrained."
   } elseif ($topWarning) {
