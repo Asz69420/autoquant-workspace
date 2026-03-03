@@ -24,8 +24,8 @@ NOW_UTC = datetime.now(timezone.utc)
 SINCE_24H = NOW_UTC - timedelta(hours=24)
 
 TF_ORDER = {"4h": 0, "1h": 1, "15m": 2}
-ASSET_ORDER = {"BTC": 0, "ETH": 1}
-EMOJI = {"BTC": "🟠", "ETH": "🔵"}
+ASSET_ORDER = {"BTC": 0, "ETH": 1, "SOL": 2}
+EMOJI = {"BTC": "🟠", "ETH": "🔵", "SOL": "🟣"}
 MAX_WIDTH = 56
 NAME_WIDTH = 9
 
@@ -225,7 +225,7 @@ def collect_rows():
         d = ds[0] if isinstance(ds, list) else ds
         asset = str(d.get("symbol") or "").upper().strip()
         tf = str(d.get("timeframe") or "").lower().strip()
-        if asset not in {"BTC", "ETH"} or not tf:
+        if asset not in {"BTC", "ETH", "SOL"} or not tf:
             continue
 
         spec_path = str(r.get("strategy_spec_path") or "")

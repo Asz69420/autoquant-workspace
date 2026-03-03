@@ -37,16 +37,19 @@ def _latest_meta(symbol: str, timeframe: str) -> str:
     metas = sorted(d.glob('*.meta.json'))
     if not metas:
         raise FileNotFoundError(f'No dataset meta found for {symbol} {timeframe}')
-    preferred = []
-    fallback = []
+
+    scored: list[tuple[int, str, Path]] = []
     for m in metas:
         meta = _load_json(m)
-        if 'start' in meta and 'end' in meta and _days_between(meta['start'], meta['end']) >= 700:
-            preferred.append(m)
-        else:
-            fallback.append(m)
-    pool = preferred if preferred else fallback
-    return str(sorted(pool)[-1])
+        start = str(meta.get('start') or '')
+        end = str(meta.get('end') or '')
+        span_days = _days_between(start, end) if start and end else -1
+        scored.append((span_days, end, m))
+
+    preferred = [x for x in scored if x[0] >= 700]
+    pool = preferred if preferred else scored
+    best = sorted(pool, key=lambda x: (x[0], x[1]))[-1][2]
+    return str(best)
 
 
 def _resolve_datasets(arg: str) -> list[str]:
@@ -58,6 +61,9 @@ def _resolve_datasets(arg: str) -> list[str]:
             _latest_meta('ETH', '15m'),
             _latest_meta('ETH', '1h'),
             _latest_meta('ETH', '4h'),
+            _latest_meta('SOL', '15m'),
+            _latest_meta('SOL', '1h'),
+            _latest_meta('SOL', '4h'),
         ]
     p = Path(arg)
     if p.exists():

@@ -277,7 +277,12 @@ def fmt(v: float | None, d: int = 1, signed: bool = False) -> str:
 
 
 def render_top(rows: list[Row], asset: str) -> list[str]:
-    title = "🏆 TOP 5 BTC (by PF)" if asset == "BTC" else "🔵 TOP 5 ETH (by PF)"
+    if asset == "BTC":
+        title = "🏆 TOP 5 BTC (by PF)"
+    elif asset == "ETH":
+        title = "🔵 TOP 5 ETH (by PF)"
+    else:
+        title = "🟣 TOP 5 SOL (by PF)"
     out = [title, "# △ TF Strategy PF WR% TC DD% P&L%", "──────────────────────────────────────────"]
 
     pool = [r for r in rows if r.asset == asset]
@@ -360,6 +365,8 @@ def build_report(rows: list[Row], meta: dict) -> str:
     lines = [f"📊 DAILY BRIEF — {now.strftime('%Y-%m-%d')} 5:30 AEST", ""]
     lines += render_top(rows, "BTC") + [""]
     lines += render_top(rows, "ETH") + [""]
+    if any(r.asset == "SOL" for r in rows):
+        lines += render_top(rows, "SOL") + [""]
     lines += [
         "⚡ 24H ACTIVITY",
         f"Cycles: {meta['cycles']} | Backtests: {meta['backtests']} | New specs: {meta['new_specs']} | Errors: {meta['errors']}",

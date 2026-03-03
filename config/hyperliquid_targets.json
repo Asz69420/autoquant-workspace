@@ -1,5 +1,5 @@
 {
   "symbols": ["BTC", "ETH", "SOL"],
-  "timeframes": ["1h", "4h"],
+  "timeframes": ["15m", "1h", "4h"],
   "lookback_days": 730
 }

@@ -163,7 +163,27 @@ def _score_batch_summary(summary: dict, complexity: dict) -> float:
 def _latest_meta(symbol: str, tf: str) -> Path:
     d = ROOT / 'artifacts' / 'data' / 'hyperliquid' / symbol / tf
     metas = sorted(d.glob('*.meta.json'))
-    return metas[-1]
+    if not metas:
+        raise FileNotFoundError(f'No dataset meta found for {symbol} {tf}')
+
+    scored: list[tuple[int, str, Path]] = []
+    for m in metas:
+        meta = _load(m)
+        start = str(meta.get('start') or '')
+        end = str(meta.get('end') or '')
+        span_days = -1
+        if start and end:
+            try:
+                sdt = datetime.fromisoformat(start.replace('Z', '+00:00'))
+                edt = datetime.fromisoformat(end.replace('Z', '+00:00'))
+                span_days = (edt - sdt).days
+            except Exception:
+                span_days = -1
+        scored.append((span_days, end, m))
+
+    preferred = [x for x in scored if x[0] >= 700]
+    pool = preferred if preferred else scored
+    return sorted(pool, key=lambda x: (x[0], x[1]))[-1][2]
 
 
 def _add_months(dt: datetime, months: int) -> datetime:
@@ -263,7 +283,7 @@ def main() -> int:
 
         holdout = holdouts[it - 1]
         train_metas = []
-        for sym, tf in [('BTC', '15m'), ('BTC', '1h'), ('BTC', '4h'), ('ETH', '15m'), ('ETH', '1h'), ('ETH', '4h')]:
+        for sym, tf in [('BTC', '15m'), ('BTC', '1h'), ('BTC', '4h'), ('ETH', '15m'), ('ETH', '1h'), ('ETH', '4h'), ('SOL', '15m'), ('SOL', '1h'), ('SOL', '4h')]:
             m = _latest_meta(sym, tf)
             train_metas.append(str(_slice_training_meta(m, holdout, it)))
         meta_list_path = ROOT / 'artifacts' / 'datasets' / datetime.now().strftime('%Y%m%d') / f'iter{it}_datasets.json'
