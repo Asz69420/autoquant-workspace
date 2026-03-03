@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-61a608bfe9e5",
+  "created_at": "2026-03-03T11:30:14.915314Z",
+  "tv_ref": "tradingview:PLcM4p4R",
+  "url": "https://www.tradingview.com/script/PLcM4p4R-VA-Pivots-OnlyFlow/",
+  "name": "VA Pivots - OnlyFlow",
+  "author": "ofderk",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "6086cff74e8cb7fbd6392d2076a9a187b7ae97dd53b7653e8287011f0ab1c75d",
+  "truncated": false
+}

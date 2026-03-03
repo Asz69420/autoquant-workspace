@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-8dc38cc09e0e",
+  "created_at": "2026-03-03T11:30:15.160717Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/PLcM4p4R-VA-Pivots-OnlyFlow/",
+  "title": "VA Pivots - OnlyFlow",
+  "author": "ofderk",
+  "summary_bullets": [
+    "Top catalog indicator: VA Pivots - OnlyFlow by ofderk."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: VA Pivots - OnlyFlow by ofderk.",
+      "note": "Meaning: Top catalog indicator: VA Pivots - OnlyFlow by ofderk."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-8dc38cc09e0e.raw.txt",
+  "sha256": "d2ee27d6b148b10c348c8d2b197c905d46388743d8fc45a9c14c0f8af950051b",
+  "truncated": false
+}

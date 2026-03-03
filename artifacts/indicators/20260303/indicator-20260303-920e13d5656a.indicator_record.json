@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-920e13d5656a",
+  "created_at": "2026-03-03T11:30:14.078774Z",
+  "tv_ref": "tradingview:2IOqEKdO",
+  "url": "https://www.tradingview.com/script/2IOqEKdO-ATP-MACD-Signal-System/",
+  "name": "ATP MACD Signal System",
+  "author": "AlgoTrade_Pro",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "10b97d0d59c6790601bddec8f52bfcd628711da1bbbe797574fe1dced0ed6e96",
+  "truncated": false
+}

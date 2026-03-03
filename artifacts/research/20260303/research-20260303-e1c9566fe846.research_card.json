@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-e1c9566fe846",
+  "created_at": "2026-03-03T11:30:14.358683Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/2IOqEKdO-ATP-MACD-Signal-System/",
+  "title": "ATP MACD Signal System",
+  "author": "AlgoTrade_Pro",
+  "summary_bullets": [
+    "Top catalog indicator: ATP MACD Signal System by AlgoTrade_Pro."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: ATP MACD Signal System by AlgoTrade_Pro.",
+      "note": "Meaning: Top catalog indicator: ATP MACD Signal System by AlgoTrade_Pro."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-e1c9566fe846.raw.txt",
+  "sha256": "4e6774fbe4564a03acb6a438496af17dea378139b924c2ae8dbe95c5f8ef43cc",
+  "truncated": false
+}

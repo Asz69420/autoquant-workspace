@@ -111,7 +111,7 @@
       "owner": "Frodex",
       "type": "task",
       "schedule": { "kind": "daily", "times": ["00:05", "04:05", "08:05", "12:05", "16:05", "20:05"] },
-      "command": "cmd /c cd /d . && python scripts/forward/forward_runner.py",
+      "command": "python scripts/forward/forward_runner.py",
       "legacy_task_name": "AutoQuant-Forward-Runner"
     },
     {
@@ -119,7 +119,7 @@
       "owner": "Frodex",
       "type": "task",
       "schedule": { "kind": "daily", "times": ["00:25", "04:25", "08:25", "12:25", "16:25", "20:25"] },
-      "command": "cmd /c cd /d . && python scripts/forward/check_runner_health.py",
+      "command": "python scripts/forward/check_runner_health.py",
       "legacy_task_name": "AutoQuant-Forward-Health"
     },
     {
@@ -127,7 +127,7 @@
       "owner": "Frodex",
       "type": "task",
       "schedule": { "kind": "weekly", "days": ["Sunday"], "time": "07:00" },
-      "command": "cmd /c cd /d . && python scripts/forward/generate_weekly_scorecard.py",
+      "command": "python scripts/forward/generate_weekly_scorecard.py",
       "legacy_task_name": "AutoQuant-Forward-Weekly"
     }
   ],
