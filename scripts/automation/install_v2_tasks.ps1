@@ -120,6 +120,52 @@ function New-V2Triggers {
   throw ('Unsupported schedule kind: ' + $kind)
 }
 
+function Convert-IntervalToMinutes {
+  param($Interval)
+
+  if ($null -eq $Interval) { return 0 }
+
+  if ($Interval -is [TimeSpan]) {
+    return [int][Math]::Round($Interval.TotalMinutes)
+  }
+
+  $raw = [string]$Interval
+  if ([string]::IsNullOrWhiteSpace($raw)) { return 0 }
+
+  $m = [regex]::Match($raw, '^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$')
+  if ($m.Success) {
+    $h = if ($m.Groups[1].Success) { [int]$m.Groups[1].Value } else { 0 }
+    $mi = if ($m.Groups[2].Success) { [int]$m.Groups[2].Value } else { 0 }
+    $s = if ($m.Groups[3].Success) { [int]$m.Groups[3].Value } else { 0 }
+    return [int]([Math]::Floor(($h * 60) + $mi + ($s / 60.0)))
+  }
+
+  return 0
+}
+
+function Normalize-WeekdayToken {
+  param($Token)
+  $v = [string]$Token
+  switch ($v.ToLowerInvariant()) {
+    '0' { return 'Sunday' }
+    '1' { return 'Sunday' }
+    '2' { return 'Monday' }
+    '3' { return 'Tuesday' }
+    '4' { return 'Wednesday' }
+    '5' { return 'Thursday' }
+    '6' { return 'Friday' }
+    '7' { return 'Saturday' }
+    'sunday' { return 'Sunday' }
+    'monday' { return 'Monday' }
+    'tuesday' { return 'Tuesday' }
+    'wednesday' { return 'Wednesday' }
+    'thursday' { return 'Thursday' }
+    'friday' { return 'Friday' }
+    'saturday' { return 'Saturday' }
+    default { return $v }
+  }
+}
+
 function Get-LiveScheduleShape {
   param($Task)
 
@@ -129,20 +175,22 @@ function Get-LiveScheduleShape {
   }
 
   $first = $triggers[0]
-  if ($null -ne $first.Repetition -and $null -ne $first.Repetition.Interval -and $first.Repetition.Interval -ne [TimeSpan]::Zero) {
-    $minutes = [int][Math]::Round($first.Repetition.Interval.TotalMinutes)
-    if ($minutes % 60 -eq 0) {
-      return ('interval:' + [int]($minutes / 60) + 'h')
+  if ($null -ne $first.Repetition -and $null -ne $first.Repetition.Interval) {
+    $minutes = Convert-IntervalToMinutes -Interval $first.Repetition.Interval
+    if ($minutes -gt 0) {
+      if ($minutes % 60 -eq 0) {
+        return ('interval:' + [int]($minutes / 60) + 'h')
+      }
+      return ('interval:' + $minutes + 'm')
     }
-    return ('interval:' + $minutes + 'm')
   }
 
-  if ([string]$first.ScheduleByWeek) {
+  if ($null -ne $first.WeeksInterval -and [int]$first.WeeksInterval -gt 0) {
     $days = @()
     foreach ($t in $triggers) {
       if ($null -ne $t.DaysOfWeek) {
         foreach ($d in @($t.DaysOfWeek)) {
-          $days += [string]$d
+          $days += (Normalize-WeekdayToken -Token $d)
         }
       }
     }
@@ -151,11 +199,22 @@ function Get-LiveScheduleShape {
     return ('weekly:' + ($uniqueDays -join ',') + '@' + $time)
   }
 
-  if ([string]$first.ScheduleByDay) {
+  if ($null -ne $first.DaysInterval -and [int]$first.DaysInterval -gt 0) {
     $times = @()
     foreach ($t in $triggers) {
       $times += ([datetime]$t.StartBoundary).ToString('HH:mm')
     }
+    $uniqueTimes = @($times | Sort-Object -Unique)
+    return ('daily:' + ($uniqueTimes -join ','))
+  }
+
+  $times = @()
+  foreach ($t in $triggers) {
+    if ($null -ne $t.StartBoundary) {
+      $times += ([datetime]$t.StartBoundary).ToString('HH:mm')
+    }
+  }
+  if ($times.Count -gt 0) {
     $uniqueTimes = @($times | Sort-Object -Unique)
     return ('daily:' + ($uniqueTimes -join ','))
   }
