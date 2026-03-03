@@ -442,6 +442,28 @@ if ($true) {
     }
   }
 
+  if ($mode -eq 'frodex' -and -not $isOragornSubagentNoteOnly) {
+    $recentEvidence = @()
+    $tailEvents = @($mainEvents | Where-Object {
+      $a = [string]$_.action
+      $s = [string]$_.summary
+      -not [string]::IsNullOrWhiteSpace($a) -and -not [string]::IsNullOrWhiteSpace($s)
+    } | Select-Object -Last 3)
+
+    foreach ($ev in $tailEvents) {
+      $a = [string]$ev.action
+      $s = ([string]$ev.summary -replace '\s+', ' ').Trim()
+      if ($s.Length -gt 90) { $s = $s.Substring(0, 90).TrimEnd() + '…' }
+      if (-not [string]::IsNullOrWhiteSpace($s)) {
+        $recentEvidence += ($a + ': ' + $s)
+      }
+    }
+
+    if ($recentEvidence.Count -gt 0) {
+      $noteText = 'Cycle evidence: ' + ($recentEvidence -join ' | ')
+    }
+  }
+
   $noteText = ($noteText -replace '\s+', ' ').Trim()
   if ($noteText.Length -gt 400) { $noteText = $noteText.Substring(0, 400) }
   if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
