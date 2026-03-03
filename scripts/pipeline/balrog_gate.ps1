@@ -4,7 +4,10 @@
 param(
   [Parameter(Mandatory=$true)]
   [ValidateSet("pre-backtest", "post-backtest", "health")]
-  [string]$Mode
+  [string]$Mode,
+
+  [Parameter(Mandatory=$false)]
+  [string]$SpecPath = ""
 )
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
@@ -88,10 +91,19 @@ if ($Mode -eq "health" -or $Mode -eq "pre-backtest") {
 
 # --- PRE-BACKTEST (validate specs before running) ---
 if ($Mode -eq "pre-backtest") {
-  $today = Get-Date -Format "yyyyMMdd"
-  $specDir = "$ROOT\artifacts\strategy_specs\$today"
-  if (Test-Path $specDir) {
-    $specs = Get-ChildItem $specDir -Filter "*.strategy_spec.json" -ErrorAction SilentlyContinue
+  $specs = @()
+
+  if (-not [string]::IsNullOrWhiteSpace($SpecPath) -and (Test-Path -LiteralPath $SpecPath)) {
+    $specs = @(Get-Item -LiteralPath $SpecPath -ErrorAction SilentlyContinue)
+  } else {
+    $today = Get-Date -Format "yyyyMMdd"
+    $specDir = "$ROOT\artifacts\strategy_specs\$today"
+    if (Test-Path $specDir) {
+      $specs = @(Get-ChildItem $specDir -Filter "*.strategy_spec.json" -ErrorAction SilentlyContinue)
+    }
+  }
+
+  if ($specs.Count -gt 0) {
     foreach ($spec in $specs) {
       try {
         $json = Get-Content $spec.FullName -Raw | ConvertFrom-Json

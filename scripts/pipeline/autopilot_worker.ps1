@@ -879,7 +879,7 @@ try {
             try {
               $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
               # Balrog pre-backtest gate
-              $balrogResult = powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
+              $balrogResult = powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest" -SpecPath $sp.strategy_spec_path
               if ($LASTEXITCODE -ne 0) {
                 # Safety: fail closed when Balrog pre-gate blocks so backtests do not run on flagged artifacts.
                 throw ("BALROG BLOCKED: Pre-backtest gate failed. " + [string]$balrogResult)
@@ -1134,7 +1134,7 @@ try {
         try {
           $batchStartUtc = [DateTime]::UtcNow.AddMinutes(-1)
           # Balrog pre-backtest gate
-          $balrogResult = powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest"
+          $balrogResult = powershell -ExecutionPolicy Bypass -File "$RepoRoot\scripts\pipeline\balrog_gate.ps1" -Mode "pre-backtest" -SpecPath $spPath
           if ($LASTEXITCODE -ne 0) {
             # Safety: fail closed when Balrog pre-gate blocks so backtests do not run on flagged artifacts.
             throw ("BALROG BLOCKED: Pre-backtest gate failed. " + [string]$balrogResult)
