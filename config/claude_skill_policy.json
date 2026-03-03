@@ -1,0 +1,11 @@
+{
+  "allowed_modes": [
+    "research",
+    "generate",
+    "doctrine",
+    "audit"
+  ],
+  "default_retry_count": 1,
+  "timeout_seconds": 900,
+  "model_preference": "claude-sonnet-4-5"
+}
