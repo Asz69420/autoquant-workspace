@@ -1,16 +1,19 @@
-{
-  "id": "bundle_drIqeApSOec",
-  "created_at": "2026-03-03T18:16:28.580473+00:00",
-  "source": "youtube",
-  "video_id": "drIqeApSOec",
-  "source_channel_name": "SoheilPKO",
-  "source_channel_id": "UC7QqMi_dhkGuFaA0TrYJTAw",
-  "content_category": "INDICATOR_CONCEPT",
-  "research_card_path": "artifacts/research/20260304/research-20260304-e10fb5b448e5.research_card.json",
-  "indicator_record_paths": [
-    "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260301/indicator-20260301-448b634717bb.indicator_record.json",
-    "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-0a794ed0f552.indicator_record.json"
-  ],
-  "linkmap_path": "artifacts/links/20260304/research-20260304-e10fb5b448e5.linkmap.json",
-  "status": "NEW"
+﻿{
+    "id":  "bundle_drIqeApSOec",
+    "created_at":  "2026-03-03T18:16:28.580473+00:00",
+    "source":  "youtube",
+    "video_id":  "drIqeApSOec",
+    "source_channel_name":  "SoheilPKO",
+    "source_channel_id":  "UC7QqMi_dhkGuFaA0TrYJTAw",
+    "content_category":  "INDICATOR_CONCEPT",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-e10fb5b448e5.research_card.json",
+    "indicator_record_paths":  [
+                                   "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260301/indicator-20260301-448b634717bb.indicator_record.json",
+                                   "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-0a794ed0f552.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-e10fb5b448e5.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-03T18:31:50.9841589Z",
+    "attempts":  1,
+    "last_error":  "ADAPTIVE_PROMOTION_GATE"
 }
