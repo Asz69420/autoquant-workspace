@@ -26,6 +26,7 @@ SHORTS_MAX_SECONDS = 90
 MAX_VIDEO_SECONDS = 3600
 CATEGORY_CONFIG_PATH = ROOT / 'data' / 'state' / 'youtube_channel_categories.json'
 CONCEPT_CATEGORIES = {'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT'}
+AUTO_CLASSIFY_CATEGORIES = ['INDICATOR_CONCEPT', 'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT']
 
 
 def _j(path: Path, default):
@@ -142,6 +143,20 @@ def _notify_watch_skip(reason_code: str, title: str, duration_s: int):
     try:
         subprocess.run(
             [PY, 'scripts/tg_notify.py', msg, '--reason-code', reason_code],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception:
+        pass
+
+
+def _notify_category_review(channel_name: str, title: str, top1: str, top2: str):
+    msg = f"Category review needed: {channel_name} | {title}\nTop candidates: {top1}, {top2}"
+    try:
+        subprocess.run(
+            [PY, 'scripts/tg_notify.py', msg, '--reason-code', 'YT_CATEGORY_REVIEW'],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -344,12 +359,9 @@ def _resolve_channel_category_config(ch: dict, by_id: dict[str, dict], by_name: 
     }
 
 
-def _classify_video_category(title: str, rc_path: str, cfg: dict) -> str:
+def _classify_video_category(title: str, rc_path: str, cfg: dict) -> tuple[str, bool, str, str]:
     active = str(cfg.get('active_category') or 'REVIEW').upper()
     secondaries = [str(x).upper() for x in (cfg.get('secondary_categories') or []) if str(x)]
-    allowed = [active] + [x for x in secondaries if x != active]
-    if len(allowed) <= 1:
-        return active
 
     text_parts = [str(title or '')]
     card = _j(Path(rc_path), {})
@@ -370,29 +382,41 @@ def _classify_video_category(title: str, rc_path: str, cfg: dict) -> str:
 
     blob = ' '.join(text_parts).lower()
 
-    scores = {c: 0 for c in allowed}
-    scores[active] += 1
+    scores = {c: 0 for c in AUTO_CLASSIFY_CATEGORIES}
+    if active in scores:
+        scores[active] += 2
+    for s in secondaries:
+        if s in scores:
+            scores[s] += 1
 
-    indicator_keywords = ['indicator', 'tradingview', 'pine', 'ema', 'rsi', 'macd', 'stoch', 'adx', 'atr', 'supertrend', 'vortex']
+    indicator_keywords = ['indicator', 'tradingview', 'pine', 'ema', 'rsi', 'macd', 'stoch', 'adx', 'atr', 'supertrend', 'vortex', 'oscillator']
+    trading_keywords = ['entry', 'exit', 'setup', 'strategy', 'signal', 'backtest', 'trade plan']
     nuanced_keywords = ['mindset', 'psychology', 'thesis', 'framework', 'process', 'narrative', 'behavior', 'edge']
-    macro_keywords = ['macro', 'liquidity', 'fomc', 'cpi', 'rates', 'yield', 'dxy', 'economy']
-    risk_keywords = ['risk', 'execution', 'slippage', 'fees', 'position sizing', 'drawdown']
+    macro_keywords = ['macro', 'liquidity', 'fomc', 'cpi', 'rates', 'yield', 'dxy', 'economy', 'fed']
+    risk_keywords = ['risk', 'execution', 'slippage', 'fees', 'position sizing', 'drawdown', 'sizing']
+    structure_keywords = ['market structure', 'trend', 'regime', 'distribution', 'accumulation', 'cycle']
 
-    if 'INDICATOR_CONCEPT' in scores:
-        if any(k in blob for k in indicator_keywords):
-            scores['INDICATOR_CONCEPT'] += 3
-    if 'NUANCED_CONCEPT' in scores:
-        if any(k in blob for k in nuanced_keywords):
-            scores['NUANCED_CONCEPT'] += 2
-    if 'MACRO_CONTEXT' in scores:
-        if any(k in blob for k in macro_keywords):
-            scores['MACRO_CONTEXT'] += 3
-    if 'RISK_EXECUTION' in scores:
-        if any(k in blob for k in risk_keywords):
-            scores['RISK_EXECUTION'] += 3
+    if any(k in blob for k in indicator_keywords):
+        scores['INDICATOR_CONCEPT'] += 4
+    if any(k in blob for k in trading_keywords):
+        scores['TRADING_CONCEPT'] += 3
+    if any(k in blob for k in nuanced_keywords):
+        scores['NUANCED_CONCEPT'] += 3
+    if any(k in blob for k in macro_keywords):
+        scores['MACRO_CONTEXT'] += 4
+    if any(k in blob for k in risk_keywords):
+        scores['RISK_EXECUTION'] += 3
+    if any(k in blob for k in structure_keywords):
+        scores['MARKET_STRUCTURE'] += 3
 
-    best = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)[0][0]
-    return best
+    ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
+    top1, top2 = ranked[0], ranked[1]
+
+    uncertain = (top1[1] <= 2) or ((top1[1] - top2[1]) <= 1)
+    if uncertain:
+        return 'REVIEW', True, top1[0], top2[0]
+
+    return top1[0], False, top1[0], top2[0]
 
 
 def main() -> int:
@@ -483,9 +507,13 @@ def main() -> int:
                 seen_videos.add(vid)
                 continue
 
-            content_category = _classify_video_category(item.get('title', ''), rc['research_card_path'], category_cfg)
-            if content_category != str(category_cfg.get('active_category') or '').upper():
+            content_category, needs_review, top1, top2 = _classify_video_category(item.get('title', ''), rc['research_card_path'], category_cfg)
+            if needs_review:
+                _log('YT_CATEGORY_REVIEW', 'YT_CATEGORY_REVIEW', f"video_id={vid} channel={ch.get('name','youtube')} top1={top1} top2={top2}", 'WARN')
+                _notify_category_review(str(ch.get('name', 'youtube')), str(item.get('title', vid)), top1, top2)
+            elif content_category != str(category_cfg.get('active_category') or '').upper():
                 _log('YT_CATEGORY_OVERRIDE', 'YT_CATEGORY_OVERRIDE', f"video_id={vid} from={category_cfg.get('active_category')} to={content_category}", 'INFO')
+
             linked = _resolve_existing_indicators(rc['research_card_path'], ind_idx)
 
             lm = _run('scripts/pipeline/link_research_indicators.py', '--research-card-path', rc['research_card_path'], '--indicator-record-paths', json.dumps(linked[:2]))
