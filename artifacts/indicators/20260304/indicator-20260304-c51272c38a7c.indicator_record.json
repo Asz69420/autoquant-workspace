@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260304-c51272c38a7c",
+  "created_at": "2026-03-03T17:30:15.052260Z",
+  "tv_ref": "tradingview:fnmZTl0e",
+  "url": "https://www.tradingview.com/script/fnmZTl0e-AG-Pro-Trend-Quality/",
+  "name": "AG Pro Trend Quality",
+  "author": "AGProLabs",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "15b8bb118fca3449205b24c1cdcf1845cf4097573741f25bde368031821e51a4",
+  "truncated": false
+}

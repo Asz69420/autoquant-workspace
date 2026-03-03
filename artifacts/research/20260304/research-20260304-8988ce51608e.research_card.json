@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-8988ce51608e",
+  "created_at": "2026-03-03T17:45:01.365346Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=qjRFgNHrqrc",
+  "title": "The ONLY Indicator with ZERO False Signals! [Used by Professionals]",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "Alright, to add this indicator, here we click on indicators and we search dual range volume profile, this one which is written by someone named Uncle the Shooter.",
+    "Alright, this is the indicator and as you can see it's added here on the right side of the chart.",
+    "As the name of the indicator is telling us, this is a volume profile indicator but we have two histograms here and this new volume profile indicator.",
+    "In other words, the indicator uses two different price ranges to calculate and show volume profile.",
+    "This is main profile and this is pivot profile.",
+    "For the main profile, for the data range that is visible on the price chart, in simple words for the candles that you can see on the price chart, the indicator uses this look back period to calculate and show this volume profile.",
+    "So for this volume profile, the data from here up to now from this low to this high, the data is used in building this volume profile.",
+    "From the lowest low to the highest high, this price range is divided into 100 equals bins or segments.",
+    "So here for this price range, we have 100 bins or segments.",
+    "And for each bin or segment that is representing that price range, the traded volume in that price range is calculated and shown by the help of these horizontal volume bars."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Alright, to add this indicator, here we click on indicators and we search dual range volume profile, this one which is written by someone named Uncle the Shooter.",
+      "note": "Meaning: Alright, to add this indicator, here we click on indicators and we search dual range volume profile, this one which is written by someone named Uncle t"
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, this is the indicator and as you can see it's added here on the right side of the chart.",
+      "note": "Meaning: Alright, this is the indicator and as you can see it's added here on the right side of the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As the name of the indicator is telling us, this is a volume profile indicator but we have two histograms here and this new volume profile indicator.",
+      "note": "Meaning: As the name of the indicator is telling us, this is a volume profile indicator but we have two histograms here and this new volume profile indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "In other words, the indicator uses two different price ranges to calculate and show volume profile.",
+      "note": "Meaning: In other words, the indicator uses two different price ranges to calculate and show volume profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is main profile and this is pivot profile.",
+      "note": "Meaning: This is main profile and this is pivot profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the main profile, for the data range that is visible on the price chart, in simple words for the candles that you can see on the price chart, the indicator uses this look back period to calculate ",
+      "note": "Meaning: For the main profile, for the data range that is visible on the price chart, in simple words for the candles that you can see on the price chart, the i"
+    },
+    {
+      "timestamp": null,
+      "quote": "So for this volume profile, the data from here up to now from this low to this high, the data is used in building this volume profile.",
+      "note": "Meaning: So for this volume profile, the data from here up to now from this low to this high, the data is used in building this volume profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "From the lowest low to the highest high, this price range is divided into 100 equals bins or segments.",
+      "note": "Meaning: From the lowest low to the highest high, this price range is divided into 100 equals bins or segments."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here for this price range, we have 100 bins or segments.",
+      "note": "Meaning: So here for this price range, we have 100 bins or segments."
+    },
+    {
+      "timestamp": null,
+      "quote": "And for each bin or segment that is representing that price range, the traded volume in that price range is calculated and shown by the help of these horizontal volume bars.",
+      "note": "Meaning: And for each bin or segment that is representing that price range, the traded volume in that price range is calculated and shown by the help of these h"
+    },
+    {
+      "timestamp": null,
+      "quote": "The larger the bar, the more volume was traded in that price range.",
+      "note": "Meaning: The larger the bar, the more volume was traded in that price range."
+    },
+    {
+      "timestamp": null,
+      "quote": "So for example, in this price range, we had more volume in compared to, for example, this price range.",
+      "note": "Meaning: So for example, in this price range, we had more volume in compared to, for example, this price range."
+    }
+  ],
+  "extracted_rules": [
+    "And in this case, when we check the price action, we can clearly see that we had reaction of the price around this price range.",
+    "So we can have reaction when the price retest this level or break this level.",
+    "So when the price reaches to around this line, we have high probability that the price will stop here and then it goes up or if it is broken, it will become a resistance level for any pullback or retest of the broken level.",
+    "So when you know in what price ranges, there is high probability to have stopping of the price and then turning off the price.",
+    "This can effectively help you with your trade entries, setting stop loss and profit target.",
+    "If we go to the settings of the indicator here, you can see that for the value area, the percentage is set at 50.",
+    "So for example, if you zoom out and more candles become visible on the price chart, the volume profile will change because now it considers this amount of look back period to calculate and show this volume profile.",
+    "And if you use volume profile in your trading strategy, this indicator is a good choice for you.",
+    "If you have any questions, feel free to ask and leave a comment for me."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "As the name of the indicator is telling us, this is a volume profile indicator but we have two histograms here and this new volume profile indicator."
+    },
+    {
+      "type": "risk",
+      "description": "This can effectively help you with your trade entries, setting stop loss and profit target."
+    }
+  ],
+  "explicit_conditions": [
+    "So when the price reaches to around this line, we have high probability that the price will stop here and then it goes up or if it is broken, it will become a resistance level for any pullback or retest of the broken level.",
+    "So when you know in what price ranges, there is high probability to have stopping of the price and then turning off the price.",
+    "This can effectively help you with your trade entries, setting stop loss and profit target."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "dual range volume profile"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "dual range volume profile",
+      "keywords": [
+        "dual",
+        "range",
+        "volume",
+        "profile"
+      ],
+      "confidence": 0.93,
+      "author_hint": "someone named Uncle the Shooter"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-8988ce51608e.raw.txt",
+  "sha256": "2a0d55c6d796fbe368e8e93f60504417cb3a4fc59549c4c2e12fc1b4b92c793a",
+  "truncated": false
+}

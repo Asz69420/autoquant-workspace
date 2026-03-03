@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-0ebfa2dc027d",
+  "created_at": "2026-03-03T17:30:15.469049Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/fnmZTl0e-AG-Pro-Trend-Quality/",
+  "title": "AG Pro Trend Quality",
+  "author": "AGProLabs",
+  "summary_bullets": [
+    "Top catalog indicator: AG Pro Trend Quality by AGProLabs."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: AG Pro Trend Quality by AGProLabs.",
+      "note": "Meaning: Top catalog indicator: AG Pro Trend Quality by AGProLabs."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: AG Pro Trend Quality by AGProLabs."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-0ebfa2dc027d.raw.txt",
+  "sha256": "b5564d7db5e744cefb8e13eac10ef2db1a075bf2b05f4fe6665a7e791994d10e",
+  "truncated": false
+}

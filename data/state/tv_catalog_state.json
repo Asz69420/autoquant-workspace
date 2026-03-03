@@ -1,5 +1,5 @@
 {
-  "top_cursor": 4510,
+  "top_cursor": 4524,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -117,7 +117,9 @@
     "gann fan [ualgo]|ualgo",
     "adaptive momentum ribbon|zakalgotrade",
     "raven v2.3.17|ravenanalytics",
-    "zero lag kalman structure [boswaves]|boswaves"
+    "zero lag kalman structure [boswaves]|boswaves",
+    "ag pro trend quality|agprolabs",
+    "unfilled wick 50% levels|artik1"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -236,7 +238,9 @@
     "bfIEARU4",
     "mLVUH2V8",
     "hBSQWbmG",
-    "LW8nOcaq"
+    "LW8nOcaq",
+    "fnmZTl0e",
+    "I2YVuOGd"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

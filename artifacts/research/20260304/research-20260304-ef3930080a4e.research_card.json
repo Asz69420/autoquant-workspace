@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-ef3930080a4e",
+  "created_at": "2026-03-03T17:52:04.400537Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=umw9T9_8Fi0",
+  "title": "This Indicator Tells You EXACTLY When a New Trend Starts!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "Desk Indicator is the best trend indicator ever created on TradingView.",
+    "Alright, here we click on indicators and we search TASC Directional Movement.",
+    "This one, which is an editor specs indicator and written by point coders TASC.",
+    "Alright, this is the indicator and as you can see it's added here below the chart in the form of an oscillator.",
+    "You can see that we have a line here that is moving above and below the center line which is zero.",
+    "This indicator was originally developed by John Ehlers many years ago and now we have it here on TradingView platform.",
+    "This indicator is built based on hand function.",
+    "Hand function is used for signal processing and because of this, it is very suitable for financial markets to identify signals of momentum changes or trend changes in the market.",
+    "By the help of this function, we have more accurate and realistic result based on the changes that are really happening in the market.",
+    "The applied function on the price data is transformed and represented here in the form of this oscillator that you can see here."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Desk Indicator is the best trend indicator ever created on TradingView.",
+      "note": "Meaning: Desk Indicator is the best trend indicator ever created on TradingView."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, here we click on indicators and we search TASC Directional Movement.",
+      "note": "Meaning: Alright, here we click on indicators and we search TASC Directional Movement."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one, which is an editor specs indicator and written by point coders TASC.",
+      "note": "Meaning: This one, which is an editor specs indicator and written by point coders TASC."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, this is the indicator and as you can see it's added here below the chart in the form of an oscillator.",
+      "note": "Meaning: Alright, this is the indicator and as you can see it's added here below the chart in the form of an oscillator."
+    },
+    {
+      "timestamp": null,
+      "quote": "You can see that we have a line here that is moving above and below the center line which is zero.",
+      "note": "Meaning: You can see that we have a line here that is moving above and below the center line which is zero."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator was originally developed by John Ehlers many years ago and now we have it here on TradingView platform.",
+      "note": "Meaning: This indicator was originally developed by John Ehlers many years ago and now we have it here on TradingView platform."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator is built based on hand function.",
+      "note": "Meaning: This indicator is built based on hand function."
+    },
+    {
+      "timestamp": null,
+      "quote": "Hand function is used for signal processing and because of this, it is very suitable for financial markets to identify signals of momentum changes or trend changes in the market.",
+      "note": "Meaning: Hand function is used for signal processing and because of this, it is very suitable for financial markets to identify signals of momentum changes or t"
+    },
+    {
+      "timestamp": null,
+      "quote": "By the help of this function, we have more accurate and realistic result based on the changes that are really happening in the market.",
+      "note": "Meaning: By the help of this function, we have more accurate and realistic result based on the changes that are really happening in the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "The applied function on the price data is transformed and represented here in the form of this oscillator that you can see here.",
+      "note": "Meaning: The applied function on the price data is transformed and represented here in the form of this oscillator that you can see here."
+    },
+    {
+      "timestamp": null,
+      "quote": "We have a line here that is oscillating above and below the center line and depending on the position of the line above or below the center line, it changes color between yellow and blue.",
+      "note": "Meaning: We have a line here that is oscillating above and below the center line and depending on the position of the line above or below the center line, it ch"
+    },
+    {
+      "timestamp": null,
+      "quote": "When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in a downtrend and when the line is above the center",
+      "note": "Meaning: When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in "
+    }
+  ],
+  "extracted_rules": [
+    "When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in a downtrend and when the line is above the center line, the color is yellow and this shows that we have greater upside momentum so the price is probably advancing in an uptrend.",
+    "Alright, by default the length of the oscillator is set at 10 and if we decrease the length, for example, if we set it at 5, the indicator becomes more responsive to the price action.",
+    "Here in this indicator, when this line goes above the center line, it shows a probable pollback and when it is closed back below the center line, it shows end of the pollback and an excellent opportunity to enter a short position.",
+    "Here in this situation, when the oscillator line goes below the center line, it shows a probable pollback and when it is closed back above the center line, it shows end of the pollback and a great opportunity to enter a long position.",
+    "When the line is below the center line, we say the market is trending down and when the line is above the center line, we say that the market is trending up and then by the help of another indicator and price action concepts, we're going to find a low risk trading opportunity inside the identified trends.",
+    "If you know this indicator, I mean the parabolic SAR, it is very helpful for identifying pullbacks and end of the pullbacks.",
+    "When the dots are above the price, it shows that we have greater downside momentum, so the price is declining and when the dots go below the price, it shows we have greater upside momentum, so the price is advancing.",
+    "This shows that probably a downtrend is started, but we don't trade only based on this because we can encounter many false signals, so we need more confirmation to decrease our risk and be more confident that a downtrend is really happening.",
+    "So here we are now and in the next step, we want to find a low-risk trading opportunity to enter a trade.",
+    "When we get a dot above the price, it shows that now we have greater downside momentum and this shows that probably the pullback ended.",
+    "So this was a pullback and here when we got the first dot above the price, we can say that the pullback ended.",
+    "During a downtrend, when the price goes for a pullback, before that a swing low is created and this can act as a potential support level.",
+    "When we got the first dot above the price, after that we want closing of the price below this level.",
+    "In this case, you can see that when we get the first dot above the price, at the same time, the candle is also closed below this low.",
+    "So here the cell signal is confirmed and in practice we could enter a short position at this point.",
+    "In this case, setting a stop loss above the previous swing high is very far from our trade entry.",
+    "So we can set it here above the breaking candle and profit target at 1.5 risk to reward ratio.",
+    "To decrease our risk, we only take the first pullback with the conditions that I explained.",
+    "When this indicator is showing uptrend, but the parabolic star goes above the price and shows the decline of the price, it shows that probably a pullback is forming.",
+    "In an uptrend, when the price goes for a pullback before the pullback, a swing high is created and this can act as a potential resistance level."
+  ],
+  "parameters_set": [
+    {
+      "name": "max value also",
+      "value": "0.3",
+      "context": "ilarly, we set it at 0.03 and for max value also we set it at 0.3. So for the start, we have 0.03 for incr"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Desk Indicator is the best trend indicator ever created on TradingView."
+    },
+    {
+      "type": "trend",
+      "description": "Hand function is used for signal processing and because of this, it is very suitable for financial markets to identify signals of momentum changes or trend changes in the market."
+    },
+    {
+      "type": "trend",
+      "description": "When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in a downtrend and when the line is above the center line, the color is "
+    },
+    {
+      "type": "momentum",
+      "description": "So on every momentum changes in the market, we have changing in the indicator."
+    },
+    {
+      "type": "trend",
+      "description": "You can see that during this downtrend in the pollbacks, the line went above the center line and became yellow."
+    },
+    {
+      "type": "trend",
+      "description": "We have a similar situation here during this uptrend."
+    },
+    {
+      "type": "trend",
+      "description": "For example, consider that we already identified that here the longer term trend is down and we want to enter in the pollbacks and this indicator can help us to identify pollbacks and end of the pollbacks in a downtrend."
+    },
+    {
+      "type": "trend",
+      "description": "But in this video, we're going to use a longer length for this oscillator and use it for trend identification."
+    },
+    {
+      "type": "risk",
+      "description": "When the line is below the center line, we say the market is trending down and when the line is above the center line, we say that the market is trending up and then by the help of another indicator and price action conc"
+    },
+    {
+      "type": "momentum",
+      "description": "When the dots are above the price, it shows that we have greater downside momentum, so the price is declining and when the dots go below the price, it shows we have greater upside momentum, so the price is advancing."
+    },
+    {
+      "type": "risk",
+      "description": "This shows that probably a downtrend is started, but we don't trade only based on this because we can encounter many false signals, so we need more confirmation to decrease our risk and be more confident that a downtrend"
+    },
+    {
+      "type": "risk",
+      "description": "So here we are now and in the next step, we want to find a low-risk trading opportunity to enter a trade."
+    },
+    {
+      "type": "trend",
+      "description": "This indicator is telling us that the market is probably trending down and here parabolic SAR is telling us that in short-term perspective, we have greater upside momentum and the price was advancing."
+    },
+    {
+      "type": "momentum",
+      "description": "This shows a sudden change in momentum from upside to downside."
+    },
+    {
+      "type": "momentum",
+      "description": "When we get a dot above the price, it shows that now we have greater downside momentum and this shows that probably the pullback ended."
+    },
+    {
+      "type": "trend",
+      "description": "During a downtrend, when the price goes for a pullback, before that a swing low is created and this can act as a potential support level."
+    },
+    {
+      "type": "confirmation",
+      "description": "So here the cell signal is confirmed and in practice Entry: a short position at this point."
+    },
+    {
+      "type": "risk",
+      "description": "In this case, setting a stop loss above the previous swing high is very far from our trade entry."
+    },
+    {
+      "type": "risk",
+      "description": "So we can set it here above the breaking candle and profit target at 1.5 risk to reward ratio."
+    },
+    {
+      "type": "risk",
+      "description": "To decrease our risk, we only take the first pullback with the conditions that I explained."
+    }
+  ],
+  "explicit_conditions": [
+    "When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in a downtrend and when the line is above the center line, the color is yellow and this shows that we have greater upside momentum so the price is probably advancing in an uptrend.",
+    "Here in this indicator, when this line goes above the center line, it shows a probable pollback and when it is closed back below the center line, it shows end of the pollback and an excellent opportunity to enter a short position.",
+    "Here in this situation, when the oscillator line goes below the center line, it shows a probable pollback and when it is closed back above the center line, it shows end of the pollback and a great opportunity to enter a long position.",
+    "When the line is below the center line, we say the market is trending down and when the line is above the center line, we say that the market is trending up and then by the help of another indicator and price action concepts, we're going to find a low risk trading opportunity inside the identified trends.",
+    "This shows that probably a downtrend is started, but we don't trade only based on this because we can encounter many false signals, so we need more confirmation to decrease our risk and be more confident that a downtrend is really happening.",
+    "So here we are now and in the next step, we want to find a low-risk trading opportunity to enter a trade.",
+    "In this case, setting a stop loss above the previous swing high is very far from our trade entry.",
+    "So we can set it here above the breaking candle and profit target at 1.5 risk to reward ratio.",
+    "To decrease our risk, we only take the first pullback with the conditions that I explained.",
+    "When this indicator is showing uptrend, but the parabolic star goes above the price and shows the decline of the price, it shows that probably a pullback is forming.",
+    "So the bi-signal here is confirmed and in practice Entry: a long position at this point with the stop-loss below the previous swing low and profit target at 1.5 risk-to-reward ratio.",
+    "As I mentioned earlier, to decrease our risk, we only take the first pullback after having all the conditions that I explained.",
+    "Please pay attention that although this is a high probability trading strategy and with different layers of confirmation, we try to decrease our risk as much as possible, but this doesn't mean you will not encounter false signals.",
+    "You need to manage your risk properly.",
+    "1% role risk management is the best risk management strategy and it helps you to minimize the effect of your losing possessions.",
+    "The link is also placed in the description and I highly recommend you to watch it because without a proper risk management, you won't be able to survive in this game."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Target at 2R.",
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "TASC Directional Movement"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "TASC Directional Movement",
+      "keywords": [
+        "tasc",
+        "directional",
+        "movement"
+      ],
+      "confidence": 0.93,
+      "author_hint": "point coders TASC"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-ef3930080a4e.raw.txt",
+  "sha256": "3f4dd63b2eeefb4d6d6edf8f0cc510d49956979b76eb4eead230f94d3e1f1340",
+  "truncated": false
+}

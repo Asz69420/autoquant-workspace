@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-b3ab35d71c04",
+  "created_at": "2026-03-03T17:30:16.957501Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/I2YVuOGd-Unfilled-Wick-50-Levels/",
+  "title": "Unfilled Wick 50% Levels",
+  "author": "aRtik1",
+  "summary_bullets": [
+    "Top catalog indicator: Unfilled Wick 50% Levels by aRtik1."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Unfilled Wick 50% Levels by aRtik1.",
+      "note": "Meaning: Top catalog indicator: Unfilled Wick 50% Levels by aRtik1."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-b3ab35d71c04.raw.txt",
+  "sha256": "aa841732b22fc8924ec5ed973ef6a01fabfc9158805a94c9d244e18adfebb608",
+  "truncated": false
+}

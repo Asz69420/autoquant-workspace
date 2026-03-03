@@ -1,0 +1,31 @@
+{
+  "research_card_path": "artifacts/research/20260304/research-20260304-0d395eaf1e32.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260304/indicator-20260304-995a08fa4a72.indicator_record.json",
+    "artifacts/indicators/20260303/indicator-20260303-920e13d5656a.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "jurik ma trends breakouts this one which is a new indicator from big beluga all r",
+      "author_hint": null,
+      "keywords": [
+        "jurik",
+        "ma",
+        "trends",
+        "breakouts",
+        "this"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=_m17obVJl1g",
+      "video_id": "_m17obVJl1g",
+      "noted_at": "2026-03-03T17:57:06.439534+00:00"
+    }
+  ]
+}

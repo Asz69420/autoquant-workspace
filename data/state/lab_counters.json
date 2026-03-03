@@ -1,16 +1,16 @@
 ﻿{
-    "directive_loop_stall_cycles":  51,
+    "directive_loop_stall_cycles":  55,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-73d9912f79de.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-0d1092192495.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-5f64ed55f6c3.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ichtk01v.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-2d3cfd8c497a.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-t3vxpb01.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-almamh01.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-0ac1e8b891c0.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-6543a018a1d2.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-19b3e1c752d2.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-0c2851e63122.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-990bcd92014d.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-b1e96ec9d87f.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-19b3e1c752d2.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-03T17:15:14.9235855Z"
+    "updated_at":  "2026-03-03T18:00:15.2948840Z"
 }

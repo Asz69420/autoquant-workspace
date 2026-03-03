@@ -1,0 +1,26 @@
+{
+  "research_card_path": "artifacts/research/20260304/research-20260304-ef3930080a4e.research_card.json",
+  "indicator_record_paths": [],
+  "grabber_queue": [
+    {
+      "hint": "TASC Directional Movement",
+      "author_hint": "point coders TASC",
+      "keywords": [
+        "tasc",
+        "directional",
+        "movement"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=umw9T9_8Fi0",
+      "video_id": "umw9T9_8Fi0",
+      "noted_at": "2026-03-03T17:52:04.732673+00:00"
+    }
+  ]
+}

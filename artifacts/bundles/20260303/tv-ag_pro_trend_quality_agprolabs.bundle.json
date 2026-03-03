@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_ag pro trend qua",
+    "created_at":  "2026-03-03T17:30:15.785112+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-0ebfa2dc027d.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260304/indicator-20260304-c51272c38a7c.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-0ebfa2dc027d.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-03T17:33:29.9196694Z",
+    "attempts":  1,
+    "last_error":  "ADAPTIVE_PROMOTION_GATE"
+}

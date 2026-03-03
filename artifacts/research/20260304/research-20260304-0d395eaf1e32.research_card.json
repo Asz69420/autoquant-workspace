@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-0d395eaf1e32",
+  "created_at": "2026-03-03T17:57:06.169258Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=_m17obVJl1g",
+  "title": "After 10 Years of Failure and Wins, I Found Indicator that Works!",
+  "author": "SoheilPKO",
+  "summary_bullets": [],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [
+    "jurik ma trends breakouts this one which is a new indicator from big beluga all r"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "jurik ma trends breakouts this one which is a new indicator from big beluga all r",
+      "keywords": [
+        "jurik",
+        "ma",
+        "trends",
+        "breakouts",
+        "this"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-0d395eaf1e32.raw.txt",
+  "sha256": "4dd1e57a733a704717fbba37d296f150aa5f59add6b890e5df7e20a5e6123f14",
+  "truncated": false
+}

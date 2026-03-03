@@ -1,6 +1,6 @@
 ﻿{
     "event":  "LAB_SUMMARY",
-    "created_at":  "2026-03-03T17:15:14.7793476Z",
+    "created_at":  "2026-03-03T18:00:15.1673713Z",
     "bundles_processed":  0,
     "promotions_processed":  0,
     "refinements_run":  0,
@@ -21,7 +21,7 @@
     "insight_failed":  0,
     "recombine_created":  0,
     "recombine_bundle_path":  "",
-    "starvation_cycles":  6,
-    "drought_cycles":  6,
-    "directive_loop_stall_cycles":  51
+    "starvation_cycles":  10,
+    "drought_cycles":  10,
+    "directive_loop_stall_cycles":  55
 }
