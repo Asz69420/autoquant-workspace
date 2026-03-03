@@ -1,6 +1,8 @@
 ﻿{
-    "directive_loop_stall_cycles":  75,
+    "directive_loop_stall_cycles":  77,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-dccde684eae5.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-2b93f89191d8.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-8b9ec033da45.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-ad677848eb72.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-3d9ea802b2f0.strategy_spec.json",
@@ -8,9 +10,7 @@
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-b72c7d382c00.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-668b23898100.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-276d889724f1.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-d3e8e6c4e819.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-d0085e471f42.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-c0595f083a63.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-d3e8e6c4e819.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-03T21:16:03.9675595Z"
+    "updated_at":  "2026-03-03T21:45:22.1369066Z"
 }
