@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-50060fbc51c1",
+  "created_at": "2026-03-03T07:45:37.154459Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/hLV3gFmw/",
+  "title": "TS Real H1 - Entry Indicator",
+  "author": "Fran_Pineda",
+  "summary_bullets": [
+    "Top catalog indicator: TS Real H1 - Entry Indicator by Fran_Pineda."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: TS Real H1 - Entry Indicator by Fran_Pineda.",
+      "note": "Meaning: Top catalog indicator: TS Real H1 - Entry Indicator by Fran_Pineda."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-50060fbc51c1.raw.txt",
+  "sha256": "7cdacdc40bd8bfce2e21b52ce48fbb882fd0ea43708aa99ca44cbe31e76ba975",
+  "truncated": false
+}

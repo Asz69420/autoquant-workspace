@@ -1,5 +1,5 @@
 {
-  "top_cursor": 4199,
+  "top_cursor": 4206,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -106,7 +106,9 @@
     "strategy [sb.x trades]|santiagobonillag",
     "ag pro market regime meter|agprolabs",
     "adaptive momentum classifier [willyalgotrader]|willyalgotrader",
-    "crr trendlines priority levels|rivero8894"
+    "crr trendlines priority levels|rivero8894",
+    "stealthtrail supertrend [willyalgotrader]|willyalgotrader",
+    "ts real h1 - entry indicator|fran_pineda"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -214,7 +216,9 @@
     "vrwIlzLc",
     "BKudAHJn",
     "KLEBo02H",
-    "WOlvrRtw"
+    "WOlvrRtw",
+    "fdiiZPk6",
+    "hLV3gFmw"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-5f9c0102a935",
+  "created_at": "2026-03-03T07:45:36.889306Z",
+  "tv_ref": "tradingview:hLV3gFmw",
+  "url": "https://www.tradingview.com/script/hLV3gFmw/",
+  "name": "TS Real H1 - Entry Indicator",
+  "author": "Fran_Pineda",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "ca4510f898a4cd8b9e9ee54e71ce11b78061a6e15d8f2e40f611e031e4771f57",
+  "truncated": false
+}

@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_ts real h1 - ent",
+    "created_at":  "2026-03-03T07:45:37.309154+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260303/research-20260303-50060fbc51c1.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260303/indicator-20260303-5f9c0102a935.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260303/research-20260303-50060fbc51c1.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-03T07:45:50.3737120Z",
+    "attempts":  1,
+    "last_error":  "NO_VARIANTS_COMPILED"
+}
