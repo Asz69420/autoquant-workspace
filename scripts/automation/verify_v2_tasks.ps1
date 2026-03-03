@@ -65,7 +65,7 @@ function Get-DesiredActionArgs {
 
   $escapedRoot = $RepoRoot.Replace("'", "''")
   $escapedCommand = $Command.Replace("'", "''")
-  $inner = "Set-Location -LiteralPath '$escapedRoot'; & cmd.exe /d /c '$escapedCommand'"
+  $inner = "Set-Location -LiteralPath '$escapedRoot'; & ([scriptblock]::Create('$escapedCommand'))"
   $bytes = [System.Text.Encoding]::Unicode.GetBytes($inner)
   $encoded = [Convert]::ToBase64String($bytes)
   return ('-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -EncodedCommand ' + $encoded)
