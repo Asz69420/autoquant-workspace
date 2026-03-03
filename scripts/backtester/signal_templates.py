@@ -171,7 +171,7 @@ def stochastic_reversal(df: pd.DataFrame, i: int, params: dict) -> tuple[bool, b
     if pd.isna(k_prev) or pd.isna(d_prev):
         return False, False
 
-    long_sig = _crossed_above(k_prev, k_now, d_prev, d_now) and (k_now < os_val)
+    long_sig = _crossed_above(k_prev, k_now, d_prev, d_now) and (k_prev < os_val)
     short_sig = _crossed_below(k_prev, k_now, d_prev, d_now) and (k_now > ob)
     return bool(long_sig), bool(short_sig)
 
