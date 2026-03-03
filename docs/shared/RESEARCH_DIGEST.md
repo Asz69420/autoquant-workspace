@@ -4,7 +4,7 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-03 02:01 UTC
+**Last updated:** 2026-03-03 08:01 UTC
 **Entries:** 25
 
 ---

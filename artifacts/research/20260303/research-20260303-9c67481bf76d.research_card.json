@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-9c67481bf76d",
+  "created_at": "2026-03-03T08:11:05.084280Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/bO8G1or8-Institutional-Structure-Intelligence-Engine-JOAT/",
+  "title": "Institutional Structure Intelligence Engine [JOAT]",
+  "author": "officialjackofalltrades",
+  "summary_bullets": [
+    "Top catalog indicator: Institutional Structure Intelligence Engine [JOAT] by officialjackofalltrades."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Institutional Structure Intelligence Engine [JOAT] by officialjackofalltrades.",
+      "note": "Meaning: Top catalog indicator: Institutional Structure Intelligence Engine [JOAT] by officialjackofalltrades."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-9c67481bf76d.raw.txt",
+  "sha256": "9f0c0afca49757902a408e29c3c877df3f098ace0c40db2ebeb4bd4e70911e97",
+  "truncated": false
+}

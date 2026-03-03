@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-70b74170fe10",
+  "created_at": "2026-03-03T08:11:04.727335Z",
+  "tv_ref": "tradingview:bO8G1or8",
+  "url": "https://www.tradingview.com/script/bO8G1or8-Institutional-Structure-Intelligence-Engine-JOAT/",
+  "name": "Institutional Structure Intelligence Engine [JOAT]",
+  "author": "officialjackofalltrades",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "9bdd54891fa470f2b50898ee456b0760a973cdc66039fe0573347c36e5957e31",
+  "truncated": false
+}
