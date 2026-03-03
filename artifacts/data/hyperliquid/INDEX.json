@@ -94,5 +94,77 @@
     "end": "2026-02-26T00:00:00+00:00",
     "sha256": "34bab5bd6c5129c1df28916e4bd4a3957b5566df3be23e2c3520ee13a5566118",
     "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/4h/20240227T040000Z-20260226T000000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "15m",
+    "start": "2026-01-09T19:30:00+00:00",
+    "end": "2026-03-03T00:30:00+00:00",
+    "sha256": "db1396d47317049652a18cc2a9d09a2827c215687e27839b01e8790f9afd2d65",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/15m/20260109T193000Z-20260303T003000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "1h",
+    "start": "2025-08-06T14:00:00+00:00",
+    "end": "2026-03-02T23:00:00+00:00",
+    "sha256": "bc8ae58e14d669da109d9b505e621e05a903d2879bb99d9cbf0f3e9b3ae0a0ca",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/1h/20250806T140000Z-20260302T230000Z.csv"
+  },
+  {
+    "symbol": "BTC",
+    "tf": "4h",
+    "start": "2024-03-03T00:00:00+00:00",
+    "end": "2026-03-02T20:00:00+00:00",
+    "sha256": "9ad9187fbfb7179da5c9b9e6727603e2feeb053795eea939fb5b9e158a48a6f9",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/BTC/4h/20240303T000000Z-20260302T200000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "15m",
+    "start": "2026-01-09T19:30:00+00:00",
+    "end": "2026-03-03T00:30:00+00:00",
+    "sha256": "ca2380531f261899c0dbe5e344080bed100d7628708ef794f952084dc335eab5",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/15m/20260109T193000Z-20260303T003000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "1h",
+    "start": "2025-08-06T14:00:00+00:00",
+    "end": "2026-03-02T23:00:00+00:00",
+    "sha256": "36585c59cfc854adaab64c6993d511393026dfa6982a527cdf0b8530809713d1",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/1h/20250806T140000Z-20260302T230000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "4h",
+    "start": "2024-03-03T00:00:00+00:00",
+    "end": "2026-03-02T20:00:00+00:00",
+    "sha256": "73732c0691d51845e0bb1cec0b131f592f7a7f1ba7cd3506ecbc271f85b9612c",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/4h/20240303T000000Z-20260302T200000Z.csv"
+  },
+  {
+    "symbol": "SOL",
+    "tf": "15m",
+    "start": "2026-01-09T19:45:00+00:00",
+    "end": "2026-03-03T00:30:00+00:00",
+    "sha256": "9d572d0e8ec771c55cbd56df51f6b71e3d7002d4efc13411fe83f4bb21465678",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/SOL/15m/20260109T194500Z-20260303T003000Z.csv"
+  },
+  {
+    "symbol": "SOL",
+    "tf": "1h",
+    "start": "2025-08-06T14:00:00+00:00",
+    "end": "2026-03-02T23:00:00+00:00",
+    "sha256": "07abbd15a47e277613b9fa42f173808e2642ffee2b9acbdbf1c2268eebed68a2",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/SOL/1h/20250806T140000Z-20260302T230000Z.csv"
+  },
+  {
+    "symbol": "SOL",
+    "tf": "4h",
+    "start": "2024-03-03T00:00:00+00:00",
+    "end": "2026-03-02T20:00:00+00:00",
+    "sha256": "2ca0c9e9ba97cb0d5d09a84906890b22a63b11b36bcd57521a8dad74746f721d",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/SOL/4h/20240303T000000Z-20260302T200000Z.csv"
   }
 ]

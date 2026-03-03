@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260303-df3f7a00c404",
+  "created_at": "2026-03-03T00:49:52.530478Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260303/research-20260303-5f70bb95c9cd.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260303/research-20260303-5f70bb95c9cd.linkmap.json"
+    ]
+  },
+  "title": "Using Crypto to Trade Gold & US Markets (Full Walkthrough)",
+  "thesis_bullets": [
+    "In this video, I want to show you how you can use your cryptos like your tethers, your USDC, your bitcoins, your salon, your ethereums, your uh camel coins, whatever to to put trades on other markets.",
+    "When I say other markets, I'm talking about gold, silver, platinum, platium, all of the major US indices like SPY, NASDAQ, Dow Jones, and even other world markets as well, plus many, many more.",
+    "all of the major US equities as well and even several different Forex pairs.",
+    "That is going to be through Bybit, which is the link in the description below, which will give you several bonuses.",
+    "But of course, full disclosure, it is an affiliate link, but I want to walk you through how you actually fund your account, how you put on trades, these sort of things.",
+    "Honestly, if you're familiar with Bybit or any of the major crypto exchanges, you're already going to know how this works.",
+    "But it is one of those times where I think it's very important to kind of focus on this because I know a lot of people don't have access to the US markets.",
+    "because I have direct experience with it, not particularly through through myself, but through my wife Elsa, who is not a US citizen.",
+    "She was trying to sign up to a Vanguard account to get uh, you know, access to the US markets when we were living in Europe.",
+    "And there were so many [ __ ] hoops to jump through in order to get this damn account."
+  ],
+  "hypotheses": [
+    {
+      "statement": "GOLD continuation edge appears when signal alignment persists on 1h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest GOLD on 1h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "1h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "GOLD OHLCV on 1h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "df3f7a00c404d1b8b76767c89aea415e2ced7decf86433c85f83002cb4d63c7a"
+}
