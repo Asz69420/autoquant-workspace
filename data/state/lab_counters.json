@@ -1,5 +1,5 @@
 ﻿{
-    "directive_loop_stall_cycles":  80,
+    "directive_loop_stall_cycles":  82,
     "recent_backfill_specs":  [
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-ag3x6r1k.strategy_spec.json",
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-sc7t4n9w.strategy_spec.json",
@@ -12,5 +12,5 @@
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-er4n8m2q.strategy_spec.json",
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-kv2m6w9p.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-03T03:24:43.8669226Z"
+    "updated_at":  "2026-03-03T03:49:56.7586733Z"
 }

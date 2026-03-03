@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-f9d5813f9ac8",
+  "created_at": "2026-03-03T03:34:52.961230Z",
+  "tv_ref": "tradingview:BKudAHJn",
+  "url": "https://www.tradingview.com/script/BKudAHJn-AG-Pro-Market-Regime-Meter/",
+  "name": "AG Pro Market Regime Meter",
+  "author": "AGProLabs",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "b606f3bcc6ee61c0e2e0364b3bf4ee7cd02f06a1cb2767eac11c7692d67cbd8b",
+  "truncated": false
+}

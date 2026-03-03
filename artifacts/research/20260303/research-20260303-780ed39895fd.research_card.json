@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-780ed39895fd",
+  "created_at": "2026-03-03T03:34:53.262328Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/BKudAHJn-AG-Pro-Market-Regime-Meter/",
+  "title": "AG Pro Market Regime Meter",
+  "author": "AGProLabs",
+  "summary_bullets": [
+    "Top catalog indicator: AG Pro Market Regime Meter by AGProLabs."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: AG Pro Market Regime Meter by AGProLabs.",
+      "note": "Meaning: Top catalog indicator: AG Pro Market Regime Meter by AGProLabs."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-780ed39895fd.raw.txt",
+  "sha256": "1fec6c1f042614adb0ec54df5752a37d3a5f0ed0f7e16a7a3f8e4c67b7531048",
+  "truncated": false
+}
