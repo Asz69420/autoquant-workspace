@@ -168,11 +168,11 @@ $claudeAuditAction = New-ScheduledTaskAction -Execute $PowerShellExe -Argument (
 $claudeAuditTrigger = New-DailyTriggers -Times @('05:00')
 Register-AutoQuantTask -TaskName 'AutoQuant-Claude-Auditor' -Action $claudeAuditAction -Triggers $claudeAuditTrigger -Description 'Claude backtest auditor daily at 05:00' -StartNow:$startTasks
 
-# 12) AutoQuant-build-queue-worker (every 30 seconds)
+# 12) AutoQuant-build-queue-worker (every 1 minute; Task Scheduler does not support <1m repetition)
 $buildQueueScript = Join-Path $ROOT 'scripts\automation\build_queue_worker.ps1'
 $buildQueueAction = New-ScheduledTaskAction -Execute $PowerShellExe -Argument ('-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $buildQueueScript + '"') -WorkingDirectory $ROOT
-$buildQueueTrigger = New-LoopTrigger -Interval (New-TimeSpan -Seconds 30)
-Register-AutoQuantTask -TaskName 'AutoQuant-build-queue-worker' -Action $buildQueueAction -Triggers @($buildQueueTrigger) -Description 'Build queue worker every 30 seconds' -StartNow:$startTasks
+$buildQueueTrigger = New-LoopTrigger -Interval (New-TimeSpan -Minutes 1)
+Register-AutoQuantTask -TaskName 'AutoQuant-build-queue-worker' -Action $buildQueueAction -Triggers @($buildQueueTrigger) -Description 'Build queue worker every 1 minute' -StartNow:$startTasks
 
 # 13) AutoQuant-tg_reporter (startup + every 2 minutes)
 $tgReporterScript = Join-Path $ROOT 'scripts\tg_reporter.py'
