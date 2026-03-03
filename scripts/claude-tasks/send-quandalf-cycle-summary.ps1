@@ -45,7 +45,19 @@ function Normalize-JournalEntry([string]$text) {
     }
   }
 
-  return ($lines -join "`n")
+  $normalized = ($lines -join "`n")
+
+  # Remove machine-directive JSON blocks from DM journal view
+  $normalized = [System.Text.RegularExpressions.Regex]::Replace(
+    $normalized,
+    '(?is)(?:^|\n)\s*(?:---\s*)?machine\s+directives\b.*?(?=(?:\n##\s+|\n###\s+|\z))',
+    "`n"
+  )
+
+  # Collapse excessive blank lines after removal
+  $normalized = [System.Text.RegularExpressions.Regex]::Replace($normalized, '(?m)^(\s*\r?\n){3,}', "`n`n")
+
+  return $normalized.Trim()
 }
 
 try {
