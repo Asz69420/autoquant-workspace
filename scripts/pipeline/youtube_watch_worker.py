@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 import re
 from datetime import datetime, UTC
@@ -153,10 +154,14 @@ def _notify_watch_skip(reason_code: str, title: str, duration_s: int):
 
 
 def _notify_category_review(channel_name: str, title: str, top1: str, top2: str):
-    msg = f"Category review needed: {channel_name} | {title}\nTop candidates: {top1}, {top2}"
+    msg = f"⚙️ Frodex review needed: {channel_name} | {title}\nTop candidates: {top1}, {top2}"
     try:
+        target_dm = (os.getenv('TELEGRAM_CMD_CHAT_ID') or '').strip()
+        cmd = [PY, 'scripts/tg_notify.py', msg, '--reason-code', 'YT_CATEGORY_REVIEW']
+        if target_dm:
+            cmd += ['--chat-id', target_dm]
         subprocess.run(
-            [PY, 'scripts/tg_notify.py', msg, '--reason-code', 'YT_CATEGORY_REVIEW'],
+            cmd,
             cwd=ROOT,
             text=True,
             capture_output=True,
