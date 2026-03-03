@@ -315,3 +315,42 @@ Focus on **decorrelated signals** that would diversify the portfolio rather than
 - If forward PF diverges significantly: the backtest was overfit and we need to investigate why
 
 ---
+
+## Entry 010 — Consolidation: Pipeline Death & Forward-Test Patience (2026-03-03)
+
+### What Happened
+No new ACCEPTs this cycle. This is the first pure consolidation cycle — no new strategy breakthroughs, but important system-level findings.
+
+### The Pipeline Is Dead
+The autopilot summary reveals catastrophic pipeline starvation:
+- **215 starvation cycles** — no accepted work in 215 consecutive cycles
+- **31 drought cycles** — no candidates passing gate for 31 cycles
+- **22 directive stall cycles** — directive system producing nothing for 22 cycles
+- **1/100 candidates ingested** — 99% rejection at ingestion
+- **0 candidates passing gate** — even the 1% that gets through doesn't survive
+
+This isn't a temporary drought. The pipeline's spec generation is fundamentally broken. Every ACCEPT in the system came from Claude specs (8/8). The pipeline produced exactly 1 ACCEPT ever (template_div, PF=1.419). Pipeline compute is pure waste at this point.
+
+### Forward-Test Is Healthy
+18 signal evaluations across 6 runs, all clean. Every bar shows `regime: "ranging"`. Both Vortex v3a and Supertrend 8:1 are correctly waiting for their respective signals — neither fires in ranging (Vortex needs a crossover, Supertrend needs a direction flip). This is exactly what selective strategies should do. Patience.
+
+### What Changed In My Thinking
+1. **Encoded a meta-rule.** After 46 backtests, the strongest pattern isn't about any specific indicator — it's about indicator *architecture*. Adaptive indicators (KAMA's self-adjusting speed, Vortex's transition detection) are the only path to all-regime profitability. Static indicators (CCI, RSI, MACD) top out at PF=1.712 and need regime gates. This is now brain rule `rule-adaptive-over-static`.
+
+2. **Pipeline death changes the research model.** If the pipeline can't generate specs, the research agenda is 100% Claude-driven. This is fine — Claude specs have a 22.2% ACCEPT rate vs pipeline's ~0%. But it means research velocity is bounded by Claude advisory cycles, not by compute.
+
+3. **Research card quality is a missed opportunity.** 9/10 TradingView catalog cards extracted nothing useful. The TV catalog sees hundreds of indicators with specific entry/exit logic, but the extraction pipeline only captures titles and authors. Fixing this would seed Claude spec generation with concrete ideas.
+
+### What I'm Testing Next
+Same as Entry 009 — the 3 pending orders remain unexecuted:
+1. Ichimoku TK Transition v1 — transition detection via different math than Vortex
+2. CCI Chop Fade v3 — the 8:1 R:R iteration
+3. Supertrend OBV Confirm v1 — first volume-based signal
+
+### Suggestions For Asz
+- Deploy KAMA Stoch v1 as third forward-test lane (no code changes needed)
+- Decide pipeline fate: kill it, rebuild it, or accept it's dead
+- Define forward-test graduation criteria before the first trade fires
+- Fix TV catalog extraction — it's a research pipeline that produces empty cards
+
+---

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-e03cca8b4d9b",
+  "created_at": "2026-03-03T12:00:14.889241Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/r8oRZtjj-Volume-Delta-Safe-Algo-Overlay/",
+  "title": "Volume Delta Safe Algo Overlay",
+  "author": "jeetunse",
+  "summary_bullets": [
+    "Top catalog indicator: Volume Delta Safe Algo Overlay by jeetunse."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Volume Delta Safe Algo Overlay by jeetunse.",
+      "note": "Meaning: Top catalog indicator: Volume Delta Safe Algo Overlay by jeetunse."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-e03cca8b4d9b.raw.txt",
+  "sha256": "a63c66ea6fe0514381accc9ebb355459c126d7e76dded0d2876e57710fb76e11",
+  "truncated": false
+}

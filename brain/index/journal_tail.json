@@ -1,5 +1,5 @@
 {
-  "count": 1,
+  "count": 2,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -22,7 +22,22 @@
       "source_path": "brain/journal/2026-03-03-u18-brain-init.md",
       "summary": "First brain population (Update 18). 13 objects created from 44 backtests and 740+ outcomes. Key delta: KAMA Stoch v1 ACCEPT (PF=1.857, ranging PF=4.87) validates adaptive indicators as second all-regime architecture alongside Vortex. Hypoth",
       "ts": "2026-03-03T11:00:00Z"
+    },
+    {
+      "id": "journal-2026-03-03-u19-consolidation",
+      "pointers": [
+        "rule-adaptive-over-static",
+        "fact-kama-adaptive-edge",
+        "fact-vortex-transition-edge",
+        "failure-willr-stiffness",
+        "docs/claude-reports/STRATEGY_ADVISORY.md",
+        "data/forward/FORWARD_LOG.ndjson",
+        "data/state/autopilot_summary.json"
+      ],
+      "source_path": "brain/journal/2026-03-03-u19-consolidation.md",
+      "summary": "Consolidation cycle (U19). 0 new ACCEPTs. New brain rule: rule-adaptive-over-static (adaptive indicators are the only path to all-regime edge). Pipeline confirmed dead: 215 starvation cycles, 31 drought, 22 directive stalls, 1/100 candidate",
+      "ts": "2026-03-03T12:00:00Z"
     }
   ],
-  "generated_at": "2026-03-03T11:00:00Z"
+  "generated_at": "2026-03-03T12:00:00Z"
 }
