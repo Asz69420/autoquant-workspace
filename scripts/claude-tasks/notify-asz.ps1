@@ -45,11 +45,19 @@ function Convert-MarkupToHtml([string]$text) {
     $line = [string]$rawLine
     $line = $line -replace '`', ''
 
-    # Markdown table row -> readable bullet row
+    # Markdown table row -> readable ASCII row
     if ($line -match '^\s*\|.*\|\s*$') {
       $cells = @($line.Trim() -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
       if ($cells.Count -gt 0) {
-        $line = '• ' + ($cells -join '  |  ')
+        if ($cells[0] -eq 'Variant' -and $cells.Count -ge 4) {
+          $line = '- ' + ($cells -join ' | ')
+        }
+        elseif ($cells.Count -ge 4) {
+          $line = "- $($cells[0]): Trend $($cells[1]) | Range $($cells[2]) | Trans $($cells[3])"
+        }
+        else {
+          $line = '- ' + ($cells -join ' | ')
+        }
       }
     }
 
@@ -65,8 +73,8 @@ function Convert-MarkupToHtml([string]$text) {
     $line = $line -replace '__(.+?)__', '<b>$1</b>'
     $line = $line -replace '(?<!\*)\*(.+?)(?<!\*)\*', '<i>$1</i>'
 
-    # Normalize bullets for cleaner Telegram rendering
-    $line = $line -replace '^\s*[-*]\s+', '• '
+    # Normalize bullets to ASCII (avoids mojibake on some clients)
+    $line = $line -replace '^\s*[-*]\s+', '- '
 
     [void]$outLines.Add($line)
   }
