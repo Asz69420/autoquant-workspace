@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-4d0bd0b3165a",
+  "created_at": "2026-03-03T13:42:32.784550Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=GZLlLCkJUHQ",
+  "title": "I Waited So Long for THIS All-In-One Price Action Indicator!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "I want to show something amazing, a new indicator that gives you a dashboard related to market structure and price action concepts.",
+    "[music] It is an all-in-one indicator combining order block, fair value gap, liquidity sweep, volume analysis, volatility analysis, swing high and swing low, market structure labels, and many more concepts.",
+    "And the excellent feature is that all these concepts can be displayed independently in up to seven [music] different time frames.",
+    "And everything is shown here in this dashboard.",
+    "This is the best indicator I've ever seen on Trading View.",
+    "I will completely explain this indicator and how you can use it.",
+    "All right, on Trading View platform here, we click on indicators and we search market structure dashboard this one which is written by flux chart.",
+    "All right, as you can see a dashboard is added to our chart here.",
+    "There are lots of information here but don't worry I will completely explain everything.",
+    "This dashboard provides some information related to market structure and price action concepts and it has the ability to show them independently for different time frames."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "I want to show something amazing, a new indicator that gives you a dashboard related to market structure and price action concepts.",
+      "note": "Meaning: I want to show something amazing, a new indicator that gives you a dashboard related to market structure and price action concepts."
+    },
+    {
+      "timestamp": null,
+      "quote": "[music] It is an all-in-one indicator combining order block, fair value gap, liquidity sweep, volume analysis, volatility analysis, swing high and swing low, market structure labels, and many more con",
+      "note": "Meaning: [music] It is an all-in-one indicator combining order block, fair value gap, liquidity sweep, volume analysis, volatility analysis, swing high and swin"
+    },
+    {
+      "timestamp": null,
+      "quote": "And the excellent feature is that all these concepts can be displayed independently in up to seven [music] different time frames.",
+      "note": "Meaning: And the excellent feature is that all these concepts can be displayed independently in up to seven [music] different time frames."
+    },
+    {
+      "timestamp": null,
+      "quote": "And everything is shown here in this dashboard.",
+      "note": "Meaning: And everything is shown here in this dashboard."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is the best indicator I've ever seen on Trading View.",
+      "note": "Meaning: This is the best indicator I've ever seen on Trading View."
+    },
+    {
+      "timestamp": null,
+      "quote": "I will completely explain this indicator and how you can use it.",
+      "note": "Meaning: I will completely explain this indicator and how you can use it."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, on Trading View platform here, we click on indicators and we search market structure dashboard this one which is written by flux chart.",
+      "note": "Meaning: All right, on Trading View platform here, we click on indicators and we search market structure dashboard this one which is written by flux chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, as you can see a dashboard is added to our chart here.",
+      "note": "Meaning: All right, as you can see a dashboard is added to our chart here."
+    },
+    {
+      "timestamp": null,
+      "quote": "There are lots of information here but don't worry I will completely explain everything.",
+      "note": "Meaning: There are lots of information here but don't worry I will completely explain everything."
+    },
+    {
+      "timestamp": null,
+      "quote": "This dashboard provides some information related to market structure and price action concepts and it has the ability to show them independently for different time frames.",
+      "note": "Meaning: This dashboard provides some information related to market structure and price action concepts and it has the ability to show them independently for di"
+    },
+    {
+      "timestamp": null,
+      "quote": "By default, no level or information is shown on the chart and everything is only here in the dashboard.",
+      "note": "Meaning: By default, no level or information is shown on the chart and everything is only here in the dashboard."
+    },
+    {
+      "timestamp": null,
+      "quote": "I will explain each of these information and for the available ones I will turn them on in the settings so they will be overlaid on the price chart and you better understand them.",
+      "note": "Meaning: I will explain each of these information and for the available ones I will turn them on in the settings so they will be overlaid on the price chart and"
+    }
+  ],
+  "extracted_rules": [
+    "If we go to the settings of the indicator here, you can see that we have settings related to time frames.",
+    "You can have up to seven different time frames and you can set if for example you use three time frames in your trading strategy.",
+    "This is logical and in case if you want to change them you need to consider this fact that the higher the time frame the more reliable the trends.",
+    "If for example we go to 1 minute time frame, you can see that we have information for seven time frames that are set in the settings.",
+    "If we go to the settings of the indicator and if we scroll down here we have settings for visual overlays and here we can turn on swing labels.",
+    "When you hover on each of these information, the indicator gives a small explanation.",
+    "If we go to weekly time frame, we can see that yes, the price swept the liquidity and turned back down.",
+    "If we go to the settings of the indicator and if we scroll down here we can turn on order blocks so they will be shown on the price chart.",
+    "In case if it is your first time hearing about order blocks, order block is a price range that institutional traders, banks, hedge funds, investment companies or other large financial entities, they entered or exited the market with very large capital.",
+    "If I want to say it in a very simple word, order blocks are price ranges where relatively large amounts of orders are executed.",
+    "So we can consider them in our trading strategy for trade entry, stop-loss and profit target.",
+    "If we change the time frame to weekly time frame we can clearly see that the price is inside the identified bearish order block.",
+    "If [clears throat] we go to the settings of the indicator and if we scroll down here we have an option for fair value gaps.",
+    "By default, the EMA length is set at 9, but you can change it in the settings if you need higher length.",
+    "In the settings of the indicator there are some other concepts or features that you can turn them on if you need those features and concepts in your trading strategy.",
+    "If you have any questions, feel free to ask and leave a comment for me."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "In front of each time frame, there is also weight of the time frame for trend calculation."
+    },
+    {
+      "type": "trend",
+      "description": "This is logical and in case if you want to change them you need to consider this fact that the higher the time frame the more reliable the trends."
+    },
+    {
+      "type": "trend",
+      "description": "So they should have higher weight in trend calculation."
+    },
+    {
+      "type": "confirmation",
+      "description": "So depending on your trading strategy and the time frames that you need, you can have your required time frames here."
+    },
+    {
+      "type": "risk",
+      "description": "So we can consider them in our trading strategy for trade entry, stop-loss and profit target."
+    },
+    {
+      "type": "trend",
+      "description": "And here we have trend bias which gives us information about the major trend based on higher time frame analysis."
+    },
+    {
+      "type": "confirmation",
+      "description": "It can help you to effectively analyze the market and have your required information all in one in a single dashboard on your price chart."
+    }
+  ],
+  "explicit_conditions": [
+    "So we can consider them in our trading strategy for trade entry, stop-loss and profit target."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "market structure dashboard this one which is written by flux chart",
+    "EMA"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "market structure dashboard this one which is written by flux chart",
+      "keywords": [
+        "market",
+        "structure",
+        "dashboard",
+        "this",
+        "one"
+      ],
+      "confidence": 0.93,
+      "author_hint": "flux chart"
+    }
+  ],
+  "timeframes_mentioned": [
+    "daily",
+    "weekly"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-4d0bd0b3165a.raw.txt",
+  "sha256": "946a3107a7cf05579e79b6017f4728f9022ddd411f085d0c9a9cf4d138b21934",
+  "truncated": false
+}

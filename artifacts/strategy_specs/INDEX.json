@@ -1,17 +1,18 @@
-﻿[
-    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-stvwap01.strategy_spec.json",
-    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-mcdvwp01.strategy_spec.json",
-    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-cciv3r81.strategy_spec.json",
-    {
-        "value":  [
-                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-t3alma1v1.strategy_spec.json",
-                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-stchfx01.strategy_spec.json",
-                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-ichtk1v1.strategy_spec.json",
-                      {
-                          "value":  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-rsidp10x.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-macd10t1.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-erawb08x.strategy_spec.json ",
-                          "Count":  4
-                      }
-                  ],
-        "Count":  4
-    }
+[
+  "artifacts/strategy_specs/20260303/strategy-spec-20260303-a2935eb1588f.strategy_spec.json",
+  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-stvwap01.strategy_spec.json",
+  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-mcdvwp01.strategy_spec.json",
+  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-cciv3r81.strategy_spec.json",
+  {
+    "value": [
+      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-t3alma1v1.strategy_spec.json",
+      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-stchfx01.strategy_spec.json",
+      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-ichtk1v1.strategy_spec.json",
+      {
+        "value": "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-rsidp10x.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-macd10t1.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-erawb08x.strategy_spec.json ",
+        "Count": 4
+      }
+    ],
+    "Count": 4
+  }
 ]

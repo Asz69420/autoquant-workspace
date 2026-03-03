@@ -1,0 +1,196 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-3c6f7f2422eb",
+  "created_at": "2026-03-03T13:43:08.306159Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=vSOlWwtzU2c",
+  "title": "Delete ALL Your Indicators, and Use Only THIS One! [Perfect for Scalping]",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "This indicator is designed for scalpers.",
+    "I want to teach you a very accurate trading strategy based on this indicator.",
+    "On Trading View Platform here, we click on indicators and we search scalping pullback.",
+    "this one which is written by just uncle L.",
+    "All right, this is the indicator and as you can see it's overlaid on the price chart.",
+    "Let me explain what we have here and then I will teach you the trading strategy.",
+    "This blue line here is an EMA with length of 200.",
+    "We have this green line here which is an EMA with length of 89.",
+    "And this is our fast EMA.",
+    "And then we have this red line here with the two bands above and below that."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This indicator is designed for scalpers.",
+      "note": "Meaning: This indicator is designed for scalpers."
+    },
+    {
+      "timestamp": null,
+      "quote": "I want to teach you a very accurate trading strategy based on this indicator.",
+      "note": "Meaning: I want to teach you a very accurate trading strategy based on this indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "On Trading View Platform here, we click on indicators and we search scalping pullback.",
+      "note": "Meaning: On Trading View Platform here, we click on indicators and we search scalping pullback."
+    },
+    {
+      "timestamp": null,
+      "quote": "this one which is written by just uncle L.",
+      "note": "Meaning: this one which is written by just uncle L."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, this is the indicator and as you can see it's overlaid on the price chart.",
+      "note": "Meaning: All right, this is the indicator and as you can see it's overlaid on the price chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "Let me explain what we have here and then I will teach you the trading strategy.",
+      "note": "Meaning: Let me explain what we have here and then I will teach you the trading strategy."
+    },
+    {
+      "timestamp": null,
+      "quote": "This blue line here is an EMA with length of 200.",
+      "note": "Meaning: This blue line here is an EMA with length of 200."
+    },
+    {
+      "timestamp": null,
+      "quote": "We have this green line here which is an EMA with length of 89.",
+      "note": "Meaning: We have this green line here which is an EMA with length of 89."
+    },
+    {
+      "timestamp": null,
+      "quote": "And this is our fast EMA.",
+      "note": "Meaning: And this is our fast EMA."
+    },
+    {
+      "timestamp": null,
+      "quote": "And then we have this red line here with the two bands above and below that.",
+      "note": "Meaning: And then we have this red line here with the two bands above and below that."
+    },
+    {
+      "timestamp": null,
+      "quote": "And this is an EMA with length of 34 which is based on close high and low.",
+      "note": "Meaning: And this is an EMA with length of 34 which is based on close high and low."
+    },
+    {
+      "timestamp": null,
+      "quote": "And this is called price action channel.",
+      "note": "Meaning: And this is called price action channel."
+    }
+  ],
+  "extracted_rules": [
+    "If we go to the settings of the indicator here, we can turn on the slow EMA which is an EMA with length of 600.",
+    "So here the trend is identified and we are in an uptrend and we should look for long position opportunities and the best opportunity is when there is a pullback.",
+    "We want a pullback of the price at least to the price channel and if the price goes lower than this it is okay.",
+    "So, we could enter a long position at this point with the stop loss below the channel and profit target at 1.5 risk-to-reward ratio.",
+    "Deeper pullbacks can give you more probability if you have proper confirmation.",
+    "And when we check RSI, we can see that RSI line went below the center line.",
+    "When the RSI line closes back above the center line and also above the moving average line for more confirmation which is the case here, this can tell us that the pullback ended and there is a high potential for the price to advance more.",
+    "And you can see that the indicator also showed this arrow which in times that there is a deeper pullback and then when the price turns to the direction of the trend, it shows these arrows.",
+    "So here the buy signal is confirmed and in practice we could enter a long position at this point with the stop loss below the channel and profit target at 1.5 risk-to-reward ratio.",
+    "The pullback only means when before that like this case here the price is above the channel clearly.",
+    "We only take a trade when there is a clear trend in the market.",
+    "I explained how you identify a trend when the price is in an uptrend.",
+    "When the price is below the price action channel, the channel is below the green EMA and the green EMA is below the blue EMA.",
+    "Now we want to find a good trading opportunity to enter a trade and that is when a pullback happens in the market.",
+    "We want a pullback of the price at least to the price action channel and if it goes higher it is okay as long as the conditions of our first step are not broken.",
+    "So the sell signal here is confirmed and in practice we could enter a short position at this point with the stop loss above the channel or above the pullback and profit target at 1.5 risk-to-reward ratio.",
+    "Although this trading strategy is very accurate but without risk management, you don't have any chance to execute this trading strategy profitably.",
+    "Losing positions are always part of the game and if they are not managed properly, you will lose your trading account sooner or later.",
+    "1% role risk management is the best risk management strategy that you can use in your trading system.",
+    "If you have any questions, feel free to ask and leave a comment for me."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "You can also have another EMA with an extreme length for identifying major trend of the market."
+    },
+    {
+      "type": "trend",
+      "description": "As I said, this gray line here has length of 600 and it is used for trend identification in a very long-term perspective."
+    },
+    {
+      "type": "trend",
+      "description": "And this EMA with length of 200 is enough for us to identify the trends."
+    },
+    {
+      "type": "trend",
+      "description": "In the first step, we need to identify the current trend of the market and then we try to look for trading opportunities in the same direction with the current trend."
+    },
+    {
+      "type": "trend",
+      "description": "This shows that the current trend is an uptrend and also in a shorterterm perspective we have greater upside momentum in the market."
+    },
+    {
+      "type": "trend",
+      "description": "So here the trend is identified and we are in an uptrend and we should look for long position opportunities and the best opportunity is when there is a pullback."
+    },
+    {
+      "type": "risk",
+      "description": "So, Entry: a long position at this point with the Stop: below the channel and profit target at 1.5 risk-to-reward ratio."
+    },
+    {
+      "type": "trend",
+      "description": "And you can see that the indicator also showed this arrow which in times that there is a deeper pullback and then when the price turns to the direction of the trend, it shows these arrows."
+    },
+    {
+      "type": "risk",
+      "description": "So here the buy signal is confirmed and in practice Entry: a long position at this point with the Stop: below the channel and profit target at 1.5 risk-to-reward ratio."
+    },
+    {
+      "type": "trend",
+      "description": "We only take a trade when there is a clear trend in the market."
+    },
+    {
+      "type": "trend",
+      "description": "I explained how you identify a trend when the price is in an uptrend."
+    },
+    {
+      "type": "trend",
+      "description": "This shows that the price is in a downtrend and we have greater downside momentum in shorter term perspective."
+    },
+    {
+      "type": "risk",
+      "description": "So the sell signal here is confirmed and in practice Entry: a short position at this point with the stop loss above the channel or above the pullback and profit target at 1.5 risk-to-reward ratio."
+    },
+    {
+      "type": "risk",
+      "description": "Although this trading strategy is very accurate but without risk management, you don't have any chance to execute this trading strategy profitably."
+    },
+    {
+      "type": "risk",
+      "description": "1% role risk management is the best risk management strategy that you can use in your trading system."
+    },
+    {
+      "type": "risk",
+      "description": "The link is also placed in the description and I highly recommend you to watch it because without a proper riskmanagement strategy, you cannot become a consistently profitable trader."
+    }
+  ],
+  "explicit_conditions": [
+    "So here the trend is identified and we are in an uptrend and we should look for long position opportunities and the best opportunity is when there is a pullback.",
+    "So, Entry: a long position at this point with the Stop: below the channel and profit target at 1.5 risk-to-reward ratio.",
+    "And when we check RSI, we can see that RSI line went below the center line.",
+    "When the RSI line closes back above the center line and also above the moving average line for more confirmation which is the case here, this can tell us that the pullback ended and there is a high potential for the price to advance more.",
+    "So here the buy signal is confirmed and in practice Entry: a long position at this point with the Stop: below the channel and profit target at 1.5 risk-to-reward ratio.",
+    "So the sell signal here is confirmed and in practice Entry: a short position at this point with the stop loss above the channel or above the pullback and profit target at 1.5 risk-to-reward ratio.",
+    "Although this trading strategy is very accurate but without risk management, you don't have any chance to execute this trading strategy profitably.",
+    "1% role risk management is the best risk management strategy that you can use in your trading system."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "RSI"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-3c6f7f2422eb.raw.txt",
+  "sha256": "f7f3e94da6a78d3ca5cc17aa8d85e186fffe76b358cce85f5d8f1063e65ff78e",
+  "truncated": false
+}

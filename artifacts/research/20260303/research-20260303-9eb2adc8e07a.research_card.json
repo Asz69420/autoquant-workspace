@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-9eb2adc8e07a",
+  "created_at": "2026-03-03T13:42:53.016111Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=qjRFgNHrqrc",
+  "title": "The ONLY Indicator with ZERO False Signals! [Used by Professionals]",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "This indicator is used by professionals.",
+    "I will teach you how you can effectively use this indicator.",
+    "To add this indicator here, we click on indicators and we search dual range volume profile.",
+    "this one which is written by someone named Uncle the shooter.",
+    "All right, this is the indicator and as you can see it's added here on the right side of the chart.",
+    "As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator.",
+    "In other words, the indicator uses two different price ranges to calculate and show volume profile.",
+    "This is main profile and this is pivot profile.",
+    "For the main profile, for the data range that is visible on the price chart.",
+    "In simple words, for the candles that you can see on the price chart, the indicator uses this look back period to calculate and show this volume profile."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This indicator is used by professionals.",
+      "note": "Meaning: This indicator is used by professionals."
+    },
+    {
+      "timestamp": null,
+      "quote": "I will teach you how you can effectively use this indicator.",
+      "note": "Meaning: I will teach you how you can effectively use this indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "To add this indicator here, we click on indicators and we search dual range volume profile.",
+      "note": "Meaning: To add this indicator here, we click on indicators and we search dual range volume profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "this one which is written by someone named Uncle the shooter.",
+      "note": "Meaning: this one which is written by someone named Uncle the shooter."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, this is the indicator and as you can see it's added here on the right side of the chart.",
+      "note": "Meaning: All right, this is the indicator and as you can see it's added here on the right side of the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator.",
+      "note": "Meaning: As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "In other words, the indicator uses two different price ranges to calculate and show volume profile.",
+      "note": "Meaning: In other words, the indicator uses two different price ranges to calculate and show volume profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is main profile and this is pivot profile.",
+      "note": "Meaning: This is main profile and this is pivot profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the main profile, for the data range that is visible on the price chart.",
+      "note": "Meaning: For the main profile, for the data range that is visible on the price chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "In simple words, for the candles that you can see on the price chart, the indicator uses this look back period to calculate and show this volume profile.",
+      "note": "Meaning: In simple words, for the candles that you can see on the price chart, the indicator uses this look back period to calculate and show this volume profil"
+    },
+    {
+      "timestamp": null,
+      "quote": "So for this volume profile, the data from here up to now from this low to this high, the data is used in building this volume profile.",
+      "note": "Meaning: So for this volume profile, the data from here up to now from this low to this high, the data is used in building this volume profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "from the lowest low to the highest high.",
+      "note": "Meaning: from the lowest low to the highest high."
+    }
+  ],
+  "extracted_rules": [
+    "And in this case when we check the price action we can clearly see that we had reaction of the price around this price range.",
+    "So we can have reaction when the price retest this level or break this level.",
+    "So when the price reaches to around this line we have high probability that the price will stop here and then it goes up or if it has broken it will become a resistance level for any pullback or retest of the broken level.",
+    "So when you know in what price ranges there is high probability to have stopping of the price and then turning of the price this can effectively help you with your trade entries setting a stop-loss and profit target.",
+    "If we go to the settings of the indicator here, you can see that for the value area the percentage is set at 50.",
+    "So for example, if you zoom out and more candles become visible on the price chart, the volume profile will change because now it considers this amount of look back period to calculate and show this volume profile and this happens automatically and you don't need to refresh your page.",
+    "This is one of the best volume profile indicator and if you use volume profile in your trading strategy, this indicator is a good choice for you.",
+    "If you have any questions, feel free to ask and leave a comment for me."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator."
+    },
+    {
+      "type": "risk",
+      "description": "So when you know in what price ranges there is high probability to have stopping of the price and then turning of the price this can effectively help you with your trade entries setting a stop-loss and profit target."
+    }
+  ],
+  "explicit_conditions": [
+    "So when the price reaches to around this line we have high probability that the price will stop here and then it goes up or if it has broken it will become a resistance level for any pullback or retest of the broken level.",
+    "So when you know in what price ranges there is high probability to have stopping of the price and then turning of the price this can effectively help you with your trade entries setting a stop-loss and profit target."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "dual range volume profile"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "dual range volume profile",
+      "keywords": [
+        "dual",
+        "range",
+        "volume",
+        "profile"
+      ],
+      "confidence": 0.93,
+      "author_hint": "someone named Uncle the shooter"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-9eb2adc8e07a.raw.txt",
+  "sha256": "05706cf3e6d46954d140f6b855d925a94969b4b238ca315fe104b609e8eef481",
+  "truncated": false
+}

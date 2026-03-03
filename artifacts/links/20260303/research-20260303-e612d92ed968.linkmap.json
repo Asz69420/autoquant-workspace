@@ -1,0 +1,43 @@
+{
+  "research_card_path": "artifacts/research/20260303/research-20260303-e612d92ed968.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260303/indicator-20260303-61a608bfe9e5.indicator_record.json",
+    "artifacts/indicators/20260303/indicator-20260303-70b74170fe10.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "red K trader pressure index",
+      "author_hint": "red K trader",
+      "keywords": [
+        "red",
+        "k",
+        "trader",
+        "pressure",
+        "index"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "hint": "click on indicators and search red K trader pressure index",
+      "author_hint": "red K trader",
+      "keywords": [
+        "click",
+        "on",
+        "indicators",
+        "and",
+        "search"
+      ],
+      "confidence": 0.88
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=RRmHGgO2SD8",
+      "video_id": "RRmHGgO2SD8",
+      "noted_at": "2026-03-03T13:42:17.724705+00:00"
+    }
+  ]
+}

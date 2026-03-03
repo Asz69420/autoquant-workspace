@@ -1,0 +1,6 @@
+Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v=sCJwxieF8L0 title=LIVE: BlackRock confirms partnership with Ripple! This Speech Is a Game Changer for XRP! reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:TranscriptsDisabled:
+Could not retrieve a transcript for the video https://www.youtube.com/watch?v=sCJwxieF8L0! This is most likely caused by:
+
+Subtitles are disabled for this video
+
+If you are sure that the described cause is not responsible for this error

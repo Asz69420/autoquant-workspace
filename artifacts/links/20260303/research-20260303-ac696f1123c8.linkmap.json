@@ -1,0 +1,41 @@
+{
+  "research_card_path": "artifacts/research/20260303/research-20260303-ac696f1123c8.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260303/indicator-20260303-11fbd4690842.indicator_record.json",
+    "artifacts/indicators/20260303/indicator-20260303-61a608bfe9e5.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "TAC directional movement",
+      "author_hint": "point coders TASC",
+      "keywords": [
+        "tac",
+        "directional",
+        "movement"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "hint": "parabolic s this one which is a built-in indicator on trading view platform and w",
+      "author_hint": "point coders TASC",
+      "keywords": [
+        "parabolic",
+        "s",
+        "this",
+        "one",
+        "which"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=umw9T9_8Fi0",
+      "video_id": "umw9T9_8Fi0",
+      "noted_at": "2026-03-03T13:42:58.644212+00:00"
+    }
+  ]
+}

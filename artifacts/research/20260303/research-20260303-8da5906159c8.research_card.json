@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-8da5906159c8",
+  "created_at": "2026-03-03T13:43:38.168588Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=sCJwxieF8L0",
+  "title": "LIVE: BlackRock confirms partnership with Ripple! This Speech Is a Game Changer for XRP!",
+  "author": "PineTrades",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=sCJwxieF8L0 title=LIVE: BlackRock confirms partnership with Ripple!",
+    "This Speech Is a Game Changer for XRP!",
+    "reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:TranscriptsDisabled: Could not retrieve a transcript for the video https://www.youtube.com/watch?v=sCJwxieF8L0!",
+    "This is most likely caused by: Subtitles are disabled for this video If you are sure that the described cause is not responsible for this error."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=sCJwxieF8L0 title=LIVE: BlackRock confirms partnership with Ripple!",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=sCJwxieF8L0 title=LIVE: BlackRock confirms partnership with Ripple!"
+    },
+    {
+      "timestamp": null,
+      "quote": "This Speech Is a Game Changer for XRP!",
+      "note": "Meaning: This Speech Is a Game Changer for XRP!"
+    },
+    {
+      "timestamp": null,
+      "quote": "reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:TranscriptsDisabled: Could not retrieve a transcript for the video https://www.youtube.com/watch?v=sCJwxieF8L0!",
+      "note": "Meaning: reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:TranscriptsDisabled: Could not retrieve a transcript for the video https://www.yo"
+    },
+    {
+      "timestamp": null,
+      "quote": "This is most likely caused by: Subtitles are disabled for this video If you are sure that the described cause is not responsible for this error.",
+      "note": "Meaning: This is most likely caused by: Subtitles are disabled for this video If you are sure that the described cause is not responsible for this error."
+    }
+  ],
+  "extracted_rules": [
+    "This is most likely caused by: Subtitles are disabled for this video If you are sure that the described cause is not responsible for this error."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "XRP"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-8da5906159c8.raw.txt",
+  "sha256": "a082b709739805abeb309c6f58a00d07c69f8a2ef894479a712f613fc0affacf",
+  "truncated": false
+}

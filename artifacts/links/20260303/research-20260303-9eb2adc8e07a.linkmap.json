@@ -1,0 +1,30 @@
+{
+  "research_card_path": "artifacts/research/20260303/research-20260303-9eb2adc8e07a.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260303/indicator-20260303-11fbd4690842.indicator_record.json",
+    "artifacts/indicators/20260303/indicator-20260303-7048d24e439b.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "dual range volume profile",
+      "author_hint": "someone named Uncle the shooter",
+      "keywords": [
+        "dual",
+        "range",
+        "volume",
+        "profile"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=qjRFgNHrqrc",
+      "video_id": "qjRFgNHrqrc",
+      "noted_at": "2026-03-03T13:42:53.294521+00:00"
+    }
+  ]
+}

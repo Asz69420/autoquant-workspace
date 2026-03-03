@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-a8be417b4a42",
+  "created_at": "2026-03-03T13:43:03.506159Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=_m17obVJl1g",
+  "title": "After 10 Years of Failure and Wins, I Found Indicator that Works!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "Check, check, signal, enter a trade.",
+    "Again, check, check, signal, enter a trade.",
+    "This indicator will blow your mind.",
+    "I will teach you how you can effectively use this indicator.",
+    "All right, let's add the indicator.",
+    "Here we click on indicators and we search Jurich MA trends breakouts.",
+    "This one which is a new indicator from big beluga.",
+    "This is the indicator and as you can see it is overlaid on the price chart.",
+    "We have this line here that changes color between green and blue and this is a jurik moving average.",
+    "Jurich moving average is a very smooth and low lag moving average that has the ability to quickly respond to the price action and trend changes but with minimum amount of noises."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Check, check, signal, enter a trade.",
+      "note": "Meaning: Check, check, signal, enter a trade."
+    },
+    {
+      "timestamp": null,
+      "quote": "Again, check, check, signal, enter a trade.",
+      "note": "Meaning: Again, check, check, signal, enter a trade."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator will blow your mind.",
+      "note": "Meaning: This indicator will blow your mind."
+    },
+    {
+      "timestamp": null,
+      "quote": "I will teach you how you can effectively use this indicator.",
+      "note": "Meaning: I will teach you how you can effectively use this indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, let's add the indicator.",
+      "note": "Meaning: All right, let's add the indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here we click on indicators and we search Jurich MA trends breakouts.",
+      "note": "Meaning: Here we click on indicators and we search Jurich MA trends breakouts."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one which is a new indicator from big beluga.",
+      "note": "Meaning: This one which is a new indicator from big beluga."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is the indicator and as you can see it is overlaid on the price chart.",
+      "note": "Meaning: This is the indicator and as you can see it is overlaid on the price chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "We have this line here that changes color between green and blue and this is a jurik moving average.",
+      "note": "Meaning: We have this line here that changes color between green and blue and this is a jurik moving average."
+    },
+    {
+      "timestamp": null,
+      "quote": "Jurich moving average is a very smooth and low lag moving average that has the ability to quickly respond to the price action and trend changes but with minimum amount of noises.",
+      "note": "Meaning: Jurich moving average is a very smooth and low lag moving average that has the ability to quickly respond to the price action and trend changes but wit"
+    },
+    {
+      "timestamp": null,
+      "quote": "The interpretation is just like any other types of moving averages.",
+      "note": "Meaning: The interpretation is just like any other types of moving averages."
+    },
+    {
+      "timestamp": null,
+      "quote": "When the price is above the line, we can say that the market is trending up.",
+      "note": "Meaning: When the price is above the line, we can say that the market is trending up."
+    }
+  ],
+  "extracted_rules": [
+    "When the price is above the line, we can say that the market is trending up.",
+    "And when the price is below the line, we can say that the market is trending down.",
+    "When the price is moving farther away from the moving average line, we can say that the upside momentum is strong.",
+    "And when it is moving close to the line, we say that the upside momentum is weakening which could be because of a pullback or in another situation after that a reversal may happen and the price may go below the line.",
+    "Similarly here when the price is moving farther away below the moving average line we can say that the downside momentum is strong and when it is moving near the line we say that the downside momentum is weakening which can be because of a pullback or a reversal may happen and the price may go above the line.",
+    "And when it is trending, it is either trending up or trending down.",
+    "When the market is in an uptrend, the price makes higher highs and higher lows.",
+    "And when the market is in a downtrend, the price makes lower highs and lower lows.",
+    "And if you don't see this structure, it means that the market is not trending.",
+    "When the market is trending, there is a concept that is related to breakouts inside the trends.",
+    "When we are in an uptrend, when the price goes for a pullback, before the pullback, a sewing high is created on the chart.",
+    "When this level is broken and we get a candle that has closed above this level, it can be a signal that probably the price is going to advance more in the direction of the uptrend.",
+    "Similarly, in a downtrend, when the price goes for a pullback, before the pullback, a swing low is created and this low can act as a potential support level.",
+    "So in practice, we could enter a long position at this point with the stop loss below the pullback or below the green line if it is not far from our trade entry and profit target at 1.5.",
+    "So the breakout here is confirmed and we could enter a long position at this point with the stop loss below the pullback or below the green line if it is not very far from our trade entry and profit target at 1.5 risk-to-reward ratio.",
+    "So in practice, we could enter a short position at this point with the stop loss above the moving average line and profit target at 1.5 risk-to-reward ratio.",
+    "So in practice we would enter a short position at this point with the stop loss above the pullback and profit target at 1.5 risk-to-reward ratio and until now the price is here and not known yet if this position will be profitable or not.",
+    "If this is just a pullback after that we will have decline of the price making this position profitable.",
+    "Losing possessions are always part of the game and you need to manage your risk properly so you can minimize the effect of your losing possessions.",
+    "There is a riskmanagement strategy that is called 1% rule and it is one of the best risk management strategies that you can use."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Jurich moving average is a very smooth and low lag moving average that has the ability to quickly respond to the price action and trend changes but with minimum amount of noises."
+    },
+    {
+      "type": "trend",
+      "description": "When the price is above the line, we can say that the market is trending up."
+    },
+    {
+      "type": "trend",
+      "description": "And when the price is below the line, we can say that the market is trending down."
+    },
+    {
+      "type": "momentum",
+      "description": "When the price is moving farther away from the moving average line, we can say that the upside momentum is strong."
+    },
+    {
+      "type": "momentum",
+      "description": "And when it is moving close to the line, we say that the upside momentum is weakening which could be because of a pullback or in another situation after that a reversal may happen and the price may go below the line."
+    },
+    {
+      "type": "momentum",
+      "description": "Similarly here when the price is moving farther away below the moving average line we can say that the downside momentum is strong and when it is moving near the line we say that the downside momentum is weakening which "
+    },
+    {
+      "type": "trend",
+      "description": "The breakout signals that are happening inside the trends and this is actually where the indicator is providing the signals."
+    },
+    {
+      "type": "trend",
+      "description": "It is either trending or not trending."
+    },
+    {
+      "type": "trend",
+      "description": "And when it is trending, it is either trending up or trending down."
+    },
+    {
+      "type": "trend",
+      "description": "When the market is in an uptrend, the price makes higher highs and higher lows."
+    },
+    {
+      "type": "trend",
+      "description": "And when the market is in a downtrend, the price makes lower highs and lower lows."
+    },
+    {
+      "type": "trend",
+      "description": "This is the structure of a downtrend and uptrend."
+    },
+    {
+      "type": "trend",
+      "description": "And if you don't see this structure, it means that the market is not trending."
+    },
+    {
+      "type": "trend",
+      "description": "When the market is trending, there is a concept that is related to breakouts inside the trends."
+    },
+    {
+      "type": "trend",
+      "description": "When we are in an uptrend, when the price goes for a pullback, before the pullback, a sewing high is created on the chart."
+    },
+    {
+      "type": "trend",
+      "description": "When this level is broken and we get a candle that has closed above this level, it can be a signal that probably the price is going to advance more in the direction of the uptrend."
+    },
+    {
+      "type": "trend",
+      "description": "Similarly, in a downtrend, when the price goes for a pullback, before the pullback, a swing low is created and this low can act as a potential support level."
+    },
+    {
+      "type": "trend",
+      "description": "The indicator has a juric moving average and this helps us with identifying trends and then it shows breakout signals inside the identified trends."
+    },
+    {
+      "type": "trend",
+      "description": "For example, here you can see that while the moving average line is green which tells us that the price is in an uptrend, then we had a pullback of the price to the green line."
+    },
+    {
+      "type": "risk",
+      "description": "So in practice, Entry: a long position at this point with the Stop: below the pullback or below the green line if it is not far from our trade entry and profit target at 1.5."
+    }
+  ],
+  "explicit_conditions": [
+    "So in practice, Entry: a long position at this point with the Stop: below the pullback or below the green line if it is not far from our trade entry and profit target at 1.5.",
+    "So the breakout here is confirmed and Entry: a long position at this point with the Stop: below the pullback or below the green line if it is not very far from our trade entry and profit target at 1.5 risk-to-reward ratio.",
+    "So in practice, Entry: a short position at this point with the stop loss above the moving average line and profit target at 1.5 risk-to-reward ratio.",
+    "So in practice we would enter a short position at this point with the stop loss above the pullback and profit target at 1.5 risk-to-reward ratio and until now the price is here and not known yet if this position will be profitable or not.",
+    "Losing possessions are always part of the game and you need to manage your risk properly so you can minimize the effect of your losing possessions.",
+    "There is a riskmanagement strategy that is called 1% rule and it is one of the best risk management strategies that you can use.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you cannot become a consistently profitable trader."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "Jurich MA trends breakouts"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "Jurich MA trends breakouts",
+      "keywords": [
+        "jurich",
+        "ma",
+        "trends",
+        "breakouts"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-a8be417b4a42.raw.txt",
+  "sha256": "0f6ad31ed7449f1cb8607afddf3a1585fd5f152a028ca7c7b078ab5b8511de21",
+  "truncated": false
+}

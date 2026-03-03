@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-146afe94b2c4",
+  "created_at": "2026-03-03T13:43:17.941593Z",
+  "source_type": "transcript",
+  "source_ref": "https://www.youtube.com/watch?v=drIqeApSOec",
+  "title": "This NEW Tool Made Me DELETE Every Indicator from My Chart!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "This new indicator takes your trading to the next level.",
+    "This is an advanced indicator built based on multiple linear regression.",
+    "The accuracy of this indicator is insane.",
+    "I will teach you a trading strategy based on this indicator that makes consistent profit.",
+    "All right, let's add the indicator.",
+    "Here we click on indicators and we search regression slope oscillator this one which is a new indicator from Big Beluga.",
+    "All right, this is the indicator and as you can see it is added here below the chart.",
+    "As I said, this indicator is built based on multiple linear regression.",
+    "In case if you don't know what linear regression is, regression is a statistical technique to predict a variable based on the value of one or more variables.",
+    "And because of its linear characteristic, it's a perfect model in financial markets for predicting the price and trends in the market."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This new indicator takes your trading to the next level.",
+      "note": "Meaning: This new indicator takes your trading to the next level."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is an advanced indicator built based on multiple linear regression.",
+      "note": "Meaning: This is an advanced indicator built based on multiple linear regression."
+    },
+    {
+      "timestamp": null,
+      "quote": "The accuracy of this indicator is insane.",
+      "note": "Meaning: The accuracy of this indicator is insane."
+    },
+    {
+      "timestamp": null,
+      "quote": "I will teach you a trading strategy based on this indicator that makes consistent profit.",
+      "note": "Meaning: I will teach you a trading strategy based on this indicator that makes consistent profit."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, let's add the indicator.",
+      "note": "Meaning: All right, let's add the indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here we click on indicators and we search regression slope oscillator this one which is a new indicator from Big Beluga.",
+      "note": "Meaning: Here we click on indicators and we search regression slope oscillator this one which is a new indicator from Big Beluga."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, this is the indicator and as you can see it is added here below the chart.",
+      "note": "Meaning: All right, this is the indicator and as you can see it is added here below the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As I said, this indicator is built based on multiple linear regression.",
+      "note": "Meaning: As I said, this indicator is built based on multiple linear regression."
+    },
+    {
+      "timestamp": null,
+      "quote": "In case if you don't know what linear regression is, regression is a statistical technique to predict a variable based on the value of one or more variables.",
+      "note": "Meaning: In case if you don't know what linear regression is, regression is a statistical technique to predict a variable based on the value of one or more vari"
+    },
+    {
+      "timestamp": null,
+      "quote": "And because of its linear characteristic, it's a perfect model in financial markets for predicting the price and trends in the market.",
+      "note": "Meaning: And because of its linear characteristic, it's a perfect model in financial markets for predicting the price and trends in the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator uses multiple linear regression over different look back periods and then average them into a single oscillator line that is represented here below the chart.",
+      "note": "Meaning: This indicator uses multiple linear regression over different look back periods and then average them into a single oscillator line that is represented"
+    },
+    {
+      "timestamp": null,
+      "quote": "Let me explain what we have here and how we can interpret this indicator and then I will teach you a trading strategy based on this indicator.",
+      "note": "Meaning: Let me explain what we have here and how we can interpret this indicator and then I will teach you a trading strategy based on this indicator."
+    }
+  ],
+  "extracted_rules": [
+    "In case if you don't know what linear regression is, regression is a statistical technique to predict a variable based on the value of one or more variables.",
+    "As you can see, when the oscillator line is below the center line, it shows that the market is trending down.",
+    "And when the oscillator line goes above the center line, it shows that the market is in an uptrend.",
+    "You may ask if this center line crossovers can be a signal for reversal of the market.",
+    "When crosses below the center line, it can be a signal for starting of a downtrend.",
+    "And when crosses above the center line, it can be a signal for starting of an uptrend.",
+    "When the oscillator line crosses above the signal line, it's a bullish signal and it shows that we have increased upside momentum.",
+    "And when the oscillator line crosses below the signal line, it's a bearish signal and it shows that we have increased downside momentum.",
+    "When it is a reversal signal on the other side, when the oscillator line is below the center line, if we get a bullish crossover, which is when the oscillator line crosses above the signal line, it shows a white circle like this.",
+    "And when the oscillator line is above the center line, if we get a bearish signal, which is when the oscillator line crosses below the signal line, we get a circle like this.",
+    "But instead, the signals that are in the same direction with the current trend of the market, they have lower risk and they can be used in trend following strategies.",
+    "For example, when the oscillator line is below the center line, which tells us that the market is trending down, then the bearish crossovers, which is when the oscillator line crosses below the signal line, they can be used for entering a trade in the same direction with the current trend of the market.",
+    "Or similarly here when the oscillator line is above the center line which tells us that the market is trending up then the bullish crossovers which is when the oscillator line crosses above the signal line they can be used for entering a trade in the same direction with the current trend of the market.",
+    "If the prior uptrend is still strong, the price will continue advancing.",
+    "But if a reversal is happening in the market and now we have greater downside momentum in the market, this advancing of the price will stop.",
+    "When we have this situation, it tells us that probably a pullback is forming on the chart.",
+    "In the next step, we want to know when the pullback is ended.",
+    "So the reversal signal here is confirmed and in practice we could enter a short position at this point with the stop loss above the pullback and profit target at risk-to-reward ratio of two.",
+    "If the reversal is real and now we have greater upside momentum, this decline of the price will stop and then advancing of the price to higher levels.",
+    "You can see that it happened here when this candle was closed."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "And because of its linear characteristic, it's a perfect model in financial markets for predicting the price and trends in the market."
+    },
+    {
+      "type": "trend",
+      "description": "As you can see, when the oscillator line is below the center line, it shows that the market is trending down."
+    },
+    {
+      "type": "trend",
+      "description": "And when the oscillator line goes above the center line, it shows that the market is in an uptrend."
+    },
+    {
+      "type": "trend",
+      "description": "So below the center line, the market is trending down."
+    },
+    {
+      "type": "trend",
+      "description": "And above the center line, the market is trending up."
+    },
+    {
+      "type": "trend",
+      "description": "You can clearly see that the oscillator is perfectly showing us the trend of the market."
+    },
+    {
+      "type": "trend",
+      "description": "In other words, a signal for starting of a new trend."
+    },
+    {
+      "type": "trend",
+      "description": "When crosses below the center line, it can be a signal for starting of a downtrend."
+    },
+    {
+      "type": "trend",
+      "description": "And when crosses above the center line, it can be a signal for starting of an uptrend."
+    },
+    {
+      "type": "trend",
+      "description": "And we need more confirmation to say with higher probability that a new trend is forming on the chart."
+    },
+    {
+      "type": "trend",
+      "description": "Here we have also another line this white line which is signal line and it is moving average of the oscillator line and we can use crossover of the signal line and the oscillator line for identifying momentum changes ins"
+    },
+    {
+      "type": "momentum",
+      "description": "When the oscillator line crosses above the signal line, it's a bullish signal and it shows that we have increased upside momentum."
+    },
+    {
+      "type": "momentum",
+      "description": "And when the oscillator line crosses below the signal line, it's a bearish signal and it shows that we have increased downside momentum."
+    },
+    {
+      "type": "risk",
+      "description": "As you can see, these signals are very risky because they are against the current trend of the market."
+    },
+    {
+      "type": "risk",
+      "description": "But instead, the signals that are in the same direction with the current trend of the market, they have lower risk and they can be used in trend following strategies."
+    },
+    {
+      "type": "trend",
+      "description": "For example, when the oscillator line is below the center line, which tells us that the market is trending down, then the bearish crossovers, which is when the oscillator line crosses below the signal line, they can be u"
+    },
+    {
+      "type": "trend",
+      "description": "Or similarly here when the oscillator line is above the center line which tells us that the market is trending up then the bullish crossovers which is when the oscillator line crosses above the signal line they can be us"
+    },
+    {
+      "type": "trend",
+      "description": "So, we're going to catch starting of a new trend and find a perfect trading opportunity to enter a trade."
+    },
+    {
+      "type": "trend",
+      "description": "This is an initial signal that probably a downtrend is forming."
+    },
+    {
+      "type": "trend",
+      "description": "If the prior uptrend is still strong, the price will continue advancing."
+    }
+  ],
+  "explicit_conditions": [
+    "As you can see, when the oscillator line is below the center line, it shows that the market is trending down.",
+    "And when the oscillator line goes above the center line, it shows that the market is in an uptrend.",
+    "You may ask if this center line crossovers can be a signal for reversal of the market.",
+    "When crosses below the center line, it can be a signal for starting of a downtrend.",
+    "And when crosses above the center line, it can be a signal for starting of an uptrend.",
+    "When it is a reversal signal on the other side, when the oscillator line is below the center line, if we get a bullish crossover, which is when the oscillator line crosses above the signal line, it shows a white circle like this.",
+    "And when the oscillator line is above the center line, if we get a bearish signal, which is when the oscillator line crosses below the signal line, we get a circle like this.",
+    "But instead, the signals that are in the same direction with the current trend of the market, they have lower risk and they can be used in trend following strategies.",
+    "For example, when the oscillator line is below the center line, which tells us that the market is trending down, then the bearish crossovers, which is when the oscillator line crosses below the signal line, they can be used for entering a trade in the same direction with the current trend of the market.",
+    "Or similarly here when the oscillator line is above the center line which tells us that the market is trending up then the bullish crossovers which is when the oscillator line crosses above the signal line they can be used for entering a trade in the same direction with the current trend of the market.",
+    "But if a reversal is happening in the market and now we have greater downside momentum in the market, this advancing of the price will stop.",
+    "So the reversal signal here is confirmed and in practice Entry: a short position at this point with the stop loss above the pullback and Target: 2R.",
+    "If the reversal is real and now we have greater upside momentum, this decline of the price will stop and then advancing of the price to higher levels.",
+    "When we have a false center line crossover like this, most of the times we will not reach to the final confirmation of entering a trade.",
+    "But this is not always the case and we can encounter false signals because just like any other trading strategies, this trading strategy will not give you 100% guaranteed signals and you need to manage your risk properly.",
+    "1% role risk management is the best risk management strategy and recommended by professional traders."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "regression slope oscillator this one which is a new indicator from Big Beluga"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "regression slope oscillator this one which is a new indicator from Big Beluga",
+      "keywords": [
+        "regression",
+        "slope",
+        "oscillator",
+        "this",
+        "one"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-146afe94b2c4.raw.txt",
+  "sha256": "bed2e5069e1f769a21e1ee01e8cb2e70dab126307eb1e3929d804876b2abac8b",
+  "truncated": false
+}
