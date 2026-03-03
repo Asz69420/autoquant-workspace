@@ -452,39 +452,31 @@ if ($true) {
   } elseif ($errors -gt 0) {
     $noteText = "I hit $errors issue(s) in this window and need a quick review."
   } elseif ($mode -eq 'frodex') {
-    $parts = @()
-
-    if ($promotionBlocked -gt 0 -or $specBlocked -gt 0 -or $batchBlockedPromotion -gt 0) {
-      $parts += ("I hit promotion/backtest blockers this cycle (spec blocked: $specBlocked, promotion blocked: $promotionBlocked, batch blocked: $batchBlockedPromotion).")
-    }
+    $clauses = @()
+    $clauses += ("This cycle ingested $ingested item(s), scanned $bundlesScanned bundle(s), selected $bundlesSelected, emitted specs OK/blocked/review as $specOk/$specBlocked/$specReview, executed $batchExecutedTotal backtest(s) across $batchAttempts batch attempt(s), and produced promotions OK/blocked as $promotionOk/$promotionBlocked")
 
     if ($starvation -gt 0) {
-      $parts += ("Throughput drought has repeated for $starvation cycle(s).")
+      $clauses += ("throughput drought has now repeated for $starvation cycle(s)")
     }
 
-    if ($bundlesSelected -eq 0 -and $batchAttempts -eq 0) {
-      $parts += "No new runnable bundles reached execution in this window."
+    if ($promotionBlocked -gt 0 -or $specBlocked -gt 0 -or $batchBlockedPromotion -gt 0) {
+      $clauses += ("the main blocker counts were spec blocked $specBlocked, promotion blocked $promotionBlocked, and batch blocked $batchBlockedPromotion")
     }
 
     if ($topWarning) {
-      if ($topWarningCount -gt 1) {
-        $parts += ("Top repeated warning: $topWarning.")
-      } else {
-        $parts += ("Top warning: $topWarning.")
-      }
+      $repeatWord = if ($topWarningCount -gt 1) { "repeated $topWarningCount times" } else { "seen once" }
+      $clauses += ("the top warning was '$topWarning' ($repeatWord)")
     }
 
-    if ($parts.Count -eq 0) {
-      if ($batchExecutedTotal -gt 0 -or $promoted -gt 0 -or $dirVariants -gt 0 -or $ingested -gt 0) {
-        $parts += "Cycle completed normally and progressed key pipeline stages."
-      } elseif ($forwardRuns -gt 0) {
-        $parts += "Forward checks are active and healthy while this cycle stayed quiet."
-      } else {
-        $parts += "Cycle was quiet with no actionable changes in this window."
-      }
+    if ($outboxLag -gt 0) {
+      $clauses += ("queue lag is currently $outboxLag event(s)")
     }
 
-    $noteText = ($parts -join ' ')
+    if ($clauses.Count -eq 1 -and $forwardRuns -gt 0 -and $batchExecutedTotal -eq 0 -and $promoted -eq 0 -and $ingested -eq 0) {
+      $clauses += "forward checks were active while this window remained operationally quiet"
+    }
+
+    $noteText = (($clauses -join ', ') + '.')
   } else {
     if ($mode -eq 'oragorn') {
       if ($completed -gt 0 -or $failed -gt 0) {
