@@ -7,7 +7,7 @@ import json
 import subprocess
 import sys
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -119,12 +119,122 @@ def _variant_resolved_signature(variant_obj: dict, symbol: str, timeframe: str) 
     return hashlib.sha256(raw.encode('utf-8')).hexdigest()
 
 
+def _index_historical_signatures(lookback_days: int = 90, max_entries: int = 5000) -> set[str]:
+    idx_path = ROOT / 'artifacts' / 'library' / 'RUN_INDEX.json'
+    if not idx_path.exists():
+        return set()
+
+    entries = _load_json(idx_path)
+    if not isinstance(entries, list):
+        return set()
+
+    cutoff = datetime.now(UTC) - timedelta(days=max(0, lookback_days))
+    selected = entries[-max_entries:] if max_entries > 0 else entries
+    out: set[str] = set()
+    spec_cache: dict[str, dict] = {}
+
+    for item in selected:
+        try:
+            created = str(item.get('created_at') or '')
+            if created:
+                created_dt = datetime.fromisoformat(created.replace('Z', '+00:00'))
+                if created_dt.tzinfo is None:
+                    created_dt = created_dt.replace(tzinfo=UTC)
+                if created_dt.astimezone(UTC) < cutoff:
+                    continue
+
+            ds = item.get('datasets_tested') or []
+            if not ds:
+                continue
+            d0 = ds[0] if isinstance(ds, list) else ds
+            symbol = str(d0.get('symbol') or '').upper()
+            timeframe = str(d0.get('timeframe') or '').lower()
+            if not symbol or not timeframe:
+                continue
+
+            spec_path = str(item.get('strategy_spec_path') or '')
+            variant_name = str(item.get('variant_name') or '')
+            if not spec_path or not variant_name:
+                continue
+
+            abs_spec = str((ROOT / spec_path).resolve()) if not Path(spec_path).is_absolute() else spec_path
+            if abs_spec not in spec_cache:
+                p = Path(abs_spec)
+                if not p.exists():
+                    spec_cache[abs_spec] = {}
+                else:
+                    spec_cache[abs_spec] = _load_json(p)
+            spec = spec_cache.get(abs_spec) or {}
+            variants = spec.get('variants') or []
+            variant_obj = next((v for v in variants if str(v.get('name')) == variant_name), None)
+            if not isinstance(variant_obj, dict):
+                continue
+
+            sig = _variant_resolved_signature(variant_obj, symbol, timeframe)
+            out.add(sig)
+        except Exception:
+            continue
+
+    return out
+
+
+def _index_recent_batch_signatures(lookback_days: int = 14, max_batch_files: int = 200) -> set[str]:
+    batch_root = ROOT / 'artifacts' / 'batches'
+    if not batch_root.exists():
+        return set()
+
+    cutoff = datetime.now(UTC) - timedelta(days=max(0, lookback_days))
+    files = sorted(batch_root.rglob('*.batch_backtest.json'))[-max_batch_files:]
+    out: set[str] = set()
+    spec_cache: dict[str, dict] = {}
+
+    for bf in files:
+        try:
+            bj = _load_json(bf)
+            created = str(bj.get('created_at') or '')
+            if created:
+                created_dt = datetime.fromisoformat(created.replace('Z', '+00:00'))
+                if created_dt.tzinfo is None:
+                    created_dt = created_dt.replace(tzinfo=UTC)
+                if created_dt.astimezone(UTC) < cutoff:
+                    continue
+
+            spec_path = str(bj.get('strategy_spec_path') or '')
+            if not spec_path:
+                continue
+            abs_spec = str((ROOT / spec_path).resolve()) if not Path(spec_path).is_absolute() else spec_path
+            if abs_spec not in spec_cache:
+                p = Path(abs_spec)
+                spec_cache[abs_spec] = _load_json(p) if p.exists() else {}
+            spec = spec_cache.get(abs_spec) or {}
+            variants = spec.get('variants') or []
+
+            for run in (bj.get('runs') or []):
+                variant_name = str(run.get('variant_name') or '')
+                symbol = str(run.get('symbol') or '').upper()
+                timeframe = str(run.get('timeframe') or '').lower()
+                if not variant_name or not symbol or not timeframe:
+                    continue
+                variant_obj = next((v for v in variants if str(v.get('name')) == variant_name), None)
+                if not isinstance(variant_obj, dict):
+                    continue
+                sig = _variant_resolved_signature(variant_obj, symbol, timeframe)
+                out.add(sig)
+        except Exception:
+            continue
+
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--strategy-spec', required=True)
     ap.add_argument('--variant', required=True, help='variant name or "all"')
     ap.add_argument('--datasets', default='default', help='default | csv list of dataset meta paths | JSON file path')
     ap.add_argument('--max-runs', type=int, default=24)
+    ap.add_argument('--dedup-lookback-days', type=int, default=90)
+    ap.add_argument('--dedup-max-history', type=int, default=5000)
+    ap.add_argument('--disable-history-dedup', action='store_true')
     args = ap.parse_args()
 
     spec = _load_json(args.strategy_spec)
@@ -138,7 +248,23 @@ def main() -> int:
     dataset_metas = _resolve_datasets(args.datasets)
 
     runs = []
-    seen_resolved = set()
+    in_batch_seen = set()
+    historical_seen = set()
+    history_skips = 0
+    in_batch_skips = 0
+
+    if not args.disable_history_dedup:
+        historical_seen = _index_historical_signatures(
+            lookback_days=args.dedup_lookback_days,
+            max_entries=args.dedup_max_history,
+        )
+        historical_seen.update(
+            _index_recent_batch_signatures(
+                lookback_days=min(args.dedup_lookback_days, 30),
+                max_batch_files=200,
+            )
+        )
+
     for variant in selected_variants:
         variant_obj = variant_objects.get(variant, {})
         for dataset_meta in dataset_metas:
@@ -146,10 +272,18 @@ def main() -> int:
             symbol = str(meta.get('symbol') or '')
             timeframe = str(meta.get('timeframe') or '')
             sig = _variant_resolved_signature(variant_obj, symbol, timeframe)
-            if sig in seen_resolved:
-                print(f"DEDUP_RESOLVED_SKIP variant={variant} symbol={symbol} timeframe={timeframe}", file=sys.stderr)
+
+            if sig in historical_seen:
+                history_skips += 1
+                print(f"DEDUP_SKIP_HISTORY variant={variant} symbol={symbol} timeframe={timeframe}", file=sys.stderr)
                 continue
-            seen_resolved.add(sig)
+
+            if sig in in_batch_seen:
+                in_batch_skips += 1
+                print(f"DEDUP_SKIP_BATCH variant={variant} symbol={symbol} timeframe={timeframe}", file=sys.stderr)
+                continue
+
+            in_batch_seen.add(sig)
             fout = _run([
                 PY,
                 'scripts/pipeline/check_feasibility.py',
@@ -216,8 +350,14 @@ def main() -> int:
 
     if args.max_runs > 0:
         runs = runs[:args.max_runs]
+    attempted = len(selected_variants) * len(dataset_metas)
+    dedup_skipped_total = history_skips + in_batch_skips
     summary = {
         'total_runs': len(runs),
+        'attempted_runs': attempted,
+        'dedup_skipped_total': dedup_skipped_total,
+        'dedup_skipped_history': history_skips,
+        'dedup_skipped_batch': in_batch_skips,
         'failed_runs': sum(1 for r in runs if not r['gate_pass']),
         'net_profit': round(sum(float(r.get('net_profit', 0.0)) for r in runs), 8),
         'trades': int(sum(int(r.get('trades', 0)) for r in runs)),
@@ -250,7 +390,15 @@ def main() -> int:
         ])
         experiment_plan_path = json.loads(p).get('experiment_plan_path')
 
-    print(json.dumps({'batch_artifact_path': str(batch_path), 'experiment_plan_path': experiment_plan_path, 'failed_runs': summary['failed_runs']}))
+    print(json.dumps({
+        'batch_artifact_path': str(batch_path),
+        'experiment_plan_path': experiment_plan_path,
+        'failed_runs': summary['failed_runs'],
+        'attempted_runs': summary['attempted_runs'],
+        'dedup_skipped_total': summary['dedup_skipped_total'],
+        'dedup_skipped_history': summary['dedup_skipped_history'],
+        'dedup_skipped_batch': summary['dedup_skipped_batch'],
+    }))
     return 0
 
 
