@@ -25,6 +25,7 @@ BACKOFF_BASE_SECONDS = [15 * 60, 30 * 60, 60 * 60, 2 * 60 * 60, 4 * 60 * 60]
 JITTER_MAX_SECONDS = 10 * 60
 SHORTS_MAX_SECONDS = 90
 MAX_VIDEO_SECONDS = 3600
+ENABLE_DURATION_CHECK = (os.getenv('YT_ENABLE_DURATION_CHECK', '0').strip() == '1')
 CATEGORY_CONFIG_PATH = ROOT / 'data' / 'state' / 'youtube_channel_categories.json'
 CONCEPT_CATEGORIES = {'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT'}
 AUTO_CLASSIFY_CATEGORIES = ['INDICATOR_CONCEPT', 'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT']
@@ -108,12 +109,22 @@ def _fetch_latest(channel_id: str):
 
 
 def _fetch_video_duration_seconds(video_id: str) -> int | None:
-    """Return video duration in seconds via yt-dlp metadata, or None if unavailable."""
+    """Return video duration in seconds via yt-dlp metadata, or None if unavailable/disabled."""
+    if not ENABLE_DURATION_CHECK:
+        return None
+
     url = f'https://www.youtube.com/watch?v={video_id}'
     try:
         import yt_dlp
 
-        with yt_dlp.YoutubeDL({'quiet': True, 'skip_download': True, 'no_warnings': True}) as ydl:
+        node_path = os.getenv('NODE_PATH', r'C:\Program Files\nodejs\node.exe')
+        ydl_opts = {
+            'quiet': True,
+            'skip_download': True,
+            'no_warnings': True,
+            'js_runtimes': {'node': node_path},
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
         d = info.get('duration')
         if d is None:
@@ -452,7 +463,12 @@ def main() -> int:
         ch['channel_id'] = channel_id
         category_cfg = _resolve_channel_category_config(ch, category_by_id, category_by_name)
         channels_checked += 1
-        latest = _fetch_latest(channel_id)
+        try:
+            latest = _fetch_latest(channel_id)
+        except Exception as e:
+            failed += 1
+            _log('YT_WATCH_FETCH_FAIL', 'YT_WATCH_FETCH_FAIL', f"channel={channel_id} detail={str(e)[:180]}", 'WARN')
+            continue
         if latest and not ch.get('last_seen_video_id'):
             ch['last_seen_video_id'] = latest[0]['video_id']
             seen_videos.add(latest[0]['video_id'])

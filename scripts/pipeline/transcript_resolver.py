@@ -88,10 +88,21 @@ def via_youtube_transcript_api(video_id: str) -> dict:
     return {"ok": True, "method": "youtube_transcript_api", "quality": "caption", "text": text}
 
 
+def _node_path() -> str:
+    p = os.getenv("NODE_PATH", r"C:\Program Files\nodejs\node.exe")
+    return p if Path(p).exists() else "node"
+
+
 def via_ytdlp(url: str) -> dict:
     import yt_dlp
 
-    with yt_dlp.YoutubeDL({"quiet": True, "skip_download": True}) as ydl:
+    ydl_opts = {
+        "quiet": True,
+        "skip_download": True,
+        "no_warnings": True,
+        "js_runtimes": {"node": _node_path()},
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
 
     subs = info.get("subtitles") or {}
@@ -159,6 +170,9 @@ def via_asr(url: str) -> dict:
             PY,
             "-m",
             "yt_dlp",
+            "--no-warnings",
+            "--js-runtimes",
+            f"node:{_node_path()}",
             "-f",
             "bestaudio/best",
             "-o",
