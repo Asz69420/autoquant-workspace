@@ -78,7 +78,13 @@ try {
 
   $msg = "Quandalf ${TaskLabel}:`n$effectiveSummary"
 
-  & "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
+  if ($isJournalEntry) {
+    & "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg -PlainText
+  }
+  else {
+    & "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
+  }
+
   Write-Host "Quandalf DM summary sent"
 }
 catch {

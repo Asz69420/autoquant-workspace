@@ -2,7 +2,8 @@
 # Usage: powershell -File notify-asz.ps1 -Message "Your message here"
 param(
   [Parameter(Mandatory=$true)]
-  [string]$Message
+  [string]$Message,
+  [switch]$PlainText
 )
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
@@ -118,12 +119,17 @@ function Split-MessageChunks([string]$text, [int]$maxChars = 3500) {
   return $chunks
 }
 
-function Send-TelegramHtml([string]$url, [string]$chatId, [string]$htmlText) {
-  $body = @{
+function Send-TelegramMessage([string]$url, [string]$chatId, [string]$text, [bool]$useHtml = $true) {
+  $bodyObj = @{
     chat_id = $chatId
-    text = $htmlText
-    parse_mode = "HTML"
-  } | ConvertTo-Json -Compress
+    text = $text
+  }
+
+  if ($useHtml) {
+    $bodyObj.parse_mode = "HTML"
+  }
+
+  $body = $bodyObj | ConvertTo-Json -Compress
   $body = $body -replace '\\u003c', '<' -replace '\\u003e', '>'
 
   $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
@@ -137,7 +143,7 @@ function Send-TelegramHtml([string]$url, [string]$chatId, [string]$htmlText) {
 }
 
 $url = "https://api.telegram.org/bot$token/sendMessage"
-$chunks = Split-MessageChunks -text $Message -maxChars 3500
+$chunks = @(Split-MessageChunks -text $Message -maxChars 3500)
 $total = $chunks.Count
 $responses = New-Object System.Collections.Generic.List[object]
 
@@ -149,8 +155,13 @@ try {
       $chunkText = $prefix + $chunkText
     }
 
-    $renderedMessage = Convert-MarkupToHtml -text $chunkText
-    $response = Send-TelegramHtml -url $url -chatId $chatId -htmlText $renderedMessage
+    $outText = $chunkText
+    $useHtml = -not $PlainText
+    if ($useHtml) {
+      $outText = Convert-MarkupToHtml -text $chunkText
+    }
+
+    $response = Send-TelegramMessage -url $url -chatId $chatId -text $outText -useHtml $useHtml
     [void]$responses.Add($response)
   }
 
