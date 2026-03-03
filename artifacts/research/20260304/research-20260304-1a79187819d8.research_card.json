@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-1a79187819d8",
+  "created_at": "2026-03-03T22:18:15.278848Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=ekyEyibuKhc",
+  "title": "This SECRET Settings of MACD Make It Impossible to Lose!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "Follow my instruction step by step on TradingView Platform.",
+    "Here, click on indicators and search MACD.",
+    "This one and add two MACDs to your chart.",
+    "And now you need to change their settings.",
+    "I want to teach you a secret settings and combination of these two MACDs that together they help you find the most accurate by cell signals on the chart.",
+    "Alright, first, we go to the settings of this MACD at the bottom and here in the inputs tab, for the fast length, we set it at 100.",
+    "For the slow length, we set it at 200.",
+    "And for the signal length, we set it at 50.",
+    "And then we go to the style tab and we remove MACD line and signal line.",
+    "Alright, we're done with the settings of this MACD."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Follow my instruction step by step on TradingView Platform.",
+      "note": "Meaning: Follow my instruction step by step on TradingView Platform."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here, click on indicators and search MACD.",
+      "note": "Meaning: Here, click on indicators and search MACD."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one and add two MACDs to your chart.",
+      "note": "Meaning: This one and add two MACDs to your chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "And now you need to change their settings.",
+      "note": "Meaning: And now you need to change their settings."
+    },
+    {
+      "timestamp": null,
+      "quote": "I want to teach you a secret settings and combination of these two MACDs that together they help you find the most accurate by cell signals on the chart.",
+      "note": "Meaning: I want to teach you a secret settings and combination of these two MACDs that together they help you find the most accurate by cell signals on the char"
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, first, we go to the settings of this MACD at the bottom and here in the inputs tab, for the fast length, we set it at 100.",
+      "note": "Meaning: Alright, first, we go to the settings of this MACD at the bottom and here in the inputs tab, for the fast length, we set it at 100."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the slow length, we set it at 200.",
+      "note": "Meaning: For the slow length, we set it at 200."
+    },
+    {
+      "timestamp": null,
+      "quote": "And for the signal length, we set it at 50.",
+      "note": "Meaning: And for the signal length, we set it at 50."
+    },
+    {
+      "timestamp": null,
+      "quote": "And then we go to the style tab and we remove MACD line and signal line.",
+      "note": "Meaning: And then we go to the style tab and we remove MACD line and signal line."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, we're done with the settings of this MACD.",
+      "note": "Meaning: Alright, we're done with the settings of this MACD."
+    },
+    {
+      "timestamp": null,
+      "quote": "And now we go to the settings of the second MACD.",
+      "note": "Meaning: And now we go to the settings of the second MACD."
+    },
+    {
+      "timestamp": null,
+      "quote": "And first here in the inputs tab, here for the fast length, we set it at eight.",
+      "note": "Meaning: And first here in the inputs tab, here for the fast length, we set it at eight."
+    }
+  ],
+  "extracted_rules": [
+    "We're going to use this MACD histogram to see when a new trend is forming on the chart.",
+    "And then by the help of MACD line and signal line that are showing shorter momentum changes in the market, we're going to use them to find a low risk trading opportunity to enter a trade.",
+    "When it is below the center line and red, the market is trending down.",
+    "And when it is above the center line and green, the market is trending up.",
+    "If the reversal is real and now in the market we have greater downside momentum than upside momentum, this advancing of the price shouldn't be able to pass the previous high.",
+    "When MACD histogram went below the center line and became red, here we wait for the white line to go above the orange line.",
+    "When this happened, it tells us that probably the pullback ended and the price is gonna decline more.",
+    "So the reversal is confirmed here and in practice we could enter a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.",
+    "But as I said, this is not where we enter a trade.",
+    "We need more confirmation for the reversal and for this purpose we wait for a pullback because it can show if we have greater upside momentum in the market or greater downside momentum.",
+    "If the reversal is real and now we have greater upside momentum in the market, this decline of the price will be short and then turning of the price and advancing of the price to higher levels.",
+    "When this happened and the white line is already closed above the orange line, the reversal is confirmed.",
+    "So in practice we could enter a long position at this point with the stop loss below the pullback and profit target at risk to reward ratio of 2.",
+    "And in the next step, we are trying to find a low risk trading opportunity in the pullbacks.",
+    "And so because this is a reversal trading strategy, in compared to a trend following strategy, it has more degree of risk.",
+    "So risk management plays an important role in this trading strategy.",
+    "Without a proper risk management, your losing positions will be out of control and you will lose your trading account sooner or later.",
+    "There is a risk management strategy that is called 1% role and it is one of the best risk management strategies that you can use.",
+    "By the help of this risk management strategy, you can minimize the effect of your losing positions so you can consistently make profit.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management, you cannot become a consistently profitable trader."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "Alright, so now we have one MACD with histogram and the other MACD with MACD line and signal line."
+    },
+    {
+      "type": "momentum",
+      "description": "Alright, here we have a MACD line, signal line, and MACD histogram."
+    },
+    {
+      "type": "momentum",
+      "description": "Because this MACD histogram is not based on this MACD line and signal line crossovers."
+    },
+    {
+      "type": "momentum",
+      "description": "The MACD histogram has longer length for the moving averages."
+    },
+    {
+      "type": "momentum",
+      "description": "The MACD line and signal line, I mean this white line and the orange line will help us with short term momentum changes in the market."
+    },
+    {
+      "type": "trend",
+      "description": "And this MACD histogram will help us with identifying trends and trend changes that are happening in the market."
+    },
+    {
+      "type": "trend",
+      "description": "We're going to use this MACD histogram to see when a new trend is forming on the chart."
+    },
+    {
+      "type": "risk",
+      "description": "And then by the help of MACD line and signal line that are showing shorter momentum changes in the market, we're going to use them to find a low risk trading opportunity to enter a trade."
+    },
+    {
+      "type": "trend",
+      "description": "As I said, we use this MACD histogram for trend identification."
+    },
+    {
+      "type": "trend",
+      "description": "When it is below the center line and red, the market is trending down."
+    },
+    {
+      "type": "trend",
+      "description": "And when it is above the center line and green, the market is trending up."
+    },
+    {
+      "type": "trend",
+      "description": "So the points that MACD histogram changes position and color, it could be a signal for starting off a new trend."
+    },
+    {
+      "type": "risk",
+      "description": "But we're not gonna trade only based on this signal because still too risky and we may encounter many false signals."
+    },
+    {
+      "type": "trend",
+      "description": "So we need more confirmation to say with higher probability that a new trend is forming on the chart."
+    },
+    {
+      "type": "momentum",
+      "description": "Here you can see that the MACD histogram went below the center line and became red."
+    },
+    {
+      "type": "trend",
+      "description": "So this is an early signal that probably a downtrend is forming."
+    },
+    {
+      "type": "momentum",
+      "description": "If the reversal is real and now in the market we have greater downside momentum than upside momentum, this advancing of the price shouldn't be able to pass the previous high."
+    },
+    {
+      "type": "momentum",
+      "description": "The MACD line and signal line can help us with identifying the pullbacks and end of the pullbacks because they show shorter momentum changes in the market."
+    },
+    {
+      "type": "momentum",
+      "description": "When MACD histogram went below the center line and became red, here we wait for the white line to go above the orange line."
+    },
+    {
+      "type": "risk",
+      "description": "So the reversal is confirmed here and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2."
+    }
+  ],
+  "explicit_conditions": [
+    "And then by the help of MACD line and signal line that are showing shorter momentum changes in the market, we're going to use them to find a low risk trading opportunity to enter a trade.",
+    "When it is below the center line and red, the market is trending down.",
+    "And when it is above the center line and green, the market is trending up.",
+    "When MACD histogram went below the center line and became red, here we wait for the white line to go above the orange line.",
+    "So the reversal is confirmed here and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.",
+    "When this happened and the white line is already closed above the orange line, the reversal is confirmed.",
+    "So in practice Entry: a long position at this point with the Stop: below the pullback and profit target at risk to reward ratio of 2.",
+    "And in the next step, we are trying to find a low risk trading opportunity in the pullbacks.",
+    "And so because this is a reversal trading strategy, in compared to a trend following strategy, it has more degree of risk.",
+    "So risk management plays an important role in this trading strategy.",
+    "Without a proper risk management, your losing positions will be out of control and you will lose your trading account sooner or later.",
+    "There is a risk management strategy that is called 1% role and it is one of the best risk management strategies that you can use.",
+    "By the help of this risk management strategy, you can minimize the effect of your losing positions so you can consistently make profit.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management, you cannot become a consistently profitable trader."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "MACD"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-1a79187819d8.raw.txt",
+  "sha256": "0f6a20029b520f56f4014ead453b93f3a62e4e52a5d31530e77bc946d6f81a3b",
+  "truncated": false
+}

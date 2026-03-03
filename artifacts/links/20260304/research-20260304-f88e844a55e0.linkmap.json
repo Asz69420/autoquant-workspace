@@ -1,8 +1,8 @@
 {
   "research_card_path": "artifacts/research/20260304/research-20260304-f88e844a55e0.research_card.json",
   "indicator_record_paths": [
-    "artifacts/indicators/20260304/indicator-20260304-995a08fa4a72.indicator_record.json",
-    "artifacts/indicators/20260304/indicator-20260304-2385618ba57b.indicator_record.json"
+    "artifacts/indicators/20260304/indicator-20260304-e4f7034a84b5.indicator_record.json",
+    "artifacts/indicators/20260304/indicator-20260304-5e9af3e7de1b.indicator_record.json"
   ],
   "grabber_queue": [
     {
@@ -25,7 +25,7 @@
       "channel_url": "https://m.youtube.com/@SoheilPKO",
       "video_url": "https://www.youtube.com/watch?v=W1DcXrwJkdw",
       "video_id": "W1DcXrwJkdw",
-      "noted_at": "2026-03-03T17:21:12.350483+00:00"
+      "noted_at": "2026-03-03T22:19:10.069432+00:00"
     }
   ]
 }

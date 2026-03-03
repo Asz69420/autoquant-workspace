@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-ee6bb598b743",
+  "created_at": "2026-03-03T22:20:19.902678Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=qjRFgNHrqrc",
+  "title": "The ONLY Indicator with ZERO False Signals! [Used by Professionals]",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "Alright, to add this indicator here we click on indicators and we search dual range volume profile, this one which is written by someone named uncle the shooter.",
+    "Alright, this is the indicator and as you can see it's added here on the right side of the chart.",
+    "As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator.",
+    "In other words, the indicator uses two different price ranges to calculate and show volume profile.",
+    "This is main profile and this is pivot profile.",
+    "For the main profile for the data range that is visible on the price chart in simple words for the candles that you can see on the price chart the indicator uses this look back period to calculate and show this volume profile.",
+    "So for this volume profile the data from here up to now from this low to this high the data is used in building this volume profile from the lowest low to the highest high this price range is divided into 100 equals bins or segments.",
+    "So here for this price range we have 100 bins or segments and for each bin or segment that is representing that price range the traded volume in that price range is calculated and shown by the help of these horizontal volume bars the larger the bar the more volume was traded in that price range.",
+    "So for example in this price range we had more volume in compared to for example this price range the indicator also uses different shades of color from yellow to orange to red to show the amount of the volume yellow is used for the lowest amount of volume and red is used for the highest amount of volume with different shades of darker yellow to orange and red in between for different amount of volume.",
+    "So besides the size of the horizontal bar the colors of the bars can also help you visually to instantly evaluate in what price ranges we had greater amount of volume."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Alright, to add this indicator here we click on indicators and we search dual range volume profile, this one which is written by someone named uncle the shooter.",
+      "note": "Meaning: Alright, to add this indicator here we click on indicators and we search dual range volume profile, this one which is written by someone named uncle th"
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, this is the indicator and as you can see it's added here on the right side of the chart.",
+      "note": "Meaning: Alright, this is the indicator and as you can see it's added here on the right side of the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator.",
+      "note": "Meaning: As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "In other words, the indicator uses two different price ranges to calculate and show volume profile.",
+      "note": "Meaning: In other words, the indicator uses two different price ranges to calculate and show volume profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is main profile and this is pivot profile.",
+      "note": "Meaning: This is main profile and this is pivot profile."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the main profile for the data range that is visible on the price chart in simple words for the candles that you can see on the price chart the indicator uses this look back period to calculate and",
+      "note": "Meaning: For the main profile for the data range that is visible on the price chart in simple words for the candles that you can see on the price chart the indi"
+    },
+    {
+      "timestamp": null,
+      "quote": "So for this volume profile the data from here up to now from this low to this high the data is used in building this volume profile from the lowest low to the highest high this price range is divided ",
+      "note": "Meaning: So for this volume profile the data from here up to now from this low to this high the data is used in building this volume profile from the lowest low"
+    },
+    {
+      "timestamp": null,
+      "quote": "So here for this price range we have 100 bins or segments and for each bin or segment that is representing that price range the traded volume in that price range is calculated and shown by the help of",
+      "note": "Meaning: So here for this price range we have 100 bins or segments and for each bin or segment that is representing that price range the traded volume in that p"
+    },
+    {
+      "timestamp": null,
+      "quote": "So for example in this price range we had more volume in compared to for example this price range the indicator also uses different shades of color from yellow to orange to red to show the amount of t",
+      "note": "Meaning: So for example in this price range we had more volume in compared to for example this price range the indicator also uses different shades of color fro"
+    },
+    {
+      "timestamp": null,
+      "quote": "So besides the size of the horizontal bar the colors of the bars can also help you visually to instantly evaluate in what price ranges we had greater amount of volume.",
+      "note": "Meaning: So besides the size of the horizontal bar the colors of the bars can also help you visually to instantly evaluate in what price ranges we had greater a"
+    },
+    {
+      "timestamp": null,
+      "quote": "So in this look back period in these price ranges we had relatively greater amount of volume in these price ranges with the greatest amount of volume in this price range where we have the largest hori",
+      "note": "Meaning: So in this look back period in these price ranges we had relatively greater amount of volume in these price ranges with the greatest amount of volume i"
+    },
+    {
+      "timestamp": null,
+      "quote": "The price range that has the highest amount of volume is called point of control and this indicator shows the bar with gray color.",
+      "note": "Meaning: The price range that has the highest amount of volume is called point of control and this indicator shows the bar with gray color."
+    }
+  ],
+  "extracted_rules": [
+    "So in this look back period in this price range we had the greatest amount of volume and this is the center of the balance for this volume profile for a reason market participants had more levels of activity in this price range and in this case when we check the price action we can clearly see that we had reaction of the price around this price range so this level of the price is significant level and it can play a key role for the future price action.",
+    "So we can have reaction when the price retest this level or break this level for example here you can see that it acted like a resistance level you can see that the price stopped here and then turned down and then here this resistance level was broken and after that we had retest of the broken resistance level.",
+    "Now it is playing as a support level so when the price reaches to around this line we have high probability that the price will stop here and then it goes up or if it is broken it will become a resistance level for any pullback or retest of the broken level.",
+    "So when you know in what price ranges there is high probability to have stopping of the price and then turning of the price this can effectively help you with your trade entries setting stop loss and profit target."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "As the name of the indicator is telling us this is a volume profile indicator but we have two histograms here and this new volume profile indicator."
+    },
+    {
+      "type": "risk",
+      "description": "So when you know in what price ranges there is high probability to have stopping of the price and then turning of the price this can effectively help you with your trade entries setting stop loss and profit target."
+    }
+  ],
+  "explicit_conditions": [
+    "So we can have reaction when the price retest this level or break this level for example here you can see that it acted like a resistance level you can see that the price stopped here and then turned down and then here this resistance level was broken and after that we had retest of the broken resistance level.",
+    "Now it is playing as a support level so when the price reaches to around this line we have high probability that the price will stop here and then it goes up or if it is broken it will become a resistance level for any pullback or retest of the broken level.",
+    "So when you know in what price ranges there is high probability to have stopping of the price and then turning of the price this can effectively help you with your trade entries setting stop loss and profit target."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "dual range volume profile"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "dual range volume profile",
+      "keywords": [
+        "dual",
+        "range",
+        "volume",
+        "profile"
+      ],
+      "confidence": 0.93,
+      "author_hint": "someone named uncle the shooter"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-ee6bb598b743.raw.txt",
+  "sha256": "3b6f00e4101c74818f79ba3aa8224407bddc1b621132291be054c1e0499a2a84",
+  "truncated": false
+}

@@ -1,0 +1,43 @@
+{
+  "research_card_path": "artifacts/research/20260304/research-20260304-0b1acc00d476.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260304/indicator-20260304-e4f7034a84b5.indicator_record.json",
+    "artifacts/indicators/20260304/indicator-20260304-5e9af3e7de1b.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "BB impulse indicator this one which is written by lazybear",
+      "author_hint": "lazybear",
+      "keywords": [
+        "bb",
+        "impulse",
+        "indicator",
+        "this",
+        "one"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "hint": "mac t this one moving average convergence divergence and we need to change its se",
+      "author_hint": "lazybear",
+      "keywords": [
+        "mac",
+        "t",
+        "this",
+        "one",
+        "moving"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=Uj7Bk7r9dfU",
+      "video_id": "Uj7Bk7r9dfU",
+      "noted_at": "2026-03-03T22:11:59.959042+00:00"
+    }
+  ]
+}

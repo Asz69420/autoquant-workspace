@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-0b1acc00d476",
+  "created_at": "2026-03-03T22:11:59.613235Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=Uj7Bk7r9dfU",
+  "title": "This Indicator Tells You Exactly When to ENTER & EXIT Trades!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen.",
+    "This is one of the best indicators on trading view for scalping strategies and day trading strategies.",
+    "So it's suitable for timeframes like 1 minute, 5 minutes, 15 minutes up to 1 hour.",
+    "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudden increase of momentum in the market.",
+    "Alright on trading view platform here we click on indicators and we search BB impulse indicator this one which is written by lazybear.",
+    "Alright this is the indicator and as you can see it is added here below the chart.",
+    "As you can see we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors as you can see this indicator is built based on Bollinger bands and it is created by John Bollinger who's the one created the Bollinger bands.",
+    "If we go to the settings of the indicator you can see that we have settings for length and multiplier similar to Bollinger bands and similarly by default the length is set at 20 and the multiplier is set at 2.",
+    "We don't change this because this is optimized for most of trading strategies but here we have another two settings which are alert level which is set at 0.24 and impulse level which is set at 0.4.",
+    "Before I close the settings here we go to the style tab and here we change the histogram to columns so the bars will be better visible on the price chart."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen.",
+      "note": "Meaning: It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is one of the best indicators on trading view for scalping strategies and day trading strategies.",
+      "note": "Meaning: This is one of the best indicators on trading view for scalping strategies and day trading strategies."
+    },
+    {
+      "timestamp": null,
+      "quote": "So it's suitable for timeframes like 1 minute, 5 minutes, 15 minutes up to 1 hour.",
+      "note": "Meaning: So it's suitable for timeframes like 1 minute, 5 minutes, 15 minutes up to 1 hour."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudde",
+      "note": "Meaning: This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy be"
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright on trading view platform here we click on indicators and we search BB impulse indicator this one which is written by lazybear.",
+      "note": "Meaning: Alright on trading view platform here we click on indicators and we search BB impulse indicator this one which is written by lazybear."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright this is the indicator and as you can see it is added here below the chart.",
+      "note": "Meaning: Alright this is the indicator and as you can see it is added here below the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you can see we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors as you can see this indicator is built based on Bollinger ",
+      "note": "Meaning: As you can see we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors as you ca"
+    },
+    {
+      "timestamp": null,
+      "quote": "If we go to the settings of the indicator you can see that we have settings for length and multiplier similar to Bollinger bands and similarly by default the length is set at 20 and the multiplier is ",
+      "note": "Meaning: If we go to the settings of the indicator you can see that we have settings for length and multiplier similar to Bollinger bands and similarly by defau"
+    },
+    {
+      "timestamp": null,
+      "quote": "We don't change this because this is optimized for most of trading strategies but here we have another two settings which are alert level which is set at 0.24 and impulse level which is set at 0.4.",
+      "note": "Meaning: We don't change this because this is optimized for most of trading strategies but here we have another two settings which are alert level which is set "
+    },
+    {
+      "timestamp": null,
+      "quote": "Before I close the settings here we go to the style tab and here we change the histogram to columns so the bars will be better visible on the price chart.",
+      "note": "Meaning: Before I close the settings here we go to the style tab and here we change the histogram to columns so the bars will be better visible on the price cha"
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright so this dashed line here is alert level which is set at 0.24 and this solid line here is impulse level which is set at 0.4 so depending on the size of the bar if the bar passes the alert level",
+      "note": "Meaning: Alright so this dashed line here is alert level which is set at 0.24 and this solid line here is impulse level which is set at 0.4 so depending on the "
+    },
+    {
+      "timestamp": null,
+      "quote": "When the bar passes the alert level the dashed line it is alert signal that the momentum is probably going to increase and when the bar passes the impulse level the solid line here it is impulse signa",
+      "note": "Meaning: When the bar passes the alert level the dashed line it is alert signal that the momentum is probably going to increase and when the bar passes the impu"
+    }
+  ],
+  "extracted_rules": [
+    "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudden increase of momentum in the market.",
+    "If we go to the settings of the indicator you can see that we have settings for length and multiplier similar to Bollinger bands and similarly by default the length is set at 20 and the multiplier is set at 2.",
+    "Alright so this dashed line here is alert level which is set at 0.24 and this solid line here is impulse level which is set at 0.4 so depending on the size of the bar if the bar passes the alert level or impulse level we can have a signal about increase of momentum.",
+    "When the bar passes the alert level the dashed line it is alert signal that the momentum is probably going to increase and when the bar passes the impulse level the solid line here it is impulse signal and it tells us that we had a sudden increase of momentum in the market but not any impulse signal means that the price is going to further move in that direction."
+  ],
+  "parameters_set": [
+    {
+      "name": "fast length",
+      "value": "100",
+      "context": "first here in the input step for the fast length we set it at 100 for the slow length we set it at 200 an"
+    },
+    {
+      "name": "slow length",
+      "value": "200",
+      "context": "fast length we set it at 100 for the slow length we set it at 200 and here for signal length we set it at"
+    },
+    {
+      "name": "signal length",
+      "value": "50",
+      "context": "gth we set it at 200 and here for signal length we set it at 50 and then we go to the style tab and we"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen."
+    },
+    {
+      "type": "trend",
+      "description": "This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudden increase of moment"
+    },
+    {
+      "type": "momentum",
+      "description": "As you can see we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors as you can see this indicator is built based on Bollinger bands and it is crea"
+    },
+    {
+      "type": "momentum",
+      "description": "Alright so this dashed line here is alert level which is set at 0.24 and this solid line here is impulse level which is set at 0.4 so depending on the size of the bar if the bar passes the alert level or impulse level we"
+    },
+    {
+      "type": "momentum",
+      "description": "When the bar passes the alert level the dashed line it is alert signal that the momentum is probably going to increase and when the bar passes the impulse level the solid line here it is impulse signal and it tells us th"
+    }
+  ],
+  "indicators_mentioned": [
+    "BB impulse indicator this one which is written by lazybear",
+    "mac t this one moving average convergence divergence and we need to change its se",
+    "Bollinger Bands"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "BB impulse indicator this one which is written by lazybear",
+      "keywords": [
+        "bb",
+        "impulse",
+        "indicator",
+        "this",
+        "one"
+      ],
+      "confidence": 0.93,
+      "author_hint": "lazybear"
+    },
+    {
+      "name": "mac t this one moving average convergence divergence and we need to change its se",
+      "keywords": [
+        "mac",
+        "t",
+        "this",
+        "one",
+        "moving"
+      ],
+      "confidence": 0.93,
+      "author_hint": "lazybear"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-0b1acc00d476.raw.txt",
+  "sha256": "575c028dd58880a54a2995968a073aa932578daa91311d291f9ce4a124a1d39e",
+  "truncated": false
+}

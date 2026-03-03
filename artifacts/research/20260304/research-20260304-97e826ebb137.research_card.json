@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-97e826ebb137",
+  "created_at": "2026-03-03T22:06:24.612426Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=RRmHGgO2SD8",
+  "title": "All My Indicators Were Useless... Until I Found THIS One! Try It NOW!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "This indicator measures pressure, bullish pressure versus bearish pressure.",
+    "This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down.",
+    "Alright on trading view platform here click on indicators and search redk trader pressure index.",
+    "This one which is an editor specs indicator and written by redk trader.",
+    "Alright this is the indicator and as you can see it has added here below the chart.",
+    "As I said this indicator measures bullish and bearish pressure in the market.",
+    "As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers push the price down.",
+    "So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is likely to go.",
+    "This indicator considers this fact to help us know who has the upper hand in the market buyers or sellers.",
+    "This is actually what this indicator is trying to tell us."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This indicator measures pressure, bullish pressure versus bearish pressure.",
+      "note": "Meaning: This indicator measures pressure, bullish pressure versus bearish pressure."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down.",
+      "note": "Meaning: This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright on trading view platform here click on indicators and search redk trader pressure index.",
+      "note": "Meaning: Alright on trading view platform here click on indicators and search redk trader pressure index."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one which is an editor specs indicator and written by redk trader.",
+      "note": "Meaning: This one which is an editor specs indicator and written by redk trader."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright this is the indicator and as you can see it has added here below the chart.",
+      "note": "Meaning: Alright this is the indicator and as you can see it has added here below the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As I said this indicator measures bullish and bearish pressure in the market.",
+      "note": "Meaning: As I said this indicator measures bullish and bearish pressure in the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers push the price down.",
+      "note": "Meaning: As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers p"
+    },
+    {
+      "timestamp": null,
+      "quote": "So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is likely to go.",
+      "note": "Meaning: So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is "
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator considers this fact to help us know who has the upper hand in the market buyers or sellers.",
+      "note": "Meaning: This indicator considers this fact to help us know who has the upper hand in the market buyers or sellers."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is actually what this indicator is trying to tell us.",
+      "note": "Meaning: This is actually what this indicator is trying to tell us."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright let's see what we have here this green area shows bullish pressure and the red area shows bearish pressure so when we have green area it tells us that we have more pressure from buyers and whe",
+      "note": "Meaning: Alright let's see what we have here this green area shows bullish pressure and the red area shows bearish pressure so when we have green area it tells "
+    },
+    {
+      "timestamp": null,
+      "quote": "We have also a white line here which is net pressure which is bearish pressure subtracted from bullish pressure you can consider it as an average pressure in the market unlike the green area and red a",
+      "note": "Meaning: We have also a white line here which is net pressure which is bearish pressure subtracted from bullish pressure you can consider it as an average press"
+    }
+  ],
+  "extracted_rules": [
+    "This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down.",
+    "So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is likely to go.",
+    "Alright let's see what we have here this green area shows bullish pressure and the red area shows bearish pressure so when we have green area it tells us that we have more pressure from buyers and when we have red area it tells us that we have more pressure from sellers.",
+    "We have also a white line here which is net pressure which is bearish pressure subtracted from bullish pressure you can consider it as an average pressure in the market unlike the green area and red area that are above zero this white line is moving above and below zero when the white line is above zero there is higher buying pressure in the market and in times that the white line is below zero there is higher selling pressure in the market."
+  ],
+  "parameters_set": [
+    {
+      "name": "average length",
+      "value": "30",
+      "context": "ngs of the indicator and here for the average length we set it at 30 and then here for smoothing we set it a"
+    },
+    {
+      "name": "smoothing",
+      "value": "15",
+      "context": "we set it at 30 and then here for smoothing we set it at 15 here for control level 30 is okay and h"
+    },
+    {
+      "name": "longer magti here for the fast length",
+      "value": "100",
+      "context": "to change their settings here for the longer magti here for the fast length we set it at 100 for the slow length we set "
+    },
+    {
+      "name": "slow length",
+      "value": "200",
+      "context": "fast length we set it at 100 for the slow length we set it at 200 and here for the signal smoothing we se"
+    },
+    {
+      "name": "signal smoothing",
+      "value": "50",
+      "context": "gth we set it at 200 and here for the signal smoothing we set it at 50 and then here for the shorter magti her"
+    },
+    {
+      "name": "shorter magti here for the fast length",
+      "value": "34",
+      "context": "we set it at 50 and then here for the shorter magti here for the fast length we set it at 34 for the slow length we set "
+    },
+    {
+      "name": "slow length",
+      "value": "144",
+      "context": "e fast length we set it at 34 for the slow length we set it at 144 and here for signal smoothing we set it"
+    },
+    {
+      "name": "signal smoothing",
+      "value": "9",
+      "context": "gth we set it at 144 and here for signal smoothing we set it at 9 and finally we go to the style tab and"
+    }
+  ],
+  "indicators_mentioned": [
+    "redk trader pressure index",
+    "double magti we add this one sk double magti which is written by sir krez",
+    "Alright on trading view platform here click on indicators and search redk trader pressure index"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "redk trader pressure index",
+      "keywords": [
+        "redk",
+        "trader",
+        "pressure",
+        "index"
+      ],
+      "confidence": 0.93,
+      "author_hint": "redk trader"
+    },
+    {
+      "name": "double magti we add this one sk double magti which is written by sir krez",
+      "keywords": [
+        "double",
+        "magti",
+        "we",
+        "add",
+        "this"
+      ],
+      "confidence": 0.93,
+      "author_hint": "redk trader"
+    },
+    {
+      "name": "Alright on trading view platform here click on indicators and search redk trader pressure index",
+      "keywords": [
+        "alright",
+        "on",
+        "trading",
+        "view",
+        "platform"
+      ],
+      "confidence": 0.88,
+      "author_hint": "redk trader"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-97e826ebb137.raw.txt",
+  "sha256": "2953e3a607c1a580f4794b8c32538e31a66c80bf85b554d13537f49916af6863",
+  "truncated": false
+}

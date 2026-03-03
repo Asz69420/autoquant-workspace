@@ -1,5 +1,5 @@
 {
-  "top_cursor": 4728,
+  "top_cursor": 4753,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -264,5 +264,6 @@
     "delta flow volume profile [ualgo]|ualgo",
     "crr trendlines priority levels|rivero8894",
     "zero lag kalman structure [boswaves]|boswaves"
-  ]
+  ],
+  "trending_cursor": 5
 }

@@ -1,0 +1,29 @@
+{
+  "research_card_path": "artifacts/research/20260304/research-20260304-658cf75092e2.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260304/indicator-20260304-995a08fa4a72.indicator_record.json",
+    "artifacts/indicators/20260303/indicator-20260303-70b74170fe10.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "market structure dashboard",
+      "author_hint": "flux chart",
+      "keywords": [
+        "market",
+        "structure",
+        "dashboard"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=GZLlLCkJUHQ",
+      "video_id": "GZLlLCkJUHQ",
+      "noted_at": "2026-03-03T22:15:52.714344+00:00"
+    }
+  ]
+}
