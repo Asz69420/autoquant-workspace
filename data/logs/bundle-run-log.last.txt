@@ -1,4 +1,4 @@
-﻿⚠️ Frodex ⏱ 4m 51s GPT5.3
+﻿⚠️ Frodex ⏱ 15m 6s GPT5.3
 ○───activity─────────────────────
 Data ingested: 0
 Backtests completed: 0
