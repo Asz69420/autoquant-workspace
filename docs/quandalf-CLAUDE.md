@@ -111,6 +111,6 @@ Challenge them as you gather more data.
 
 ## Scope
 
-Primary assets: BTC, ETH on 15m, 1h, 4h
+Primary assets: ETH, SOL (primary), BTC (validation only) on 15m, 1h, 4h
 Data source: HyperLiquid historical candles
 Backtester: Python engine with full indicator computation, position sizing, fee and slippage modeling

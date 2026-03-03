@@ -111,7 +111,7 @@ timeframes = ['4h']
 assets_m = re.search(r"-\s*Assets:\s*(.+)", text)
 if assets_m:
     aval = assets_m.group(1)
-    found = re.findall(r"\b(BTC|ETH)\b", aval, re.I)
+    found = re.findall(r"\b(BTC|ETH|SOL)\b", aval, re.I)
     if found:
         assets = [x.upper() for x in found]
 

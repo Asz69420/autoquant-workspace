@@ -23,6 +23,7 @@ import os
 import re
 import subprocess
 import sys
+import html
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -106,6 +107,79 @@ def truncate(text: str, limit: int = TELEGRAM_MAX_LEN) -> str:
     if len(text) <= limit:
         return text
     return text[: limit - 30] + "\n\n… [truncated]"
+
+
+def format_bridge_text(raw: str) -> str:
+    """Make Claude output readable in Telegram without markdown/parser issues."""
+    if not raw:
+        return ""
+
+    lines: list[str] = []
+    for ln in raw.replace("\r\n", "\n").split("\n"):
+        line = ln.rstrip()
+
+        if re.match(r"^\s*\|(?:\s*:?-{3,}:?\s*\|)+\s*$", line):
+            continue
+
+        if re.match(r"^\s*\|.*\|\s*$", line):
+            cells = [c.strip() for c in line.strip().split("|") if c.strip()]
+            if cells:
+                if cells[0].lower() == "variant" and len(cells) >= 4:
+                    line = "- " + " | ".join(cells)
+                elif len(cells) >= 4:
+                    line = f"- {cells[0]}: Trend {cells[1]} | Range {cells[2]} | Trans {cells[3]}"
+                else:
+                    line = "- " + " | ".join(cells)
+
+        line = re.sub(r"^###\s+", "", line)
+        line = re.sub(r"^##\s+", "", line)
+        line = re.sub(r"^#\s+", "", line)
+        line = re.sub(r"^\s*[-*]\s+", "- ", line)
+        line = line.replace("→", "->")
+        line = line.replace("•", "- ")
+
+        line = re.sub(r"\*\*(.+?)\*\*", r"\1", line)
+        line = re.sub(r"__(.+?)__", r"\1", line)
+        line = re.sub(r"(?<!\*)\*(.+?)(?<!\*)\*", r"\1", line)
+
+        lines.append(line)
+
+    text = "\n".join(lines)
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    return text or "(no output)"
+
+
+def split_for_telegram(text: str, limit: int = TELEGRAM_MAX_LEN) -> list[str]:
+    if len(text) <= limit:
+        return [text]
+
+    chunks: list[str] = []
+    current = ""
+    for line in text.split("\n"):
+        candidate = f"{current}\n{line}" if current else line
+        if len(candidate) <= limit:
+            current = candidate
+            continue
+
+        if current:
+            chunks.append(current)
+            current = line
+        else:
+            chunks.append(line[:limit])
+            current = line[limit:]
+
+    if current:
+        chunks.append(current)
+    return chunks or [text[:limit]]
+
+
+async def reply_formatted(update: Update, raw_text: str) -> None:
+    text = format_bridge_text(raw_text)
+    chunks = split_for_telegram(text)
+    total = len(chunks)
+    for idx, chunk in enumerate(chunks, start=1):
+        prefix = f"[Part {idx}/{total}]\n" if total > 1 else ""
+        await update.message.reply_text(prefix + chunk)
 
 
 def is_dangerous(text: str) -> str | None:
@@ -270,7 +344,7 @@ async def cmd_cli(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     loop = asyncio.get_running_loop()
     output = await loop.run_in_executor(None, run_claude, query, "Read,Glob,Grep")
     log_command(USER_ID, "/cli", query, output, True)
-    await update.message.reply_text(truncate(output))
+    await reply_formatted(update, output)
 
 
 async def cmd_write(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -299,7 +373,7 @@ async def cmd_write(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     loop = asyncio.get_running_loop()
     output = await loop.run_in_executor(None, run_claude, query, allowed)
     log_command(USER_ID, "/write", query, output, True)
-    await update.message.reply_text(truncate(output))
+    await reply_formatted(update, output)
 
 
 async def cmd_run(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -319,7 +393,7 @@ async def cmd_run(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     loop = asyncio.get_running_loop()
     output = await loop.run_in_executor(None, run_task_script, script)
     log_command(USER_ID, "/run", task_name, output, True)
-    await update.message.reply_text(truncate(output))
+    await reply_formatted(update, output)
 
 
 async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -395,7 +469,7 @@ async def cmd_status(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
     msg = "\n".join(lines)
     log_command(USER_ID, "/status", "", msg, True)
-    await update.message.reply_text(truncate(msg))
+    await reply_formatted(update, msg)
 
 
 async def cmd_stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -443,7 +517,7 @@ async def handle_plain_dm(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     dm_allowed = "Read,Glob,Grep,Write(docs/shared/*),Edit(docs/shared/*),MultiEdit(docs/shared/*)"
     output = await loop.run_in_executor(None, run_claude, query, dm_allowed)
     log_command(USER_ID, "/cli(dm)", query, output, True)
-    await update.message.reply_text(truncate(output))
+    await reply_formatted(update, output)
 
 
 # ---------------------------------------------------------------------------
