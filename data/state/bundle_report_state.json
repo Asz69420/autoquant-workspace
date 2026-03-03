@@ -1,6 +1,10 @@
 ﻿{
+    "quandalf_last":  {
+                          "hash":  "e351cc68f1d7d0231668b5f1422f2e19584e8b1cc6e67da97fb891d4caeebf70",
+                          "sent_at":  "2026-03-03T23:00:18.6456867Z"
+                      },
     "frodex_last":  {
-                        "hash":  "6edf4020c852961ccb15b33fe61a07ac649dd5a3d5d91188ea21ac283d31479e",
-                        "sent_at":  "2026-03-03T22:49:22.5484967Z"
+                        "hash":  "c46ddd886460bdb6669c1414c2e7f8f55b96839b8c15d7942900e68664f6ad9e",
+                        "sent_at":  "2026-03-03T23:19:22.6528571Z"
                     }
 }

@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-058825ccce8f",
+  "created_at": "2026-03-03T23:20:13.095312Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=Zepx8mARre0",
+  "title": "NEW Claude Opus 4.6 AI Good For TradingView Strategies? (Backtesting Engine) (watch ASAP)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys Claude released Opus 4.6 and I've tested it for trading strategies.",
+    "And it's an absolute game changer guys because I was able to create the backtesting engine with this AI which has the same exact backtesting results as TradingView has.",
+    "And that matters because when the AI figures out the trading strategy for you then it can finally run a backtest to figure out that some of the ideas that it has are not so good and give you the best one.",
+    "And when you then use that in TradingView you will get the exact same numbers.",
+    "Gone other times when the AI proposes you a new trading strategy you copy the code into TradingView just to be disappointed.",
+    "It is definitely a game changer because now the AI can run simulations that actually matter and it can make decisions based on these numbers while you're drinking your coffee.",
+    "I hope you realize how big this is guys and I'm excited to show you to you right now let's get started.",
+    "And guys make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+    "Also remember this is not financial advice crypto is risky you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd.",
+    "First of all let me show you how all of this works before I show you how to set this up and what I'm using here but roughly speaking I'm using Claude application on the desktop I'm using Claude code on the desktop it's very simple because it's just a chat for you guys and I'm giving it a folder to work in and also I'm choosing Opus 4.6 obvious I will show you later but the magic happens when this AI is able to run its own back test and its own variations of strategies."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys Claude released Opus 4.6 and I've tested it for trading strategies.",
+      "note": "Meaning: That's right guys Claude released Opus 4.6 and I've tested it for trading strategies."
+    },
+    {
+      "timestamp": null,
+      "quote": "And it's an absolute game changer guys because I was able to create the backtesting engine with this AI which has the same exact backtesting results as TradingView has.",
+      "note": "Meaning: And it's an absolute game changer guys because I was able to create the backtesting engine with this AI which has the same exact backtesting results as"
+    },
+    {
+      "timestamp": null,
+      "quote": "And that matters because when the AI figures out the trading strategy for you then it can finally run a backtest to figure out that some of the ideas that it has are not so good and give you the best ",
+      "note": "Meaning: And that matters because when the AI figures out the trading strategy for you then it can finally run a backtest to figure out that some of the ideas t"
+    },
+    {
+      "timestamp": null,
+      "quote": "And when you then use that in TradingView you will get the exact same numbers.",
+      "note": "Meaning: And when you then use that in TradingView you will get the exact same numbers."
+    },
+    {
+      "timestamp": null,
+      "quote": "Gone other times when the AI proposes you a new trading strategy you copy the code into TradingView just to be disappointed.",
+      "note": "Meaning: Gone other times when the AI proposes you a new trading strategy you copy the code into TradingView just to be disappointed."
+    },
+    {
+      "timestamp": null,
+      "quote": "It is definitely a game changer because now the AI can run simulations that actually matter and it can make decisions based on these numbers while you're drinking your coffee.",
+      "note": "Meaning: It is definitely a game changer because now the AI can run simulations that actually matter and it can make decisions based on these numbers while you'"
+    },
+    {
+      "timestamp": null,
+      "quote": "I hope you realize how big this is guys and I'm excited to show you to you right now let's get started.",
+      "note": "Meaning: I hope you realize how big this is guys and I'm excited to show you to you right now let's get started."
+    },
+    {
+      "timestamp": null,
+      "quote": "And guys make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+      "note": "Meaning: And guys make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this c"
+    },
+    {
+      "timestamp": null,
+      "quote": "Also remember this is not financial advice crypto is risky you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd.",
+      "note": "Meaning: Also remember this is not financial advice crypto is risky you can lose all of your money guys and that is why I run this educational channel so that y"
+    },
+    {
+      "timestamp": null,
+      "quote": "First of all let me show you how all of this works before I show you how to set this up and what I'm using here but roughly speaking I'm using Claude application on the desktop I'm using Claude code o",
+      "note": "Meaning: First of all let me show you how all of this works before I show you how to set this up and what I'm using here but roughly speaking I'm using Claude a"
+    },
+    {
+      "timestamp": null,
+      "quote": "So here I said can you create a new strategy based on MacD, RSI and EMAs on Bitcoin, use the one day chart and give me the best variant you found after doing your back tests.",
+      "note": "Meaning: So here I said can you create a new strategy based on MacD, RSI and EMAs on Bitcoin, use the one day chart and give me the best variant you found after"
+    },
+    {
+      "timestamp": null,
+      "quote": "It's a very simple prompt really.",
+      "note": "Meaning: It's a very simple prompt really."
+    }
+  ],
+  "extracted_rules": [
+    "And that matters because when the AI figures out the trading strategy for you then it can finally run a backtest to figure out that some of the ideas that it has are not so good and give you the best one.",
+    "And when you then use that in TradingView you will get the exact same numbers.",
+    "Gone other times when the AI proposes you a new trading strategy you copy the code into TradingView just to be disappointed.",
+    "And guys make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+    "First of all let me show you how all of this works before I show you how to set this up and what I'm using here but roughly speaking I'm using Claude application on the desktop I'm using Claude code on the desktop it's very simple because it's just a chat for you guys and I'm giving it a folder to work in and also I'm choosing Opus 4.6 obvious I will show you later but the magic happens when this AI is able to run its own back test and its own variations of strategies.",
+    "And I'm expecting this thing now to create ideas and then run back tests and then change its plan if the back tests are bad for example let's say that the strategy is not profitable.",
+    "This is the folder by the way and this is the back testing engine here which we're gonna look at later on and this is the file that it created and when I open it up I can see the pine script code really I don't need to read it just copy the whole thing go to trading view and make a new strategy like this create new strategy then delete whatever is in there paste the thing here click save, click save again and then click add to chart okay there you go and as you can see here the PNL is 1833% and ",
+    "So the AI was doing all the heavy lifting and it gave me the best version that it was able to come up with in that moment if I don't like something now I can go to trading view right and I can say look I'm gonna zoom in I'm gonna see where it has issues where it's making stupid decisions also I'm gonna go to the list of trades and I'm gonna find the one where here I have adverse execution right so I have too much drawdown really I'm gonna click here to go to the trade and check it out and then I"
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Also remember this is not financial advice crypto is risky you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-058825ccce8f.raw.txt",
+  "sha256": "63875c1ccd0da183997549564fd45b19c9d1d7aab49323645cc1a985b95e5abf",
+  "truncated": false
+}

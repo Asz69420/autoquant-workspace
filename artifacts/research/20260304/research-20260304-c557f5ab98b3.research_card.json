@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-c557f5ab98b3",
+  "created_at": "2026-03-03T23:13:36.054890Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=WW16O1JDdj4",
+  "title": "How to Reverse Engineer a Closed Source TradingView Indicator with AI (IT WORKS)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys, you wanna know how to reconstruct a trading view indicator even if you don't have access to the code.",
+    "Perfect because I found a way to do it using AI and some smart prompting.",
+    "I went ahead and reconstructed some of the famous indicators like the money line from Ivan on Tech and Annis Ribbons.",
+    "And in this video, I'm not gonna only show you how to do it, but I'm also gonna show you the performance of these indicators because once I have the code, I can turn them into a strategy to see their KPIs.",
+    "Are they better than what we already know?",
+    "Oh my God, this data is quite important and the results are quite shocking to be honest.",
+    "And it's not even hard to do if you watch this video because I will give you all the tips and tricks and also the prompts that you need.",
+    "Another amazing benefit of having the code of the indicator is that you can turn it into a strategy and automate it, right?",
+    "So buying and selling fully automatically on your exchange, I will tell you more about it later in this video.",
+    "And because this is such a game-changing video, it doesn't make any sense to skip forward because you're gonna miss out on some golden nugget information, right?"
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys, you wanna know how to reconstruct a trading view indicator even if you don't have access to the code.",
+      "note": "Meaning: That's right guys, you wanna know how to reconstruct a trading view indicator even if you don't have access to the code."
+    },
+    {
+      "timestamp": null,
+      "quote": "Perfect because I found a way to do it using AI and some smart prompting.",
+      "note": "Meaning: Perfect because I found a way to do it using AI and some smart prompting."
+    },
+    {
+      "timestamp": null,
+      "quote": "I went ahead and reconstructed some of the famous indicators like the money line from Ivan on Tech and Annis Ribbons.",
+      "note": "Meaning: I went ahead and reconstructed some of the famous indicators like the money line from Ivan on Tech and Annis Ribbons."
+    },
+    {
+      "timestamp": null,
+      "quote": "And in this video, I'm not gonna only show you how to do it, but I'm also gonna show you the performance of these indicators because once I have the code, I can turn them into a strategy to see their ",
+      "note": "Meaning: And in this video, I'm not gonna only show you how to do it, but I'm also gonna show you the performance of these indicators because once I have the co"
+    },
+    {
+      "timestamp": null,
+      "quote": "Are they better than what we already know?",
+      "note": "Meaning: Are they better than what we already know?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Oh my God, this data is quite important and the results are quite shocking to be honest.",
+      "note": "Meaning: Oh my God, this data is quite important and the results are quite shocking to be honest."
+    },
+    {
+      "timestamp": null,
+      "quote": "And it's not even hard to do if you watch this video because I will give you all the tips and tricks and also the prompts that you need.",
+      "note": "Meaning: And it's not even hard to do if you watch this video because I will give you all the tips and tricks and also the prompts that you need."
+    },
+    {
+      "timestamp": null,
+      "quote": "Another amazing benefit of having the code of the indicator is that you can turn it into a strategy and automate it, right?",
+      "note": "Meaning: Another amazing benefit of having the code of the indicator is that you can turn it into a strategy and automate it, right?"
+    },
+    {
+      "timestamp": null,
+      "quote": "So buying and selling fully automatically on your exchange, I will tell you more about it later in this video.",
+      "note": "Meaning: So buying and selling fully automatically on your exchange, I will tell you more about it later in this video."
+    },
+    {
+      "timestamp": null,
+      "quote": "And because this is such a game-changing video, it doesn't make any sense to skip forward because you're gonna miss out on some golden nugget information, right?",
+      "note": "Meaning: And because this is such a game-changing video, it doesn't make any sense to skip forward because you're gonna miss out on some golden nugget informati"
+    },
+    {
+      "timestamp": null,
+      "quote": "Before we start, make sure to like this video if it adds value to you because otherwise, the YouTube algorithm will never know.",
+      "note": "Meaning: Before we start, make sure to like this video if it adds value to you because otherwise, the YouTube algorithm will never know."
+    },
+    {
+      "timestamp": null,
+      "quote": "Also remember, this is not financial advice.",
+      "note": "Meaning: Also remember, this is not financial advice."
+    }
+  ],
+  "extracted_rules": [
+    "That's right guys, you wanna know how to reconstruct a trading view indicator even if you don't have access to the code.",
+    "And it's not even hard to do if you watch this video because I will give you all the tips and tricks and also the prompts that you need.",
+    "Before we start, make sure to like this video if it adds value to you because otherwise, the YouTube algorithm will never know.",
+    "I will put it on the top right corner and if you watch that video, this is a type III indicator, right?",
+    "Well, it's because when you turn off one of them, the lines are still there, right?",
+    "And that's all I need to decide when to buy and when to sell.",
+    "And as well, when you go here, you can see that this bearish indicator here, right?",
+    "It is coming when the line is red and the bullish one down there.",
+    "It's coming when the line turns green.",
+    "You don't need to understand this perfectly, but what you need to understand is that if your chart is not clean, then there will be a ton of columns here and it's way too much information for the AI to process.",
+    "And when you go here again to the settings, right?",
+    "If you would turn on, for example, the heat map, right?",
+    "And only if that doesn't work, then go to Opus 4.1.",
+    "That's awesome, but let's try it again with another indicator to see if this works more than once.",
+    "If you have, remove them, okay?",
+    "So what I'm basically doing here is, again, I'm zooming out to make sure the trading view has loaded enough data so that when I export it, I have enough data for the AI.",
+    "And when I go back to the prompt document, which the link is down below, scroll down and I find the prompt for this particular indicator.",
+    "And then I tell it that it has to take care because if it looks at MMA05 and believes that this is simply a five period MMA, it's not correct.",
+    "Now, what you're actually doing if you're using an indicator for buying and selling, you're doing this, let me show you, right?",
+    "You have to know the risk-reward ratios."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Crypto is risky, you can lose all of your money and that is why I run this educational channel so that you can be ahead of the herd."
+    },
+    {
+      "type": "trend",
+      "description": "I just have the uptrend and the downtrend."
+    },
+    {
+      "type": "trend",
+      "description": "But now you also have the uptrend and where exactly the line is on that day, right?"
+    },
+    {
+      "type": "trend",
+      "description": "On that candle and the downtrend."
+    },
+    {
+      "type": "trend",
+      "description": "Well, there was no downtrend, okay?"
+    },
+    {
+      "type": "trend",
+      "description": "So it is basically either an uptrend or a downtrend."
+    },
+    {
+      "type": "trend",
+      "description": "So I wanted to reconstruct uptrend and downtrend columns and nothing else, right?"
+    },
+    {
+      "type": "trend",
+      "description": "Let's reconstruct Anis Ribbons, which is a trend ribbon indicator."
+    },
+    {
+      "type": "risk",
+      "description": "You have to know the risk-reward ratios."
+    },
+    {
+      "type": "trend",
+      "description": "So we don't need uptrend, downtrend."
+    },
+    {
+      "type": "trend",
+      "description": "Let me show you, if I turn off our indicator that we created, you can see on this side here whenever there is an uptrend or downtrend, they match perfectly, right?"
+    },
+    {
+      "type": "filter",
+      "description": "But when an indicator doesn't show you the source code you can't do that, right?"
+    },
+    {
+      "type": "risk",
+      "description": "But you need the education to properly build a risk-adjusted portfolio to know how to play the markets depending on the cycles and how to rebalance, how to use all of this to your advantage, right?"
+    },
+    {
+      "type": "risk",
+      "description": "And this is just for higher net worth individuals for people who have enough money to understand that risk management is the most important thing, okay?"
+    }
+  ],
+  "explicit_conditions": [
+    "You have to know the risk-reward ratios.",
+    "But you need the education to properly build a risk-adjusted portfolio to know how to play the markets depending on the cycles and how to rebalance, how to use all of this to your advantage, right?",
+    "And this is just for higher net worth individuals for people who have enough money to understand that risk management is the most important thing, okay?"
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-c557f5ab98b3.raw.txt",
+  "sha256": "0cf3d4e0fac36ce2bf37218738dc7e942de398152c2c2c333207d5cc3ff4602d",
+  "truncated": false
+}

@@ -1,9 +1,9 @@
-﻿⚠️ Frodex ⏱ 13m 51s GPT5.3
+﻿⚠️ Frodex ⏱ 14m 53s GPT5.3
 ○───activity─────────────────────
 Data ingested: 3
 Bundles scanned/selected: 0/0
-Specs (OK/Blocked/Review): 3/0/0
+Specs (OK/Blocked/Review): 2/0/0
 Backtests executed: 0 (attempts: 6)
-Promotions (OK/Blocked): 3/0
+Promotions (OK/Blocked): 2/0
 ○───note─────────────────────────
-Cycle evidence: strategist_reasoning: stage=Strategist effort=high | BUNDLE_SPEC_RESULT: Bundle spec result: path=artifacts/bundles/20260303/ekyEyibuKhc.bundle.json spec_status=OK… | PROMOTION_SUMMARY: Promote: bundles=1 thesis=OK spec=OK variants=3 status=OK
+This cycle ingested 3 item(s), scanned 0 bundle(s), selected 0, emitted specs OK/blocked/review as 2/0/0, executed 0 backtest(s) across 6 batch attempt(s), and produced promotions OK/blocked as 2/0, the top warning was 'Backtester: Backtest stage warning x6' (repeated 6 times).

@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-b8d4e2f3",
+  "name": "T3 EMA Smooth Cross v1",
+  "created_at": "2026-03-04T19:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Standard EMA crossovers (EMA_9 x EMA_21) are exhausted with PF near 0 — killed by whipsaws in ranging markets. T3_10_0.7 applies triple exponential smoothing, mathematically eliminating the lag-vs-noise tradeoff that kills EMA crosses. T3 crossing EMA_21 should produce fewer false signals while capturing the same trend initiations. CHOP < 50 gate (proven by Vortex v3a champion) ensures we only trade when directional energy exists. This tests whether T3's smoothing advantage creates a viable crossover that EMA alone cannot.",
+  "regime_assumption": "transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "t3_ema_smooth_cross_v1_8to1",
+      "description": "T3 triple-smoothed crossing EMA_21 with CHOP directional gate. 8:1 R:R.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "T3_10_0.7 crosses_above EMA_21",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "T3_10_0.7 crosses_below EMA_21",
+        "CHOP_14_1_100 < 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {"indicator": "T3 10/0.7", "role": "baseline", "notes": "Triple-smoothed EMA. Eliminates whipsaws that kill standard EMA crosses."},
+        {"indicator": "EMA 21", "role": "confirmation", "notes": "Standard EMA as crossover partner. T3 crosses EMA_21 = trend initiation."},
+        {"indicator": "CHOP 14", "role": "gate", "notes": "CHOP < 50 = directional energy present. Same gate as Vortex v3a champion."},
+        {"indicator": "ATR 14", "role": "volume_volatility", "notes": "1.5x stop / 12.0x TP = 8:1 R:R."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_ema_smooth_cross_v1_10to1",
+      "description": "T3 triple-smoothed crossing EMA_21 with CHOP gate. 10:1 R:R for tail-harvesting.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "T3_10_0.7 crosses_above EMA_21",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "T3_10_0.7 crosses_below EMA_21",
+        "CHOP_14_1_100 < 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (15.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 10:1."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 15.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 12.0, "max": 18.0, "step": 1.5, "default": 15.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {"indicator": "T3 10/0.7", "role": "baseline", "notes": "Triple-smoothed EMA for low-noise crossover."},
+        {"indicator": "EMA 21", "role": "confirmation", "notes": "Crossover partner."},
+        {"indicator": "CHOP 14", "role": "gate", "notes": "CHOP < 50 directional gate."},
+        {"indicator": "ATR 14", "role": "volume_volatility", "notes": "1.5x stop / 15.0x TP = 10:1 R:R."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["T3_10_0.7", "EMA_21", "CHOP_14_1_100", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 (triple-smoothed EMA — inherently filters whipsaw noise)",
+    "confirmation": "EMA_21 (standard EMA as crossover partner)",
+    "gate": "CHOP_14_1_100 < 50 (directional energy filter, proven by Vortex v3a)",
+    "volume_volatility": "ATR_14 for position sizing and stop/TP calculation"
+  }
+}

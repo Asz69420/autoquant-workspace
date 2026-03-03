@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-c4141a7d3528",
+  "created_at": "2026-03-03T23:27:36.283712Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=IUsYDXKD6ww",
+  "title": "BIG TRAP Is Laid For You 👀 Bitcoin & Crypto in Q4 2025",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=IUsYDXKD6ww title=BIG TRAP Is Laid For You 👀 Bitcoin & Crypto in Q4 2025 reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extension is too long."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=IUsYDXKD6ww title=BIG TRAP Is Laid For You 👀 Bitcoin & Crypto in Q4 2025 reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extens",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=IUsYDXKD6ww title=BIG TRAP Is Laid For You 👀 Bitcoin & Crypto in Q4 2025 reason=TRANSCRIPT_UNAVAILABLE_AT_IN"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-c4141a7d3528.raw.txt",
+  "sha256": "ef2ee05d4ab3fdc4f87e5128bd141135f2954bdfda511e259d70c13e6dd116a1",
+  "truncated": false
+}
