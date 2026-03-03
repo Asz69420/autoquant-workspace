@@ -73,6 +73,44 @@ function Normalize-JournalEntry([string]$text) {
   return $normalized.Trim()
 }
 
+function Build-JournalDigest([string]$entryText, [int]$maxChars = 1400) {
+  $entry = Normalize-JournalEntry -text $entryText
+  if ([string]::IsNullOrWhiteSpace($entry)) { return "" }
+
+  $title = ""
+  $mTitle = [System.Text.RegularExpressions.Regex]::Match($entry, '(?m)^##\s+Entry\b.*$')
+  if ($mTitle.Success) { $title = $mTitle.Value.Trim() }
+
+  $wanted = @(
+    'What I learned this cycle',
+    'What changed in my thinking',
+    'What I.?m testing next',
+    'Suggestions for Asz(?:\s*\(if any\))?'
+  )
+
+  $sections = @()
+  foreach ($pat in $wanted) {
+    $rx = '(?ims)^###\s*(' + $pat + ')\s*\r?\n(.*?)(?=^###\s+|\z)'
+    $m = [System.Text.RegularExpressions.Regex]::Match($entry, $rx)
+    if ($m.Success) {
+      $h = ([string]$m.Groups[1].Value -replace '\s+', ' ').Trim()
+      $b = ([string]$m.Groups[2].Value -replace '\s+', ' ').Trim()
+      if ($b.Length -gt 320) { $b = $b.Substring(0, 320).TrimEnd() + '…' }
+      $sections += ("### " + $h + "`n" + $b)
+    }
+  }
+
+  if ($sections.Count -eq 0) {
+    return Convert-ToCompactText -rawText $entry -maxChars $maxChars
+  }
+
+  $out = @()
+  if (-not [string]::IsNullOrWhiteSpace($title)) { $out += $title }
+  $out += $sections
+  $text = ($out -join "`n`n").Trim()
+  return Convert-ToCompactText -rawText $text -maxChars $maxChars
+}
+
 function Get-BridgeVar([string]$key) {
   if (-not (Test-Path $bridgeEnv)) { return "" }
 
@@ -141,11 +179,11 @@ try {
       if (-not [string]::IsNullOrWhiteSpace($raw)) {
         $journalMatches = [System.Text.RegularExpressions.Regex]::Matches($raw, '(?ms)^## Entry\b.*?(?=^## Entry\b|\z)')
         if ($journalMatches.Count -gt 0) {
-          $effectiveSummary = Normalize-JournalEntry -text $journalMatches[$journalMatches.Count - 1].Value
+          $effectiveSummary = Build-JournalDigest -entryText $journalMatches[$journalMatches.Count - 1].Value -maxChars 1400
           $isJournalEntry = $true
         }
         else {
-          $effectiveSummary = Normalize-JournalEntry -text $raw
+          $effectiveSummary = Convert-ToCompactText -rawText (Normalize-JournalEntry -text $raw) -maxChars 1400
         }
       }
     }
