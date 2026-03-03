@@ -1,0 +1,7 @@
+﻿ID                                   Name                     Schedule                         Next       Last       Status    Target    Agent     
+bee47871-9be1-4044-84ff-cc83a7cdb7c6 git-auto-sync            cron */30 * * * * (exact)        in 17m     13m ago    ok        isolated  default
+b6d07171-ab62-4038-a4ec-4a5ac7b3d0d7 quandalf-auto-execute    cron */30 * * * * @ Australia... in 17m     13m ago    ok        isolated  main
+1bb83c1c-a22f-4112-9253-a919b8a72619 research-digest-update   cron 0 */6 * * * @ Australia/... in 4h      2h ago     ok        isolated  main
+d569c08f-8bb7-4fff-b252-3d4a84fa488f keeper-daily-light       cron 30 5 * * * @ Australia/B... in 10h     14h ago    ok        isolated  main
+0af1eeb2-e84c-45d9-bcb1-bd4414c7648f keeper-weekly-deep       cron 0 18 * * 0 @ Australia/B... in 5d      2d ago     ok        isolated  main
+
