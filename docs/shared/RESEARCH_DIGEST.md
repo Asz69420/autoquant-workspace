@@ -4,37 +4,12 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-02 22:32 UTC
+**Last updated:** 2026-03-03 02:01 UTC
 **Entries:** 25
 
 ---
 
-## 1. strategy_008_bb_mean_reversion_rsi
-*manual-transcript-drop | transcript_drop | 2026-02-26*
-Source: transcript_drop://strategy_008_bb_mean_reversion_rsi
-
-**Summary:** STRATEGY: Bollinger Band Mean Reversion with RSI Confirmation ASSET: BTC, ETH TIMEFRAME: 1h MARKET CONDITION: Ranging/mean-reverting with established trend context TYPE: Mean reversion within trend CONCEPT: Trade bounces off Bollinger Band extremes but ONLY in the direction of the larger trend. This prevents counter-trend mean reversion trades that get steamrolled. RSI confirms the oversold/overbought condition is genuine. Price targeting the middle band (SMA 20) gives a clear mechanical exit. INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (period 14) - stop loss sizing - SMA 20 - take profit target (Bollinger middle band) ENTRY LONG: 1.
-**Trading Rules:**
-- INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (peri
-- Previous candle was also above or touching upper BB EXIT RULES: - Take profit: Price reaches SMA 20 (middle Bollinger Band) - Stop loss: 2.0x ATR(14) beyond the Bollinger Band that triggered entry - T
-**Strategy Components:**
-- [trend] STRATEGY: Bollinger Band Mean Reversion with RSI Confirmation ASSET: BTC, ETH TIMEFRAME: 1h MARKET CONDITION: Ranging/mean-reverting with established trend context TYPE: Mean reversion within trend CO
-- [trend] This prevents counter-trend mean reversion trades that get steamrolled.
-- [trend] Price is above EMA 200 (we are in an uptrend, this is a pullback) 4.
-- [risk] INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (peri
-- [risk] Stop: below previous swing low.
-- [momentum] RSI confirmation filters out the touches that happen during momentum (which would continue through the band).
-**Risk Management:**
-- Stop below previous swing low.
-**Entry/Exit Conditions:**
-- INDICATORS USED: - Bollinger Bands (period 20, std dev 2.0) - identify price extremes - RSI (period 14) - confirm oversold/overbought - EMA 200 - major trend filter (only trade with trend) - ATR (peri
-- Previous candle was also above or touching upper BB EXIT RULES: - Take profit: Price reaches SMA 20 (middle Bollinger Band) - Stop loss: 2.0x ATR(14) beyond the Bollinger Band that triggered entry - T
-**Indicators:** EMA, SMA, RSI, ATR, Bollinger Bands
-**Context:** Timeframes: 1h | Assets: BTC, ETH
-
----
-
-## 2. strategy_004_gaussian_channel_trend_pullback
+## 1. strategy_004_gaussian_channel_trend_pullback
 *manual-transcript-drop | transcript_drop | 2026-02-26*
 Source: transcript_drop://strategy_004_gaussian_channel_trend_pullback
 
@@ -58,7 +33,7 @@ Source: transcript_drop://strategy_004_gaussian_channel_trend_pullback
 
 ---
 
-## 3. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
+## 2. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
@@ -88,7 +63,7 @@ Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
 ---
 
-## 4. This Smart Money Indicator Looked Too Good to Be True... I Tested It
+## 3. This Smart Money Indicator Looked Too Good to Be True... I Tested It
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
@@ -125,7 +100,7 @@ Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
 ---
 
-## 5. TRADER REVIEW: The " ONE CANDLE " Scalping Strategy I Will Use For Life @The Rumers
+## 4. TRADER REVIEW: The " ONE CANDLE " Scalping Strategy I Will Use For Life @The Rumers
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=tzXWPcf-GM4
 
@@ -158,7 +133,7 @@ Source: https://www.youtube.com/watch?v=tzXWPcf-GM4
 
 ---
 
-## 6. I Turned a FREE TradingView Indicator Into a Real Strategy… The Test Shocked Me
+## 5. I Turned a FREE TradingView Indicator Into a Real Strategy… The Test Shocked Me
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=jBkCq0DnHQU
 
@@ -193,7 +168,7 @@ Source: https://www.youtube.com/watch?v=jBkCq0DnHQU
 
 ---
 
-## 7. A Subscriber Sent Me This FREE TradingView Indicator… I Gave It $10,000 to Test
+## 6. A Subscriber Sent Me This FREE TradingView Indicator… I Gave It $10,000 to Test
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=_kvEItHHhJc
 
@@ -202,7 +177,7 @@ Source: https://www.youtube.com/watch?v=_kvEItHHhJc
 
 ---
 
-## 8. My Community Found a FREE TradingView Indicator… The Backtest Blew My Mind
+## 7. My Community Found a FREE TradingView Indicator… The Backtest Blew My Mind
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=kSfSp0hZwto
 
@@ -239,7 +214,7 @@ Source: https://www.youtube.com/watch?v=kSfSp0hZwto
 
 ---
 
-## 9. TRADER REVIEW: 1 Minute Scalping Strategy Works Everyday (Stupid Simple and Proven) @Jdub Trades
+## 8. TRADER REVIEW: 1 Minute Scalping Strategy Works Everyday (Stupid Simple and Proven) @Jdub Trades
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=Ntp-o384C5g
 
@@ -269,7 +244,7 @@ Source: https://www.youtube.com/watch?v=Ntp-o384C5g
 
 ---
 
-## 10. INSANE New TradingView Indicator Shows Buy & Sell Signals [TESTED]
+## 9. INSANE New TradingView Indicator Shows Buy & Sell Signals [TESTED]
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=7rianyn0wPI
 
@@ -305,7 +280,7 @@ Source: https://www.youtube.com/watch?v=7rianyn0wPI
 
 ---
 
-## 11. Crypto Trading Made Super Easy!
+## 10. Crypto Trading Made Super Easy!
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=t9v32eQ5qcE
 
@@ -320,7 +295,7 @@ Source: https://www.youtube.com/watch?v=t9v32eQ5qcE
 
 ---
 
-## 12. This Buy/Sell Indicator is INSANE! (TradingView Indicator Test 2025)
+## 11. This Buy/Sell Indicator is INSANE! (TradingView Indicator Test 2025)
 *DaviddTech | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=2yH2nAC7G80
 
@@ -357,7 +332,7 @@ Source: https://www.youtube.com/watch?v=2yH2nAC7G80
 
 ---
 
-## 13. A Useful Chart for Navigating BTC Bear Market (Chart Shown: Year-To-Date ROI)
+## 12. A Useful Chart for Navigating BTC Bear Market (Chart Shown: Year-To-Date ROI)
 *IntoTheCryptoverse | asr_transcript | 2026-02-26*
 Source: https://www.youtube.com/watch?v=rh5nqX3tUds
 
@@ -366,7 +341,7 @@ Source: https://www.youtube.com/watch?v=rh5nqX3tUds
 
 ---
 
-## 14. Claude AI can NOW Automatically Build and Improve Your TradingView Strategies (while you sleep)
+## 13. Claude AI can NOW Automatically Build and Improve Your TradingView Strategies (while you sleep)
 *MichaelIonita | transcript | 2026-02-27*
 Source: https://www.youtube.com/watch?v=77ikjQjdGFg
 
@@ -396,7 +371,7 @@ Source: https://www.youtube.com/watch?v=77ikjQjdGFg
 
 ---
 
-## 15. Gold: Dubious Speculation
+## 14. Gold: Dubious Speculation
 *IntoTheCryptoverse | transcript | 2026-02-27*
 Source: https://www.youtube.com/watch?v=whCcobPN71w
 
@@ -419,7 +394,7 @@ Source: https://www.youtube.com/watch?v=whCcobPN71w
 
 ---
 
-## 16. Пазарът най-накрая удари таргетите ни около 70000$
+## 15. Пазарът най-накрая удари таргетите ни около 70000$
 *TradeTravelChill | asr_transcript | 2026-02-27*
 Source: https://www.youtube.com/watch?v=pfBjvU0PQSc
 
@@ -428,7 +403,7 @@ Source: https://www.youtube.com/watch?v=pfBjvU0PQSc
 
 ---
 
-## 17. How to trade like a pro (step by step) 🤖
+## 16. How to trade like a pro (step by step) 🤖
 *DaviddTech | transcript | 2026-02-27*
 Source: https://www.youtube.com/watch?v=3pW6m2oTCDE
 
@@ -445,7 +420,7 @@ Source: https://www.youtube.com/watch?v=3pW6m2oTCDE
 
 ---
 
-## 18. "They're Down 50% Against Gold"
+## 17. "They're Down 50% Against Gold"
 *IntoTheCryptoverse | transcript | 2026-02-28*
 Source: https://www.youtube.com/watch?v=Tp7ENo2ii40
 
@@ -456,7 +431,7 @@ Source: https://www.youtube.com/watch?v=Tp7ENo2ii40
 
 ---
 
-## 19. This Indicator Deleted Almost All of My False Signals!
+## 18. This Indicator Deleted Almost All of My False Signals!
 *SoheilPKO | transcript | 2026-02-28*
 Source: https://www.youtube.com/watch?v=ssu2qDoPyks
 
@@ -476,7 +451,7 @@ Source: https://www.youtube.com/watch?v=ssu2qDoPyks
 
 ---
 
-## 20. A trader’s nightmare: when an influencer can’t explain their edge…
+## 19. A trader’s nightmare: when an influencer can’t explain their edge…
 *DaviddTech | transcript | 2026-02-28*
 Source: https://www.youtube.com/watch?v=6Ex-hduaP9A
 
@@ -487,7 +462,7 @@ Source: https://www.youtube.com/watch?v=6Ex-hduaP9A
 
 ---
 
-## 21. The Mechanism That Ends Business Cycles
+## 20. The Mechanism That Ends Business Cycles
 *IntoTheCryptoverse | transcript | 2026-02-28*
 Source: https://www.youtube.com/watch?v=bB6oo3oJc0k
 
@@ -515,7 +490,7 @@ Source: https://www.youtube.com/watch?v=bB6oo3oJc0k
 
 ---
 
-## 22. Average day as an automated trader 🤖
+## 21. Average day as an automated trader 🤖
 *DaviddTech | transcript | 2026-03-01*
 Source: https://www.youtube.com/watch?v=lGtVSCYaRZg
 
@@ -526,7 +501,7 @@ Source: https://www.youtube.com/watch?v=lGtVSCYaRZg
 
 ---
 
-## 23. Bitcoin: The Beauty of Mathematics (Part 68)
+## 22. Bitcoin: The Beauty of Mathematics (Part 68)
 *IntoTheCryptoverse | transcript | 2026-03-01*
 Source: https://www.youtube.com/watch?v=hAFvtCnrJAw
 
@@ -551,7 +526,7 @@ Source: https://www.youtube.com/watch?v=hAFvtCnrJAw
 
 ---
 
-## 24. Трейдинг за начинаещи: Как трябва да изглежда денят ти !
+## 23. Трейдинг за начинаещи: Как трябва да изглежда денят ти !
 *TradeTravelChill | asr_transcript | 2026-03-02*
 Source: https://www.youtube.com/watch?v=5FkZrOoGmJc
 
@@ -576,7 +551,7 @@ Source: https://www.youtube.com/watch?v=5FkZrOoGmJc
 
 ---
 
-## 25. Bitcoin: The Early March Rally
+## 24. Bitcoin: The Early March Rally
 *IntoTheCryptoverse | transcript | 2026-03-02*
 Source: https://www.youtube.com/watch?v=R9yYJXpYYzg
 
@@ -596,5 +571,32 @@ Source: https://www.youtube.com/watch?v=R9yYJXpYYzg
 - [filter] It went to the It went back up to the resistance band, got rejected, came back down.
 - [filter] Like is there a chance that Bitcoin goes up to that gets rejected and then gets another rally into late March kind of like last cycle?
 **Context:** Timeframes: daily
+
+---
+
+## 25. Using Crypto to Trade Gold & US Markets (Full Walkthrough)
+*ECKrown | transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=XkdmG94fvqA
+
+**Summary:** In this video, I want to show you how you can use your cryptos like your tethers, your USDC, your bitcoins, your salon, your ethereums, your uh camel coins, whatever to to put trades on other markets. When I say other markets, I'm talking about gold, silver, platinum, platium, all of the major US indices like SPY, NASDAQ, Dow Jones, and even other world markets as well, plus many, many more. all of the major US equities as well and even several different Forex pairs. That is going to be through Bybit, which is the link in the description below, which will give you several bonuses. But of course, full disclosure, it is an affiliate link, but I want to walk you through how you actually fund your account, how you put on trades, these sort of things.
+**Trading Rules:**
+- When I say other markets, I'm talking about gold, silver, platinum, platium, all of the major US indices like SPY, NASDAQ, Dow Jones, and even other world markets as well, plus many, many more.
+- Honestly, if you're familiar with Bybit or any of the major crypto exchanges, you're already going to know how this works.
+- She was trying to sign up to a Vanguard account to get uh, you know, access to the US markets when we were living in Europe.
+- Uh but yeah if you're not US person it's probably the easiest way to get exposure to these major markets which you know are the ones that are typically moving.
+- But of course, if you're just looking at Bitcoin, there's been [ __ ] all going on for the past month and for the couple months before that, you know, pretty much nothing going on over here as well.
+- So, if you are a career trader or a career investor, you know, the opportunity cost is a real thing.
+- But if you do want those bonuses, then yes, there is a nice benefit with that.
+- I don't really know why you'd want to do that, but hey, if you do, it's all there for you.
+**Strategy Components:**
+- [risk] Of course, also on your order entry screen, if you can actually go through this, then you can also set up your takerit and your stop loss in advance.
+- [risk] But at the very least, you can protect yourself and and manage risk that way.
+- [confirmation] It also requires a trading volume as well.
+**Risk Management:**
+- Stop below previous swing low.
+**Entry/Exit Conditions:**
+- Of course, also on your order entry screen, if you can actually go through this, then you can also set up your takerit and your stop loss in advance.
+- But at the very least, you can protect yourself and and manage risk that way.
+**Context:** Assets: GOLD, NASDAQ
 
 ---

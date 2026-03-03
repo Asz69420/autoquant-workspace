@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-03-03T02:09:58.869916+00:00",
+  "lanes": {
+    "vortex_v3a_eth_4h::ETH::4h": {
+      "champion_id": "vortex_v3a_eth_4h",
+      "asset": "ETH",
+      "timeframe": "4h",
+      "status": "flat",
+      "equity": 10000.0,
+      "open_position": null,
+      "watch_weeks": 0,
+      "stats": {
+        "entries": 0,
+        "closes": 0,
+        "wins": 0,
+        "losses": 0,
+        "gross_win": 0.0,
+        "gross_loss": 0.0,
+        "realized_pnl": 0.0
+      }
+    },
+    "supertrend_8to1_eth_4h::ETH::4h": {
+      "champion_id": "supertrend_8to1_eth_4h",
+      "asset": "ETH",
+      "timeframe": "4h",
+      "status": "flat",
+      "equity": 10000.0,
+      "open_position": null,
+      "watch_weeks": 0,
+      "stats": {
+        "entries": 0,
+        "closes": 0,
+        "wins": 0,
+        "losses": 0,
+        "gross_win": 0.0,
+        "gross_loss": 0.0,
+        "realized_pnl": 0.0
+      }
+    }
+  }
+}

@@ -263,3 +263,55 @@ v2c and Supertrend are essentially tied. But v2c has BETTER transitional alpha (
 STIFFNESS, ADX-as-filter, QQE (mean-reversion), Donchian touches
 
 ---
+
+## Entry 009 — Forward-Testing is Live (2026-03-03)
+
+### The Milestone
+After 10+ cycles requesting it, forward-testing infrastructure is operational. This was the #1 blocker to revenue — every backtest win before today was theoretical. Now we validate in real-time.
+
+### What's Running
+Two champions in production paper-trading on ETH 4h:
+1. **Vortex v3a** — PF 2.034, stop 0.75 ATR, TP 10 ATR. Our highest-PF strategy ever.
+2. **Supertrend 8:1** — PF 1.921, stop 1.0 ATR, TP 8 ATR. Former champion, proven all-regime.
+
+Runner executes every 4h bar close (+5min). Health monitor checks every cycle. Weekly scorecard generates Sunday 7am AEST with leaderboard, PF drift analysis, and auto-promotion suggestions.
+
+### First Two Cycles
+Both cycles ran clean. Regime: ranging. No entry signals fired (Vortex needs a VTXP/VTXM crossover, Supertrend needs a direction flip). Both lanes flat at $10,000 paper equity. This is expected — these strategies are selective (84-85 trades over 2 years = roughly 1 trade per week on average).
+
+### What Changes Now
+**Before forward-testing:** Strategy quality was measured only by historical PF. No way to know if backtest alpha was real or curve-fitted.
+
+**After forward-testing:** Every new candidate strategy has a path to production:
+1. Backtest → ACCEPT (PF > 1.2, DD < 25%)
+2. Forward-test → validate live PF matches backtest PF within drift tolerance
+3. Promote or demote based on weekly scorecard verdicts
+
+This is the missing link between research and revenue. The research pipeline now has a customer.
+
+### Strategic Shift: From Exploration to Exploitation
+For 8 entries I was a pure researcher — testing hypotheses, mapping indicator space, finding Vortex. That phase isn't over, but the emphasis shifts:
+
+**Exploitation (primary):** Monitor forward-test performance. First trade is the most important data point. Does Vortex v3a actually work in live conditions? Does the reversal exit fire cleanly on real bars? Does the stop/TP geometry hold?
+
+**Exploration (secondary):** Continue backtesting to feed the promotion pipeline. The weekly scorecard auto-surfaces candidates that beat the weakest active champion. But now I should prioritize strategies that are DIFFERENT from the current roster — portfolio diversification, not just PF maximization.
+
+### Portfolio Gap Analysis
+Current roster is Vortex + Supertrend — both are cross-based trend/transition detectors on ETH 4h. Correlated exposure. What's missing:
+- **A mean-reversion component** — CCI Chop Fade (PF 1.255) is close but below ACCEPT threshold. Could iterate.
+- **A volume-based signal** — OBV and VWAP are computed but never tested in any strategy.
+- **Ichimoku cloud signals** — ISA/ISB/ITS/IKS are computed, never tested. Tenkan/Kijun crosses are transition signals like Vortex but based on different math (median prices vs directional movement).
+- **A momentum divergence detector** — no strategy has ever tested for divergence between price and an indicator.
+
+### Next Research Direction
+Focus on **decorrelated signals** that would diversify the portfolio rather than adding another trend-detection variant. Priority:
+1. **Ichimoku Tenkan-Kijun cross** — similar transition logic to Vortex but independent indicator family. If it works, it confirms the "transition detection" thesis is a general edge, not a Vortex-specific artifact.
+2. **Volume-confirmed entries** — OBV trend + existing signals. Test if volume adds confirmation value.
+3. **CCI Chop Fade v3** — the 8:1 R:R iteration that was never actually tested (v2 was accidentally identical to v1). Could push PF past 1.3.
+
+### What I Expect
+- First forward trade within 3-7 days (1 trade/week average from backtest)
+- If forward PF tracks backtest PF within ±30% after 10+ trades: we have a validated live strategy
+- If forward PF diverges significantly: the backtest was overfit and we need to investigate why
+
+---

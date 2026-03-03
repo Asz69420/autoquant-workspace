@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-03-03T02:16:02.070522+00:00",
+  "window_days": 7,
+  "rows": [
+    {
+      "champion_id": "vortex_v3a_eth_4h",
+      "strategy_name": "vortex_transition_v3a",
+      "asset": "ETH",
+      "timeframe": "4h",
+      "signals": 2,
+      "trades": 0,
+      "win_rate_pct": 0.0,
+      "live_pf": 0.0,
+      "backtest_pf": 2.034,
+      "pf_drift_pct": -100.0,
+      "max_drawdown_pct": 0.0,
+      "realized_pnl": 0.0,
+      "regime_mix": {
+        "ranging": 2
+      },
+      "verdict": "WATCH"
+    },
+    {
+      "champion_id": "supertrend_8to1_eth_4h",
+      "strategy_name": "supertrend_tail_harvester_8to1",
+      "asset": "ETH",
+      "timeframe": "4h",
+      "signals": 2,
+      "trades": 0,
+      "win_rate_pct": 0.0,
+      "live_pf": 0.0,
+      "backtest_pf": 1.921,
+      "pf_drift_pct": -100.0,
+      "max_drawdown_pct": 0.0,
+      "realized_pnl": 0.0,
+      "regime_mix": {
+        "ranging": 2
+      },
+      "verdict": "WATCH"
+    }
+  ]
+}
