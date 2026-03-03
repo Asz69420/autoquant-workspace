@@ -14,6 +14,7 @@ $ROOT = "C:\Users\Clamps\.openclaw\workspace"
 Set-Location $ROOT
 
 $violations = @()
+$warnings = @()
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
 function Test-IgnoredTempArtifactFile([System.IO.FileInfo]$File) {
@@ -85,6 +86,26 @@ if ($Mode -eq "health" -or $Mode -eq "pre-backtest") {
     $validateOut = & python "$ROOT\scripts\forward\validate_champions.py" --file "$championsPath" 2>&1
     if ($LASTEXITCODE -ne 0) {
       $violations += "CHAMPIONS_INVALID: $([string]($validateOut -join ' '))"
+    }
+  }
+
+  # Optional QUANDALF_BRAIN validator hook (only when object files exist)
+  $brainObjectFiles = @()
+  foreach ($objDir in @('facts', 'rules', 'constraints', 'failures')) {
+    $path = "$ROOT\brain\$objDir"
+    if (Test-Path $path) {
+      $brainObjectFiles += Get-ChildItem -Path $path -Filter "*.md" -File -ErrorAction SilentlyContinue
+    }
+  }
+
+  if ($brainObjectFiles.Count -gt 0 -and (Test-Path "$ROOT\scripts\quandalf\validate_brain.py")) {
+    $brainOut = & python "$ROOT\scripts\quandalf\validate_brain.py" 2>&1
+    $brainText = [string]($brainOut -join "`n")
+
+    if ($LASTEXITCODE -ne 0) {
+      $violations += "BRAIN_VALIDATE_FAIL: $brainText"
+    } elseif ($brainText -match 'BRAIN_VALIDATE \[WARN\]') {
+      $warnings += "BRAIN_VALIDATE_WARN: $brainText"
     }
   }
 }
@@ -182,6 +203,11 @@ if ($violations.Count -gt 0) {
   Write-Output $report
   exit 1
 } else {
+  if ($warnings.Count -gt 0) {
+    foreach ($w in $warnings) {
+      Write-Output "[WARN] $w"
+    }
+  }
   Write-Output "[$timestamp] Balrog $Mode check: ALL CLEAR"
   exit 0
 }
