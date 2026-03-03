@@ -70,17 +70,7 @@ function New-DailyTriggers {
     return $list
 }
 
-function New-QuarterHourTrigger {
-    # Anchor at next quarter-hour boundary so runs align at :00/:15/:30/:45
-    $now = Get-Date
-    $base = Get-Date -Date $now.Date
-    $mins = $now.Hour * 60 + $now.Minute
-    $nextQuarterMins = ([int][Math]::Floor($mins / 15) + 1) * 15
-    $startAt = $base.AddMinutes($nextQuarterMins)
-    if ($startAt -le $now) { $startAt = $startAt.AddMinutes(15) }
-
-    return (New-ScheduledTaskTrigger -Once -At $startAt -RepetitionInterval (New-TimeSpan -Minutes 15) -RepetitionDuration (New-TimeSpan -Days 3650))
-}
+# quarter-hour helper removed; using stable loop trigger scheduling
 
 function Assert-PathExists {
     param([string]$Path)
@@ -114,11 +104,11 @@ foreach ($p in $requiredPaths) { Assert-PathExists -Path $p }
 
 $startTasks = (-not $NoStart)
 
-# 1) AutoQuant-autopilot-user (every 15 minutes, aligned to :00/:15/:30/:45)
+# 1) AutoQuant-autopilot-user (every 15 minutes)
 $autopilotScript = Join-Path $ROOT 'scripts\automation\run_autopilot_task.ps1'
 $autopilotAction = New-ScheduledTaskAction -Execute $PowerShellExe -Argument ('-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $autopilotScript + '"') -WorkingDirectory $ROOT
-$autopilotTrigger = New-QuarterHourTrigger
-Register-AutoQuantTask -TaskName 'AutoQuant-autopilot-user' -Action $autopilotAction -Triggers @($autopilotTrigger) -Description 'Run autopilot loop every 15 minutes (quarter-hour aligned)' -StartNow:$startTasks
+$autopilotTrigger = New-LoopTrigger -Interval (New-TimeSpan -Minutes 15)
+Register-AutoQuantTask -TaskName 'AutoQuant-autopilot-user' -Action $autopilotAction -Triggers @($autopilotTrigger) -Description 'Run autopilot loop every 15 minutes' -StartNow:$startTasks
 
 # 2) AutoQuant-youtube-watch-user (every 6 hours)
 $ytScript = Join-Path $ROOT 'scripts\pipeline\run_youtube_watch_worker.ps1'
@@ -126,11 +116,11 @@ $ytAction = New-ScheduledTaskAction -Execute $PowerShellExe -Argument ('-NoProfi
 $ytTrigger = New-LoopTrigger -Interval (New-TimeSpan -Hours 6)
 Register-AutoQuantTask -TaskName 'AutoQuant-youtube-watch-user' -Action $ytAction -Triggers @($ytTrigger) -Description 'Run YouTube watch worker every 6 hours' -StartNow:$startTasks
 
-# 3) AutoQuant-bundle-run-log-user (frodex, every 15 minutes, aligned to :00/:15/:30/:45)
+# 3) AutoQuant-bundle-run-log-user (frodex, every 15 minutes)
 $bundleScript = Join-Path $ROOT 'scripts\automation\bundle-run-log.ps1'
 $bundleFrodexAction = New-ScheduledTaskAction -Execute $PowerShellExe -Argument ('-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $bundleScript + '" -Pipeline frodex -WindowMinutes 16') -WorkingDirectory $ROOT
-$bundleFrodexTrigger = New-QuarterHourTrigger
-Register-AutoQuantTask -TaskName 'AutoQuant-bundle-run-log-user' -Action $bundleFrodexAction -Triggers @($bundleFrodexTrigger) -Description 'Bundle and report frodex logs every 15 minutes (quarter-hour aligned)' -StartNow:$startTasks
+$bundleFrodexTrigger = New-LoopTrigger -Interval (New-TimeSpan -Minutes 15)
+Register-AutoQuantTask -TaskName 'AutoQuant-bundle-run-log-user' -Action $bundleFrodexAction -Triggers @($bundleFrodexTrigger) -Description 'Bundle and report frodex logs every 15 minutes' -StartNow:$startTasks
 
 # 4) AutoQuant-bundle-run-log-quandalf-user (every 2 hours)
 $bundleQuandalfAction = New-ScheduledTaskAction -Execute $PowerShellExe -Argument ('-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $bundleScript + '" -Pipeline quandalf -WindowMinutes 130') -WorkingDirectory $ROOT
