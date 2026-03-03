@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-stvwap01",
+  "created_at": "2026-03-03T13:00:03Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend follow is our #2 family (PF=1.921, forward-testing). Current template uses ADX_14 > 20 as a trend-strength filter. But ADX is a LAGGING confirmation — it only rises after a trend is already established, causing late entries and missed transitions. VWAP_D provides a DIFFERENT kind of confirmation: it answers 'is price above or below where volume-weighted activity concentrated?' This is a NOW signal, not a lagging one. Hypothesis: replacing ADX with VWAP produces earlier entries during transitions (when price flips above VWAP before ADX registers trend strength) while still filtering false signals (a Supertrend flip against VWAP direction is likely noise). This tests whether volume-weighted positioning beats trend-strength for Supertrend confirmation. Both existing Supertrend ACCEPTs use ADX — VWAP is a genuinely decorrelated confirmation axis. Additionally, a KAMA variant tests whether the adaptive MA (proven in KAMA Stoch v1 PF=1.857) confirms Supertrend better than either ADX or VWAP.",
+  "target_regime": "transitional (Supertrend flip catches direction changes) + ranging (Supertrend ranging PF=2.914 in tail harvester — the best single-regime PF for Supertrend family)",
+  "variants": [
+    {
+      "name": "supertrend_vwap_8to1",
+      "description": "Supertrend direction flip confirmed by close vs VWAP_D at 8:1 R:R. Direct A/B test against Supertrend+ADX (our control at PF=1.921). VWAP replaces ADX as confirmation — tests whether volume-weighted positioning produces earlier/better entries than trend-strength filtering. Uses exact stop/TP from the champion Supertrend 8:1 tail harvester.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < VWAP_D"
+      ],
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — proven cross-based signal with 7 ACCEPTs"},
+        {"indicator": "VWAP", "role": "confirmation", "notes": "VWAP_D — volume-weighted average price. NEVER TESTED. Replaces ADX_14 as confirmation filter."}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=VWAP",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "supertrend_kama_confirm_8to1",
+      "description": "Supertrend direction flip confirmed by close vs KAMA_10_2_30 at 8:1 R:R. KAMA is our best adaptive indicator (KAMA Stoch v1 PF=1.857 all-regime). When Supertrend flips bullish AND close is above KAMA, the adaptive MA agrees the trend has shifted. Tests whether combining two proven indicator families (Supertrend + KAMA) produces synergy. KAMA's self-adjusting speed should filter whipsaws that ADX misses.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < KAMA_10_2_30"
+      ],
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — proven trend-following signal"},
+        {"indicator": "KAMA", "role": "confirmation", "notes": "KAMA_10_2_30 — adaptive MA with proven all-regime edge. Tests synergy between two ACCEPT-producing indicator families."}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "supertrend_vwap_kama_triple_10to1",
+      "description": "Supertrend flip confirmed by BOTH VWAP AND KAMA — triple confirmation at 10:1 R:R. All three must agree: Supertrend flips, close above VWAP (volume-weighted bias), close above KAMA (adaptive trend). Fewer trades but highest conviction. If this has fewer trades but higher PF than single-confirmation variants, triple confirmation is the winning architecture.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > VWAP_D",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < VWAP_D",
+        "close < KAMA_10_2_30"
+      ],
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd_7_3.0 direction flip — primary signal"},
+        {"indicator": "VWAP", "role": "confirmation", "notes": "VWAP_D — volume-weighted session bias confirmation"},
+        {"indicator": "KAMA", "role": "regime_gate", "notes": "KAMA_10_2_30 — adaptive MA as second confirmation layer. Triple agreement = highest conviction."}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=VWAP",
+        "RoleFramework[volume_volatility]=KAMA",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

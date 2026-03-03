@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-mcdvwp01",
+  "created_at": "2026-03-03T13:00:01Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD histogram zero-line cross is our most consistent signal family (9 ACCEPTs, best PF=1.712). ALL existing MACD variants use EMA_50 as trend confirmation. VWAP_D (daily Volume-Weighted Average Price) is computed every bar but NEVER tested — it represents where the 'real money' traded on the session. Hypothesis: VWAP incorporates volume information that pure price MAs miss. When MACD flips bullish AND close is above VWAP, both momentum AND volume-weighted fair value agree the move is genuine. If this outperforms MACD+EMA_50, it proves volume adds confirmation value — opening a new confirmation family. If it underperforms, EMA_50 remains superior and we can deprioritize VWAP. Either outcome is informative. This is the first-ever strategy using VWAP in our system.",
+  "target_regime": "transitional (MACD histogram flip detects momentum shift) + trending continuation (VWAP confirmation aligns with session bias)",
+  "variants": [
+    {
+      "name": "macd_vwap_momentum_8to1",
+      "description": "MACD histogram crosses zero confirmed by close vs VWAP_D at 8:1 R:R. Direct A/B test against MACD+EMA_50 (our control). Uses proven MACD 7:1 family geometry but with VWAP replacing EMA_50. Stop 1.5 ATR matches the MACD family baseline.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "close < VWAP_D"
+      ],
+      "components": [
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-line cross — proven momentum signal with 9 ACCEPTs"},
+        {"indicator": "VWAP", "role": "baseline", "notes": "VWAP_D — daily volume-weighted average price. NEVER TESTED. Replaces EMA_50 as trend confirmation."}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "macd_vwap_tight_10to1",
+      "description": "MACD histogram crosses zero confirmed by close vs VWAP_D at 10:1 R:R with tighter stop (1.0 ATR). Matches Vortex v3a geometry. Tests whether the tighter stop that worked for Vortex also works for MACD+VWAP — the theory being that volume-confirmed entries have higher conviction and need less breathing room.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "close < VWAP_D"
+      ],
+      "components": [
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-line cross — momentum signal"},
+        {"indicator": "VWAP", "role": "baseline", "notes": "VWAP_D — volume-weighted trend confirmation replacing EMA_50"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

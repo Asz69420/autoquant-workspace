@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-cciv3r81",
+  "created_at": "2026-03-03T13:00:02Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "CCI Chop Fade v1 achieved PF=1.255 all-regime on ETH 4h — our first all-regime oscillator ACCEPT (Entry 004). Quandalf ordered a v3 at 8:1 R:R (Entry 009) because the 12:1 R:R may be too wide: many trades run to ~8-10 ATR profit then reverse back to exit at lower levels. v2 was accidentally identical to v1 (TP stayed at 18 ATR due to order error — Entry 005). THIS is the actual v3 test that was never executed. Hypothesis: tightening TP from 18 to 12 ATR (stop 1.5, giving 8:1 R:R) captures more winners at their peak before reversal, boosting win rate and PF past the 1.3 ACCEPT threshold. The Vortex family showed tighter geometry consistently improves PF (1.385 -> 1.892 across v1-v2c). An aggressive variant at 1.0 stop / 8.0 TP (also 8:1) tests the Supertrend sweet spot geometry on CCI signals.",
+  "target_regime": "ranging (CHOP > 50 confirms range-bound market where CCI mean-reversion has proven PF=1.43) + transitional (CCI PF=1.52 in transitional regime)",
+  "variants": [
+    {
+      "name": "cci_chop_fade_v3_8to1",
+      "description": "CCI beyond +/-100 under CHOP ranging gate with 8:1 R:R (stop 1.5, TP 12). This is the ORDERED BUT NEVER EXECUTED v3. Direct iteration on v1 (PF=1.255 at 12:1). Only change: TP reduced from 18 to 12 ATR. Tests whether more trades hit TP before reversing.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "CCI_20_0.015 < -100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "components": [
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI_20_0.015 beyond +/-100 — continuous zone-based mean-reversion signal with proven 421-trade base"},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 > 50 confirms ranging market where mean-reversion has edge"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=CCI",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "cci_chop_fade_v3_tight_8to1",
+      "description": "CCI beyond +/-100 under CHOP gate with AGGRESSIVE 8:1 geometry (stop 1.0, TP 8). Applies the Supertrend/Vortex lesson: tight stops cut loser damage, winners are captured by TP before reversal. Tests whether the tight-stop advantage discovered in Vortex (PF 1.385->1.892) transfers to CCI oscillator signals.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "CCI_20_0.015 < -100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "components": [
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI_20_0.015 beyond +/-100 — zone-based mean-reversion signal"},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 > 50 confirms ranging regime"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=CCI",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "cci_chop_fade_v3_deep_6to1",
+      "description": "CCI beyond +/-150 (deeper oversold/overbought) under CHOP gate with 6:1 R:R (stop 1.5, TP 9). Tests whether requiring DEEPER CCI extremes (-150/+150 vs -100/+100) produces higher-conviction mean-reversion entries. Fewer trades but each should be at a more extreme deviation from mean. Moderate R:R to match the shorter expected moves from extreme positions.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "CCI_20_0.015 < -150",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 150",
+        "CHOP_14_1_100 > 50"
+      ],
+      "components": [
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI_20_0.015 beyond +/-150 — deep extreme zone for high-conviction mean-reversion"},
+        {"indicator": "Choppiness Index", "role": "regime_gate", "notes": "CHOP_14_1_100 > 50 confirms ranging market"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=CCI",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=CHOP",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}
