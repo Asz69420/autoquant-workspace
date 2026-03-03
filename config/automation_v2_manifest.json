@@ -242,6 +242,17 @@
       },
       "command": "python scripts/forward/generate_weekly_scorecard.py",
       "legacy_task_name": "AutoQuant-Forward-Weekly"
+    },
+    {
+      "name": "logron-reporter-drain-1m",
+      "owner": "Logron",
+      "type": "task",
+      "schedule": {
+        "kind": "interval",
+        "minutes": 1
+      },
+      "command": "python scripts/tg_reporter.py --manual",
+      "legacy_task_name": "AutoQuant-tg_reporter"
     }
   ],
   "cron_jobs": [
