@@ -26,7 +26,10 @@
       "name": "MichaelIonita",
       "channel_id": "UCC0O5FKSMcjzrvOUa08hS_A",
       "active_category": "NUANCED_CONCEPT",
-      "notes": "User-set"
+      "secondary_categories": [
+        "INDICATOR_CONCEPT"
+      ],
+      "notes": "User-set mixed: indicator + nuanced"
     },
     {
       "name": "IntoTheCryptoverse",
