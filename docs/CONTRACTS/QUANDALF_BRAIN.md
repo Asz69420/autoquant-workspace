@@ -22,6 +22,8 @@ Only `evidence/` and object/journal markdown are edited manually.
 
 Each object file in `brain/{facts,rules,constraints,failures}` is markdown with YAML frontmatter.
 
+Frontmatter arrays must use multi-line YAML syntax (`- item`), never inline (`[a, b, c]`).
+
 Required frontmatter fields:
 
 - `id` (string, globally unique)

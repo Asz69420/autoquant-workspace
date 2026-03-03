@@ -1,0 +1,180 @@
+{
+  "spec_id": "strategy-spec-20260304-claude-dual-macd-rkp",
+  "schema_version": 1.1,
+  "source": "claude-advisor",
+  "created_at": "2026-03-04T06:50:00Z",
+  "template_name": "macd_confirmation",
+  "signal_pattern": "dual_macd_alignment",
+  "target_asset": "ETH",
+  "target_tf": "4h",
+  "edge_hypothesis": "Test Red K Pressure-style dual MACD architecture using non-standard parameter pairs (slow 100/200/50 and fast 34/144/9). Hypothesis: requiring cross-timeframe momentum alignment reduces false positives and improves trend continuation expectancy on ETH 4h.",
+  "RoleFramework": {
+    "baseline": "MACD",
+    "confirmation": "MACD",
+    "volume_volatility": "ATR"
+  },
+  "risk_policy": {
+    "stop_type": "atr",
+    "stop_atr_mult": 2.0,
+    "tp_type": "atr",
+    "tp_atr_mult": 12.0,
+    "risk_per_trade_pct": 0.01
+  },
+  "variants": [
+    {
+      "variant_id": "baseline",
+      "label": "Dual MACD strict alignment",
+      "mutation_type": "none",
+      "RoleFramework": {
+        "baseline": "MACD",
+        "confirmation": "MACD",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "macd_slow_set": "MACD_100_200_50",
+        "macd_fast_set": "MACD_34_144_9"
+      },
+      "entry_long": [
+        "MACD_100_200_50 line above signal and histogram rising",
+        "MACD_34_144_9 crosses above signal on current bar"
+      ],
+      "entry_short": [
+        "MACD_100_200_50 line below signal and histogram falling",
+        "MACD_34_144_9 crosses below signal on current bar"
+      ],
+      "filters": [
+        "Require indicator columns: MACD_100_200_50 and MACD_34_144_9",
+        "bar-close execution",
+        "no repaint",
+        "RoleFramework[baseline]=MACD",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12.0x ATR)",
+        "Exit on ATR stop hit (2.0x ATR)",
+        "Exit when fast MACD flips against position"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR",
+        "TP: 12.0x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "fast_confirm_relaxed",
+      "label": "Dual MACD relaxed fast confirmation",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "MACD",
+        "confirmation": "MACD",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 13.2,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "macd_slow_set": "MACD_100_200_50",
+        "macd_fast_set": "MACD_34_144_9"
+      },
+      "entry_long": [
+        "MACD_100_200_50 above signal",
+        "MACD_34_144_9 histogram turns positive within last 2 bars"
+      ],
+      "entry_short": [
+        "MACD_100_200_50 below signal",
+        "MACD_34_144_9 histogram turns negative within last 2 bars"
+      ],
+      "filters": [
+        "Require indicator columns: MACD_100_200_50 and MACD_34_144_9",
+        "bar-close execution",
+        "no repaint"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (13.2x ATR)",
+        "Exit on ATR stop hit (2.2x ATR)",
+        "Exit when slow MACD loses alignment"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.2x ATR",
+        "TP: 13.2x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "tight_stop_high_rr",
+      "label": "Dual MACD tight-stop high-RR",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "MACD",
+        "confirmation": "MACD",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.6,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.8,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {
+        "macd_slow_set": "MACD_100_200_50",
+        "macd_fast_set": "MACD_34_144_9"
+      },
+      "entry_long": [
+        "Slow and fast MACD both bullish",
+        "Fast MACD histogram acceleration positive"
+      ],
+      "entry_short": [
+        "Slow and fast MACD both bearish",
+        "Fast MACD histogram acceleration negative"
+      ],
+      "filters": [
+        "Require indicator columns: MACD_100_200_50 and MACD_34_144_9",
+        "bar-close execution",
+        "no repaint"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12.8x ATR)",
+        "Exit on ATR stop hit (1.6x ATR)",
+        "Exit when fast MACD crosses against position"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.6x ATR",
+        "TP: 12.8x ATR"
+      ],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ],
+  "advisory_context": {
+    "prefer_templates": [
+      "macd_confirmation"
+    ]
+  }
+}

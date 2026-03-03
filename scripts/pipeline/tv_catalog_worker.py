@@ -95,6 +95,48 @@ def _is_invalid_candidate(name: str, author: str) -> bool:
     return any(x in n for x in bad_fragments)
 
 
+def _infer_indicator_hints(name: str) -> list[str]:
+    tokens = (name or '').upper()
+    known = ['MACD', 'EMA', 'SMA', 'RSI', 'ATR', 'VWAP', 'CCI', 'ADX', 'STOCH', 'BOLLINGER', 'ICHIMOKU', 'SUPER', 'KAMA', 'ALMA', 'T3', 'DONCHIAN', 'VORTEX', 'QQE', 'OBV']
+    hints = []
+    for k in known:
+      if k in tokens:
+        hints.append(k)
+    return hints[:6]
+
+
+def _fetch_script_context(url: str, title: str, author: str) -> str:
+    if not url:
+        return f'TradingView catalog indicator: {title} by {author}.'
+    try:
+        html = urlopen(url, timeout=20).read().decode('utf-8', errors='ignore')
+    except Exception:
+        return f'TradingView catalog indicator: {title} by {author}.'
+
+    desc = ''
+    m_desc = re.search(r'<meta\s+name="description"\s+content="([^"]+)"', html, re.I)
+    if m_desc:
+        desc = re.sub(r'\s+', ' ', m_desc.group(1)).strip()
+
+    snippet = ''
+    m_og = re.search(r'<meta\s+property="og:description"\s+content="([^"]+)"', html, re.I)
+    if m_og:
+        snippet = re.sub(r'\s+', ' ', m_og.group(1)).strip()
+
+    hints = _infer_indicator_hints(title)
+    hint_line = ('Possible indicators: ' + ', '.join(hints) + '.') if hints else ''
+    parts = [
+      f'TradingView indicator: {title} by {author}.',
+      desc,
+      snippet,
+      hint_line,
+      f'Source URL: {url}'
+    ]
+    text = ' '.join([p for p in parts if p])
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text[:4000]
+
+
 def _emit_bundle(rc_path: str, ir_paths: list[str], key: str):
     lm = _run('scripts/pipeline/link_research_indicators.py', '--research-card-path', rc_path, '--indicator-record-paths', json.dumps(ir_paths))
     bday = datetime.now(UTC).strftime('%Y%m%d')
@@ -154,8 +196,10 @@ def main() -> int:
                 skipped += 1
                 continue
 
+            context_text = _fetch_script_context(cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), cand['name'], cand['author'])
+            hint_list = _infer_indicator_hints(cand['name'])
             try:
-                ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_top']))
+                ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps(hint_list), '--signals', json.dumps(hint_list), '--notes', json.dumps(['catalog_top', 'source=tv_page_context']))
                 _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
                 grabber_ok += 1
             except Exception:
@@ -169,7 +213,7 @@ def main() -> int:
                 too_large_skipped_count += 1
                 _log('COMPONENT_TOO_LARGE', 'COMPONENT_TOO_LARGE', 'Component too large; skipped', 'WARN', outputs=[ir['indicator_record_path']])
             else:
-                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Top catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
+                rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', context_text, '--title', cand['name'], '--author', cand['author'])
                 bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
                 created.append(bp)
                 _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
@@ -196,8 +240,10 @@ def main() -> int:
         if key in st['seen_tv_keys']:
             skipped += 1
             continue
+        context_text = _fetch_script_context(cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), cand['name'], cand['author'])
+        hint_list = _infer_indicator_hints(cand['name'])
         try:
-            ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps([]), '--signals', json.dumps([]), '--notes', json.dumps(['catalog_trending']))
+            ir = _run('scripts/pipeline/emit_indicator_record.py', '--tv-ref', f"tradingview:{cand['script_id']}", '--url', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--name', cand['name'], '--author', cand['author'], '--version', 'v1', '--key-inputs', json.dumps(hint_list), '--signals', json.dumps(hint_list), '--notes', json.dumps(['catalog_trending', 'source=tv_page_context']))
             _log('GRABBER_FETCH_OK', 'GRABBER_FETCH_OK', f"script_id={cand['script_id']} name={cand['name']}", 'INFO', outputs=[ir['indicator_record_path']])
             grabber_ok += 1
         except Exception:
@@ -210,7 +256,7 @@ def main() -> int:
             too_large_skipped_count += 1
             _log('COMPONENT_TOO_LARGE', 'COMPONENT_TOO_LARGE', 'Component too large; skipped', 'WARN', outputs=[ir['indicator_record_path']])
         else:
-            rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', f"Trending catalog indicator: {cand['name']} by {cand['author']}", '--title', cand['name'], '--author', cand['author'])
+            rc = _run('scripts/pipeline/emit_research_card.py', '--source-ref', cand.get('url', f"https://www.tradingview.com/script/{cand['script_id']}/"), '--source-type', 'tradingview_catalog', '--raw-text', context_text, '--title', cand['name'], '--author', cand['author'])
             bp = _emit_bundle(rc['research_card_path'], [ir['indicator_record_path']], key)
             created.append(bp)
             _log('TV_INDICATOR_ADDED', 'TV_INDICATOR_ADDED', f"script_id={cand['script_id']} tv_key={key}", 'INFO', outputs=[ir['indicator_record_path']])
