@@ -1,0 +1,234 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-c8d3a5f6",
+  "name": "T3 Vortex Transition Hybrid",
+  "created_at": "2026-03-03T13:12:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Vortex crossovers are the proven alpha source — v3a PF=2.034 across ALL regimes, transitional PF=3.886. But raw Vortex generates some false crossovers during choppy price action. T3 (Tillson triple-smoothed EMA) is the smoothest available moving average — it filters micro-noise that causes premature Vortex crosses. By requiring Vortex crossover to ALIGN with T3 trend direction (close vs T3), we filter false transitions while preserving the genuine regime-change signals that make Vortex profitable. No regime gate needed — Vortex family profits across all regimes, so adding CHOP would only reduce trade count without improving PF.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "t3_vortex_hybrid_v1_8to1",
+      "description": "Core thesis: Vortex crossover + T3 trend direction filter. 8:1 R:R matching proven Vortex family parameters.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > T3_10_0.7"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < T3_10_0.7"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "Tillson T3 — triple-smoothed EMA with volume factor 0.7. Smoothest available MA, provides high-conviction trend direction."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex Positive — measures upward trend movement. Crossover with VTXM captures regime transitions."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex Negative — measures downward trend movement. Cross with VTXP is the primary signal."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_vortex_hybrid_v2_6to1",
+      "description": "Wider stop (2.0x ATR) for 6:1 R:R. Vortex v2c used similar parameters at PF=1.892 — tests whether T3 filter maintains performance with wider stops.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > T3_10_0.7"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < T3_10_0.7"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 trend direction filter."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex crossover signal (positive leg)."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex crossover signal (negative leg)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Wider 2.0x ATR stop for breathing room."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_vortex_hybrid_v3_adx_8to1",
+      "description": "Adds ADX > 20 as trend strength gate. Vortex captures transitions — ADX confirms the transition has momentum. Tests whether filtering weak transitions improves PF at cost of trade count.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > T3_10_0.7",
+        "ADX_14 > 20"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < T3_10_0.7",
+        "ADX_14 > 20"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 trend direction filter."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex transition signal."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex transition signal."
+        },
+        {
+          "indicator": "ADX_14",
+          "role": "confirmation",
+          "notes": "ADX > 20 confirms the transition has directional momentum. Caution: ADX-as-filter has killed mean-reversion, but this is a transition strategy, not mean-reversion."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["T3_10_0.7", "VTXP_14", "VTXM_14", "ADX_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 — triple-smoothed EMA, smoothest available trend direction filter",
+    "confirmation": "VTXP_14/VTXM_14 — Vortex crossover captures regime transitions; ADX_14 (v3 only) — trend strength gate",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

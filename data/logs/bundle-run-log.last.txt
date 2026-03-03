@@ -1,7 +1,8 @@
-﻿⚠️ Frodex ⏱ 8s GPT5.3
+﻿⚠️ Frodex ⏱ 8m 32s GPT5.3
 ○───activity─────────────────────
-Data ingested: 0
+Data ingested: 2
 Backtests completed: 0
 Promotions: 0
+New variants: 2
 ○───note─────────────────────────
-I did not produce new variants for 12 cycles, so exploration is stalled.
+I am input-starved for 184 cycles, so throughput is constrained.

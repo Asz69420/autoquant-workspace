@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-b4e7f2a1",
+  "name": "ALMA CCI Smooth Fade",
+  "created_at": "2026-03-03T13:10:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ALMA (Arnaud Legoux Moving Average) uses a Gaussian-weighted calculation that minimizes lag while maintaining smoothness — mathematically distinct from EMA. In ranging markets (CHOP > 50), when CCI reaches extreme values (<-100 or >100) and price reverts toward ALMA, this captures overextension-to-mean-reversion. ALMA's smoother curve should produce cleaner reversion targets than EMA, reducing whipsaw entries. CCI extremes have proven profitable in CCI Chop Fade v2 (PF=1.255, ALL regimes) — this tests whether ALMA as the reversion anchor improves on EMA-based approaches.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "alma_cci_fade_v1_8to1",
+      "description": "Core thesis: CCI extreme + price crosses back to ALMA in ranging market. 8:1 R:R with tight stop for tail harvesting.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "CCI_20_0.015 < -100",
+        "close crosses_above ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 100",
+        "close crosses_below ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "Arnaud Legoux MA — Gaussian-weighted, minimizes lag vs EMA. Serves as mean-reversion anchor."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "Commodity Channel Index — extreme readings (<-100, >100) identify overextension for fade entries."
+        },
+        {
+          "indicator": "CHOP_14_1_100",
+          "role": "confirmation",
+          "notes": "Choppiness Index > 50 gates for ranging regime. Proven regime filter across ACCEPT-tier strategies."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R targeting."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_cci_fade_v2_6to1",
+      "description": "Wider stop (2.0x ATR) for 6:1 R:R. Tests whether more breathing room improves win rate enough to offset lower R:R.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "CCI_20_0.015 < -100",
+        "close crosses_above ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 100",
+        "close crosses_below ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "Arnaud Legoux MA — Gaussian-weighted mean-reversion anchor."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI extremes identify overextension."
+        },
+        {
+          "indicator": "CHOP_14_1_100",
+          "role": "confirmation",
+          "notes": "Ranging regime gate (> 50)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based sizing with wider 2.0x stop."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_cci_fade_v3_relaxed_8to1",
+      "description": "Relaxed CCI threshold (-80/+80 instead of -100/+100). Tests whether less extreme CCI readings still produce profitable fades with ALMA anchor, increasing trade count.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "CCI_20_0.015 < -80",
+        "close crosses_above ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 > 80",
+        "close crosses_below ALMA_9_6.0_0.85",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "ALMA mean-reversion anchor."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "Relaxed CCI threshold (-80/+80) for higher trade frequency."
+        },
+        {
+          "indicator": "CHOP_14_1_100",
+          "role": "confirmation",
+          "notes": "Ranging regime gate."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ALMA_9_6.0_0.85", "CCI_20_0.015", "CHOP_14_1_100", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ALMA_9_6.0_0.85 — Gaussian-weighted MA, smoother mean-reversion target than EMA",
+    "confirmation": "CCI_20_0.015 — extreme readings identify overextension; CHOP_14_1_100 — ranging regime gate",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

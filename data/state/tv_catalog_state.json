@@ -1,5 +1,5 @@
 {
-  "top_cursor": 3979,
+  "top_cursor": 4019,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -104,7 +104,9 @@
     "cisd reversal: multi-liquidity mode with alerts|sabril777",
     "ultimate institutional levels -no lag, no repaint, high accuracy|trendriderpro",
     "strategy [sb.x trades]|santiagobonillag",
-    "ag pro market regime meter|agprolabs"
+    "ag pro market regime meter|agprolabs",
+    "adaptive momentum classifier [willyalgotrader]|willyalgotrader",
+    "crr trendlines priority levels|rivero8894"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -210,7 +212,9 @@
     "ybcd6z3h",
     "Vi9sy7XL",
     "vrwIlzLc",
-    "BKudAHJn"
+    "BKudAHJn",
+    "KLEBo02H",
+    "WOlvrRtw"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",
@@ -223,6 +227,7 @@
     "initial value breakout [omegatools]|omegatools",
     "adaptive quasimodo + confluence engine - phenlabs|phenlabs",
     "casper smc: 5m orb + retest|hoosn1ck",
-    "delta flow volume profile [ualgo]|ualgo"
+    "delta flow volume profile [ualgo]|ualgo",
+    "crr trendlines priority levels|rivero8894"
   ]
 }

@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-d2f9b7e3",
+  "name": "KAMA Stochastic Adaptive Pullback",
+  "created_at": "2026-03-03T13:14:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "KAMA (Kaufman Adaptive Moving Average) self-adapts smoothing speed — fast during trends, slow during ranges. This built-in adaptivity means it serves as BOTH trend direction AND implicit regime filter. When KAMA is trending (close above/below KAMA), Stochastic K crossing D from oversold/overbought zones identifies pullback completion — the moment momentum resumes in the trend direction. This bypasses the stochastic_reversal template bug (line 175, k_prev issue) by using spec_rules interpreter directly. The hypothesis: KAMA's adaptive smoothing produces fewer false trend signals than fixed-period EMA, while Stochastic pullback timing enters at better prices than crossover strategies.",
+  "regime_assumption": "trending",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "kama_stoch_pullback_v1_8to1",
+      "description": "Core thesis: KAMA trend + Stochastic oversold/overbought pullback. 8:1 R:R. Stochastic K must be in extreme zone (< 30 for long, > 70 for short) before crossing D.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "STOCHk_14_3_3 crosses_above STOCHd_14_3_3",
+        "STOCHk_14_3_3 < 30"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "STOCHk_14_3_3 crosses_below STOCHd_14_3_3",
+        "STOCHk_14_3_3 > 70"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "Kaufman Adaptive MA — adapts smoothing to market conditions. Fast constant 2, slow constant 30. Acts as trend direction AND implicit regime filter."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic %K — crosses %D from extreme zones to time pullback completion. Bypasses stochastic_reversal template bug by using spec_rules."
+        },
+        {
+          "indicator": "STOCHd_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic %D — signal line for K crossover timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_stoch_pullback_v2_10to1",
+      "description": "Extended TP at 10:1 R:R (15x ATR). Tests whether KAMA's adaptive trend detection holds long enough for larger profit targets. If KAMA truly identifies sustained trends, wider TP should capture more of the move.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "STOCHk_14_3_3 crosses_above STOCHd_14_3_3",
+        "STOCHk_14_3_3 < 30"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "STOCHk_14_3_3 crosses_below STOCHd_14_3_3",
+        "STOCHk_14_3_3 > 70"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "KAMA adaptive trend direction."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic pullback timing from extreme zone."
+        },
+        {
+          "indicator": "STOCHd_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic signal line."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for trend continuation."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_stoch_pullback_v3_relaxed_8to1",
+      "description": "Relaxed Stochastic thresholds (< 40 for long, > 60 for short). Tests whether moderate pullbacks into KAMA trend generate enough trades without sacrificing edge. The strict < 30 threshold may be too rare on 4h candles.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "STOCHk_14_3_3 crosses_above STOCHd_14_3_3",
+        "STOCHk_14_3_3 < 40"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "STOCHk_14_3_3 crosses_below STOCHd_14_3_3",
+        "STOCHk_14_3_3 > 60"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "KAMA adaptive trend direction."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Relaxed Stochastic thresholds (40/60) for higher trade frequency on 4h."
+        },
+        {
+          "indicator": "STOCHd_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic signal line."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["KAMA_10_2_30", "STOCHk_14_3_3", "STOCHd_14_3_3", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "KAMA_10_2_30 — self-adapting MA, provides trend direction with built-in regime sensitivity",
+    "confirmation": "STOCHk_14_3_3/STOCHd_14_3_3 — K/D crossover from extreme zones times pullback completion",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

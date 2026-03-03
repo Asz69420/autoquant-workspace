@@ -1,0 +1,120 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772515188-backfill-strategy-spec-20260303-claude-d2f9b7e3.strategy_spec",
+  "run_id": "autopilot-1772515188-backfill-strategy-spec-20260303-claude-d2f9b7e3.strategy_spec",
+  "created_at": "2026-03-03T05:28:08.322574+00:00",
+  "verdict": "ACCEPT",
+  "strategy_family": "strategy-spec-20260303-claude-d2f9b7e3.strategy_spec",
+  "template": "kama_stoch_pullback_v1_8to1",
+  "metrics": {
+    "profit_factor_after_costs": 1.85666299,
+    "max_drawdown": 0.101104192986,
+    "trades": 42,
+    "regime_breakdown": {
+      "trending_trades": 20,
+      "ranging_trades": 10,
+      "transitional_trades": 12
+    },
+    "regime_pf": {
+      "trending": 1.25127958,
+      "ranging": 4.87127412,
+      "transitional": 1.36097619
+    },
+    "regime_wr": {
+      "trending": 0.2,
+      "ranging": 0.4,
+      "transitional": 0.25
+    },
+    "dominant_regime": "trending"
+  },
+  "regime_analysis": {
+    "available": true,
+    "good_regimes": [
+      "trending",
+      "ranging",
+      "transitional"
+    ],
+    "bad_regimes": [],
+    "all_good": true,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "NO_IMPROVEMENT",
+      "short": "Refinement reported no improvement",
+      "evidence_pointer": "refinement_cycle.final_recommendation"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "require_regime_filter": true,
+        "regime_gate": "trend_or_volatility"
+      },
+      "rationale": "Doctrine: regime assumptions/gating required; strategy lacks explicit regime filter.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "PARAM_SWEEP",
+      "params": {
+        "parameter": "risk_r",
+        "range": [
+          0.75,
+          1.75
+        ],
+        "step": 0.25,
+        "reason": "all_regimes_strong"
+      },
+      "rationale": "Regime-aware: robust across regimes; prioritise refinement over structural changes.",
+      "priority": 1
+    },
+    {
+      "id": "d3",
+      "type": "TEMPLATE_SWITCH",
+      "params": {
+        "target": "FALLBACK_TEMPLATE_CONFIRMATION"
+      },
+      "rationale": "Switch template when local refinement stalls.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-06|conf:0.76",
+      "theme": "regime_required",
+      "text": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "id": "20260226-20|conf:0.72",
+      "theme": "regime_required",
+      "text": "Embed concept hook into testable hypothesis design: Session gating before execution enablement"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"regime_gate\": \"trend_or_volatility\", \"require_regime_filter\": true}",
+    "Apply PARAM_SWEEP with params={\"parameter\": \"risk_r\", \"range\": [0.75, 1.75], \"reason\": \"all_regimes_strong\", \"step\": 0.25}",
+    "Apply TEMPLATE_SWITCH with params={\"target\": \"FALLBACK_TEMPLATE_CONFIRMATION\"}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260303/batch_20260303_d9cd3b3d.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260302/refine_20260302_7a2bd9e8.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "aa840f943606a0e5"
+}

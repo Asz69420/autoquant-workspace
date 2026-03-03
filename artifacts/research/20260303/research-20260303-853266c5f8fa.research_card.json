@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-853266c5f8fa",
+  "created_at": "2026-03-03T05:19:51.922837Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/KLEBo02H-Adaptive-Momentum-Classifier-WillyAlgoTrader/",
+  "title": "Adaptive Momentum Classifier [WillyAlgoTrader]",
+  "author": "WillyAlgoTrader",
+  "summary_bullets": [
+    "Top catalog indicator: Adaptive Momentum Classifier [WillyAlgoTrader] by WillyAlgoTrader."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Adaptive Momentum Classifier [WillyAlgoTrader] by WillyAlgoTrader.",
+      "note": "Meaning: Top catalog indicator: Adaptive Momentum Classifier [WillyAlgoTrader] by WillyAlgoTrader."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "Top catalog indicator: Adaptive Momentum Classifier [WillyAlgoTrader] by WillyAlgoTrader."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-853266c5f8fa.raw.txt",
+  "sha256": "a49b1370245cdd3e858c882d906ed38698ceedc13a2599cd65deb433ae477184",
+  "truncated": false
+}

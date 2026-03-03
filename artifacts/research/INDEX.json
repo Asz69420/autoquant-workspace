@@ -1,4 +1,6 @@
 [
+  "artifacts/research/20260303/research-20260303-3a43ca633863.research_card.json",
+  "artifacts/research/20260303/research-20260303-853266c5f8fa.research_card.json",
   "artifacts/research/20260303/research-20260303-780ed39895fd.research_card.json",
   "artifacts/research/20260303/research-20260303-1cab4afab98f.research_card.json",
   "artifacts/research/20260303/research-20260303-2793b689b028.research_card.json",
@@ -196,7 +198,5 @@
   "fake/7.json",
   "fake/8.json",
   "fake/9.json",
-  "fake/10.json",
-  "fake/11.json",
-  "fake/12.json"
+  "fake/10.json"
 ]
