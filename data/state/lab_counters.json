@@ -1,6 +1,7 @@
 ﻿{
     "directive_loop_stall_cycles":  0,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260303/strategy-spec-20260303-ude-d2f9b7e3-ad470ee2.strategy_spec.json",
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-d2f9b7e3.strategy_spec.json",
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-c8d3a5f6.strategy_spec.json",
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-b4e7f2a1.strategy_spec.json",
@@ -9,8 +10,7 @@
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-vp5c8k2m.strategy_spec.json",
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-c5e9a3b7.strategy_spec.json",
                                   "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-b4d8f2a6.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-a7c3e1f9.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-mc9v4h6t.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-a7c3e1f9.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-03T05:28:21.8124361Z"
+    "updated_at":  "2026-03-03T05:49:57.0667322Z"
 }
