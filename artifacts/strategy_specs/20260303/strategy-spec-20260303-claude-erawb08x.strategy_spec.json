@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-erawb08x",
+  "created_at": "2026-03-03T14:00:02Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ema_rsi_atr has the highest ranging PF of any template (2.864) thanks to the ATR volatility gate filtering dead-money periods. The current ACCEPT uses RSI 40-70 (long) and 30-60 (short). Hypothesis: widening the RSI acceptance band (35-65 for both sides) captures more volatility-expansion entries that the narrower band misses, while the ATR gate still filters noise. A tighter band (45-55) tests the opposite: ultra-selective entries with higher average quality.",
+  "target_regime": "ranging (ema_rsi_atr ranging PF=2.864 — highest of any template) + transitional (PF=1.731)",
+  "variants": [
+    {
+      "name": "ema_rsi_atr_widband_8to1",
+      "description": "EMA-RSI-ATR with wide RSI band (35-65) at 8:1 R:R. Captures more trade opportunities during volatility expansion while ATR gate maintains signal quality.",
+      "template_name": "ema_rsi_atr",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9 vs EMA_21 for trend direction"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in wide band (35-65) for entry confirmation"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 above 20-bar MA as volatility expansion gate"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "default": 35.0, "min": 25.0, "max": 45.0, "step": 5.0},
+        {"name": "rsi_long_max", "default": 65.0, "min": 55.0, "max": 75.0, "step": 5.0},
+        {"name": "rsi_short_min", "default": 35.0, "min": 25.0, "max": 45.0, "step": 5.0},
+        {"name": "rsi_short_max", "default": 65.0, "min": 55.0, "max": 75.0, "step": 5.0}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "ema_rsi_atr_widband_10to1",
+      "description": "EMA-RSI-ATR with wide RSI band (35-65) at 10:1 R:R. Same entry logic as widband_8to1 but wider TP to capture larger volatility-expansion moves. Tests whether extra TP room improves PF like it did for Supertrend and MACD families.",
+      "template_name": "ema_rsi_atr",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9 vs EMA_21 for trend direction"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in wide band (35-65) for entry confirmation"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 above 20-bar MA as volatility expansion gate"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "default": 35.0, "min": 25.0, "max": 45.0, "step": 5.0},
+        {"name": "rsi_long_max", "default": 65.0, "min": 55.0, "max": 75.0, "step": 5.0},
+        {"name": "rsi_short_min", "default": 35.0, "min": 25.0, "max": 45.0, "step": 5.0},
+        {"name": "rsi_short_max", "default": 65.0, "min": 55.0, "max": 75.0, "step": 5.0}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "ema_rsi_atr_tightband_8to1",
+      "description": "EMA-RSI-ATR with ultra-tight RSI band (45-55) at 8:1 R:R with wider 2.0 ATR stop. Only enters when RSI is near equilibrium during volatility expansion — filters out momentum-chasing entries. Fewer but higher-conviction trades. Wider stop gives breathing room.",
+      "template_name": "ema_rsi_atr",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_9 vs EMA_21 for trend direction"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 in tight band (45-55) for ultra-selective entry"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 above 20-bar MA as volatility expansion gate"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [
+        {"name": "rsi_long_min", "default": 45.0, "min": 40.0, "max": 50.0, "step": 5.0},
+        {"name": "rsi_long_max", "default": 55.0, "min": 50.0, "max": 60.0, "step": 5.0},
+        {"name": "rsi_short_min", "default": 45.0, "min": 40.0, "max": 50.0, "step": 5.0},
+        {"name": "rsi_short_max", "default": 55.0, "min": 50.0, "max": 60.0, "step": 5.0}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

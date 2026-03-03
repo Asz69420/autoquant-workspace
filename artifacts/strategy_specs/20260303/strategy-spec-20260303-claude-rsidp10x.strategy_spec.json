@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-rsidp10x",
+  "created_at": "2026-03-03T14:00:01Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "RSI pullback works because price reverts to trend after temporary overextension. Current ACCEPT uses RSI<40 (PF=1.442 at 8:1). Hypothesis: deeper pullbacks (RSI<30 for longs, RSI>70 for shorts) indicate stronger exhaustion and produce more explosive snap-backs. The stricter filter reduces trade count but increases average winner quality. Combined with wide TP to capture the full reversion swing.",
+  "target_regime": "ranging (RSI pullback 8:1 ranging PF=1.795) + trending (PF=1.505 — one of few templates profitable in trending)",
+  "variants": [
+    {
+      "name": "rsi_deep_pullback_10to1",
+      "description": "RSI deep pullback (RSI<30 for longs) at 10:1 R:R. Only enters on extreme overextension, captures large reversals. Tests whether deeper = more profitable.",
+      "template_name": "rsi_pullback",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_200 for trend direction, EMA_50 for slope confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 with deep pullback thresholds (30/70)"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [
+        {"name": "rsi_long_max", "default": 30.0, "min": 20.0, "max": 45.0, "step": 5.0},
+        {"name": "rsi_short_min", "default": 70.0, "min": 55.0, "max": 80.0, "step": 5.0},
+        {"name": "ema_trend", "default": 200, "min": 50, "max": 200, "step": 50},
+        {"name": "ema_slope", "default": 50, "min": 20, "max": 50, "step": 10}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "rsi_deep_pullback_8to1_wide",
+      "description": "RSI deep pullback (RSI<30) at 8:1 R:R with wider 2.0 ATR stop. Gives more room for the pullback to resolve before reverting. Tests stop sensitivity for deep pullback entries.",
+      "template_name": "rsi_pullback",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_200 for trend direction, EMA_50 for slope confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 with deep pullback thresholds (30/70)"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [
+        {"name": "rsi_long_max", "default": 30.0, "min": 20.0, "max": 45.0, "step": 5.0},
+        {"name": "rsi_short_min", "default": 70.0, "min": 55.0, "max": 80.0, "step": 5.0},
+        {"name": "ema_trend", "default": 200, "min": 50, "max": 200, "step": 50},
+        {"name": "ema_slope", "default": 50, "min": 20, "max": 50, "step": 10}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "rsi_moderate_pullback_12to1",
+      "description": "RSI moderate pullback (RSI<35) at 12:1 R:R. Less strict than deep (30), more strict than current ACCEPT (40). Ultra-wide TP captures full mean-reversion swings. Tests the RSI threshold vs R:R optimization surface.",
+      "template_name": "rsi_pullback",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_200 for trend direction, EMA_50 for slope confirmation"},
+        {"indicator": "RSI", "role": "confirmation", "notes": "RSI_14 with moderate pullback thresholds (35/65)"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [
+        {"name": "rsi_long_max", "default": 35.0, "min": 25.0, "max": 45.0, "step": 5.0},
+        {"name": "rsi_short_min", "default": 65.0, "min": 55.0, "max": 75.0, "step": 5.0},
+        {"name": "ema_trend", "default": 200, "min": 50, "max": 200, "step": 50},
+        {"name": "ema_slope", "default": 50, "min": 20, "max": 50, "step": 10}
+      ],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}

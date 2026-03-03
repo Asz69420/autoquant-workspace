@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-macd10t1",
+  "created_at": "2026-03-03T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD histogram zero-line cross is a proven signal (9 ACCEPTs, best PF=1.712 at 7:1 R:R). The Supertrend family showed that pushing R:R from 5:1 to 8:1 improved PF from 1.395 to 1.921. Hypothesis: MACD follows the same pattern — wider TP captures rare tail events that dominate returns. Testing 10:1 and 12:1 R:R to find the MACD optimal R:R frontier.",
+  "target_regime": "ranging + transitional (where MACD 7:1 ranging PF=2.062)",
+  "variants": [
+    {
+      "name": "macd_tail_10to1",
+      "description": "MACD histogram zero-line cross at 10:1 R:R. Tests if wider TP than current best (7:1) captures larger tail moves on ETH 4h.",
+      "template_name": "macd_confirmation",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_50 as trend direction baseline for MACD confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-line cross as entry signal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "macd_tail_12to1",
+      "description": "MACD histogram zero-line cross at 12:1 R:R. Ultra-wide TP to capture maximum tail events. RSI slingshot proved 12:1 works (PF=1.270); does MACD perform better at this ratio?",
+      "template_name": "macd_confirmation",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_50 as trend direction baseline for MACD confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-line cross as entry signal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "name": "macd_wide_stop_8to1",
+      "description": "MACD histogram zero-line cross at 8:1 R:R with wider 2.0 ATR stop. Tests whether extra breathing room reduces premature stop-outs while maintaining high R:R. Vortex v2b showed wider stops can hurt — does MACD behave differently?",
+      "template_name": "macd_confirmation",
+      "components": [
+        {"indicator": "EMA", "role": "trend", "notes": "EMA_50 as trend direction baseline for MACD confirmation"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "MACDh_12_26_9 zero-line cross as entry signal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "ATR_14 for stop/TP sizing"}
+      ],
+      "filters": [
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR",
+        "Data required: ETH OHLCV on 4h",
+        "no repaint",
+        "bar-close execution"
+      ],
+      "parameters": [],
+      "constraints": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ]
+}
