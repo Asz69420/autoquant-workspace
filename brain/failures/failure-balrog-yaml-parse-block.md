@@ -13,8 +13,8 @@ tags:
   - pipeline
   - schema
   - blocker
-validated_at: "2026-03-04T12:00:00Z"
-updated_at: "2026-03-04T12:00:00Z"
+validated_at: "2026-03-04T18:00:00Z"
+updated_at: "2026-03-04T18:00:00Z"
 ---
 
 The validate_brain.py simple YAML parser uses json.loads() to parse inline arrays like `tags: [a, b, c]`. JSON requires quoted strings, so unquoted values fail parsing and return the raw string instead of an array. The schema then rejects it as "expected array". This blocked all 14 brain objects, producing 17 FAILs and 14 WARNs across 36+ backtest attempts over 6+ autopilot cycles.
@@ -23,3 +23,4 @@ The validate_brain.py simple YAML parser uses json.loads() to parse inline array
 - Impact: 0 backtests executed since brain init (U18), drought surged 31 → 53
 - Fix: Convert all inline arrays to multi-line YAML (`- item` per line), add validated_at timestamps
 - Prevention: All future brain objects must use multi-line YAML list syntax only
+- Verified fix (U21): Post-fix backtests execute without schema errors. 10/10 runs completed. BALROG no longer blocking.

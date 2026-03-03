@@ -4,242 +4,12 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-03 14:01 UTC
+**Last updated:** 2026-03-03 20:01 UTC
 **Entries:** 25
 
 ---
 
-## 1. Gold: Dubious Speculation
-*IntoTheCryptoverse | transcript | 2026-02-27*
-Source: https://www.youtube.com/watch?v=whCcobPN71w
-
-**Summary:** Hey everyone, thanks for jumping back into the heavy metal verse. Today we're going to talk about gold dubious speculation. You can also use the coupon code ITC50 to get 50% off your first month of Into the Cryptoverse Premium. Let's go ahead and jump in. So, gold is back above 5200.
-**Trading Rules:**
-- Now, what's interesting is when you look at monthly candles for gold, I don't think you could look at this and be able to definitively say that the bull market has to be over, which has been the thesi
-- Even if the top for silver is in, even in the case where silver has topped, gold could still go to an all-time high.
-- Now, if silver has topped for the year, I do not I do not look at this chart and believe that it's like a top that will last for say 20 years.
-- I would say for silver, if this is the top for the year, I might envision us sort of in in a top like this where we had in in 1974 where it might fall off for a while, but I would expect it to come ba
-- And if you look at what silver did in 1973 or sorry 1974, you can see that it dropped about 43% and kind of consolidated with some lower highs for a while, but then eventually it built back up into an
-- And when you look at gold or sorry when you look at silver in this move you can see that the correction that it just had was around 47%.
-- Now one of the things we mentioned for silver is that it should get a counter trend rally that kind of tops out in the March April May time frame if history is any indication.
-- If you look at at silver, if we overlay the price of silver with the price of gold, and we're just going to look back in history and kind of see how these two interact with each other.
-**Strategy Components:**
-- [trend] Now one of the things we mentioned for silver is that it should get a counter trend rally that kind of tops out in the March April May time frame if history is any indication.
-- [trend] And I do sometimes wonder if if this is a trend line that's going to come into play as well, where, you know, you might see it bounce around here for a little while.
-- [trend] And that's why I told you guys when silver was like 45% down, it didn't make sense to go panic sell it because usually you get a counter trend rally going into like the going into the spring, which is
-- [risk] And back then, you know, it made a lot more sense to be underweight metals and overweight stocks and overweight riskier things like crypto.
-**Context:** Timeframes: monthly | Assets: GOLD
-
----
-
-## 2. Пазарът най-накрая удари таргетите ни около 70000$
-*TradeTravelChill | asr_transcript | 2026-02-27*
-Source: https://www.youtube.com/watch?v=pfBjvU0PQSc
-
-**Summary:** And now, the market is at the end of the day and the targets we would have set up from a long time ago. The liquidation of every single bitcoin was more than 30,000, even a little bit. The cars are driving on Twitter in panic, and half of the retail is already out of the market. Most people at the moment are looking at the market and see that Haos is selling for a long time and are wondering why they didn't take this decision sooner. While some are panicking about the red candles, others are baking.
-**Raw Concepts:** And now, the market is at the end of the day and the targets we would have set up from a long time ago. The liquidation of every single bitcoin was more than 30,000, even a little bit. The cars are driving on Twitter in panic, and half of the retail is already out of the market. Most people at the moment are looking at the market and see that Haos is selling for a long time and are wondering why they didn't take this decision sooner. While some are panicking about the red candles, others are baking....
-
----
-
-## 3. How to trade like a pro (step by step) 🤖
-*DaviddTech | transcript | 2026-02-27*
-Source: https://www.youtube.com/watch?v=3pW6m2oTCDE
-
-**Summary:** and retying the market prediction myth and replacing it with trading bots that actually work. I got consistent execution with minimal emotion interference. Most traders think success comes with accurate predictions. In reality, it comes from running a small edge repeatedly. So, to avoid this, number one, lock in your rules.
-**Trading Rules:**
-- So, to avoid this, number one, lock in your rules.
-- Create at least three rules that cover your trading conditions, confirmations, and risk.
-- If you're tired of being bottlenecked by your own trading, follow for more rules-based trading systems that run without your interference.
-**Strategy Components:**
-- [filter] So, to avoid this, number one, lock in your rules.
-- [risk] Create at least three rules that cover your trading conditions, confirmations, and risk.
-**Entry/Exit Conditions:**
-- Create at least three rules that cover your trading conditions, confirmations, and risk.
-
----
-
-## 4. "They're Down 50% Against Gold"
-*IntoTheCryptoverse | transcript | 2026-02-28*
-Source: https://www.youtube.com/watch?v=Tp7ENo2ii40
-
-**Summary:** If you think, well, yeah, you've made a lot of money in stocks. I mean, like, I've done really well with just buying low expense ratio index funds for a long time, but it does not change the fact, and you guys know me. Like, I've always looked at opportunity costs. Like, think about altcoins and Bitcoin, how I spent four or five years, since 2022, early 2022 telling people that alts were bleeding to Bitcoin and there was no justification for for them as a long-term investment. The reality is how good stocks have been over the last few years since 2021.
-**Trading Rules:**
-- If you think, well, yeah, you've made a lot of money in stocks.
-**Context:** Assets: GOLD
-
----
-
-## 5. This Indicator Deleted Almost All of My False Signals!
-*SoheilPKO | transcript | 2026-02-28*
-Source: https://www.youtube.com/watch?v=ssu2qDoPyks
-
-**Summary:** Listen, no matter what trading method you use or what trading strategy you use or what markets you're trading or what time frames you're trading, you always need to analyze volume. Taking a trading decision only based on the price is a blind decision. So volume analysis should be part of your trading strategy. In this video, I want to introduce three volume indicators that are excellent choices to use in your trading strategy. All right, let's add the first indicator.
-**Trading Rules:**
-- When it comes to a volume indicator, most of traders use a basic volume indicator like this one.
-- This one which is an editor specs indicator and written by XDCO if I'm pronouncing it correctly.
-- This one which is added here is just a simple volume indicator that you probably know if you have worked with this volume indicator.
-- If the candle is closed green the color of the bar is green.
-- And if the candle is closed red, the color of the bar is red.
-- When we are using this volume indicator, we don't care about the colors.
-- If we go to the settings of the indicator here in this part heat map threshold multipliers you can see that we have four different multipliers which are set at four 2.5 1 and minus.5.
-- So for example when volume is at least four standard deviation above the average it is considered extra high and when it is one standard deviation above the average it is considered medium.
-**Strategy Components:**
-- [trend] Whether a breakout inside a trend or a breakout after a flat market.
-**Indicators:** volume delta this one which is written by HAP harmonic
-
----
-
-## 6. A trader’s nightmare: when an influencer can’t explain their edge…
-*DaviddTech | transcript | 2026-02-28*
-Source: https://www.youtube.com/watch?v=6Ex-hduaP9A
-
-**Summary:** Sorry bro, you can't practice my strategy. So if two people look at exactly the same chart, are they going to take exactly the same trade? You just have to like feel the market. And your back test feels it too. So how do your students learn it or even understand it?
-**Trading Rules:**
-- So if two people look at exactly the same chart, are they going to take exactly the same trade?
-- So, if you can't test it, verify it, or even explain it, why should I buy your course?
-
----
-
-## 7. The Mechanism That Ends Business Cycles
-*IntoTheCryptoverse | transcript | 2026-02-28*
-Source: https://www.youtube.com/watch?v=bB6oo3oJc0k
-
-**Summary:** Hey everyone and thanks for jumping back into the macroverse. Today we're going to talk about the mechanism that typically ends business cycles. Use the coupon code ITC50 to get 50% off your first month. Let's go ahead and jump in. So, we've been putting out videos for a while talking about how business cycles end.
-**Trading Rules:**
-- Late business cycle environments are characterized where higher risk assets bleed to lower risk assets.
-- I've called it sort of rolling down the risk curve.
-- That's when you have a contraction in the United States.
-- When you do that, you get a chart that looks like this.
-- When you look at it in this way and you see that each business cycle returns back down to these low levels, this metric does anyways, you can see that saying that hey there wasn't a recession in 2014.
-- If you want to ignore the pandemic and say that we can't that was just sort of a black swan, you could argue that this business cycle has been going on since 2009.
-- Okay, that's the equation and you can stop there if you want to.
-- If you want to normalize it, which is what I like to do, you can divide all of it by the money supply M2.
-**Strategy Components:**
-- [risk] Late business cycle environments are characterized where higher risk assets bleed to lower risk assets.
-- [risk] I've called it sort of rolling down the risk curve.
-- [risk] And if you're curious why higher risk assets have been doing so poorly for so long, it's because we have been in a late business cycle environment for many years.
-- [trend] So again even in the '90s the unemployment rate was trending higher.
-**Entry/Exit Conditions:**
-- Late business cycle environments are characterized where higher risk assets bleed to lower risk assets.
-- I've called it sort of rolling down the risk curve.
-- Okay, that's the equation and you can stop there if you want to.
-- And if you're curious why higher risk assets have been doing so poorly for so long, it's because we have been in a late business cycle environment for many years.
-**Context:** Assets: GOLD
-
----
-
-## 8. Average day as an automated trader 🤖
-*DaviddTech | transcript | 2026-03-01*
-Source: https://www.youtube.com/watch?v=lGtVSCYaRZg
-
-**Summary:** Okay, so being a trader who uses automation, my days vary quite a lot, one from another, but I guess that's part of the fun and kind of the point. Typically, my day starts before the whole of my house awakes. I barely sleep, and my brain has the habit of turning on early, whether I want it to or not. I make coffee and sit down quietly so I don't wake everybody else up. First thing I do is check my systems just to confirm everything is running the way it's supposed to.
-**Trading Rules:**
-- If something needs attention, I'll note it for a bit later.
-- And if you want to see more trading content, make sure you hit.
-
----
-
-## 9. Bitcoin: The Beauty of Mathematics (Part 68)
-*IntoTheCryptoverse | transcript | 2026-03-01*
-Source: https://www.youtube.com/watch?v=hAFvtCnrJAw
-
-**Summary:** Hey everyone and thanks for jumping back into the cryptoverse. Today we're going to talk about Bitcoin, the beauty of mathematics part 68. You can also check out my other website benjenkowan.com as well. Let's go ahead and jump in. So the cryptocurrency market cap is coming in at around 2.29 trillion.
-**Trading Rules:**
-- And then when Bitcoin topped out, there was then no rotation into altcoins.
-- And so, really, if you think about it, it all happens to align perfectly.
-- Now, the hard part now is if we didn't go to durably overvalued, can we go the entire year without really starting to creep down to this lower regression trend line?
-- So, there's still some room for the asset class to move down in the midterm year if it wants to.
-- If you look at at Bitcoin, if we look at Bitcoin's total market cap, the market cap of Bitcoin is around 1.33 trillion.
-- So with Bitcoin making up the difference, there's still more in Bitcoin than the altcoin market, but if Bitcoin continues to go down, which it likely will as the year goes on, it will drag the altcoin
-- I'm not an expert on predicting when those counterturn rallies will occur.
-- But I think the bare market still has some time to play out even if you do get a a counter trend rally, you know, potentially back up to the bull market support band or now bare market resistance band
-**Strategy Components:**
-- [trend] This is still about 50 to 55% I think 50 53.55% below that quote unquote fair value logarithmic aggression trend line.
-- [trend] Now, the hard part now is if we didn't go to durably overvalued, can we go the entire year without really starting to creep down to this lower regression trend line?
-- [trend] But I think the bare market still has some time to play out even if you do get a a counter trend rally, you know, potentially back up to the bull market support band or now bare market resistance band
-- [risk] And then when everything else rolled over because we were in a late business cycle environment like 2019, you don't get that final rotation into higher risk assets because Bitcoin did not have its own
-**Entry/Exit Conditions:**
-- And then when everything else rolled over because we were in a late business cycle environment like 2019, you don't get that final rotation into higher risk assets because Bitcoin did not have its own
-**Context:** Timeframes: daily
-
----
-
-## 10. Трейдинг за начинаещи: Как трябва да изглежда денят ти !
-*TradeTravelChill | asr_transcript | 2026-03-02*
-Source: https://www.youtube.com/watch?v=5FkZrOoGmJc
-
-**Summary:** If you start training today, in 2026, you will be able to do something different from 90% of the people. You will not be able to look for signals, you will not be able to jump between strategies. For sure, you will not be able to open your position and accept the principle. You will be able to build up a simple, repeatable day by day process. Because the truth is the following.
-**Trading Rules:**
-- If you start training today, in 2026, you will be able to do something different from 90% of the people.
-- If you are starting, you want to do it seriously.
-- If we are in the trend, what is the trend?
-- Higher, higher, higher, higher high, higher high, higher high, higher high, higher high, and we enter the consolidation flag while we are still not doing it.
-- When I look at it, I realize that we are down-trend.
-- When I said this, I knew that the macro trend is not very good.
-- If you took a similar trade, you can allow yourself to cover the AMA and the previous structure, namely this top hand here and then to drive this trend down.
-- If you start trading seriously there is a little advantage and it matters.
-**Strategy Components:**
-- [trend] If we are in the trend, what is the trend?
-- [trend] For example, the 7th graphic looks like a trend for us.
-- [trend] The day graphic again looks like a trend for us.
-**Entry/Exit Conditions:**
-- So you have to know when we have lower days and lower levels in downtrend and when we have higher levels or consolidation in the next wave consolidation and in the next wave and after that Entry: the 
-**Indicators:** for long-term long-term
-**Context:** Timeframes: daily, 1m | Assets: BTC, GOLD, XRP
-
----
-
-## 11. Bitcoin: The Early March Rally
-*IntoTheCryptoverse | transcript | 2026-03-02*
-Source: https://www.youtube.com/watch?v=R9yYJXpYYzg
-
-**Summary:** Hey everyone and thanks for jumping back into the cryptoverse. Today we're going to talk about Bitcoin and we're going to be discussing this early March rally that we have been talking about for the last couple of weeks. Let's go ahead and jump in. So, one of the things that we have identified with Bitcoin in midterm years is that Bitcoin will often form a low in February and then it will tend to form a lower high in March. So, we're going to go through a few examples, but before we get to those examples, I want you to look at the average response of Bitcoin in midterm years around this time.
-**Trading Rules:**
-- So if you look at the year-to- date ROI of Bitcoin so far this year, this is what it looks like, right?
-- Like if there is a rally and you hold nothing, then you're more likely to FOMO in and be that person that buys at the lower high.
-- Whereas, if you just kind of have a small stack that you always hold no matter what, it kind of helps helps with that.
-- Now, the only counterpoint to that is to say, what if the low here that we broke down from is more comparable to say the lows from from 2024?
-- I don't know if it's going to let me move them over collectively, but what we're going to do is we're going to go look at at the next one.
-- If you zoom in, technically it was late February, but again you did have renewed strength into early March and the top was March 5th.
-- I don't remember when it was in 2014.
-- When did the lower high occur?
-**Strategy Components:**
-- [trend] And that the main goal of midterm years is to not chase every single counter trend rally, but to preserve what you have because at the, you know, later on this year, a lot of these rallies no longer, 
-- [filter] And what you'll notice is that back then what Bitcoin did was it it rallied for a week, got rejected, rallied again up to the bare market resistance band, even got a little bit above it, but ultimatel
-- [filter] It went to the It went back up to the resistance band, got rejected, came back down.
-- [filter] Like is there a chance that Bitcoin goes up to that gets rejected and then gets another rally into late March kind of like last cycle?
-**Context:** Timeframes: daily
-
----
-
-## 12. Using Crypto to Trade Gold & US Markets (Full Walkthrough)
-*ECKrown | transcript | 2026-03-03*
-Source: https://www.youtube.com/watch?v=XkdmG94fvqA
-
-**Summary:** In this video, I want to show you how you can use your cryptos like your tethers, your USDC, your bitcoins, your salon, your ethereums, your uh camel coins, whatever to to put trades on other markets. When I say other markets, I'm talking about gold, silver, platinum, platium, all of the major US indices like SPY, NASDAQ, Dow Jones, and even other world markets as well, plus many, many more. all of the major US equities as well and even several different Forex pairs. That is going to be through Bybit, which is the link in the description below, which will give you several bonuses. But of course, full disclosure, it is an affiliate link, but I want to walk you through how you actually fund your account, how you put on trades, these sort of things.
-**Trading Rules:**
-- When I say other markets, I'm talking about gold, silver, platinum, platium, all of the major US indices like SPY, NASDAQ, Dow Jones, and even other world markets as well, plus many, many more.
-- Honestly, if you're familiar with Bybit or any of the major crypto exchanges, you're already going to know how this works.
-- She was trying to sign up to a Vanguard account to get uh, you know, access to the US markets when we were living in Europe.
-- Uh but yeah if you're not US person it's probably the easiest way to get exposure to these major markets which you know are the ones that are typically moving.
-- But of course, if you're just looking at Bitcoin, there's been [ __ ] all going on for the past month and for the couple months before that, you know, pretty much nothing going on over here as well.
-- So, if you are a career trader or a career investor, you know, the opportunity cost is a real thing.
-- But if you do want those bonuses, then yes, there is a nice benefit with that.
-- I don't really know why you'd want to do that, but hey, if you do, it's all there for you.
-**Strategy Components:**
-- [risk] Of course, also on your order entry screen, if you can actually go through this, then you can also set up your takerit and your stop loss in advance.
-- [risk] But at the very least, you can protect yourself and and manage risk that way.
-- [confirmation] It also requires a trading volume as well.
-**Risk Management:**
-- Stop below previous swing low.
-**Entry/Exit Conditions:**
-- Of course, also on your order entry screen, if you can actually go through this, then you can also set up your takerit and your stop loss in advance.
-- But at the very least, you can protect yourself and and manage risk that way.
-**Context:** Assets: GOLD, NASDAQ
-
----
-
-## 13. My Updated EMA Settings! Impossible to Lose with THIS Strategy!
+## 1. My Updated EMA Settings! Impossible to Lose with THIS Strategy!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=UiZflVQxoXk
 
@@ -278,7 +48,7 @@ Source: https://www.youtube.com/watch?v=UiZflVQxoXk
 
 ---
 
-## 14. All My Indicators Were Useless... Until I Found THIS One! Try It NOW!
+## 2. All My Indicators Were Useless... Until I Found THIS One! Try It NOW!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=RRmHGgO2SD8
 
@@ -319,7 +89,7 @@ Source: https://www.youtube.com/watch?v=RRmHGgO2SD8
 
 ---
 
-## 15. This Indicator Tells You Exactly When Trend Is UP or DOWN!
+## 3. This Indicator Tells You Exactly When Trend Is UP or DOWN!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=W1DcXrwJkdw
 
@@ -355,7 +125,7 @@ Source: https://www.youtube.com/watch?v=W1DcXrwJkdw
 
 ---
 
-## 16. This Indicator Tells You Exactly When to ENTER & EXIT Trades!
+## 4. This Indicator Tells You Exactly When to ENTER & EXIT Trades!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=Uj7Bk7r9dfU
 
@@ -394,7 +164,7 @@ Source: https://www.youtube.com/watch?v=Uj7Bk7r9dfU
 
 ---
 
-## 17. I Waited So Long for THIS All-In-One Price Action Indicator!
+## 5. I Waited So Long for THIS All-In-One Price Action Indicator!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=GZLlLCkJUHQ
 
@@ -424,7 +194,7 @@ Source: https://www.youtube.com/watch?v=GZLlLCkJUHQ
 
 ---
 
-## 18. This SECRET Settings of MACD Make It Impossible to Lose!
+## 6. This SECRET Settings of MACD Make It Impossible to Lose!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=ekyEyibuKhc
 
@@ -462,7 +232,7 @@ Source: https://www.youtube.com/watch?v=ekyEyibuKhc
 
 ---
 
-## 19. The ONLY Indicator with ZERO False Signals! [Used by Professionals]
+## 7. The ONLY Indicator with ZERO False Signals! [Used by Professionals]
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=qjRFgNHrqrc
 
@@ -488,7 +258,7 @@ Source: https://www.youtube.com/watch?v=qjRFgNHrqrc
 
 ---
 
-## 20. This Indicator Tells You EXACTLY When a New Trend Starts!
+## 8. This Indicator Tells You EXACTLY When a New Trend Starts!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=umw9T9_8Fi0
 
@@ -528,7 +298,7 @@ Source: https://www.youtube.com/watch?v=umw9T9_8Fi0
 
 ---
 
-## 21. After 10 Years of Failure and Wins, I Found Indicator that Works!
+## 9. After 10 Years of Failure and Wins, I Found Indicator that Works!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=_m17obVJl1g
 
@@ -565,7 +335,7 @@ Source: https://www.youtube.com/watch?v=_m17obVJl1g
 
 ---
 
-## 22. Delete ALL Your Indicators, and Use Only THIS One! [Perfect for Scalping]
+## 10. Delete ALL Your Indicators, and Use Only THIS One! [Perfect for Scalping]
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=vSOlWwtzU2c
 
@@ -600,7 +370,7 @@ Source: https://www.youtube.com/watch?v=vSOlWwtzU2c
 
 ---
 
-## 23. After 10 Years, I Found the Perfect EMA Settings! It Shows Exact Signals!
+## 11. After 10 Years, I Found the Perfect EMA Settings! It Shows Exact Signals!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=QuovcpwYjxg
 
@@ -635,7 +405,7 @@ Source: https://www.youtube.com/watch?v=QuovcpwYjxg
 
 ---
 
-## 24. This NEW Tool Made Me DELETE Every Indicator from My Chart!
+## 12. This NEW Tool Made Me DELETE Every Indicator from My Chart!
 *SoheilPKO | transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=drIqeApSOec
 
@@ -672,7 +442,7 @@ Source: https://www.youtube.com/watch?v=drIqeApSOec
 
 ---
 
-## 25. LIVE: BlackRock confirms partnership with Ripple! This Speech Is a Game Changer for XRP!
+## 13. LIVE: BlackRock confirms partnership with Ripple! This Speech Is a Game Changer for XRP!
 *PineTrades | youtube_url | 2026-03-03*
 Source: https://www.youtube.com/watch?v=sCJwxieF8L0
 
@@ -680,5 +450,395 @@ Source: https://www.youtube.com/watch?v=sCJwxieF8L0
 **Trading Rules:**
 - This is most likely caused by: Subtitles are disabled for this video If you are sure that the described cause is not responsible for this error.
 **Context:** Assets: XRP
+
+---
+
+## 14. My Updated EMA Settings! Impossible to Lose with THIS Strategy!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=UiZflVQxoXk
+
+**Summary:** The name of this setup is double 8. It gives you the most accurate bicep signals ever. It's very easy and you just need to follow my instruction. Alright, we need to add four exponential moving averages and we're gonna give them special settings and combination. Alright, here we click on indicators and we search Reben, this one, moving average Reben.
+**Trading Rules:**
+- When you add this indicator, automatically four moving averages are added to the chart and now we need to change their settings.
+- If you remember these two white lines here are EMA with length of eight, one based on high and the other one based on low and they created a channel on the price chart which we call it white channel a
+- From here when this candle is closed, you can see that both of the white lines are above the green channel.
+- When we got this, we go back on the price action and we find the highest high and we mark this level.
+- If it is far from the green channel, it is not a good pullback and you shouldn't take any action.
+- Alright, so we already marked this high and we should wait and see if the price is able to close above this level or not because this high can act as a potential resistance level.
+- So here the reversal of the price is confirmed and in practice, we could enter a long position at this point with the stop loss below the pullback and profit target at risk to reward ratio of two.
+- In a short position setup, which is when we are trying to catch starting of a downtrend, in the first step, we want crossing of the price below the green channel.
+**Strategy Components:**
+- [trend] This green channel is gonna help us with trend changes and the white channel is gonna help us with momentum changes inside trends.
+- [trend] This is a reversal trading strategy and we're gonna find the points of the market that the trend is changing and then we're gonna find an excellent opportunity to enter a trade.
+- [trend] This is an early signal that probably an uptrend is forming in the market.
+- [risk] So here the reversal of the price is confirmed and in practice, Entry: a long position at this point with the Stop: below the pullback and Target: 2R.
+- [risk] So here the reversal is confirmed and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.
+- [risk] You can see that it happened here so the buy signal is confirmed and in practice Entry: a long position at this point with the Stop: below the pullback and profit target at risk to reward ratio of 2.
+- [filter] So by considering this point that the pullback should go near to the green channel or ideally inside the green channel you can avoid false signals like this.
+**Risk Management:**
+- Stop below previous swing low.
+- Target at 2R.
+- Use explicit risk management on every trade.
+**Entry/Exit Conditions:**
+- In a short position setup, which is when we are trying to catch starting of a downtrend, in the first step, we want crossing of the price below the green channel.
+- So here the reversal is confirmed and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.
+- You can see that it happened here so the buy signal is confirmed and in practice Entry: a long position at this point with the Stop: below the pullback and profit target at risk to reward ratio of 2.
+- To lower our risk we follow the rules of our trading strategy after a short pullback like this.
+- This trading strategy is very accurate because it has different layers of confirmation with the final confirmation based on price action breaking which helps to filter most of the false signals but no
+- One percent role risk management is the best risk management strategy that is recommended by professional traders.
+**Indicators:** EMA
+
+---
+
+## 15. All My Indicators Were Useless... Until I Found THIS One! Try It NOW!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=RRmHGgO2SD8
+
+**Summary:** This indicator measures pressure, bullish pressure versus bearish pressure. This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down. Alright on trading view platform here click on indicators and search redk trader pressure index. This one which is an editor specs indicator and written by redk trader. Alright this is the indicator and as you can see it is added here below the chart.
+**Trading Rules:**
+- This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down.
+- So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is likely to go.
+- So when we have green area it tells us that we have more pressure from buyers and when we have red area it tells us that we have more pressure from sellers.
+- When the white line is above zero there is higher buying pressure in the market and in times that the white line is below zero there is higher selling pressure in the market.
+- When the area passes the 30 level it shows that now we have considerable pressure in that direction and here we have two MACDs.
+- When it is red the market is trending down and when it is green the market is trending up so the point of histogram changing can be a signal for starting of a new trend.
+- In fact because this MACD has shorter length before the changing point of the longer MACD earlier than this the shorter term MACD is already above the centerline but at this point when the longer MACD
+- When we have three of these situations at the same time the starting of an uptrend is confirmed.
+**Strategy Components:**
+- [trend] We use the MACD with longer length for identifying longer term trend of the market and we use the MACD with shorter length for identifying shorter term trends or momentum changes in the market.
+- [trend] In this trading strategy in the first step we start with the longer MACD as I said it is used for identifying longer term trends of the market.
+- [trend] When it is red the market is trending down and when it is green the market is trending up so the point of histogram changing can be a signal for starting of a new trend.
+- [confirmation] Here we have a dashed line which is at 30 and this is our control level.
+- [confirmation] Require green area and it should be above 30.
+- [confirmation] Bearish pressure must exceed 30 to confirm short setup.
+- [momentum] In the next step we look at the shorter MACD.
+- [momentum] When this happened we want the shorter MACD to also be below the centerline.
+- [risk] In other words the buy signal here is confirmed so in practice Entry: a long position at this point with the Stop: below the previous swing low and profit target at risk to reward ratio of 2.
+- [risk] Bullish pressure must exceed 30 to confirm long setup.
+**Risk Management:**
+- Stop below previous swing low.
+**Entry/Exit Conditions:**
+- In fact because this MACD has shorter length before the changing point of the longer MACD earlier than this the shorter term MACD is already above the centerline but at this point when the longer MACD
+- When we have three of these situations at the same time the starting of an uptrend is confirmed.
+- In other words the buy signal here is confirmed so in practice Entry: a long position at this point with the Stop: below the previous swing low and profit target at risk to reward ratio of 2.
+- When the histogram goes below the centerline and it becomes red it is a signal that probably a downtrend is forming on the chart.
+- When we have three of these situations at the same time the downtrend is confirmed so in practice Entry: a short position at this point and you can see that this trade was also a profitable trade.
+- The shorter MACD is also above the centerline so supporting the formation of an uptrend and here we can see that we have a bullish pressure because the area is green and it is above 30 so the buy sign
+**Indicators:** redk trader pressure index, Alright on trading view platform here click on indicators and search redk trader pressure index, MACD
+**Parameters:** average length=30, smoothing=15, fast length=100, slow length=200, signal smoothing=50
+
+---
+
+## 16. This Indicator Tells You Exactly When Trend Is UP or DOWN!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=W1DcXrwJkdw
+
+**Summary:** It is built based on triple exponentially smoothed moving average and because of this it can filter the majority of noises on the chart. This is one of the best trend indicator on TradingView that can help you with trends and momentum changes in the market, making it a perfect choice for trend following strategies and reversal trading strategies. All right, let's add the indicator. Here we click on indicators and we search trex t-r-i-x. This one trex histogram which is written by just Uncle L.
+**Trading Rules:**
+- By default trex is shown like a histogram but in case if you want to have it like an oscillator line here you can go to the settings of the indicator and here you have an option to show trex as a line
+- When the histogram is below the centerline and red it shows that the market is trending down and when the histogram is above the centerline and it is green it shows that the market is in an uptrend.
+- When the histogram is below the centerline we have two shades of red.
+- When it is dark red which is when the bars are going lower and lower it shows that the downside momentum is increasing and when the bars become smaller and the color becomes lighter red it shows that 
+- Similarly when the histogram is above the centerline there are two shades of green.
+- When it is light green which is when the bars are going higher and higher this shows that the upside momentum is increasing and when it becomes dark green it shows that the upside momentum is weakenin
+- You may ask if the points of the histogram changing can be used as a trading signal.
+- For example when the histogram goes below the centerline and becomes red it can be a signal for starting of a downtrend and when the histogram goes above the centerline and becomes green it can be a s
+**Strategy Components:**
+- [filter] It is built based on triple exponentially smoothed moving average and because of this it can filter the majority of noises on the chart.
+- [trend] This is one of the best trend indicator on TradingView that can help you with trends and momentum changes in the market, making it a perfect choice for trend following strategies and reversal trading 
+- [trend] So regardless of the noises and short term fluctuations that you see on the chart it can give you a stable picture of the trends and momentum changes inside the trends.
+- [trend] We continue with the histogram because it makes it easier to analyze momentum changes that are happening inside trends.
+- [momentum] This one trex histogram which is written by just Uncle L.
+- [momentum] This is actually an oscillator and you can see that we have a histogram and a line that are moving above and below the center line which is zero.
+- [momentum] All right getting back to the indicator this histogram is trex.
+**Risk Management:**
+- Use explicit risk management on every trade.
+**Entry/Exit Conditions:**
+- For example when the histogram goes below the centerline and becomes red it can be a signal for starting of a downtrend and when the histogram goes above the centerline and becomes green it can be a s
+- We want to decrease our risk as much as possible so we wait for a pullback to see what happens next because if the reversal is real and now downside momentum is greater than the upside momentum in the
+- When we got a betas signal like this it tells us that probably the pullback ended so here the reversal is confirmed and you can see how the price turned to a downtrend.
+- You need to manage your risk properly so you can minimize the effect of your losing positions.
+- One percent role risk management is the best risk management strategy and recommended by professional traders.
+- I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you cannot survive in this game.
+**Indicators:** trex t-r-i-x
+
+---
+
+## 17. This Indicator Tells You Exactly When to ENTER & EXIT Trades!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=Uj7Bk7r9dfU
+
+**Summary:** It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen. This is one of the best indicators on trading view for scalping strategies and day trading strategies. So it's suitable for timeframes like 1 minute, 5 minutes, 15 minutes up to 1 hour. This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudden increase of momentum in the market. Alright, on trading view platform, here we click on indicators and we search BB impulse indicator, this one which is written by lazybear.
+**Trading Rules:**
+- This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudde
+- If we go to the settings of the indicator, you can see that we have settings for length and multiplier similar to Bollinger bands and similarly by default the length is set at 20 and the multiplier is
+- Alright, so this dashed line here is alert level which is set at 0.24 and this solid line here is impulse level which is set at 0.4 so depending on the size of the bar if the bar passes the alert leve
+- When the bar passes the alert level the dashed line it is alert signal that the momentum is probably going to increase and when the bar passes the impulse level the solid line here it is impulse signa
+**Strategy Components:**
+- [momentum] It gives you impulse signal where the momentum is suddenly increasing and a breakout is probably going to happen.
+- [momentum] As you can see, we have a histogram and the bars are sometimes above the center line and sometimes below the center line with different colors.
+- [momentum] Alright, so this dashed line here is alert level which is set at 0.24 and this solid line here is impulse level which is set at 0.4 so depending on the size of the bar if the bar passes the alert leve
+- [trend] This indicator can be used for any type of trading strategies whether it is trend following strategy, reversal strategy or breakout trading strategy because it gives you a signal when there is a sudde
+**Indicators:** BB impulse indicator, mac t this one moving average convergence divergence and we need to change its se, Bollinger Bands
+**Parameters:** fast length=100, slow length=200, signal length=50
+
+---
+
+## 18. I Waited So Long for THIS All-In-One Price Action Indicator!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=GZLlLCkJUHQ
+
+**Summary:** I want to show something amazing, a new indicator that gives you a dashboard related to market structure and price action concepts. It is an all-in-one indicator combining order block, fair value gap, liquidity sweep, volume analysis, volatility analysis, swing high and swing low, market structure labels, and many more concepts. And the excellent feature is that all these concepts can be displayed independently in up to seven different timeframes and everything is shown here in this dashboard. This is the best indicator I've ever seen on TradingView. I will completely explain this indicator and how you can use it.
+**Trading Rules:**
+- If we go to the settings of the indicator here, you can see that we have settings related to timeframes.
+- You can have up to seven different timeframes and you can set if, for example, you use three timeframes in your trading strategy, you can remove the other ones and adjust timeframes based on your trad
+- And in case if you want to change them, you need to consider this fact that the higher the timeframe, the more reliable the trends.
+- If, for example, we go to one minute timeframe, you can see that we have information for seven timeframes that are set in the settings.
+- If we go to the settings of the indicator, and if we scroll down here, we have settings for visual overlays.
+- When you hover on each of these information, the indicator gives a small explanation.
+- If we go to weekly timeframe, we can see that yes, the price swept the liquidity and turned back down.
+- If we go to the settings of the indicator and if we scroll down here, we can turn on order blocks.
+**Strategy Components:**
+- [trend] In front of each timeframe, there is also weight of the timeframe for trend calculation.
+- [trend] And in case if you want to change them, you need to consider this fact that the higher the timeframe, the more reliable the trends.
+- [trend] So they should have higher weight in trend calculation.
+- [confirmation] So depending on your trading strategy and the timeframes that you need, you can have your required timeframes here.
+- [confirmation] This indicator by providing a multi time frame dashboard, it can help you to effectively analyze the market and have your required information all in one in a single dashboard on your price chart.
+- [risk] So we can consider them in our trading strategy for trade entry, stop loss and profit target.
+**Risk Management:**
+- Stop below previous swing low.
+**Entry/Exit Conditions:**
+- So we can consider them in our trading strategy for trade entry, stop loss and profit target.
+**Indicators:** market structure dashboard, EMA
+**Context:** Timeframes: daily, weekly
+
+---
+
+## 19. This SECRET Settings of MACD Make It Impossible to Lose!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=ekyEyibuKhc
+
+**Summary:** Follow my instruction step by step. On Trading View Platform, here click on Indicators and search MACD. And add two MACDs to your chart. And now you need to change their settings. I wanna teach you a secret settings and combination of these two MACDs that together they help you find the most accurate Bicell Signals on the chart.
+**Trading Rules:**
+- We're gonna use this MACD histogram to see when a new trend is forming on the chart and then by the help of MACD line and signal line that are showing shorter momentum changes in the market, we're gon
+- When it is below the center line and red, the market is trending down and when it is above the center line and green, the market is trending up.
+- If the reversal is real and now in the market we have greater downside momentum than upside momentum, this advancing of the price shouldn't be able to pass the previous high and before this, it should
+- When MACD histogram went below the center line and became red, here we wait for the white line to go above the orange line.
+- When this happened, it tells us that probably the pullback ended and the price is gonna decline more.
+- So the reversal is confirmed here and in practice we could enter a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.
+- But as I said, this is not where we enter a trade.
+- We need more confirmation for the reversal and for this purpose we wait for a pullback because it can show if we have greater upside momentum in the market or greater downside momentum.
+**Strategy Components:**
+- [momentum] Alright, here we have a MACD line, signal line and MACD histogram and it seems like an ordinary MACD indicator but it is not because this MACD histogram is not based on this MACD line and signal line 
+- [momentum] The MACD histogram has longer length for the moving averages and these MACD line and signal line are based on shorter length for the moving averages.
+- [momentum] Here you can see that the MACD histogram went below the center line and became red.
+- [trend] The MACD line and signal line, I mean this white line and the orange line will help us with shorter momentum changes in the market and this MACD histogram will help us with identifying trends and tren
+- [trend] As I said, we use this MACD histogram for trend identification.
+- [trend] When it is below the center line and red, the market is trending down and when it is above the center line and green, the market is trending up.
+- [risk] We're gonna use this MACD histogram to see when a new trend is forming on the chart and then by the help of MACD line and signal line that are showing shorter momentum changes in the market, we're gon
+- [risk] But we're not gonna trade only based on this signal because still too risky and we may encounter many false signals.
+- [risk] So the reversal is confirmed here and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.
+- [confirmation] When this happened and the white line is already closed above the orange line, the reversal is confirmed.
+**Risk Management:**
+- Stop below previous swing low.
+- Apply 1% risk rule.
+**Entry/Exit Conditions:**
+- We're gonna use this MACD histogram to see when a new trend is forming on the chart and then by the help of MACD line and signal line that are showing shorter momentum changes in the market, we're gon
+- When it is below the center line and red, the market is trending down and when it is above the center line and green, the market is trending up.
+- If the reversal is real and now in the market we have greater downside momentum than upside momentum, this advancing of the price shouldn't be able to pass the previous high and before this, it should
+- When MACD histogram went below the center line and became red, here we wait for the white line to go above the orange line.
+- So the reversal is confirmed here and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.
+- When this happened and the white line is already closed above the orange line, the reversal is confirmed.
+**Indicators:** MACD
+**Parameters:** fast length=100, slow length=200, signal length=50, fast length=8, slow length=13
+
+---
+
+## 20. The ONLY Indicator with ZERO False Signals! [Used by Professionals]
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=qjRFgNHrqrc
+
+**Summary:** Alright, to add this indicator, here we click on indicators and we search dual range volume profile, this one which is written by someone named Uncle the Shooter. Alright, this is the indicator and as you can see it's added here on the right side of the chart. As the name of the indicator is telling us, this is a volume profile indicator but we have two histograms here and this new volume profile indicator. In other words, the indicator uses two different price ranges to calculate and show volume profile. This is main profile and this is pivot profile.
+**Trading Rules:**
+- And in this case, when we check the price action, we can clearly see that we had reaction of the price around this price range.
+- So we can have reaction when the price retest this level or break this level.
+- So when the price reaches to around this line, we have high probability that the price will stop here and then it goes up or if it is broken, it will become a resistance level for any pullback or rete
+- So when you know in what price ranges, there is high probability to have stopping of the price and then turning off the price.
+- This can effectively help you with your trade entries, setting stop loss and profit target.
+- If we go to the settings of the indicator here, you can see that for the value area, the percentage is set at 50.
+- So for example, if you zoom out and more candles become visible on the price chart, the volume profile will change because now it considers this amount of look back period to calculate and show this v
+- And if you use volume profile in your trading strategy, this indicator is a good choice for you.
+**Strategy Components:**
+- [momentum] As the name of the indicator is telling us, this is a volume profile indicator but we have two histograms here and this new volume profile indicator.
+- [risk] This can effectively help you with your trade entries, setting stop loss and profit target.
+**Risk Management:**
+- Stop below previous swing low.
+**Entry/Exit Conditions:**
+- So when the price reaches to around this line, we have high probability that the price will stop here and then it goes up or if it is broken, it will become a resistance level for any pullback or rete
+- So when you know in what price ranges, there is high probability to have stopping of the price and then turning off the price.
+- This can effectively help you with your trade entries, setting stop loss and profit target.
+**Indicators:** dual range volume profile
+
+---
+
+## 21. This Indicator Tells You EXACTLY When a New Trend Starts!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=umw9T9_8Fi0
+
+**Summary:** Desk Indicator is the best trend indicator ever created on TradingView. Alright, here we click on indicators and we search TASC Directional Movement. This one, which is an editor specs indicator and written by point coders TASC. Alright, this is the indicator and as you can see it's added here below the chart in the form of an oscillator. You can see that we have a line here that is moving above and below the center line which is zero.
+**Trading Rules:**
+- When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in a downtrend and when the line is above the center
+- Alright, by default the length of the oscillator is set at 10 and if we decrease the length, for example, if we set it at 5, the indicator becomes more responsive to the price action.
+- Here in this indicator, when this line goes above the center line, it shows a probable pollback and when it is closed back below the center line, it shows end of the pollback and an excellent opportun
+- Here in this situation, when the oscillator line goes below the center line, it shows a probable pollback and when it is closed back above the center line, it shows end of the pollback and a great opp
+- When the line is below the center line, we say the market is trending down and when the line is above the center line, we say that the market is trending up and then by the help of another indicator a
+- If you know this indicator, I mean the parabolic SAR, it is very helpful for identifying pullbacks and end of the pullbacks.
+- When the dots are above the price, it shows that we have greater downside momentum, so the price is declining and when the dots go below the price, it shows we have greater upside momentum, so the pri
+- This shows that probably a downtrend is started, but we don't trade only based on this because we can encounter many false signals, so we need more confirmation to decrease our risk and be more confid
+**Strategy Components:**
+- [trend] Desk Indicator is the best trend indicator ever created on TradingView.
+- [trend] Hand function is used for signal processing and because of this, it is very suitable for financial markets to identify signals of momentum changes or trend changes in the market.
+- [trend] When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in a downtrend and when the line is above the center
+- [momentum] So on every momentum changes in the market, we have changing in the indicator.
+- [momentum] When the dots are above the price, it shows that we have greater downside momentum, so the price is declining and when the dots go below the price, it shows we have greater upside momentum, so the pri
+- [momentum] This shows a sudden change in momentum from upside to downside.
+- [risk] When the line is below the center line, we say the market is trending down and when the line is above the center line, we say that the market is trending up and then by the help of another indicator a
+- [risk] This shows that probably a downtrend is started, but we don't trade only based on this because we can encounter many false signals, so we need more confirmation to decrease our risk and be more confid
+- [risk] So here we are now and in the next step, we want to find a low-risk trading opportunity to enter a trade.
+- [confirmation] So here the cell signal is confirmed and in practice Entry: a short position at this point.
+**Risk Management:**
+- Stop below previous swing low.
+- Target at 2R.
+- Use explicit risk management on every trade.
+- Apply 1% risk rule.
+**Entry/Exit Conditions:**
+- When the price is below the center line, the color is blue and this shows that we have greater downside momentum so the price is probably declining in a downtrend and when the line is above the center
+- Here in this indicator, when this line goes above the center line, it shows a probable pollback and when it is closed back below the center line, it shows end of the pollback and an excellent opportun
+- Here in this situation, when the oscillator line goes below the center line, it shows a probable pollback and when it is closed back above the center line, it shows end of the pollback and a great opp
+- When the line is below the center line, we say the market is trending down and when the line is above the center line, we say that the market is trending up and then by the help of another indicator a
+- This shows that probably a downtrend is started, but we don't trade only based on this because we can encounter many false signals, so we need more confirmation to decrease our risk and be more confid
+- So here we are now and in the next step, we want to find a low-risk trading opportunity to enter a trade.
+**Indicators:** TASC Directional Movement
+**Parameters:** max value also=0.3
+
+---
+
+## 22. After 10 Years of Failure and Wins, I Found Indicator that Works!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=_m17obVJl1g
+
+**Indicators:** jurik ma trends breakouts this one which is a new indicator from big beluga all r
+**Raw Concepts:** look at this check check signal enter a trade boom again check check signal enter a trade boom this indicator will blow your mind i will teach you how you can effectively use this indicator so make sure you watch this video until the end and let's get started before i add the indicator if you like my contents please support the channel by liking the video and subscribing to my channel if you haven't subscribed yet all right let's add the indicator here we click on indicators and we search jurik ma trends breakouts this one which is a new indicator from big beluga all right this is the indicator and as you can see it is overlaid on the price chart this indicator has two parts we have this line here that changes color between green and blue and this is a jurik moving average jurik moving ave...
+
+---
+
+## 23. Delete ALL Your Indicators, and Use Only THIS One! [Perfect for Scalping]
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=vSOlWwtzU2c
+
+**Summary:** This indicator is designed for scalpers. I want to teach you a very accurate trading strategy based on this indicator. All right, on TradingView platform, here we click on indicators and we search scalping pullback. This one, which is written by just uncle L. All right, this is the indicator.
+**Trading Rules:**
+- If we go to the settings of the indicator here, we can turn on the slow EMA, which is an EMA with length of 600.
+- And the best opportunity is when there is a pullback.
+- And if the price goes lower than this, it is okay.
+- So we could enter a long position at this point with the stop plus below the channel and profit target at 1.5 risk to reward ratio.
+- Deeper pullbacks can give you more probability if you have proper confirmation.
+- And when we check RSI, we can see that RSI line went below the centerline.
+- When the RSI line closes back above the centerline and also above the moving average line for more confirmation, which is the case here, this can tell us that the pullback ended and there is a high po
+- And then when the price turns to the direction of the trend, it shows these arrows, you shouldn't trade only based on these arrows, because they are not always correct.
+**Strategy Components:**
+- [trend] You can also have another EMA with an extreme length for identifying major trend of the market.
+- [trend] And it is used for trend identification in a very long term perspective.
+- [trend] But in our trading strategy, we're not going to use this EMA and this EMA with length of 200 is enough for us to identify the trends.
+- [momentum] And also in a shorter term perspective, we have greater upside momentum in the market.
+- [risk] So Entry: a long position at this point with the stop plus below the channel and profit target at 1.5 risk to reward ratio.
+- [risk] And in practice, Entry: a long possession at this point with the Stop: below the channel and profit target at 1.5 risk to reward ratio.
+- [risk] So the cell signal here is confirmed and in practice Entry: a short position at this point with the stop plus above the channel or above the pullback and profit target at 1.5 risk to reward ratio.
+- [confirmation] So here the buy signal is confirmed.
+**Risk Management:**
+- Stop below previous swing low.
+**Entry/Exit Conditions:**
+- So Entry: a long position at this point with the stop plus below the channel and profit target at 1.5 risk to reward ratio.
+- And in practice, Entry: a long possession at this point with the Stop: below the channel and profit target at 1.5 risk to reward ratio.
+- So the cell signal here is confirmed and in practice Entry: a short position at this point with the stop plus above the channel or above the pullback and profit target at 1.5 risk to reward ratio.
+- Although this trading strategy is very accurate, but without risk management, you don't have any chance to execute this trading strategy profitably.
+- One percent role risk management is the best risk management strategy that you can use in your trading system.
+- The link is also placed in the description and I highly recommend you to watch it because without a proper risk management strategy, you cannot become a consistently profitable trader.
+**Indicators:** EMA, RSI
+
+---
+
+## 24. After 10 Years, I Found the Perfect EMA Settings! It Shows Exact Signals!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=QuovcpwYjxg
+
+**Summary:** I want to teach you an excellent EMA settings and combination that helps you find accurate buy sell signals. This trading strategy can make you consistent profit. Alright we're gonna add 6 exponential moving averages to the chart and we're gonna give them some special settings and combination. First we add 3 EMAs and then another 3 EMAs. Here we click on indicators and we search Reben.
+**Trading Rules:**
+- When you click on this indicator, 4 moving averages are added to the chart.
+- When there is overlap between white ribbon and the orange ribbon the market is in a trading range.
+- But when the two ribbons are completely separated from each other and there is no overlap between them we can say that the market is trending and there is a trend in the market.
+- Here in this part of the chart you can see that from here when these candles are closed the white ribbon is completely below the orange ribbon.
+- When the two ribbons are completely separated in this case you can see that the white ribbon completely went below the orange ribbon.
+- When we got a candle touching the orange ribbon we go to the next step to see if this was really a pullback and when we get a signal for end of the pullback.
+- When the price goes for a pullback before that a sawing low is created.
+- We mark this low and we wait to see if the price can break this level or not because this can act as a potential support level.
+**Strategy Components:**
+- [trend] At any time that there is overlap between the two ribbons the market is not trending.
+- [trend] You cannot see them completely separated from each other and this overlap shows that there is no trend in the market.
+- [trend] So the first signal that these EMAs can give you is the signal of non-trending market.
+- [filter] You can see how many times it was rejected.
+- [risk] So here the sell signal is confirmed and in practice Entry: a short position at this point with the stop loss above the white ribbon and profit target at risk to reward ratio of 2.
+- [risk] Here you can see that this candle is closed above this high so the bi-signal here is confirmed and in practice Entry: a long possession at this point with this Stop: below the white ribbon and profit 
+- [risk] This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly.
+- [confirmation] Here you can see that this candle is closed below the level so the sell signal here is confirmed and in practice Entry: a short position at this point and you can see how the price declined after that
+**Risk Management:**
+- Stop below previous swing low.
+- Use explicit risk management on every trade.
+- Apply 1% risk rule.
+**Entry/Exit Conditions:**
+- So here the sell signal is confirmed and in practice Entry: a short position at this point with the stop loss above the white ribbon and profit target at risk to reward ratio of 2.
+- Here you can see that this candle is closed above this high so the bi-signal here is confirmed and in practice Entry: a long possession at this point with this Stop: below the white ribbon and profit 
+- This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly.
+- There is a risk management strategy that is called 1% role and this risk management strategy helps you to minimize the effect of your losing possessions.
+- I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you will not be able to survive in this g
+**Parameters:** second ema also=13
+
+---
+
+## 25. This NEW Tool Made Me DELETE Every Indicator from My Chart!
+*SoheilPKO | asr_transcript | 2026-03-03*
+Source: https://www.youtube.com/watch?v=drIqeApSOec
+
+**Summary:** This new indicator takes your trading to the next level. This is an advanced indicator built based on multiple linear regression. The accuracy of this indicator is insane. I will teach you a trading strategy based on this indicator that makes consistent profit. Here we click on indicators and we search regression slope oscillator.
+**Trading Rules:**
+- In case if you don't know what linear regression is, regression is a statistical technique to predict a variable based on the value of one or more variables and because of its linear characteristic, i
+- As you can see, when the oscillator line is below the center line, it shows that the market is trending down.
+- And when the oscillator line goes above the center line, it shows that the market is in an up trend.
+- You may ask if this center line crossovers can be a signal for reversal of the market.
+- When crosses below the center line, it can be a signal for starting off a downtrend.
+- And when crosses above the center line, it can be a signal for starting off an uptrend.
+- When the oscillator line crosses above the signal line, it's a bullish signal.
+- And when the oscillator line crosses below the signal line, it's a bearish signal.
+**Strategy Components:**
+- [trend] In case if you don't know what linear regression is, regression is a statistical technique to predict a variable based on the value of one or more variables and because of its linear characteristic, i
+- [trend] As you can see, when the oscillator line is below the center line, it shows that the market is trending down.
+- [trend] And when the oscillator line goes above the center line, it shows that the market is in an up trend.
+- [momentum] And it shows that we have increased upside momentum.
+- [momentum] But if a reversal is happening in the market, and now we have greater downside momentum in the market, this advancing of the price will stop.
+- [risk] These signals are very risky because they are against the current trend of the market.
+- [risk] But instead, the signals that are in the same direction with the current trend of the market, they have lower risk and they can be used in trend following strategies.
+- [confirmation] So the reversal signal here is confirmed.
+**Risk Management:**
+- Stop below previous swing low.
+- Use explicit risk management on every trade.
+- Apply 1% risk rule.
+**Entry/Exit Conditions:**
+- As you can see, when the oscillator line is below the center line, it shows that the market is trending down.
+- And when the oscillator line goes above the center line, it shows that the market is in an up trend.
+- You may ask if this center line crossovers can be a signal for reversal of the market.
+- When crosses below the center line, it can be a signal for starting off a downtrend.
+- And when crosses above the center line, it can be a signal for starting off an uptrend.
+- When it has a reversal signal on the other side, when the oscillator line is below the center line, if we get a bullish crossover, which is when the oscillator line crosses above the signal line, it s
+**Indicators:** regression slope oscillator
 
 ---
