@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-f88e844a55e0",
+  "created_at": "2026-03-03T17:21:12.018478Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=W1DcXrwJkdw",
+  "title": "This Indicator Tells You Exactly When Trend Is UP or DOWN!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "It is built based on triple exponentially smoothed moving average and because of this it can filter the majority of noises on the chart.",
+    "This is one of the best trend indicator on TradingView that can help you with trends and momentum changes in the market, making it a perfect choice for trend following strategies and reversal trading strategies.",
+    "All right, let's add the indicator.",
+    "Here we click on indicators and we search trex t-r-i-x.",
+    "This one trex histogram which is written by just Uncle L.",
+    "All right, this is the indicator and as you can see it's added here below the chart.",
+    "This is actually an oscillator and you can see that we have a histogram and a line that are moving above and below the center line which is zero.",
+    "As I mentioned at the beginning of the video this oscillator is built based on triple exponentially smoothed moving average consider an exponential moving average that is smoothed three times and because of this it has the ability to remove many of the noises on the price chart.",
+    "So regardless of the noises and short term fluctuations that you see on the chart it can give you a stable picture of the trends and momentum changes inside the trends.",
+    "All right getting back to the indicator this histogram is trex."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "It is built based on triple exponentially smoothed moving average and because of this it can filter the majority of noises on the chart.",
+      "note": "Meaning: It is built based on triple exponentially smoothed moving average and because of this it can filter the majority of noises on the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is one of the best trend indicator on TradingView that can help you with trends and momentum changes in the market, making it a perfect choice for trend following strategies and reversal trading ",
+      "note": "Meaning: This is one of the best trend indicator on TradingView that can help you with trends and momentum changes in the market, making it a perfect choice for"
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, let's add the indicator.",
+      "note": "Meaning: All right, let's add the indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here we click on indicators and we search trex t-r-i-x.",
+      "note": "Meaning: Here we click on indicators and we search trex t-r-i-x."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one trex histogram which is written by just Uncle L.",
+      "note": "Meaning: This one trex histogram which is written by just Uncle L."
+    },
+    {
+      "timestamp": null,
+      "quote": "All right, this is the indicator and as you can see it's added here below the chart.",
+      "note": "Meaning: All right, this is the indicator and as you can see it's added here below the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is actually an oscillator and you can see that we have a histogram and a line that are moving above and below the center line which is zero.",
+      "note": "Meaning: This is actually an oscillator and you can see that we have a histogram and a line that are moving above and below the center line which is zero."
+    },
+    {
+      "timestamp": null,
+      "quote": "As I mentioned at the beginning of the video this oscillator is built based on triple exponentially smoothed moving average consider an exponential moving average that is smoothed three times and beca",
+      "note": "Meaning: As I mentioned at the beginning of the video this oscillator is built based on triple exponentially smoothed moving average consider an exponential mov"
+    },
+    {
+      "timestamp": null,
+      "quote": "So regardless of the noises and short term fluctuations that you see on the chart it can give you a stable picture of the trends and momentum changes inside the trends.",
+      "note": "Meaning: So regardless of the noises and short term fluctuations that you see on the chart it can give you a stable picture of the trends and momentum changes i"
+    },
+    {
+      "timestamp": null,
+      "quote": "All right getting back to the indicator this histogram is trex.",
+      "note": "Meaning: All right getting back to the indicator this histogram is trex."
+    },
+    {
+      "timestamp": null,
+      "quote": "By default trex is shown like a histogram but in case if you want to have it like an oscillator line here you can go to the settings of the indicator and here you have an option to show trex as a line",
+      "note": "Meaning: By default trex is shown like a histogram but in case if you want to have it like an oscillator line here you can go to the settings of the indicator a"
+    },
+    {
+      "timestamp": null,
+      "quote": "So trex will be shown like a line.",
+      "note": "Meaning: So trex will be shown like a line."
+    }
+  ],
+  "extracted_rules": [
+    "By default trex is shown like a histogram but in case if you want to have it like an oscillator line here you can go to the settings of the indicator and here you have an option to show trex as a line instead of a histogram.",
+    "When the histogram is below the centerline and red it shows that the market is trending down and when the histogram is above the centerline and it is green it shows that the market is in an uptrend.",
+    "When the histogram is below the centerline we have two shades of red.",
+    "When it is dark red which is when the bars are going lower and lower it shows that the downside momentum is increasing and when the bars become smaller and the color becomes lighter red it shows that the downside momentum is weakening.",
+    "Similarly when the histogram is above the centerline there are two shades of green.",
+    "When it is light green which is when the bars are going higher and higher this shows that the upside momentum is increasing and when it becomes dark green it shows that the upside momentum is weakening.",
+    "You may ask if the points of the histogram changing can be used as a trading signal.",
+    "For example when the histogram goes below the centerline and becomes red it can be a signal for starting of a downtrend and when the histogram goes above the centerline and becomes green it can be a signal for starting of an uptrend but we don't trade only based on this because these centerline crossovers alone are very prone to be false signals because for example we can have them when there is a deeper pullback in the market.",
+    "If we go to the settings of the indicator here we have an option for showing trex signal crossovers.",
+    "When it is on the signals are added to the indicator as you can see.",
+    "When the histogram crosses above the signal line it is a bullish momentum signal and when the histogram crosses below the centerline it is a betish momentum signal.",
+    "For example when the histogram is below the centerline and red which tells us that the trend is down we only take betish signals and when the histogram is above the centerline and green which tells us that the price is in an uptrend we only take the bullish signals.",
+    "Before the signal when the histogram was above the centerline we can see that there is a divergence.",
+    "We want to decrease our risk as much as possible so we wait for a pullback to see what happens next because if the reversal is real and now downside momentum is greater than the upside momentum in the market this advancing of the price should not be able to pass the previous high and the price will turn down and go to lower levels.",
+    "If you know price action analysis you can easily know when the pullback is formed and when the pullback is ended which is when the price is closed below this low but if you remember I explained earlier that the crossovers of the histogram and its signal line can give us signals about momentum changes and this can help us to know when a pullback and end of the pullback is happening in the market.",
+    "When we got a betas signal like this it tells us that probably the pullback ended so here the reversal is confirmed and you can see how the price turned to a downtrend.",
+    "Here at this point you can see that the histogram went above the centerline and became green and before this when the histogram was below the centerline you can see that we have a divergence.",
+    "Now we want to wait for a pullback because if the reversal is real and an uptrend is already started so there should be greater upside momentum than downside momentum.",
+    "So if there is any decline in the market it should not be able to go to the previous low and we should have turning of the price to higher levels.",
+    "When we got a bullish signal like this it shows that probably the pullback ended and the price is going to advance more."
+  ],
+  "strategy_components": [
+    {
+      "type": "filter",
+      "description": "It is built based on triple exponentially smoothed moving average and because of this it can filter the majority of noises on the chart."
+    },
+    {
+      "type": "trend",
+      "description": "This is one of the best trend indicator on TradingView that can help you with trends and momentum changes in the market, making it a perfect choice for trend following strategies and reversal trading strategies."
+    },
+    {
+      "type": "momentum",
+      "description": "This one trex histogram which is written by just Uncle L."
+    },
+    {
+      "type": "momentum",
+      "description": "This is actually an oscillator and you can see that we have a histogram and a line that are moving above and below the center line which is zero."
+    },
+    {
+      "type": "trend",
+      "description": "So regardless of the noises and short term fluctuations that you see on the chart it can give you a stable picture of the trends and momentum changes inside the trends."
+    },
+    {
+      "type": "momentum",
+      "description": "All right getting back to the indicator this histogram is trex."
+    },
+    {
+      "type": "trend",
+      "description": "We continue with the histogram because it makes it easier to analyze momentum changes that are happening inside trends."
+    },
+    {
+      "type": "trend",
+      "description": "When the histogram is below the centerline and red it shows that the market is trending down and when the histogram is above the centerline and it is green it shows that the market is in an uptrend."
+    },
+    {
+      "type": "momentum",
+      "description": "When the histogram is below the centerline we have two shades of red."
+    },
+    {
+      "type": "momentum",
+      "description": "When it is dark red which is when the bars are going lower and lower it shows that the downside momentum is increasing and when the bars become smaller and the color becomes lighter red it shows that the downside momentu"
+    },
+    {
+      "type": "momentum",
+      "description": "The weakness of the downside momentum can happen during pullbacks or before a reversal."
+    },
+    {
+      "type": "momentum",
+      "description": "Similarly when the histogram is above the centerline there are two shades of green."
+    },
+    {
+      "type": "momentum",
+      "description": "When it is light green which is when the bars are going higher and higher this shows that the upside momentum is increasing and when it becomes dark green it shows that the upside momentum is weakening."
+    },
+    {
+      "type": "trend",
+      "description": "So the possession of the histogram above or below the centerline can help us with trends and the color changing of the histogram can help us with identifying momentum changes inside the trends."
+    },
+    {
+      "type": "momentum",
+      "description": "You may ask if the points of the histogram changing can be used as a trading signal."
+    },
+    {
+      "type": "trend",
+      "description": "Yes they can be a signal for starting of a new trend."
+    },
+    {
+      "type": "trend",
+      "description": "For example when the histogram goes below the centerline and becomes red it can be a signal for starting of a downtrend and when the histogram goes above the centerline and becomes green it can be a signal for starting o"
+    },
+    {
+      "type": "momentum",
+      "description": "The crossovers of the histogram and the signal line can provide a signal about momentum changes."
+    },
+    {
+      "type": "momentum",
+      "description": "When the histogram crosses above the signal line it is a bullish momentum signal and when the histogram crosses below the centerline it is a betish momentum signal."
+    },
+    {
+      "type": "trend",
+      "description": "These signals are useful in trend following strategies where you try to take signals in the pullbacks inside a trend."
+    }
+  ],
+  "explicit_conditions": [
+    "For example when the histogram goes below the centerline and becomes red it can be a signal for starting of a downtrend and when the histogram goes above the centerline and becomes green it can be a signal for starting of an uptrend but we don't trade only based on this because these centerline crossovers alone are very prone to be false signals because for example we can have them when there is a deeper pullback in the market.",
+    "We want to decrease our risk as much as possible so we wait for a pullback to see what happens next because if the reversal is real and now downside momentum is greater than the upside momentum in the market this advancing of the price should not be able to pass the previous high and the price will turn down and go to lower levels.",
+    "When we got a betas signal like this it tells us that probably the pullback ended so here the reversal is confirmed and you can see how the price turned to a downtrend.",
+    "You need to manage your risk properly so you can minimize the effect of your losing positions.",
+    "One percent role risk management is the best risk management strategy and recommended by professional traders.",
+    "I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you cannot survive in this game."
+  ],
+  "risk_management_notes": [
+    "Use explicit risk management on every trade."
+  ],
+  "indicators_mentioned": [
+    "trex t-r-i-x"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "trex t-r-i-x",
+      "keywords": [
+        "trex",
+        "t",
+        "r",
+        "i",
+        "x"
+      ],
+      "confidence": 0.93,
+      "author_hint": "just Uncle L"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-f88e844a55e0.raw.txt",
+  "sha256": "93e5927753c13d2c525421c0cb4c3df0e0b3838f7bc48d86ea46eddb9e738374",
+  "truncated": false
+}

@@ -1,6 +1,7 @@
 ﻿{
-    "directive_loop_stall_cycles":  49,
+    "directive_loop_stall_cycles":  51,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ichtk01v.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-2d3cfd8c497a.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-t3vxpb01.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-almamh01.strategy_spec.json",
@@ -9,8 +10,7 @@
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-19b3e1c752d2.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-0c2851e63122.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-990bcd92014d.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-b1e96ec9d87f.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-bd5a85c7a2fb.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-b1e96ec9d87f.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-03T17:00:05.5855664Z"
+    "updated_at":  "2026-03-03T17:15:14.9235855Z"
 }

@@ -1,0 +1,265 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-bcfab09431ba",
+  "created_at": "2026-03-03T17:14:46.657092Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=RRmHGgO2SD8",
+  "title": "All My Indicators Were Useless... Until I Found THIS One! Try It NOW!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "This indicator measures pressure, bullish pressure versus bearish pressure.",
+    "This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down.",
+    "Alright on trading view platform here click on indicators and search redk trader pressure index.",
+    "This one which is an editor specs indicator and written by redk trader.",
+    "Alright this is the indicator and as you can see it is added here below the chart.",
+    "As I said this indicator measures bullish and bearish pressure in the market.",
+    "As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers push the price down.",
+    "So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is likely to go.",
+    "This indicator considers this fact to help us know who has the upper hand in the market buyers or sellers.",
+    "This is actually what this indicator is trying to tell us."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "This indicator measures pressure, bullish pressure versus bearish pressure.",
+      "note": "Meaning: This indicator measures pressure, bullish pressure versus bearish pressure."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down.",
+      "note": "Meaning: This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright on trading view platform here click on indicators and search redk trader pressure index.",
+      "note": "Meaning: Alright on trading view platform here click on indicators and search redk trader pressure index."
+    },
+    {
+      "timestamp": null,
+      "quote": "This one which is an editor specs indicator and written by redk trader.",
+      "note": "Meaning: This one which is an editor specs indicator and written by redk trader."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright this is the indicator and as you can see it is added here below the chart.",
+      "note": "Meaning: Alright this is the indicator and as you can see it is added here below the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "As I said this indicator measures bullish and bearish pressure in the market.",
+      "note": "Meaning: As I said this indicator measures bullish and bearish pressure in the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers push the price down.",
+      "note": "Meaning: As you know in the market there is always a fight between buyers and sellers which on one hand buyers push the price up and on the other hand sellers p"
+    },
+    {
+      "timestamp": null,
+      "quote": "So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is likely to go.",
+      "note": "Meaning: So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is "
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator considers this fact to help us know who has the upper hand in the market buyers or sellers.",
+      "note": "Meaning: This indicator considers this fact to help us know who has the upper hand in the market buyers or sellers."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is actually what this indicator is trying to tell us.",
+      "note": "Meaning: This is actually what this indicator is trying to tell us."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright let's see what we have here.",
+      "note": "Meaning: Alright let's see what we have here."
+    },
+    {
+      "timestamp": null,
+      "quote": "This green area shows bullish pressure and the red area shows bearish pressure.",
+      "note": "Meaning: This green area shows bullish pressure and the red area shows bearish pressure."
+    }
+  ],
+  "extracted_rules": [
+    "This is one of the most powerful indicators on trading view that can effectively help you know if the price is gonna go up or down.",
+    "So as a trader if you can determine at any given time who is in control so you would be able to say with high probability which direction the price is likely to go.",
+    "So when we have green area it tells us that we have more pressure from buyers and when we have red area it tells us that we have more pressure from sellers.",
+    "When the white line is above zero there is higher buying pressure in the market and in times that the white line is below zero there is higher selling pressure in the market.",
+    "When the area passes the 30 level it shows that now we have considerable pressure in that direction and here we have two MACDs.",
+    "When it is red the market is trending down and when it is green the market is trending up so the point of histogram changing can be a signal for starting of a new trend.",
+    "In fact because this MACD has shorter length before the changing point of the longer MACD earlier than this the shorter term MACD is already above the centerline but at this point when the longer MACD goes above the centerline at that moment we want the shorter MACD to be also above the centerline.",
+    "When we have three of these situations at the same time the starting of an uptrend is confirmed.",
+    "In other words the buy signal here is confirmed so in practice we could enter a long position at this point with the stop loss below the previous swing low and profit target at risk to reward ratio of 2.",
+    "When the histogram goes below the centerline and it becomes red it is a signal that probably a downtrend is forming on the chart.",
+    "When this happened we want the shorter MACD to also be below the centerline.",
+    "When we have three of these situations at the same time the downtrend is confirmed so in practice we could enter a short position at this point and you can see that this trade was also a profitable trade.",
+    "The shorter MACD is also above the centerline so supporting the formation of an uptrend and here we can see that we have a bullish pressure because the area is green and it is above 30 so the buy signal here is confirmed and in practice we could enter a long position at this point with the stop loss below the previous sawing low and profit target at risk to reward ratio and you can see that this trade was also a profitable trade where the price advanced up to this point."
+  ],
+  "parameters_set": [
+    {
+      "name": "average length",
+      "value": "30",
+      "context": "ngs of the indicator and here for the average length we set it at 30 and then here for smoothing we set it a"
+    },
+    {
+      "name": "smoothing",
+      "value": "15",
+      "context": "we set it at 30 and then here for smoothing we set it at 15. Here for control level 30 is okay and h"
+    },
+    {
+      "name": "fast length",
+      "value": "100",
+      "context": "ere for the longer MACD. Here for the fast length we set it at 100 for the slow length we set it at 200 an"
+    },
+    {
+      "name": "slow length",
+      "value": "200",
+      "context": "fast length we set it at 100 for the slow length we set it at 200 and here for the signal smoothing we se"
+    },
+    {
+      "name": "signal smoothing",
+      "value": "50",
+      "context": "gth we set it at 200 and here for the signal smoothing we set it at 50 and then here for the shorter MACD here"
+    },
+    {
+      "name": "shorter macd here for the fast length",
+      "value": "34",
+      "context": "we set it at 50 and then here for the shorter MACD here for the fast length we set it at 34 for the slow length we set i"
+    },
+    {
+      "name": "slow length",
+      "value": "144",
+      "context": "e fast length we set it at 34 for the slow length we set it at 144 and here for signal smoothing we set it"
+    },
+    {
+      "name": "signal smoothing",
+      "value": "9",
+      "context": "gth we set it at 144 and here for signal smoothing we set it at 9 and finally we go to the style tab and"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "We use the MACD with longer length for identifying longer term trend of the market and we use the MACD with shorter length for identifying shorter term trends or momentum changes in the market."
+    },
+    {
+      "type": "confirmation",
+      "description": "Here we have a dashed line which is at 30 and this is our control level."
+    },
+    {
+      "type": "trend",
+      "description": "In this trading strategy in the first step we start with the longer MACD as I said it is used for identifying longer term trends of the market."
+    },
+    {
+      "type": "trend",
+      "description": "When it is red the market is trending down and when it is green the market is trending up so the point of histogram changing can be a signal for starting of a new trend."
+    },
+    {
+      "type": "momentum",
+      "description": "In the next step we look at the shorter MACD."
+    },
+    {
+      "type": "trend",
+      "description": "In fact because this MACD has shorter length before the changing point of the longer MACD earlier than this the shorter term MACD is already above the centerline but at this point when the longer MACD goes above the cent"
+    },
+    {
+      "type": "trend",
+      "description": "The whole of this situation shows that in a longer term perspective we have a signal that shows the trend has changed from downtrend to an uptrend and in a shorter term perspective the midterm trend is also up and we hav"
+    },
+    {
+      "type": "confirmation",
+      "description": "Require green area and it should be above 30."
+    },
+    {
+      "type": "trend",
+      "description": "When we have three of these situations at the same time the starting of an uptrend is confirmed."
+    },
+    {
+      "type": "risk",
+      "description": "In other words the buy signal here is confirmed so in practice Entry: a long position at this point with the Stop: below the previous swing low and profit target at risk to reward ratio of 2."
+    },
+    {
+      "type": "trend",
+      "description": "In the first step our focus is on longer MACD."
+    },
+    {
+      "type": "trend",
+      "description": "When the histogram goes below the centerline and it becomes red it is a signal that probably a downtrend is forming on the chart."
+    },
+    {
+      "type": "momentum",
+      "description": "When this happened we want the shorter MACD to also be below the centerline."
+    },
+    {
+      "type": "trend",
+      "description": "This situation shows that in a longer term perspective we have a signal that a downtrend has probably started and in a shorter term perspective it is also supported by this MACD that the midterm trend is also down."
+    },
+    {
+      "type": "confirmation",
+      "description": "Bearish pressure must exceed 30 to confirm short setup."
+    },
+    {
+      "type": "trend",
+      "description": "When we have three of these situations at the same time the downtrend is confirmed so in practice Entry: a short position at this point and you can see that this trade was also a profitable trade."
+    },
+    {
+      "type": "trend",
+      "description": "Following this downtrend you can see that here the longer MACD went above the centerline and became green giving us a signal that probably an uptrend is starting."
+    },
+    {
+      "type": "risk",
+      "description": "Bullish pressure must exceed 30 to confirm long setup."
+    },
+    {
+      "type": "trend",
+      "description": "All right moving on the chart here you can see that the longer MACD went below the centerline and became red the shorter MACD is also below the centerline but look at this indicator it doesn't show bearish pressure with "
+    }
+  ],
+  "explicit_conditions": [
+    "In fact because this MACD has shorter length before the changing point of the longer MACD earlier than this the shorter term MACD is already above the centerline but at this point when the longer MACD goes above the centerline at that moment we want the shorter MACD to be also above the centerline.",
+    "When we have three of these situations at the same time the starting of an uptrend is confirmed.",
+    "In other words the buy signal here is confirmed so in practice Entry: a long position at this point with the Stop: below the previous swing low and profit target at risk to reward ratio of 2.",
+    "When the histogram goes below the centerline and it becomes red it is a signal that probably a downtrend is forming on the chart.",
+    "When we have three of these situations at the same time the downtrend is confirmed so in practice Entry: a short position at this point and you can see that this trade was also a profitable trade.",
+    "The shorter MACD is also above the centerline so supporting the formation of an uptrend and here we can see that we have a bullish pressure because the area is green and it is above 30 so the buy signal here is confirmed and in practice Entry: a long position at this point with the Stop: below the previous sawing low and profit target at risk to reward ratio and you can see that this trade was also a profitable trade where the price advanced up to this point."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [
+    "redk trader pressure index",
+    "Alright on trading view platform here click on indicators and search redk trader pressure index",
+    "MACD"
+  ],
+  "tv_search_hints": [
+    {
+      "name": "redk trader pressure index",
+      "keywords": [
+        "redk",
+        "trader",
+        "pressure",
+        "index"
+      ],
+      "confidence": 0.93,
+      "author_hint": "redk trader"
+    },
+    {
+      "name": "Alright on trading view platform here click on indicators and search redk trader pressure index",
+      "keywords": [
+        "alright",
+        "on",
+        "trading",
+        "view",
+        "platform"
+      ],
+      "confidence": 0.88,
+      "author_hint": "redk trader"
+    }
+  ],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-bcfab09431ba.raw.txt",
+  "sha256": "898a9b9b83877b2d35efbd3d5fa4db22fc34a64db4332f605f0ba6d79f86eb99",
+  "truncated": false
+}

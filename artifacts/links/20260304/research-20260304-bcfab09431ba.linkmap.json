@@ -1,0 +1,42 @@
+{
+  "research_card_path": "artifacts/research/20260304/research-20260304-bcfab09431ba.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260304/indicator-20260304-d2787f627783.indicator_record.json",
+    "artifacts/indicators/20260303/indicator-20260303-61a608bfe9e5.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "redk trader pressure index",
+      "author_hint": "redk trader",
+      "keywords": [
+        "redk",
+        "trader",
+        "pressure",
+        "index"
+      ],
+      "confidence": 0.93
+    },
+    {
+      "hint": "Alright on trading view platform here click on indicators and search redk trader pressure index",
+      "author_hint": "redk trader",
+      "keywords": [
+        "alright",
+        "on",
+        "trading",
+        "view",
+        "platform"
+      ],
+      "confidence": 0.88
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=RRmHGgO2SD8",
+      "video_id": "RRmHGgO2SD8",
+      "noted_at": "2026-03-03T17:14:46.993282+00:00"
+    }
+  ]
+}

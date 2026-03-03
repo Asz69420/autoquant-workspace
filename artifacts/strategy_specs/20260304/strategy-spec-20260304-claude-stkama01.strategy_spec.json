@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-stkama01",
+  "name": "Supertrend KAMA Double Adaptive Trend",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The strongest meta-rule in the system (rule-adaptive-over-static, brain U19) states: adaptive indicators produce all-regime ACCEPTs while static indicators top out at PF=1.712 and need regime gates. Both Supertrend and KAMA are adaptive — Supertrend adapts its trailing stop level dynamically based on ATR, KAMA adapts its smoothing speed based on market noise (efficiency ratio). They are INDEPENDENTLY adaptive through DIFFERENT mechanisms: Supertrend via volatility-adjusted levels, KAMA via noise-adjusted speed. This spec tests what happens when two independent adaptive systems must AGREE before entering. Supertrend direction flip (SUPERTd crossing 0) provides the cross-based entry trigger — proven in the 2nd-ranked strategy (PF=1.921, 85 trades). KAMA direction confirmation (close vs KAMA) adds an independent adaptive filter. The existing Supertrend champion uses ADX_14 > 20 (static filter). This spec replaces the static filter with an adaptive one. If PF improves: adaptive+adaptive > adaptive+static. If PF drops: KAMA agreement removes valid entries (too correlated with Supertrend). Either result teaches us about adaptive indicator correlation.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "st_kama_v1_8to1",
+      "description": "Core thesis: Supertrend direction flip + KAMA directional confirmation. 8:1 R:R. SUPERTd crossing above 0 (bullish flip) AND close > KAMA (KAMA confirms bullish). Tests adaptive+adaptive vs the existing adaptive+static(ADX) architecture. Uses same R:R as Supertrend champion for direct comparison.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction — ATR-adaptive trailing stop. Direction flip (crosses 0) is a proven cross-based entry trigger. 2nd-ranked system strategy at PF=1.921."
+        },
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "confirmation",
+          "notes": "Kaufman Adaptive MA — speed adapts to market noise via efficiency ratio. Close vs KAMA confirms adaptive trend direction. Replaces static ADX filter."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "st_kama_chop_v2_8to1",
+      "description": "Adds CHOP < 50 anti-chop filter. Tests whether explicitly excluding extreme ranges (CHOP > 50) improves Supertrend+KAMA entries. Hypothesis: two adaptive indicators may still fire false signals during extreme chop — the CHOP filter provides a simple regime gate. If PF improves: even adaptive indicators benefit from explicit chop removal. If PF drops: KAMA already handles chop detection implicitly through speed adaptation.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > KAMA_10_2_30",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < KAMA_10_2_30",
+        "CHOP_14_1_100 < 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction flip entry trigger."
+        },
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "confirmation",
+          "notes": "Adaptive trend confirmation."
+        },
+        {
+          "indicator": "CHOP_14_1_100",
+          "role": "confirmation",
+          "notes": "Anti-chop gate. < 50 = market not excessively choppy. Tests if adaptive indicators need explicit chop protection."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "st_kama_v3_tight_10to1",
+      "description": "Champion-geometry variant: 0.75 ATR stop, 10 ATR TP (same parameters that made Vortex v3a the #1 champion at PF=2.034). Tests whether the tight-stop-wide-TP geometry that maximizes Vortex also maximizes Supertrend+KAMA. If PF > 2.0: this geometry is universally optimal for cross-based adaptive strategies. If PF drops: tight stops require the Vortex reversal exit mechanism that this strategy doesn't have.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 0.75,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (7.5x).",
+        "Exit on ATR stop hit (0.75x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 0.75x ATR_14.",
+        "Take profit at 7.5x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction flip with champion-tight stop geometry."
+        },
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "confirmation",
+          "notes": "KAMA adaptive filter with tight-stop geometry test."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "0.75x ATR stop / 7.5x ATR TP — champion geometry from Vortex v3a."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["SUPERTd_7_3.0", "KAMA_10_2_30", "CHOP_14_1_100", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "SUPERTd_7_3.0 — Supertrend direction indicator. ATR-adaptive trailing stop; direction flip is a proven high-quality cross-based entry trigger.",
+    "confirmation": "KAMA_10_2_30 — Kaufman Adaptive MA. Speed adjusts to market noise. Replaces static ADX filter with adaptive trend confirmation.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}

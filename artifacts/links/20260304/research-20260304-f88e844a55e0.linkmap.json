@@ -1,0 +1,31 @@
+{
+  "research_card_path": "artifacts/research/20260304/research-20260304-f88e844a55e0.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260304/indicator-20260304-995a08fa4a72.indicator_record.json",
+    "artifacts/indicators/20260304/indicator-20260304-2385618ba57b.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "trex t-r-i-x",
+      "author_hint": "just Uncle L",
+      "keywords": [
+        "trex",
+        "t",
+        "r",
+        "i",
+        "x"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=W1DcXrwJkdw",
+      "video_id": "W1DcXrwJkdw",
+      "noted_at": "2026-03-03T17:21:12.350483+00:00"
+    }
+  ]
+}

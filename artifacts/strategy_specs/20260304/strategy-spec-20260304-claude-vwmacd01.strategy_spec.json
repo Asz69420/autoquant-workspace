@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-vwmacd01",
+  "name": "VWAP MACD Institutional Momentum Flow",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "VWAP (Volume-Weighted Average Price) has NEVER been tested in any strategy despite being computed since system inception. VWAP represents the volume-weighted fair value — the average price institutions paid weighted by volume. When close > VWAP_D, net buyers paid more than average (bullish institutional flow). When close < VWAP_D, net sellers dominate (bearish institutional flow). MACD histogram zero-cross is the most proven cross-based entry trigger in the system (9 ACCEPTs via macd_confirmation template, best PF=1.712). The hypothesis: VWAP direction filter + MACDh momentum acceleration timing creates a volume-backed momentum strategy. Unlike EMA_50 (which MACD confirmation already uses), VWAP incorporates VOLUME information — it knows not just where price is but where the MONEY is. If VWAP adds edge over bare MACD, it confirms volume information is an untapped alpha source. If VWAP matches bare MACD, volume is redundant on 4h.",
+  "regime_assumption": "trending",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "vwap_macdh_v1_8to1",
+      "description": "Core thesis: VWAP directional filter + MACDh zero-cross entry. 8:1 R:R. close > VWAP_D confirms bullish volume flow, MACDh crossing above 0 times the momentum acceleration. Tests if volume-weighted price level adds conviction beyond raw MACD confirmation.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > VWAP_D",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < VWAP_D",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "VWAP_D",
+          "role": "baseline",
+          "notes": "Daily VWAP — volume-weighted average price. First system test of VWAP as trend direction filter. Close vs VWAP shows institutional money flow direction."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD Histogram zero-cross. Proven cross-based trigger with 9 ACCEPTs via macd_confirmation. Times momentum acceleration."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "vwap_macdh_ema21_v2_8to1",
+      "description": "Adds EMA_21 alignment as fast trend confirmation. Triple filter: VWAP (volume-backed direction) + EMA_21 (short-term trend) + MACDh (momentum acceleration). Tests whether triple-alignment reduces false signals or over-filters. If PF improves: the extra filter removes losing trades. If trade count drops too far: over-filtering kills the strategy.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > VWAP_D",
+        "close > EMA_21",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < VWAP_D",
+        "close < EMA_21",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "VWAP_D",
+          "role": "baseline",
+          "notes": "VWAP directional filter — institutional money flow."
+        },
+        {
+          "indicator": "EMA_21",
+          "role": "baseline",
+          "notes": "Short-term EMA trend alignment. Tests triple-filter conviction."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD Histogram momentum acceleration timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "vwap_macdh_v3_10to1",
+      "description": "Core thesis at extended 10:1 R:R (15x ATR TP). VWAP-backed momentum entries may hold longer than EMA-backed entries because volume flow is more persistent than price-only trend. If PF holds at 10:1: VWAP identifies stronger moves that sustain. If PF drops: volume flow on 4h resets too frequently for extended TP.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > VWAP_D",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < VWAP_D",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "VWAP_D",
+          "role": "baseline",
+          "notes": "VWAP direction — tests if volume-backed entries sustain extended TP targets."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACDh zero-cross at 10:1 R:R."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["VWAP_D", "MACDh_12_26_9", "EMA_21", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "VWAP_D — Volume-Weighted Average Price. First system test. Represents institutional fair value; close vs VWAP indicates volume-backed trend direction.",
+    "confirmation": "MACDh_12_26_9 — MACD Histogram zero-cross. Proven momentum acceleration timing with 9 ACCEPTs.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}

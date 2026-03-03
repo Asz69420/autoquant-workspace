@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-dd42f90510da",
+  "created_at": "2026-03-03T17:08:16.364669Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=UiZflVQxoXk",
+  "title": "My Updated EMA Settings! Impossible to Lose with THIS Strategy!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "The name of this setup is double 8.",
+    "It gives you the most accurate bicep signals ever.",
+    "It's very easy and you just need to follow my instruction.",
+    "Alright, we need to add four exponential moving averages and we're gonna give them special settings and combination.",
+    "Alright, here we click on indicators and we search Reben, this one, moving average Reben.",
+    "When you add this indicator, automatically four moving averages are added to the chart and now we need to change their settings.",
+    "So here we go to the settings of the Reben and first here for the moving average type, we set exponential moving average for them because as I said, we need four exponential moving averages.",
+    "So here we set EMA for them and then for the first EMA, we set the length at eight and for the second EMA, we also set the length at eight.",
+    "For the first EMA here for the source of calculation, we set it at high and for the second one, we set it based on low.",
+    "So here we have two EMAs with the same length of eight, but one of them is based on high and the other one is based on low."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "The name of this setup is double 8.",
+      "note": "Meaning: The name of this setup is double 8."
+    },
+    {
+      "timestamp": null,
+      "quote": "It gives you the most accurate bicep signals ever.",
+      "note": "Meaning: It gives you the most accurate bicep signals ever."
+    },
+    {
+      "timestamp": null,
+      "quote": "It's very easy and you just need to follow my instruction.",
+      "note": "Meaning: It's very easy and you just need to follow my instruction."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, we need to add four exponential moving averages and we're gonna give them special settings and combination.",
+      "note": "Meaning: Alright, we need to add four exponential moving averages and we're gonna give them special settings and combination."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, here we click on indicators and we search Reben, this one, moving average Reben.",
+      "note": "Meaning: Alright, here we click on indicators and we search Reben, this one, moving average Reben."
+    },
+    {
+      "timestamp": null,
+      "quote": "When you add this indicator, automatically four moving averages are added to the chart and now we need to change their settings.",
+      "note": "Meaning: When you add this indicator, automatically four moving averages are added to the chart and now we need to change their settings."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we go to the settings of the Reben and first here for the moving average type, we set exponential moving average for them because as I said, we need four exponential moving averages.",
+      "note": "Meaning: So here we go to the settings of the Reben and first here for the moving average type, we set exponential moving average for them because as I said, we"
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we set EMA for them and then for the first EMA, we set the length at eight and for the second EMA, we also set the length at eight.",
+      "note": "Meaning: So here we set EMA for them and then for the first EMA, we set the length at eight and for the second EMA, we also set the length at eight."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the first EMA here for the source of calculation, we set it at high and for the second one, we set it based on low.",
+      "note": "Meaning: For the first EMA here for the source of calculation, we set it at high and for the second one, we set it based on low."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we have two EMAs with the same length of eight, but one of them is based on high and the other one is based on low.",
+      "note": "Meaning: So here we have two EMAs with the same length of eight, but one of them is based on high and the other one is based on low."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright, here for the third EMA, we set the length at 88 and for this EMA, we also set the length at 88.",
+      "note": "Meaning: Alright, here for the third EMA, we set the length at 88 and for this EMA, we also set the length at 88."
+    },
+    {
+      "timestamp": null,
+      "quote": "Then here for the source of calculation for the third EMA, we set it based on high and for this one, it should be based on low.",
+      "note": "Meaning: Then here for the source of calculation for the third EMA, we set it based on high and for this one, it should be based on low."
+    }
+  ],
+  "extracted_rules": [
+    "When you add this indicator, automatically four moving averages are added to the chart and now we need to change their settings.",
+    "If you remember these two white lines here are EMA with length of eight, one based on high and the other one based on low and they created a channel on the price chart which we call it white channel and these two green lines are EMA with length of 88, similarly one based on high and the other one based on low and they have also created a channel on the price chart which we call it green channel.",
+    "From here when this candle is closed, you can see that both of the white lines are above the green channel.",
+    "When we got this, we go back on the price action and we find the highest high and we mark this level.",
+    "If it is far from the green channel, it is not a good pullback and you shouldn't take any action.",
+    "Alright, so we already marked this high and we should wait and see if the price is able to close above this level or not because this high can act as a potential resistance level.",
+    "So here the reversal of the price is confirmed and in practice, we could enter a long position at this point with the stop loss below the pullback and profit target at risk to reward ratio of two.",
+    "In a short position setup, which is when we are trying to catch starting of a downtrend, in the first step, we want crossing of the price below the green channel.",
+    "From here, when the scandal is closed, you can see that both of the white lines are already below the green channel.",
+    "When this happened and we got a candle that is closed above the white channel, we go back on the price action and we find the lowest low and we mark this level and we should wait and see if the price can break this level or not.",
+    "So here the reversal is confirmed and in practice we could enter a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.",
+    "You can see that it happened here so the buy signal is confirmed and in practice we could enter a long position at this point with the stop loss below the pullback and profit target at risk to reward ratio of 2.",
+    "Before this we mark the lowest low and we wait to see if the price can break this level but you can see that it didn't happen so we correctly didn't get any final confirmation and you can see that again the price turned to an obtrent and here when the price went above the green channel and after that you can see that the white channel also went above the green channel.",
+    "Now we should wait for a candle that is closed below the white channel which it didn't happen because the pullback is very short and if you remember in cases like this where the pullback is far from the green channel I said that this is not a pullback that we want and we shouldn't take any action after that and we should wait for the next trading opportunity.",
+    "So in case if we had also a candle that was closed below the white channel because this pullback is far from the green channel we shouldn't take any action for this signal.",
+    "To lower our risk we follow the rules of our trading strategy after a short pullback like this.",
+    "You can see that the price declined after that but very far from the green channel and as I said when we have a pullback like this we don't take any action and we just wait for the next trading opportunity.",
+    "You can see that the price did a pullback to the green zone so everything is okay until now we marked the lowest low here and we wait to see if the price can break this level or not.",
+    "After the pullback one trying here but not successful again the price went up another trying here and again not successful for breaking off this level and again we got another retest of the green channel and finally here you can see that this candle is closed below this low so the reversal is confirmed and in practice we could enter a short position at this point with this surplus above the pullback and profit target at risk to reward ratio of two and you can see that this trade was also a profi",
+    "This trading strategy is very accurate because it has different layers of confirmation with the final confirmation based on price action breaking which helps to filter most of the false signals but not all of them and you will definitely encounter false signals just like any other trading strategies so you need to manage your risk properly."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "This green channel is gonna help us with trend changes and the white channel is gonna help us with momentum changes inside trends."
+    },
+    {
+      "type": "trend",
+      "description": "This is a reversal trading strategy and we're gonna find the points of the market that the trend is changing and then we're gonna find an excellent opportunity to enter a trade."
+    },
+    {
+      "type": "trend",
+      "description": "This is an early signal that probably an uptrend is forming in the market."
+    },
+    {
+      "type": "risk",
+      "description": "So here the reversal of the price is confirmed and in practice, Entry: a long position at this point with the Stop: below the pullback and Target: 2R."
+    },
+    {
+      "type": "trend",
+      "description": "In a short position setup, which is when we are trying to catch starting of a downtrend, in the first step, we want crossing of the price below the green channel."
+    },
+    {
+      "type": "trend",
+      "description": "This is an early signal that probably a downtrend is forming in the market."
+    },
+    {
+      "type": "risk",
+      "description": "So here the reversal is confirmed and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2."
+    },
+    {
+      "type": "risk",
+      "description": "You can see that it happened here so the buy signal is confirmed and in practice Entry: a long position at this point with the Stop: below the pullback and profit target at risk to reward ratio of 2."
+    },
+    {
+      "type": "risk",
+      "description": "To lower our risk we follow the rules of our trading strategy after a short pullback like this."
+    },
+    {
+      "type": "trend",
+      "description": "You can see that the price went above the green channel and after that the white channel also went above the green channel so we have early conditions of an uptrend and here you can see that we got a candle that is close"
+    },
+    {
+      "type": "filter",
+      "description": "So by considering this point that the pullback should go near to the green channel or ideally inside the green channel you can avoid false signals like this."
+    },
+    {
+      "type": "risk",
+      "description": "After the pullback one trying here but not successful again the price went up another trying here and again not successful for breaking off this level and again we got another retest of the green channel and finally here"
+    },
+    {
+      "type": "risk",
+      "description": "This trading strategy is very accurate because it has different layers of confirmation with the final confirmation based on price action breaking which helps to filter most of the false signals but not all of them and yo"
+    },
+    {
+      "type": "risk",
+      "description": "One percent role risk management is the best risk management strategy that is recommended by professional traders."
+    },
+    {
+      "type": "risk",
+      "description": "I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you cannot survive in this game."
+    }
+  ],
+  "explicit_conditions": [
+    "In a short position setup, which is when we are trying to catch starting of a downtrend, in the first step, we want crossing of the price below the green channel.",
+    "So here the reversal is confirmed and in practice Entry: a short position at this point with the stop loss above the pullback and profit target at risk to reward ratio of 2.",
+    "You can see that it happened here so the buy signal is confirmed and in practice Entry: a long position at this point with the Stop: below the pullback and profit target at risk to reward ratio of 2.",
+    "To lower our risk we follow the rules of our trading strategy after a short pullback like this.",
+    "This trading strategy is very accurate because it has different layers of confirmation with the final confirmation based on price action breaking which helps to filter most of the false signals but not all of them and you will definitely encounter false signals just like any other trading strategies so you need to manage your risk properly.",
+    "One percent role risk management is the best risk management strategy that is recommended by professional traders.",
+    "I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you cannot survive in this game."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Target at 2R.",
+    "Use explicit risk management on every trade."
+  ],
+  "indicators_mentioned": [
+    "EMA"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-dd42f90510da.raw.txt",
+  "sha256": "18b4e0c20122b8aa39e8e3972d5eea7a88e687b96482abbfefc3677815f0a8db",
+  "truncated": false
+}
