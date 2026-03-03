@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-814f05b12214",
+  "created_at": "2026-03-03T19:45:14.352961Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/AnvOJqrS-IU-Liquidity-Sweep-indicator/",
+  "title": "IU Liquidity Sweep indicator",
+  "author": "Shivam_Mandrai",
+  "summary_bullets": [
+    "Top catalog indicator: IU Liquidity Sweep indicator by Shivam_Mandrai."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: IU Liquidity Sweep indicator by Shivam_Mandrai.",
+      "note": "Meaning: Top catalog indicator: IU Liquidity Sweep indicator by Shivam_Mandrai."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-814f05b12214.raw.txt",
+  "sha256": "83bb960e3d5ca1ffdb4a5c9c5584fd08fa7671ea51464673a039425255f1a9ae",
+  "truncated": false
+}

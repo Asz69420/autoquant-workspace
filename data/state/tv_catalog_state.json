@@ -1,5 +1,5 @@
 {
-  "top_cursor": 4584,
+  "top_cursor": 4603,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -120,7 +120,9 @@
     "zero lag kalman structure [boswaves]|boswaves",
     "ag pro trend quality|agprolabs",
     "unfilled wick 50% levels|artik1",
-    "liquidity sweep rider institutional hft grabber|uzair2join"
+    "liquidity sweep rider institutional hft grabber|uzair2join",
+    "iu liquidity sweep indicator|shivam_mandrai",
+    "htf reversal divergences [mr. quant]|jacob_luxalgo"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -242,7 +244,9 @@
     "LW8nOcaq",
     "fnmZTl0e",
     "I2YVuOGd",
-    "Wys8loiZ"
+    "Wys8loiZ",
+    "AnvOJqrS",
+    "ifkYLkyC"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

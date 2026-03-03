@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_iu liquidity swe",
+    "created_at":  "2026-03-03T19:45:14.491691+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-814f05b12214.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260304/indicator-20260304-37e71f3b65d5.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-814f05b12214.linkmap.json",
+    "status":  "BLOCKED",
+    "last_processed_at":  "2026-03-03T19:48:29.8164315Z",
+    "attempts":  1,
+    "last_error":  "ADAPTIVE_PROMOTION_GATE"
+}
