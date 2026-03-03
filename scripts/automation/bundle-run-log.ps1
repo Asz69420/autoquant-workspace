@@ -399,14 +399,22 @@ if ($mode -eq 'quandalf') {
     $lines += "Sub-agents finished: $completed"
     $lines += "Sub-agents failed: $failed"
   } else {
-    $lines += "Data ingested: $ingested"
-    $lines += "Bundles scanned/selected: $bundlesScanned/$bundlesSelected"
-    $lines += "Specs (OK/Blocked/Review): $specOk/$specBlocked/$specReview"
-    $lines += "Backtests executed: $batchExecutedTotal (attempts: $batchAttempts)"
-    $lines += "Promotions (OK/Blocked): $promotionOk/$promotionBlocked"
-    if ($dirVariants -gt 0) { $lines += "New variants: $dirVariants" }
-    if ($forwardRuns -gt 0) { $lines += "Forward checks: $forwardRuns" }
-    if ($outboxLag -gt 0) { $lines += "Queue lag: $outboxLag" }
+    $submittedCount = 0
+    if ($bundlesSelected -gt 0) {
+      $submittedCount = $bundlesSelected
+    } elseif ($bundleStarts -gt 0) {
+      $submittedCount = $bundleStarts
+    } else {
+      $submittedCount = ($specOk + $specBlocked + $specReview)
+    }
+
+    $lines += "Ingested: $ingested"
+    $lines += "Submitted: $submittedCount"
+    $lines += "Passed: $specOk"
+    $lines += "Backtests: $batchExecutedTotal"
+    $lines += "Promoted: $promotionOk"
+    $lines += "Queue lag: $outboxLag"
+    $lines += "Tested: $forwardRuns"
   }
 }
 # Shared bottom note block (up to 3 lines)
@@ -452,31 +460,21 @@ if ($true) {
   } elseif ($errors -gt 0) {
     $noteText = "I hit $errors issue(s) in this window and need a quick review."
   } elseif ($mode -eq 'frodex') {
-    $clauses = @()
-    $clauses += ("This cycle ingested $ingested item(s), scanned $bundlesScanned bundle(s), selected $bundlesSelected, emitted specs OK/blocked/review as $specOk/$specBlocked/$specReview, executed $batchExecutedTotal backtest(s) across $batchAttempts batch attempt(s), and produced promotions OK/blocked as $promotionOk/$promotionBlocked")
-
-    if ($starvation -gt 0) {
-      $clauses += ("throughput drought has now repeated for $starvation cycle(s)")
+    if ($errors -gt 0) {
+      $noteText = "Issues detected this cycle; I flagged them for follow-up."
+    } elseif ($promotionOk -gt 0 -and $promotionBlocked -gt 0) {
+      $noteText = "Strong cycle: $promotionOk promoted, $promotionBlocked held for review."
+    } elseif ($promotionOk -gt 0) {
+      $noteText = "Strong cycle: $promotionOk promoted cleanly."
+    } elseif ($batchExecutedTotal -gt 0) {
+      $noteText = "Cycle complete: $batchExecutedTotal backtests run; no strong promotion yet."
+    } elseif ($ingested -gt 0 -or $bundlesSelected -gt 0 -or ($specOk + $specBlocked + $specReview) -gt 0) {
+      $noteText = "Pipeline moved through ingest and validation this window."
+    } elseif ($forwardRuns -gt 0) {
+      $noteText = "Forward testing stayed active while the lab window was quiet."
+    } else {
+      $noteText = "Quiet cycle; no actionable changes in this window."
     }
-
-    if ($promotionBlocked -gt 0 -or $specBlocked -gt 0 -or $batchBlockedPromotion -gt 0) {
-      $clauses += ("the main blocker counts were spec blocked $specBlocked, promotion blocked $promotionBlocked, and batch blocked $batchBlockedPromotion")
-    }
-
-    if ($topWarning) {
-      $repeatWord = if ($topWarningCount -gt 1) { "repeated $topWarningCount times" } else { "seen once" }
-      $clauses += ("the top warning was '$topWarning' ($repeatWord)")
-    }
-
-    if ($outboxLag -gt 0) {
-      $clauses += ("queue lag is currently $outboxLag event(s)")
-    }
-
-    if ($clauses.Count -eq 1 -and $forwardRuns -gt 0 -and $batchExecutedTotal -eq 0 -and $promoted -eq 0 -and $ingested -eq 0) {
-      $clauses += "forward checks were active while this window remained operationally quiet"
-    }
-
-    $noteText = (($clauses -join ', ') + '.')
   } else {
     if ($mode -eq 'oragorn') {
       if ($completed -gt 0 -or $failed -gt 0) {
