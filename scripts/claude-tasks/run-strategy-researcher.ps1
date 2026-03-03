@@ -106,17 +106,18 @@ Journal entry minimum:
 D) Append/update one human-readable operator journal entry to:
 docs/shared/QUANDALF_JOURNAL.md
 
-Operator journal format (MANDATORY):
-- What I learned this cycle
-- What changed in my thinking
-- What I’m testing next
+Operator journal format (MANDATORY, match historical Entry 007 style):
+- Results
+- Key Insights
+- What I’m Testing Next
 - Suggestions for Asz (if any)
 
 Style constraints (MANDATORY):
 - Max 4 sections only (exactly the headings above)
-- 2-4 bullets per section
-- Max 700 words total
+- 2-6 bullets per section
+- Max 900 words total
 - No large tables, no long narrative blocks
+- Keep concise but substantial (not one-line stubs)
 
 IMPORTANT:
 - Do NOT include machine-directive JSON in operator journal content.

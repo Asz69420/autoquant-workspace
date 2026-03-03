@@ -82,10 +82,13 @@ function Build-JournalDigest([string]$entryText, [int]$maxChars = 1400) {
   if ($mTitle.Success) { $title = $mTitle.Value.Trim() }
 
   $wanted = @(
+    'Results',
+    'Key Insights?',
+    'What I.?m Testing Next',
+    'Suggestions for Asz(?:\s*\(if any\))?',
     'What I learned this cycle',
     'What changed in my thinking',
-    'What I.?m testing next',
-    'Suggestions for Asz(?:\s*\(if any\))?'
+    'What I.?m testing next'
   )
 
   $sections = @()
