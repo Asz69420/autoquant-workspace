@@ -19,6 +19,8 @@ Set-Location -LiteralPath $RepoRoot
 
 $adaptivePolicyPath = Join-Path $RepoRoot 'config\adaptive_execution_policy.json'
 $adaptiveGateScript = Join-Path $RepoRoot 'scripts\pipeline\evaluate_promotion_gate.py'
+$youtubeWatchlistPath = Join-Path $RepoRoot 'data\state\youtube_watchlist.json'
+$allowedYoutubeChannelIds = @{}
 $adaptivePolicyEnabled = $false
 try {
   if (Test-Path -LiteralPath $adaptivePolicyPath) {
@@ -29,6 +31,20 @@ try {
   }
 } catch {
   $adaptivePolicyEnabled = $false
+}
+
+try {
+  if (Test-Path -LiteralPath $youtubeWatchlistPath) {
+    $ytState = Get-Content -LiteralPath $youtubeWatchlistPath -Raw | ConvertFrom-Json
+    foreach ($ch in @($ytState.channels)) {
+      $cid = [string]$ch.channel_id
+      if (-not [string]::IsNullOrWhiteSpace($cid)) {
+        $allowedYoutubeChannelIds[$cid] = $true
+      }
+    }
+  }
+} catch {
+  $allowedYoutubeChannelIds = @{}
 }
 
 function Run-Py($pyArgs) {
@@ -730,6 +746,17 @@ try {
         if ([string]::IsNullOrWhiteSpace($bundleStatus)) { $bundleStatus = 'NEW' }
         if ($bundleStatus -ne 'NEW') { continue }
         $newBundlesSeen += 1
+
+        $bundleSource = [string]$b.source
+        if ($bundleSource -eq 'youtube') {
+          $bundleChannelId = [string]$b.source_channel_id
+          if ([string]::IsNullOrWhiteSpace($bundleChannelId) -or -not $allowedYoutubeChannelIds.ContainsKey($bundleChannelId)) {
+            Set-BundleState -bundlePath $bp -status 'REVIEW_REQUIRED' -lastError 'CHANNEL_NOT_IN_WATCHLIST' -incrementAttempt $false
+            Emit-Summary 'BUNDLE_SKIPPED_REVIEW_REQUIRED' ('Bundle quarantined: source=youtube channel_id=' + $bundleChannelId + ' not in active watchlist path=' + [string]$bp) 'WARN' 'Autopilot'
+            continue
+          }
+        }
+
         $processableNewBundles += 1
         Emit-Summary 'BUNDLE_PROCESS_START' ('Bundle process start: path=' + [string]$bp + ' status=' + $bundleStatus) 'INFO' 'Autopilot'
 

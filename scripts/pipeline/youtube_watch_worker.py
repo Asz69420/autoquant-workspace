@@ -509,7 +509,10 @@ def main() -> int:
                 continue
 
             content_category, needs_review, top1, top2 = _classify_video_category(item.get('title', ''), rc['research_card_path'], category_cfg)
+            bundle_status = 'NEW'
             if needs_review:
+                content_category = 'REVIEW_REQUIRED'
+                bundle_status = 'REVIEW_REQUIRED'
                 _log('YT_CATEGORY_REVIEW', 'YT_CATEGORY_REVIEW', f"video_id={vid} channel={ch.get('name','youtube')} top1={top1} top2={top2}", 'WARN')
                 _notify_category_review(str(ch.get('name', 'youtube')), str(item.get('title', vid)), vid, top1, top2)
             elif content_category != str(category_cfg.get('active_category') or '').upper():
@@ -532,14 +535,17 @@ def main() -> int:
                 'research_card_path': rc['research_card_path'],
                 'indicator_record_paths': linked[:2],
                 'linkmap_path': lm['linkmap_path'],
-                'status': 'NEW',
+                'status': bundle_status,
             }
             _w(bpath, b)
-            _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=youtube video_id={vid} category={content_category}", 'INFO', outputs=[str(bpath).replace('\\', '/')])
-            bundles = [str(bpath).replace('\\', '/')] + [x for x in bundles if x != str(bpath).replace('\\', '/')]
+            if bundle_status == 'REVIEW_REQUIRED':
+                _log('BUNDLE_REVIEW_REQUIRED', 'BUNDLE_REVIEW_REQUIRED', f"source=youtube video_id={vid} category={content_category}", 'WARN', outputs=[str(bpath).replace('\\', '/')])
+            else:
+                _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=youtube video_id={vid} category={content_category}", 'INFO', outputs=[str(bpath).replace('\\', '/')])
+                bundles = [str(bpath).replace('\\', '/')] + [x for x in bundles if x != str(bpath).replace('\\', '/')]
             seen_videos.add(vid)
             created.append(str(bpath).replace('\\', '/'))
-            if content_category in CONCEPT_CATEGORIES:
+            if bundle_status == 'NEW' and content_category in CONCEPT_CATEGORIES:
                 concept_cards.append(str(rc['research_card_path']).replace('\\', '/'))
             processed += 1
 
