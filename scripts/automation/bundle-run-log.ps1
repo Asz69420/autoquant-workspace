@@ -393,13 +393,26 @@ if ($mode -ne 'quandalf') {
   $lines += $noteText
 }
 $messageBody = ($lines -join "`n").TrimEnd()
-$caption = "``````" + "`n" + $messageBody + "`n" + "``````"
+
+function Escape-MarkdownV2 {
+  param([string]$Text)
+  if ($null -eq $Text) { return "" }
+  $escaped = [string]$Text
+  $chars = @('_','*','[',']','(',')','~','`','>','#','+','-','=','|','{','}','.','!')
+  foreach ($ch in $chars) {
+    $escaped = $escaped -replace ([regex]::Escape($ch)), ('\' + $ch)
+  }
+  return $escaped
+}
+
+$caption = Escape-MarkdownV2 -Text $messageBody
+if ($caption.Length -gt 1000) { $caption = $caption.Substring(0, 997) + "..." }
 
 # --- Send ---
 function Send-TextMessage {
   param($tok, $chatId, $text)
   $uri = "https://api.telegram.org/bot$tok/sendMessage"
-  $body = @{ chat_id = $chatId; text = $text; parse_mode = "Markdown" } | ConvertTo-Json -Compress
+  $body = @{ chat_id = $chatId; text = $text; parse_mode = "MarkdownV2" } | ConvertTo-Json -Compress
   Invoke-RestMethod -Uri $uri -Method Post -Body $body -ContentType "application/json" | Out-Null
 }
 
@@ -409,7 +422,7 @@ if ($bannerPath) {
   $parts = @()
   $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"chat_id`"`r`n`r`n$logChannel"
   $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"caption`"`r`n`r`n$caption"
-  $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"parse_mode`"`r`n`r`nMarkdown"
+  $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"parse_mode`"`r`n`r`nMarkdownV2"
   $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"photo`"; filename=`"banner.jpg`"`r`nContent-Type: image/jpeg`r`n"
 
   $preBytes = [System.Text.Encoding]::UTF8.GetBytes(($parts -join "`r`n") + "`r`n")
