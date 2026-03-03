@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260303-2793b689b028",
+  "created_at": "2026-03-03T03:19:51.175947Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/Vi9sy7XL-Ultimate-Institutional-Levels-No-lag-No-repaint-High-Accuracy/",
+  "title": "Ultimate Institutional Levels -No lag, No repaint, High Accuracy",
+  "author": "TrendRiderPro",
+  "summary_bullets": [
+    "Top catalog indicator: Ultimate Institutional Levels -No lag, No repaint, High Accuracy by TrendRiderPro."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Ultimate Institutional Levels -No lag, No repaint, High Accuracy by TrendRiderPro.",
+      "note": "Meaning: Top catalog indicator: Ultimate Institutional Levels -No lag, No repaint, High Accuracy by TrendRiderPro."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Top catalog indicator: Ultimate Institutional Levels -No lag, No repaint, High Accuracy by TrendRiderPro."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260303/research-20260303-2793b689b028.raw.txt",
+  "sha256": "1f8b9f8694a551f260ee0604ae87a209c9d571154a70ff703d5bb951f443c0f7",
+  "truncated": false
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260303-f4a45f72c395",
+  "created_at": "2026-03-03T03:19:50.908846Z",
+  "tv_ref": "tradingview:Vi9sy7XL",
+  "url": "https://www.tradingview.com/script/Vi9sy7XL-Ultimate-Institutional-Levels-No-lag-No-repaint-High-Accuracy/",
+  "name": "Ultimate Institutional Levels -No lag, No repaint, High Accuracy",
+  "author": "TrendRiderPro",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "7f054ee106e81db2c11d98a0bd0dc76355052b1a35fa65fd2aef4668dd90903b",
+  "truncated": false
+}

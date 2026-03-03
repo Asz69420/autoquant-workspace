@@ -1,0 +1,250 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-sc7t4n9w",
+  "name": "Supertrend CCI Pullback Synergy",
+  "created_at": "2026-03-03T15:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend 8:1 is the #2 champion (PF=1.921) — it catches trend direction via SUPERTd flips. CCI Chop Fade v2 (PF=1.255) catches momentum extremes in ranges. Neither strategy exploits the pattern where Supertrend is trending AND CCI dips to oversold — the 'buy the dip in a confirmed trend' setup. When SUPERTd confirms bullish AND CCI recovers from below -100 (crosses_above -100), we enter at the exact bar where momentum shifts back to the trend direction after a pullback. This combines our two proven indicator families (Supertrend for direction, CCI for timing) in a way that neither individual strategy tests. The mechanism is distinct: trend continuation after pullback, not trend initiation or mean-reversion.",
+  "regime_assumption": "trending_with_pullbacks",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "supertrend_cci_pullback_v1_8to1",
+      "description": "Supertrend trend direction + CCI pullback recovery. 8:1 R:R with 1.5x ATR stop. Entry on CCI crossing above -100 while Supertrend is bullish. Tests whether trend-aligned pullback timing beats pure Supertrend direction.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Supertrend direction: SUPERTd_7_3.0 == 1/-1",
+        "CCI recovery: crosses_above -100 (long) / crosses_below 100 (short)",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "Supertrend",
+          "role": "baseline",
+          "notes": "SUPERTd_7_3.0 == 1 (bullish) / -1 (bearish). Proven trend direction indicator from #2 champion."
+        },
+        {
+          "indicator": "Commodity Channel Index",
+          "role": "confirmation",
+          "notes": "CCI_20_0.015 crosses_above -100 = recovery from oversold pullback. Timing signal for trend re-entry."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supertrend_cci_pullback_v2_12to1",
+      "description": "Same Supertrend + CCI pullback logic but extreme 12:1 R:R tail harvesting. 2.0x ATR stop for breathing room, 24x ATR take profit. Tests whether this combined signal can capture the outsized trend continuation moves.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 24.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Supertrend direction: SUPERTd_7_3.0 == 1/-1",
+        "CCI recovery: crosses_above -100 / crosses_below 100",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (24.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "R:R = 12:1. Needs 7.7% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 24.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.25, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 18.0, "max": 30.0, "step": 3.0, "default": 24.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "Supertrend",
+          "role": "baseline",
+          "notes": "SUPERTd_7_3.0 trend direction. Same as v1."
+        },
+        {
+          "indicator": "Commodity Channel Index",
+          "role": "confirmation",
+          "notes": "CCI recovery from extreme. Same entry as v1 but targeting larger moves."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 2.0x stop / 24.0x TP = 12:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supertrend_cci_pullback_v3_deep",
+      "description": "Deeper pullback variant: CCI must reach -150 (not just -100) before recovery. This filters for only the deepest pullbacks within trends — higher conviction but fewer trades. Tests whether deeper CCI extremes produce better entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above -150"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below 150"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "Supertrend direction: SUPERTd_7_3.0 == 1/-1",
+        "Deep CCI recovery: crosses_above -150 / crosses_below 150",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "Supertrend",
+          "role": "baseline",
+          "notes": "SUPERTd_7_3.0 trend direction. Same directional filter."
+        },
+        {
+          "indicator": "Commodity Channel Index",
+          "role": "confirmation",
+          "notes": "CCI_20_0.015 crosses_above -150 = recovery from DEEP oversold. Higher conviction than -100 threshold."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["SUPERTd_7_3.0", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "SUPERTd_7_3.0 (Supertrend trend direction, proven #2 champion)",
+    "confirmation": "CCI_20_0.015 (pullback recovery timing signal)",
+    "volume_volatility": "ATR_14 for position sizing and R:R"
+  }
+}

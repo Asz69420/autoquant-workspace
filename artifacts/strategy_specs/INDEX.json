@@ -1,14 +1,14 @@
 ﻿[
-    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-c5e9a3b7.strategy_spec.json",
-    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-b4d8f2a6.strategy_spec.json",
-    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-a7c3e1f9.strategy_spec.json",
+    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-vp5c8k2m.strategy_spec.json",
+    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-sc7t4n9w.strategy_spec.json",
+    "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-ag3x6r1k.strategy_spec.json",
     {
         "value":  [
-                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-rp3x7k5w.strategy_spec.json",
-                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-mc9v4h6t.strategy_spec.json",
-                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-er4n8m2q.strategy_spec.json",
+                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-c5e9a3b7.strategy_spec.json",
+                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-b4d8f2a6.strategy_spec.json",
+                      "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-a7c3e1f9.strategy_spec.json",
                       {
-                          "value":  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-wr7s3f5t.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-kv2m6w9p.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-cc4k8m2w.strategy_spec.json ",
+                          "value":  "artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-rp3x7k5w.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-mc9v4h6t.strategy_spec.json artifacts/strategy_specs/20260303/strategy-spec-20260303-claude-er4n8m2q.strategy_spec.json ",
                           "Count":  4
                       }
                   ],

@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-vp5c8k2m",
+  "name": "VWAP CCI Double Mean Reversion",
+  "created_at": "2026-03-03T15:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "VWAP_D represents institutional volume-weighted fair value. CCI measures statistical deviation from a moving average. When BOTH indicators agree that price is overextended (close below VWAP AND CCI oversold below -100), two independent mean-reversion forces converge — volume-based fair value pull AND statistical mean pull. In ranging markets (CHOP > 50), this double-confirmation should produce higher-conviction mean-reversion entries than CCI alone (CCI Chop Fade v2 PF=1.255). VWAP_D has NEVER been tested in any strategy — this is first-contact with volume-weighted pricing as a signal component.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "vwap_cci_mean_rev_v1_8to1",
+      "description": "VWAP + CCI double mean reversion with CHOP ranging gate. 8:1 R:R with 1.5x ATR stop. Tests whether volume-weighted fair value adds edge to CCI mean reversion signals.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < VWAP_D",
+        "CCI_20_0.015 < -100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "close > VWAP_D",
+        "CCI_20_0.015 > 100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "VWAP deviation: close vs VWAP_D",
+        "CCI extreme: CCI_20_0.015 beyond +/- 100",
+        "CHOP ranging gate: CHOP_14_1_100 > 50",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "VWAP Daily",
+          "role": "baseline",
+          "notes": "VWAP_D — volume-weighted average price. Institutional fair value reference. Price below VWAP = sellers pushed below fair value."
+        },
+        {
+          "indicator": "Commodity Channel Index",
+          "role": "confirmation",
+          "notes": "CCI_20_0.015 < -100 = statistically oversold. Confirms the VWAP deviation is extreme enough to trade."
+        },
+        {
+          "indicator": "Choppiness Index",
+          "role": "confirmation",
+          "notes": "CHOP_14_1_100 > 50 = ranging market gate. Proven regime filter across 19/24 legacy ACCEPTs."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "vwap_cci_mean_rev_v2_10to1",
+      "description": "Same VWAP + CCI + CHOP setup but with 2.0x ATR stop and 10:1 R:R. Wider stop accommodates 4h volatility and tests whether more room to breathe improves hit rate enough to offset lower R:R.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < VWAP_D",
+        "CCI_20_0.015 < -100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "entry_short": [
+        "close > VWAP_D",
+        "CCI_20_0.015 > 100",
+        "CHOP_14_1_100 > 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "VWAP deviation: close vs VWAP_D",
+        "CCI extreme: CCI_20_0.015 beyond +/- 100",
+        "CHOP ranging gate: CHOP_14_1_100 > 50",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.25, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 15.0, "max": 25.0, "step": 2.5, "default": 20.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "VWAP Daily",
+          "role": "baseline",
+          "notes": "VWAP_D — volume-weighted fair value. Same signal as v1."
+        },
+        {
+          "indicator": "Commodity Channel Index",
+          "role": "confirmation",
+          "notes": "CCI_20_0.015 extreme confirmation. Same as v1."
+        },
+        {
+          "indicator": "Choppiness Index",
+          "role": "confirmation",
+          "notes": "CHOP_14_1_100 > 50 = ranging gate."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 2.0x stop / 20.0x TP = 10:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["VWAP_D", "CCI_20_0.015", "CHOP_14_1_100", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "VWAP_D (volume-weighted institutional fair value)",
+    "confirmation": "CCI_20_0.015 + CHOP_14_1_100 (statistical extreme + ranging gate)",
+    "volume_volatility": "ATR_14 for position sizing and R:R"
+  }
+}

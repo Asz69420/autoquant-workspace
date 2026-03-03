@@ -1,0 +1,252 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260303-claude-ag3x6r1k",
+  "name": "ALMA Gaussian Trend Pullback",
+  "created_at": "2026-03-03T15:00:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Inspired by Research Digest entry 'Gaussian Channel Trend Pullback' — Gaussian channel strategies perform well on crypto. ALMA (Arnaud Legoux Moving Average) uses a Gaussian-weighted window with offset, making it the closest available indicator to a Gaussian channel centerline. When price pulls back to ALMA and then crosses back above it (crosses_above ALMA) while the medium-term trend is confirmed bullish (close > EMA_50), this captures the exact moment a pullback ends and trend resumes. Unlike EMA crossovers (exhausted, 0 ACCEPTs), ALMA's Gaussian weighting responds differently to price patterns — it's smoother in trends and more responsive at reversals due to the offset parameter. The ALMA + EMA_50 combination has never been tested in this pullback-recovery configuration. Every existing spec using ALMA tested it as a crossover partner (T3 ALMA crossover), not as a pullback target.",
+  "regime_assumption": "trending",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "alma_pullback_ema50_v1_8to1",
+      "description": "ALMA as pullback target in EMA_50 trend. Price crossing back above ALMA after dipping below = pullback recovery. 8:1 R:R with 1.5x ATR stop. Tests whether ALMA's Gaussian weighting captures better pullback entries than standard MAs.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > EMA_50",
+        "close crosses_above ALMA_9_6.0_0.85"
+      ],
+      "entry_short": [
+        "close < EMA_50",
+        "close crosses_below ALMA_9_6.0_0.85"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "ALMA pullback: close crosses_above/below ALMA_9_6.0_0.85",
+        "EMA_50 trend gate: close above/below EMA_50",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "ALMA",
+          "role": "baseline",
+          "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted MA (9-period, offset 6, sigma 0.85). Pullback target. Price crossing back above ALMA = pullback recovery."
+        },
+        {
+          "indicator": "EMA 50",
+          "role": "confirmation",
+          "notes": "EMA_50 — medium-term trend direction filter. Only enter when price is on the trending side."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_pullback_ema50_v2_10to1",
+      "description": "ALMA pullback with wider stop (2.0x ATR) and 10:1 R:R. The wider stop gives ALMA pullback more room for 4h noise. Tests optimal stop distance for Gaussian-weighted pullback entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > EMA_50",
+        "close crosses_above ALMA_9_6.0_0.85"
+      ],
+      "entry_short": [
+        "close < EMA_50",
+        "close crosses_below ALMA_9_6.0_0.85"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "ALMA pullback: close crosses_above/below ALMA_9_6.0_0.85",
+        "EMA_50 trend gate: close above/below EMA_50",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (20.0x ATR).",
+        "Exit on ATR-based stop loss hit (2.0x ATR).",
+        "R:R = 10:1. Needs 9.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14 below/above entry.",
+        "Take profit at 20.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.5, "step": 0.25, "default": 2.0},
+        {"name": "tp_atr_mult", "min": 15.0, "max": 25.0, "step": 2.5, "default": 20.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "ALMA",
+          "role": "baseline",
+          "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted pullback target. Same signal as v1."
+        },
+        {
+          "indicator": "EMA 50",
+          "role": "confirmation",
+          "notes": "EMA_50 trend direction. Same as v1."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 2.0x stop / 20.0x TP = 10:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_pullback_rsi_v3_8to1",
+      "description": "ALMA pullback with RSI confirmation instead of EMA_50 trend gate. RSI_14 > 40 confirms momentum is not deeply oversold (the pullback is healthy, not a reversal). This tests whether momentum confirmation (RSI) beats trend-direction confirmation (EMA_50) for ALMA pullback timing.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above ALMA_9_6.0_0.85",
+        "RSI_14 > 40",
+        "RSI_14 < 70"
+      ],
+      "entry_short": [
+        "close crosses_below ALMA_9_6.0_0.85",
+        "RSI_14 < 60",
+        "RSI_14 > 30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "ALMA pullback: close crosses_above/below ALMA_9_6.0_0.85",
+        "RSI momentum band: 40-70 for longs, 30-60 for shorts",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (12.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.5x ATR).",
+        "R:R = 8:1. Needs 11.1% win rate to break even after fees."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14 below/above entry.",
+        "Take profit at 12.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 25%."
+      ],
+      "parameters": [
+        {"name": "stop_atr_mult", "min": 1.5, "max": 2.0, "step": 0.25, "default": 1.5},
+        {"name": "tp_atr_mult", "min": 9.0, "max": 15.0, "step": 1.5, "default": 12.0},
+        {"name": "risk_r", "min": 0.5, "max": 1.5, "step": 0.25, "default": 1.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "components": [
+        {
+          "indicator": "ALMA",
+          "role": "baseline",
+          "notes": "ALMA_9_6.0_0.85 — Gaussian-weighted pullback target. Same cross signal."
+        },
+        {
+          "indicator": "RSI",
+          "role": "confirmation",
+          "notes": "RSI_14 between 40-70 (long) / 30-60 (short). Filters out entries at momentum extremes where pullback may be a reversal."
+        },
+        {
+          "indicator": "ATR",
+          "role": "volume_volatility",
+          "notes": "ATR_14 for 1.5x stop / 12.0x TP = 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ALMA_9_6.0_0.85", "EMA_50", "RSI_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ALMA_9_6.0_0.85 (Gaussian-weighted MA as pullback target)",
+    "confirmation": "EMA_50 (trend direction, v1/v2) or RSI_14 (momentum band, v3)",
+    "volume_volatility": "ATR_14 for position sizing and R:R"
+  }
+}
