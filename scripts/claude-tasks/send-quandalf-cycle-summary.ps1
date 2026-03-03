@@ -22,6 +22,18 @@ function Convert-ToCompactText([string]$rawText, [int]$maxChars = 3500) {
   return $t
 }
 
+function Get-TextSha256([string]$text) {
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try {
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes([string]$text)
+    $hashBytes = $sha.ComputeHash($bytes)
+    return ([System.BitConverter]::ToString($hashBytes) -replace '-', '').ToLowerInvariant()
+  }
+  finally {
+    $sha.Dispose()
+  }
+}
+
 function Normalize-JournalEntry([string]$text) {
   if ([string]::IsNullOrWhiteSpace($text)) { return "" }
 
@@ -89,6 +101,29 @@ try {
   }
 
   $msg = "Quandalf ${TaskLabel}:`n$effectiveSummary"
+
+  if ($isJournalEntry) {
+    $stateDir = "$ROOT\data\logs\claude-tasks"
+    $statePath = "$stateDir\last-journal-dm.sha256"
+    New-Item -ItemType Directory -Force -Path $stateDir | Out-Null
+
+    $currentHash = Get-TextSha256 -text $effectiveSummary
+    $lastHash = ""
+    if (Test-Path $statePath) {
+      $lastHash = [string](Get-Content -Path $statePath -Raw -Encoding UTF8 -ErrorAction SilentlyContinue)
+      $lastHash = $lastHash.Trim()
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($lastHash) -and $lastHash -eq $currentHash) {
+      Write-Host "Quandalf DM summary skipped (duplicate journal entry)"
+      return
+    }
+
+    & "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
+    Set-Content -Path $statePath -Value $currentHash -Encoding UTF8
+    Write-Host "Quandalf DM summary sent"
+    return
+  }
 
   & "$ROOT\scripts\claude-tasks\notify-asz.ps1" -Message $msg
 
