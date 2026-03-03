@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "categories": [
+    "INDICATOR_CONCEPT",
+    "TRADING_CONCEPT",
+    "NUANCED_CONCEPT",
+    "MARKET_STRUCTURE",
+    "RISK_EXECUTION",
+    "MACRO_CONTEXT",
+    "REVIEW"
+  ],
+  "channels": [
+    {
+      "name": "SoheilPKO",
+      "channel_id": "UC7QqMi_dhkGuFaA0TrYJTAw",
+      "active_category": "INDICATOR_CONCEPT",
+      "notes": "Default from mode=INDICATORS"
+    },
+    {
+      "name": "PineTrades",
+      "channel_id": "UCpwDBjHySPPXMoI86xFrHFg",
+      "active_category": "INDICATOR_CONCEPT",
+      "notes": "Default from mode=INDICATORS"
+    },
+    {
+      "name": "MichaelIonita",
+      "channel_id": "UCC0O5FKSMcjzrvOUa08hS_A",
+      "active_category": "TRADING_CONCEPT",
+      "notes": "Default from mode=CONCEPTS"
+    },
+    {
+      "name": "IntoTheCryptoverse",
+      "channel_id": "UCRvqjQPSeaWn-uEx-w0XOIg",
+      "active_category": "INDICATOR_CONCEPT",
+      "notes": "Default from mode=INDICATORS"
+    },
+    {
+      "name": "ECKrown",
+      "channel_id": "UCnwxzpFzZNtLH8NgTeAROFA",
+      "active_category": "INDICATOR_CONCEPT",
+      "notes": "Default from mode=INDICATORS"
+    },
+    {
+      "name": "TradeTravelChill",
+      "channel_id": "UC8z0A6pWQ4mXucKtEfYiIAA",
+      "active_category": "INDICATOR_CONCEPT",
+      "notes": "Default from mode=INDICATORS"
+    },
+    {
+      "name": "DaviddTech",
+      "channel_id": "UC7NJLsf6IonOy8QI8gt5BeA",
+      "active_category": "TRADING_CONCEPT",
+      "notes": "Default from mode=CONCEPTS"
+    }
+  ]
+}

@@ -24,6 +24,8 @@ BACKOFF_BASE_SECONDS = [15 * 60, 30 * 60, 60 * 60, 2 * 60 * 60, 4 * 60 * 60]
 JITTER_MAX_SECONDS = 10 * 60
 SHORTS_MAX_SECONDS = 90
 MAX_VIDEO_SECONDS = 3600
+CATEGORY_CONFIG_PATH = ROOT / 'data' / 'state' / 'youtube_channel_categories.json'
+CONCEPT_CATEGORIES = {'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT'}
 
 
 def _j(path: Path, default):
@@ -295,12 +297,52 @@ def _queue_retry(q: dict[str, dict], video_id: str, err: str, retry_after_hint: 
     return row
 
 
+def _load_channel_categories() -> tuple[dict[str, str], dict[str, str]]:
+    cfg = _j(CATEGORY_CONFIG_PATH, {})
+    by_id: dict[str, str] = {}
+    by_name: dict[str, str] = {}
+    rows = cfg.get('channels', []) if isinstance(cfg, dict) else []
+    for r in rows:
+        if not isinstance(r, dict):
+            continue
+        cat = str(r.get('active_category') or '').strip().upper()
+        if not cat:
+            continue
+        cid = str(r.get('channel_id') or '').strip()
+        name = str(r.get('name') or '').strip().lower()
+        if cid:
+            by_id[cid] = cat
+        if name:
+            by_name[name] = cat
+    return by_id, by_name
+
+
+def _default_category_from_mode(mode: str) -> str:
+    m = str(mode or '').strip().upper()
+    if m == 'INDICATORS':
+        return 'INDICATOR_CONCEPT'
+    if m == 'CONCEPTS':
+        return 'TRADING_CONCEPT'
+    return 'REVIEW'
+
+
+def _resolve_content_category(ch: dict, by_id: dict[str, str], by_name: dict[str, str]) -> str:
+    cid = str(ch.get('channel_id') or '').strip()
+    nm = str(ch.get('name') or '').strip().lower()
+    if cid and cid in by_id:
+        return by_id[cid]
+    if nm and nm in by_name:
+        return by_name[nm]
+    return _default_category_from_mode(str(ch.get('mode') or ''))
+
+
 def main() -> int:
     state = _j(STATE_PATH, {'channels': [], 'seen_video_ids': [], 'max_new_videos_per_run': 2})
     bundles = _j(BUNDLE_INDEX, [])
     ind_idx = _j(INDICATOR_INDEX, [])
     max_new = max(1, int(state.get('max_new_videos_per_run', MAX_NEW)))  # retained for telemetry/back-compat
     retry_queue = _load_retry_queue()
+    category_by_id, category_by_name = _load_channel_categories()
 
     created = []
     seen_videos = set(state.get('seen_video_ids', []))
@@ -319,6 +361,7 @@ def main() -> int:
             failed += 1
             continue
         ch['channel_id'] = channel_id
+        content_category = _resolve_content_category(ch, category_by_id, category_by_name)
         channels_checked += 1
         latest = _fetch_latest(channel_id)
         if latest and not ch.get('last_seen_video_id'):
@@ -392,17 +435,20 @@ def main() -> int:
                 'created_at': datetime.now(UTC).isoformat(),
                 'source': 'youtube',
                 'video_id': vid,
+                'source_channel_name': str(ch.get('name', 'youtube')),
+                'source_channel_id': channel_id,
+                'content_category': content_category,
                 'research_card_path': rc['research_card_path'],
                 'indicator_record_paths': linked[:2],
                 'linkmap_path': lm['linkmap_path'],
                 'status': 'NEW',
             }
             _w(bpath, b)
-            _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=youtube video_id={vid}", 'INFO', outputs=[str(bpath).replace('\\', '/')])
+            _log('BUNDLE_CREATED', 'BUNDLE_CREATED', f"source=youtube video_id={vid} category={content_category}", 'INFO', outputs=[str(bpath).replace('\\', '/')])
             bundles = [str(bpath).replace('\\', '/')] + [x for x in bundles if x != str(bpath).replace('\\', '/')]
             seen_videos.add(vid)
             created.append(str(bpath).replace('\\', '/'))
-            if str(ch.get('mode', '')).upper() == 'CONCEPTS':
+            if content_category in CONCEPT_CATEGORIES:
                 concept_cards.append(str(rc['research_card_path']).replace('\\', '/'))
             processed += 1
 
