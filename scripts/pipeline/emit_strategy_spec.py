@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tempfile
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 MAX_JSON_BYTES = 60 * 1024
@@ -957,11 +957,15 @@ def _directives_from_outcome_notes(path: str) -> list[dict]:
     return out
 
 
-def _latest_llm_outcome_note() -> tuple[str, dict]:
+def _latest_llm_outcome_note(max_age_hours: int = 24) -> tuple[str, dict]:
     out_root = ROOT / 'artifacts' / 'outcomes'
     files = sorted(out_root.glob('**/outcome_notes_*.json'), key=lambda p: p.stat().st_mtime, reverse=True)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=max(1, int(max_age_hours)))
     for p in files:
         try:
+            mtime_utc = datetime.fromtimestamp(p.stat().st_mtime, tz=timezone.utc)
+            if mtime_utc < cutoff:
+                continue
             obj = json.loads(p.read_text(encoding='utf-8-sig'))
         except Exception:
             continue
@@ -994,6 +998,10 @@ def main() -> int:
     consumed_outcome_path = ''
     consumed_outcome_verdict = ''
     consumed_directives: list[dict] = []
+    try:
+        max_outcome_note_age_hours = int(os.getenv('STRATEGIST_MAX_OUTCOME_NOTE_AGE_HOURS', '24'))
+    except Exception:
+        max_outcome_note_age_hours = 24
 
     if args.mode == 'directive-only':
         if not args.source_spec or not args.outcome_notes:
@@ -1053,7 +1061,7 @@ def main() -> int:
         strategy_family = str(thesis.get('strategy_family') or thesis.get('id') or '')
         template = str(thesis.get('template') or '')
 
-        llm_path, llm_note = _latest_llm_outcome_note()
+        llm_path, llm_note = _latest_llm_outcome_note(max_age_hours=max_outcome_note_age_hours)
         llm_verdict = str(llm_note.get('verdict') or '').upper()
         llm_directives = [d for d in (llm_note.get('directives') or []) if isinstance(d, dict) and d.get('id') and d.get('type')]
 
@@ -1089,6 +1097,24 @@ def main() -> int:
         lib_aug = _pick_library_augmented_variant(thesis, variants, max_candidates=10)
         if lib_aug is not None and len(variants) < 5:
             variants = variants + [lib_aug]
+
+    if len(variants) == 0 and args.mode == 'thesis':
+        # Fail-open fallback: if directive path produced no variants, regenerate baseline/template variants.
+        fallback_variants: list[dict] = []
+        candidate_signals = thesis.get('candidate_signals', []) if isinstance(thesis, dict) else []
+        if candidate_signals:
+            baseline = build_baseline(thesis)
+            fallback_variants = [
+                baseline,
+                variant_perturbation(baseline),
+                variant_remove_component(baseline),
+                variant_threshold_mutation(baseline),
+            ][:5]
+        elif _indicator_evaluable(thesis):
+            fallback_variants = _fallback_templates(thesis)
+
+        if fallback_variants:
+            variants = _apply_outcome_guidance(fallback_variants, limit=5)
 
     if len(variants) == 0:
         print(json.dumps({
