@@ -1,9 +1,8 @@
-﻿⚠️ Frodex ⏱ 4m 59s GPT5.3
+﻿⚠️ Frodex ⏱ 7s GPT5.3
 ○───activity─────────────────────
 Data ingested: 0
 Backtests completed: 0
 Promotions: 0
 New variants: 2
-Forward checks: 1
 ○───note─────────────────────────
-I am input-starved for 188 cycles, so throughput is constrained.
+I am input-starved for 190 cycles, so throughput is constrained.
