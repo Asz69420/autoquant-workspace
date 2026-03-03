@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-f57cd1b703ee",
+  "created_at": "2026-03-03T18:15:15.811124Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/Wys8loiZ-Liquidity-Sweep-Rider-Institutional-HFT-Grabber/",
+  "title": "Liquidity Sweep Rider Institutional HFT Grabber",
+  "author": "uzair2join",
+  "summary_bullets": [
+    "Top catalog indicator: Liquidity Sweep Rider Institutional HFT Grabber by uzair2join."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Top catalog indicator: Liquidity Sweep Rider Institutional HFT Grabber by uzair2join.",
+      "note": "Meaning: Top catalog indicator: Liquidity Sweep Rider Institutional HFT Grabber by uzair2join."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-f57cd1b703ee.raw.txt",
+  "sha256": "0ad88538daa0303ce366cd29d81c65837cc1a0387f4664748cb2eb9f7a2fe50a",
+  "truncated": false
+}

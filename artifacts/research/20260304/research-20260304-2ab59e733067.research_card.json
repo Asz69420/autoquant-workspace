@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-2ab59e733067",
+  "created_at": "2026-03-03T18:09:44.264148Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=QuovcpwYjxg",
+  "title": "After 10 Years, I Found the Perfect EMA Settings! It Shows Exact Signals!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "I want to teach you an excellent EMA settings and combination that helps you find accurate buy sell signals.",
+    "This trading strategy can make you consistent profit.",
+    "Alright we're gonna add 6 exponential moving averages to the chart and we're gonna give them some special settings and combination.",
+    "First we add 3 EMAs and then another 3 EMAs.",
+    "Here we click on indicators and we search Reben.",
+    "When you click on this indicator, 4 moving averages are added to the chart.",
+    "But this is not what we want and we need to change their settings.",
+    "So here we go to the settings of the Reben and first we remove one of them because we need 3 moving averages and 3 of them should be exponential moving averages.",
+    "So here we set EMA for them.",
+    "Here for the first EMA we set the length at 13."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "I want to teach you an excellent EMA settings and combination that helps you find accurate buy sell signals.",
+      "note": "Meaning: I want to teach you an excellent EMA settings and combination that helps you find accurate buy sell signals."
+    },
+    {
+      "timestamp": null,
+      "quote": "This trading strategy can make you consistent profit.",
+      "note": "Meaning: This trading strategy can make you consistent profit."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright we're gonna add 6 exponential moving averages to the chart and we're gonna give them some special settings and combination.",
+      "note": "Meaning: Alright we're gonna add 6 exponential moving averages to the chart and we're gonna give them some special settings and combination."
+    },
+    {
+      "timestamp": null,
+      "quote": "First we add 3 EMAs and then another 3 EMAs.",
+      "note": "Meaning: First we add 3 EMAs and then another 3 EMAs."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here we click on indicators and we search Reben.",
+      "note": "Meaning: Here we click on indicators and we search Reben."
+    },
+    {
+      "timestamp": null,
+      "quote": "When you click on this indicator, 4 moving averages are added to the chart.",
+      "note": "Meaning: When you click on this indicator, 4 moving averages are added to the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "But this is not what we want and we need to change their settings.",
+      "note": "Meaning: But this is not what we want and we need to change their settings."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we go to the settings of the Reben and first we remove one of them because we need 3 moving averages and 3 of them should be exponential moving averages.",
+      "note": "Meaning: So here we go to the settings of the Reben and first we remove one of them because we need 3 moving averages and 3 of them should be exponential moving"
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we set EMA for them.",
+      "note": "Meaning: So here we set EMA for them."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here for the first EMA we set the length at 13.",
+      "note": "Meaning: Here for the first EMA we set the length at 13."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the second EMA also we set it at 13 and for the third EMA similarly we set the length at 13.",
+      "note": "Meaning: For the second EMA also we set it at 13 and for the third EMA similarly we set the length at 13."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we have 3 EMAs with the same length but with different source of calculations.",
+      "note": "Meaning: So here we have 3 EMAs with the same length but with different source of calculations."
+    }
+  ],
+  "extracted_rules": [
+    "When you click on this indicator, 4 moving averages are added to the chart.",
+    "When there is overlap between white ribbon and the orange ribbon the market is in a trading range.",
+    "But when the two ribbons are completely separated from each other and there is no overlap between them we can say that the market is trending and there is a trend in the market.",
+    "Here in this part of the chart you can see that from here when these candles are closed the white ribbon is completely below the orange ribbon.",
+    "When the two ribbons are completely separated in this case you can see that the white ribbon completely went below the orange ribbon.",
+    "When we got a candle touching the orange ribbon we go to the next step to see if this was really a pullback and when we get a signal for end of the pullback.",
+    "When the price goes for a pullback before that a sawing low is created.",
+    "We mark this low and we wait to see if the price can break this level or not because this can act as a potential support level.",
+    "So here the sell signal is confirmed and in practice we could enter a short position at this point with the stop loss above the white ribbon and profit target at risk to reward ratio of 2.",
+    "Before the pullback we find the lowest low we mark it and we wait to see if the price can break this level or not.",
+    "When the white ribbon is completely above the orange ribbon now we should wait for a pullback of the price to the orange ribbon.",
+    "We want the price to at least touch the orange ribbon and when this happened before that a sewing high is created on the chart we mark this high and we wait to see if the price can break this level or not.",
+    "Here you can see that this candle is closed above this high so the bi-signal here is confirmed and in practice we could enter a long possession at this point with this stop loss below the white ribbon and profit target at risk to reward ratio of 2.",
+    "We mark the high and you can see that the price couldn't break this level and after that we got reversal of the price to a downtrend from here you can see that the white ribbon is completely below the orange ribbon and from here we got pullback of the price to the orange ribbon before the pullback we mark the low and we wait to see if the price can break this level or not.",
+    "Here you can see that this candle is closed below the level so the sell signal here is confirmed and in practice we could enter a short position at this point and you can see how the price declined after that.",
+    "This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly.",
+    "There is a risk management strategy that is called 1% role and this risk management strategy helps you to minimize the effect of your losing possessions.",
+    "I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you will not be able to survive in this game.",
+    "If you have any questions feel free to ask and leave a comment for me, I'll answer your questions as soon as possible."
+  ],
+  "parameters_set": [
+    {
+      "name": "second ema also",
+      "value": "13",
+      "context": "EMA we set the length at 13. For the second EMA also we set it at 13 and for the third EMA similarly we set"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "At any time that there is overlap between the two ribbons the market is not trending."
+    },
+    {
+      "type": "trend",
+      "description": "You cannot see them completely separated from each other and this overlap shows that there is no trend in the market."
+    },
+    {
+      "type": "trend",
+      "description": "So the first signal that these EMAs can give you is the signal of non-trending market."
+    },
+    {
+      "type": "trend",
+      "description": "But when the two ribbons are completely separated from each other and there is no overlap between them we can say that the market is trending and there is a trend in the market."
+    },
+    {
+      "type": "trend",
+      "description": "And this shows that probably this is the starting of a downtrend."
+    },
+    {
+      "type": "filter",
+      "description": "You can see how many times it was rejected."
+    },
+    {
+      "type": "risk",
+      "description": "So here the sell signal is confirmed and in practice Entry: a short position at this point with the stop loss above the white ribbon and profit target at risk to reward ratio of 2."
+    },
+    {
+      "type": "trend",
+      "description": "Following the downtrend we are still in a downtrend because the white ribbon is completely below the orange ribbon."
+    },
+    {
+      "type": "trend",
+      "description": "This can show weakness in the downtrend but as long as it is not going above the orange ribbon it is ok and we can wait for more confirmation to enter a short position."
+    },
+    {
+      "type": "trend",
+      "description": "So now we are probably in an downtrend and we should look for long possession opportunities."
+    },
+    {
+      "type": "risk",
+      "description": "Here you can see that this candle is closed above this high so the bi-signal here is confirmed and in practice Entry: a long possession at this point with this Stop: below the white ribbon and profit target at risk to re"
+    },
+    {
+      "type": "trend",
+      "description": "And this trading strategy because we have different layers of confirmation especially the final price action confirmation it helps us to avoid trend changes that are short."
+    },
+    {
+      "type": "trend",
+      "description": "For example here after the white ribbon completely went below the orange ribbon you can see that here we got pullback of the price to the orange ribbon but after that the price couldn't break this low and then you can se"
+    },
+    {
+      "type": "trend",
+      "description": "We mark the high and you can see that the price couldn't break this level and after that we got reversal of the price to a downtrend from here you can see that the white ribbon is completely below the orange ribbon and f"
+    },
+    {
+      "type": "confirmation",
+      "description": "Here you can see that this candle is closed below the level so the sell signal here is confirmed and in practice Entry: a short position at this point and you can see how the price declined after that."
+    },
+    {
+      "type": "risk",
+      "description": "This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly."
+    },
+    {
+      "type": "risk",
+      "description": "There is a risk management strategy that is called 1% role and this risk management strategy helps you to minimize the effect of your losing possessions."
+    },
+    {
+      "type": "risk",
+      "description": "I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you will not be able to survive in this game."
+    }
+  ],
+  "explicit_conditions": [
+    "So here the sell signal is confirmed and in practice Entry: a short position at this point with the stop loss above the white ribbon and profit target at risk to reward ratio of 2.",
+    "Here you can see that this candle is closed above this high so the bi-signal here is confirmed and in practice Entry: a long possession at this point with this Stop: below the white ribbon and profit target at risk to reward ratio of 2.",
+    "This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly.",
+    "There is a risk management strategy that is called 1% role and this risk management strategy helps you to minimize the effect of your losing possessions.",
+    "I have a complete guide on this the link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you will not be able to survive in this game."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-2ab59e733067.raw.txt",
+  "sha256": "c11b0cf7f05401fa1dc921675bbf7216c35c564a45a668a78f78885e37d04c55",
+  "truncated": false
+}

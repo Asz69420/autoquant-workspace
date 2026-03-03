@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260304-2b96f4b9da53",
+  "created_at": "2026-03-03T18:15:15.474755Z",
+  "tv_ref": "tradingview:Wys8loiZ",
+  "url": "https://www.tradingview.com/script/Wys8loiZ-Liquidity-Sweep-Rider-Institutional-HFT-Grabber/",
+  "name": "Liquidity Sweep Rider Institutional HFT Grabber",
+  "author": "uzair2join",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "519dbfafdf6f4987b250e51bcf2878337a6a1e28c8b148c791b220af777f1451",
+  "truncated": false
+}
