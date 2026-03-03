@@ -49,7 +49,9 @@ foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail $tailLines)) {
     if ($ts -ge $cutoff) { $events += $entry }
   } catch { continue }
 }
-if ($events.Count -eq 0) { Write-Host "No events in window"; exit 0 }
+if ($events.Count -eq 0) {
+  Write-Host "No events in window (sending heartbeat bundle)"
+}
 
 # --- Filter noise + pipeline ownership ---
 $mainEvents = @($events | Where-Object {
