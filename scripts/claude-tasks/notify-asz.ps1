@@ -64,16 +64,68 @@ function Convert-MarkupToHtml([string]$text) {
   return ($outLines -join "`n")
 }
 
-$url = "https://api.telegram.org/bot$token/sendMessage"
-$renderedMessage = Convert-MarkupToHtml -text $Message
-$body = @{
-  chat_id = $chatId
-  text = $renderedMessage
-  parse_mode = "HTML"
-} | ConvertTo-Json -Compress
-$body = $body -replace '\\u003c', '<' -replace '\\u003e', '>'
+function Split-MessageChunks([string]$text, [int]$maxChars = 3500) {
+  $chunks = New-Object System.Collections.Generic.List[string]
+  if ([string]::IsNullOrEmpty($text)) {
+    [void]$chunks.Add("")
+    return $chunks
+  }
 
-try {
+  $lines = $text -split "`r?`n"
+  $buffer = ""
+
+  foreach ($line in $lines) {
+    $lineText = [string]$line
+
+    if ($lineText.Length -gt $maxChars) {
+      if ($buffer.Length -gt 0) {
+        [void]$chunks.Add($buffer.TrimEnd("`r","`n"))
+        $buffer = ""
+      }
+
+      $start = 0
+      while ($start -lt $lineText.Length) {
+        $len = [Math]::Min($maxChars, $lineText.Length - $start)
+        [void]$chunks.Add($lineText.Substring($start, $len))
+        $start += $len
+      }
+      continue
+    }
+
+    if ($buffer.Length -eq 0) {
+      $buffer = $lineText
+      continue
+    }
+
+    $candidate = $buffer + "`n" + $lineText
+    if ($candidate.Length -le $maxChars) {
+      $buffer = $candidate
+    }
+    else {
+      [void]$chunks.Add($buffer.TrimEnd("`r","`n"))
+      $buffer = $lineText
+    }
+  }
+
+  if ($buffer.Length -gt 0) {
+    [void]$chunks.Add($buffer.TrimEnd("`r","`n"))
+  }
+
+  if ($chunks.Count -eq 0) {
+    [void]$chunks.Add("")
+  }
+
+  return $chunks
+}
+
+function Send-TelegramHtml([string]$url, [string]$chatId, [string]$htmlText) {
+  $body = @{
+    chat_id = $chatId
+    text = $htmlText
+    parse_mode = "HTML"
+  } | ConvertTo-Json -Compress
+  $body = $body -replace '\\u003c', '<' -replace '\\u003e', '>'
+
   $bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
   $response = Invoke-RestMethod -Uri $url -Method Post -Body $bodyBytes -ContentType "application/json; charset=utf-8"
 
@@ -81,7 +133,28 @@ try {
     throw "Telegram API returned non-OK response."
   }
 
-  Write-Output $response
+  return $response
+}
+
+$url = "https://api.telegram.org/bot$token/sendMessage"
+$chunks = Split-MessageChunks -text $Message -maxChars 3500
+$total = $chunks.Count
+$responses = New-Object System.Collections.Generic.List[object]
+
+try {
+  for ($i = 0; $i -lt $total; $i++) {
+    $chunkText = $chunks[$i]
+    if ($total -gt 1) {
+      $prefix = "[Part $($i + 1)/$total]`n"
+      $chunkText = $prefix + $chunkText
+    }
+
+    $renderedMessage = Convert-MarkupToHtml -text $chunkText
+    $response = Send-TelegramHtml -url $url -chatId $chatId -htmlText $renderedMessage
+    [void]$responses.Add($response)
+  }
+
+  $responses | Write-Output
   Write-Host "DM sent to Asz"
 }
 catch {

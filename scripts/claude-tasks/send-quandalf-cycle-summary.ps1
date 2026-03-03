@@ -50,31 +50,28 @@ function Normalize-JournalEntry([string]$text) {
 
 try {
   $effectiveSummary = $Summary
+  $isJournalEntry = $false
 
   if ([string]::IsNullOrWhiteSpace($effectiveSummary) -and -not [string]::IsNullOrWhiteSpace($SourceFile)) {
     if (Test-Path $SourceFile) {
       $raw = Get-Content -Path $SourceFile -Raw -Encoding UTF8 -ErrorAction SilentlyContinue
       if (-not [string]::IsNullOrWhiteSpace($raw)) {
-        $entrySections = @($raw -split '(?m)^## Entry\b')
-        $lastSection = $null
-        for ($i = $entrySections.Count - 1; $i -ge 0; $i--) {
-          $candidate = [string]$entrySections[$i]
-          if (-not [string]::IsNullOrWhiteSpace($candidate)) {
-            $lastSection = $candidate.Trim()
-            break
-          }
+        $journalMatches = [System.Text.RegularExpressions.Regex]::Matches($raw, '(?ms)^## Entry\b.*?(?=^## Entry\b|\z)')
+        if ($journalMatches.Count -gt 0) {
+          $effectiveSummary = Normalize-JournalEntry -text $journalMatches[$journalMatches.Count - 1].Value
+          $isJournalEntry = $true
         }
-
-        if (-not [string]::IsNullOrWhiteSpace($lastSection)) {
-          $effectiveSummary = Normalize-JournalEntry -text $lastSection
-        } else {
+        else {
           $effectiveSummary = Normalize-JournalEntry -text $raw
         }
       }
     }
   }
 
-  $effectiveSummary = Convert-ToCompactText -rawText $effectiveSummary -maxChars $MaxChars
+  if (-not $isJournalEntry) {
+    $effectiveSummary = Convert-ToCompactText -rawText $effectiveSummary -maxChars $MaxChars
+  }
+
   if ([string]::IsNullOrWhiteSpace($effectiveSummary)) {
     $effectiveSummary = "Cycle completed."
   }
@@ -85,5 +82,5 @@ try {
   Write-Host "Quandalf DM summary sent"
 }
 catch {
-  Write-Host ("Quandalf DM summary failed: " + $_.Exception.Message)
+  throw ("Quandalf DM summary failed: " + $_.Exception.Message)
 }
