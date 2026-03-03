@@ -22,7 +22,12 @@
       "name": "oragorn-context-sync-daily",
       "owner": "Oragorn",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["03:00"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "03:00"
+        ]
+      },
       "command": "powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File scripts/automation/run-oragorn-context-sync.ps1",
       "legacy_task_name": "AutoQuant-Oragorn-ContextSync"
     },
@@ -30,7 +35,10 @@
       "name": "frodex-ops-loop-15m",
       "owner": "Frodex",
       "type": "task",
-      "schedule": { "kind": "interval", "minutes": 15 },
+      "schedule": {
+        "kind": "interval",
+        "minutes": 15
+      },
       "command": "powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File scripts/automation/run_autopilot_task.ps1",
       "legacy_task_name": "AutoQuant-autopilot-user"
     },
@@ -38,7 +46,10 @@
       "name": "frodex-bundle-log-15m",
       "owner": "Logron",
       "type": "task",
-      "schedule": { "kind": "interval", "minutes": 15 },
+      "schedule": {
+        "kind": "interval",
+        "minutes": 15
+      },
       "command": "powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File scripts/automation/bundle-run-log.ps1 -Pipeline frodex -WindowMinutes 16",
       "legacy_task_name": "AutoQuant-bundle-run-log-user"
     },
@@ -46,7 +57,10 @@
       "name": "quandalf-bundle-log-2h",
       "owner": "Logron",
       "type": "task",
-      "schedule": { "kind": "interval", "hours": 2 },
+      "schedule": {
+        "kind": "interval",
+        "hours": 2
+      },
       "command": "powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File scripts/automation/bundle-run-log.ps1 -Pipeline quandalf -WindowMinutes 130",
       "legacy_task_name": "AutoQuant-bundle-run-log-quandalf-user"
     },
@@ -54,7 +68,23 @@
       "name": "frodex-youtube-watch-6h",
       "owner": "Frodex",
       "type": "task",
-      "schedule": { "kind": "interval", "hours": 6 },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "00:00",
+          "02:00",
+          "04:00",
+          "06:00",
+          "08:00",
+          "10:00",
+          "12:00",
+          "14:00",
+          "16:00",
+          "18:00",
+          "20:00",
+          "22:00"
+        ]
+      },
       "command": "powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File scripts/pipeline/run_youtube_watch_worker.ps1",
       "legacy_task_name": "AutoQuant-youtube-watch-user"
     },
@@ -62,7 +92,17 @@
       "name": "quandalf-research-4h",
       "owner": "Quandalf",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["02:00", "06:00", "10:00", "14:00", "18:00", "22:00"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "02:00",
+          "06:00",
+          "10:00",
+          "14:00",
+          "18:00",
+          "22:00"
+        ]
+      },
       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/claude-tasks/run-strategy-researcher.ps1",
       "legacy_task_name": "AutoQuant-Claude-Researcher"
     },
@@ -70,7 +110,23 @@
       "name": "quandalf-generate-2h",
       "owner": "Quandalf",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["01:00", "03:00", "05:00", "07:00", "09:00", "11:00", "13:00", "15:00", "17:00", "19:00", "21:00", "23:00"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "01:00",
+          "03:00",
+          "05:00",
+          "07:00",
+          "09:00",
+          "11:00",
+          "13:00",
+          "15:00",
+          "17:00",
+          "19:00",
+          "21:00",
+          "23:00"
+        ]
+      },
       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/claude-tasks/run-strategy-generator.ps1",
       "legacy_task_name": "AutoQuant-Claude-Generator"
     },
@@ -78,7 +134,12 @@
       "name": "quandalf-doctrine-daily-0400",
       "owner": "Quandalf",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["04:00"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "04:00"
+        ]
+      },
       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/claude-tasks/run-doctrine-synthesizer.ps1",
       "legacy_task_name": "AutoQuant-Claude-Doctrine"
     },
@@ -86,7 +147,12 @@
       "name": "quandalf-auditor-daily-0500",
       "owner": "Quandalf",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["05:00"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "05:00"
+        ]
+      },
       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/claude-tasks/run-backtest-auditor.ps1",
       "legacy_task_name": "AutoQuant-Claude-Auditor"
     },
@@ -94,7 +160,12 @@
       "name": "frodex-daily-intel-0530",
       "owner": "Frodex",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["05:30"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "05:30"
+        ]
+      },
       "command": "powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File scripts/automation/run_daily_intel.ps1",
       "legacy_task_name": "AutoQuant-daily-intel-user"
     },
@@ -102,7 +173,23 @@
       "name": "frodex-transcript-ingest-0930",
       "owner": "Frodex",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["09:30"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "00:10",
+          "02:10",
+          "04:10",
+          "06:10",
+          "08:10",
+          "10:10",
+          "12:10",
+          "14:10",
+          "16:10",
+          "18:10",
+          "20:10",
+          "22:10"
+        ]
+      },
       "command": "powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \"python scripts/pipeline/transcript_ingest_worker.py\"",
       "legacy_task_name": "AutoQuant-transcript-ingest-user"
     },
@@ -110,7 +197,17 @@
       "name": "frodex-forward-runner-4h",
       "owner": "Frodex",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["00:05", "04:05", "08:05", "12:05", "16:05", "20:05"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "00:05",
+          "04:05",
+          "08:05",
+          "12:05",
+          "16:05",
+          "20:05"
+        ]
+      },
       "command": "python scripts/forward/forward_runner.py",
       "legacy_task_name": "AutoQuant-Forward-Runner"
     },
@@ -118,7 +215,17 @@
       "name": "frodex-forward-health-4h",
       "owner": "Frodex",
       "type": "task",
-      "schedule": { "kind": "daily", "times": ["00:25", "04:25", "08:25", "12:25", "16:25", "20:25"] },
+      "schedule": {
+        "kind": "daily",
+        "times": [
+          "00:25",
+          "04:25",
+          "08:25",
+          "12:25",
+          "16:25",
+          "20:25"
+        ]
+      },
       "command": "python scripts/forward/check_runner_health.py",
       "legacy_task_name": "AutoQuant-Forward-Health"
     },
@@ -126,7 +233,13 @@
       "name": "frodex-forward-weekly-sun0700",
       "owner": "Frodex",
       "type": "task",
-      "schedule": { "kind": "weekly", "days": ["Sunday"], "time": "07:00" },
+      "schedule": {
+        "kind": "weekly",
+        "days": [
+          "Sunday"
+        ],
+        "time": "07:00"
+      },
       "command": "python scripts/forward/generate_weekly_scorecard.py",
       "legacy_task_name": "AutoQuant-Forward-Weekly"
     }
