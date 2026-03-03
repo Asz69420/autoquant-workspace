@@ -388,6 +388,16 @@ if ($true) {
     }
   } elseif ($errors -gt 0) {
     $noteText = "I hit $errors issue(s) in this window and need a quick review."
+  } elseif ($mode -eq 'frodex' -and ($dirVariants -gt 0 -or $ingested -gt 0 -or $btExecuted -gt 0 -or $promoted -gt 0)) {
+    if ($promoted -gt 0) {
+      $noteText = "Utility advanced promotion flow this cycle."
+    } elseif ($btExecuted -gt 0) {
+      $noteText = "Utility completed backtests and recorded results."
+    } elseif ($dirVariants -gt 0) {
+      $noteText = "Utility generated new variants this cycle."
+    } else {
+      $noteText = "Utility ingested new inputs and is progressing normally."
+    }
   } elseif ($stall -gt 5) {
     if ($forwardRuns -gt 0 -or $forwardSignalEvals -gt 0) {
       $noteText = "Strategy generation is stalled ($stall cycles), but forward-testing is active."
