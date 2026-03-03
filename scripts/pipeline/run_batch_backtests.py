@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import uuid
@@ -79,6 +80,47 @@ def _resolve_datasets(arg: str) -> list[str]:
 def _run(cmd: list[str]) -> str:
     p = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=True)
     return p.stdout.strip()
+
+
+def _load_advisory_enforcement(advisory_path: str) -> dict:
+    out = {
+        'exclude_assets': set(),
+        'exclude_timeframes': set(),
+        'blacklist_templates': set(),
+        'blacklist_directives': set(),
+    }
+    p = Path(advisory_path)
+    if not p.exists():
+        return out
+
+    txt = p.read_text(encoding='utf-8', errors='ignore')
+    m = re.search(r'##\s*Machine\s+Directives.*?```json\s*(\[.*?\])\s*```', txt, re.S | re.I)
+    if not m:
+        return out
+
+    try:
+        directives = json.loads(m.group(1))
+    except Exception:
+        return out
+
+    if not isinstance(directives, list):
+        return out
+
+    for d in directives:
+        if not isinstance(d, dict):
+            continue
+        action = str(d.get('action') or '').upper()
+        target = str(d.get('target') or '').strip()
+        if action == 'EXCLUDE_ASSET' and target:
+            out['exclude_assets'].add(target.upper())
+        elif action == 'EXCLUDE_TIMEFRAME' and target:
+            out['exclude_timeframes'].add(target.lower())
+        elif action == 'BLACKLIST_TEMPLATE' and target:
+            out['blacklist_templates'].add(target.lower())
+        elif action == 'BLACKLIST_DIRECTIVE' and target:
+            out['blacklist_directives'].add(target.upper())
+
+    return out
 
 
 def _variant_resolved_signature(variant_obj: dict, symbol: str, timeframe: str) -> str:
@@ -235,9 +277,11 @@ def main() -> int:
     ap.add_argument('--dedup-lookback-days', type=int, default=90)
     ap.add_argument('--dedup-max-history', type=int, default=5000)
     ap.add_argument('--disable-history-dedup', action='store_true')
+    ap.add_argument('--advisory-path', default='docs/claude-reports/STRATEGY_ADVISORY.md')
     args = ap.parse_args()
 
     spec = _load_json(args.strategy_spec)
+    enforcement = _load_advisory_enforcement(args.advisory_path)
     variant_objects = {str(v.get('name')): v for v in spec.get('variants', []) if isinstance(v, dict) and v.get('name')}
     variants = [v['name'] for v in spec.get('variants', [])]
     selected_variants = variants if args.variant == 'all' else [args.variant]
@@ -281,6 +325,44 @@ def main() -> int:
             if sig in in_batch_seen:
                 in_batch_skips += 1
                 print(f"DEDUP_SKIP_BATCH variant={variant} symbol={symbol} timeframe={timeframe}", file=sys.stderr)
+                continue
+
+            resolved_template = ''
+            if resolve_template is not None:
+                try:
+                    resolved_template = str(resolve_template(variant_obj) or '').lower()
+                except Exception:
+                    resolved_template = ''
+
+            directive_block_reason = None
+            if symbol.upper() in enforcement['exclude_assets']:
+                directive_block_reason = f"EXCLUDE_ASSET:{symbol.upper()}"
+            elif timeframe.lower() in enforcement['exclude_timeframes']:
+                directive_block_reason = f"EXCLUDE_TIMEFRAME:{timeframe.lower()}"
+            elif resolved_template and resolved_template in enforcement['blacklist_templates']:
+                directive_block_reason = f"BLACKLIST_TEMPLATE:{resolved_template}"
+            elif any(str(x).upper() in enforcement['blacklist_directives'] for x in [variant_obj.get('origin', ''), variant_obj.get('name', '')]):
+                directive_block_reason = "BLACKLIST_DIRECTIVE"
+
+            if directive_block_reason:
+                runs.append({
+                    'variant_name': variant,
+                    'symbol': symbol,
+                    'timeframe': timeframe,
+                    'dataset_meta_path': dataset_meta,
+                    'backtest_result_path': '',
+                    'trade_list_path': '',
+                    'gate_pass': False,
+                    'status': 'SKIPPED',
+                    'skip_reason': 'DIRECTIVE_BLOCKED',
+                    'directive_block_reason': directive_block_reason,
+                    'feasibility_report_path': '',
+                    'feasibility_flags': [],
+                    'net_profit': 0.0,
+                    'trades': 0,
+                    'profit_factor': 0.0,
+                    'max_drawdown': 0.0,
+                })
                 continue
 
             in_batch_seen.add(sig)
