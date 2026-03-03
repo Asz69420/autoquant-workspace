@@ -1,0 +1,5 @@
+﻿strategy-spec-20260303-claude-ea12n5k8.strategy_spec.json
+strategy-spec-20260303-claude-kv2m6w9p.strategy_spec.json
+strategy-spec-20260303-claude-mc10r2w4.strategy_spec.json
+strategy-spec-20260303-claude-rp9f4m7w.strategy_spec.json
+strategy-spec-20260303-claude-st12x4k7.strategy_spec.json
