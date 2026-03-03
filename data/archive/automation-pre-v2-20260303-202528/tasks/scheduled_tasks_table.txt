@@ -1,0 +1,19 @@
+﻿
+TaskName                               State
+--------                               -----
+AutoQuant-autopilot-user               Ready
+AutoQuant-bundle-run-log-quandalf-user Ready
+AutoQuant-Claude-Auditor               Ready
+AutoQuant-Claude-Doctrine              Ready
+AutoQuant-Claude-Generator             Ready
+AutoQuant-Claude-Researcher            Ready
+AutoQuant-daily-intel-user             Ready
+AutoQuant-Forward-Health               Ready
+AutoQuant-Forward-Runner               Ready
+AutoQuant-Forward-Weekly               Ready
+AutoQuant-Oragorn-ContextSync          Ready
+AutoQuant-transcript-ingest-user       Ready
+AutoQuant-youtube-watch-user           Ready
+
+
+

@@ -1,0 +1,483 @@
+﻿[
+    {
+        "task_name":  "AutoQuant-autopilot-user",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772521487000)\/",
+        "next_run":  "\/Date(1772533800000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\automation\\run_autopilot_task.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T17:45:00+10:00",
+                             "repetition_interval":  "PT15M",
+                             "repetition_duration":  "P3650D",
+                             "days_interval":  null,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-bundle-run-log-quandalf-user",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772517661000)\/",
+        "next_run":  "\/Date(1772538220000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\automation\\bundle-run-log.ps1\" -Pipeline quandalf -WindowMinutes 130",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T17:43:40+10:00",
+                             "repetition_interval":  "PT2H",
+                             "repetition_duration":  "P3650D",
+                             "days_interval":  null,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Claude-Auditor",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772478001000)\/",
+        "next_run":  "\/Date(1772564400000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\claude-tasks\\run-backtest-auditor.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T05:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Claude-Doctrine",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772474401000)\/",
+        "next_run":  "\/Date(1772560800000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\claude-tasks\\run-doctrine-synthesizer.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T04:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Claude-Generator",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772521201000)\/",
+        "next_run":  "\/Date(1772535600000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\claude-tasks\\run-strategy-generator.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T01:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T03:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T05:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T07:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T09:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T11:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T13:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T15:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T17:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T19:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T21:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T23:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Claude-Researcher",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772510401000)\/",
+        "next_run":  "\/Date(1772539200000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\claude-tasks\\run-strategy-researcher.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T02:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T06:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T10:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T14:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T18:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T22:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-daily-intel-user",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772479801000)\/",
+        "next_run":  "\/Date(1772566200000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\automation\\run_daily_intel.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T05:30:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Forward-Health",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772533500000)\/",
+        "next_run":  "\/Date(1772547900000)\/",
+        "actions":  [
+                        {
+                            "execute":  "cmd.exe",
+                            "arguments":  "/c cd /d C:\\Users\\Clamps\\.openclaw\\workspace \u0026\u0026 python scripts/forward/check_runner_health.py",
+                            "working_dir":  null
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T00:25:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T04:25:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T08:25:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T12:25:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T16:25:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T20:25:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Forward-Runner",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772532300000)\/",
+        "next_run":  "\/Date(1772546700000)\/",
+        "actions":  [
+                        {
+                            "execute":  "cmd.exe",
+                            "arguments":  "/c cd /d C:\\Users\\Clamps\\.openclaw\\workspace \u0026\u0026 python scripts/forward/forward_runner.py",
+                            "working_dir":  null
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T00:05:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T04:05:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T08:05:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T12:05:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T16:05:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         },
+                         {
+                             "start_boundary":  "2026-03-03T20:05:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Forward-Weekly",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772504161000)\/",
+        "next_run":  "\/Date(1772917200000)\/",
+        "actions":  [
+                        {
+                            "execute":  "cmd.exe",
+                            "arguments":  "/c cd /d C:\\Users\\Clamps\\.openclaw\\workspace \u0026\u0026 python scripts/forward/generate_weekly_scorecard.py",
+                            "working_dir":  null
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T07:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  null,
+                             "weeks_interval":  1
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-Oragorn-ContextSync",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772470801000)\/",
+        "next_run":  "\/Date(1772557200000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\automation\\run-oragorn-context-sync.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T03:00:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-transcript-ingest-user",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772494201000)\/",
+        "next_run":  "\/Date(1772580600000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command \"python \u0027C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\pipeline\\transcript_ingest_worker.py\u0027\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T09:30:00+10:00",
+                             "repetition_interval":  null,
+                             "repetition_duration":  null,
+                             "days_interval":  1,
+                             "weeks_interval":  null
+                         }
+                     ]
+    },
+    {
+        "task_name":  "AutoQuant-youtube-watch-user",
+        "state":  "Ready",
+        "last_result":  0,
+        "last_run":  "\/Date(1772520121000)\/",
+        "next_run":  "\/Date(1772545420000)\/",
+        "actions":  [
+                        {
+                            "execute":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                            "arguments":  "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"C:\\Users\\Clamps\\.openclaw\\workspace\\scripts\\pipeline\\run_youtube_watch_worker.ps1\"",
+                            "working_dir":  "C:\\Users\\Clamps\\.openclaw\\workspace"
+                        }
+                    ],
+        "triggers":  [
+                         {
+                             "start_boundary":  "2026-03-03T17:43:40+10:00",
+                             "repetition_interval":  "PT6H",
+                             "repetition_duration":  "P3650D",
+                             "days_interval":  null,
+                             "weeks_interval":  null
+                         }
+                     ]
+    }
+]

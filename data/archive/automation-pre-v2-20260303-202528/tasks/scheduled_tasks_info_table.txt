@@ -1,0 +1,19 @@
+﻿
+Task                                   State LastResult LastRun               NextRun              
+----                                   ----- ---------- -------               -------              
+AutoQuant-autopilot-user               Ready          0 3/03/2026 5:04:47 PM  3/03/2026 8:30:00 PM 
+AutoQuant-bundle-run-log-quandalf-user Ready          0 3/03/2026 4:01:01 PM  3/03/2026 9:43:40 PM 
+AutoQuant-Claude-Auditor               Ready          0 3/03/2026 5:00:01 AM  4/03/2026 5:00:00 AM 
+AutoQuant-Claude-Doctrine              Ready          0 3/03/2026 4:00:01 AM  4/03/2026 4:00:00 AM 
+AutoQuant-Claude-Generator             Ready          0 3/03/2026 5:00:01 PM  3/03/2026 9:00:00 PM 
+AutoQuant-Claude-Researcher            Ready          0 3/03/2026 2:00:01 PM  3/03/2026 10:00:00 PM
+AutoQuant-daily-intel-user             Ready          0 3/03/2026 5:30:01 AM  4/03/2026 5:30:00 AM 
+AutoQuant-Forward-Health               Ready          0 3/03/2026 8:25:00 PM  4/03/2026 12:25:00 AM
+AutoQuant-Forward-Runner               Ready          0 3/03/2026 8:05:00 PM  4/03/2026 12:05:00 AM
+AutoQuant-Forward-Weekly               Ready          0 3/03/2026 12:16:01 PM 8/03/2026 7:00:00 AM 
+AutoQuant-Oragorn-ContextSync          Ready          0 3/03/2026 3:00:01 AM  4/03/2026 3:00:00 AM 
+AutoQuant-transcript-ingest-user       Ready          0 3/03/2026 9:30:01 AM  4/03/2026 9:30:00 AM 
+AutoQuant-youtube-watch-user           Ready          0 3/03/2026 4:42:01 PM  3/03/2026 11:43:40 PM
+
+
+

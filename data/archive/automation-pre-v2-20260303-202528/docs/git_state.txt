@@ -1,0 +1,33 @@
+﻿HEAD:
+2e048b58d31980263f77c77bb79194217ba3f844
+
+status:
+ M artifacts/bundles/INDEX.json
+ M artifacts/data/hyperliquid/INDEX.json
+ M data/forward/FORWARD_LOG.ndjson
+ M data/forward/PAPER_POSITIONS.json
+ M data/state/youtube_watchlist.json
+?? artifacts/data/hyperliquid/ETH/4h/20240303T080000Z-20260303T040000Z.csv
+?? artifacts/data/hyperliquid/ETH/4h/20240303T080000Z-20260303T040000Z.meta.json
+?? data/archive/automation-pre-v2-20260303-202528/
+?? data/logs/outbox/20260303T100511Z___ingest-20260303100511___oQ___WARN.json
+?? data/logs/outbox/20260303T101002Z___yt-watch-1772532602___oQ___INFO.json
+?? data/logs/outbox/20260303T101003Z___yt-watch-1772532602___oQ___INFO.json
+?? data/logs/outbox/20260303T101003Z___yt-watch-1772532603___oQ___INFO.json
+?? data/logs/outbox/20260303T101004Z___yt-watch-1772532604___oQ___INFO.json
+?? data/logs/outbox/20260303T101005Z___yt-watch-1772532605___oQ___INFO.json
+?? data/logs/outbox/20260303T101006Z___yt-watch-1772532606___Reader___OK.json
+?? data/logs/outbox/20260303T101006Z___yt-watch-1772532606___oQ___INFO.json
+
+last10:
+2e048b58 (HEAD -> main) feat(v2): add claude skill adapter for agent-driven operations
+661d9508 feat(v2): add manifest-driven task installer and verifier
+02e3d6a3 (origin/main) ≡ƒöä Auto-sync 2026-03-03T10:00:11Z |  18 files changed, 717 insertions(+), 14 deletions(-)
+be0faf46 ≡ƒöä Auto-sync 2026-03-03T09:30:06Z |  30 files changed, 89 insertions(+), 32 deletions(-)
+1a051055 ≡ƒöä Auto-sync 2026-03-03T09:00:05Z |  5 files changed, 5 insertions(+), 1 deletion(-)
+e6d0339b ≡ƒöä Auto-sync 2026-03-03T08:30:06Z |  88 files changed, 481 insertions(+), 2583 deletions(-)
+0fd56b37 Revert "feat(automation): add all-in-one AutoQuant scheduled task setup script"
+df5de322 ≡ƒöä Auto-sync 2026-03-03T08:00:06Z |  61 files changed, 3058 insertions(+), 31 deletions(-)
+8bca77a4 revert(tasks): restore stable 15-minute loop scheduling
+4d4faaef fix(tasks): align 15-minute jobs to quarter-hour boundaries
+
