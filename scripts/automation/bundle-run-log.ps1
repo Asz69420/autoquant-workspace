@@ -72,6 +72,16 @@ $mainEvents = @($events | Where-Object {
 })
 if ($mainEvents.Count -eq 0) { Write-Host "No meaningful events for pipeline=$mode"; exit 0 }
 
+# Suppress sync-only windows (prevents duplicate standalone repo-sync style pings)
+if ($mode -eq 'frodex') {
+  $nonRepoEvents = @($mainEvents | Where-Object { [string]$_.action -ne 'REPO_HYGIENE_GATE' })
+  $repoInfoOnly = @($mainEvents | Where-Object { ([string]$_.action -eq 'REPO_HYGIENE_GATE') -and ([string]$_.status_word -eq 'INFO') })
+  if ($nonRepoEvents.Count -eq 0 -and $repoInfoOnly.Count -gt 0) {
+    Write-Host "Skip send: repo-sync hygiene-only window"
+    exit 0
+  }
+}
+
 $oragornSubagentCompletionEvents = @()
 $isOragornSubagentNoteOnly = $false
 if ($mode -eq 'oragorn') {
