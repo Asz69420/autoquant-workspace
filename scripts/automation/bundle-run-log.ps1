@@ -487,6 +487,40 @@ $escapedBody = Escape-Html -Text $messageBody
 if ($escapedBody.Length -gt 985) { $escapedBody = $escapedBody.Substring(0, 982) + "..." }
 $caption = "<pre>" + $escapedBody + "</pre>"
 
+# --- Duplicate guard (same payload in short window) ---
+$reportStatePath = "$ROOT\data\state\bundle_report_state.json"
+$reportState = @{}
+try {
+  if (Test-Path -LiteralPath $reportStatePath) {
+    $loaded = Get-Content -LiteralPath $reportStatePath -Raw | ConvertFrom-Json
+    if ($loaded) { $reportState = $loaded }
+  }
+} catch { $reportState = @{} }
+
+$hashInput = [System.Text.Encoding]::UTF8.GetBytes(($mode + "|" + $messageBody))
+$sha = [System.Security.Cryptography.SHA256]::Create()
+try {
+  $hashHex = ([BitConverter]::ToString($sha.ComputeHash($hashInput))).Replace('-', '').ToLowerInvariant()
+} finally {
+  $sha.Dispose()
+}
+
+$stateKey = ($mode + "_last")
+$minRepeatSeconds = 600
+$skipDuplicateSend = $false
+try {
+  $node = $reportState.$stateKey
+  if ($node) {
+    $prevHash = [string]$node.hash
+    $prevAt = [string]$node.sent_at
+    if (-not [string]::IsNullOrWhiteSpace($prevHash) -and $prevHash -eq $hashHex -and -not [string]::IsNullOrWhiteSpace($prevAt)) {
+      $prevDt = [DateTime]::Parse($prevAt).ToUniversalTime()
+      $ageSec = ([DateTime]::UtcNow - $prevDt).TotalSeconds
+      if ($ageSec -lt $minRepeatSeconds) { $skipDuplicateSend = $true }
+    }
+  }
+} catch {}
+
 # --- Send ---
 function Send-TextMessage {
   param($tok, $chatId, $text)
@@ -495,32 +529,38 @@ function Send-TextMessage {
   Invoke-RestMethod -Uri $uri -Method Post -Body $body -ContentType "application/json" | Out-Null
 }
 
-if ($bannerPath) {
-  $uri = "https://api.telegram.org/bot$telegramSendToken/sendPhoto"
-  $boundary = [System.Guid]::NewGuid().ToString()
-  $parts = @()
-  $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"chat_id`"`r`n`r`n$logChannel"
-  $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"caption`"`r`n`r`n$caption"
-  $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"parse_mode`"`r`n`r`nHTML"
-  $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"photo`"; filename=`"banner.jpg`"`r`nContent-Type: image/jpeg`r`n"
-
-  $preBytes = [System.Text.Encoding]::UTF8.GetBytes(($parts -join "`r`n") + "`r`n")
-  $photoBytes = [System.IO.File]::ReadAllBytes($bannerPath)
-  $endBytes = [System.Text.Encoding]::UTF8.GetBytes("`r`n--$boundary--`r`n")
-  $fullBody = New-Object byte[] ($preBytes.Length + $photoBytes.Length + $endBytes.Length)
-  [System.Buffer]::BlockCopy($preBytes, 0, $fullBody, 0, $preBytes.Length)
-  [System.Buffer]::BlockCopy($photoBytes, 0, $fullBody, $preBytes.Length, $photoBytes.Length)
-  [System.Buffer]::BlockCopy($endBytes, 0, $fullBody, ($preBytes.Length + $photoBytes.Length), $endBytes.Length)
-
-  try {
-    Invoke-RestMethod -Uri $uri -Method Post -Body $fullBody -ContentType "multipart/form-data; boundary=$boundary" | Out-Null
-    Write-Host "Bundle sent to log channel with banner"
-  } catch {
-    Write-Host "Photo failed: $_"
-    Write-Host "Skipped text fallback (images-only mode)"
-  }
+if ($skipDuplicateSend) {
+  Write-Host "Skipped duplicate bundle send (same payload within 10m)"
 } else {
-  Write-Host "No banner available; skipped send (images-only mode)"
+  if ($bannerPath) {
+    $uri = "https://api.telegram.org/bot$telegramSendToken/sendPhoto"
+    $boundary = [System.Guid]::NewGuid().ToString()
+    $parts = @()
+    $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"chat_id`"`r`n`r`n$logChannel"
+    $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"caption`"`r`n`r`n$caption"
+    $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"parse_mode`"`r`n`r`nHTML"
+    $parts += "--$boundary`r`nContent-Disposition: form-data; name=`"photo`"; filename=`"banner.jpg`"`r`nContent-Type: image/jpeg`r`n"
+
+    $preBytes = [System.Text.Encoding]::UTF8.GetBytes(($parts -join "`r`n") + "`r`n")
+    $photoBytes = [System.IO.File]::ReadAllBytes($bannerPath)
+    $endBytes = [System.Text.Encoding]::UTF8.GetBytes("`r`n--$boundary--`r`n")
+    $fullBody = New-Object byte[] ($preBytes.Length + $photoBytes.Length + $endBytes.Length)
+    [System.Buffer]::BlockCopy($preBytes, 0, $fullBody, 0, $preBytes.Length)
+    [System.Buffer]::BlockCopy($photoBytes, 0, $fullBody, $preBytes.Length, $photoBytes.Length)
+    [System.Buffer]::BlockCopy($endBytes, 0, $fullBody, ($preBytes.Length + $photoBytes.Length), $endBytes.Length)
+
+    try {
+      Invoke-RestMethod -Uri $uri -Method Post -Body $fullBody -ContentType "multipart/form-data; boundary=$boundary" | Out-Null
+      $reportState[$stateKey] = @{ hash = $hashHex; sent_at = [DateTime]::UtcNow.ToString('o') }
+      ($reportState | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $reportStatePath -Encoding utf8
+      Write-Host "Bundle sent to log channel with banner"
+    } catch {
+      Write-Host "Photo failed: $_"
+      Write-Host "Skipped text fallback (images-only mode)"
+    }
+  } else {
+    Write-Host "No banner available; skipped send (images-only mode)"
+  }
 }
 
 $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8
