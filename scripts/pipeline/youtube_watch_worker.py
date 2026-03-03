@@ -456,16 +456,11 @@ def main() -> int:
         if latest and not ch.get('last_seen_video_id'):
             ch['last_seen_video_id'] = latest[0]['video_id']
             seen_videos.add(latest[0]['video_id'])
-        marker = str(ch.get('last_seen_video_id', '') or '')
-        unseen_since_marker = []
-        for x in latest:
-            if marker and x['video_id'] == marker:
-                break
-            unseen_since_marker.append(x)
-        new_count = len([x for x in unseen_since_marker if x['video_id'] not in seen_videos])
+        pending_items = [x for x in latest if x['video_id'] not in seen_videos]
+        new_count = len(pending_items)
         new_total += new_count
         _log('YT_WATCH_CHECK', 'YT_WATCH_CHECK', f"channel={channel_id} new_count={new_count}", 'INFO')
-        for item in unseen_since_marker:
+        for item in pending_items:
             vid = item['video_id']
             if vid in seen_videos:
                 dedup += 1
@@ -548,9 +543,8 @@ def main() -> int:
                 concept_cards.append(str(rc['research_card_path']).replace('\\', '/'))
             processed += 1
 
-        if latest:
+        if latest and latest[0]['video_id'] in seen_videos:
             ch['last_seen_video_id'] = latest[0]['video_id']
-            seen_videos.add(latest[0]['video_id'])
 
     _w(BUNDLE_INDEX, bundles[:500])
     state['seen_video_ids'] = list(seen_videos)[-1000:]
