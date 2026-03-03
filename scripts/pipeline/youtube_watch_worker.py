@@ -153,8 +153,9 @@ def _notify_watch_skip(reason_code: str, title: str, duration_s: int):
         pass
 
 
-def _notify_category_review(channel_name: str, title: str, top1: str, top2: str):
-    msg = f"⚙️ Frodex review needed: {channel_name} | {title}\nTop candidates: {top1}, {top2}"
+def _notify_category_review(channel_name: str, title: str, video_id: str, top1: str, top2: str):
+    url = f"https://www.youtube.com/watch?v={video_id}"
+    msg = f"⚙️ Frodex review needed: {channel_name} | {title}\nTop candidates: {top1}, {top2}\nVideo: {url}"
     try:
         target_dm = (os.getenv('TELEGRAM_CMD_CHAT_ID') or '').strip()
         cmd = [PY, 'scripts/tg_notify.py', msg, '--reason-code', 'YT_CATEGORY_REVIEW']
@@ -515,7 +516,7 @@ def main() -> int:
             content_category, needs_review, top1, top2 = _classify_video_category(item.get('title', ''), rc['research_card_path'], category_cfg)
             if needs_review:
                 _log('YT_CATEGORY_REVIEW', 'YT_CATEGORY_REVIEW', f"video_id={vid} channel={ch.get('name','youtube')} top1={top1} top2={top2}", 'WARN')
-                _notify_category_review(str(ch.get('name', 'youtube')), str(item.get('title', vid)), top1, top2)
+                _notify_category_review(str(ch.get('name', 'youtube')), str(item.get('title', vid)), vid, top1, top2)
             elif content_category != str(category_cfg.get('active_category') or '').upper():
                 _log('YT_CATEGORY_OVERRIDE', 'YT_CATEGORY_OVERRIDE', f"video_id={vid} from={category_cfg.get('active_category')} to={content_category}", 'INFO')
 
