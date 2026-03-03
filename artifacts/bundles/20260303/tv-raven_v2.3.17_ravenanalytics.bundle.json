@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_raven v2.3.17|ra",
+    "created_at":  "2026-03-03T15:30:16.966245+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-66644cd370af.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260304/indicator-20260304-2385618ba57b.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-66644cd370af.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-03T15:33:45.9709516Z",
+    "attempts":  1,
+    "last_error":  null
+}

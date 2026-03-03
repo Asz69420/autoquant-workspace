@@ -1,5 +1,5 @@
 {
-  "top_cursor": 4430,
+  "top_cursor": 4450,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -115,7 +115,9 @@
     "volume delta safe algo overlay|jeetunse",
     "vortex volatility engine [pineify]|pineify",
     "gann fan [ualgo]|ualgo",
-    "adaptive momentum ribbon|zakalgotrade"
+    "adaptive momentum ribbon|zakalgotrade",
+    "raven v2.3.17|ravenanalytics",
+    "zero lag kalman structure [boswaves]|boswaves"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -232,7 +234,9 @@
     "r8oRZtjj",
     "S5Y1EXOi",
     "bfIEARU4",
-    "mLVUH2V8"
+    "mLVUH2V8",
+    "hBSQWbmG",
+    "LW8nOcaq"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",
@@ -246,6 +250,7 @@
     "adaptive quasimodo + confluence engine - phenlabs|phenlabs",
     "casper smc: 5m orb + retest|hoosn1ck",
     "delta flow volume profile [ualgo]|ualgo",
-    "crr trendlines priority levels|rivero8894"
+    "crr trendlines priority levels|rivero8894",
+    "zero lag kalman structure [boswaves]|boswaves"
   ]
 }

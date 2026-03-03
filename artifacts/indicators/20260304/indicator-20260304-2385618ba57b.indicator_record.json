@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260304-2385618ba57b",
+  "created_at": "2026-03-03T15:30:15.538682Z",
+  "tv_ref": "tradingview:hBSQWbmG",
+  "url": "https://www.tradingview.com/script/hBSQWbmG/",
+  "name": "RaVen V2.3.17",
+  "author": "RavenAnalytics",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "974628713aa5e217e76814be0fa63953f240fd68defa3cb575a22feb069c08e4",
+  "truncated": false
+}
