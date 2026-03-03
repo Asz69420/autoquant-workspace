@@ -9,6 +9,7 @@ from datetime import datetime, UTC
 from pathlib import Path
 import subprocess
 import sys
+import time
 from urllib.request import urlopen
 from urllib.parse import urlparse
 from xml.etree import ElementTree as ET
@@ -21,8 +22,10 @@ INDICATOR_INDEX = ROOT / 'artifacts' / 'library' / 'INDICATOR_INDEX.json'
 RETRY_QUEUE_PATH = ROOT / 'data' / 'state' / 'youtube_retry_queue.json'
 MAX_NEW = 2
 MAX_RETRY_ATTEMPTS = 5
-BACKOFF_BASE_SECONDS = [15 * 60, 30 * 60, 60 * 60, 2 * 60 * 60, 4 * 60 * 60]
-JITTER_MAX_SECONDS = 10 * 60
+BACKOFF_BASE_SECONDS = [2 * 60 * 60, 4 * 60 * 60, 8 * 60 * 60, 12 * 60 * 60, 24 * 60 * 60]
+JITTER_MAX_SECONDS = 15 * 60
+PROCESS_JITTER_MIN_SECONDS = int(os.getenv('YT_PROCESS_JITTER_MIN_SECONDS', '30'))
+PROCESS_JITTER_MAX_SECONDS = int(os.getenv('YT_PROCESS_JITTER_MAX_SECONDS', '120'))
 SHORTS_MAX_SECONDS = 90
 MAX_VIDEO_SECONDS = 3600
 ENABLE_DURATION_CHECK = (os.getenv('YT_ENABLE_DURATION_CHECK', '1').strip() == '1')
@@ -460,6 +463,8 @@ def main() -> int:
     new_total = 0
     concept_cards = []
     for ch in state.get('channels', []):
+        if processed >= max_new:
+            break
         if ch.get('enabled', True) is False:
             continue
         channel_url = str(ch.get('url', '') or '')
@@ -484,6 +489,8 @@ def main() -> int:
         new_total += new_count
         _log('YT_WATCH_CHECK', 'YT_WATCH_CHECK', f"channel={channel_id} new_count={new_count}", 'INFO')
         for item in pending_items:
+            if processed >= max_new:
+                break
             vid = item['video_id']
             if vid in seen_videos:
                 dedup += 1
@@ -502,6 +509,12 @@ def main() -> int:
 
             if not _retry_allowed_now(retry_queue, vid):
                 continue
+
+            jitter_low = max(0, int(PROCESS_JITTER_MIN_SECONDS))
+            jitter_high = max(jitter_low, int(PROCESS_JITTER_MAX_SECONDS))
+            if jitter_high > 0:
+                time.sleep(random.randint(jitter_low, jitter_high))
+
             try:
                 tr = _transcript(vid, item['title'])
                 if str(tr.get('status', 'OK')).upper() == 'RETRY_LATER':

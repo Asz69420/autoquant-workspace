@@ -1,5 +1,5 @@
 {
-  "max_new_videos_per_run": 999,
+  "max_new_videos_per_run": 1,
   "channels": [
     {
       "name": "SoheilPKO",
