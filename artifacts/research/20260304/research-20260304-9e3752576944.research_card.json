@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-9e3752576944",
+  "created_at": "2026-03-03T22:56:43.991873Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=HzA8o5fg5T8",
+  "title": "NEW GPT 5.2 AI Good For TradingView Strategies? (watch ASAP)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys, OpenAI released yet another model, Chatchapiti 5.2 and I've tested it for trading strategies for you guys so you know exactly where this model is good and where it's still.",
+    "And spoiler alert, yes it is able to solve a problem that no other AI can and I will show you exactly what that is in this video and yes it will be mega beneficial for you guys.",
+    "Can this AI convert an indicator into a trading strategy?",
+    "Can it improve a trading strategy?",
+    "Can it also come up with a completely new trading strategy from the scratch?",
+    "I want to tickle its senses right?",
+    "There is some knowledge in there right?",
+    "There is some awesome trading strategy and I want to surface it with this question yes and then also can it find the source code of a closed source indicator?",
+    "Very interesting as well and I have videos for all of these things but in this video I'm testing this model for these challenges.",
+    "So by the end of this video you know exactly what to use this model for and what better to use other models for and as well you might get a nice interesting trading strategy out of this video."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys, OpenAI released yet another model, Chatchapiti 5.2 and I've tested it for trading strategies for you guys so you know exactly where this model is good and where it's still.",
+      "note": "Meaning: That's right guys, OpenAI released yet another model, Chatchapiti 5.2 and I've tested it for trading strategies for you guys so you know exactly where "
+    },
+    {
+      "timestamp": null,
+      "quote": "And spoiler alert, yes it is able to solve a problem that no other AI can and I will show you exactly what that is in this video and yes it will be mega beneficial for you guys.",
+      "note": "Meaning: And spoiler alert, yes it is able to solve a problem that no other AI can and I will show you exactly what that is in this video and yes it will be meg"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can this AI convert an indicator into a trading strategy?",
+      "note": "Meaning: Can this AI convert an indicator into a trading strategy?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it improve a trading strategy?",
+      "note": "Meaning: Can it improve a trading strategy?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it also come up with a completely new trading strategy from the scratch?",
+      "note": "Meaning: Can it also come up with a completely new trading strategy from the scratch?"
+    },
+    {
+      "timestamp": null,
+      "quote": "I want to tickle its senses right?",
+      "note": "Meaning: I want to tickle its senses right?"
+    },
+    {
+      "timestamp": null,
+      "quote": "There is some knowledge in there right?",
+      "note": "Meaning: There is some knowledge in there right?"
+    },
+    {
+      "timestamp": null,
+      "quote": "There is some awesome trading strategy and I want to surface it with this question yes and then also can it find the source code of a closed source indicator?",
+      "note": "Meaning: There is some awesome trading strategy and I want to surface it with this question yes and then also can it find the source code of a closed source ind"
+    },
+    {
+      "timestamp": null,
+      "quote": "Very interesting as well and I have videos for all of these things but in this video I'm testing this model for these challenges.",
+      "note": "Meaning: Very interesting as well and I have videos for all of these things but in this video I'm testing this model for these challenges."
+    },
+    {
+      "timestamp": null,
+      "quote": "So by the end of this video you know exactly what to use this model for and what better to use other models for and as well you might get a nice interesting trading strategy out of this video.",
+      "note": "Meaning: So by the end of this video you know exactly what to use this model for and what better to use other models for and as well you might get a nice intere"
+    },
+    {
+      "timestamp": null,
+      "quote": "Let's get started and guys make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+      "note": "Meaning: Let's get started and guys make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're"
+    },
+    {
+      "timestamp": null,
+      "quote": "Also remember this is not financial advice, crypto is risky, you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd.",
+      "note": "Meaning: Also remember this is not financial advice, crypto is risky, you can lose all of your money guys and that is why I run this educational channel so that"
+    }
+  ],
+  "extracted_rules": [
+    "Let's get started and guys make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+    "And if you want to know exactly step by step, I will link the Gemini video up here where I've done it much slower than in this video.",
+    "Remember this when we compare with the other AIs.",
+    "But before we look deeper into the KPIs, let's see if the trading logic did what we expected it to do.",
+    "And then when the green bars basically fall over cliff and we get a red bar here on the indicator, then there is a sell signal and that happens over and over again.",
+    "And with that logic, if we apply it for these seven to eight years, then these are the KPIs we get.",
+    "But then when we go to the GPT version, you can see it's fully ignoring the downtrend and not trading there whatsoever, only started trading back here in the uptrend.",
+    "Because when you have higher PNL, you can also have a higher drawdown.",
+    "And when you have a lower PNL, you must have a lower drawdown.",
+    "Otherwise, you're taking on more risk for less reward.",
+    "And guys, remember, you don't need to create your own trading strategies, especially if you don't have time and especially once you have figured out that creating your own trading strategies is actually a hard work, yes?",
+    "So if you need a solution for the entire crypto market from bear to bull and back to bear, risk adjusted portfolio strategies you can use and a VIP community, consider that.",
+    "Let's now see if this new model can improve an existing trading strategy.",
+    "But let's try to also go short and see if we can make even more P&L.",
+    "That means I don't want it to simply go short when the long closes because that is a pretty bad idea I already tried and I wanted to find a completely different logic if it wants to go short.",
+    "And this is the Gaussian channel code that you don't have but again, I have and I just wanted to see if it's able to come up with something cool.",
+    "If I will put it in my course or I will put it into Signum where all of you guys can get access to it.",
+    "So if you're wondering what I'm talking about in Signum, this is a trade automation software where you can automate any trading strategy.",
+    "Let's check if this new model, Chatchapiti 5.2 can come up with a completely new trading strategy from the scratch and the idea here is that I'm pretty sure it has a lot of knowledge and somewhere there there is the best trading strategy hidden and I want it to surface it to us, right?",
+    "You can change them as well if you want long or if you want short as well."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Also remember this is not financial advice, crypto is risky, you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd."
+    },
+    {
+      "type": "risk",
+      "description": "This is what we get from Gemini in the same timeframe, 2485% total PNL and also the max drawdown is much higher, 46.11%, right?"
+    },
+    {
+      "type": "trend",
+      "description": "As you can see here, whenever there is a downtrend, it's also trading to trying to squeeze out some more."
+    },
+    {
+      "type": "trend",
+      "description": "But then when we go to the GPT version, you can see it's fully ignoring the downtrend and not trading there whatsoever, only started trading back here in the uptrend."
+    },
+    {
+      "type": "risk",
+      "description": "Otherwise, you're taking on more risk for less reward."
+    },
+    {
+      "type": "filter",
+      "description": "Also you need to forward test them for many years and also you need to avoid overfitting and other issues."
+    },
+    {
+      "type": "risk",
+      "description": "So if you need a solution for the entire crypto market from bear to bull and back to bear, risk adjusted portfolio strategies you can use and a VIP community, consider that."
+    },
+    {
+      "type": "filter",
+      "description": "So what happened already is that the strategy sold over here, this is Bitcoin one day chart and it avoided a massive loss, right?"
+    },
+    {
+      "type": "risk",
+      "description": "And that means that you see now the Gaussian channel strategy on Bitcoin reached 4,091% PNL, it never managed that, right?"
+    },
+    {
+      "type": "filter",
+      "description": "Avoid this and this and this."
+    },
+    {
+      "type": "trend",
+      "description": "This is a super trend indicator simply, but yes, it works."
+    },
+    {
+      "type": "risk",
+      "description": "Click on these screenshots and you will see every single trade they took but you need the education to properly build a risk-adjusted portfolio to know how to play the markets depending on the cycles and how to rebalance"
+    },
+    {
+      "type": "risk",
+      "description": "This is the most advanced program that you can find and this is just for higher net worth individuals, for people who have enough money to understand that risk management is the most important thing, okay?"
+    },
+    {
+      "type": "risk",
+      "description": "Stop loss, you said, watch the punch rise and fall."
+    }
+  ],
+  "explicit_conditions": [
+    "Otherwise, you're taking on more risk for less reward.",
+    "So if you need a solution for the entire crypto market from bear to bull and back to bear, risk adjusted portfolio strategies you can use and a VIP community, consider that.",
+    "Click on these screenshots and you will see every single trade they took but you need the education to properly build a risk-adjusted portfolio to know how to play the markets depending on the cycles and how to rebalance, how to use all of this to your advantage, right?",
+    "This is the most advanced program that you can find and this is just for higher net worth individuals, for people who have enough money to understand that risk management is the most important thing, okay?",
+    "Stop loss, you said, watch the punch rise and fall."
+  ],
+  "risk_management_notes": [
+    "Apply 1% risk rule.",
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-9e3752576944.raw.txt",
+  "sha256": "f14334d1824c6c3156b6b192f8e9087e201736e1bf736405c4f2d79d7d27f424",
+  "truncated": false
+}

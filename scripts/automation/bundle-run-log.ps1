@@ -412,6 +412,7 @@ if ($mode -eq 'quandalf') {
 # Shared bottom note block (up to 3 lines)
 if ($true) {
   $topWarning = $null
+  $topWarningCount = 0
   if ($warnings.Count -gt 0) {
     $uniqueWarnings = @{}
     foreach ($w in $warnings) {
@@ -421,6 +422,7 @@ if ($true) {
     $topWarningEntry = @($uniqueWarnings.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 1)
     if ($topWarningEntry.Count -gt 0) {
       $tw = $topWarningEntry[0]
+      $topWarningCount = [int]$tw.Value
       $suffix = if ($tw.Value -gt 1) { " x$($tw.Value)" } else { "" }
       $topWarning = "$($tw.Key)$suffix"
     }
@@ -449,26 +451,40 @@ if ($true) {
     }
   } elseif ($errors -gt 0) {
     $noteText = "I hit $errors issue(s) in this window and need a quick review."
-  } elseif ($mode -eq 'frodex' -and ($dirVariants -gt 0 -or $ingested -gt 0 -or $btExecuted -gt 0 -or $promoted -gt 0)) {
-    if ($promoted -gt 0) {
-      $noteText = "Utility advanced promotion flow this cycle."
-    } elseif ($btExecuted -gt 0) {
-      $noteText = "Utility completed backtests and recorded results."
-    } elseif ($dirVariants -gt 0) {
-      $noteText = "Utility generated new variants this cycle."
-    } else {
-      $noteText = "Utility ingested new inputs and is progressing normally."
+  } elseif ($mode -eq 'frodex') {
+    $parts = @()
+
+    if ($promotionBlocked -gt 0 -or $specBlocked -gt 0 -or $batchBlockedPromotion -gt 0) {
+      $parts += ("I hit promotion/backtest blockers this cycle (spec blocked: $specBlocked, promotion blocked: $promotionBlocked, batch blocked: $batchBlockedPromotion).")
     }
-  } elseif ($stall -gt 5) {
-    if ($forwardRuns -gt 0 -or $forwardSignalEvals -gt 0) {
-      $noteText = "Strategy generation is stalled ($stall cycles), but forward-testing is active."
-    } else {
-      $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
+
+    if ($starvation -gt 0) {
+      $parts += ("Throughput drought has repeated for $starvation cycle(s).")
     }
-  } elseif ($starvation -gt 10) {
-    $noteText = "I am input-starved for $starvation cycles, so throughput is constrained."
-  } elseif ($topWarning) {
-    $noteText = "I flagged a warning to watch: $topWarning"
+
+    if ($bundlesSelected -eq 0 -and $batchAttempts -eq 0) {
+      $parts += "No new runnable bundles reached execution in this window."
+    }
+
+    if ($topWarning) {
+      if ($topWarningCount -gt 1) {
+        $parts += ("Top repeated warning: $topWarning.")
+      } else {
+        $parts += ("Top warning: $topWarning.")
+      }
+    }
+
+    if ($parts.Count -eq 0) {
+      if ($batchExecutedTotal -gt 0 -or $promoted -gt 0 -or $dirVariants -gt 0 -or $ingested -gt 0) {
+        $parts += "Cycle completed normally and progressed key pipeline stages."
+      } elseif ($forwardRuns -gt 0) {
+        $parts += "Forward checks are active and healthy while this cycle stayed quiet."
+      } else {
+        $parts += "Cycle was quiet with no actionable changes in this window."
+      }
+    }
+
+    $noteText = ($parts -join ' ')
   } else {
     if ($mode -eq 'oragorn') {
       if ($completed -gt 0 -or $failed -gt 0) {
@@ -497,30 +513,8 @@ if ($true) {
     }
   }
 
-  if ($mode -eq 'frodex' -and -not $isOragornSubagentNoteOnly) {
-    $recentEvidence = @()
-    $tailEvents = @($mainEvents | Where-Object {
-      $a = [string]$_.action
-      $s = [string]$_.summary
-      -not [string]::IsNullOrWhiteSpace($a) -and -not [string]::IsNullOrWhiteSpace($s)
-    } | Select-Object -Last 3)
-
-    foreach ($ev in $tailEvents) {
-      $a = [string]$ev.action
-      $s = ([string]$ev.summary -replace '\s+', ' ').Trim()
-      if ($s.Length -gt 90) { $s = $s.Substring(0, 90).TrimEnd() + '…' }
-      if (-not [string]::IsNullOrWhiteSpace($s)) {
-        $recentEvidence += ($a + ': ' + $s)
-      }
-    }
-
-    if ($recentEvidence.Count -gt 0) {
-      $noteText = 'Cycle evidence: ' + ($recentEvidence -join ' | ')
-    }
-  }
-
   $noteText = ($noteText -replace '\s+', ' ').Trim()
-  if ($noteText.Length -gt 400) { $noteText = $noteText.Substring(0, 400) }
+  if ($noteText.Length -gt 365) { $noteText = $noteText.Substring(0, 365) }
   if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
 
   $lines += "○───note─────────────────────────"
@@ -565,17 +559,22 @@ try {
 }
 
 $stateKey = ($mode + "_last")
-$minRepeatSeconds = 600
+$minSendIntervalSeconds = 720
+$minRepeatSeconds = 1800
 $skipDuplicateSend = $false
 try {
   $node = $reportState.$stateKey
   if ($node) {
     $prevHash = [string]$node.hash
     $prevAt = [string]$node.sent_at
-    if (-not [string]::IsNullOrWhiteSpace($prevHash) -and $prevHash -eq $hashHex -and -not [string]::IsNullOrWhiteSpace($prevAt)) {
+    if (-not [string]::IsNullOrWhiteSpace($prevAt)) {
       $prevDt = [DateTime]::Parse($prevAt).ToUniversalTime()
       $ageSec = ([DateTime]::UtcNow - $prevDt).TotalSeconds
-      if ($ageSec -lt $minRepeatSeconds) { $skipDuplicateSend = $true }
+      if ($ageSec -lt $minSendIntervalSeconds) {
+        $skipDuplicateSend = $true
+      } elseif (-not [string]::IsNullOrWhiteSpace($prevHash) -and $prevHash -eq $hashHex -and $ageSec -lt $minRepeatSeconds) {
+        $skipDuplicateSend = $true
+      }
     }
   }
 } catch {}

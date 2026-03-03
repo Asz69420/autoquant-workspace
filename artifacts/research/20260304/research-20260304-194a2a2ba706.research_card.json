@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-194a2a2ba706",
+  "created_at": "2026-03-03T22:31:03.708692Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=QuovcpwYjxg",
+  "title": "After 10 Years, I Found the Perfect EMA Settings! It Shows Exact Signals!",
+  "author": "SoheilPKO",
+  "summary_bullets": [
+    "I want to teach you an excellent EMA settings and combination that helps you find accurate buy sell signals.",
+    "This trading strategy can make you consistent profit.",
+    "Alright we're gonna add 6 exponential moving averages to the chart and we're gonna give them some special settings and combination.",
+    "First we add 3 EMAs and then another 3 EMAs.",
+    "Here we click on indicators and we search Reben.",
+    "When you click on this indicator, 4 moving averages are added to the chart.",
+    "But this is not what we want and we need to change their settings.",
+    "So here we go to the settings of the Reben and first we remove one of them because we need 3 moving averages and 3 of them should be exponential moving averages.",
+    "So here we set EMA for them.",
+    "Here for the first EMA we set the length at 13."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "I want to teach you an excellent EMA settings and combination that helps you find accurate buy sell signals.",
+      "note": "Meaning: I want to teach you an excellent EMA settings and combination that helps you find accurate buy sell signals."
+    },
+    {
+      "timestamp": null,
+      "quote": "This trading strategy can make you consistent profit.",
+      "note": "Meaning: This trading strategy can make you consistent profit."
+    },
+    {
+      "timestamp": null,
+      "quote": "Alright we're gonna add 6 exponential moving averages to the chart and we're gonna give them some special settings and combination.",
+      "note": "Meaning: Alright we're gonna add 6 exponential moving averages to the chart and we're gonna give them some special settings and combination."
+    },
+    {
+      "timestamp": null,
+      "quote": "First we add 3 EMAs and then another 3 EMAs.",
+      "note": "Meaning: First we add 3 EMAs and then another 3 EMAs."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here we click on indicators and we search Reben.",
+      "note": "Meaning: Here we click on indicators and we search Reben."
+    },
+    {
+      "timestamp": null,
+      "quote": "When you click on this indicator, 4 moving averages are added to the chart.",
+      "note": "Meaning: When you click on this indicator, 4 moving averages are added to the chart."
+    },
+    {
+      "timestamp": null,
+      "quote": "But this is not what we want and we need to change their settings.",
+      "note": "Meaning: But this is not what we want and we need to change their settings."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we go to the settings of the Reben and first we remove one of them because we need 3 moving averages and 3 of them should be exponential moving averages.",
+      "note": "Meaning: So here we go to the settings of the Reben and first we remove one of them because we need 3 moving averages and 3 of them should be exponential moving"
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we set EMA for them.",
+      "note": "Meaning: So here we set EMA for them."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here for the first EMA we set the length at 13.",
+      "note": "Meaning: Here for the first EMA we set the length at 13."
+    },
+    {
+      "timestamp": null,
+      "quote": "For the second EMA also we set it at 13 and for the third EMA similarly we set the length at 13.",
+      "note": "Meaning: For the second EMA also we set it at 13 and for the third EMA similarly we set the length at 13."
+    },
+    {
+      "timestamp": null,
+      "quote": "So here we have 3 EMAs with the same length but with different source of calculations.",
+      "note": "Meaning: So here we have 3 EMAs with the same length but with different source of calculations."
+    }
+  ],
+  "extracted_rules": [
+    "When you click on this indicator, 4 moving averages are added to the chart.",
+    "Here you can see that this candle is closed below the level so the sell signal here is confirmed and in practice we could enter a short position at this point and you can see how the price declined after that.",
+    "This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly.",
+    "There is a risk management strategy that is called 1% role and this risk management strategy helps you to minimize the effect of your losing possessions.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you will not be able to survive in this game.",
+    "If you have any questions feel free to ask and leave a comment for me."
+  ],
+  "parameters_set": [
+    {
+      "name": "second ema also",
+      "value": "13",
+      "context": "EMA we set the length at 13. For the second EMA also we set it at 13 and for the third EMA similarly we set"
+    }
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "Here you can see that this candle is closed below the level so the sell signal here is confirmed and in practice Entry: a short position at this point and you can see how the price declined after that."
+    },
+    {
+      "type": "risk",
+      "description": "This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly."
+    },
+    {
+      "type": "risk",
+      "description": "There is a risk management strategy that is called 1% role and this risk management strategy helps you to minimize the effect of your losing possessions."
+    },
+    {
+      "type": "risk",
+      "description": "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you will not be able to survive in this game."
+    }
+  ],
+  "explicit_conditions": [
+    "This is not possible and there is no trading strategy or method capable of doing this but instead you need to manage your risk properly.",
+    "There is a risk management strategy that is called 1% role and this risk management strategy helps you to minimize the effect of your losing possessions.",
+    "The link is also placed in the description and I highly recommend you to watch it now because without a proper risk management you will not be able to survive in this game."
+  ],
+  "risk_management_notes": [
+    "Use explicit risk management on every trade.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-194a2a2ba706.raw.txt",
+  "sha256": "e623bbb1850332412551615d3846d599429a6c439f7710e3208419b813d0d19a",
+  "truncated": false
+}

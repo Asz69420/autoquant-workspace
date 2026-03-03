@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-39edadeae4ea",
+  "created_at": "2026-03-03T22:39:43.837728Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=Zepx8mARre0",
+  "title": "NEW Claude Opus 4.6 AI Good For TradingView Strategies? (Backtesting Engine) (watch ASAP)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys, Claude released Opus 4.6 and I've tested it for trading strategies.",
+    "And it's an absolute game changer guys because I was able to create the backtesting engine with this AI, which has the same exact backtesting results as TradingView has.",
+    "And that matters because when the AI figures out the trading strategy for you, then it can finally run a backtest to figure out that some of the ideas that it has are not so good and give you the best one.",
+    "And when you then use that in TradingView, you will get the exact same numbers.",
+    "Gone are the times when the AI proposes you a new trading strategy, you copy the code into TradingView just to be disappointed.",
+    "It is definitely a game changer because now the AI can run simulations that actually matter and it can make decisions based on these numbers while you're drinking your coffee.",
+    "I hope you realize how big this is guys and I'm excited to show you to you right now.",
+    "And guys, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+    "Also remember, this is not financial advice, crypto is risky, you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd.",
+    "First of all, let me show you how all of this works before I show you how to set this up and what I'm using here."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys, Claude released Opus 4.6 and I've tested it for trading strategies.",
+      "note": "Meaning: That's right guys, Claude released Opus 4.6 and I've tested it for trading strategies."
+    },
+    {
+      "timestamp": null,
+      "quote": "And it's an absolute game changer guys because I was able to create the backtesting engine with this AI, which has the same exact backtesting results as TradingView has.",
+      "note": "Meaning: And it's an absolute game changer guys because I was able to create the backtesting engine with this AI, which has the same exact backtesting results a"
+    },
+    {
+      "timestamp": null,
+      "quote": "And that matters because when the AI figures out the trading strategy for you, then it can finally run a backtest to figure out that some of the ideas that it has are not so good and give you the best",
+      "note": "Meaning: And that matters because when the AI figures out the trading strategy for you, then it can finally run a backtest to figure out that some of the ideas "
+    },
+    {
+      "timestamp": null,
+      "quote": "And when you then use that in TradingView, you will get the exact same numbers.",
+      "note": "Meaning: And when you then use that in TradingView, you will get the exact same numbers."
+    },
+    {
+      "timestamp": null,
+      "quote": "Gone are the times when the AI proposes you a new trading strategy, you copy the code into TradingView just to be disappointed.",
+      "note": "Meaning: Gone are the times when the AI proposes you a new trading strategy, you copy the code into TradingView just to be disappointed."
+    },
+    {
+      "timestamp": null,
+      "quote": "It is definitely a game changer because now the AI can run simulations that actually matter and it can make decisions based on these numbers while you're drinking your coffee.",
+      "note": "Meaning: It is definitely a game changer because now the AI can run simulations that actually matter and it can make decisions based on these numbers while you'"
+    },
+    {
+      "timestamp": null,
+      "quote": "I hope you realize how big this is guys and I'm excited to show you to you right now.",
+      "note": "Meaning: I hope you realize how big this is guys and I'm excited to show you to you right now."
+    },
+    {
+      "timestamp": null,
+      "quote": "And guys, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+      "note": "Meaning: And guys, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this "
+    },
+    {
+      "timestamp": null,
+      "quote": "Also remember, this is not financial advice, crypto is risky, you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd.",
+      "note": "Meaning: Also remember, this is not financial advice, crypto is risky, you can lose all of your money guys and that is why I run this educational channel so tha"
+    },
+    {
+      "timestamp": null,
+      "quote": "First of all, let me show you how all of this works before I show you how to set this up and what I'm using here.",
+      "note": "Meaning: First of all, let me show you how all of this works before I show you how to set this up and what I'm using here."
+    },
+    {
+      "timestamp": null,
+      "quote": "But roughly speaking, I'm using Claude application on the desktop.",
+      "note": "Meaning: But roughly speaking, I'm using Claude application on the desktop."
+    },
+    {
+      "timestamp": null,
+      "quote": "I'm using Claude code on the desktop.",
+      "note": "Meaning: I'm using Claude code on the desktop."
+    }
+  ],
+  "extracted_rules": [
+    "And that matters because when the AI figures out the trading strategy for you, then it can finally run a backtest to figure out that some of the ideas that it has are not so good and give you the best one.",
+    "And when you then use that in TradingView, you will get the exact same numbers.",
+    "Gone are the times when the AI proposes you a new trading strategy, you copy the code into TradingView just to be disappointed.",
+    "And guys, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+    "But the magic happens when this AI is able to run its own back test and its own variations of strategies.",
+    "And I'm expecting this thing now to create ideas and then run back tests and then change its plan if the back tests are bad.",
+    "And when I open it up, I can see the PineScript code.",
+    "If I don't like something, now I can go to trading view, right?",
+    "And if I don't have an idea, you can tell it to be creative as well, right?",
+    "Individual plans though, if you get the pro plan, for example, includes more usage than the API has for the same amount of money, okay?",
+    "But the AI or this backtesting engine is quite smart because if it doesn't have the data, it will go into the internet and fetch it from there.",
+    "But it's always more accurate if you get it from trading view.",
+    "And it will go ahead, run the numbers and if it finds out that the strategy is not profitable, it will just skip it and try a different version, okay?",
+    "So let me see if it needs something from me, not really.",
+    "And so in the meantime, I will simply drink my coffee and I will see you when this is finished.",
+    "And by the way, if you wanna use Gaussian channel strategy right now, then go to signum.money and the Gaussian channel strategy is already there, already finished.",
+    "So let me see if it actually came up with the PineScript version.",
+    "You can just talk to it if it forgets to do something.",
+    "So now I will just come back when this is finished and I wanna show you the numbers in TradingView.",
+    "And by the way, if you want access then well I will show you in a minute how to get access but first of all, if you want to download chart data I showed you already on my channel how to do that that first of all deactivate everything on the chart every single indicator that you have deactivate because otherwise you will be part of the download and then open up the chart that you wanna download for example, Bitcoin or whatever."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Also remember, this is not financial advice, crypto is risky, you can lose all of your money guys and that is why I run this educational channel so that you are always ahead of the herd."
+    },
+    {
+      "type": "filter",
+      "description": "It avoided stupid stuff like losing ones or ones with high drawdown because it can backtest guys, okay?"
+    },
+    {
+      "type": "filter",
+      "description": "So as you can see here now I have the ADA data there and why this is also important, let me give you an idea is because you can tell the AI to run back tests on multiple coins with the same strategy to avoid overfitting,"
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-39edadeae4ea.raw.txt",
+  "sha256": "1b589596f0120f57d59bf6b91d121dd07b8f833d345d17a73e87aa9545e4ddc4",
+  "truncated": false
+}

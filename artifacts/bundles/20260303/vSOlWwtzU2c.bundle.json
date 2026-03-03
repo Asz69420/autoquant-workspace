@@ -1,13 +1,13 @@
 {
   "id": "bundle_vSOlWwtzU2c",
-  "created_at": "2026-03-03T22:28:03.602765+00:00",
+  "created_at": "2026-03-03T22:57:53.925045+00:00",
   "source": "youtube",
   "video_id": "vSOlWwtzU2c",
   "source_channel_name": "SoheilPKO",
   "source_channel_id": "UC7QqMi_dhkGuFaA0TrYJTAw",
   "content_category": "INDICATOR_CONCEPT",
-  "research_card_path": "artifacts/research/20260304/research-20260304-881758bdcfb5.research_card.json",
+  "research_card_path": "artifacts/research/20260304/research-20260304-594c1efcd241.research_card.json",
   "indicator_record_paths": [],
-  "linkmap_path": "artifacts/links/20260304/research-20260304-881758bdcfb5.linkmap.json",
+  "linkmap_path": "artifacts/links/20260304/research-20260304-594c1efcd241.linkmap.json",
   "status": "NEW"
 }

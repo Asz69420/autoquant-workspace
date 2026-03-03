@@ -1,4 +1,10 @@
 [
+  "artifacts/thesis/20260304/thesis-20260304-ed6747bea7de.thesis.json",
+  "artifacts/thesis/20260304/thesis-20260304-8ef033c7e0ff.thesis.json",
+  "artifacts/thesis/20260304/thesis-20260304-038e79b5c09c.thesis.json",
+  "artifacts/thesis/20260304/thesis-20260304-2d4ebc404aa9.thesis.json",
+  "artifacts/thesis/20260304/thesis-20260304-e4f679ddd158.thesis.json",
+  "artifacts/thesis/20260304/thesis-20260304-3b7db68f6d13.thesis.json",
   "artifacts/thesis/20260304/thesis-20260304-98498aa544b6.thesis.json",
   "artifacts/thesis/20260304/thesis-20260304-797bdabfa320.thesis.json",
   "artifacts/thesis/20260304/thesis-20260304-8529f757824b.thesis.json",
@@ -192,11 +198,5 @@
   "artifacts/thesis/20260225/thesis-20260225-64a3d2591bcc.thesis.json",
   "artifacts/thesis/20260224/thesis-20260224-1febddaab016.thesis.json",
   "fake/0.json",
-  "fake/1.json",
-  "fake/2.json",
-  "fake/3.json",
-  "fake/4.json",
-  "fake/5.json",
-  "fake/6.json",
-  "fake/7.json"
+  "fake/1.json"
 ]

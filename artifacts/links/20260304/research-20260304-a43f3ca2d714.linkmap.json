@@ -1,0 +1,29 @@
+{
+  "research_card_path": "artifacts/research/20260304/research-20260304-a43f3ca2d714.research_card.json",
+  "indicator_record_paths": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260301/indicator-20260301-448b634717bb.indicator_record.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/indicators/20260226/indicator-20260226-0a794ed0f552.indicator_record.json"
+  ],
+  "grabber_queue": [
+    {
+      "hint": "regression slope oscillator",
+      "author_hint": null,
+      "keywords": [
+        "regression",
+        "slope",
+        "oscillator"
+      ],
+      "confidence": 0.93
+    }
+  ],
+  "usage_notes": [
+    {
+      "source": "youtube",
+      "channel": "SoheilPKO",
+      "channel_url": "https://m.youtube.com/@SoheilPKO",
+      "video_url": "https://www.youtube.com/watch?v=drIqeApSOec",
+      "video_id": "drIqeApSOec",
+      "noted_at": "2026-03-03T22:34:28.570346+00:00"
+    }
+  ]
+}

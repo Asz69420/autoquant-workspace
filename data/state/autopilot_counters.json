@@ -1,5 +1,6 @@
 ﻿{
-    "starvation_cycles":  35,
-    "drought_cycles":  4,
-    "updated_at":  "2026-03-03T22:23:53.0400191Z"
+    "throughput_drought_cycles":  0,
+    "drought_cycles":  6,
+    "updated_at":  "2026-03-03T22:53:51.5580960Z",
+    "starvation_cycles":  0
 }
