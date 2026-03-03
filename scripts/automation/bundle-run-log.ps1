@@ -155,6 +155,7 @@ $insightNew = 0
 $stall = 0; $starvation = 0
 $warnings = @()
 $forwardRuns = 0; $forwardEntries = 0; $forwardCloses = 0; $forwardSignalEvals = 0; $forwardOpenPositions = 0
+$delegated = 0; $spawned = 0; $completed = 0; $failed = 0; $totalActions = 0
 
 foreach ($e in $mainEvents) {
   $sum = if ($e.summary) { $e.summary } else { "" }
@@ -310,7 +311,11 @@ $backtestAuditCount = @($mainEvents | Where-Object { [string]$_.action -eq 'back
 $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
 
 if ($mode -eq 'quandalf') {
-  $lines += "Quandalf ran: research=$strategyResearchCount generate=$strategyGenerateCount doctrine=$doctrineSynthesisCount audit=$backtestAuditCount"
+  $lines += "○───activity─────────────────────"
+  $lines += "Research cycles: $strategyResearchCount"
+  $lines += "Strategy drafts: $strategyGenerateCount"
+  $lines += "Doctrine updates: $doctrineSynthesisCount"
+  $lines += "Audits: $backtestAuditCount"
 } elseif (-not $isOragornSubagentNoteOnly) {
   $lines += "○───activity─────────────────────"
 
@@ -319,29 +324,22 @@ if ($mode -eq 'quandalf') {
     $spawned = @($mainEvents | Where-Object { @('SUBAGENT_SPAWN','SUBAGENT_SPAWNED') -contains ([string]$_.action) }).Count
     $completed = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
     $failed = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FAIL' }).Count
-    $diagnosed = @($mainEvents | Where-Object { [string]$_.action -eq 'DIAGNOSIS_COMPLETE' }).Count
-    $contextUpdates = @($mainEvents | Where-Object { [string]$_.action -eq 'CONTEXT_UPDATE' }).Count
-    $totalActions = $delegated + $spawned + $completed + $failed + $diagnosed + $contextUpdates
+    $totalActions = $delegated + $spawned + $completed + $failed
 
-    $lines += "Delegated : $delegated tasks"
-    $lines += "Sub-agents: $spawned spawned"
-    $lines += "Completed : $completed finished"
-    $lines += "Failed    : $failed failed"
-    $lines += "Diagnosed : $diagnosed reads"
-    $lines += "Ctx updates: $contextUpdates syncs"
+    $lines += "Delegations: $delegated"
+    $lines += "Sub-agents spawned: $spawned"
+    $lines += "Sub-agents finished: $completed"
+    $lines += "Sub-agents failed: $failed"
   } else {
-    $lines += "Grabbed : $grabbed videos$(if ($grabFailed -gt 0) { " ($grabFailed failed)" })"
-    $lines += "Ingested : $ingested specs"
-    if ($btExecuted -gt 0) { $lines += "Backtested: $btExecuted runs" } else { $lines += "Backtested: 0 (no variants)" }
-    $lines += "Variants : $dirVariants new + $dirExplore explore"
-    $lines += "Refined : $refined iterations"
-    $lines += "Promoted : $promoted strategies"
-    $lines += "Forward : runs=$forwardRuns signals=$forwardSignalEvals entries=$forwardEntries closes=$forwardCloses open=$forwardOpenPositions"
-    if ($insightNew -gt 0) { $lines += "Insights : $insightNew processed" }
+    $lines += "Data ingested: $ingested"
+    $lines += "Backtests completed: $btExecuted"
+    $lines += "Promotions: $promoted"
+    if ($dirVariants -gt 0) { $lines += "New variants: $dirVariants" }
+    if ($forwardRuns -gt 0) { $lines += "Forward checks: $forwardRuns" }
   }
 }
 # Shared bottom note block (up to 3 lines)
-if ($mode -ne 'quandalf') {
+if ($true) {
   $topWarning = $null
   if ($warnings.Count -gt 0) {
     $uniqueWarnings = @{}
@@ -382,7 +380,7 @@ if ($mode -ne 'quandalf') {
     $noteText = "I hit $errors issue(s) in this window and need a quick review."
   } elseif ($stall -gt 5) {
     if ($forwardRuns -gt 0 -or $forwardSignalEvals -gt 0) {
-      $noteText = "Strategy generation is stalled ($stall cycles), but forward-testing is active (runs=$forwardRuns signals=$forwardSignalEvals)."
+      $noteText = "Strategy generation is stalled ($stall cycles), but forward-testing is active."
     } else {
       $noteText = "I did not produce new variants for $stall cycles, so exploration is stalled."
     }
@@ -392,37 +390,28 @@ if ($mode -ne 'quandalf') {
     $noteText = "I flagged a warning to watch: $topWarning"
   } else {
     if ($mode -eq 'oragorn') {
-      $subagentSummaries = @(
-        $mainEvents |
-        Where-Object { @('SUBAGENT_SPAWNED','SUBAGENT_SPAWN','SUBAGENT_FINISH','SUBAGENT_FAIL') -contains ([string]$_.action) } |
-        ForEach-Object {
-          $s = [string]$_.summary
-          if ([string]::IsNullOrWhiteSpace($s)) { $null } else { $s.Trim() }
-        } |
-        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-      )
-
-      if ($subagentSummaries.Count -gt 0) {
-        $uniqueSummaries = @{}
-        foreach ($s in $subagentSummaries) {
-          if (-not $uniqueSummaries.ContainsKey($s)) { $uniqueSummaries[$s] = $true }
-        }
-        $summaryList = @($uniqueSummaries.Keys | Select-Object -Last 3)
-        $noteText = "Sub-agent tasks this window: " + ($summaryList -join ' | ')
-      } elseif ($totalActions -gt 0) {
-        $noteText = "I coordinated $totalActions command action(s) this window with clean telemetry."
+      if ($completed -gt 0 -or $failed -gt 0) {
+        $noteText = "Commander lifecycle updated: $completed finished, $failed failed."
+      } elseif ($delegated -gt 0) {
+        $noteText = "Commander delegated $delegated task(s) this window."
       } else {
-        $noteText = "No Oragorn command actions were recorded in this window."
+        $noteText = "Commander had no new delegation actions in this window."
+      }
+    } elseif ($mode -eq 'quandalf') {
+      if ($strategyResearchCount + $strategyGenerateCount + $doctrineSynthesisCount + $backtestAuditCount -gt 0) {
+        $noteText = "Strategist cycle completed and orders/journal are in sync."
+      } else {
+        $noteText = "No strategist runs were recorded in this window."
       }
     } else {
-      if ($btExecuted -gt 0) {
-        $noteText = "I advanced $btExecuted backtest run(s) this cycle and kept the pipeline stable."
-      } elseif ($ingested -gt 0) {
-        $noteText = "I ingested $ingested new item(s) this cycle; backtests will follow next stages."
-      } elseif ($dirVariants -gt 0) {
-        $noteText = "I emitted $dirVariants new variant(s) this cycle to keep exploration moving."
+      if ($promoted -gt 0) {
+        $noteText = "Utility advanced promotion flow this cycle."
+      } elseif ($btExecuted -gt 0) {
+        $noteText = "Utility completed backtests and recorded results."
+      } elseif ($forwardRuns -gt 0) {
+        $noteText = "Utility forward checks are active and healthy."
       } else {
-        $noteText = "This cycle was quiet, but the pipeline remained healthy."
+        $noteText = "Utility cycle was quiet; no actionable changes this window."
       }
     }
   }
