@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-276d889724f1",
+  "created_at": "2026-03-03T19:01:54.146387Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260304/research-20260304-5c3e91cd9916.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260304/research-20260304-5c3e91cd9916.linkmap.json"
+    ]
+  },
+  "title": "This SECRET Settings of MACD Make It Impossible to Lose!",
+  "thesis_bullets": [
+    "Follow my instruction step by step.",
+    "On Trading View Platform, here click on Indicators and search MACD.",
+    "And add two MACDs to your chart.",
+    "And now you need to change their settings.",
+    "I wanna teach you a secret settings and combination of these two MACDs that together they help you find the most accurate Bicell Signals on the chart.",
+    "Alright, first we go to the settings of this MACD at the bottom and here in the Inputs tab, for the fast length we set it at 100, for the slow length we set it at 200 and for the signal length we set it at 50.",
+    "And then we go to the Style tab and we remove MACD line and signal line.",
+    "Alright, we're done with the settings of this MACD.",
+    "And now we go to the settings of the second MACD and first here in the Inputs tab, here for the fast length we set it at 8 and for the slow length we set it at 13 and for the signal length it should be 9.",
+    "Then we go to the Style tab and we remove the histogram."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on 1h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on 1h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "MACD"
+      ],
+      "timeframe_bias": "1h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on 1h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "276d889724f1ddb89ca142564af67181a4eb7c47a0cf67eb9c93743b87e58a71"
+}

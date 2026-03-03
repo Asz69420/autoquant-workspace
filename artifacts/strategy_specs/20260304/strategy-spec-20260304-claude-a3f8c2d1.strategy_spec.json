@@ -1,0 +1,191 @@
+{
+  "spec_id": "strategy-spec-20260304-claude-a3f8c2d1",
+  "schema_version": 1.1,
+  "source": "claude-advisor",
+  "created_at": "2026-03-04T05:00:00Z",
+  "template_name": "macd_confirmation",
+  "signal_pattern": "macd_confirmation",
+  "target_asset": "ETH",
+  "target_tf": "4h",
+  "edge_hypothesis": "MACDh zero-line crossovers on ETH 4h capture ranging oscillation entry points with asymmetric R:R. The histogram flip is a momentum-shift signal that, combined with EMA_50 structural alignment, isolates swing-quality entries. Ranging regimes produce the most oscillation events, so this targets the universal base regime (ranging PF consistently 1.12-4.87 across ACCEPTs). High R:R (7:1) lets losers die cheap while winners capture the full swing amplitude. Key test: can MACD confirmation, which produced PF=1.712 as a tail harvester, improve further with optimized stop placement?",
+  "RoleFramework": {
+    "baseline": "EMA",
+    "confirmation": "MACD",
+    "volume_volatility": "ATR"
+  },
+  "risk_policy": {
+    "stop_type": "atr",
+    "stop_atr_mult": 2.0,
+    "tp_type": "atr",
+    "tp_atr_mult": 14.0,
+    "risk_per_trade_pct": 0.01
+  },
+  "variants": [
+    {
+      "variant_id": "baseline",
+      "label": "MACD confirmation 7:1 standard",
+      "mutation_type": "none",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "MACD",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 14.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero-line confirming bullish momentum shift",
+        "Close above EMA_50 confirms structural uptrend alignment",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero-line confirming bearish momentum shift",
+        "Close below EMA_50 confirms structural downtrend alignment",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (14.0x ATR)",
+        "Exit on ATR stop hit (2.0x ATR)",
+        "Exit on opposite MACDh crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR",
+        "TP: 14.0x ATR (7:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "tight_stop_8to1",
+      "label": "MACD confirmation tight stop 8:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "MACD",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero-line confirming bullish momentum shift",
+        "Close above EMA_50 confirms structural uptrend alignment",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero-line confirming bearish momentum shift",
+        "Close below EMA_50 confirms structural downtrend alignment",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12.0x ATR)",
+        "Exit on ATR stop hit (1.5x ATR)",
+        "Exit on opposite MACDh crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR",
+        "TP: 12.0x ATR (8:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "wide_stop_6to1",
+      "label": "MACD confirmation wide stop 6:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "MACD",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "MACDh_12_26_9 crosses above zero-line confirming bullish momentum shift",
+        "Close above EMA_50 confirms structural uptrend alignment",
+        "Use signal: macd_confirmation"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses below zero-line confirming bearish momentum shift",
+        "Close below EMA_50 confirms structural downtrend alignment",
+        "Use signal: macd_confirmation"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15.0x ATR)",
+        "Exit on ATR stop hit (2.5x ATR)",
+        "Exit on opposite MACDh crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.5x ATR",
+        "TP: 15.0x ATR (6:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow", "macd_confirmation"]
+  }
+}

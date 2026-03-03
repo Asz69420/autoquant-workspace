@@ -1,0 +1,185 @@
+{
+  "spec_id": "strategy-spec-20260304-claude-c1a6e8b3",
+  "schema_version": 1.1,
+  "source": "claude-advisor",
+  "created_at": "2026-03-04T05:00:00Z",
+  "template_name": "ema_crossover",
+  "signal_pattern": "ema_crossover",
+  "target_asset": "ETH",
+  "target_tf": "4h",
+  "edge_hypothesis": "EMA_9/EMA_21 crossovers were declared 'exhausted' in Entry 001, but that conclusion was drawn from low-R:R (2-3:1) configurations. This spec tests the rehabilitation hypothesis: can the simplest trend signal produce ACCEPT-tier results when paired with extreme R:R (8:1)? The crossover itself is a fast-response trend initiation signal. At 2:1 R:R, whipsaws destroy PnL because losers are expensive relative to winners. At 8:1 R:R with 2.0 ATR stops, the crossover becomes a 'lottery ticket' — most trades stop out cheaply, but winners run 16x ATR before TP. If ETH 4h trends persist (as the Vortex and Supertrend ACCEPTs suggest), then even a 15-20% win rate produces positive expectancy. This is a meta-test: does R:R override signal quality as the dominant performance driver?",
+  "RoleFramework": {
+    "baseline": "EMA",
+    "confirmation": "EMA",
+    "volume_volatility": "ATR"
+  },
+  "risk_policy": {
+    "stop_type": "atr",
+    "stop_atr_mult": 2.0,
+    "tp_type": "atr",
+    "tp_atr_mult": 16.0,
+    "risk_per_trade_pct": 0.01
+  },
+  "variants": [
+    {
+      "variant_id": "baseline",
+      "label": "EMA crossover 8:1 rehabilitation",
+      "mutation_type": "none",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "EMA",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 signaling bullish trend initiation",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 signaling bearish trend initiation",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16.0x ATR)",
+        "Exit on ATR stop hit (2.0x ATR)",
+        "Exit on opposite EMA crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR",
+        "TP: 16.0x ATR (8:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "tight_stop_10to1",
+      "label": "EMA crossover tight 10:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "EMA",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 signaling bullish trend initiation",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 signaling bearish trend initiation",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15.0x ATR)",
+        "Exit on ATR stop hit (1.5x ATR)",
+        "Exit on opposite EMA crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR (tight — tests whether tighter stop improves expectancy by reducing loss size despite more stopouts)",
+        "TP: 15.0x ATR (10:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "moderate_6to1",
+      "label": "EMA crossover moderate 6:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "EMA",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "EMA_9 crosses above EMA_21 signaling bullish trend initiation",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "EMA_9 crosses below EMA_21 signaling bearish trend initiation",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15.0x ATR)",
+        "Exit on ATR stop hit (2.5x ATR)",
+        "Exit on opposite EMA crossover signal"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.5x ATR (wider cushion — tests whether surviving more whipsaws increases win rate enough to offset smaller R:R)",
+        "TP: 15.0x ATR (6:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow", "macd_confirmation"]
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "spec_id": "strategy-spec-20260304-claude-e7b4d9f5",
+  "schema_version": 1.1,
+  "source": "claude-advisor",
+  "created_at": "2026-03-04T05:00:00Z",
+  "template_name": "ema_rsi_atr",
+  "signal_pattern": "ema_rsi_atr",
+  "target_asset": "ETH",
+  "target_tf": "4h",
+  "edge_hypothesis": "EMA trend alignment + RSI momentum confirmation + ATR volatility gate on ETH 4h targets the transitional regime — the regime with highest alpha (Vortex v3a trans PF=3.886). The triple-confirmation architecture reduces false entries during choppy consolidation. The ATR gate filters out low-volatility bars where moves lack follow-through, ensuring entries only fire when expansion energy is present. This tests whether the ema_rsi_atr template, which has never been tested at high R:R on ETH 4h, can produce ACCEPT-tier results with proper risk management. The key mechanism: RSI confirms directional commitment (not just EMA alignment) before capital is deployed, while ATR ensures the entry bar has enough range to sustain a move.",
+  "RoleFramework": {
+    "baseline": "EMA",
+    "confirmation": "RSI",
+    "volume_volatility": "ATR"
+  },
+  "risk_policy": {
+    "stop_type": "atr",
+    "stop_atr_mult": 2.0,
+    "tp_type": "atr",
+    "tp_atr_mult": 16.0,
+    "risk_per_trade_pct": 0.01
+  },
+  "variants": [
+    {
+      "variant_id": "baseline",
+      "label": "EMA-RSI-ATR 8:1 standard",
+      "mutation_type": "none",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "RSI",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "EMA trend alignment confirms bullish structure",
+        "RSI_14 confirms momentum above neutral zone",
+        "ATR volatility gate ensures sufficient expansion energy",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "EMA trend alignment confirms bearish structure",
+        "RSI_14 confirms momentum below neutral zone",
+        "ATR volatility gate ensures sufficient expansion energy",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16.0x ATR)",
+        "Exit on ATR stop hit (2.0x ATR)",
+        "Exit on opposite signal alignment"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.0x ATR",
+        "TP: 16.0x ATR (8:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "conservative_6to1",
+      "label": "EMA-RSI-ATR conservative 6:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "RSI",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "EMA trend alignment confirms bullish structure",
+        "RSI_14 confirms momentum above neutral zone",
+        "ATR volatility gate ensures sufficient expansion energy",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "EMA trend alignment confirms bearish structure",
+        "RSI_14 confirms momentum below neutral zone",
+        "ATR volatility gate ensures sufficient expansion energy",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15.0x ATR)",
+        "Exit on ATR stop hit (2.5x ATR)",
+        "Exit on opposite signal alignment"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 2.5x ATR (wider cushion)",
+        "TP: 15.0x ATR (6:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    },
+    {
+      "variant_id": "aggressive_10to1",
+      "label": "EMA-RSI-ATR aggressive 10:1",
+      "mutation_type": "threshold_mutation",
+      "RoleFramework": {
+        "baseline": "EMA",
+        "confirmation": "RSI",
+        "volume_volatility": "ATR"
+      },
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 0.01
+      },
+      "signal_params": {},
+      "entry_long": [
+        "EMA trend alignment confirms bullish structure",
+        "RSI_14 confirms momentum above neutral zone",
+        "ATR volatility gate ensures sufficient expansion energy",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "EMA trend alignment confirms bearish structure",
+        "RSI_14 confirms momentum below neutral zone",
+        "ATR volatility gate ensures sufficient expansion energy",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15.0x ATR)",
+        "Exit on ATR stop hit (1.5x ATR)",
+        "Exit on opposite signal alignment"
+      ],
+      "risk_rules": [
+        "Risk per trade: 1%",
+        "Stop: 1.5x ATR (tight for max R:R)",
+        "TP: 15.0x ATR (10:1 R:R)"
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      }
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow", "macd_confirmation"]
+  }
+}
