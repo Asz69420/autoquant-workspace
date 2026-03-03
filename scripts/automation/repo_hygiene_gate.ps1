@@ -33,6 +33,11 @@ function Get-UntrackedPaths {
     if ($ln.Length -lt 4) { continue }
     if ($ln.Substring(0,2) -eq '??') {
       $p = $ln.Substring(3).Trim()
+      if ($p.StartsWith('"') -and $p.EndsWith('"') -and $p.Length -ge 2) {
+        $p = $p.Substring(1, $p.Length - 2)
+        $p = $p -replace '\\\\', '\\'
+        $p = $p -replace '\\"', '"'
+      }
       if (-not [string]::IsNullOrWhiteSpace($p)) {
         $out += ($p -replace '\\','/')
       }

@@ -2,6 +2,7 @@
 """Emit an ActionEvent to data/logs/spool/."""
 import json
 import os
+import re
 import sys
 from datetime import datetime, timedelta, UTC
 from pathlib import Path
@@ -25,6 +26,14 @@ def compute_ts_local_aest(ts_iso_str):
     ampm = dt_aest.strftime("%p")
     
     return f"{day} {month} {hour_12}:{minute} {ampm} AEST"
+
+def _safe_token(value: str) -> str:
+    s = (value or '').strip()
+    s = re.sub(r'\s+', '_', s)
+    s = re.sub(r'[^A-Za-z0-9._-]', '_', s)
+    s = re.sub(r'_+', '_', s).strip('._-')
+    return s or 'unknown'
+
 
 def main():
     import argparse
@@ -96,8 +105,11 @@ def main():
         "error": error,
     }
     
-    # Filename: ts_file___run_id___agent___status_word.json
-    filename = f"{ts_file}___{args.run_id}___{args.agent}___{args.status_word}.json"
+    # Filename: ts_file___run_id___agent___status_word.json (sanitized tokens)
+    safe_run_id = _safe_token(args.run_id)
+    safe_agent = _safe_token(args.agent)
+    safe_status = _safe_token(args.status_word)
+    filename = f"{ts_file}___{safe_run_id}___{safe_agent}___{safe_status}.json"
     
     # Atomic write to outbox (primary) or spool (legacy fallback)
     outbox_dir = Path("data/logs/outbox")
