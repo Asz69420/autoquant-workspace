@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-almamh01",
+  "name": "ALMA Trend MACD Histogram Momentum Flip",
+  "created_at": "2026-03-04T12:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ALMA (Arnaud Legoux Moving Average) uses Gaussian-weighted smoothing centered at an offset point (0.85) within the lookback window. This places peak weight near recent prices while suppressing noise through Gaussian distribution — mathematically designed to be the lowest-lag smooth moving average. Unlike EMA (exponential decay) or KAMA (volatility-adaptive), ALMA's edge is pure signal clarity: it shows trend direction with minimal lag and no whipsaw during ranges. MACD histogram crossing zero represents the ACCELERATION of momentum — not just direction but the rate of change of the MACD-Signal spread. When ALMA confirms trend direction AND MACDh flips positive/negative, we're entering at the exact moment smooth trend + fresh momentum acceleration converge. This is the first test of ALMA_9_6.0_0.85 in the system. The hypothesis: ALMA's Gaussian smoothing produces cleaner trend signals than any other MA, and MACDh zero-cross is a proven cross-based entry trigger with established trade frequency on 4h.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "alma_macdh_v1_8to1",
+      "description": "Core thesis: ALMA trend direction + MACDh zero-line cross. 8:1 R:R. ALMA provides the smoothest possible trend filter while MACDh crossing zero times the momentum acceleration entry.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "Arnaud Legoux MA — Gaussian-weighted, offset 0.85, sigma 6.0. Minimal lag smooth trend direction. First system test of ALMA."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD Histogram — momentum acceleration. Zero-line cross is a well-tested cross-based signal with reliable frequency on 4h."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_macdh_ema50_v2_8to1",
+      "description": "Adds EMA_50 as macro trend confirmation. Tests whether a double-MA alignment (ALMA short-term + EMA_50 macro) with MACDh timing produces higher PF through better trend conviction. If ALMA alone is sufficient, the EMA_50 gate reduces trades without improving edge.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "close > EMA_50",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "close < EMA_50",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "ALMA short-term trend direction."
+        },
+        {
+          "indicator": "EMA_50",
+          "role": "baseline",
+          "notes": "EMA_50 macro trend confirmation. Double-MA alignment tests conviction vs frequency trade-off."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD Histogram zero-cross timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_macdh_v3_10to1",
+      "description": "Extended 10:1 R:R (15x ATR TP). Tests if ALMA's clean trend signal holds long enough for wider profit targets. If ALMA truly provides the smoothest trend read, positions should survive longer without being whipsawed out — allowing larger TP multiples to capture full trend moves.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "ALMA trend direction — Gaussian smoothing should hold trends longer."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACDh zero-cross entry timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for trend continuation capture."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ALMA_9_6.0_0.85", "MACDh_12_26_9", "EMA_50", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ALMA_9_6.0_0.85 — Gaussian-weighted low-lag MA. Provides smoothest trend direction signal with minimal whipsaw.",
+    "confirmation": "MACDh_12_26_9 — MACD Histogram. Zero-line cross captures momentum acceleration timing.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}

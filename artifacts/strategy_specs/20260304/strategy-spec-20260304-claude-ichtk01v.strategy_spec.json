@@ -1,0 +1,261 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-ichtk01v",
+  "name": "Ichimoku TK Cross Cloud-Confirmed CCI Gate",
+  "created_at": "2026-03-04T12:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Ichimoku Tenkan-Sen (ITS_9) and Kijun-Sen (IKS_26) encode multi-timeframe momentum through midpoint calculations of high-low ranges — fundamentally different from EMA which only tracks close prices. A TK cross captures the relationship between 9-bar and 26-bar structural midpoints, making it a richer signal than simple MA crossovers. When price is ABOVE the Ichimoku cloud (both Senkou Spans), multi-layered trend structure is confirmed. Adding CCI > 0 ensures momentum is positive at entry. The hypothesis: Ichimoku's structural trend detection combined with CCI momentum gating produces higher-quality entries than single-MA + oscillator combos because it reads market STRUCTURE, not just price level. This is the first Ichimoku test in the system — it targets ranging-to-trending transitions where TK crosses fire as structure resolves.",
+  "regime_assumption": "transitional",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ichi_tk_cci_v1_8to1",
+      "description": "Core thesis: Ichimoku TK cross above cloud + CCI positive momentum gate. 8:1 R:R. TK cross is the entry trigger, cloud position confirms structural trend, CCI > 0 filters noise.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "close > ISA_9",
+        "close > ISB_26",
+        "CCI_20_0.015 > 0"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "close < ISA_9",
+        "close < ISB_26",
+        "CCI_20_0.015 < 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Ichimoku Tenkan-Sen (9-bar midpoint of high-low range). Fast structural line — cross above Kijun triggers entry."
+        },
+        {
+          "indicator": "IKS_26",
+          "role": "baseline",
+          "notes": "Ichimoku Kijun-Sen (26-bar midpoint). Slow structural line — TK cross captures multi-period momentum shift."
+        },
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Senkou Span A — cloud boundary. Price above both spans confirms structural trend."
+        },
+        {
+          "indicator": "ISB_26",
+          "role": "baseline",
+          "notes": "Senkou Span B — cloud boundary. Cloud position acts as multi-layered regime filter."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI momentum gate. > 0 for long, < 0 for short. Filters entries where momentum hasn't aligned."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_tk_cci_v2_strong_8to1",
+      "description": "Stronger CCI gate: CCI > 50 for long / CCI < -50 for short. Tests whether requiring established (not just nascent) momentum improves win rate at the cost of fewer entries. If structural TK cross + strong momentum produces higher PF, the extra filter pays for reduced frequency.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "close > ISA_9",
+        "close > ISB_26",
+        "CCI_20_0.015 > 50"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "close < ISA_9",
+        "close < ISB_26",
+        "CCI_20_0.015 < -50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Ichimoku Tenkan-Sen."
+        },
+        {
+          "indicator": "IKS_26",
+          "role": "baseline",
+          "notes": "Ichimoku Kijun-Sen."
+        },
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Senkou Span A cloud boundary."
+        },
+        {
+          "indicator": "ISB_26",
+          "role": "baseline",
+          "notes": "Senkou Span B cloud boundary."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "Stronger CCI gate at +/-50. Tests established momentum vs nascent."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_tk_pure_v3_8to1",
+      "description": "No CCI gate — pure Ichimoku structural entry. TK cross above cloud only. Tests whether Ichimoku's multi-layered structure is self-sufficient without momentum confirmation. If PF is comparable to v1, the CCI gate adds complexity without edge.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 crosses_above IKS_26",
+        "close > ISA_9",
+        "close > ISB_26"
+      ],
+      "entry_short": [
+        "ITS_9 crosses_below IKS_26",
+        "close < ISA_9",
+        "close < ISB_26"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Ichimoku",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Ichimoku Tenkan-Sen — entry trigger."
+        },
+        {
+          "indicator": "IKS_26",
+          "role": "baseline",
+          "notes": "Ichimoku Kijun-Sen — cross target."
+        },
+        {
+          "indicator": "ISA_9",
+          "role": "confirmation",
+          "notes": "Cloud Span A — structural trend confirmation."
+        },
+        {
+          "indicator": "ISB_26",
+          "role": "confirmation",
+          "notes": "Cloud Span B — structural trend confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ITS_9", "IKS_26", "ISA_9", "ISB_26", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ITS_9/IKS_26 — Ichimoku structural midpoint lines. TK cross captures multi-period momentum shift. ISA_9/ISB_26 cloud confirms structural trend regime.",
+    "confirmation": "CCI_20_0.015 — momentum direction gate. Ensures statistical momentum aligns with structural signal.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}

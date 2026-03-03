@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-t3vxpb01",
+  "name": "T3 Vortex Pullback Confluence",
+  "created_at": "2026-03-04T12:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "T3 (Tillson Triple Exponential Smoothing, factor 0.7) applies triple EMA smoothing with a volume factor — producing the smoothest adaptive moving average in the indicator library. Unlike KAMA which adapts to volatility or EMA which uses fixed decay, T3's triple smoothing eliminates virtually all high-frequency noise. This means when price CROSSES T3, the pullback was deep and meaningful — shallow fakeouts get filtered by the heavy smoothing. Instead of using Vortex for TRANSITION detection (the proven Vortex v3a approach), this strategy uses Vortex as a TREND CONFIRMATION filter: when VTXP > VTXM, the positive vortex is asserting uptrend. Combining T3 pullback touch (cross-based entry) with established Vortex trend (continuous filter) captures pullback-into-confirmed-trend — a complementary angle to the transition-catching approach. The hypothesis: T3's heavy smoothing makes its price-cross events rare but high-conviction, and Vortex trend confirmation ensures we only enter when structural trend agrees.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "t3_vortex_pullback_v1_8to1",
+      "description": "Core thesis: price crosses above/below T3 (pullback completion) while Vortex confirms established trend direction. 8:1 R:R. T3's heavy smoothing makes the cross event a high-conviction pullback signal.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above T3_10_0.7",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close crosses_below T3_10_0.7",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "Tillson T3 — triple-smoothed EMA with volume factor 0.7. Heaviest smoothing in indicator library. Price crossing T3 = deep pullback completed. First system test of T3."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex Indicator Plus — positive directional movement. VTXP > VTXM confirms established uptrend."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex Indicator Minus — negative directional movement. VTXM > VTXP confirms established downtrend."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_vortex_strong_v2_8to1",
+      "description": "Adds Vortex strength gate: VTXP > 1.0 for long / VTXM > 1.0 for short. Vortex values above 1.0 indicate the directional movement exceeds the average true range — a strong trend assertion. Tests whether requiring Vortex STRENGTH (not just direction) improves entry quality on T3 pullbacks.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above T3_10_0.7",
+        "VTXP_14 > VTXM_14",
+        "VTXP_14 > 1.0"
+      ],
+      "entry_short": [
+        "close crosses_below T3_10_0.7",
+        "VTXM_14 > VTXP_14",
+        "VTXM_14 > 1.0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 triple-smoothed MA — pullback entry via price cross."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex Plus with strength gate > 1.0. Directional movement exceeds ATR = strong trend."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex Minus with strength gate > 1.0."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_vortex_wide_v3_10to1",
+      "description": "Wider 10:1 R:R (15x ATR TP). T3's heavy smoothing should identify sustained pullback entries that hold for longer. If T3 cross truly captures deep mean-reversion into trend, the position should survive to wider TP targets. No Vortex strength gate — tests the simplest T3 + Vortex direction combo at extended TP.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above T3_10_0.7",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close crosses_below T3_10_0.7",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 triple-smoothed — pullback entry at wide TP target."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex direction confirmation for trend."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex direction confirmation for trend."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for trend continuation."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["T3_10_0.7", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 — Tillson triple-smoothed EMA. Heaviest smoothing in library. Price crossing T3 captures deep pullback completion.",
+    "confirmation": "VTXP_14/VTXM_14 — Vortex Indicator. Used as trend CONFIRMATION (not transition detection). VTXP > VTXM = established uptrend.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}
