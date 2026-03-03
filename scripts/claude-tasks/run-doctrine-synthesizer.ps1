@@ -40,7 +40,7 @@ Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $log
 
 $proposedDoctrine = "$ROOT\docs\claude-reports\DOCTRINE_PROPOSED.md"
 if (Test-Path $proposedDoctrine) {
-  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+  powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
     -TaskLabel "doctrine cycle" `
     -SourceFile $proposedDoctrine | Out-Null
 }

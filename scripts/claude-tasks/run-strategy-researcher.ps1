@@ -138,11 +138,11 @@ if ($taskExit -eq 0) {
 
 if ($taskExit -eq 0) {
   if (Test-Path $journal) {
-    powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+    powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
       -TaskLabel "journal cycle" `
       -SourceFile $journal | Out-Null
   } elseif (Test-Path $advisory) {
-    powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+    powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
       -TaskLabel "research cycle" `
       -SourceFile $advisory | Out-Null
   }

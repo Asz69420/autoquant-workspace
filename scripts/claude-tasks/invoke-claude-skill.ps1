@@ -30,7 +30,7 @@ if (-not [string]::IsNullOrWhiteSpace($PromptFile)) {
   $args.PromptFile = $PromptFile
 }
 
-$raw = & powershell -NoProfile -ExecutionPolicy Bypass -File $runnerPath @args
+$raw = & powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File $runnerPath @args
 $exitCode = $LASTEXITCODE
 
 $jsonText = ($raw | Out-String).Trim()

@@ -91,11 +91,11 @@ if ($taskExit -ne 0) {
 }
 
 # Auto-promote generated specs into pipeline
-powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\promote-claude-specs.ps1"
+powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\promote-claude-specs.ps1"
 
 $journal = "$ROOT\docs\shared\QUANDALF_JOURNAL.md"
 if (Test-Path $journal) {
-  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+  powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
     -TaskLabel "journal cycle" `
     -SourceFile $journal | Out-Null
 } else {
@@ -104,7 +104,7 @@ if (Test-Path $journal) {
     Where-Object { $_.LastWriteTime -ge (Get-Date).AddHours(-3) }
   )
   $summary = "Generated $($recentSpecs.Count) spec file(s) in this cycle."
-  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+  powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
     -TaskLabel "generator cycle" `
     -Summary $summary | Out-Null
 }

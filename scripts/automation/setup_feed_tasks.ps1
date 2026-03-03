@@ -10,7 +10,7 @@ $ErrorActionPreference = 'Stop'
 $wd = (Get-Location).Path
 
 function Register-LoopTask($taskName, $scriptArgs, [TimeSpan]$interval) {
-  $arg = '-ExecutionPolicy Bypass -Command "cd ''' + $wd + '''; ' + $scriptArgs + '"'
+  $arg = '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "cd ''' + $wd + '''; ' + $scriptArgs + '"'
   $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $arg
   $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1)
   $trigger.RepetitionInterval = $interval
@@ -20,7 +20,7 @@ function Register-LoopTask($taskName, $scriptArgs, [TimeSpan]$interval) {
 }
 
 function Register-DailyTask($taskName, $scriptArgs, [string]$timeAt) {
-  $arg = '-ExecutionPolicy Bypass -Command "cd ''' + $wd + '''; ' + $scriptArgs + '"'
+  $arg = '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "cd ''' + $wd + '''; ' + $scriptArgs + '"'
   $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $arg
   $trigger = New-ScheduledTaskTrigger -Daily -At $timeAt
   $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew
@@ -33,7 +33,7 @@ if ($YouTubeDaily) {
   Register-LoopTask '\AutoQuant-youtube-watch' 'python scripts/pipeline/youtube_watch_worker.py' (New-TimeSpan -Hours $YouTubeHours)
 }
 Register-LoopTask '\AutoQuant-tv-catalog' 'python scripts/pipeline/tv_catalog_worker.py' (New-TimeSpan -Hours $TVHours)
-Register-LoopTask '\AutoQuant-autopilot' 'powershell -ExecutionPolicy Bypass -File scripts/pipeline/autopilot_worker.ps1 -RunYouTubeWatcher -RunTVCatalogWorker -MaxBundlesPerRun 3 -MaxRefinementsPerRun 1' (New-TimeSpan -Minutes $AutopilotMinutes)
+Register-LoopTask '\AutoQuant-autopilot' 'powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File scripts/pipeline/autopilot_worker.ps1 -RunYouTubeWatcher -RunTVCatalogWorker -MaxBundlesPerRun 3 -MaxRefinementsPerRun 1' (New-TimeSpan -Minutes $AutopilotMinutes)
 
 $ytMode = if ($YouTubeDaily) { ('daily@' + $YouTubeDailyAt) } else { ($YouTubeHours.ToString() + 'h') }
 Write-Output ('Tasks ensured: AutoQuant-youtube-watch/' + $ytMode + ', AutoQuant-tv-catalog/' + $TVHours + 'h, AutoQuant-autopilot/' + $AutopilotMinutes + 'm')

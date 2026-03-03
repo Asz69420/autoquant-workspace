@@ -58,11 +58,11 @@ python scripts/log_event.py --run-id "deep-iterator-$timestamp" --agent "claude-
 claude -p "$prompt" --allowedTools "Read,Write,Glob,Grep" 2>&1 | Tee-Object -Append -FilePath $logFile
 
 # Auto-promote any new specs to pipeline
-powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\promote-claude-specs.ps1" 2>&1 | Tee-Object -Append -FilePath $logFile
+powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\promote-claude-specs.ps1" 2>&1 | Tee-Object -Append -FilePath $logFile
 
 $iterLog = "$ROOT\docs\claude-reports\DEEP_ITERATION_LOG.md"
 if (Test-Path $iterLog) {
-  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+  powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
     -TaskLabel "deep iterator cycle" `
     -SourceFile $iterLog | Out-Null
 }

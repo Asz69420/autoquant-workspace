@@ -57,7 +57,7 @@ Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $log
 
 $auditFile = "$ROOT\docs\claude-reports\BACKTEST_AUDIT.md"
 if (Test-Path $auditFile) {
-  powershell -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
+  powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
     -TaskLabel "audit cycle" `
     -SourceFile $auditFile | Out-Null
 }

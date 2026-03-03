@@ -42,7 +42,7 @@ $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -RestartCount 999 -
 Register-ScheduledTask -TaskName 'AutoQuant-tg_reporter' -Action $action -Trigger @($startupTrigger,$repeatTrigger) -Principal $principal -Settings $settings -Force | Out-Null
 
 # Create watchdog task
-$watchAction = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -ExecutionPolicy Bypass -File \"$watchScript\""
+$watchAction = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"$watchScript\""
 $watchTrigger = New-ScheduledTaskTrigger -Once -At (Get-Date).Date
 $watchTrigger.Repetition = (New-ScheduledTaskTrigger -Once -At (Get-Date).Date -RepetitionInterval (New-TimeSpan -Minutes $Minutes) -RepetitionDuration (New-TimeSpan -Days 3650)).Repetition
 $watchSettings = New-ScheduledTaskSettingsSet -StartWhenAvailable -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1)
