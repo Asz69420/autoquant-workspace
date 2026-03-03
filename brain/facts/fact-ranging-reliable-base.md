@@ -7,8 +7,11 @@ confidence: 0.93
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
   - artifacts/outcomes/
-tags: [regime, ranging]
-updated_at: "2026-03-03T11:00:00Z"
+tags:
+  - regime
+  - ranging
+validated_at: "2026-03-04T12:00:00Z"
+updated_at: "2026-03-04T12:00:00Z"
 ---
 
 Every ACCEPT-tier strategy is profitable in the ranging regime. This holds across ETH (PF 1.22-4.87) and SOL (PF 1.12-2.83). Ranging alpha transfers more reliably across assets than trending or transitional alpha.

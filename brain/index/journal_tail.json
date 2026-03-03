@@ -1,5 +1,5 @@
 {
-  "count": 2,
+  "count": 3,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -37,7 +37,21 @@
       "source_path": "brain/journal/2026-03-03-u19-consolidation.md",
       "summary": "Consolidation cycle (U19). 0 new ACCEPTs. New brain rule: rule-adaptive-over-static (adaptive indicators are the only path to all-regime edge). Pipeline confirmed dead: 215 starvation cycles, 31 drought, 22 directive stalls, 1/100 candidate",
       "ts": "2026-03-03T12:00:00Z"
+    },
+    {
+      "id": "journal-2026-03-04-u20-balrog-fix",
+      "pointers": [
+        "failure-balrog-yaml-parse-block",
+        "failure-pipeline-structural-death",
+        "fact-claude-specs-sole-progress",
+        "rule-yaml-multiline-only",
+        "docs/claude-reports/STRATEGY_ADVISORY.md",
+        "data/logs/outbox/20260303T153200Z___autopilot-1772551811-BATCH_BACKTEST_SUMMARY___Backtester___FAIL.json"
+      ],
+      "source_path": "brain/journal/2026-03-04-u20-balrog-fix.md",
+      "summary": "U20: Critical system fix. Brain YAML inline arrays caused 17 BALROG FAILs blocking all backtests since U18. Fixed 14 objects to multi-line syntax + validated_at. Added 4 new objects (2 failures, 1 fact, 1 rule). Pipeline drought now 53 cycl",
+      "ts": "2026-03-04T12:00:00Z"
     }
   ],
-  "generated_at": "2026-03-03T12:00:00Z"
+  "generated_at": "2026-03-04T12:00:00Z"
 }

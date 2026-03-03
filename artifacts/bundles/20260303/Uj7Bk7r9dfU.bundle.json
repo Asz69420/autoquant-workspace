@@ -1,16 +1,19 @@
-{
-  "id": "bundle_Uj7Bk7r9dfU",
-  "created_at": "2026-03-03T13:42:27.901518+00:00",
-  "source": "youtube",
-  "video_id": "Uj7Bk7r9dfU",
-  "source_channel_name": "SoheilPKO",
-  "source_channel_id": "UC7QqMi_dhkGuFaA0TrYJTAw",
-  "content_category": "INDICATOR_CONCEPT",
-  "research_card_path": "artifacts/research/20260303/research-20260303-b42c31416ecd.research_card.json",
-  "indicator_record_paths": [
-    "artifacts/indicators/20260303/indicator-20260303-5f9c0102a935.indicator_record.json",
-    "artifacts/indicators/20260302/indicator-20260302-41083b85ea18.indicator_record.json"
-  ],
-  "linkmap_path": "artifacts/links/20260303/research-20260303-b42c31416ecd.linkmap.json",
-  "status": "NEW"
+﻿{
+    "id":  "bundle_Uj7Bk7r9dfU",
+    "created_at":  "2026-03-03T13:42:27.901518+00:00",
+    "source":  "youtube",
+    "video_id":  "Uj7Bk7r9dfU",
+    "source_channel_name":  "SoheilPKO",
+    "source_channel_id":  "UC7QqMi_dhkGuFaA0TrYJTAw",
+    "content_category":  "INDICATOR_CONCEPT",
+    "research_card_path":  "artifacts/research/20260303/research-20260303-b42c31416ecd.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260303/indicator-20260303-5f9c0102a935.indicator_record.json",
+                                   "artifacts/indicators/20260302/indicator-20260302-41083b85ea18.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260303/research-20260303-b42c31416ecd.linkmap.json",
+    "status":  "DONE",
+    "last_processed_at":  "2026-03-03T16:01:58.7539013Z",
+    "attempts":  1,
+    "last_error":  null
 }

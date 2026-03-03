@@ -28,149 +28,111 @@ Three strategies targeting untested indicators:
 
 ### Next Steps
 - Test all three on ETH 1h and 4h first
-- If Choppiness Donchian works, iterate thresholds
-- If KAMA Vortex works, explore Ichimoku as alternative
 
 ---
 
 ## Entry 002 — v1 Zero Trades Analysis (2026-03-02)
 
-### What Happened
-v1 (chop_donchian_fade_v1) produced 0 trades across all 4 runs (BTC/ETH x 1h/4h).
+### Results
+chop_donchian_fade_v1: **0 trades on ETH 1h** (confirmed on 4,014 bars)
 
 ### Why
-Triple gate was redundant — CHOP > 61.8 + DCL touch + RSI < 35 all at once is too restrictive.
-DCL touch already implies low RSI in most cases.
-Three conditions that rarely align simultaneously = no signals.
+Triple gate (CHOP > 61.8 AND DCL touch AND RSI < 35) is too restrictive. Each condition individually has reasonable frequency, but combining all three means they almost never align at the same bar. The Donchian touch especially — it's a discrete event at specific prices, not a zone.
 
 ### Lesson
-Start with 2 conditions, add confirmation filters later once base signal generates enough trades to evaluate.
-
-### What I Changed for v2
-- Dropped RSI entirely (redundant with DCL/DCU)
-- Lowered CHOP gate from 61.8 to 50 (more bars qualify as ranging)
-- Widened TP from 3 ATR to 12 ATR (matching proven 5:1+ ACCEPT profile)
-- 2 conditions only — should fire significantly more trades
-
-### Thesis
-Unchanged: mean reversion in ranging markets via channel edge fades.
-v2 tests whether the base signal generates enough trades before adding confirmation filters.
+Start with 2 conditions, add filters only if overtrading. A strategy with 0 trades teaches nothing about market dynamics.
 
 ---
 
 ## Entry 003 — Donchian Fade Post-Mortem & Pivot to Oscillators (2026-03-02)
 
-### What Happened
-v2 (chop_donchian_fade_v2) produced 2 trades across 4 runs. Both losers. PF = 0.000.
-- BTC 4h: 1 short (loss, gated INSUFFICIENT_TRADES)
-- ETH 1h: 1 short (loss)
-- BTC 1h: 0 trades
-- ETH 4h: 0 trades
+### Results
+chop_donchian_fade_v2 (relaxed RSI gate removed): 2 trades, both losers. PF=0.000.
 
-### Root Cause Analysis
-The problem is NOT the CHOP threshold or the Donchian period. The problem is the **signal type**.
+### Post-Mortem
+Discrete/level-based signals (DCL touch) are too rare for reliable backtesting. Found a signal frequency taxonomy:
+1. **Continuous/zone-based:** RSI > 50, close > EMA_200 → fires every bar in a zone (too frequent alone)
+2. **Cross-based:** EMA_9 crosses EMA_21, VTXP crosses VTXM → moderate frequency, good for signals
+3. **Discrete/level-based:** price touches DCL_20, close == BBU → very rare, poor as primary signals
 
-Donchian channel touches (`close <= DCL_20_20`) require price to be at the exact N-bar low. This is a **discrete, rare event** — even in ranging markets, price oscillates *within* the channel, rarely touching the edge exactly. Loosening from 3 conditions to 2, or from CHOP > 61.8 to CHOP > 50, doesn't fix this because the DCL/DCU touch itself is the bottleneck.
+### Key Finding
+ALL 23 prior ACCEPTs use continuous or cross-based signals. NONE use discrete/level-based.
 
-Compare to our 23 ACCEPTs: they ALL use **continuous oscillators** (RSI in a range, MACD histogram direction, Supertrend state). These generate signals whenever an indicator is in a zone, not when price hits an exact level.
-
-### Key Lesson
-**Signal frequency taxonomy matters.** Before designing a strategy, classify the signal type:
-- **Continuous/zone-based:** RSI < 30, CCI > 100, MACD histogram positive → fires on many bars → enough trades
-- **Cross-based:** EMA_9 crosses_above EMA_21 → fires on transition bars → moderate trades
-- **Discrete/level-based:** close <= DCL, close touches BBL → fires on rare exact hits → too few trades
-
-All our ACCEPTs use continuous or cross-based signals. Level-based signals need a different approach (proximity zones like "close < DCL * 1.01" instead of exact touches).
-
-### What I'm Trying Next
-Pivoting to two continuous oscillator strategies that should generate 20-100+ trades:
-1. **CCI Chop Fade v1** — CCI beyond ±100 under CHOP ranging gate. CCI crosses ±100 frequently.
-2. **Williams %R Stiffness Fade v1** — Williams %R at extremes with low STIFFNESS. First-ever test of STIFFNESS indicator.
-
-Both keep the core thesis (mean reversion in ranges) but use signals that fire when an indicator is IN A ZONE, not when price touches a level.
-
-### Hypotheses Being Tested
-- H1: Continuous oscillators solve the trade-count problem under CHOP gating
-- H2: CCI ±100 is a viable mean-reversion signal (never tested)
-- H3: STIFFNESS < 50 works as a ranging filter (alternative to CHOP)
-- H4: Williams %R extremes predict mean reversion (never tested in our system)
-- H5: 12:1 R:R works with faster oscillator signals
-
-### Expected Outcome
-If trade count > 20 but PF < 1.0: the oscillator fires too indiscriminately → need tighter regime gating.
-If trade count > 20 and PF > 1.0: we have a new signal family to iterate on.
-If trade count still < 10: something deeper is wrong with the CHOP/STIFFNESS regime gate itself.
+### Pivot
+Abandoning Donchian fade entirely. Pivoting to:
+1. **CCI Chop Fade** — CCI oscillator with CHOP range confirmation (both continuous/zone)
+2. **Williams %R Stiffness Fade** — WILLR with STIFFNESS range filter (both continuous/zone)
 
 ---
 
 ## Entry 004 — CCI Confirmed, STIFFNESS Dead (2026-03-03)
 
 ### Results
-- CCI Chop Fade: 421 trades. ETH 4h winner — PF 1.255, 29% return, 16.4% DD, win rate 37%.
-- Regime: ranging PF 1.43, transitional PF 1.52, trending PF 1.13. ALL regimes profitable on 4h.
-- Lower TFs lose: 15m PF 0.62, 1h PF 0.81. Signal too noisy below 4h.
-- Williams Stiffness: 0 trades all TFs. STIFFNESS dead as regime filter.
+CCI Chop Fade: 421 trades total.
+- **ETH 4h: PF 1.255, 29% return, 16.4% DD, 37% win rate** — PROFITABLE ALL REGIMES
+  - Ranging PF 1.43, Transitional PF 1.52, Trending PF 1.13
+- ETH 1h: PF 0.816, -31% return — signal too noisy below 4h
+- ETH 15m: PF 0.618 — dead
+- BTC 4h: PF 0.955 — BTC loses again (ranging PF 1.12 only profitable slice)
 
-### Hypotheses Resolved
-- H1 CONFIRMED: Continuous oscillators solve trade count under CHOP gating (421 vs 0 for Donchian).
-- H2 PARTIAL: CCI works on 4h only. Lower TFs = noise.
-- H3 REJECTED: STIFFNESS produced nothing. Dead indicator.
-- H4 REJECTED: WILLR + STIFFNESS = no entries.
-- H5 INCONCLUSIVE: 12:1 R:R yields PF 1.255. Close but not ACCEPT-tier.
+Williams Stiffness Fade: **0 TRADES** on ETH 4h (and all combos). STIFFNESS indicator never transitions below 50 simultaneously with WILLR at extremes.
 
-### Key Insight
-CCI Chop Fade ETH 4h is our first all-regime-profitable oscillator besides Supertrend. PF 1.255 is close to ACCEPT. The 12:1 R:R may be too wide — tightening to 8:1 could boost win rate and PF past 1.3. Adding ADX < 25 as trend filter may cut trending losers without killing ranging alpha.
+### Key Insights
+1. **CCI works as mean-reversion on 4h.** Not spectacular (PF 1.255) but ALL regimes profitable.
+2. **STIFFNESS is dead.** The indicator design doesn't match our signals. Permanently blacklisted.
+3. **4h confirms as THE timeframe.** CCI 15m→1h→4h: PF 0.618→0.816→1.255. Signal clarity improves monotonically.
 
-### Next Action
-Iterate CCI: 8:1 R:R + ADX confirmation. Drop STIFFNESS permanently.
+### Next
+Iterate CCI with 8:1 R:R and ADX confirmation filter.
 
 ---
 
 ## Entry 005 — CCI Iteration Dead End, Pivot to QQE (2026-03-03)
 
 ### Results
-- cci_chop_fade_v2 (intended 8:1 R:R): PF 1.255 — identical to v1. TP was still 12.0 (order error). No actual change tested.
-- cci_adx_chop_fade_v1 (ADX < 25 filter): PF 1.053, -75 trades. ADX killed ranging alpha (ranging PF dropped 1.43 → 0.84). Trending PF = 0.000 (no trades at all).
+- cci_chop_fade_v2: PF 1.255 (identical to v1 — TP was still 12:1 despite orders saying 8:1. Execution error.)
+- cci_adx_chop_fade_v1: PF 1.053, -75 trades. ADX filter was destructive.
 
-### Lessons
-- **ADX filter is destructive for mean-reversion strategies.** It removes ranging trades along with trending ones because ADX < 25 doesn't distinguish "ranging" from "quiet/no-signal." CHOP alone is a better regime gate.
-- CCI Chop Fade is plateaued at PF 1.255. Two iterations, zero improvement. Diminishing returns — pivot to new signal family.
-- **Dead indicator list:** STIFFNESS, ADX-as-filter-for-oscillators.
+### Why ADX Failed
+ADX > 20 as an entry filter eliminates the BEST mean-reversion trades (which occur when ADX is LOW = range-bound). CCI Chop Fade's ranging PF dropped from 1.43 to 0.84 with ADX filter.
 
-### New Thesis: QQE Momentum Exhaustion
-QQE_14_5_4.236 is a smoothed RSI with dynamic bands. Never tested. Hypothesis: QQE extremes signal momentum exhaustion more reliably than raw CCI because QQE has built-in smoothing that filters noise (explaining why CCI failed on 1h/15m).
+### Lesson
+**ADX-as-filter kills mean-reversion edge.** ADX measures trend STRENGTH. Adding a strength filter to a mean-reversion strategy removes exactly the conditions where the strategy profits. This is obvious in hindsight.
 
-Test: QQE crossing back from extremes under CHOP ranging gate = mean-reversion entry on ETH 4h.
+### Dead Indicator List (updated)
+- STIFFNESS: 0 trades, dead signal
+- ADX-as-filter: actively destructive for mean-reversion
+- Donchian touches: too rare, discrete events
 
-### What I Expect
-- QQE smoothing → cleaner signals than CCI on lower TFs too
-- If PF > 1.3 on 4h: iterate with tighter R:R
-- If 4h works but 1h doesn't: confirms 4h is the only viable mean-reversion TF
+### Pivot to QQE
+QQE (Quantitative Qualitative Estimation) is a smoothed RSI with dynamic bands. Hypothesis: QQE's smoothing might work better on lower timeframes than raw CCI.
 
 ---
 
 ## Entry 006 — QQE Dead, STC Transitional Signal Only (2026-03-03)
 
 ### Results
-- QQE Chop Fade: 33 trades both TFs. ETH 4h PF 0.116 (catastrophic). ETH 1h PF 0.993 (breakeven). QQE extremes too rare under CHOP gate — low trade count + no edge.
-- STC Cycle Fade: 475 trades. ETH 4h PF 1.012, DD 33.8%. ETH 1h PF 0.809.
-- STC regime breakdown: transitional PF 1.28 (4h) and 1.246 (1h) — ONLY profitable regime. Ranging barely breakeven, trending loses.
+QQE Chop Fade: 33 trades, ETH 4h PF 0.116 (catastrophic), 1h PF 0.993.
+STC Cycle Fade: 475 trades, ETH 4h PF 1.012, DD 33.8%.
+- STC regime breakdown: transitional PF 1.28 (4h) and 1.246 (1h). ONLY profitable regime.
+  - Ranging: breakeven (1.00-1.02)
+  - Trending: loses (-0.71 to -0.94)
 
-### Hypotheses Resolved
-- QQE as mean-reversion oscillator: **REJECTED.** 33 trades = QQE rarely hits 30/70 under ranging conditions. Smoothing that was supposed to help actually kills signal frequency.
-- STC as mean-reversion oscillator: **PARTIAL.** Generates trades (215 on 4h) but no edge in ranging (PF 1.038). Only works in transitions.
-- 4h superiority: **CONFIRMED again.** Every oscillator tested loses on 1h.
+### Key Insights
+1. **QQE is dead for mean-reversion.** The smoothed RSI+bands fires almost exclusively during TRENDING regime, which is exactly wrong for a fade strategy.
+2. **STC shows a transition signal** — its only alpha is in transitional regime. But DD=33.8% and PF=1.012 overall make it impractical.
+3. **Transitional regime is the untapped alpha.** STC transitional PF=1.28, CCI transitional PF=1.52. Both strategies find their best edge in regime transitions.
 
-### Key Insight
-**Transitional regime is the untapped alpha.** STC PF 1.28 in transitional, CCI PF 1.52 in transitional (Entry 004). Our ACCEPTs dominate ranging — but transitional is where the NEXT edge lives. Problem: we have no regime-isolation gate. CHOP > 50 gates for ranging, but what gates for transitional?
+### Dead Indicator List (updated)
+STIFFNESS, ADX-as-filter, QQE (for mean-reversion), Donchian touches
 
-Transitional = market shifting between states. Vortex crossover (VTXP crossing VTXM) detects exactly this. CHOP falling from high to low = leaving range = entering transition.
+### Pivot: Transition Detection
+If transitional is where alpha lives, I should build a strategy that TARGETS transitions. Which indicators detect regime transitions?
+- **Vortex** (VTXP/VTXM crossover) — directional movement crossover
+- **CHOP going below 50** — end of range-bound period
+- **ADX rising from low** — trend beginning
 
-### Dead Indicator List (cumulative)
-STIFFNESS, ADX-as-filter, QQE (as mean-reversion signal), Donchian touches
-
-### Next Action
-Abandon oscillator mean-reversion thesis — 4 oscillators tested (CCI, WILLR, QQE, STC), best was CCI at PF 1.255. Pivot to transition-detection: Vortex crossover + falling CHOP.
+New hypothesis: Vortex crossover + falling CHOP = transition entry.
 
 ---
 
@@ -352,5 +314,45 @@ Same as Entry 009 — the 3 pending orders remain unexecuted:
 - Decide pipeline fate: kill it, rebuild it, or accept it's dead
 - Define forward-test graduation criteria before the first trade fires
 - Fix TV catalog extraction — it's a research pipeline that produces empty cards
+
+---
+
+## Entry 011 — BALROG Unblocked: The YAML Bug That Ate 53 Cycles (2026-03-04)
+
+### What Happened
+Zero new ACCEPTs, but I found and fixed the root cause of a critical system failure. The BALROG pre-backtest gate had been blocking every single backtest since I initialized the brain knowledge base in U18. Drought counter surged from 31 to 53. Directive stalls from 22 to 44.
+
+### Root Cause
+The brain's `validate_brain.py` uses a simple YAML parser that can't handle inline array syntax. When I wrote `tags: [asset, timeframe, eth, 4h]`, the parser tried `json.loads("[asset, timeframe, eth, 4h]")` which fails because JSON needs quoted strings. It silently fell back to returning the raw string, which the schema then rejected as "expected array."
+
+17 FAILs across 14 brain objects. Every backtest blocked. 36+ failed attempts across 6+ autopilot cycles.
+
+### The Fix
+Converted all inline arrays to multi-line YAML syntax (`- item` per line) and added `validated_at` timestamps. Created a new brain rule (`rule-yaml-multiline-only`) to prevent recurrence.
+
+### What Changed In My Thinking
+1. **System bugs > strategy research.** The best strategy spec is worthless if the pipeline can't run it. I had 3 Claude specs (Ichimoku, ALMA, T3) sitting unexecuted because a serialization format bug prevented any backtests. Infrastructure quality directly bounds research velocity.
+
+2. **The pipeline is structurally dead, not just stalled.** 53 drought cycles. 44 directive stalls. 0 backtests this cycle. Even after the BALROG fix, the pipeline's spec-generation and refinement loops have 0% improvement rate. The question isn't "how do we fix the pipeline" — it's "should we maintain it at all?"
+
+3. **New brain objects encode system failures, not just market knowledge.** Added `failure-balrog-yaml-parse-block` and `failure-pipeline-structural-death` as first-class brain objects. The brain should track system risks alongside market insights.
+
+### New Brain Objects Added (4)
+- `failure-balrog-yaml-parse-block` — YAML parsing bug documentation
+- `failure-pipeline-structural-death` — Pipeline 53-drought structural failure
+- `fact-claude-specs-sole-progress` — Claude 22.2% ACCEPT rate vs pipeline ~0%
+- `rule-yaml-multiline-only` — Multi-line YAML arrays mandatory
+
+### What's Pending Execution
+Three Claude specs ready for backtest (if BALROG now passes):
+1. **ALMA MACDh Momentum Flip** — First ALMA_9_6.0_0.85 test. Gaussian MA + MACDh zero-cross timing.
+2. **Ichimoku TK Cloud CCI Gate** — First Ichimoku (ITS_9/IKS_26/ISA_9/ISB_26) test. Tests whether transition-detection is a general mechanism or Vortex-specific.
+3. **T3 Vortex Pullback Confluence** — First T3_10_0.7 test. Triple-smoothed deep pullback + Vortex direction confirm.
+
+### Suggestions For Asz
+- Run `python scripts/quandalf/validate_brain.py` — verify 0 FAILs before next autopilot cycle
+- Add YAML formatting rule to brain contract doc
+- Consider killing the automated pipeline — 53 drought cycles, 0 useful output
+- The dual-MACD system from the Red K Pressure Index video (SoheilPKO) deserves a spec: fast MACD 34/144/9 + slow MACD 100/200/50 — requires new indicator columns
 
 ---

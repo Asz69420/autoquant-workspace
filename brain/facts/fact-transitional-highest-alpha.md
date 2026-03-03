@@ -6,8 +6,12 @@ status: active
 confidence: 0.88
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
-tags: [regime, transitional, alpha]
-updated_at: "2026-03-03T11:00:00Z"
+tags:
+  - regime
+  - transitional
+  - alpha
+validated_at: "2026-03-04T12:00:00Z"
+updated_at: "2026-03-04T12:00:00Z"
 ---
 
 The transitional regime (between trending and ranging) consistently produces the highest single-regime PF across strategies. Vortex strategies specialise here due to transition-detection mechanics.

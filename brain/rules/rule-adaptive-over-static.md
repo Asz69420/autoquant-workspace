@@ -7,10 +7,17 @@ confidence: 0.91
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
   - artifacts/outcomes/
-tags: [indicator-selection, adaptive, all-regime, design-principle]
-supporting_ids: [fact-kama-adaptive-edge, fact-vortex-transition-edge, fact-ranging-reliable-base]
-contradictory_ids: []
-updated_at: "2026-03-03T12:00:00Z"
+tags:
+  - indicator-selection
+  - adaptive
+  - all-regime
+  - design-principle
+supporting_ids:
+  - fact-kama-adaptive-edge
+  - fact-vortex-transition-edge
+  - fact-ranging-reliable-base
+validated_at: "2026-03-04T12:00:00Z"
+updated_at: "2026-03-04T12:00:00Z"
 ---
 
 Adaptive indicators (self-adjusting parameters or transition-detecting mechanics) are the only indicator families that produce all-regime ACCEPT-tier strategies. Static indicators max out at PF=1.712 (MACD) and require regime gates to avoid trending losses.

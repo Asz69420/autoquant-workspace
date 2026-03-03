@@ -6,9 +6,15 @@ status: active
 confidence: 0.93
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
-tags: [timeframe, 1h, degradation]
-supporting_ids: [fact-eth-4h-dominance, rule-4h-only]
-updated_at: "2026-03-03T11:00:00Z"
+tags:
+  - timeframe
+  - 1h
+  - degradation
+supporting_ids:
+  - fact-eth-4h-dominance
+  - rule-4h-only
+validated_at: "2026-03-04T12:00:00Z"
+updated_at: "2026-03-04T12:00:00Z"
 ---
 
 Every strategy tested on both 1h and 4h is worse on 1h:

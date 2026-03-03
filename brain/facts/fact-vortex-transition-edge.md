@@ -7,8 +7,14 @@ confidence: 0.92
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
   - artifacts/outcomes/
-tags: [vortex, regime, transition, eth, 4h]
-updated_at: "2026-03-03T11:00:00Z"
+tags:
+  - vortex
+  - regime
+  - transition
+  - eth
+  - 4h
+validated_at: "2026-03-04T12:00:00Z"
+updated_at: "2026-03-04T12:00:00Z"
 ---
 
 Vortex crossover (VTXP/VTXM) detects regime transitions, not regime states. This is why it works across all regimes on ETH — transitions happen at the boundaries of every regime. 6 variants tested on ETH 4h, 5 are all-regime profitable.

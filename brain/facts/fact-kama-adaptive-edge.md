@@ -7,8 +7,13 @@ confidence: 0.75
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
   - artifacts/outcomes/
-tags: [kama, adaptive, all-regime, eth]
-updated_at: "2026-03-03T11:00:00Z"
+tags:
+  - kama
+  - adaptive
+  - all-regime
+  - eth
+validated_at: "2026-03-04T12:00:00Z"
+updated_at: "2026-03-04T12:00:00Z"
 ---
 
 KAMA_10_2_30 (Kaufman Adaptive Moving Average) self-adjusts smoothing speed — fast in directional moves, slow in noisy ranges. KAMA Stoch Pullback v1 achieved PF=1.857, DD=10.1%, all-regime profitable (trending 1.25, ranging 4.87, transitional 1.36).
