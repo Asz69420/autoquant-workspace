@@ -109,12 +109,13 @@ function Get-LiveReviewInfo {
     $errors = [int]($s.errors_count)
 
     $qGenerated = 0
-    $qBacklog = 0
+    $qQueued = 0
     try { if ($null -ne $s.quandalf_queue_generated) { $qGenerated = [int]$s.quandalf_queue_generated } } catch {}
     try {
-      if ($null -ne $s.queue_backlog) { $qBacklog = [int]$s.queue_backlog }
-      elseif ($null -ne $s.frodex_queue_backlog) { $qBacklog = [int]$s.frodex_queue_backlog }
-      elseif ($null -ne $s.quandalf_queue_ready) { $qBacklog = [int]$s.quandalf_queue_ready }
+      if ($null -ne $s.queued_for_testing) { $qQueued = [int]$s.queued_for_testing }
+      elseif ($null -ne $s.queue_backlog) { $qQueued = [int]$s.queue_backlog }
+      elseif ($null -ne $s.frodex_queue_backlog) { $qQueued = [int]$s.frodex_queue_backlog }
+      elseif ($null -ne $s.quandalf_queue_ready) { $qQueued = [int]$s.quandalf_queue_ready }
     } catch {}
 
     return [PSCustomObject]@{
@@ -122,7 +123,7 @@ function Get-LiveReviewInfo {
       advanced = $passing
       aborted = $errors
       q_generated = $qGenerated
-      q_backlog = $qBacklog
+      q_queued = $qQueued
       is_live = $true
     }
   } catch {
@@ -165,7 +166,7 @@ function Send-QuandalfCard {
   $lines += $activityDivider
   $queuedValue = 0
   try {
-    if ($null -ne $resultsInfo.q_backlog) { $queuedValue = [int]$resultsInfo.q_backlog }
+    if ($null -ne $resultsInfo.q_queued) { $queuedValue = [int]$resultsInfo.q_queued }
     else { $queuedValue = [int]$orderInfo.queued }
   } catch { $queuedValue = [int]$orderInfo.queued }
 
@@ -287,24 +288,24 @@ try {
     $summary = [string]$entry.summary
     $liveNow = Get-LiveReviewInfo
     $qGenNow = 0
-    $qBacklogNow = 0
+    $qQueuedNow = 0
     if ($null -ne $liveNow) {
       try { $qGenNow = [int]$liveNow.q_generated } catch {}
-      try { $qBacklogNow = [int]$liveNow.q_backlog } catch {}
+      try { $qQueuedNow = [int]$liveNow.q_queued } catch {}
     }
 
     if ($statusWord -ne 'ok') {
       $noteSentence = 'Cycle hit an execution issue; remediation is required before throughput can normalize.'
-    } elseif ($qGenNow -eq 0 -and $qBacklogNow -eq 0) {
-      $noteSentence = 'No new strategies were generated and queue is empty — intake is currently stalled.'
-    } elseif ($qGenNow -eq 0 -and $qBacklogNow -gt 0) {
-      $noteSentence = ('No new generation this cycle; queued backlog remains ' + [int]$qBacklogNow + ' for Frodex to process.')
+    } elseif ($qGenNow -eq 0 -and $qQueuedNow -eq 0) {
+      $noteSentence = 'No novel strategies generated or queued this cycle — generation contract breached.'
+    } elseif ($qGenNow -eq 0 -and $qQueuedNow -gt 0) {
+      $noteSentence = ('No new generation this cycle; ' + [int]$qQueuedNow + ' strategies remain queued for testing.')
     } else {
-      $noteSentence = ('Generated ' + [int]$qGenNow + ' new strategies; queued backlog is now ' + [int]$qBacklogNow + '.')
+      $noteSentence = ('Generated ' + [int]$qGenNow + ' novel strategies and queued ' + [int]$qQueuedNow + ' for testing.')
     }
 
-    if (($summary -match '(?i)no pending order') -and $qGenNow -eq 0 -and $qBacklogNow -eq 0) {
-      $noteSentence = 'No pending strategy order and no new queue activity this cycle.'
+    if (($summary -match '(?i)no pending order') -and $qGenNow -eq 0 -and $qQueuedNow -eq 0) {
+      $noteSentence = 'No pending strategy order and no generation/queue activity this cycle.'
     }
   } else {
     $durLabel = Format-DurationLabelFromMs -DurationMs ([Nullable[Int64]]((New-TimeSpan -Start $triggerStarted -End (Get-Date)).TotalMilliseconds))

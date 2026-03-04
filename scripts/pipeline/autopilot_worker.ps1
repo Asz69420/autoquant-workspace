@@ -1471,15 +1471,17 @@ if (Test-Path -LiteralPath $queueStatePath) {
   } catch {}
 }
 $quandalfQueueGenerated = [Math]::Max(0, ([int]$queueBacklog - [int]$prevQueueBacklog + [int]$candidatesIngested))
+$queuedForTesting = [int]$quandalfQueueGenerated
 $summary.quandalf_queue_generated = [int]$quandalfQueueGenerated
+$summary.queued_for_testing = [int]$queuedForTesting
 $summary.queue_backlog = [int]$queueBacklog
 
-$strategyShortfall = [Math]::Max(0, [int]$MinStrategiesPerRun - [int]$candidatesIngested)
+$strategyShortfall = [Math]::Max(0, [int]$MinStrategiesPerRun - [int]$quandalfQueueGenerated)
 if ($strategyShortfall -gt 0) {
   $summary.strategy_contract_ok = $false
   $summary.strategy_contract_shortfall = [int]$strategyShortfall
   if (-not $DryRun) {
-    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: ingested=" + [int]$candidatesIngested + " min=" + [int]$MinStrategiesPerRun + " max=" + [int]$MaxStrategiesPerRun + " shortfall=" + [int]$strategyShortfall) 'FAIL' 'Autopilot'
+    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: generated=" + [int]$quandalfQueueGenerated + " queued_for_testing=" + [int]$queuedForTesting + " min=" + [int]$MinStrategiesPerRun + " max=" + [int]$MaxStrategiesPerRun + " shortfall=" + [int]$strategyShortfall) 'FAIL' 'Autopilot'
     $errorsCount += 1
     try {
       $rcKick = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
@@ -1494,10 +1496,19 @@ if ($strategyShortfall -gt 0) {
       Emit-Summary 'STRATEGY_KICKSTART_TRIGGERED' 'Kickstart seed generation failed' 'FAIL' 'Autopilot'
     }
   }
-} elseif ([int]$candidatesIngested -gt [int]$MaxStrategiesPerRun) {
+} elseif ([int]$quandalfQueueGenerated -gt [int]$MaxStrategiesPerRun) {
   $summary.strategy_contract_ok = $false
   if (-not $DryRun) {
-    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: ingested=" + [int]$candidatesIngested + " exceeds max=" + [int]$MaxStrategiesPerRun) 'WARN' 'Autopilot'
+    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: generated=" + [int]$quandalfQueueGenerated + " exceeds max=" + [int]$MaxStrategiesPerRun) 'FAIL' 'Autopilot'
+    $errorsCount += 1
+  }
+}
+
+if ([int]$queuedForTesting -lt [int]$quandalfQueueGenerated) {
+  $summary.strategy_contract_ok = $false
+  if (-not $DryRun) {
+    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: queued_for_testing=" + [int]$queuedForTesting + " < generated=" + [int]$quandalfQueueGenerated) 'FAIL' 'Autopilot'
+    $errorsCount += 1
   }
 }
 
@@ -1507,6 +1518,7 @@ $summary.errors_count = $errorsCount
 $queueStateObj = [ordered]@{
   updated_at = [DateTime]::UtcNow.ToString('o')
   quandalf_queue_generated = [int]$quandalfQueueGenerated
+  queued_for_testing = [int]$queuedForTesting
   queue_backlog = [int]$queueBacklog
 }
 ($queueStateObj | ConvertTo-Json -Depth 4) | Set-Content -Path (Join-Path $stateDir 'queue_telemetry_state.json') -Encoding utf8
@@ -1575,7 +1587,7 @@ if (-not $DryRun) {
   }
 
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " q_gen=" + [int]$quandalfQueueGenerated + " backlog=" + [int]$queueBacklog + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " generated=" + [int]$quandalfQueueGenerated + " queued_for_testing=" + [int]$queuedForTesting + " backlog=" + [int]$queueBacklog + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 if (-not $DryRun -and $strategyShortfall -gt 0) {
