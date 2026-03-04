@@ -170,15 +170,15 @@ When reviewing or delegating script work:
 - No ??= null-coalescing assignment → standard if/else
 
 ## Live Pipeline Snapshot (auto-updated)
-Generated: 2026-03-03 17:00 UTC
+Generated: 2026-03-04 17:00 UTC
 
 - Recent events window: last 50 ActionEvents
 - Grabber fetched: 0
 - Backtests executed: 0
 - Promoted variants: 0
-- Directive variants: 2
+- Directive variants: 0
 - Stall cycles: 0
-- Starvation cycles: 193
+- Starvation cycles: 0
 - Error events: 1
 
 Artifact state:
@@ -188,15 +188,15 @@ Artifact state:
 - claude-specs (staging): 0
 
 ## Known Issues (auto-updated)
-- Pipeline starvation warning active (193 cycles).
 - Recent error signal detected (1 event(s)).
+- No directive variants/backtests observed in the recent window.
 
 ## Roadmap Progress (auto-updated)
 - Model policy Phase 1 (policy + resolver + drift guard): ✅ active
 - Model policy Phase 2 (script wiring references): 2 script(s) currently reference the resolver
 - Oragorn context auto-sync: ✅ enabled (daily target 03:00)
 - Doctrine source size: 40 lines
-- Strategy advisory source size: 229 lines
+- Strategy advisory source size: 164 lines
 
 ## Roadmap
 - Phase 2: Wire model_reasoning_policy.json resolver into all scripts
