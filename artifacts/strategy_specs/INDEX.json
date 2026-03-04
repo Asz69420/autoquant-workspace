@@ -1,31 +1,17 @@
 ﻿[
-    "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-e5d8f4a9.strategy_spec.json",
-    "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-c9b0e2f7.strategy_spec.json",
-    "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-a7f3b1c2.strategy_spec.json",
+    "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-f3a8d5b1.strategy_spec.json",
+    "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-d4e1f8a3.strategy_spec.json",
+    "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-b7c2a9e6.strategy_spec.json",
     {
         "value":  [
-                      "artifacts/strategy_specs/20260305/strategy-spec-20260305-12c5d8d913ad-5615f3b8.strategy_spec.json",
-                      "artifacts/strategy_specs/20260305/strategy-spec-20260305-12c5d8d913ad.strategy_spec.json",
-                      "artifacts/strategy_specs/20260305/strategy-spec-20260305-13a80050d94c.strategy_spec.json",
-                      "artifacts/strategy_specs/20260305/strategy-spec-20260305-5df8f61c0c71.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-b88-cea057db-34a9b6ca.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-6ee-565b20ac-8a53bf5d.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-875-b95291c9-2ac8017d.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-3fb992b3a875-b95291c9.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee-565b20ac.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-6ee-34882b88-cea057db.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee-34882b88.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-3fb992b3a875.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-500d092f4a10.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-stmacd01.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-kmrsi01a.strategy_spec.json",
-                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-e2macd01.strategy_spec.json",
+                      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-e5d8f4a9.strategy_spec.json",
+                      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-c9b0e2f7.strategy_spec.json",
+                      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-a7f3b1c2.strategy_spec.json",
                       {
-                          "value":  "artifacts/strategy_specs/20260304/strategy-spec-20260304-566-62259506-7826de32.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-6f1-4900d3bf-9fac5f14.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-a09-8147ca85-154f6ee8.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-535-1fde8a09-8147ca85.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-00e-8959a6f1-4900d3bf.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-c1d-aa432566-62259506.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-9f0-c8439c1d-aa432566.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-27d-53d1800e-8959a6f1.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-ba6-f390b535-1fde8a09.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-2d0-30035ba6-f390b535.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-c34-36d1327d-53d1800e.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-10b-558459f0-c8439c1d.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-9c3-aa38310b-558459f0.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-14c5a03a3c34-36d1327d.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-c34-79b912d0-30035ba6.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-14c5a03a3c34-79b912d0.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-14c5a03a3c34.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-f5bcc194e9c3-aa38310b.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-5063f4f1f99b-ae969653.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-99b-2a452aae-a335ee77.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-5063f4f1f99b-2a452aae.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-5063f4f1f99b.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-f5bcc194e9c3.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-dcbc1d66558b.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-192cb8bdfdc1-45dd16d5.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-192cb8bdfdc1.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-4a5792708e9a.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-05245639f3b7.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-56d21e2beaaa.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-kmmacd01.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ikcld01a.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-dcchbk01.strategy_spec.json ",
-                          "Count":  33
+                          "value":  "artifacts/strategy_specs/20260305/strategy-spec-20260305-12c5d8d913ad-5615f3b8.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-12c5d8d913ad.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-13a80050d94c.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-5df8f61c0c71.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-b88-cea057db-34a9b6ca.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-6ee-565b20ac-8a53bf5d.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-875-b95291c9-2ac8017d.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-3fb992b3a875-b95291c9.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee-565b20ac.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-6ee-34882b88-cea057db.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee-34882b88.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-3fb992b3a875.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-500d092f4a10.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-stmacd01.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-kmrsi01a.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-e2macd01.strategy_spec.json ",
+                          "Count":  18
                       }
                   ],
-        "Count":  18
+        "Count":  4
     }
 ]

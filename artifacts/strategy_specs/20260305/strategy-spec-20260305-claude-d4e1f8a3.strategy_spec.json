@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-d4e1f8a3",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T17:30:00Z",
+  "edge_hypothesis": "Supertrend CCI v3 Wide on ETH 1h was a near-miss (PF=1.480, DD=36.43%, 63 trades, all-regime). The high DD is characteristic of 1h noise. Porting to 4h should reduce whipsaw-driven drawdown while preserving the CCI extreme-reversal + Supertrend trend-confirmation signal. CCI crossing -100/+100 detects exhaustion reversals; Supertrend direction confirms the reversal has structural support. This is the highest-priority near-miss port identified in U23.",
+  "variants": [
+    {
+      "name": "supertrend_cci_v4_4h_8to1",
+      "description": "Core 4h port of the 1h near-miss. CCI crosses extreme threshold while Supertrend confirms direction. 8:1 R:R at the proven sweet spot with 1.5 ATR stop.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above -100",
+        "SUPERTd_7_3.0 == 1"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below 100",
+        "SUPERTd_7_3.0 == -1"
+      ],
+      "filters": [
+        "no repaint", "bot-friendly", "chart timeframe only", "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": ["Exit on opposite signal.", "Exit on max bars."],
+      "risk_rules": ["Risk note: ATR-based stop and TP.", "Risk note: 1% risk per trade."],
+      "parameters": [{"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd direction confirms structural trend support for the reversal"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI crossing -100/+100 detects exhaustion at extremes"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "supertrend_cci_v4_4h_10to1",
+      "description": "Higher R:R variant to test whether CCI reversals on 4h carry longer. 10:1 with same 1.5 ATR stop.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above -100",
+        "SUPERTd_7_3.0 == 1"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below 100",
+        "SUPERTd_7_3.0 == -1"
+      ],
+      "filters": [
+        "no repaint", "bot-friendly", "chart timeframe only", "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": ["Exit on opposite signal.", "Exit on max bars."],
+      "risk_rules": ["Risk note: ATR-based stop and TP.", "Risk note: 1% risk per trade."],
+      "parameters": [{"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd direction confirms structural trend support"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI crossing -100/+100 detects exhaustion reversal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "supertrend_cci_v4_4h_tight_stop",
+      "description": "Tight stop variant (1.0 ATR) to test whether tighter risk control reduces DD below 20% on 4h. Lower R:R (8:1 effective) compensated by better DD profile.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above -100",
+        "SUPERTd_7_3.0 == 1"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below 100",
+        "SUPERTd_7_3.0 == -1"
+      ],
+      "filters": [
+        "no repaint", "bot-friendly", "chart timeframe only", "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": ["Exit on opposite signal.", "Exit on max bars."],
+      "risk_rules": ["Risk note: ATR-based stop and TP.", "Risk note: 1% risk per trade."],
+      "parameters": [{"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "SUPERTd direction confirms structural trend support"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI crossing -100/+100 detects exhaustion reversal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing, tight 1.0x for DD control"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow"],
+    "design_target": "supertrend_cci_v4_4h",
+    "near_miss_reference": "Supertrend CCI v3 Wide ETH 1h PF=1.480 DD=36.43% — 4h port expected to reduce DD"
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "RSI", "MACD", "ATR", "Bollinger Bands", "ADX", "Supertrend", "Stochastic", "CCI", "WILLR", "OBV", "VWAP", "Donchian", "Ichimoku", "CHOP", "KAMA", "T3", "ALMA", "VTXP", "STC", "QQE"],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "RSI": "rsi", "MACD": "macd", "ATR": "atr",
+    "Bollinger Bands": "bbands", "ADX": "adx", "Supertrend": "supertrend",
+    "Stochastic": "stoch", "CCI": "cci", "WILLR": "willr", "OBV": "obv",
+    "VWAP": "vwap", "Donchian": "donchian", "Ichimoku": "ichimoku",
+    "CHOP": "chop", "KAMA": "kama", "T3": "t3", "ALMA": "alma",
+    "VTXP": "vortex", "STC": "stc", "QQE": "qqe"
+  },
+  "indicator_roles": {
+    "baseline": ["EMA", "SMA", "Supertrend", "Ichimoku", "KAMA", "T3", "ALMA"],
+    "confirmation": ["RSI", "MACD", "Stochastic", "CCI", "WILLR", "ADX", "VTXP", "STC", "QQE", "OBV"],
+    "volume_volatility": ["ATR", "Bollinger Bands", "VWAP", "CHOP", "Donchian"]
+  }
+}
