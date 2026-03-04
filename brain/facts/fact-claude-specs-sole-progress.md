@@ -6,7 +6,7 @@ status: active
 confidence: 0.95
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
-  - artifacts/claude-specs/20260305/
+  - artifacts/claude-specs/
 tags:
   - claude-specs
   - pipeline
