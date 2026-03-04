@@ -270,5 +270,13 @@
     "end": "2026-03-04T08:00:00+00:00",
     "sha256": "c957d15090b2e30fd706a8d208dd00b8d2a1a76d6e7820ecef59d1d6a7055078",
     "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/4h/20240304T120000Z-20260304T080000Z.csv"
+  },
+  {
+    "symbol": "ETH",
+    "tf": "4h",
+    "start": "2024-03-04T16:00:00+00:00",
+    "end": "2026-03-04T12:00:00+00:00",
+    "sha256": "5b2e06f0f16eb23f4dddc93423c163c1e4c6ecc6a4d97fc93cd1863ed307a43e",
+    "path": "C:/Users/Clamps/.openclaw/workspace/artifacts/data/hyperliquid/ETH/4h/20240304T160000Z-20260304T120000Z.csv"
   }
 ]
