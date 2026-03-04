@@ -4,7 +4,8 @@
                           "sent_at":  "2026-03-04T05:00:18.5354837Z"
                       },
     "frodex_last":  {
-                        "hash":  "1f810fa2bc8994d48e7644f7002de6302d453af8423f155b4a09bb4bdb259f1d",
-                        "sent_at":  "2026-03-04T05:49:22.3328798Z"
+                        "sent_at":  "2026-03-04T06:16:06.0192344Z",
+                        "last_run_id":  "autopilot-1772604902",
+                        "hash":  "1cd9e46e7c242158f10da4f65970e9f2ab7bc41fbe441c6f0f28f095bf9aca30"
                     }
 }

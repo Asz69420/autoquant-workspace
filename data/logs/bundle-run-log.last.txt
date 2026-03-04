@@ -7,6 +7,6 @@ Passed: 0
 Backtests: 0
 Promoted: 0
 Forwardtests: 0
-Queue lag: 1
+Queue lag: 0
 ○───note─────────────────────────
 Quiet cycle; no actionable changes in this window.
