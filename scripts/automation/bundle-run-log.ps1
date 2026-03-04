@@ -529,19 +529,12 @@ if ($mode -eq 'quandalf') {
       $submittedCount = ($specOk + $specBlocked + $specReview)
     }
 
-    $reviewedCount = [int]$ingested
-    $advancedCount = [int]$batchExecutedTotal
-    $passedCount = [int]$passingGate
-    $abortedCount = [int]$errors
-    $generatedCount = [int]$generated
-    $queuedCount = if ([int]$queuedBacklog -gt 0) { [int]$queuedBacklog } else { [int]$outboxLag }
-
-    $lines += "Reviewed: $reviewedCount"
-    $lines += "Advanced: $advancedCount"
-    $lines += "Passed: $passedCount"
-    $lines += "Aborted: $abortedCount"
-    $lines += "Generated: $generatedCount"
-    $lines += "Queued: $queuedCount"
+    $lines += "Ingested: $ingested"
+    $lines += "Submitted: $submittedCount"
+    $lines += "Backtests: $batchExecutedTotal"
+    $lines += "Promoted: $promotionOk"
+    $lines += "Forwardtests: $forwardRuns"
+    $lines += "Queue lag: $outboxLag"
   }
 }
 # Shared bottom note block (up to 3 lines)
