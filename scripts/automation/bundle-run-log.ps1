@@ -358,9 +358,9 @@ $statusIcon = switch ($statusTag) {
 }
 
 $titleLine = switch ($mode) {
-  'quandalf' { '🧠 Strategy Testing' }
-  'oragorn' { '🧠 Commander Actions' }
-  default { '🧠 Algorithm Testing' }
+  'quandalf' { '📚 Researching' }
+  'oragorn' { '👑 Commander Actions' }
+  default { '📊 Algo Testing' }
 }
 
 $lines = @()

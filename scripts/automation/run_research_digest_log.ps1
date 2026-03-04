@@ -56,11 +56,10 @@ if ([string]::IsNullOrWhiteSpace($telegramSendToken)) { throw 'Missing Telegram 
 
 # 3) Build Quandalf-styled digest caption (no file path line)
 $lines = @()
-$brainEmoji = [System.Char]::ConvertFromUtf32(0x1F9E0)
 $activityDivider = ([char]0x25CB) + (([string][char]0x2500) * 3) + 'activity' + (([string][char]0x2500) * 21)
 $dur = New-TimeSpan -Start $scriptStart -End (Get-Date)
 $durLabel = (([int]$dur.TotalMinutes).ToString() + 'm ' + $dur.Seconds.ToString('00') + 's')
-$lines += ($brainEmoji + " Research Digest")
+$lines += "📥 Digest"
 $lines += ("Status: ✅ | Duration: " + $durLabel)
 $lines += $activityDivider
 $lines += "Scanned: $scanned"
