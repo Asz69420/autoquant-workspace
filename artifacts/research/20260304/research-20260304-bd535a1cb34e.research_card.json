@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-bd535a1cb34e",
+  "created_at": "2026-03-04T05:30:05.810447Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltimator5/",
+  "title": "Dumb Money Concepts [theUltimator5]",
+  "author": "TheUltimator5",
+  "summary_bullets": [
+    "TradingView indicator: Dumb Money Concepts [theUltimator5] by TheUltimator5.",
+    "Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the actions of institutional investors (banks, hedge funds) rather than relying on traditional technical indicators by analyzing order blocks, liquidity gaps, and market imbalances...",
+    "Well this indicator isn&#39;t that.",
+    "This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the actions of institutional investors (banks, hedge funds) rather than relying on traditional technical indicators by analyzing order blocks, liquidity gaps, and market imbalances...",
+    "This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Source URL: https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltimator5/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Dumb Money Concepts [theUltimator5] by TheUltimator5.",
+      "note": "Meaning: TradingView indicator: Dumb Money Concepts [theUltimator5] by TheUltimator5."
+    },
+    {
+      "timestamp": null,
+      "quote": "Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the actions of institutional investors (banks, hedge",
+      "note": "Meaning: Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the"
+    },
+    {
+      "timestamp": null,
+      "quote": "Well this indicator isn&#39;t that.",
+      "note": "Meaning: Well this indicator isn&#39;t that."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Most people are familiar with Smart Money Concepts (SMC), ",
+      "note": "Meaning: This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Most peop"
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Source URL: https://www.tradingview.com/script/8qgtThms-Du",
+      "note": "Meaning: This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Source UR"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-bd535a1cb34e.raw.txt",
+  "sha256": "409c0bf0ad9343a2a62c4c8ca5e76723fd2d38594c9b2beb0fd6fa5e4949cc6d",
+  "truncated": false
+}

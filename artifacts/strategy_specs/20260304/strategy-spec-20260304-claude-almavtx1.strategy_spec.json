@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-almavtx1",
+  "name": "ALMA Vortex Momentum Capture",
+  "created_at": "2026-03-04T22:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ALMA (Arnaud Legoux Moving Average) uses a Gaussian-weighted smoothing kernel that reduces lag compared to EMA while filtering more noise than SMA. ALMA has never been tested as a baseline in any ACCEPT-tier strategy, yet it should provide cleaner trend direction signals. Paired with Vortex indicator — the backbone of the #1 strategy (Vortex v3a PF=2.034) — this combines an untested smooth baseline with a proven directional momentum filter. The hypothesis: ALMA's superior smoothing + Vortex directional confirmation = high-quality trend entries with fewer whipsaws than EMA-based approaches.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "alma_vortex_v1_8to1",
+      "description": "Price above ALMA confirms uptrend direction. Vortex positive exceeding negative confirms directional momentum. 8:1 R:R at the proven sweet spot with tight 1.5 ATR stop.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {"indicator": "ALMA_9_6.0_0.85", "role": "baseline", "notes": "Gaussian-weighted MA — smoother and lower-lag than EMA. Untested baseline in any ACCEPT."},
+        {"indicator": "VTXP_14", "role": "confirmation", "notes": "Vortex positive index — proven directional momentum in #1 strategy."},
+        {"indicator": "VTXM_14", "role": "confirmation", "notes": "Vortex negative index — cross-referenced against VTXP for directional bias."},
+        {"indicator": "ATR_14", "role": "volume_volatility", "notes": "Adaptive stop/TP sizing."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_vortex_v2_wide_10to1",
+      "description": "Same ALMA+Vortex logic but with wider stop (2.0 ATR) and higher R:R (10:1). Tests whether giving trades more room to breathe improves hit rate enough to offset reduced frequency.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {"indicator": "ALMA_9_6.0_0.85", "role": "baseline", "notes": "Gaussian-weighted MA baseline."},
+        {"indicator": "VTXP_14", "role": "confirmation", "notes": "Vortex positive index."},
+        {"indicator": "VTXM_14", "role": "confirmation", "notes": "Vortex negative index."},
+        {"indicator": "ATR_14", "role": "volume_volatility", "notes": "Wider adaptive stop/TP sizing."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ALMA_9_6.0_0.85", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ALMA_9_6.0_0.85 — Gaussian-weighted moving average, smoother than EMA with less lag",
+    "confirmation": "VTXP_14 vs VTXM_14 — directional momentum from Vortex indicator family",
+    "volume_volatility": "ATR_14 — adaptive position sizing and risk management"
+  }
+}

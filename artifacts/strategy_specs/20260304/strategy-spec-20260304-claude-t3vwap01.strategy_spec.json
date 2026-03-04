@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-t3vwap01",
+  "name": "T3 VWAP Confluence Entry",
+  "created_at": "2026-03-04T22:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "T3 (Tillson Triple Smoothed EMA) is the smoothest adaptive moving average in the indicator library, virtually eliminating whipsaws while maintaining responsiveness. VWAP (Volume Weighted Average Price) has NEVER been tested in any strategy — it represents an entirely untapped signal source. The hypothesis: when price is above both T3 (trend direction) AND VWAP (volume-weighted fair value), we have confluence of technical trend AND institutional positioning. Trades where both smart-money price level and trend filter agree should have superior follow-through. This tests a completely new signal dimension — volume-weighted price levels.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "t3_vwap_v1_8to1",
+      "description": "Close above T3 confirms smooth trend. Close above VWAP confirms volume-weighted buying pressure. Both must agree for entry. 8:1 R:R at proven sweet spot.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "close < VWAP_D"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {"indicator": "T3_10_0.7", "role": "baseline", "notes": "Tillson T3 — triple-smoothed EMA. Ultra-smooth trend direction with minimal whipsaws."},
+        {"indicator": "VWAP_D", "role": "confirmation", "notes": "Daily VWAP — volume-weighted average price. Never tested. Represents institutional fair value."},
+        {"indicator": "ATR_14", "role": "volume_volatility", "notes": "Adaptive stop/TP sizing."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_vwap_v2_wide_10to1",
+      "description": "Same T3+VWAP confluence with wider stop (2.0 ATR) and 10:1 R:R. Tests whether the wider-stop pattern that succeeded with Supertrend CCI transfers to this signal pair.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "close < VWAP_D"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {"indicator": "T3_10_0.7", "role": "baseline", "notes": "Tillson T3 triple-smoothed EMA baseline."},
+        {"indicator": "VWAP_D", "role": "confirmation", "notes": "Daily VWAP volume-weighted confirmation."},
+        {"indicator": "ATR_14", "role": "volume_volatility", "notes": "Wider adaptive stop/TP sizing."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["T3_10_0.7", "VWAP_D", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 — Tillson Triple Smoothed EMA, ultra-smooth trend direction",
+    "confirmation": "VWAP_D — Daily Volume Weighted Average Price, institutional fair value level",
+    "volume_volatility": "ATR_14 — adaptive position sizing and risk management"
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-kamcci01",
+  "name": "KAMA CCI Trend Confirmation",
+  "created_at": "2026-03-04T22:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Two independently validated paradigms combined: (1) KAMA adapts its smoothing speed to market noise — fast in trends, slow in chop — and already produced an ACCEPT at PF=1.857 with Stochastic. (2) CCI as trend CONFIRMATION (not mean-reversion fade) proved profitable in Supertrend CCI v3 at PF=1.480 all-regime. The hypothesis: KAMA's noise-adaptive baseline + CCI's momentum confirmation should identify entries where both the adaptive trend filter AND momentum strength agree. This tests whether KAMA's edge transfers to a different confirmation signal.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "kama_cci_v1_8to1",
+      "description": "Price above KAMA confirms adaptive trend direction. CCI above zero confirms positive momentum. Standard CCI threshold for maximum trade frequency.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 > 0"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 < 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {"indicator": "KAMA_10_2_30", "role": "baseline", "notes": "Kaufman Adaptive MA — speed adapts to market noise. Proven in KAMA Stoch v1 (PF=1.857)."},
+        {"indicator": "CCI_20_0.015", "role": "confirmation", "notes": "CCI as trend confirmation (>0 = bullish momentum). Proven paradigm from Supertrend CCI v3 (PF=1.480)."},
+        {"indicator": "ATR_14", "role": "volume_volatility", "notes": "Adaptive stop/TP sizing."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_cci_v2_strong_6to1",
+      "description": "Higher CCI threshold (>100) filters for strong momentum only. Lower R:R (6:1) compensates with higher win rate. Tests whether filtering for CCI extremes improves quality.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 > 100"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 < -100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (9x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 9x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {"indicator": "KAMA_10_2_30", "role": "baseline", "notes": "Kaufman Adaptive MA baseline."},
+        {"indicator": "CCI_20_0.015", "role": "confirmation", "notes": "CCI >100 = strong bullish momentum filter."},
+        {"indicator": "ATR_14", "role": "volume_volatility", "notes": "Adaptive stop/TP sizing."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_cci_v3_wide_10to1",
+      "description": "CCI >0 with wider stop (2.0 ATR) and higher R:R (10:1). Tests whether the near-miss Supertrend CCI v3 Wide success pattern (wider stops) transfers to KAMA baseline.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 > 0"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 < 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {"indicator": "KAMA_10_2_30", "role": "baseline", "notes": "Kaufman Adaptive MA baseline."},
+        {"indicator": "CCI_20_0.015", "role": "confirmation", "notes": "CCI >0 = bullish momentum confirmation."},
+        {"indicator": "ATR_14", "role": "volume_volatility", "notes": "Wider adaptive stop/TP sizing."}
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["KAMA_10_2_30", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "KAMA_10_2_30 — Kaufman Adaptive Moving Average, speed adapts to noise level",
+    "confirmation": "CCI_20_0.015 — Commodity Channel Index as trend momentum confirmation",
+    "volume_volatility": "ATR_14 — adaptive position sizing and risk management"
+  }
+}

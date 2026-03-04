@@ -1,16 +1,16 @@
 ﻿{
-    "directive_loop_stall_cycles":  110,
+    "directive_loop_stall_cycles":  112,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-t3vwap01.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-kamcci01.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-almavtx1.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ikkama01.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-b63281d28d32.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-6d0727b1f82d.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-7a21386a372b.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-7f349899378f.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-3eba3aced75c.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-a07e1f629153.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-0807a1122234.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-vwstmr01.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-24399f4c253e.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-stcci01a.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-a07e1f629153.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-04T05:00:04.9145009Z"
+    "updated_at":  "2026-03-04T05:20:04.2535094Z"
 }
