@@ -164,6 +164,40 @@ def validate_journal_pointer_policy(journal_dir: Path, root: Path) -> list[str]:
     return warns
 
 
+def load_action_run_ids(actions_path: Path) -> set[str]:
+    run_ids: set[str] = set()
+    if not actions_path.exists():
+        return run_ids
+    for line in actions_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        t = line.strip()
+        if not t:
+            continue
+        try:
+            obj = json.loads(t)
+        except Exception:
+            continue
+        rid = str(obj.get("run_id", "")).strip()
+        if rid:
+            run_ids.add(rid)
+    return run_ids
+
+
+def evidence_path_satisfied(root: Path, evidence_path: str, action_run_ids: set[str]) -> tuple[bool, bool]:
+    p = (root / str(evidence_path)).resolve()
+    if p.exists():
+        return True, False
+
+    norm = str(evidence_path).replace('\\', '/').lstrip('./')
+    if norm.startswith("data/logs/outbox/") and norm.endswith(".json"):
+        parts = Path(norm).name.split("___")
+        if len(parts) >= 2:
+            run_id = parts[1].strip()
+            if run_id and run_id in action_run_ids:
+                return True, True
+
+    return False, False
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(ROOT))
@@ -175,6 +209,7 @@ def main() -> int:
     errors: list[str] = []
     warns: list[str] = []
     object_records: list[tuple[Path, dict[str, Any], str]] = []
+    action_run_ids = load_action_run_ids(root / "data" / "logs" / "actions.ndjson")
 
     for obj_type, directory in OBJECT_DIRS.items():
         dir_path = root / directory.relative_to(ROOT)
@@ -201,9 +236,11 @@ def main() -> int:
             evidence_paths = fm.get("evidence_paths", [])
             if isinstance(evidence_paths, list):
                 for ep in evidence_paths:
-                    p = (root / str(ep)).resolve()
-                    if not p.exists():
+                    ok, via_actions = evidence_path_satisfied(root, str(ep), action_run_ids)
+                    if not ok:
                         errors.append(f"{rel}: missing evidence path {ep}")
+                    elif via_actions:
+                        warns.append(f"{rel}: evidence path drained from outbox but run_id exists in actions.ndjson ({ep})")
             object_records.append((md_file, fm, obj_type))
 
     ids: dict[str, Path] = {}
