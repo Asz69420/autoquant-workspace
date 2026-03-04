@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "tv_key": "gk smart trend hud tp1-tp3|hgavin780",
+    "script_id": "lN4QuOF7",
+    "name": "GK Smart Trend HUD TP1-TP3",
+    "author": "hgavin780",
+    "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-150d389b8517.indicator_record.json",
+    "first_seen_ts": "2026-03-03T23:30:16.270064+00:00",
+    "sources": [
+      "top"
+    ]
+  }
+]

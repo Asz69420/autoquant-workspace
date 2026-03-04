@@ -1,0 +1,13 @@
+﻿{
+    "schema_version":  "1.0",
+    "id":  "promo_strategy-spec-20260304-f8503d8e1021.strategy_spec",
+    "created_at":  "2026-03-03T23:34:49.9757699Z",
+    "status":  "OK",
+    "reason_code":  null,
+    "suggestion":  null,
+    "input_linkmap_path":  "artifacts/links/20260304/research-20260304-e10fb5b448e5.linkmap.json",
+    "thesis_artifact_path":  "artifacts/thesis/20260304/thesis-20260304-f8503d8e1021.thesis.json",
+    "strategy_spec_artifact_path":  "artifacts/strategy_specs/20260304/strategy-spec-20260304-f8503d8e1021.strategy_spec.json",
+    "batch_backtest_artifact_path":  "",
+    "experiment_plan_artifact_path":  ""
+}

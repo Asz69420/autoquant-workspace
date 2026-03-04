@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-7744afd82dc9",
+  "created_at": "2026-03-03T23:33:04.745232Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=CEJ_R5226xE",
+  "title": "NEW OpenClaw AI Good For Trading Strategies? (watch ASAP) (Clawdbot / Moltbot)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys, Open Claw has taken the world by storm, formerly was known as Claude Bot.",
+    "But what I care about is, can it trade for us?",
+    "Can it create a trading strategy?",
+    "Can it execute that strategy on my exchange fully automatically?",
+    "And can it also, and this is madness, can it also adapt the strategy and pick the right one, depending on what is actually happening in the markets?",
+    "With normal AI's like Claude or Chatchapiti, this is definitely not possible.",
+    "But with this AI, the answer to most of these questions is yes.",
+    "And that is why I'm making this video because it's mind blowing.",
+    "In this video, I'm gonna walk you through how I set it up for myself to create trading strategies to have it automatically trade that strategy on my hyper liquid account.",
+    "And also I'm gonna show you how you could take advantage of this yourself so you can benefit as fast as possible."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys, Open Claw has taken the world by storm, formerly was known as Claude Bot.",
+      "note": "Meaning: That's right guys, Open Claw has taken the world by storm, formerly was known as Claude Bot."
+    },
+    {
+      "timestamp": null,
+      "quote": "But what I care about is, can it trade for us?",
+      "note": "Meaning: But what I care about is, can it trade for us?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it create a trading strategy?",
+      "note": "Meaning: Can it create a trading strategy?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it execute that strategy on my exchange fully automatically?",
+      "note": "Meaning: Can it execute that strategy on my exchange fully automatically?"
+    },
+    {
+      "timestamp": null,
+      "quote": "And can it also, and this is madness, can it also adapt the strategy and pick the right one, depending on what is actually happening in the markets?",
+      "note": "Meaning: And can it also, and this is madness, can it also adapt the strategy and pick the right one, depending on what is actually happening in the markets?"
+    },
+    {
+      "timestamp": null,
+      "quote": "With normal AI's like Claude or Chatchapiti, this is definitely not possible.",
+      "note": "Meaning: With normal AI's like Claude or Chatchapiti, this is definitely not possible."
+    },
+    {
+      "timestamp": null,
+      "quote": "But with this AI, the answer to most of these questions is yes.",
+      "note": "Meaning: But with this AI, the answer to most of these questions is yes."
+    },
+    {
+      "timestamp": null,
+      "quote": "And that is why I'm making this video because it's mind blowing.",
+      "note": "Meaning: And that is why I'm making this video because it's mind blowing."
+    },
+    {
+      "timestamp": null,
+      "quote": "In this video, I'm gonna walk you through how I set it up for myself to create trading strategies to have it automatically trade that strategy on my hyper liquid account.",
+      "note": "Meaning: In this video, I'm gonna walk you through how I set it up for myself to create trading strategies to have it automatically trade that strategy on my hy"
+    },
+    {
+      "timestamp": null,
+      "quote": "And also I'm gonna show you how you could take advantage of this yourself so you can benefit as fast as possible.",
+      "note": "Meaning: And also I'm gonna show you how you could take advantage of this yourself so you can benefit as fast as possible."
+    },
+    {
+      "timestamp": null,
+      "quote": "But I'm also gonna show you the downsides and what you need to take care of because this is not yet ultra polished product, right?",
+      "note": "Meaning: But I'm also gonna show you the downsides and what you need to take care of because this is not yet ultra polished product, right?"
+    },
+    {
+      "timestamp": null,
+      "quote": "So with all of that in mind, guys, this is crazy stuff.",
+      "note": "Meaning: So with all of that in mind, guys, this is crazy stuff."
+    }
+  ],
+  "extracted_rules": [
+    "And guys, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know and also you're supporting this channel.",
+    "So if you don't think that what I did is interesting for you, then you don't have to continue watching.",
+    "But if so, right, then continue watching when I show you how to create trading strategies with it and also how to install it for yourself.",
+    "So if he wants to code something in Python and needs a package, it can just do it, right?",
+    "And if you're on a four hour chart, then you would like every four hours to make a decision, right?",
+    "Unless you have a stop loss.",
+    "If you have a strategy on the four hour, right?",
+    "Then it made a small loss when closing this and then it opened the short.",
+    "If it doesn't tell me, by the way, you might have this problem, then just ask it, hey, give me an update and I will tell you exactly what happened.",
+    "If you don't know what it is, don't worry about it.",
+    "And the difference is, okay, that if you go into the normal Claude interface, then it's very transactional.",
+    "If you run this AI in this way with open claw on your own machine, then you have a couple of benefits which are game changing, right?",
+    "Now is the time when you guys say, okay, Michael, cool, love it.",
+    "So basically, if you run this on your personal machine, then the AI will run with the same permissions as you have on that machine.",
+    "But if it's a virtual machine, suddenly you need to connect with it over SSH and it's complicated, okay?",
+    "Or it works for coding but then the machine shuts down, it goes to sleep if you're not chatting with it.",
+    "If the machine shuts down then the cron job wouldn't wake up anything and then there is no trading, okay?",
+    "If I wait until there is the perfect solution, this video will never get out, okay?",
+    "So if you have it running then this is how you can continue having it trade on your hyperliquid account.",
+    "That means if I go to the trading interface here, it would have set the Bitcoin USDC trading leverage to instead of 10 to 7, okay?"
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Also remember, this is not financial advice, crypto is risky, you can lose all of your money guys."
+    },
+    {
+      "type": "trend",
+      "description": "It can write code which he did over here creating a strategy for the ranging market, a strategy for the trending market, doing backtesting, right, having its own code for running the backtest and then giving me the resul"
+    },
+    {
+      "type": "trend",
+      "description": "And these are the files that it created, strategy trending.js, strategy ranging.js, for example, then hyperliquid.js, which is the code that it needs to communicate with hyperliquid API because it can execute the strateg"
+    },
+    {
+      "type": "risk",
+      "description": "Unless you have a stop loss."
+    },
+    {
+      "type": "trend",
+      "description": "I said trend following because I know that's the best way to do it."
+    },
+    {
+      "type": "risk",
+      "description": "You will also learn how to build a risk-adjusted portfolio, which is an absolute game changer for anyone in this market."
+    }
+  ],
+  "explicit_conditions": [
+    "Unless you have a stop loss.",
+    "You will also learn how to build a risk-adjusted portfolio, which is an absolute game changer for anyone in this market."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-7744afd82dc9.raw.txt",
+  "sha256": "01b1c908ab1ed1e0e154562c198345a3d6e54c4f101e3b1005b9b3539254ba21",
+  "truncated": false
+}

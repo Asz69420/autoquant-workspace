@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-18f84a7de034",
+  "created_at": "2026-03-03T23:46:40.131123Z",
+  "inputs": {
+    "research_card_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\research\\20260304\\research-20260304-fc79790fbfaa.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\links\\20260304\\research-20260304-fc79790fbfaa.linkmap.json"
+    ]
+  },
+  "title": "Awesome Gold Trading Strategy (modified Gaussian Channel on TradingView)",
+  "thesis_bullets": [
+    "That's right, guys, golden metals are going to the moon, while crypto is doing absolutely nothing.",
+    "And that's why I'm giving you a trading strategy for golden metals so you can benefit from it.",
+    "This is the strategy I'm talking about.",
+    "Look how nicely it captured the uptrends in gold and is now still invested with an open profit of 89%.",
+    "It will also help you answer the question if you should still invest into the metals market, get out, how high can it still go, and as well, how to play it in the future.",
+    "And I'm also going to give you a warning about the trap that this market is setting up for you right now, and most people will fall for it and lose a lot of money.",
+    "So make sure to watch this video carefully.",
+    "And there is an even better strategy, which is part of my course.",
+    "You don't need this, but I want to show you because I'm proud of it, which started in October 2023 here and is still invested with an open profit of 164% on gold.",
+    "So anyone that has joined the course early and used the strategy is now very happy."
+  ],
+  "hypotheses": [
+    {
+      "statement": "GOLD continuation edge appears when signal alignment persists on 1h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest GOLD on 1h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "1h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "GOLD OHLCV on 1h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "18f84a7de034cefaa9ff4843e273fa71c24e4a80d92c4f8f2a5bacd1c1e98d70"
+}

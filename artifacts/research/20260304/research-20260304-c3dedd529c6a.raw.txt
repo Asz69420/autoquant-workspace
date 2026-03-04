@@ -1,0 +1,1 @@
+Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v=isBWYK-9Cto title=Altcoin Season 2025 still happening? The Facts! reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extension is too long

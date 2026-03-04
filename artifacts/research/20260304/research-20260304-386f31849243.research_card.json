@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-386f31849243",
+  "created_at": "2026-03-03T23:54:14.027296Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=HzA8o5fg5T8",
+  "title": "NEW GPT 5.2 AI Good For TradingView Strategies? (watch ASAP)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys, OpenAI released yet another model, Chatchapiti 5.2, and I've tested it for trading strategies for you guys, so you know exactly where this model is good and where it's still.",
+    "And spoiler alert, yes, it is able to solve a problem that no other AI can, and I will show you exactly what that is in this video.",
+    "And yes, it will be mega beneficial for you guys.",
+    "Can this AI convert an indicator into a trading strategy?",
+    "Can it improve a trading strategy?",
+    "Okay, can it also come up with a completely new trading strategy from the scratch?",
+    "I want to tickle its senses, right?",
+    "There is some knowledge in there, right?",
+    "There is some awesome trading strategy, and I want to surface it with this question, yes.",
+    "And then also, can it find the source code of a closed source indicator?"
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys, OpenAI released yet another model, Chatchapiti 5.2, and I've tested it for trading strategies for you guys, so you know exactly where this model is good and where it's still.",
+      "note": "Meaning: That's right guys, OpenAI released yet another model, Chatchapiti 5.2, and I've tested it for trading strategies for you guys, so you know exactly wher"
+    },
+    {
+      "timestamp": null,
+      "quote": "And spoiler alert, yes, it is able to solve a problem that no other AI can, and I will show you exactly what that is in this video.",
+      "note": "Meaning: And spoiler alert, yes, it is able to solve a problem that no other AI can, and I will show you exactly what that is in this video."
+    },
+    {
+      "timestamp": null,
+      "quote": "And yes, it will be mega beneficial for you guys.",
+      "note": "Meaning: And yes, it will be mega beneficial for you guys."
+    },
+    {
+      "timestamp": null,
+      "quote": "Can this AI convert an indicator into a trading strategy?",
+      "note": "Meaning: Can this AI convert an indicator into a trading strategy?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it improve a trading strategy?",
+      "note": "Meaning: Can it improve a trading strategy?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Okay, can it also come up with a completely new trading strategy from the scratch?",
+      "note": "Meaning: Okay, can it also come up with a completely new trading strategy from the scratch?"
+    },
+    {
+      "timestamp": null,
+      "quote": "I want to tickle its senses, right?",
+      "note": "Meaning: I want to tickle its senses, right?"
+    },
+    {
+      "timestamp": null,
+      "quote": "There is some knowledge in there, right?",
+      "note": "Meaning: There is some knowledge in there, right?"
+    },
+    {
+      "timestamp": null,
+      "quote": "There is some awesome trading strategy, and I want to surface it with this question, yes.",
+      "note": "Meaning: There is some awesome trading strategy, and I want to surface it with this question, yes."
+    },
+    {
+      "timestamp": null,
+      "quote": "And then also, can it find the source code of a closed source indicator?",
+      "note": "Meaning: And then also, can it find the source code of a closed source indicator?"
+    },
+    {
+      "timestamp": null,
+      "quote": "And I have videos for all of these things, but in this video, I'm testing this model for these challenges.",
+      "note": "Meaning: And I have videos for all of these things, but in this video, I'm testing this model for these challenges."
+    },
+    {
+      "timestamp": null,
+      "quote": "So by the end of this video, you know exactly what to use this model for and what better to use other models for and as well, you might get a nice interesting trading strategy out of this video.",
+      "note": "Meaning: So by the end of this video, you know exactly what to use this model for and what better to use other models for and as well, you might get a nice inte"
+    }
+  ],
+  "extracted_rules": [
+    "And guys, make sure to like this video if it adds value to you, because otherwise the YouTube algorithm will never know.",
+    "And if you want to know exactly step by step, I will link the Gemini video up here where I've done it much slower than in this video."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Also remember, this is not financial advice, crypto is risky, you can lose all of your money guys."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-386f31849243.raw.txt",
+  "sha256": "7f7580b6606f832f79166e7a931514c0ed34bd96e6234c22f3c3daa8eadd56f1",
+  "truncated": false
+}

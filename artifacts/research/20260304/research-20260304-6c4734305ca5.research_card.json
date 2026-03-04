@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-6c4734305ca5",
+  "created_at": "2026-03-03T23:30:15.811770Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/",
+  "title": "GK Smart Trend HUD TP1-TP3",
+  "author": "hgavin780",
+  "summary_bullets": [
+    "TradingView indicator: GK Smart Trend HUD TP1-TP3 by hgavin780.",
+    "GK Smart Trend HUD TP1-TP3 — Full Description GK Smart Trend HUD TP1-TP3 is a complete trend + trade-management HUD built around a Zero-Lag moving average ribbon with ATR deviation bands, designed to deliver clean GK BUY / GK SELL signals and then manage the trade visually with: Entry price TP1 / TP2 / TP3 (ATR-based targets) Band-based SL (with ATR buffer) Live hit tracking (✅/❌) TP2 “SECURE PROFITS NOW” banner SESSION label (ASIA / LONDON / NEW YORK / OFF) POWER strength reading OB/OS … GK Sma",
+    "Source URL: https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: GK Smart Trend HUD TP1-TP3 by hgavin780.",
+      "note": "Meaning: TradingView indicator: GK Smart Trend HUD TP1-TP3 by hgavin780."
+    },
+    {
+      "timestamp": null,
+      "quote": "GK Smart Trend HUD TP1-TP3 — Full Description GK Smart Trend HUD TP1-TP3 is a complete trend + trade-management HUD built around a Zero-Lag moving average ribbon with ATR deviation bands, designed to ",
+      "note": "Meaning: GK Smart Trend HUD TP1-TP3 — Full Description GK Smart Trend HUD TP1-TP3 is a complete trend + trade-management HUD built around a Zero-Lag moving aver"
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "TradingView indicator: GK Smart Trend HUD TP1-TP3 by hgavin780."
+    },
+    {
+      "type": "trend",
+      "description": "GK Smart Trend HUD TP1-TP3 — Full Description GK Smart Trend HUD TP1-TP3 is a complete trend + trade-management HUD built around a Zero-Lag moving average ribbon with ATR deviation bands, designed to deliver clean GK BUY"
+    },
+    {
+      "type": "trend",
+      "description": "Source URL: https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/."
+    }
+  ],
+  "indicators_mentioned": [
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-6c4734305ca5.raw.txt",
+  "sha256": "b09113dae1dd81b6c302d8f40c09628e9f90b13ac732371a03b6393e6b947db2",
+  "truncated": false
+}

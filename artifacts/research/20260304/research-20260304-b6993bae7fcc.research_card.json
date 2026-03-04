@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-b6993bae7fcc",
+  "created_at": "2026-03-03T23:31:02.931215Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=rAQUKGtNMD4",
+  "title": "Bitcoin: Bull Market Support Band Indicator Any Good? Take care!",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys, you want to know if the bull market support band is actually a good indicator.",
+    "I turned it into a trading strategy using AI so we can all see the performance.",
+    "And the reason I'm doing this video now is because more and more influencers are talking about this indicator including Benjamin Cohen.",
+    "He's using this indicator in a lot of his videos lately.",
+    "The problem is though that this indicator is in this video I'm going to show you the performance numbers.",
+    "I'm going to give you the code of the strategy version of the bull market support band.",
+    "I'm going to show you way better strategies.",
+    "And in my opinion, Benjamin Cohen, if you're watching this, love you man, you're amazing.",
+    "You should be using these other better strategies to decide if Bitcoin's price action is healthy or not.",
+    "But that's just my dubious speculation."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys, you want to know if the bull market support band is actually a good indicator.",
+      "note": "Meaning: That's right guys, you want to know if the bull market support band is actually a good indicator."
+    },
+    {
+      "timestamp": null,
+      "quote": "I turned it into a trading strategy using AI so we can all see the performance.",
+      "note": "Meaning: I turned it into a trading strategy using AI so we can all see the performance."
+    },
+    {
+      "timestamp": null,
+      "quote": "And the reason I'm doing this video now is because more and more influencers are talking about this indicator including Benjamin Cohen.",
+      "note": "Meaning: And the reason I'm doing this video now is because more and more influencers are talking about this indicator including Benjamin Cohen."
+    },
+    {
+      "timestamp": null,
+      "quote": "He's using this indicator in a lot of his videos lately.",
+      "note": "Meaning: He's using this indicator in a lot of his videos lately."
+    },
+    {
+      "timestamp": null,
+      "quote": "The problem is though that this indicator is in this video I'm going to show you the performance numbers.",
+      "note": "Meaning: The problem is though that this indicator is in this video I'm going to show you the performance numbers."
+    },
+    {
+      "timestamp": null,
+      "quote": "I'm going to give you the code of the strategy version of the bull market support band.",
+      "note": "Meaning: I'm going to give you the code of the strategy version of the bull market support band."
+    },
+    {
+      "timestamp": null,
+      "quote": "I'm going to show you way better strategies.",
+      "note": "Meaning: I'm going to show you way better strategies."
+    },
+    {
+      "timestamp": null,
+      "quote": "And in my opinion, Benjamin Cohen, if you're watching this, love you man, you're amazing.",
+      "note": "Meaning: And in my opinion, Benjamin Cohen, if you're watching this, love you man, you're amazing."
+    },
+    {
+      "timestamp": null,
+      "quote": "You should be using these other better strategies to decide if Bitcoin's price action is healthy or not.",
+      "note": "Meaning: You should be using these other better strategies to decide if Bitcoin's price action is healthy or not."
+    },
+    {
+      "timestamp": null,
+      "quote": "But that's just my dubious speculation.",
+      "note": "Meaning: But that's just my dubious speculation."
+    },
+    {
+      "timestamp": null,
+      "quote": "Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.",
+      "note": "Meaning: Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know."
+    },
+    {
+      "timestamp": null,
+      "quote": "Also remember, this is not financial advice.",
+      "note": "Meaning: Also remember, this is not financial advice."
+    }
+  ],
+  "extracted_rules": [
+    "That's right guys, you want to know if the bull market support band is actually a good indicator.",
+    "And in my opinion, Benjamin Cohen, if you're watching this, love you man, you're amazing.",
+    "You should be using these other better strategies to decide if Bitcoin's price action is healthy or not.",
+    "Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.",
+    "Before we can decide if this is a good result or not, you need to know that there are a couple of versions of this actually because you can interpret the indicator in different ways.",
+    "If you convert other indicators into strategies, for example, in this particular case, it can go long when the lines cross, but it can also go long when the close price closes above one of the lines or something else entirely.",
+    "So you need to know which version I just showed you and also you need to know if the other versions I just mentioned are better.",
+    "Version number one is the most obvious one is buying or going long when the green line crosses above the red line and is going flat when the green line crosses back below the red line.",
+    "So let's go to version number two and see if that is any better.",
+    "When it crosses under the EMA or it crosses under the SMA, it simply goes flat.",
+    "Any line goes and it will be going long if the price closes above it.",
+    "So if you have ideas on how I could interpret this indicator even better or differently, then leave them down in the comments.",
+    "So if we go long above the red line, then these trades will never happen, right?",
+    "This is the best result out of all of the versions and not because the profit is higher, but because the max drawdown is lower risk management is the most important thing in trading, especially in crypto.",
+    "And if you're watching this channel, you know why and how important it is.",
+    "Okay, so if you have the glorious idea, not just with this indicator, but any other one, right, to go long above one of the lines, but then to go flat below a totally different line.",
+    "Okay, so if you have a logic to go long above a line, you have to use that same line to invalidate and to go flat or even to go short, whichever you like.",
+    "If your crypto portfolio is $25,000 or more, then you need more than just trading strategies.",
+    "But you need the education to properly build a risk adjusted portfolio to know how to play the markets, depending on the cycles and how to rebalance, how to use all of this to your advantage, right?",
+    "And this is just for higher net worth individuals for people who have enough money to understand that risk management is the most important thing."
+  ],
+  "strategy_components": [
+    {
+      "type": "filter",
+      "description": "And so the next idea, version three, is to go long above the red line to avoid trades like these, for example, and as well avoid this trade over here and also this trade over here."
+    },
+    {
+      "type": "filter",
+      "description": "As you can see, it's now avoiding this trade, which is exactly what we wanted."
+    },
+    {
+      "type": "filter",
+      "description": "It avoids this one over here."
+    },
+    {
+      "type": "risk",
+      "description": "This is the best result out of all of the versions and not because the profit is higher, but because the max drawdown is lower risk management is the most important thing in trading, especially in crypto."
+    },
+    {
+      "type": "risk",
+      "description": "But you need the education to properly build a risk adjusted portfolio to know how to play the markets, depending on the cycles and how to rebalance, how to use all of this to your advantage, right?"
+    },
+    {
+      "type": "risk",
+      "description": "And this is just for higher net worth individuals for people who have enough money to understand that risk management is the most important thing."
+    }
+  ],
+  "explicit_conditions": [
+    "This is the best result out of all of the versions and not because the profit is higher, but because the max drawdown is lower risk management is the most important thing in trading, especially in crypto.",
+    "But you need the education to properly build a risk adjusted portfolio to know how to play the markets, depending on the cycles and how to rebalance, how to use all of this to your advantage, right?",
+    "And this is just for higher net worth individuals for people who have enough money to understand that risk management is the most important thing."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "SMA"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-b6993bae7fcc.raw.txt",
+  "sha256": "0c8774131f1cd44a16f674390b0f22148b54eb965f4884d53f78da7f652abe2a",
+  "truncated": false
+}

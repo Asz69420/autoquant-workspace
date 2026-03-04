@@ -1,16 +1,16 @@
 ﻿{
-    "directive_loop_stall_cycles":  83,
+    "directive_loop_stall_cycles":  85,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-f3d0bea35511.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-696577f7f734.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-18f84a7de034.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-f8503d8e1021.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-f2f2afb6da46.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-545d8f8556c0.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-f006324c2437.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-ac14fe5d2c88.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-5da261875b95.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-ed6747bea7de.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-8ef033c7e0ff.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-038e79b5c09c.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-2d4ebc404aa9.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-e4f679ddd158.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b7db68f6d13.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-98498aa544b6.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-ed6747bea7de.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-03T23:18:14.8354812Z"
+    "updated_at":  "2026-03-03T23:53:51.6429278Z"
 }
