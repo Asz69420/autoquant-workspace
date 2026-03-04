@@ -77,7 +77,7 @@ function Get-ResultsReviewInfo {
   $aborted = 0
 
   if (-not (Test-Path -LiteralPath $resultsPath)) {
-    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; aborted = $aborted; is_live = $false }
+    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; is_live = $false }
   }
 
   $lines = Get-Content -LiteralPath $resultsPath -Encoding UTF8
@@ -92,7 +92,7 @@ function Get-ResultsReviewInfo {
     elseif ($line -match '\|\s*FAIL') { $aborted++ }
   }
 
-  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; aborted = $aborted; is_live = $false }
+  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; is_live = $false }
 }
 
 function Get-LiveReviewInfo {
@@ -105,6 +105,8 @@ function Get-LiveReviewInfo {
     if ($null -eq $s) { return $null }
 
     $ingested = [int]($s.candidates_ingested)
+    $advanced = 0
+    try { if ($null -ne $s.candidates_reaching_refinement) { $advanced = [int]$s.candidates_reaching_refinement } } catch {}
     $passing = [int]($s.candidates_passing_gate)
     $errors = [int]($s.errors_count)
 
@@ -120,7 +122,8 @@ function Get-LiveReviewInfo {
 
     return [PSCustomObject]@{
       reviewed = $ingested
-      advanced = $passing
+      advanced = $advanced
+      passed = $passing
       aborted = $errors
       q_generated = $qGenerated
       q_queued = $qQueued
@@ -172,7 +175,9 @@ function Send-QuandalfCard {
 
   $lines += ('Reviewed: ' + [int]$resultsInfo.reviewed)
   $lines += ('Advanced: ' + [int]$resultsInfo.advanced)
+  $lines += ('Passed: ' + [int]$resultsInfo.passed)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
+  $lines += ('Generated: ' + [int]$resultsInfo.q_generated)
   $lines += ('Queued: ' + [int]$queuedValue)
   $lines += $noteDivider
   $lines += $NoteSentence

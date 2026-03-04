@@ -287,7 +287,7 @@ $promoted = 0
 $refined = 0
 $librarySize = 0; $libNew = 0; $libLessons = 0
 $dirNotes = 0; $dirVariants = 0; $dirExplore = 0
-$ingested = 0; $errors = 0
+$ingested = 0; $errors = 0; $passingGate = 0; $generated = 0; $queuedBacklog = 0
 $insightNew = 0
 $stall = 0; $starvation = 0
 $warnings = @()
@@ -379,6 +379,10 @@ foreach ($e in $reportEvents) {
     }
     "LAB_SUMMARY" {
       if ($sum -match 'ingested=(\d+)') { $ingested = [int]$matches[1] }
+      if ($sum -match 'passing_gate=(\d+)') { $passingGate = [int]$matches[1] }
+      if ($sum -match 'generated=(\d+)') { $generated = [int]$matches[1] }
+      if ($sum -match 'queued_for_testing=(\d+)') { $queuedBacklog = [int]$matches[1] }
+      elseif ($sum -match 'backlog=(\d+)') { $queuedBacklog = [int]$matches[1] }
       if ($sum -match 'errors=(\d+)') { $errors = [int]$matches[1] }
       if ($sum -match 'throughput_drought_cycles[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
       elseif ($sum -match 'starvation[=:\s]+(\d+)') { $starvation = [int]$matches[1] }
@@ -489,13 +493,17 @@ $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSy
 if ($mode -eq 'quandalf') {
   $reviewedCount = $strategyResearchCount + $backtestAuditCount
   $advancedCount = $strategyGenerateCount
+  $passedCount = 0
   $abortedCount = $errors
+  $generatedCount = $strategyGenerateCount
   $queuedCount = $strategyGenerateCount
 
   $lines += "○───activity─────────────────────"
   $lines += "Reviewed: $reviewedCount"
   $lines += "Advanced: $advancedCount"
+  $lines += "Passed: $passedCount"
   $lines += "Aborted: $abortedCount"
+  $lines += "Generated: $generatedCount"
   $lines += "Queued: $queuedCount"
 } elseif (-not $isOragornSubagentNoteOnly) {
   $lines += "○───activity─────────────────────"
@@ -521,12 +529,19 @@ if ($mode -eq 'quandalf') {
       $submittedCount = ($specOk + $specBlocked + $specReview)
     }
 
-    $lines += "Ingested: $ingested"
-    $lines += "Submitted: $submittedCount"
-        $lines += "Backtests: $batchExecutedTotal"
-    $lines += "Promoted: $promotionOk"
-    $lines += "Forwardtests: $forwardRuns"
-    $lines += "Queue lag: $outboxLag"
+    $reviewedCount = [int]$ingested
+    $advancedCount = [int]$batchExecutedTotal
+    $passedCount = [int]$passingGate
+    $abortedCount = [int]$errors
+    $generatedCount = [int]$generated
+    $queuedCount = if ([int]$queuedBacklog -gt 0) { [int]$queuedBacklog } else { [int]$outboxLag }
+
+    $lines += "Reviewed: $reviewedCount"
+    $lines += "Advanced: $advancedCount"
+    $lines += "Passed: $passedCount"
+    $lines += "Aborted: $abortedCount"
+    $lines += "Generated: $generatedCount"
+    $lines += "Queued: $queuedCount"
   }
 }
 # Shared bottom note block (up to 3 lines)
