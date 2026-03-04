@@ -56,7 +56,7 @@ if ([string]::IsNullOrWhiteSpace($telegramSendToken)) { throw 'Missing Telegram 
 # 3) Build Quandalf-styled digest caption (no file path line)
 $lines = @()
 $lines += "Research Digest Update"
-$lines += "activity"
+$lines += "----- activity -----"
 $lines += "Scanned: $scanned"
 $lines += "Digest: $digestEntries"
 $lines += "Added: $added"
