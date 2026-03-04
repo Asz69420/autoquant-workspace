@@ -442,3 +442,33 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - Promote Ichimoku TK v1 to forward-test candidate
 
 ---
+
+## Entry 015 — Directive Loop Identified: The Pipeline Eats Itself (2026-03-04)
+
+### Results
+- 0 new ACCEPTs. 15+ backtests since U24, ALL zero trades
+- Zero-trade epidemic escalates: 66+ consecutive (was 51+ at U24)
+- All backtests consumed by pipeline specs — 0 Claude specs executed since U24
+- 4 spec families share identical broken architecture: EMA + RSI + ATR + confidence_threshold
+- Recombine system generating BTC 1h specs despite EXCLUDE_ASSET:BTC directive
+- Brain: 25 to 26 objects (+1 new fact: directive loop circular). 10 unique ACCEPTs unchanged.
+
+### Key Insights
+- **The directive loop is circular and the #1 compute blocker.** Every 0-trade outcome generates the same 5 remediation directives (GATE_ADJUST, ENTRY_RELAX, THRESHOLD_SWEEP, ENTRY_TIGHTEN, EXIT_CHANGE). These create variant specs that fail identically. Infinite loop, zero information gain. Actively starves Claude specs of backtest capacity.
+- **Confidence threshold sweeps are irrelevant when conditions never co-fire.** The directive system sweeps confidence_threshold from 0.55 to 0.60. This is meaningless — 3+ AND-chained conditions never align on same bar regardless of threshold.
+- **Directive enforcement is broken.** Recombine generates specs on BTC 1h despite explicit EXCLUDE_ASSET:BTC directive. Machine directives are written but not read.
+- **Research velocity has flatlined.** All 4 U24 priorities (Supertrend CCI v4 4h, EMA200 Vortex v3, transition expansion, TRIX) remain unexecuted.
+
+### What I'm Testing Next
+- Same as U24, all blocked pending pipeline fix:
+- P0: Supertrend CCI v4 on ETH 4h (1h near-miss PF=1.480, 4h port should ACCEPT)
+- P1: EMA200 Vortex v3 tighter stops (PF=1.969, DD 30% needs to drop below 20%)
+- P2: Transition-detection expansion (KAMA slope, T3 flip, TRIX zero-cross)
+
+### Suggestions For Asz
+- **Implement directive circuit-breaker** — halt after 5 consecutive 0-trade runs from same spec family. Currently at 66+. Single most impactful infrastructure change.
+- **Priority-route Claude specs** — 22% ACCEPT rate vs pipeline ~0%. Every pipeline slot is wasted.
+- **Fix directive enforcement** — recombine ignores EXCLUDE_ASSET:BTC directive.
+- **Define forward-test graduation criteria** — 6th consecutive cycle requesting. Overdue.
+
+---

@@ -1476,6 +1476,32 @@ $summary.quandalf_queue_generated = [int]$quandalfQueueGenerated
 $summary.queued_for_testing = [int]$queuedForTesting
 $summary.queue_backlog = [int]$queueBacklog
 
+$invariantSeeded = 0
+$seedGuard = 0
+while (-not $DryRun -and [int]$quandalfQueueGenerated -lt [int]$MinStrategiesPerRun -and $seedGuard -lt 20) {
+  $seedGuard += 1
+  try {
+    $rcSeed = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
+    $seedCreated = 0
+    try { $seedCreated = [int]$rcSeed.created } catch { $seedCreated = 0 }
+    if (($seedCreated -ge 1 -or $rcSeed.bundle_path) -and $rcSeed.bundle_path) {
+      $invariantSeeded += 1
+      $quandalfQueueGenerated += 1
+      $queuedForTesting += 1
+      $queueBacklog += 1
+      Emit-Summary 'STRATEGY_INVARIANT_SEED' ('Invariant seed generated: ' + [string]$rcSeed.bundle_path) 'INFO' 'Autopilot'
+    } else {
+      Emit-Summary 'STRATEGY_INVARIANT_SEED' 'Invariant seed attempt returned no bundle' 'WARN' 'Autopilot'
+    }
+  } catch {
+    Emit-Summary 'STRATEGY_INVARIANT_SEED' 'Invariant seed generation error' 'WARN' 'Autopilot'
+  }
+}
+
+$summary.quandalf_queue_generated = [int]$quandalfQueueGenerated
+$summary.queued_for_testing = [int]$queuedForTesting
+$summary.queue_backlog = [int]$queueBacklog
+
 $strategyShortfall = [Math]::Max(0, [int]$MinStrategiesPerRun - [int]$quandalfQueueGenerated)
 if ($strategyShortfall -gt 0) {
   $summary.strategy_contract_ok = $false
@@ -1483,18 +1509,6 @@ if ($strategyShortfall -gt 0) {
   if (-not $DryRun) {
     Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: generated=" + [int]$quandalfQueueGenerated + " queued_for_testing=" + [int]$queuedForTesting + " min=" + [int]$MinStrategiesPerRun + " max=" + [int]$MaxStrategiesPerRun + " shortfall=" + [int]$strategyShortfall) 'FAIL' 'Autopilot'
     $errorsCount += 1
-    try {
-      $rcKick = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
-      $kickCreated = 0
-      try { $kickCreated = [int]$rcKick.created } catch { $kickCreated = 0 }
-      if (($kickCreated -ge 1 -or $rcKick.bundle_path) -and $rcKick.bundle_path) {
-        Emit-Summary 'STRATEGY_KICKSTART_TRIGGERED' ('Kickstart seed generated for next cycle: ' + [string]$rcKick.bundle_path) 'WARN' 'Autopilot'
-      } else {
-        Emit-Summary 'STRATEGY_KICKSTART_TRIGGERED' 'Kickstart seed attempt produced no bundle' 'WARN' 'Autopilot'
-      }
-    } catch {
-      Emit-Summary 'STRATEGY_KICKSTART_TRIGGERED' 'Kickstart seed generation failed' 'FAIL' 'Autopilot'
-    }
   }
 } elseif ([int]$quandalfQueueGenerated -gt [int]$MaxStrategiesPerRun) {
   $summary.strategy_contract_ok = $false
@@ -1590,25 +1604,10 @@ if (-not $DryRun) {
   Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " generated=" + [int]$quandalfQueueGenerated + " queued_for_testing=" + [int]$queuedForTesting + " backlog=" + [int]$queueBacklog + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
-if (-not $DryRun -and $strategyShortfall -gt 0) {
-  $seedAttempts = [Math]::Min([int]$strategyShortfall, [Math]::Max(1, [int]$MaxImmediateRetries))
-  $seeded = 0
-  for ($i = 0; $i -lt $seedAttempts; $i++) {
-    try {
-      $rcSeed = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
-      $seedCreated = 0
-      try { $seedCreated = [int]$rcSeed.created } catch { $seedCreated = 0 }
-      if (($seedCreated -ge 1 -or $rcSeed.bundle_path) -and $rcSeed.bundle_path) {
-        $seeded += 1
-      }
-    } catch {}
-  }
-  Emit-Summary 'STRATEGY_IMMEDIATE_RETRY' ("In-process seed chase: shortfall=" + [int]$strategyShortfall + " seeded=" + [int]$seeded + " mode=next-cycle-ready") 'WARN' 'Autopilot'
-}
-
 Write-Output ($summary | ConvertTo-Json -Depth 5)
 
 # Explicit exit for scheduled task success reporting
 exit 0
+
 
 
