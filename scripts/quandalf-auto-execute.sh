@@ -17,6 +17,7 @@ fi
 
 STATE_DIR="$ROOT_DIR/data/state"
 STATE_FILE="$STATE_DIR/quandalf_handoff_state.json"
+REFLECTION_STATE_FILE="$STATE_DIR/quandalf_reflection_state.json"
 LOCK_DIR="$STATE_DIR/locks/quandalf_pipeline.lockdir"
 ACTIONS_FILE="$ROOT_DIR/data/logs/actions.ndjson"
 
@@ -31,18 +32,6 @@ if ! mkdir "$LOCK_DIR" >/dev/null 2>&1; then
   exit 0
 fi
 trap cleanup_lock EXIT
-
-# Claude Code reflection first (Opus via run_claude_skill); non-fatal fallback to existing executor path.
-echo "Quandalf reflection: trying Claude Code (Opus)..."
-set +e
-powershell.exe -NoProfile -ExecutionPolicy Bypass \
-  -File "$ROOT_DIR/scripts/automation/run_claude_skill.ps1" \
-  -Mode research -RetryCount 1 >/dev/null 2>&1
-claude_rc=$?
-set -e
-if [[ $claude_rc -ne 0 ]]; then
-  echo "WARN: Claude reflection unavailable; continuing with fallback executor path."
-fi
 
 readarray -t GATE_INFO < <("$PY_BIN" - "$ACTIONS_FILE" "$STATE_FILE" <<'PY'
 import json
@@ -109,6 +98,44 @@ if [[ "$SHOULD_RUN" != "1" ]]; then
   exit 0
 fi
 
+# Claude Code reflection first (Opus via run_claude_skill); non-fatal fallback to executor path.
+echo "Quandalf reflection: trying Claude Code (Opus)..."
+set +e
+powershell.exe -NoProfile -ExecutionPolicy Bypass \
+  -File "$ROOT_DIR/scripts/automation/run_claude_skill.ps1" \
+  -Mode research -RetryCount 1 >/dev/null 2>&1
+claude_rc=$?
+set -e
+if [[ $claude_rc -ne 0 ]]; then
+  echo "WARN: Claude reflection unavailable; continuing with fallback executor path."
+fi
+
+"$PY_BIN" - "$REFLECTION_STATE_FILE" "$LATEST_RUN_ID" "$claude_rc" <<'PY'
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+state_path = Path(sys.argv[1])
+run_id = str(sys.argv[2] or '').strip()
+rc = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+state = {}
+if state_path.exists():
+    try:
+        state = json.loads(state_path.read_text(encoding='utf-8'))
+        if not isinstance(state, dict):
+            state = {}
+    except Exception:
+        state = {}
+state['last_run_id'] = run_id
+state['last_claude_rc'] = rc
+state['last_reflection_status'] = 'ok' if rc == 0 else 'fallback_gpt'
+state['last_reflection_at'] = datetime.now(timezone.utc).isoformat()
+state['last_note'] = 'Claude reflection ok.' if rc == 0 else 'Claude reflection failed; used GPT fallback executor path.'
+state_path.parent.mkdir(parents=True, exist_ok=True)
+state_path.write_text(json.dumps(state, indent=2), encoding='utf-8')
+PY
+
 set +e
 "$PY_BIN" - "$ROOT_DIR" "$ORDERS_FILE" "$RESULTS_FILE" <<'PY'
 import json
@@ -141,7 +168,7 @@ def _grab_block(src: str, start_header: str, end_header_regex: str) -> str:
 
 
 def parse_strategies(src: str):
-    blocks = re.findall(r"###\s+Strategy[^\n]*\n\n(.*?)(?=\n###\s+Strategy|\n###\s+Test Matrix|\n##\s+Test Matrix|\Z)", src, re.S)
+    blocks = re.findall(r"###\s+(?:New\s+)?Strategy[^\n]*\n\n(.*?)(?=\n###\s+(?:New\s+)?Strategy|\n###\s+Test Matrix|\n##\s+Test Matrix|\Z)", src, re.S)
     out = []
     for blk in blocks:
         name_m = re.search(r"^name:\s*([\w_\-]+)\s*$", blk, re.M)
@@ -405,10 +432,11 @@ if ! git diff --quiet -- docs/shared/QUANDALF_ORDERS.md docs/shared/LAST_CYCLE_R
   git commit -m "docs(quandalf): auto-execute pending order"
 fi
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass \
-  -File "$ROOT_DIR/scripts/claude-tasks/send-quandalf-cycle-summary.ps1" \
-  -TaskLabel "Strategy Cycle" \
-  -SourceFile "$ROOT_DIR/docs/shared/QUANDALF_JOURNAL.md"
+# Optional notification skipped due to timeout risk
+# powershell.exe -NoProfile -ExecutionPolicy Bypass \
+#   -File "$ROOT_DIR/scripts/claude-tasks/send-quandalf-cycle-summary.ps1" \
+#   -TaskLabel "Strategy Cycle" \
+#   -SourceFile "$ROOT_DIR/docs/shared/QUANDALF_JOURNAL.md"
 
 mark_processed_run
 

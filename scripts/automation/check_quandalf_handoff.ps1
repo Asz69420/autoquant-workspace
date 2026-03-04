@@ -11,6 +11,7 @@ $jobId = 'b6d07171-ab62-4038-a4ec-4a5ac7b3d0d7'
 $ordersPath = Join-Path $ROOT 'docs\shared\QUANDALF_ORDERS.md'
 $resultsPath = Join-Path $ROOT 'docs\shared\LAST_CYCLE_RESULTS.md'
 $autopilotSummaryPath = Join-Path $ROOT 'data\state\autopilot_summary.json'
+$quandalfReflectionStatePath = Join-Path $ROOT 'data\state\quandalf_reflection_state.json'
 
 function Escape-Html {
   param([string]$Text)
@@ -152,6 +153,24 @@ function Get-RunHandoffTimestampUtc {
 
   if (@($hits).Count -eq 0) { return $null }
   return (@($hits | Sort-Object) | Select-Object -First 1)
+}
+
+function Get-ReflectionStatusForRun {
+  param([string]$RunId)
+  if ([string]::IsNullOrWhiteSpace($RunId)) { return $null }
+  if (-not (Test-Path -LiteralPath $quandalfReflectionStatePath)) { return $null }
+  try {
+    $st = Get-Content -LiteralPath $quandalfReflectionStatePath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($null -eq $st) { return $null }
+    if ([string]$st.last_run_id -ne $RunId) { return $null }
+    return [PSCustomObject]@{
+      status = [string]$st.last_reflection_status
+      note = [string]$st.last_note
+      claude_rc = [int]$st.last_claude_rc
+    }
+  } catch {
+    return $null
+  }
 }
 
 function Get-LiveReviewInfo {
@@ -402,6 +421,11 @@ try {
     }
   } else {
     $durLabel = Format-DurationLabelFromMs -DurationMs ([Nullable[Int64]]((New-TimeSpan -Start $triggerStarted -End (Get-Date)).TotalMilliseconds))
+  }
+
+  $reflectionStatus = Get-ReflectionStatusForRun -RunId $latestRunId
+  if ($null -ne $reflectionStatus -and [string]$reflectionStatus.status -eq 'fallback_gpt') {
+    $noteSentence = $noteSentence + ' ⚠️ Claude reflection failed; GPT fallback path was used.'
   }
 
   Send-QuandalfCard -StatusWord $statusWord -DurationLabel $durLabel -RunId $latestRunId -NoteSentence $noteSentence
