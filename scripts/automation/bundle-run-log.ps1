@@ -351,16 +351,23 @@ if ($mode -eq 'frodex') {
 $hasErrors = $errors -gt 0
 $hasWarnings = ($stall -gt 5) -or ($starvation -gt 10) -or ($warnings.Count -gt 0)
 $statusTag = if ($hasErrors) { "FAIL" } elseif ($hasWarnings) { "WARN" } else { "OK" }
+
+$iconOk = [char]0x2705
+$iconWarn = ([char]0x26A0) + ([char]0xFE0F)
+$iconFail = [char]0x274C
 $statusIcon = switch ($statusTag) {
-  "OK" { "✅" }
-  "WARN" { "⚠️" }
-  "FAIL" { "❌" }
+  "OK" { $iconOk }
+  "WARN" { $iconWarn }
+  "FAIL" { $iconFail }
 }
 
+$emojiAlgo = [System.Char]::ConvertFromUtf32(0x1F4CA)
+$emojiResearch = [System.Char]::ConvertFromUtf32(0x1F4DA)
+$emojiCommander = [System.Char]::ConvertFromUtf32(0x1F451)
 $titleLine = switch ($mode) {
-  'quandalf' { '📚 Researching' }
-  'oragorn' { '👑 Commander Actions' }
-  default { '📊 Algo Testing' }
+  'quandalf' { $emojiResearch + ' Researching' }
+  'oragorn' { $emojiCommander + ' Commander Actions' }
+  default { $emojiAlgo + ' Algo Testing' }
 }
 
 $lines = @()
