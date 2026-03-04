@@ -133,7 +133,10 @@ function Ensure-Lock($name) {
       }
     }
   }
-  if (Test-Path $lockPath) { throw "Lock exists: $lockPath" }
+  if (Test-Path $lockPath) {
+    Emit-Summary 'AUTOPILOT_LOCK_SKIP' ('Autopilot lock present; skipping cycle: ' + $lockPath) 'INFO' 'Autopilot'
+    return ''
+  }
   Set-Content -Path $lockPath -Value ([DateTime]::UtcNow.ToString('o')) -Encoding utf8
   return $lockPath
 }
@@ -597,6 +600,9 @@ try {
   }
 
   $lock = Ensure-Lock 'autopilot_worker'
+  if ([string]::IsNullOrWhiteSpace([string]$lock)) {
+    exit 0
+  }
 
   if ($RunYouTubeWatcher -and -not $DryRun) {
     try {
@@ -1382,6 +1388,10 @@ try {
           $directiveBackfillSpecsGenerated += 1
         }
       }
+    }
+
+    if (-not $DryRun -and $batchExecuted -eq 0) {
+      Emit-Summary 'BACKTEST_ATTEMPTED_NO_RUNS' ('Backtest attempted but zero executed: bundles=' + [int]$bundlesProcessed + ' max_bundles_per_run=' + [int]$MaxBundlesPerRun) 'WARN' 'Backtester'
     }
   }
 

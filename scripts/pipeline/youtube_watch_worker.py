@@ -30,6 +30,7 @@ SHORTS_MAX_SECONDS = 90
 MAX_VIDEO_SECONDS = 3600
 ENABLE_DURATION_CHECK = (os.getenv('YT_ENABLE_DURATION_CHECK', '1').strip() == '1')
 ENABLE_DIRECT_TELEGRAM_ALERTS = (os.getenv('YT_ENABLE_DIRECT_ALERTS', '0').strip() == '1')
+YT_FETCH_FAIL_DISABLE_THRESHOLD = max(1, int(os.getenv('YT_FETCH_FAIL_DISABLE_THRESHOLD', '3')))
 CATEGORY_CONFIG_PATH = ROOT / 'data' / 'state' / 'youtube_channel_categories.json'
 CONCEPT_CATEGORIES = {'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT'}
 AUTO_CLASSIFY_CATEGORIES = ['INDICATOR_CONCEPT', 'TRADING_CONCEPT', 'NUANCED_CONCEPT', 'MARKET_STRUCTURE', 'RISK_EXECUTION', 'MACRO_CONTEXT']
@@ -163,6 +164,31 @@ def _notify_watch_skip(reason_code: str, title: str, duration_s: int):
     try:
         subprocess.run(
             [PY, 'scripts/tg_notify.py', msg, '--reason-code', reason_code],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except Exception:
+        pass
+
+
+def _notify_watch_fetch_fail(channel_name: str, channel_id: str, detail: str, fail_count: int, disabled: bool = False):
+    """Always alert the operator DM when a channel fetch fails (or is auto-disabled)."""
+    target_dm = (os.getenv('TELEGRAM_CMD_CHAT_ID') or '').strip()
+    if not target_dm:
+        return
+    status = 'AUTO-DISABLED' if disabled else 'FETCH_FAIL'
+    msg = (
+        f"YT channel issue [{status}]\n"
+        f"channel={channel_name} ({channel_id})\n"
+        f"consecutive_failures={fail_count}\n"
+        f"detail={str(detail)[:260]}"
+    )
+    reason = 'YT_CHANNEL_AUTO_DISABLED' if disabled else 'YT_WATCH_FETCH_FAIL'
+    try:
+        subprocess.run(
+            [PY, 'scripts/tg_notify.py', msg, '--reason-code', reason, '--chat-id', target_dm],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -477,9 +503,29 @@ def main() -> int:
         channels_checked += 1
         try:
             latest = _fetch_latest(channel_id)
+            # reset fetch-fail streak on successful fetch
+            ch['fetch_fail_count'] = 0
+            ch.pop('last_fetch_fail_at', None)
+            ch.pop('last_fetch_fail_detail', None)
+            ch.pop('disabled_reason', None)
         except Exception as e:
             failed += 1
-            _log('YT_WATCH_FETCH_FAIL', 'YT_WATCH_FETCH_FAIL', f"channel={channel_id} detail={str(e)[:180]}", 'WARN')
+            fail_count = int(ch.get('fetch_fail_count', 0) or 0) + 1
+            ch['fetch_fail_count'] = fail_count
+            ch['last_fetch_fail_at'] = datetime.now(UTC).isoformat()
+            ch['last_fetch_fail_detail'] = str(e)[:260]
+            _log('YT_WATCH_FETCH_FAIL', 'YT_WATCH_FETCH_FAIL', f"channel={channel_id} detail={str(e)[:180]} fail_count={fail_count}", 'WARN')
+
+            # Notify operator DM on first failure and again if we auto-disable.
+            if fail_count == 1:
+                _notify_watch_fetch_fail(str(ch.get('name', 'unknown')), channel_id, str(e), fail_count, disabled=False)
+
+            if fail_count >= YT_FETCH_FAIL_DISABLE_THRESHOLD:
+                ch['enabled'] = False
+                ch['disabled_reason'] = f"AUTO_DISABLED_FETCH_FAIL_{fail_count}"
+                _log('YT_CHANNEL_AUTO_DISABLED', 'YT_CHANNEL_AUTO_DISABLED', f"channel={channel_id} fail_count={fail_count}", 'WARN')
+                _notify_watch_fetch_fail(str(ch.get('name', 'unknown')), channel_id, str(e), fail_count, disabled=True)
+
             continue
         if latest and not ch.get('last_seen_video_id'):
             ch['last_seen_video_id'] = latest[0]['video_id']
