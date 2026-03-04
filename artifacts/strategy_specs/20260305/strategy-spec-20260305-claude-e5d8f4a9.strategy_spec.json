@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-e5d8f4a9",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T08:30:01Z",
+  "edge_hypothesis": "CCI measures cyclical position — exits from extreme zones (-100/+100) mark cyclical turning points, ideal for mean-reversion. KAMA adapts its speed to market noise, acting as an adaptive filter that self-adjusts across regimes. Ranging regimes produce the clearest CCI cycles (proven: ranging = universal base for all ACCEPTs). This combines two untested-together indicators with strong theoretical fit for the ranging-alpha thesis.",
+  "variants": [
+    {
+      "name": "cci_kama_reversal_8to1",
+      "description": "CCI exits extreme zone + KAMA confirms direction. Mean-reversion at cyclical turning points with adaptive noise filter. 8:1 R:R.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above -100",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below 100",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit when CCI returns to opposite extreme.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "Adaptive MA — self-adjusts speed to noise level"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "Cyclical position indicator — extreme exits mark reversals"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "cci_kama_deep_extreme_8to1",
+      "description": "Deeper CCI extreme threshold (-150/+150). Fewer but higher-conviction entries at deeper oversold/overbought zones.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above -150",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below 150",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit when CCI returns to opposite extreme.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "Deeper extreme = higher conviction but fewer trades."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "Adaptive MA baseline"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "Deep cyclical extreme filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    },
+    {
+      "name": "cci_kama_reversal_tight",
+      "description": "Tighter stop (1.0 ATR) with standard CCI extremes. Tests whether KAMA noise adaptation supports tight risk management.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above -100",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below 100",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit when CCI returns to opposite extreme.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "Tight 1.0 ATR stop for reduced drawdown."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 25}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "Adaptive MA baseline"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "Standard cyclical extreme reversal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["ema_rsi_atr"]
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD", "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels", "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"],
+  "backtester_executable_indicator_map": {"EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma", "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands", "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr", "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend", "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop", "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"},
+  "indicator_roles": {"baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"], "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"], "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]}
+}

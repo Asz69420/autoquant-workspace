@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-c9b0e2f7",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T08:30:02Z",
+  "edge_hypothesis": "T3 triple-smoothed EMA has the lowest lag-to-smoothness ratio of any available MA — it eliminates choppy crossover noise that plagues EMA_9/EMA_21 (marked exhausted). EMA_200 as a directional gate amplifies transitional alpha (proven: EMA200 Vortex v2 trans PF=4.321 RECORD). Hypothesis: price crossing T3 while EMA200 confirms macro direction catches trend transitions with minimal false signals. This is a new approach to EMA200 gating — previous success was with Vortex, now testing with smoothed-MA crossover.",
+  "variants": [
+    {
+      "name": "t3_ema200_gate_8to1",
+      "description": "Price crosses T3 triple-smoothed MA with EMA200 macro direction filter. 8:1 R:R. Tests whether T3 smoothing + EMA200 gate replicates the transitional alpha amplification seen in Vortex variants.",
+      "entry_long": [
+        "close crosses_above T3_10_0.7",
+        "close > EMA_200"
+      ],
+      "entry_short": [
+        "close crosses_below T3_10_0.7",
+        "close < EMA_200"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on price crossing back below/above T3.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "T3", "role": "baseline", "notes": "Triple-smoothed EMA — lowest lag-to-smoothness ratio"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA200 macro direction gate — amplifies transitional alpha"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "t3_macdh_confirmation_8to1",
+      "description": "T3 crossover confirmed by MACD histogram momentum. Alternative confirmation signal — tests whether momentum confirmation outperforms macro direction gating.",
+      "entry_long": [
+        "close crosses_above T3_10_0.7",
+        "MACDh_12_26_9 > 0"
+      ],
+      "entry_short": [
+        "close crosses_below T3_10_0.7",
+        "MACDh_12_26_9 < 0"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on price crossing back below/above T3.",
+        "Exit on MACD histogram reversing sign.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "MACD histogram confirmation reduces false entries in choppy regimes."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "T3", "role": "baseline", "notes": "Triple-smoothed EMA crossover signal"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "Histogram momentum confirmation"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    },
+    {
+      "name": "t3_ema200_tight_stop",
+      "description": "EMA200 gate variant with tighter stop (1.0 ATR). Tests if T3 smoothing provides clean enough entries for tight risk management.",
+      "entry_long": [
+        "close crosses_above T3_10_0.7",
+        "close > EMA_200"
+      ],
+      "entry_short": [
+        "close crosses_below T3_10_0.7",
+        "close < EMA_200"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=EMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on price crossing back below/above T3.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "Tight 1.0 ATR stop — tests if T3 smoothing supports tight risk."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 25}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "T3", "role": "baseline", "notes": "Triple-smoothed EMA crossover"},
+        {"indicator": "EMA", "role": "confirmation", "notes": "EMA200 macro direction gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["ema_crossover", "macd_confirmation"]
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD", "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels", "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"],
+  "backtester_executable_indicator_map": {"EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma", "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands", "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr", "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend", "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop", "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"},
+  "indicator_roles": {"baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"], "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"], "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]}
+}
