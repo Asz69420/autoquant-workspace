@@ -7,8 +7,8 @@
                                    "artifacts/indicators/20260304/indicator-20260304-dd50f02e1662.indicator_record.json"
                                ],
     "linkmap_path":  "artifacts/links/20260304/research-20260304-8e7d0e3fd71c.linkmap.json",
-    "status":  "IN_PROGRESS",
-    "last_processed_at":  "2026-03-04T11:30:07.1560502Z",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-04T11:31:10.9244448Z",
     "attempts":  1,
-    "last_error":  null
+    "last_error":  "ADAPTIVE_PROMOTION_GATE"
 }

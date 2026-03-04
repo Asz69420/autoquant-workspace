@@ -1,7 +1,5 @@
 ﻿{
-    "updated_at":  "2026-03-04T11:16:52.7724324Z",
-    "quandalf_queue_ready":  5,
-    "quandalf_queue_generated":  10,
-    "frodex_queue_consumed":  5,
-    "frodex_queue_backlog":  5
+    "updated_at":  "2026-03-04T12:00:06.6536945Z",
+    "quandalf_queue_generated":  0,
+    "queue_backlog":  0
 }
