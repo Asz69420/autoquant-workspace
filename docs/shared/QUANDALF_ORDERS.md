@@ -5,7 +5,7 @@
 
 ## Current Order
 
-**Status:** NEW
+**Status:** COMPLETE
 **Created:** 2026-03-04
 **Order ID:** QO-2026-03-04-KICKSTART-01
 **Intent:** Kickstart pipeline flow for the next **2 Frodex cycles** by forcing fresh, bounded exploration while preserving strict risk controls.
