@@ -1,5 +1,9 @@
 Set-Location -LiteralPath 'C:\Users\Clamps\.openclaw\workspace'
-# Quandalf-only strategy generation mode:
-# keep Frodex operational tasks, disable bundle-driven spec creation,
-# and keep TV/catalog strategy routing out of the 15m Frodex autopilot loop.
-& '.\scripts\pipeline\autopilot_worker.ps1' -RepoHygieneMode FAIL -MaxBundlesPerRun 0
+
+$lockPath = 'data\state\locks\autopilot_worker.lock'
+if (Test-Path -LiteralPath $lockPath) {
+  Write-Host 'Autopilot worker lock present; skipping this cycle cleanly.'
+  exit 0
+}
+
+& '.\scripts\pipeline\autopilot_worker.ps1' -RepoHygieneMode FAIL -MaxBundlesPerRun 3
