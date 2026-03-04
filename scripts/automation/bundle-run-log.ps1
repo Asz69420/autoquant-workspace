@@ -190,14 +190,42 @@ if ($mainWithRun.Count -gt 0) {
     $grouped = @($groupRows | Group-Object key)
     $latest = $null
     $latestTs = $null
-    foreach ($g in $grouped) {
-      $endTs = @($g.Group | ForEach-Object { $_.ts } | Sort-Object)[-1]
-      if ($null -eq $latestTs -or $endTs -gt $latestTs) {
-        $latestTs = $endTs
-        $latest = $g.Name
+
+    if ($mode -eq 'frodex') {
+      $terminalActions = @('LAB_SUMMARY','AUTOPILOT_EXCEPTION')
+      $terminalCandidates = @()
+      foreach ($ev in $allTailEvents) {
+        $rid = [string]$ev.run_id
+        $key = Get-RunGroupKey -RunId $rid -Mode $mode
+        if ([string]::IsNullOrWhiteSpace($key)) { continue }
+        $act = [string]$ev.action
+        if (-not ($terminalActions -contains $act)) { continue }
+        $ts = $null
+        if ($ev.PSObject.Properties.Name -contains '__ts_utc') { $ts = $ev.__ts_utc }
+        if ($null -eq $ts) { $ts = Get-EventUtcTimestamp $ev }
+        if ($null -eq $ts) { continue }
+        if ($ts -ge $windowStartUtc -and $ts -lt $windowEndUtc) {
+          $terminalCandidates += [PSCustomObject]@{ key = $key; ts = $ts }
+        }
+      }
+      if ($terminalCandidates.Count -gt 0) {
+        $latestTerminal = @($terminalCandidates | Sort-Object ts | Select-Object -Last 1)
+        if ($latestTerminal.Count -gt 0) {
+          $selectedRunKey = [string]$latestTerminal[0].key
+        }
       }
     }
-    $selectedRunKey = $latest
+
+    if ([string]::IsNullOrWhiteSpace($selectedRunKey)) {
+      foreach ($g in $grouped) {
+        $endTs = @($g.Group | ForEach-Object { $_.ts } | Sort-Object)[-1]
+        if ($null -eq $latestTs -or $endTs -gt $latestTs) {
+          $latestTs = $endTs
+          $latest = $g.Name
+        }
+      }
+      $selectedRunKey = $latest
+    }
   }
 }
 
@@ -289,6 +317,7 @@ foreach ($e in $reportEvents) {
     "BUNDLE_SELECT_DIAG" {
       if ($sum -match 'selected=(\d+)') { $bundlesSelected = [int]$matches[1] }
       elseif ($sum -match 'processable=(\d+)') { $bundlesSelected = [int]$matches[1] }
+      elseif ($sum -match 'new_count=(\d+)') { $bundlesSelected = [int]$matches[1] }
     }
     "BUNDLE_PROCESS_START" {
       $bundleStarts++
@@ -480,10 +509,10 @@ if ($mode -eq 'quandalf') {
     $lines += "Sub-agents failed: $failed"
   } else {
     $submittedCount = 0
-    if ($bundlesSelected -gt 0) {
-      $submittedCount = $bundlesSelected
-    } elseif ($bundleStarts -gt 0) {
+    if ($bundleStarts -gt 0) {
       $submittedCount = $bundleStarts
+    } elseif ($bundlesSelected -gt 0) {
+      $submittedCount = $bundlesSelected
     } else {
       $submittedCount = ($specOk + $specBlocked + $specReview)
     }
