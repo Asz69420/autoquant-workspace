@@ -523,8 +523,7 @@ if ($mode -eq 'quandalf') {
 
     $lines += "Ingested: $ingested"
     $lines += "Submitted: $submittedCount"
-    $lines += "Validated: $specOk"
-    $lines += "Backtests: $batchExecutedTotal"
+        $lines += "Backtests: $batchExecutedTotal"
     $lines += "Promoted: $promotionOk"
     $lines += "Forwardtests: $forwardRuns"
     $lines += "Queue lag: $outboxLag"
@@ -753,4 +752,5 @@ if ($skipDuplicateSend) {
 
 $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8
 Write-Host "Done"
+
 
