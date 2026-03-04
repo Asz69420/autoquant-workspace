@@ -2,6 +2,8 @@
   [switch]$DryRun,
   [int]$MaxRefinementsPerRun = 1,
   [int]$MaxBundlesPerRun = 3,
+  [int]$MinStrategiesPerRun = 3,
+  [int]$MaxStrategiesPerRun = 10,
   [switch]$RunYouTubeWatcher,
   [switch]$RunTVCatalogWorker,
   [switch]$ForceRecombine,
@@ -16,6 +18,11 @@ try { if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorActio
 
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 Set-Location -LiteralPath $RepoRoot
+
+if ($MinStrategiesPerRun -lt 0) { $MinStrategiesPerRun = 0 }
+if ($MaxStrategiesPerRun -lt 1) { $MaxStrategiesPerRun = 1 }
+if ($MinStrategiesPerRun -gt $MaxStrategiesPerRun) { $MinStrategiesPerRun = $MaxStrategiesPerRun }
+if ($MaxBundlesPerRun -gt $MaxStrategiesPerRun) { $MaxBundlesPerRun = $MaxStrategiesPerRun }
 
 $adaptivePolicyPath = Join-Path $RepoRoot 'config\adaptive_execution_policy.json'
 $adaptiveGateScript = Join-Path $RepoRoot 'scripts\pipeline\evaluate_promotion_gate.py'
@@ -1438,10 +1445,42 @@ $summary = [ordered]@{
   insight_failed = $insightFailed
   recombine_created = $recombineCreated
   recombine_bundle_path = $recombineBundlePath
+  min_strategies_per_run = [int]$MinStrategiesPerRun
+  max_strategies_per_run = [int]$MaxStrategiesPerRun
+  strategy_contract_ok = $true
+  strategy_contract_shortfall = 0
+}
+
+$strategyShortfall = [Math]::Max(0, [int]$MinStrategiesPerRun - [int]$candidatesIngested)
+if ($strategyShortfall -gt 0) {
+  $summary.strategy_contract_ok = $false
+  $summary.strategy_contract_shortfall = [int]$strategyShortfall
+  if (-not $DryRun) {
+    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: ingested=" + [int]$candidatesIngested + " min=" + [int]$MinStrategiesPerRun + " max=" + [int]$MaxStrategiesPerRun + " shortfall=" + [int]$strategyShortfall) 'FAIL' 'Autopilot'
+    $errorsCount += 1
+    try {
+      $rcKick = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
+      $kickCreated = 0
+      try { $kickCreated = [int]$rcKick.created } catch { $kickCreated = 0 }
+      if (($kickCreated -ge 1 -or $rcKick.bundle_path) -and $rcKick.bundle_path) {
+        Emit-Summary 'STRATEGY_KICKSTART_TRIGGERED' ('Kickstart seed generated for next cycle: ' + [string]$rcKick.bundle_path) 'WARN' 'Autopilot'
+      } else {
+        Emit-Summary 'STRATEGY_KICKSTART_TRIGGERED' 'Kickstart seed attempt produced no bundle' 'WARN' 'Autopilot'
+      }
+    } catch {
+      Emit-Summary 'STRATEGY_KICKSTART_TRIGGERED' 'Kickstart seed generation failed' 'FAIL' 'Autopilot'
+    }
+  }
+} elseif ([int]$candidatesIngested -gt [int]$MaxStrategiesPerRun) {
+  $summary.strategy_contract_ok = $false
+  if (-not $DryRun) {
+    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: ingested=" + [int]$candidatesIngested + " exceeds max=" + [int]$MaxStrategiesPerRun) 'WARN' 'Autopilot'
+  }
 }
 
 $stateDir = 'data/state'
 if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir | Out-Null }
+$summary.errors_count = $errorsCount
 
 $countersPath = Join-Path $stateDir 'autopilot_counters.json'
 $counters = [ordered]@{ throughput_drought_cycles = 0; drought_cycles = 0; updated_at = [DateTime]::UtcNow.ToString('o') }
