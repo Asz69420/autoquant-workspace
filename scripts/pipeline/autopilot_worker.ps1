@@ -1097,7 +1097,8 @@ try {
     Emit-Summary 'BACKFILL_DIAG' ('Entered backfill block checkpoint: batchExecuted=' + [string]$batchExecuted + ' bundlesProcessed=' + [string]$bundlesProcessed + ' batchEmitted=' + [string]$batchEmitted) 'OK' 'Autopilot'
   }
 
-  if (-not $DryRun -and $batchExecuted -eq 0) {
+  # In Quandalf-only mode (MaxBundlesPerRun=0), skip legacy backfill replay to avoid directive regeneration loops.
+  if (-not $DryRun -and $batchExecuted -eq 0 -and $MaxBundlesPerRun -gt 0) {
     try {
       $specIndexPath = 'artifacts/strategy_specs/INDEX.json'
       $runIndexPath = 'artifacts/library/RUN_INDEX.json'
