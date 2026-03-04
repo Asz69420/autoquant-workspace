@@ -230,6 +230,7 @@ if ($mainWithRun.Count -gt 0) {
 
 if (-not [string]::IsNullOrWhiteSpace($selectedRunKey)) {
   $runTs = @()
+  $handoffTs = @()
   foreach ($ev in $allTailEvents) {
     $rid = [string]$ev.run_id
     $key = Get-RunGroupKey -RunId $rid -Mode $mode
@@ -237,11 +238,26 @@ if (-not [string]::IsNullOrWhiteSpace($selectedRunKey)) {
     $ts = $null
     if ($ev.PSObject.Properties.Name -contains '__ts_utc') { $ts = $ev.__ts_utc }
     if ($null -eq $ts) { $ts = Get-EventUtcTimestamp $ev }
-    if ($null -ne $ts) { $runTs += $ts }
+    if ($null -eq $ts) { continue }
+
+    $runTs += $ts
+    if ($mode -eq 'frodex' -and [string]$ev.action -eq 'DECISION_HANDOFF') {
+      $handoffTs += $ts
+    }
   }
+
   $runTs = @($runTs | Sort-Object)
+  $handoffTs = @($handoffTs | Sort-Object)
+
   if ($runTs.Count -ge 2) {
-    $runDuration = ($runTs[-1] - $runTs[0])
+    $startTs = $runTs[0]
+    $endTs = $runTs[-1]
+    if ($mode -eq 'frodex' -and $handoffTs.Count -gt 0) {
+      # Frodex duration contract: cycle start -> first handoff emitted.
+      $endTs = $handoffTs[0]
+    }
+
+    $runDuration = ($endTs - $startTs)
     if ($runDuration.TotalSeconds -gt 0) {
       $durationLabel = Format-CompactDuration $runDuration
     }

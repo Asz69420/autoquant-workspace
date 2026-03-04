@@ -129,6 +129,31 @@ function Get-RunSummaryMetricTotal {
   return [int]$total
 }
 
+function Get-RunHandoffTimestampUtc {
+  param([string]$RunId)
+  if ([string]::IsNullOrWhiteSpace($RunId)) { return $null }
+  if (-not (Test-Path -LiteralPath $actionsPath)) { return $null }
+
+  $hits = @()
+  try {
+    $rows = Get-Content -LiteralPath $actionsPath -Tail 4000 -Encoding UTF8
+    foreach ($line in $rows) {
+      try { $e = $line | ConvertFrom-Json } catch { continue }
+      if ([string]$e.action -ne 'DECISION_HANDOFF') { continue }
+      $rid = [string]$e.run_id
+      if (-not $rid.StartsWith($RunId + '-')) { continue }
+      $tsRaw = [string]$e.ts_iso
+      if ([string]::IsNullOrWhiteSpace($tsRaw)) { continue }
+      try {
+        $hits += [DateTime]::Parse($tsRaw).ToUniversalTime()
+      } catch {}
+    }
+  } catch {}
+
+  if (@($hits).Count -eq 0) { return $null }
+  return (@($hits | Sort-Object) | Select-Object -First 1)
+}
+
 function Get-LiveReviewInfo {
   param([string]$RunId = '')
   if (-not (Test-Path -LiteralPath $autopilotSummaryPath)) {
@@ -339,7 +364,20 @@ try {
 
   if ($entry) {
     $statusWord = [string]$entry.status
+
+    # Quandalf duration contract: handoff emitted -> quandalf run finished.
     $durLabel = Format-DurationLabelFromMs -DurationMs ([Nullable[Int64]]$entry.durationMs)
+    $handoffTsUtc = Get-RunHandoffTimestampUtc -RunId $latestRunId
+    if ($null -ne $handoffTsUtc -and $null -ne $entry.ts) {
+      try {
+        $finishUtc = [DateTimeOffset]::FromUnixTimeMilliseconds([int64]$entry.ts).UtcDateTime
+        $deltaMs = [int64][Math]::Round(($finishUtc - $handoffTsUtc).TotalMilliseconds)
+        if ($deltaMs -ge 0) {
+          $durLabel = Format-DurationLabelFromMs -DurationMs ([Nullable[Int64]]$deltaMs)
+        }
+      } catch {}
+    }
+
     $summary = [string]$entry.summary
     $liveNow = Get-LiveReviewInfo -RunId $latestRunId
     $qGenNow = 0
