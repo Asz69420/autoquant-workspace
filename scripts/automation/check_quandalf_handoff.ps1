@@ -267,7 +267,6 @@ function Send-QuandalfCard {
     else { $queuedValue = [int]$orderInfo.queued }
   } catch { $queuedValue = [int]$orderInfo.queued }
 
-  $lines += ('Reviewed: ' + [int]$resultsInfo.reviewed)
   $lines += ('Advanced: ' + [int]$resultsInfo.advanced)
   $lines += ('Passed: ' + [int]$resultsInfo.passed)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
