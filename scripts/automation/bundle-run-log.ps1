@@ -172,7 +172,8 @@ function Get-RunGroupKey {
 $durationLabel = '<1s'
 $selectedRunKey = $null
 
-$mainWithRun = @($mainEvents | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.run_id) })
+$runSourceEvents = if ($mode -eq 'frodex') { $allTailEvents } else { $mainEvents }
+$mainWithRun = @($runSourceEvents | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.run_id) })
 if ($mainWithRun.Count -gt 0) {
   $groupRows = @()
   foreach ($ev in $mainWithRun) {
@@ -204,9 +205,7 @@ if ($mainWithRun.Count -gt 0) {
         if ($ev.PSObject.Properties.Name -contains '__ts_utc') { $ts = $ev.__ts_utc }
         if ($null -eq $ts) { $ts = Get-EventUtcTimestamp $ev }
         if ($null -eq $ts) { continue }
-        if ($ts -ge $windowStartUtc -and $ts -lt $windowEndUtc) {
-          $terminalCandidates += [PSCustomObject]@{ key = $key; ts = $ts }
-        }
+        $terminalCandidates += [PSCustomObject]@{ key = $key; ts = $ts }
       }
       if ($terminalCandidates.Count -gt 0) {
         $latestTerminal = @($terminalCandidates | Sort-Object ts | Select-Object -Last 1)
@@ -635,6 +634,13 @@ $escapedBody = Escape-Html -Text $messageBody
 if ($escapedBody.Length -gt 985) { $escapedBody = $escapedBody.Substring(0, 982) + "..." }
 $caption = "<pre>" + $escapedBody + "</pre>"
 
+if ($mode -eq 'frodex' -and [string]::IsNullOrWhiteSpace($selectedRunKey)) {
+  Write-Host "No completed Frodex run found; skipping bundle send"
+  $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8
+  Write-Host "Done"
+  exit 0
+}
+
 # --- Duplicate guard (same payload in short window) ---
 $reportStatePath = "$ROOT\data\state\bundle_report_state.json"
 $reportState = @{}
@@ -666,7 +672,14 @@ try {
   if ($node) {
     $prevHash = [string]$node.hash
     $prevAt = [string]$node.sent_at
-    if (-not [string]::IsNullOrWhiteSpace($prevAt)) {
+    $prevRunId = [string]$node.last_run_id
+
+    if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey) -and $prevRunId -eq $selectedRunKey) {
+      $skipDuplicateSend = $true
+    }
+
+    $isRunDrivenFrodex = ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey))
+    if (-not $skipDuplicateSend -and -not $isRunDrivenFrodex -and -not [string]::IsNullOrWhiteSpace($prevAt)) {
       $prevDt = [DateTime]::Parse($prevAt).ToUniversalTime()
       $ageSec = ([DateTime]::UtcNow - $prevDt).TotalSeconds
       if ($ageSec -lt $minSendIntervalSeconds) {
@@ -708,7 +721,7 @@ if ($skipDuplicateSend) {
 
     try {
       Invoke-RestMethod -Uri $uri -Method Post -Body $fullBody -ContentType "multipart/form-data; boundary=$boundary" | Out-Null
-      $reportState[$stateKey] = @{ hash = $hashHex; sent_at = [DateTime]::UtcNow.ToString('o') }
+      $reportState[$stateKey] = @{ hash = $hashHex; sent_at = [DateTime]::UtcNow.ToString('o'); last_run_id = $selectedRunKey }
       ($reportState | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $reportStatePath -Encoding utf8
       Write-Host "Bundle sent to log channel with banner"
     } catch {
