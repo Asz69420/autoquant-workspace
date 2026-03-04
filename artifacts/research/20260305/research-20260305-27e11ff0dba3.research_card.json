@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-27e11ff0dba3",
+  "created_at": "2026-03-04T23:00:03.234306Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/pOokQELY/",
+  "title": "CCL JANG 1H Close Turn Signal",
+  "author": "wtr7848",
+  "summary_bullets": [
+    "TradingView indicator: CCL JANG 1H Close Turn Signal by wtr7848.",
+    "Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Source URL: https://www.tradingview.com/script/pOokQELY/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: CCL JANG 1H Close Turn Signal by wtr7848.",
+      "note": "Meaning: TradingView indicator: CCL JANG 1H Close Turn Signal by wtr7848."
+    },
+    {
+      "timestamp": null,
+      "quote": "Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Designed for 1H clos",
+      "note": "Meaning: Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals a"
+    }
+  ],
+  "extracted_rules": [
+    "Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Source URL: https://www.tradingview.com/script/pOokQELY/."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Designed for 1H close-based trend turns "
+    }
+  ],
+  "explicit_conditions": [
+    "Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Designed for 1H close-based trend turns Filters temporary counter-trend turns Keeps original trend signal when recovery confirms continuation Signals are confirmed on candle close Source URL: https://www.tradingview.com/script/pOokQELY/."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "1h"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-27e11ff0dba3.raw.txt",
+  "sha256": "b1a23efafb07a38c3c967ad41995dffc3fd22a4612a4ffc25b17afe3ede0e9d4",
+  "truncated": false
+}

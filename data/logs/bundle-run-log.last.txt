@@ -1,8 +1,8 @@
 ﻿🍳 Cooking
-Status: ❌ | Duration: 1s
+Status: ⚠️ | Duration: 3m 17s
 ○───activity─────────────────────
-Waiting: 0
-Backtests: 0
+Waiting: 2
+Backtests: 15
 Forwardtests: 0
 ○───note─────────────────────────
-System status is blocked this cycle. I hit 1 issue(s) in this window and need a quick review.
+System status needs attention this cycle. Cycle complete: 15 backtests run; no strong promotion yet.
