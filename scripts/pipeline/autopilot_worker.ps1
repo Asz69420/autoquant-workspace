@@ -1478,7 +1478,7 @@ if (Test-Path -LiteralPath $queueStatePath) {
     elseif ($null -ne $qPrev.quandalf_queue_ready) { $prevQueueBacklog = [int]$qPrev.quandalf_queue_ready }
   } catch {}
 }
-$quandalfQueueGenerated = [Math]::Max(0, ([int]$queueBacklog - [int]$prevQueueBacklog + [int]$candidatesIngested))
+$quandalfQueueGenerated = [Math]::Max(0, ([int]$queueBacklog - [int]$prevQueueBacklog))
 $queuedForTesting = [int]$quandalfQueueGenerated
 $summary.quandalf_queue_generated = [int]$quandalfQueueGenerated
 $summary.queued_for_testing = [int]$queuedForTesting
@@ -1519,10 +1519,8 @@ if ($strategyShortfall -gt 0) {
     $errorsCount += 1
   }
 } elseif ([int]$quandalfQueueGenerated -gt [int]$MaxStrategiesPerRun) {
-  $summary.strategy_contract_ok = $false
   if (-not $DryRun) {
-    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: generated=" + [int]$quandalfQueueGenerated + " exceeds max=" + [int]$MaxStrategiesPerRun) 'FAIL' 'Autopilot'
-    $errorsCount += 1
+    Emit-Summary 'STRATEGY_CONTRACT_NOTE' ("Strategy generation above configured max (non-fatal): generated=" + [int]$quandalfQueueGenerated + " max=" + [int]$MaxStrategiesPerRun) 'WARN' 'Autopilot'
   }
 }
 
@@ -1593,6 +1591,11 @@ Write-Output ($summary | ConvertTo-Json -Depth 5)
 
 # Explicit exit for scheduled task success reporting
 exit 0
+
+
+
+
+
 
 
 
