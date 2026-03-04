@@ -413,8 +413,8 @@ if ($mode -eq 'quandalf') {
     $lines += "Passed: $specOk"
     $lines += "Backtests: $batchExecutedTotal"
     $lines += "Promoted: $promotionOk"
-    $lines += "Queue lag: $outboxLag"
     $lines += "Forwardtests: $forwardRuns"
+    $lines += "Queue lag: $outboxLag"
   }
 }
 # Shared bottom note block (up to 3 lines)
