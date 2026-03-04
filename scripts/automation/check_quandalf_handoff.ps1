@@ -109,21 +109,19 @@ function Get-LiveReviewInfo {
     $errors = [int]($s.errors_count)
 
     $qGenerated = 0
-    $qReady = 0
-    $qConsumed = 0
     $qBacklog = 0
     try { if ($null -ne $s.quandalf_queue_generated) { $qGenerated = [int]$s.quandalf_queue_generated } } catch {}
-    try { if ($null -ne $s.quandalf_queue_ready) { $qReady = [int]$s.quandalf_queue_ready } } catch {}
-    try { if ($null -ne $s.frodex_queue_consumed) { $qConsumed = [int]$s.frodex_queue_consumed } } catch {}
-    try { if ($null -ne $s.frodex_queue_backlog) { $qBacklog = [int]$s.frodex_queue_backlog } } catch {}
+    try {
+      if ($null -ne $s.queue_backlog) { $qBacklog = [int]$s.queue_backlog }
+      elseif ($null -ne $s.frodex_queue_backlog) { $qBacklog = [int]$s.frodex_queue_backlog }
+      elseif ($null -ne $s.quandalf_queue_ready) { $qBacklog = [int]$s.quandalf_queue_ready }
+    } catch {}
 
     return [PSCustomObject]@{
       reviewed = $ingested
       advanced = $passing
       aborted = $errors
       q_generated = $qGenerated
-      q_ready = $qReady
-      q_consumed = $qConsumed
       q_backlog = $qBacklog
       is_live = $true
     }
@@ -169,10 +167,8 @@ function Send-QuandalfCard {
   $lines += ('Advanced: ' + [int]$resultsInfo.advanced)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
   $lines += ('Generated: ' + [int]$resultsInfo.q_generated)
-  $lines += ('Ready: ' + [int]$resultsInfo.q_ready)
-  $lines += ('Consumed: ' + [int]$resultsInfo.q_consumed)
-  $lines += ('Backlog: ' + [int]$resultsInfo.q_backlog)
-  $lines += ('Queued: ' + [int]$orderInfo.queued)
+  $lines += ('Queued for Frodex: ' + [int]$resultsInfo.q_backlog)
+  $lines += ('Queued Orders: ' + [int]$orderInfo.queued)
   $lines += $noteDivider
   $lines += $NoteSentence
 
@@ -285,13 +281,26 @@ try {
     $statusWord = [string]$entry.status
     $durLabel = Format-DurationLabelFromMs -DurationMs ([Nullable[Int64]]$entry.durationMs)
     $summary = [string]$entry.summary
+    $liveNow = Get-LiveReviewInfo
+    $qGenNow = 0
+    $qBacklogNow = 0
+    if ($null -ne $liveNow) {
+      try { $qGenNow = [int]$liveNow.q_generated } catch {}
+      try { $qBacklogNow = [int]$liveNow.q_backlog } catch {}
+    }
 
-    if ($summary -match '(?i)no pending order') {
-      $noteSentence = 'There was no queued strategy order for this cycle, so I reviewed outcomes and stayed ready for the next completed run.'
-    } elseif ($statusWord -ne 'ok') {
-      $noteSentence = 'I hit an execution issue in this reflection cycle and captured it for immediate follow-up.'
+    if ($statusWord -ne 'ok') {
+      $noteSentence = 'Cycle hit an execution issue; remediation is required before throughput can normalize.'
+    } elseif ($qGenNow -eq 0 -and $qBacklogNow -eq 0) {
+      $noteSentence = 'No new strategies were generated and queue is empty — intake is currently stalled.'
+    } elseif ($qGenNow -eq 0 -and $qBacklogNow -gt 0) {
+      $noteSentence = ('No new generation this cycle; queued backlog remains ' + [int]$qBacklogNow + ' for Frodex to process.')
     } else {
-      $noteSentence = 'I processed the queued strategy work and refreshed the result set for the next decision cycle.'
+      $noteSentence = ('Generated ' + [int]$qGenNow + ' new strategies; queued backlog is now ' + [int]$qBacklogNow + '.')
+    }
+
+    if (($summary -match '(?i)no pending order') -and $qGenNow -eq 0 -and $qBacklogNow -eq 0) {
+      $noteSentence = 'No pending strategy order and no new queue activity this cycle.'
     }
   } else {
     $durLabel = Format-DurationLabelFromMs -DurationMs ([Nullable[Int64]]((New-TimeSpan -Start $triggerStarted -End (Get-Date)).TotalMilliseconds))

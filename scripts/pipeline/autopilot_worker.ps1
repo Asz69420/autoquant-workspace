@@ -1457,26 +1457,22 @@ $summary = [ordered]@{
   strategy_contract_ok = $true
   strategy_contract_shortfall = 0
   quandalf_queue_generated = 0
-  quandalf_queue_ready = 0
-  frodex_queue_consumed = 0
-  frodex_queue_backlog = 0
+  queue_backlog = 0
 }
 
-$frodexQueueConsumed = [int]$candidatesIngested
-$frodexQueueBacklog = [int]$quandalfQueueReady
+$queueBacklog = [int]$quandalfQueueReady
 $queueStatePath = 'data/state/queue_telemetry_state.json'
-$prevQueueReady = 0
+$prevQueueBacklog = 0
 if (Test-Path -LiteralPath $queueStatePath) {
   try {
     $qPrev = Get-Content -LiteralPath $queueStatePath -Raw | ConvertFrom-Json
-    if ($null -ne $qPrev.quandalf_queue_ready) { $prevQueueReady = [int]$qPrev.quandalf_queue_ready }
+    if ($null -ne $qPrev.queue_backlog) { $prevQueueBacklog = [int]$qPrev.queue_backlog }
+    elseif ($null -ne $qPrev.quandalf_queue_ready) { $prevQueueBacklog = [int]$qPrev.quandalf_queue_ready }
   } catch {}
 }
-$quandalfQueueGenerated = [Math]::Max(0, ([int]$quandalfQueueReady - [int]$prevQueueReady + [int]$frodexQueueConsumed))
+$quandalfQueueGenerated = [Math]::Max(0, ([int]$queueBacklog - [int]$prevQueueBacklog + [int]$candidatesIngested))
 $summary.quandalf_queue_generated = [int]$quandalfQueueGenerated
-$summary.quandalf_queue_ready = [int]$quandalfQueueReady
-$summary.frodex_queue_consumed = [int]$frodexQueueConsumed
-$summary.frodex_queue_backlog = [int]$frodexQueueBacklog
+$summary.queue_backlog = [int]$queueBacklog
 
 $strategyShortfall = [Math]::Max(0, [int]$MinStrategiesPerRun - [int]$candidatesIngested)
 if ($strategyShortfall -gt 0) {
@@ -1510,10 +1506,8 @@ if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir |
 $summary.errors_count = $errorsCount
 $queueStateObj = [ordered]@{
   updated_at = [DateTime]::UtcNow.ToString('o')
-  quandalf_queue_ready = [int]$quandalfQueueReady
   quandalf_queue_generated = [int]$quandalfQueueGenerated
-  frodex_queue_consumed = [int]$frodexQueueConsumed
-  frodex_queue_backlog = [int]$frodexQueueBacklog
+  queue_backlog = [int]$queueBacklog
 }
 ($queueStateObj | ConvertTo-Json -Depth 4) | Set-Content -Path (Join-Path $stateDir 'queue_telemetry_state.json') -Encoding utf8
 
@@ -1581,7 +1575,7 @@ if (-not $DryRun) {
   }
 
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " q_gen=" + [int]$quandalfQueueGenerated + " q_ready=" + [int]$quandalfQueueReady + " q_backlog=" + [int]$frodexQueueBacklog + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " q_gen=" + [int]$quandalfQueueGenerated + " backlog=" + [int]$queueBacklog + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
 if (-not $DryRun -and $strategyShortfall -gt 0) {
