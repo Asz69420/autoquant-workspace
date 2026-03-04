@@ -10,6 +10,7 @@ $lockDir = Join-Path $ROOT 'data\state\locks\quandalf_handoff_poll.lockdir'
 $jobId = 'b6d07171-ab62-4038-a4ec-4a5ac7b3d0d7'
 $ordersPath = Join-Path $ROOT 'docs\shared\QUANDALF_ORDERS.md'
 $resultsPath = Join-Path $ROOT 'docs\shared\LAST_CYCLE_RESULTS.md'
+$autopilotSummaryPath = Join-Path $ROOT 'data\state\autopilot_summary.json'
 
 function Escape-Html {
   param([string]$Text)
@@ -76,7 +77,7 @@ function Get-ResultsReviewInfo {
   $aborted = 0
 
   if (-not (Test-Path -LiteralPath $resultsPath)) {
-    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; aborted = $aborted }
+    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; aborted = $aborted; is_live = $false }
   }
 
   $lines = Get-Content -LiteralPath $resultsPath -Encoding UTF8
@@ -91,7 +92,31 @@ function Get-ResultsReviewInfo {
     elseif ($line -match '\|\s*FAIL') { $aborted++ }
   }
 
-  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; aborted = $aborted }
+  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; aborted = $aborted; is_live = $false }
+}
+
+function Get-LiveReviewInfo {
+  if (-not (Test-Path -LiteralPath $autopilotSummaryPath)) {
+    return $null
+  }
+
+  try {
+    $s = Get-Content -LiteralPath $autopilotSummaryPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($null -eq $s) { return $null }
+
+    $ingested = [int]($s.candidates_ingested)
+    $passing = [int]($s.candidates_passing_gate)
+    $errors = [int]($s.errors_count)
+
+    return [PSCustomObject]@{
+      reviewed = $ingested
+      advanced = $passing
+      aborted = $errors
+      is_live = $true
+    }
+  } catch {
+    return $null
+  }
 }
 
 function Send-QuandalfCard {
@@ -109,6 +134,10 @@ function Send-QuandalfCard {
 
   $orderInfo = Get-CurrentOrderInfo
   $resultsInfo = Get-ResultsReviewInfo
+  $liveInfo = Get-LiveReviewInfo
+  if ($null -ne $liveInfo -and $liveInfo.is_live) {
+    $resultsInfo = $liveInfo
+  }
 
   $iconOk = [char]0x2705
   $iconWarn = ([char]0x26A0) + ([char]0xFE0F)
