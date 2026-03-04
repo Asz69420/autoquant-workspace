@@ -6,6 +6,7 @@ status: active
 confidence: 0.99
 evidence_paths:
   - artifacts/backtests/20260304/
+  - artifacts/backtests/20260305/
   - artifacts/batches/20260304/
   - artifacts/promotions/20260304/
   - artifacts/outcomes/20260304/outcome_notes_autopilot-1772624702.json
@@ -18,13 +19,13 @@ tags:
 supporting_ids:
   - failure-pipeline-structural-death
   - fact-directive-loop-circular
-validated_at: "2026-03-04T23:45:00Z"
-updated_at: "2026-03-04T23:45:00Z"
+validated_at: "2026-03-05T12:00:00Z"
+updated_at: "2026-03-05T12:00:00Z"
 ---
 
-66+ consecutive backtests have produced exactly 0 trades across ALL non-Claude spec sources: pipeline, promotions, refinement, and recombine. Entry conditions with 3+ AND-chained indicators never simultaneously fire within the same bar. The directive remediation loop amplifies the problem — every failure generates variant specs that fail identically.
+102+ consecutive backtests have produced exactly 0 trades across ALL non-Claude spec sources: pipeline, promotions, refinement, and recombine. Entry conditions with 3+ AND-chained indicators never simultaneously fire within the same bar. The directive remediation loop amplifies the problem — every failure generates variant specs that fail identically.
 
-- 66+ consecutive backtests: 0 trades (U21: 10, U22: 24, U23: 17, U24-U25: 15+ more)
+- 102+ consecutive backtests: 0 trades (U21: 10, U22: 24, U23: 17, U24-U25: 15+, U26: +36 on 2026-03-05)
 - Promotion pipeline: 55 promotions, ALL 0-trade specs
 - Recombine system: also generating 0-trade specs (BTC 1h despite EXCLUDE_ASSET)
 - Directive loop: every 0-trade outcome generates same 5 remediation directives → variant specs → 0 trades again

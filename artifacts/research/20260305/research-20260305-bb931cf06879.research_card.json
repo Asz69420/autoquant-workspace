@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-bb931cf06879",
+  "created_at": "2026-03-04T16:01:58.519156Z",
+  "source_type": "youtube_url",
+  "source_ref": "https://www.youtube.com/watch?v=Fqm5sMnDloc",
+  "title": "Bitcoin Reverses Above $71K | SPX Hanging On & Gold Turning?",
+  "author": "ECKrown",
+  "summary_bullets": [
+    "source_ref=https://www.youtube.com/watch?v=Fqm5sMnDloc title=Bitcoin Reverses Above $71K | SPX Hanging On & Gold Turning?",
+    "reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:VideoUnplayable: Could not retrieve a transcript for the video https://www.youtube.com/watch?v=Fqm5sMnDloc!",
+    "This is most likely caused by: The video is unplayable for the following reason: This live event will begin in 13 minutes.",
+    "If you are sure that the."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "source_ref=https://www.youtube.com/watch?v=Fqm5sMnDloc title=Bitcoin Reverses Above $71K | SPX Hanging On & Gold Turning?",
+      "note": "Meaning: source_ref=https://www.youtube.com/watch?v=Fqm5sMnDloc title=Bitcoin Reverses Above $71K | SPX Hanging On & Gold Turning?"
+    },
+    {
+      "timestamp": null,
+      "quote": "reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:VideoUnplayable: Could not retrieve a transcript for the video https://www.youtube.com/watch?v=Fqm5sMnDloc!",
+      "note": "Meaning: reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=youtube_transcript_api:VideoUnplayable: Could not retrieve a transcript for the video https://www.youtub"
+    },
+    {
+      "timestamp": null,
+      "quote": "This is most likely caused by: The video is unplayable for the following reason: This live event will begin in 13 minutes.",
+      "note": "Meaning: This is most likely caused by: The video is unplayable for the following reason: This live event will begin in 13 minutes."
+    },
+    {
+      "timestamp": null,
+      "quote": "If you are sure that the.",
+      "note": "Meaning: If you are sure that the."
+    }
+  ],
+  "extracted_rules": [
+    "If you are sure that the."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "SPX",
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-bb931cf06879.raw.txt",
+  "sha256": "df5c316d6fcc11b3ad831566bc1dcb13539e591a3eb45454ea1b215015a7b86e",
+  "truncated": false
+}

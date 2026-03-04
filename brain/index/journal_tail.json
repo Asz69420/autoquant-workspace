@@ -1,5 +1,5 @@
 {
-  "count": 8,
+  "count": 9,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -135,7 +135,22 @@
       "source_path": "brain/journal/2026-03-04-u25-directive-loop-identified.md",
       "summary": "U25: 0 new ACCEPTs. Directive remediation loop identified as circular — every 0-trade outcome generates same 5 directives (GATE_ADJUST, ENTRY_RELAX, THRESHOLD_SWEEP, ENTRY_TIGHTEN, EXIT_CHANGE), variants fail identically, loop repeats. Zero",
       "ts": "2026-03-04T23:45:00Z"
+    },
+    {
+      "id": "journal-2026-03-05-u26-pipeline-halt-imperative",
+      "pointers": [
+        "fact-directive-loop-circular",
+        "fact-zero-trade-signal-bottleneck",
+        "fact-claude-specs-sole-progress",
+        "fact-transition-detection-general-edge",
+        "failure-pipeline-structural-death",
+        "artifacts/backtests/20260305/",
+        "artifacts/research/20260304/"
+      ],
+      "source_path": "brain/journal/2026-03-05-u26-pipeline-halt-imperative.md",
+      "summary": "U26: 36 new backtests (2026-03-05), ALL 0 trades. Total epidemic: 102+. Directive loop crosses day boundary unchecked. 3 Claude specs (ALMA Vortex, T3 EMA200, CCI KAMA) blocked 3 cycles. Research cards identify TREX histogram and TASC DM (H",
+      "ts": "2026-03-05T12:00:00Z"
     }
   ],
-  "generated_at": "2026-03-04T23:45:00Z"
+  "generated_at": "2026-03-05T12:00:00Z"
 }

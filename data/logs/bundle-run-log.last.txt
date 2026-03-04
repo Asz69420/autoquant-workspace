@@ -1,7 +1,7 @@
 ﻿🍳 Cooking
 Status: ⚠️ | Duration: 3s
 ○───activity─────────────────────
-Waiting: 1
+Waiting: 0
 Backtests: 0
 Forwardtests: 0
 ○───note─────────────────────────
