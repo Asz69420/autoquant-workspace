@@ -508,6 +508,7 @@ def main() -> int:
             ch.pop('last_fetch_fail_at', None)
             ch.pop('last_fetch_fail_detail', None)
             ch.pop('disabled_reason', None)
+            ch.pop('last_notified_fail_count', None)
         except Exception as e:
             failed += 1
             fail_count = int(ch.get('fetch_fail_count', 0) or 0) + 1
@@ -516,15 +517,19 @@ def main() -> int:
             ch['last_fetch_fail_detail'] = str(e)[:260]
             _log('YT_WATCH_FETCH_FAIL', 'YT_WATCH_FETCH_FAIL', f"channel={channel_id} detail={str(e)[:180]} fail_count={fail_count}", 'WARN')
 
-            # Notify operator DM on first failure and again if we auto-disable.
-            if fail_count == 1:
+            # Notify operator only after second consecutive failure, and then only on state change.
+            last_notified_fail_count = int(ch.get('last_notified_fail_count', 0) or 0)
+            if fail_count == 2 and last_notified_fail_count < 2:
                 _notify_watch_fetch_fail(str(ch.get('name', 'unknown')), channel_id, str(e), fail_count, disabled=False)
+                ch['last_notified_fail_count'] = 2
 
             if fail_count >= YT_FETCH_FAIL_DISABLE_THRESHOLD:
                 ch['enabled'] = False
                 ch['disabled_reason'] = f"AUTO_DISABLED_FETCH_FAIL_{fail_count}"
                 _log('YT_CHANNEL_AUTO_DISABLED', 'YT_CHANNEL_AUTO_DISABLED', f"channel={channel_id} fail_count={fail_count}", 'WARN')
-                _notify_watch_fetch_fail(str(ch.get('name', 'unknown')), channel_id, str(e), fail_count, disabled=True)
+                if last_notified_fail_count < fail_count:
+                    _notify_watch_fetch_fail(str(ch.get('name', 'unknown')), channel_id, str(e), fail_count, disabled=True)
+                    ch['last_notified_fail_count'] = fail_count
 
             continue
         if latest and not ch.get('last_seen_video_id'):
