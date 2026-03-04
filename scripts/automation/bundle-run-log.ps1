@@ -523,7 +523,7 @@ if ($mode -eq 'quandalf') {
 
     $lines += "Ingested: $ingested"
     $lines += "Submitted: $submittedCount"
-    $lines += "Passed: $specOk"
+    $lines += "Validated: $specOk"
     $lines += "Backtests: $batchExecutedTotal"
     $lines += "Promoted: $promotionOk"
     $lines += "Forwardtests: $forwardRuns"
