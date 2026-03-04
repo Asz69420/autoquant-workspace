@@ -56,12 +56,17 @@ $tailLines = switch ($mode) {
   default { 1200 }
 }
 $events = @()
+$allTailEvents = @()
 foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail $tailLines)) {
   try {
     $entry = $line | ConvertFrom-Json
     $tsRaw = if ($entry.ts_iso) { $entry.ts_iso } elseif ($entry.ts) { $entry.ts } else { $null }
     if (-not $tsRaw) { continue }
     try { $ts = [DateTime]::Parse($tsRaw).ToUniversalTime() } catch { continue }
+
+    try { $entry | Add-Member -NotePropertyName '__ts_utc' -NotePropertyValue $ts -Force } catch {}
+    $allTailEvents += $entry
+
     if ($ts -ge $windowStartUtc -and $ts -lt $windowEndUtc) { $events += $entry }
   } catch { continue }
 }
@@ -154,14 +159,75 @@ function Format-CompactDuration {
   return ('{0}s' -f $seconds)
 }
 
-$eventTimestamps = @($mainEvents | ForEach-Object { Get-EventUtcTimestamp $_ } | Where-Object { $_ -ne $null } | Sort-Object)
+function Get-RunGroupKey {
+  param([string]$RunId, [string]$Mode)
+  if ([string]::IsNullOrWhiteSpace($RunId)) { return $null }
+  if ($Mode -eq 'frodex') {
+    if ($RunId -match '^(autopilot-\d+)') { return $matches[1] }
+    return $null
+  }
+  return $RunId
+}
+
 $durationLabel = '<1s'
-if ($eventTimestamps.Count -ge 2) {
-  $windowDuration = ($eventTimestamps[-1] - $eventTimestamps[0])
-  if ($windowDuration.TotalSeconds -eq 0) {
-    $durationLabel = '<1s'
-  } else {
-    $durationLabel = Format-CompactDuration $windowDuration
+$selectedRunKey = $null
+
+$mainWithRun = @($mainEvents | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_.run_id) })
+if ($mainWithRun.Count -gt 0) {
+  $groupRows = @()
+  foreach ($ev in $mainWithRun) {
+    $rid = [string]$ev.run_id
+    $key = Get-RunGroupKey -RunId $rid -Mode $mode
+    if ([string]::IsNullOrWhiteSpace($key)) { continue }
+    $ts = $null
+    if ($ev.PSObject.Properties.Name -contains '__ts_utc') { $ts = $ev.__ts_utc }
+    if ($null -eq $ts) { $ts = Get-EventUtcTimestamp $ev }
+    if ($null -eq $ts) { continue }
+    $groupRows += [PSCustomObject]@{ key = $key; ts = $ts }
+  }
+
+  if ($groupRows.Count -gt 0) {
+    $grouped = @($groupRows | Group-Object key)
+    $latest = $null
+    $latestTs = $null
+    foreach ($g in $grouped) {
+      $endTs = @($g.Group | ForEach-Object { $_.ts } | Sort-Object)[-1]
+      if ($null -eq $latestTs -or $endTs -gt $latestTs) {
+        $latestTs = $endTs
+        $latest = $g.Name
+      }
+    }
+    $selectedRunKey = $latest
+  }
+}
+
+if (-not [string]::IsNullOrWhiteSpace($selectedRunKey)) {
+  $runTs = @()
+  foreach ($ev in $allTailEvents) {
+    $rid = [string]$ev.run_id
+    $key = Get-RunGroupKey -RunId $rid -Mode $mode
+    if ($key -ne $selectedRunKey) { continue }
+    $ts = $null
+    if ($ev.PSObject.Properties.Name -contains '__ts_utc') { $ts = $ev.__ts_utc }
+    if ($null -eq $ts) { $ts = Get-EventUtcTimestamp $ev }
+    if ($null -ne $ts) { $runTs += $ts }
+  }
+  $runTs = @($runTs | Sort-Object)
+  if ($runTs.Count -ge 2) {
+    $runDuration = ($runTs[-1] - $runTs[0])
+    if ($runDuration.TotalSeconds -gt 0) {
+      $durationLabel = Format-CompactDuration $runDuration
+    }
+  }
+}
+
+if ($durationLabel -eq '<1s') {
+  $eventTimestamps = @($mainEvents | ForEach-Object { Get-EventUtcTimestamp $_ } | Where-Object { $_ -ne $null } | Sort-Object)
+  if ($eventTimestamps.Count -ge 2) {
+    $windowDuration = ($eventTimestamps[-1] - $eventTimestamps[0])
+    if ($windowDuration.TotalSeconds -gt 0) {
+      $durationLabel = Format-CompactDuration $windowDuration
+    }
   }
 }
 
