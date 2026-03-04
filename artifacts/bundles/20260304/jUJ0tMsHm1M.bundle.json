@@ -1,18 +1,13 @@
-﻿{
-    "id":  "bundle_jUJ0tMsHm1M",
-    "created_at":  "2026-03-04T01:02:22.910214+00:00",
-    "source":  "youtube",
-    "video_id":  "jUJ0tMsHm1M",
-    "source_channel_name":  "DaviddTech",
-    "source_channel_id":  "UC7NJLsf6IonOy8QI8gt5BeA",
-    "content_category":  "INDICATOR_CONCEPT",
-    "research_card_path":  "artifacts/research/20260304/research-20260304-ea63bd943247.research_card.json",
-    "indicator_record_paths":  [
-
-                               ],
-    "linkmap_path":  "artifacts/links/20260304/research-20260304-ea63bd943247.linkmap.json",
-    "status":  "BLOCKED",
-    "last_processed_at":  "2026-03-04T01:08:45.7095659Z",
-    "attempts":  1,
-    "last_error":  "ADAPTIVE_PROMOTION_GATE"
+{
+  "id": "bundle_jUJ0tMsHm1M",
+  "created_at": "2026-03-04T04:23:50.623698+00:00",
+  "source": "youtube",
+  "video_id": "jUJ0tMsHm1M",
+  "source_channel_name": "DaviddTech",
+  "source_channel_id": "UC7NJLsf6IonOy8QI8gt5BeA",
+  "content_category": "INDICATOR_CONCEPT",
+  "research_card_path": "artifacts/research/20260304/research-20260304-ea63bd943247.research_card.json",
+  "indicator_record_paths": [],
+  "linkmap_path": "artifacts/links/20260304/research-20260304-ea63bd943247.linkmap.json",
+  "status": "NEW"
 }

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-3eba3aced75c",
+  "created_at": "2026-03-04T04:00:50.870154Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260304/research-20260304-37d7ab741775.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260304/research-20260304-37d7ab741775.linkmap.json"
+    ]
+  },
+  "title": "Bitcoin Consolidation Pattern - Trade This Setup",
+  "thesis_bullets": [
+    "Heavy metals and heavy markets as Bitcoin and the rest of markets look like they are poised to retest some lows Maybe make some new lows here, too We are seeing a few major signals that are gonna about to be firing off in fact are already firing off in this case And I do want to talk about downside targets for all of these major assets And what she started off over here with Bitcoin with one of th",
+    "I know it sounds fucking crazy to anyone who is uninitiated here But whenever you get that new moon higher probability of a two week period of downside The most recent one that we did see was back on over on the 18th of January right here You can see Bitcoin came down from about 94,000 bucks to I mean kind of a rat right now Before that this signal over here more or less sideways and down not real",
+    "Well, we were calling out on last Friday's stream that hey Bitcoin on the weekly time frame has a shot has a chance It has an opportunity to turn the weekly stochastic momentum back to the upside if Bitcoin were to close that weekly above 69,500 Bitcoin obviously failed that pivot and not only did this week open up with more downside momentum But now the momentum pivot has actually gone up and usu",
+    "So, you know over this next week or two.",
+    "Yeah risk is to the downside I do expect Bitcoin to you know come somewhere around the lows maybe slightly lower Let's go for targets in just a moment here.",
+    "In fact, let me make sure that I'm actually hidden everything Yeah, we got that we got that and then of course when we go over here Oh, when we go over here I should also add 12 our time frame has hidden bearish divergence already painted in and if Bitcoin I mean basically just continues to close below 67,500 Yep, that is in it's just in favor playing out And then we go over to the ribbit ribbit's",
+    "Maybe even a macro low definitely possible Um, it is not going to happen all in one week or in one month or even in a few months And ultimately we should be expecting another test to the downside and wicks lower than the current low are okay But I would be what I'm looking for very specifically In uh as to start to call and feel a little more confident and lean into a potential major macro low her",
+    "Maybe it's a little bit higher but somewhere down around there And then if I see Bitcoin on that same week Recover back above about 60 000 bucks by the closure That would be a really really really really really strong signal in my book that bitcoin is going to at least attempt A big bounce from here and it might even end up being a reversal depending upon how long bitcoin ends up consulting this r",
+    "These are not short-term trades I expect these to be underwater because I do intend to hold these for about nine years from now That is my overall long-term investment plan.",
+    "And so you know, I'm I'm fast forwarding all the way out there And I'm looking at these as just general good value areas if you're more of a short-term time frame trader Well, you know, most of my positions have already expired The short 100 000 dollar call strike already already expired or yeah, it's not even there anymore."
+  ],
+  "hypotheses": [
+    {
+      "statement": "GOLD continuation edge appears when signal alignment persists on weekly.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest GOLD on weekly: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "Stochastic"
+      ],
+      "timeframe_bias": "weekly",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "GOLD OHLCV on weekly",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "3eba3aced75ca198d034e9f232b3d27147c41cb440275189fedd1361b431f664"
+}

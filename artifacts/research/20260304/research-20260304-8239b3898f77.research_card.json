@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-8239b3898f77",
+  "created_at": "2026-03-04T04:14:38.396216Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=gKBVFCvLSXM",
+  "title": "Хийтмап трейдинг за за напреднали и начинаещи",
+  "author": "TradeTravelChill",
+  "summary_bullets": [
+    "If someone was surprised by the fact that the price of a spear is at the same level, it stands there after you burst it, or why do you take a 100% with one spike and get back together?",
+    "In 90% of the points, the answer is 1.",
+    "Orders and liquidity In this video, I will show you how to see them in real time through hipmaps.",
+    "Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are spoofing orders, what is Iceberg actually and how to use this information to avoid spoofing and getting in the way.",
+    "The hipmap is a visual instrument that shows where the limit orders are found in the order book.",
+    "That is, what prices are waiting for, whether they are bought or sold.",
+    "Imagine it as a thermal map of the market.",
+    "How bright is the color of the given level, how much more orders are there.",
+    "These zones are important because they often act as a temporary resistance support.",
+    "The prices are attracted to the magnet, showing where the large participants are ready to interact with the market."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "If someone was surprised by the fact that the price of a spear is at the same level, it stands there after you burst it, or why do you take a 100% with one spike and get back together?",
+      "note": "Meaning: If someone was surprised by the fact that the price of a spear is at the same level, it stands there after you burst it, or why do you take a 100% with"
+    },
+    {
+      "timestamp": null,
+      "quote": "In 90% of the points, the answer is 1.",
+      "note": "Meaning: In 90% of the points, the answer is 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Orders and liquidity In this video, I will show you how to see them in real time through hipmaps.",
+      "note": "Meaning: Orders and liquidity In this video, I will show you how to see them in real time through hipmaps."
+    },
+    {
+      "timestamp": null,
+      "quote": "Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are spoofing orders, what is Iceberg actually and how to use this information",
+      "note": "Meaning: Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are spoofing orders, what is"
+    },
+    {
+      "timestamp": null,
+      "quote": "The hipmap is a visual instrument that shows where the limit orders are found in the order book.",
+      "note": "Meaning: The hipmap is a visual instrument that shows where the limit orders are found in the order book."
+    },
+    {
+      "timestamp": null,
+      "quote": "That is, what prices are waiting for, whether they are bought or sold.",
+      "note": "Meaning: That is, what prices are waiting for, whether they are bought or sold."
+    },
+    {
+      "timestamp": null,
+      "quote": "Imagine it as a thermal map of the market.",
+      "note": "Meaning: Imagine it as a thermal map of the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "How bright is the color of the given level, how much more orders are there.",
+      "note": "Meaning: How bright is the color of the given level, how much more orders are there."
+    },
+    {
+      "timestamp": null,
+      "quote": "These zones are important because they often act as a temporary resistance support.",
+      "note": "Meaning: These zones are important because they often act as a temporary resistance support."
+    },
+    {
+      "timestamp": null,
+      "quote": "The prices are attracted to the magnet, showing where the large participants are ready to interact with the market.",
+      "note": "Meaning: The prices are attracted to the magnet, showing where the large participants are ready to interact with the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "The hipmap does not show you where the market will go, it shows you where there is significant interest.",
+      "note": "Meaning: The hipmap does not show you where the market will go, it shows you where there is significant interest."
+    },
+    {
+      "timestamp": null,
+      "quote": "The real force comes when you combine it with the structure, liquidity and volume.",
+      "note": "Meaning: The real force comes when you combine it with the structure, liquidity and volume."
+    }
+  ],
+  "extracted_rules": [
+    "If someone was surprised by the fact that the price of a spear is at the same level, it stands there after you burst it, or why do you take a 100% with one spike and get back together?",
+    "The real force comes when you combine it with the structure, liquidity and volume.",
+    "If you press buy, the market buys it immediately at the closest price.",
+    "And when there is a huge limit order in one place, it can do the price, to play the movement, to create a bounce, or to be filled or eaten, and then the price to pass aggressively.",
+    "This means that if there is a 100 Bitcoin limit order short, it should enter more aggressive buyers at this level to fill all these 100 orders and sell the price up.",
+    "If in the situation, the limit orders manage to absorb all aggressive buyers with their short limit positions, the price would turn back and keep this level.",
+    "However, if the aggressive buyers are significantly more than these limit orders, this means that they will start filling them little by little and then they will continue up.",
+    "If you want to make them more white and more red, but this is not important.",
+    "If you give the most attention, you will see absolutely all these market makers, orders that are around the price, and simply play with sales.",
+    "Here we can see when we separate our 67200Bitcoins.",
+    "But if we get to the unit, you will see how much time they are appearing and disappearing.",
+    "If you see, you will open your eyes and you will begin to understand why the market reacts exactly where it reacts.",
+    "If you really want to learn and are serious, if you want to meet serious people and people who work together every day to succeed, you can click some of the links or scan the QR code that you see below.",
+    "When the price is approaching buy and sell, sellers begin to meet the opposite, if the price is real.",
+    "When the price is approaching sell wall, buyers meet the pressure.",
+    "Or we get a discount if they manage to keep this level.",
+    "Moreover, we get back when we have sell wall.",
+    "The first reaction, the next step when we try to get closer to this zone, the market makers hold liquidity and we get this candle, which actually, as far as I remember, rises up here, for the simple reason that there are no more sellers who can afford the buyers to buy the price up there.",
+    "I told them to break it, to buy it, someone has to sell it, if someone sells it, someone has to buy it.",
+    "And at the end, when you see that the price is going to break down, the liquidity just falls."
+  ],
+  "strategy_components": [
+    {
+      "type": "filter",
+      "description": "Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are spoofing orders, what is Iceberg actually and how to use this information to avoid spoofing a"
+    },
+    {
+      "type": "trend",
+      "description": "You have some instruments almost all in Tradingville, like Trendline, you can change color and you can see them better."
+    },
+    {
+      "type": "trend",
+      "description": "Here we will give you an example for which we will talk shortly, in the case in which we go one time to this village, they try to keep this level, we get a reaction, but this reaction is not the same as this reaction, be"
+    },
+    {
+      "type": "trend",
+      "description": "Without orders, they are used to create a false feeling for a fortified and continued certain trend."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-8239b3898f77.raw.txt",
+  "sha256": "34fcba5695a4113ed6533b8cc2eff0d0f8ff896e975a19da33f3f32213b3a370",
+  "truncated": false
+}

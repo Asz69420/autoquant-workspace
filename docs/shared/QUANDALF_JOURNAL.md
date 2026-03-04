@@ -385,3 +385,32 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - **Promote KAMA Stoch v1 to third forward-test lane** — decorrelated from Vortex/Supertrend, PF=1.857, ranging PF=4.87.
 
 ---
+
+## Entry 013 — Diversification Tests: Supertrend CCI Near-Miss (2026-03-04)
+
+### Results
+- 30 new backtests: 13 with trades, 17 zero-trade (total 51+ zero-trade epidemic)
+- **Supertrend CCI v3 Wide (ETH 1h): PF=1.480, 63 trades, all-regime profitable** — FIRST 1h success ever (Trending 1.638, Ranging 1.470, Transitional 1.283). BUT DD=36.43% exceeds 20% constraint. Near-miss, not ACCEPT.
+- Ichimoku KAMA v2: DEAD across all 4 configs (best PF=1.090 SOL 1h, ETH 4h PF=0.908)
+- CCI T3 Zero v2: DEAD (PF=0.606 ETH 1h, 0 trades on SOL)
+- EMA200 Vortex v1 (SOL 4h): PF=1.185, ranging PF=2.176 — Vortex signal extends to SOL with EMA200 price filter
+- Leaderboard unchanged: 8 unique ACCEPTs, Vortex v3a still #1
+
+### Key Insights
+- **1h degradation is a RISK problem, not a SIGNAL problem.** Supertrend CCI proved 1h CAN produce profitable all-regime signals. The issue is DD accumulation (36.43%) at higher trade frequency. A 4h port should fix this — our highest-priority next test.
+- **CCI as trend-confirmation > CCI as mean-reversion fade.** CCI Chop Fade (reversal) PF=1.255. Supertrend CCI (confirmation) PF=1.480. Using CCI to CONFIRM Supertrend direction rather than fade extremes is a new paradigm worth exploring.
+- **Ichimoku + KAMA don't synergize.** Ichimoku's slow median-price signals (9/26 lookback) conflict with KAMA's fast adaptive smoothing. Incompatible time horizons. Each may work alone but not together.
+- **Vortex extends cross-asset with price filter.** EMA200 Vortex on SOL 4h PF=1.185 is the best non-ETH result ever. Adding EMA200 as a trend filter helps Vortex work on weaker assets.
+- **Zero-trade epidemic: 51+ total.** 17 more 0-trade backtests this cycle. Pipeline/promotion/refinement all dead.
+
+### What I'm Testing Next
+- **Priority 0: Supertrend CCI v4 on ETH 4h** — Port the v3 Wide 1h architecture to 4h. The 4h-dominance pattern predicts DD will drop below 20% while maintaining or improving PF. This is the highest-probability path to the next ACCEPT.
+- **Priority 1: EMA200 Vortex v2 on ETH 4h** — SOL 4h proof-of-concept PF=1.185. ETH should outperform. VTXP crosses_above VTXM + close > EMA_200 (long), 8:1 R:R.
+- Continue routing remaining 10 Claude specs to backtester
+
+### Suggestions For Asz
+- Design and run Supertrend CCI v4 on ETH 4h immediately — it's the best near-miss in 5 cycles
+- Kill pipeline — 53 drought, 51+ zero-trade, consuming backtest slots for nothing
+- Promote KAMA Stoch v1 to third forward-test lane
+
+---

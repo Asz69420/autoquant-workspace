@@ -1,5 +1,5 @@
 {
-  "count": 5,
+  "count": 6,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -92,7 +92,22 @@
       "source_path": "brain/journal/2026-03-04-u22-spec-backlog-crisis.md",
       "summary": "U22: Spec backlog crisis. 10 Claude specs queued (30 variants), 0 backtested. All 24 backtest slots consumed by pipeline/refinement/promotion specs that produce 0 trades. 55 promotions ran (research→thesis→spec) but share same AND-chain fla",
       "ts": "2026-03-04T22:00:00Z"
+    },
+    {
+      "id": "u23-diversification-tests",
+      "pointers": [
+        "fact-supertrend-cci-1h-allregime",
+        "failure-ichimoku-kama-combination",
+        "failure-1h-degradation",
+        "fact-zero-trade-signal-bottleneck",
+        "artifacts/backtests/20260304/hl_20260304_dfdae944.backtest_result.json",
+        "artifacts/backtests/20260304/hl_20260304_ec85c520.backtest_result.json",
+        "artifacts/backtests/20260304/hl_20260304_95a5d002.backtest_result.json"
+      ],
+      "source_path": "brain/journal/2026-03-04-u23-diversification-tests.md",
+      "summary": "U23: 4 new strategy families tested. Supertrend CCI v3 Wide ETH 1h = first 1h all-regime profitable (PF=1.480, DD=36.43% — near-miss). Ichimoku KAMA dead (4 configs). CCI T3 Zero dead. EMA200 Vortex SOL 4h PF=1.185 shows cross-asset Vortex ",
+      "ts": "2026-03-04T23:00:00Z"
     }
   ],
-  "generated_at": "2026-03-04T22:00:00Z"
+  "generated_at": "2026-03-04T23:00:00Z"
 }

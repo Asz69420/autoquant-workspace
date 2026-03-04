@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-7f349899378f",
+  "created_at": "2026-03-04T04:15:07.450255Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260304/research-20260304-8239b3898f77.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260304/research-20260304-8239b3898f77.linkmap.json"
+    ]
+  },
+  "title": "Хийтмап трейдинг за за напреднали и начинаещи",
+  "thesis_bullets": [
+    "If someone was surprised by the fact that the price of a spear is at the same level, it stands there after you burst it, or why do you take a 100% with one spike and get back together?",
+    "In 90% of the points, the answer is 1.",
+    "Orders and liquidity In this video, I will show you how to see them in real time through hipmaps.",
+    "Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are spoofing orders, what is Iceberg actually and how to use this information to avoid spoofing and getting in the way.",
+    "The hipmap is a visual instrument that shows where the limit orders are found in the order book.",
+    "That is, what prices are waiting for, whether they are bought or sold.",
+    "Imagine it as a thermal map of the market.",
+    "How bright is the color of the given level, how much more orders are there.",
+    "These zones are important because they often act as a temporary resistance support.",
+    "The prices are attracted to the magnet, showing where the large participants are ready to interact with the market."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on 1h.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on 1h: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "1h",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on 1h",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "7f349899378fd07a142187d59cca72e10f53199a42088c787a27c1c915311f8a"
+}

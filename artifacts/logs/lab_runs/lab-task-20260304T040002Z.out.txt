@@ -1,0 +1,33 @@
+﻿[2026-03-04 14:00:49] Balrog post-backtest check: ALL CLEAR
+[2026-03-04 14:01:25] Balrog post-backtest check: ALL CLEAR
+[2026-03-04 14:01:58] Balrog post-backtest check: ALL CLEAR
+[2026-03-04 14:02:30] Balrog post-backtest check: ALL CLEAR
+{
+    "event":  "LAB_SUMMARY",
+    "created_at":  "2026-03-04T04:02:32.4793286Z",
+    "bundles_processed":  2,
+    "promotions_processed":  2,
+    "refinements_run":  0,
+    "new_candidates_count":  100,
+    "candidates_ingested":  2,
+    "candidates_reaching_refinement":  0,
+    "candidates_passing_gate":  0,
+    "directive_notes_seen":  1,
+    "directive_variants_emitted":  0,
+    "directive_backfill_specs_generated":  0,
+    "active_library_size":  500,
+    "new_indicators_added":  0,
+    "skipped_indicators_dedup":  178,
+    "errors_count":  0,
+    "dry_run":  false,
+    "insight_new":  0,
+    "insight_processed":  0,
+    "insight_failed":  0,
+    "recombine_created":  0,
+    "recombine_bundle_path":  "",
+    "throughput_drought_cycles":  20,
+    "starvation_cycles":  20,
+    "drought_cycles":  4,
+    "directive_loop_stall_cycles":  106
+}
+
