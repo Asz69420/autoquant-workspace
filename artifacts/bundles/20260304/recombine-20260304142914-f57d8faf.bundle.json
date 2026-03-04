@@ -1,0 +1,17 @@
+{
+  "id": "bundle_recombine-20260304142914-f57d8faf",
+  "created_at": "2026-03-04T14:29:14.832752+00:00",
+  "source": "library_recombine",
+  "research_card_path": "artifacts/research/20260304/recombine-20260304142914-f57d8faf.research_card.json",
+  "indicator_record_paths": [
+    "artifacts/indicators/20260225/indicator-20260225-5e371048d969.indicator_record.json"
+  ],
+  "linkmap_path": "",
+  "status": "NEW",
+  "recombine": {
+    "template_name": "EMA_TREND_ATR_EXITS",
+    "template_scaffold": "EMA trend + ATR exits",
+    "indicator_name": "Adaptive Flag Patterns [The_lurker]",
+    "indicator_tv_key": "adaptive flag patterns [the_lurker]|tradingview"
+  }
+}
