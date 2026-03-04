@@ -1,4 +1,4 @@
-📊 DAILY INTEL — 2026-03-04 5:30 AEST
+📊 DAILY INTEL — 2026-03-05 5:30 AEST
 
 🟠 BTC
 Strat          PF     WR%     TC     DD%     P&L%
@@ -10,38 +10,41 @@ EMA_RSI      1.00     21%    198   1048%      +4%
 🔵 ETH
 Strat          PF     WR%     TC     DD%     P&L%
 ○── 4h ──────────────────────────────────────────
+Ema200_Vo    1.97     17%     52     30%    +139%
+Supert_CC    1.54     37%     81     50%    +154%
 Templa_Di    1.29     24%     92     84%     +19%
-Malays_Sn    1.24     38%    117     95%     +17%
-EMA_RSI      1.15     20%    194    103%     +16%
 ○── 1h ──────────────────────────────────────────
+Supert_CC    1.48     24%     63     36%     +63%
 Templa_Di    1.42     19%    140     54%     +16%
 EMA_RSI      1.33     19%    162     55%     +16%
-RSI_Shall    1.27     23%    162     42%     +12%
 
 🟣 SOL
 Strat          PF     WR%     TC     DD%     P&L%
 ○── 4h ──────────────────────────────────────────
 Vortex_Tr    1.20     19%     94     23%     +18%
+Ema200_Vo    1.18     15%    106     55%     +54%
+○── 1h ──────────────────────────────────────────
+Ichi_Kama    1.09     27%    241     70%     +31%
 
 ⚡ 24H ACTIVITY
-Cycles:31 Backtests:1 Specs:2 Errors:22
+Cycles:123 Backtests:6 Specs:6 Errors:132
 
 🎯 MILESTONES
-• PF>1 firsts: Vortex_Tr
-• New records: Templa_Di 1.42, EMA_RSI 1.33
+• PF>1 firsts: Supert_CC, Ema200_Vo
+• New records: Ema200_Vo 1.97, Supert_CC 1.54
 • Near-promotion
 
 ⚠️ ATTENTION
-• FAIL errors:22/24h
-• Top:BATCH_BACKTEST_SUMMARY x12
+• FAIL errors:132/24h
+• Top:LAB_SUMMARY x43
 
 ⚡ ERRORS (24h)
  No errors in last 24h
  🔥 Balrog: all clear
 
 🧙 QUANDALF SUGGESTS
- 1. **URGENT: Verify BALROG passes** — The brain YAML fix should unblock all backtests. Run `python scripts/quandalf/validate_brain.py` to confirm 0 FAILs. If it passes, the next autopilot cycle should execute the 3 pending Claude specs.
- 2. **Add YAML rule to brain contract** — Add a line to `docs/CONTRACTS/QUANDALF_BRAIN.md`: "Frontmatter arrays must use multi-line YAML syntax (`- item`), never inline (`[a, b, c]`)."
- 3. **Pipeline decision point** — 53 drought cycles, 44 directive stalls, 0 ACCEPTs from pipeline ever. The pipeline's spec-generation produces low-quality, duplicated specs that cluster signals. Consider: is the pipeline worth maintaining, or should all research flow through Claude advisory cycles?
- 4. **Fix TV catalog extraction** — 80% of research cards are empty shells. The extraction pipeline captures metadata but not indicator logic/parameters. This limits research value.
- 5. **Consider dual-MACD spec** — The Red K Pressure video describes a specific dual-timeframe MACD architecture (100/200/50 slow + 34/144/9 fast) that hasn't been tested. These are non-standard MACD parameters requiring new indicator columns.
+ Kill the pipeline.** Not pause — kill. 102+ zero-trade across 2 days is conclusive. Reallocate ALL backtest capacity to Claude specs.
+ Run the 3 Claude specs** (ALMA Vortex, T3 EMA200, CCI KAMA) immediately. They are the entire research frontier, blocked 3 cycles.
+ Add TRIX_14, TREX, and TASC DM to the dataframe.** Next transition-detection candidates. Without them the most promising research direction is stuck.
+ Define forward-test graduation criteria.** 7 cycles overdue. Proposed: 30 days + PF > 1.2 + DD < 15% = graduate to small live allocation.
+ Write Supertrend CCI v4 spec for ETH 4h** — highest-probability next ACCEPT from 1h near-miss PF=1.480.

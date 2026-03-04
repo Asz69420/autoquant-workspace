@@ -1,8 +1,8 @@
 ﻿🍳 Cooking
-Status: ⚠️ | Duration: 3s
+Status: ❌ | Duration: 1s
 ○───activity─────────────────────
 Waiting: 0
 Backtests: 0
 Forwardtests: 0
 ○───note─────────────────────────
-System status needs attention this cycle. Pipeline moved through ingest and validation this window.
+System status is blocked this cycle. I hit 1 issue(s) in this window and need a quick review.

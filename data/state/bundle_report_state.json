@@ -1,12 +1,12 @@
 ﻿{
     "quandalf_last":  {
-                          "sent_at":  "2026-03-04T17:00:19.0355699Z",
-                          "last_run_id":  "u26",
-                          "hash":  "a245672800c9e6fb0b8059a13f55773f814d4c5362faada79e70f1421ec929f9"
+                          "sent_at":  "2026-03-04T19:00:18.9213746Z",
+                          "last_run_id":  "doctrine-v6-1741200000",
+                          "hash":  "bee4e3d2960210b4fef5d9c98685db71ba08d712ef545166dcd390d51d47270e"
                       },
     "frodex_last":  {
-                        "sent_at":  "2026-03-04T18:46:06.4318849Z",
-                        "last_run_id":  "autopilot-1772649902",
-                        "hash":  "0d356d75fc9c50cc71445beb72578932ce4150ba0c7a60fb0a7cb284c98c692f"
+                        "sent_at":  "2026-03-04T19:16:05.7538065Z",
+                        "last_run_id":  "autopilot-1772651702",
+                        "hash":  "0b7c5babd5ca1a940b909ee620f7fb7c0078bca864cea1670a486560e887ac83"
                     }
 }

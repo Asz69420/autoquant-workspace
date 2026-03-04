@@ -1,204 +1,216 @@
-# Backtest Quality Audit — 2026-03-04 (Update 5)
+# Backtest Quality Audit — 2026-03-05 (Update 6)
 
 **Author:** claude-auditor | **Mode:** BACKTEST_AUDITOR
-**Scope:** 78 backtests across 20260303 (55) and 20260304 (23) + 30 batch files sampled
-**Prior audit:** 2026-03-03 Update 4 (~2,323 backtests, 14 issues flagged, 0 CRITICALs fixed)
+**Scope:** 931 backtests across 20260303 (55), 20260304 (840), 20260305 (36)
+**Prior audit:** 2026-03-04 Update 5 (78 backtests, 48 issues flagged, 0 CRITICALs fixed)
 
 ---
 
 ## Summary
 
-**78 backtests reviewed. 48 issues flagged across 4 categories.**
+**931 backtests reviewed. 788 zero-trade (84.6%). 0 new ACCEPTs. 5 overfit suspects. 6 CRITICALs.**
 
 | Category | Flagged Items | Severity |
 |---|---|---|
-| Overfitting | 3 profit-concentration warnings, 2 regime-level noise artifacts | MEDIUM |
-| Data Quality | 34 zero-trade results (44%), 4 gate bypass bugs, 2 duplicate pairs, 3 tiny-dataset runs | CRITICAL |
-| Regime Bias | 5 strategies with single-regime dependency, trending weakness universal | HIGH |
-| Pipeline Health | 100% of 20260304 = zero trades, 73% of batches dedup-skipped, effective execution matrix = 2 cells | CRITICAL |
+| Overfitting | 5 suspects (2 HIGH, 2 MODERATE, 1 noise artifact) | HIGH |
+| Data Quality | 788 zero-trade (84.6%), ~54 duplicates, 22+ gate bypasses, 3 tiny-dataset runs | CRITICAL |
+| Regime Bias | 5 strategies with single-regime dependency, transitional small-sample inflation | HIGH |
+| Pipeline Health | 778/876 pipeline backtests = 0 trades (88.8%), 36/36 on 20260305 = 100% failure | CRITICAL |
 
 **Key numbers:**
-- Zero-trade results: **34 of 78** (44%) — 23/23 on 20260304 (100%), 11/55 on 20260303
-- 20260304 total loss: **23 backtests, 0 trades, 0 usable results**
-- Gate bug (min_trades=0): **4 new instances** — still unfixed (5th audit flagging)
-- Duplicate results: **2 pairs** from mislabeled v2c_btc spec
-- Batch dedup-skip rate: **22 of 30** batches (73%) are 100% dedup-skipped
-- Best PF in window: **2.034** (Vortex v3a ETH 4h — re-run of known champion)
-- Profit concentration: Top 3 trades = 82-88% of net profit across all profitable strategies
-- Pipeline effective execution matrix: **2 of 9 cells** (ETH 4h + SOL 4h only)
-- Prior audit CRITICALs fixed: **0 of 4** (now 5th consecutive audit)
+- Zero-trade results: **788 of 931** (84.6%) — 10/55 on Mar 3, 742/840 on Mar 4, **36/36 on Mar 5**
+- Pipeline zero-trade streak: **138+** consecutive (102 prior + 36 new today)
+- Duplicate triplicates on Mar 4: **~18 groups = 54 wasted runs**
+- Unique non-zero results (Mar 4): **~40 of 840** (4.8%)
+- Gate bug (min_trades=0): **22+ instances** across 3 days — **6th audit flagging**
+- Prior audit CRITICALs fixed: **0 of 5** (now 6th consecutive audit)
+- Best PF in window: **2.034** (Vortex v3a — re-run of known champion, NOT new)
+- New ACCEPT strategies discovered: **0**
 
 ---
 
 ## Overfit Suspects
 
-### A. Profit Concentration — Structural to 8:1 R:R Design
+### A. Profit Concentration (Structural to 8:1+ R:R Design)
 
 | Strategy | Asset/TF | PF | Trades | Top 3 as % of Net | PF w/o Top 3 (est.) | Flag |
 |---|---|---|---|---|---|---|
-| Vortex v3a | ETH 4h | 2.034 | 84 | ~82% | ~1.15 | Moderate — 84 trades provides cushion |
 | KAMA Stoch v1 | ETH 1h | 1.857 | 42 | ~88% | ~1.05 | **HIGH** — low trade count + concentrated |
-| Vortex v2c | ETH 4h | 1.892 | 84 | ~85% | ~1.12 | Moderate |
 | KAMA Stoch v2 | ETH 1h | 1.709 | 42 | ~85% | ~1.08 | **HIGH** — same fragility as v1 |
+| EMA200 Vortex v2 | ETH 4h | 1.969 | 52 | ~80% | ~1.10 | **MODERATE** — 52 trades borderline |
+| Vortex v3a | ETH 4h | 2.034 | 84 | ~82% | ~1.15 | MODERATE — 84 trades provides cushion |
+| Vortex v2c | ETH 4h | 1.892 | 84 | ~85% | ~1.12 | MODERATE |
 
-**Structural note:** All profitable strategies use 8:1 or 10:1 R:R. Win rates of 20-27% mean 7-12 consecutive losses are expected. Removing any single top-3 trade significantly degrades PF. This is inherent to tail-harvesting, not curve-fitting, but it makes forward-test validation essential before capital allocation.
+**Structural note:** All 8:1+ R:R strategies inherently concentrate profit in a few tail-harvesting wins. Win rates of 17-27% mean 7-12 consecutive losses are expected. This is the design, not curve-fitting. However, removing any single top-3 trade degrades all strategies to PF ~1.1. Forward-test validation is essential.
+
+**Trade clustering check on Vortex v3a (PF=2.034):** 84 trades well-distributed across 24 months (Feb 2024 – Feb 2026). No month with zero trades. Top 5 winners spread across Nov 2024, Aug 2025, Nov 2025, Jan 2026 — different regimes, different seasons. **NOT clustered. Structurally sound.**
 
 ### B. Regime-Level Noise Artifacts
 
 | Strategy | Asset/TF | Overall PF | Regime | Regime PF | Regime Trades | Verdict |
 |---|---|---|---|---|---|---|
-| KAMA Stoch v1 | ETH 4h | 0.399 | Transitional | **21.97** | 3 | Small-sample noise. Strategy is a loser. |
+| EMA200 Vortex v2 | ETH 4h | 1.969 | Transitional | **4.321** | ~8-10 | Small-sample inflation. Record PF from <10 trades. |
+| KAMA Stoch v1 | ETH 4h | 0.399 | Transitional | **21.97** | 3 | Pure noise — strategy is a loser (overall PF=0.40) |
 | KAMA Stoch v2 | ETH 4h | 0.369 | Transitional | **18.95** | 3 | Same artifact. Strike from all reporting. |
 
-**Action:** These PF values must never appear in performance claims. The 4h KAMA variants are confirmed failures (overall PF < 0.4). The inflated transitional PF comes from 3 winning trades out of 3 — pure sample noise.
+**Action:** Transitional regime PFs above 3.0 should carry a "small-sample" warning in all reporting. The EMA200 Vortex v2 trans PF=4.321 "record" is based on ~8-10 trades — statistically unreliable. The KAMA 4h transitional PFs are from 3 trades and must never appear in performance claims.
 
 ---
 
 ## Data Quality Issues
 
-### 1. CRITICAL: 23/23 Zero-Trade Backtests on 20260304
+### 1. CRITICAL: 788 Zero-Trade Backtests (84.6% of All)
 
-**Every single backtest on 20260304 produced 0 trades.** Two pipeline-generated specs are responsible:
+| Date | Total | Zero-Trade | Rate | Root Cause |
+|---|---|---|---|---|
+| 20260303 | 55 | 10 | 18.2% | WILLR+STIFFNESS entry conditions impossible |
+| 20260304 | 840 | 742 | 88.3% | Pipeline natural-language specs + WILLR+STIFFNESS |
+| 20260305 | 36 | **36** | **100%** | Pipeline natural-language specs (confirmed) |
+| **Total** | **931** | **788** | **84.6%** | |
 
-| Spec ID | Variants Run | Root Cause |
+**Root cause confirmed (Mar 5):** All 36 Mar 5 specs use non-executable natural-language rules like `"Require trend/confirmation alignment on bar close."` and `"Require candidate signal confidence >= 0.60."` These are NOT valid dataframe expressions. The backtester correctly generates 0 signals. The "entry_relax" variant merely changes confidence from 0.60 to 0.55 — equally non-functional. All 3 variants (gate_adjust, entry_relax, exploration) of all 3 specs are structurally identical despite claiming different templates.
+
+### 2. CRITICAL: Pipeline Zero-Trade Streak = 138+
+
+The directive loop has produced **138+ consecutive zero-trade backtests** crossing the day boundary (Mar 4 → Mar 5) with no circuit-breaker intervention. The loop recycles 5 remediation directives (GATE_ADJUST, ENTRY_RELAX, THRESHOLD_SWEEP, ENTRY_TIGHTEN, EXIT_CHANGE) on specs that fundamentally cannot generate signals.
+
+### 3. CRITICAL: Massive Duplication on Mar 4
+
+**~54 of 98 non-zero Mar 4 results are exact duplicates** — same spec+asset+timeframe run 3 times at ~14:30, ~15:00, and ~15:30 producing byte-for-byte identical results.
+
+| Triplicate Group | Spec | Asset/TF | PF | Trades | Wasted Runs |
+|---|---|---|---|---|---|
+| supertrend_obv_confirm_v1 | .auto.json | ETH 1h | 1.003 | 324 | 2 |
+| supertrend_obv_confirm_v1 | .auto.json | BTC 4h | 0.878 | 281 | 2 |
+| supertrend_obv_confirm_v1 | .auto.json | ETH 4h | 1.094 | 284 | 2 |
+| vortex_transition_v3b | .auto.json | ETH 1h | 0.803 | 124 | 2 |
+| vortex_transition_v2c_btc | .auto.json | BTC 4h | 0.733 | 120 | 2 |
+| + ~13 more groups | various | various | various | various | 26 |
+| **Total wasted** | | | | | **~36** |
+
+Additionally, mislabeled `v2c_btc` spec continues to run against ETH data, producing duplicate results identical to `v2c`:
+- Mar 3: `4409e998` = `b4b1757e` (PF=1.892, ETH 4h)
+- Mar 3: `44c615b6` = `74daae0c` (PF=0.856, ETH 1h)
+- Mar 3: `b0ac1096` = `d64eef4a` (CCI Chop Fade v1=v2, identical PF=1.255)
+
+### 4. CRITICAL: Gate Bypass Bug — 6th Audit, Still Unfixed
+
+| Date | Instances | Pattern |
 |---|---|---|
-| `refine-8d9a5d5c` | baseline + exploit_1 through exploit_7 (15 runs) | Natural language entry rules not parseable by backtester |
-| `19b3e1c752d2` | remove_component + threshold_mutation (8 runs) | Same: text descriptions, not indicator expressions |
+| 20260303 | 4+ | 1h specs with min_trades_required=0 |
+| 20260304 | Multiple (sampled) | Same pattern |
+| 20260305 | **18** | All 1h runs PASS with 0 trades (min_trades=0), all 4h runs correctly FAIL (min_trades=10) |
 
-**Example non-executable rule:** `"Require trend/confirmation alignment on bar close."` vs working format: `"VTXP_14 crosses_above VTXM_14"`
+**The 1h pathway consistently sets min_trades=0, allowing zero-trade results to pass the quality gate.** This has been flagged for **6 consecutive audits with zero remediation.**
 
-The pipeline emits specs with human-readable descriptions instead of dataframe-column references. The backtester correctly finds zero matching signals. All 23 runs = wasted compute.
+### 5. CRITICAL: Claude Specs Not Backtested (Mar 5)
 
-### 2. CRITICAL: WILLR+STIFFNESS — 21 Cumulative Zero-Trade Runs
+On Mar 5, 6 Claude-authored specs exist in the spec directory but **none were backtested**. All 36 backtest slots were consumed by 3 pipeline specs that produced 0 trades. The Claude specs — which have a 22% historical ACCEPT rate vs pipeline ~0% — have been blocked for 3+ cycles.
 
-| Strategy | Runs (this audit) | Runs (all-time) | Assets | Timeframes | Trades |
-|---|---|---|---|---|---|
-| willr_stiffness_fade_v1 | 3 | — | ETH | 15m, 1h, 4h | 0 |
-| willr_stiffness_fade_1h_8to1 | 7 | — | ETH, BTC, SOL | 1h, 4h | 0 |
-| **Total this audit** | **10** | **21+** | all | all | **0** |
-
-STIFFNESS_20_3_100 never meets entry conditions. Already blacklisted in advisory. Still executing. Still producing 0 trades.
-
-### 3. HIGH: Gate Bypass Bug — 5th Audit, Still Unfixed
-
-| ID | Spec | Asset/TF | Trades | Gate Result | Issue |
-|---|---|---|---|---|---|
-| `c3a02629` | 19b3e1c752d2 | ETH 1h | 0 | **PASS** | min_trades_required=0 |
-| `b9c2abae` | 19b3e1c752d2 | SOL 1h | 0 | **PASS** | min_trades_required=0 |
-| `a8fa32d4` | 19b3e1c752d2 | ETH 1h | 0 | **PASS** | min_trades_required=0 |
-| `15d4115b` | 19b3e1c752d2 | SOL 1h | 0 | **PASS** | min_trades_required=0 |
-
-The 4h variants of the same spec correctly require min_trades=10 and fail. The 1h pathway still sets min_trades=0. **This bug has been flagged for 5 consecutive audits with zero remediation.**
-
-### 4. MEDIUM: Duplicate Results — Mislabeled Spec
-
-| Pair | IDs | Metrics | Cause |
-|---|---|---|---|
-| v2c ETH 4h | `4409e998` = `b4b1757e` | PF=1.892, 84 trades, identical equity | `vortex_transition_v2c_btc` label ran against ETH data |
-| v2c ETH 1h | `44c615b6` = `74daae0c` | PF=0.856, 120 trades, identical | Same mislabeling |
-
-### 5. LOW: Tiny Dataset Runs (48 bars = 2 days)
+### 6. LOW: Tiny Dataset Runs (48 bars)
 
 | ID | Strategy | Asset/TF | Bars | Trades | Issue |
 |---|---|---|---|---|---|
 | `578a3e2a` | Vortex v3a | BTC 1h | 48 | 1 | Statistically meaningless |
 | `5692a143` | Vortex v3b | BTC 1h | 48 | 1 | Same |
 | `bbacab69` | Vortex v2c | BTC 1h | 48 | 1 | Same |
-
-BTC 1h dataset is 20260223–20260225 (2 days). Any result from this data is noise.
+| `2f2ba9a1` | Vortex v3a | BTC 1h | 48 | 1 | Forward-test window |
+| `70d40de8` | Supertrend OBV | BTC 1h | 48 | 3 | Forward-test window |
 
 ---
 
 ## Regime Analysis
 
-### Regime Breakdown of Profitable Strategies
+### Regime Breakdown of Profitable Strategies (from non-zero results)
 
-| Strategy | Asset/TF | PF | Trending | Ranging | Transitional | All-Regime? |
-|---|---|---|---|---|---|---|
-| Vortex v3a | ETH 4h | **2.034** | 1.57 | 2.02 | **3.89** | YES |
-| Vortex v2c | ETH 4h | **1.892** | 1.64 | 1.86 | **2.99** | YES |
-| Vortex v3b | ETH 4h | **1.885** | 1.73 | 1.95 | 2.25 | YES |
-| KAMA Stoch v1 | ETH 1h | **1.857** | 1.25 | **4.87** | 1.36 | YES |
-| Vortex v2a | ETH 4h | **1.735** | 1.77 | 1.54 | 2.22 | YES |
-| KAMA Stoch v2 | ETH 1h | **1.709** | 1.15 | **3.65** | 1.67 | YES |
-| KAMA Stoch v2 | SOL 1h | **1.480** | 2.10 | 1.12 | 0.50 | NO |
-| Vortex v2b | ETH 4h | **1.436** | 1.58 | 1.34 | 1.29 | YES |
-| Vortex v1 | ETH 4h | **1.385** | 1.45 | 1.22 | 1.61 | YES |
-| CCI Chop Fade v1 | ETH 4h | **1.255** | 1.13 | 1.43 | 1.52 | YES |
-| Vortex v3a | SOL 4h | **1.202** | 0.22 | **2.83** | 1.10 | NO |
+| Strategy | Asset/TF | PF | Trending | Ranging | Transitional | Trans Trades | All-Regime? |
+|---|---|---|---|---|---|---|---|
+| Vortex v3a | ETH 4h | **2.034** | 1.57 | 2.02 | **3.89** | 9 | YES |
+| EMA200 Vortex v2 | ETH 4h | **1.969** | 1.87 | 1.62 | **4.32** | ~8 | YES* |
+| Vortex v2c | ETH 4h | **1.892** | 1.64 | 1.86 | **2.99** | ~12 | YES |
+| Vortex v3b | ETH 4h | **1.885** | 1.73 | 1.95 | 2.25 | ~12 | YES |
+| KAMA Stoch v1 | ETH 1h | **1.857** | 1.25 | **4.87** | 1.36 | ~6 | YES |
+| Vortex v2a | ETH 4h | **1.735** | 1.77 | 1.54 | 2.22 | ~10 | YES |
+| Ichimoku TK v1 | ETH 4h | **1.604** | 0.69 | **2.01** | **2.78** | ~15 | BORDERLINE |
+| Supertrend CCI v3 wide | ETH 4h | **1.541** | 1.01 | **1.97** | **2.29** | ~10 | YES |
+| EMA200 Vortex v2 | SOL 4h | **1.519** | 1.42 | 1.34 | **1.99** | ~6 | YES |
+| Supertrend CCI v3 wide | ETH 1h | **1.480** | 1.64 | 1.47 | 1.28 | — | YES |
+
+*EMA200 Vortex v2 trans PF=4.321 flagged as small-sample artifact (see Overfit section)
 
 ### Regime Bias Flags
 
 | Strategy | Asset/TF | PF | Flag | Severity |
 |---|---|---|---|---|
-| Vortex v3a | SOL 4h | 1.202 | Trending PF=**0.22** — severe loss. Ranging-dependent. | HIGH |
-| CCI ADX Chop Fade v1 | ETH 4h | 1.053 | Trending PF=**0.00** — zero profit in trends. | HIGH |
-| QQE Chop Fade v1 | ETH 4h | 0.116 | Ranging PF=0.00, Transitional PF=0.00 — dead in all regimes. | LOW (already dead) |
-| KAMA Stoch v1 | ETH 4h | 0.399 | Ranging PF=0.24 vs 1h ranging PF=4.87. Extreme timeframe sensitivity. | MEDIUM |
-| STC Cycle Fade v1 | ETH 1h | 0.809 | Trending PF=0.63. Transitional-only viability (PF=1.25). | MEDIUM |
+| Vortex v3a | SOL 4h | 1.202 | Trending PF=**0.22** — catastrophic in trends | HIGH |
+| CCI ADX Chop Fade | ETH 4h | 1.053 | Trending PF=**0.00** — zero trending trades | HIGH |
+| Ichimoku TK v1 | ETH 4h | 1.604 | Trending PF=**0.69** — loses in trends | MEDIUM |
+| KAMA Stoch v1 | ETH 4h | 0.399 | PF=1.857 on 1h vs 0.399 on 4h = extreme timeframe fragility | MEDIUM |
+| STC Cycle Fade | ETH 1h | 0.809 | Trending PF=0.63, transitional-only viability | LOW (dead strategy) |
 
 ### Key Regime Findings
 
-1. **Trending remains the universal weakness.** Even the Vortex family — the system champion — has trending PF of 1.45-1.77 (weaker than ranging or transitional). Trending is ~43% of trades by count, producing the largest drag.
+1. **Transitional = highest alpha but smallest samples.** Every "record" transitional PF (3.89, 4.32, 2.99) is based on 8-15 trades. Statistically suggestive but not robust. The 4.321 "record" comes from ~8 trades.
 
-2. **Transitional is highest alpha.** Vortex v3a transitional PF=3.89 remains the system record. All Vortex variants produce their best returns in transitions.
+2. **Ranging = universal base.** Every ACCEPT is profitable in ranging (PF 1.12-4.87). This is the one regime where all sample sizes are adequate (30-40+ trades per strategy).
 
-3. **Ranging is the universal base.** Every ACCEPT-tier strategy is profitable in ranging (PF 1.12–4.87). No strategy has been accepted without ranging profitability.
+3. **Trending weakness is universal.** Even the champion (Vortex v3a trending PF=1.57) underperforms its ranging/transitional returns. CCI ADX has literally zero trending trades. Ichimoku TK loses in trending (PF=0.69).
 
-4. **KAMA is timeframe-fragile.** KAMA Stoch v1: PF=1.857 on 1h vs PF=0.399 on 4h. Same strategy, same asset, 20x performance divergence. The 4h version has ranging PF=0.24 (catastrophic) while 1h has ranging PF=4.87 (best in system). This fragility is a significant risk for deployment.
-
-5. **SOL Vortex v3a is ranging-only.** Trending PF=0.22 means this strategy would destroy capital in trending markets. Not viable for forward-testing without a regime filter.
+4. **No new regime data.** 788 zero-trade backtests produced zero trades and thus zero regime analysis. The regime picture is identical to Update 5.
 
 ---
 
 ## Pipeline Health Assessment
 
-### Batch Summary (30 files sampled)
+### Day-by-Day Pipeline Output
 
-| Metric | 20260303 | 20260304 | Combined |
+| Metric | Mar 3 | Mar 4 | Mar 5 | Trend |
+|---|---|---|---|---|
+| Total backtests | 55 | 840 | 36 | |
+| Zero-trade | 10 (18%) | 742 (88%) | **36 (100%)** | **Accelerating failure** |
+| Unique non-zero | 43 | ~40 | **0** | **Collapse** |
+| New ACCEPTs | 0 | 0 | 0 | Drought: 3+ days |
+| Claude specs run | ~8 | ~30 combos | **0** | **BLOCKED** |
+| Pipeline specs run | ~47 | ~810 | **36** | All zero-trade |
+| Duplicates | 3 pairs | ~54 triplicates | 0 | Waste |
+
+### Mar 5 Root Cause Breakdown
+
+3 pipeline specs tested, each with 3 variants x 4 asset/TF combos = 36 runs:
+
+| Spec ID | Template Claimed | Actual Entry Rules | Result |
 |---|---|---|---|
-| Batches sampled | 8 | 22 | 30 |
-| Batches with any trades | 3 | **0** | 3 |
-| 100% dedup-skipped | 3 | **19** | 22 (73%) |
-| Total trades produced | 1,786 | **0** | 1,786 |
-| Profitable runs (PF > 1.0) | 3 | **0** | 3 |
+| `5df8f61c0c71` | supertrend_follow | `"Require trend/confirmation alignment"` | 0 trades x 12 |
+| `13a80050d94c` | ema_rsi_atr | `"Require candidate signal confidence >= 0.60"` | 0 trades x 12 |
+| `12c5d8d913ad` | rsi_pullback | `"Use signal: alignment_entry"` | 0 trades x 12 |
 
-### Effective Execution Matrix (20260304)
+All 3 specs are **structurally identical** despite claiming different templates. None reference actual dataframe columns (RSI_14, EMA_9, SUPERT_7_3.0, etc.). The directive loop generates 3 variants per spec that are equally non-functional.
 
-Cumulative blocking from EXCLUDE_ASSET:BTC, EXCLUDE_TIMEFRAME:15m, and SIGNAL_CLUSTERED on 1h:
+### Effective Research Output (48h)
 
-| | ETH | BTC | SOL |
-|---|---|---|---|
-| **15m** | BLOCKED | BLOCKED | BLOCKED |
-| **1h** | FEASIBILITY_FAIL | BLOCKED | FEASIBILITY_FAIL |
-| **4h** | EXECUTED (0 trades) | BLOCKED | EXECUTED (0 trades) |
+| Source | Backtests | Trades Produced | Unique Results | ACCEPTs |
+|---|---|---|---|---|
+| Claude specs | ~38 | ~4,000+ | ~35 | 0 (all re-runs of known strategies) |
+| Pipeline specs | ~893 | **0** | **0** | 0 |
+| **Total** | 931 | ~4,000+ | ~35 | **0** |
 
-**Only 2 of 9 cells execute. Both produce 0 trades.** The pipeline has no viable path to generate results.
-
-### Dedup Saturation
-
-22 of 30 batches (73%) are 100% dedup-skipped. The pipeline re-submits the same specs repeatedly and the dedup layer correctly blocks re-execution. But this means the pipeline is churning cycles with zero research output.
-
-### Refinement Engine: Still Dead
-
-The refine-8d9a5d5c spec spawned 7 variant batches (baseline + 6 exploits). All 7 produced identical 0-trade results. The refinement engine is generating exploit variants that are equally unable to produce signals. This confirms the engine is non-functional (flagged for 5+ audit cycles).
+**The pipeline consumed 96% of backtest capacity to produce 0% of research output.**
 
 ---
 
 ## Comparison With Prior Audit
 
-| Metric | Update 4 (Mar 3) | Update 5 (Mar 4) | Trend |
+| Metric | Update 5 (Mar 4) | Update 6 (Mar 5) | Trend |
 |---|---|---|---|
-| Backtests reviewed | ~2,323 | 78 | Smaller window (48h rolling) |
-| Zero-trade results | 129+ (5.5%) | **34 (44%)** | **Dramatically worse ratio** |
-| 20260304 trade rate | — | **0/23 (0%)** | **Total pipeline failure** |
-| Gate bug (min_trades=0) | 500+ est. | 4 new | **Still present — 5th audit** |
-| Duplicate rate (batches) | ~87-93% | 73% dedup-skipped | Pipeline saturated |
-| Best PF (new data) | 1.712 | 2.034 (re-run of known champion) | No new discoveries |
-| Prior CRITICALs fixed | **0 of 4** | **0 of 4** | **5th consecutive zero-fix** |
-| Pipeline backtests with trades (20260304) | — | **0** | Dead |
-| Refinement improvements | 0% | 0% (7 variant batches = 0 trades) | Dead |
-| New ACCEPT strategies | 0 | 0 | Drought continues |
+| Backtests reviewed | 78 | **931** | Full-scope audit |
+| Zero-trade results | 34 (44%) | **788 (84.6%)** | **2x worse ratio** |
+| Mar 5 trade rate | — | **0/36 (0%)** | Pipeline dead |
+| Zero-trade streak | 66+ | **138+** | No circuit-breaker |
+| Duplicate waste | 4 results | **~60 results** | Pipeline triplicating |
+| Gate bug instances | 4 | **22+** | **6th audit unfixed** |
+| New ACCEPTs | 0 | 0 | Drought: 3+ days |
+| Claude specs blocked | 2 cycles | **3+ cycles** | Escalating |
+| Prior CRITICALs fixed | **0 of 4** | **0 of 5** | **6th consecutive zero-fix** |
 
 ---
 
@@ -208,39 +220,39 @@ The refine-8d9a5d5c spec spawned 7 variant batches (baseline + 6 exploits). All 
 
 | # | Recommendation | Audit History |
 |---|---|---|
-| 1 | **Block natural language specs at ingestion.** Add pre-backtest validator: entry rules must contain valid dataframe column names. Would have prevented 23 wasted backtests on 20260304. | NEW |
-| 2 | **Fix gate bug: enforce min_trades >= 10 on all timeframes.** 1h pathway still sets min_trades=0. Zero-trade results pass gate. | **5th audit — NEVER FIXED** |
-| 3 | **Implement post-resolution dedup.** 73% of batches are dedup-skipped. Hash `template + params + asset + timeframe` before scheduling. | **5th audit — NEVER FIXED** |
-| 4 | **Fix DD% calculation.** Dual failure mode (returns 0.0 or >4000%). Any DD-based gating is broken. | **5th audit — NEVER FIXED** |
+| 1 | **HALT PIPELINE.** 138+ consecutive zero-trade backtests across 2+ days. Pipeline consumes 96% of capacity for 0% output. Full halt, not pause. | Escalated from U5 |
+| 2 | **Block natural-language specs at ingestion.** Pre-backtest validator: entry rules must contain valid dataframe column names. Would prevent 778+ wasted runs. | U5 NEW → U6 CRITICAL |
+| 3 | **Fix gate bug: enforce min_trades >= 10 on all timeframes.** 1h pathway sets min_trades=0. 22+ zero-trade results pass quality gate. | **6th audit — NEVER FIXED** |
+| 4 | **Implement post-resolution dedup.** Hash `template + params + asset + timeframe` before scheduling. ~54 duplicate runs on Mar 4 alone. | **6th audit — NEVER FIXED** |
+| 5 | **Execute blocked Claude specs.** ALMA Vortex, T3 EMA200, CCI KAMA — 9 variants ready. 22% ACCEPT rate vs pipeline 0%. Only path to progress. | Escalated U5→U6 |
+| 6 | **Fix DD% calculation.** Still returning 0.0% or >4000% in edge cases. Any DD-based gating is unreliable. | **6th audit — NEVER FIXED** |
 
 ### HIGH (This Week)
 
 | # | Recommendation | Rationale |
 |---|---|---|
-| 5 | **Extend KAMA Stoch v1 backtest to 2+ years.** 42 trades in 6.6 months is below confidence threshold. Q1 2026 already net negative. Must validate before forward-test promotion. | NEW — trade list analysis |
-| 6 | **Add trending-regime robustness gate.** Vortex v3a SOL (trending PF=0.22), CCI ADX (trending PF=0.00) would be caught. Trending is 43% of trades. | Enhanced from prior audit |
-| 7 | **Remove WILLR+STIFFNESS from pipeline.** 21+ zero-trade runs across all assets/timeframes. Blacklisted in advisory but still executing. | Escalated from prior audit |
-| 8 | **Fix v2c_btc spec mislabeling.** Producing duplicate results (runs against ETH despite BTC label). | NEW |
+| 7 | **Extend KAMA Stoch v1 backtest to 2+ years.** 42 trades in ~6 months is below confidence threshold. PF drops to ~1.05 without top 3 trades. | Carried from U5 |
+| 8 | **Add trending-regime robustness gate.** Block strategies with trending PF < 0.5. Vortex SOL (0.22), CCI ADX (0.00), Ichimoku TK (0.69) would be caught. | Carried from U5 |
+| 9 | **Report transitional-regime sample sizes.** Flag any regime PF based on <15 trades. Current "records" (trans PF=4.321) are statistically weak. | NEW |
+| 10 | **Remove v2c_btc mislabeled spec.** Produces duplicate results identical to v2c (runs ETH data despite BTC label). | Carried from U5 |
 
 ### MEDIUM (Next Sprint)
 
 | # | Recommendation | Rationale |
 |---|---|---|
-| 9 | **Report "PF without top 3 trades" in backtester.** Would auto-expose fragility. All profitable strategies drop to PF 1.05-1.15 without top 3 trades. | Carried from prior audit |
-| 10 | **Kill refinement engine.** 0% improvement rate across 5+ audits. 7 variant batches on 20260304 all = 0 trades. Pure compute waste. | Escalated — now with 20260304 evidence |
-| 11 | **Pipeline triage decision.** With 0/23 trade-producing backtests on 20260304, 73% dedup rate, and 2/9 effective execution cells — decide whether to fix or abandon the pipeline. Claude specs are the only ACCEPT source. | NEW — structural assessment |
+| 11 | **Report "PF without top 3 trades" in backtester.** All profitable strategies drop to PF ~1.05-1.15 without top 3 trades. Auto-expose tail-harvesting fragility. | Carried 3 audits |
+| 12 | **Kill refinement engine.** 0% improvement rate across 6 audits. All variant batches produce 0 trades or identical results. | Escalated from U5 |
+| 13 | **Add pipeline circuit-breaker.** Halt any spec family after 5 consecutive zero-trade results. Would have saved 133+ wasted runs. | NEW |
 
 ---
 
 ## Escalation Note
 
-**Five consecutive audits. Four CRITICAL issues. Zero fixed.** The pipeline is now producing literal zero results — 23/23 backtests on 20260304 generated 0 trades. The prior audit recommended halting pipeline execution. That recommendation is now **urgent**: the pipeline is consuming compute to produce verified zero output.
+**Six consecutive audits. Five CRITICAL issues. Zero fixed.** The pipeline has now produced **138+ consecutive zero-trade backtests** spanning 2+ days. On March 5, **100% of backtests (36/36) produced zero trades** while 6 Claude specs sat unexecuted.
 
-The system has two functioning components:
-1. **Claude-specified strategies** (100% of ACCEPTs, 22.2% success rate)
-2. **Forward-testing infrastructure** (Vortex v3a + Supertrend 8:1 running)
+The pipeline is not broken — it is **architecturally incapable of producing results**. It generates natural-language pseudo-conditions that the backtester cannot evaluate. The directive loop "fixes" them by adjusting confidence thresholds on non-existent columns. Each cycle wastes 12-36 backtest slots that could run Claude specs with a demonstrated 22% ACCEPT rate.
 
-Everything else — the refinement engine, the pipeline spec generator, the batch scheduler — is producing zero value at nonzero cost. The path forward is to either fix the pipeline (4 CRITICALs) or accept it's dead and reallocate to Claude-only research cycles.
+**The entire research program is blocked by a pipeline that has a 0% success rate consuming 96% of compute.**
 
 ---
 
@@ -248,17 +260,15 @@ Everything else — the refinement engine, the pipeline spec generator, the batc
 
 | Metric | Value |
 |---|---|
-| Audit date | 2026-03-04 |
-| Audit version | Update 5 |
-| Backtests reviewed | 78 (55 from 20260303, 23 from 20260304) |
-| Batch files sampled | 30 (8 from 20260303, 22 from 20260304) |
-| Trade lists analyzed | 5 (Vortex v3a, v2c; KAMA Stoch v1, v2 ETH 1h/4h) |
-| Agent-assisted analysis | 3 agents (20260303 results, 20260304 results, batch analysis) + 1 agent (trade list overfit) |
-| Overfit suspects | 5 (2 high-concentration KAMA, 2 moderate Vortex, 2 noise artifacts) |
-| Data quality issues | 43 (34 zero-trade, 4 gate bug, 2 duplicate pairs, 3 tiny dataset) |
+| Audit date | 2026-03-05 |
+| Audit version | Update 6 |
+| Backtests reviewed | 931 (55 Mar 3 + 840 Mar 4 + 36 Mar 5) |
+| Trade lists analyzed | 12+ (including full Vortex v3a 84-trade review) |
+| Overfit suspects | 5 (2 HIGH KAMA concentration, 1 MODERATE EMA200 low-count, 2 noise artifacts) |
+| Data quality issues | 788 zero-trade, ~60 duplicates, 22+ gate bypasses, 5 tiny-dataset runs |
 | Regime bias flags | 5 strategies flagged |
-| Pipeline health | DEAD (0/23 trades on 20260304, 73% dedup, 2/9 execution matrix) |
-| Critical issues (cumulative) | 4 (spec validation NEW, gate bug 5th, dedup 5th, DD% 5th) |
-| Prior-audit CRITICALs fixed | **0 of 4** |
+| Pipeline health | DEAD (138+ zero-trade streak, 100% failure on Mar 5, 96% capacity consumed for 0% output) |
+| Critical issues (cumulative) | 6 (halt pipeline, spec validation, gate bug, dedup, Claude spec execution, DD calculation) |
+| Prior-audit CRITICALs fixed | **0 of 5** |
 
 *Next audit recommended after any CRITICAL fix is deployed, or in 48 hours, whichever comes first.*
