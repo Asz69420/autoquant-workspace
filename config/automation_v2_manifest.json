@@ -65,7 +65,7 @@
       "legacy_task_name": "AutoQuant-bundle-run-log-quandalf-user"
     },
     {
-      "name": "frodex-youtube-watch-6h",
+      "name": "frodex-youtube-watch-2h",
       "owner": "Frodex",
       "type": "task",
       "schedule": {
