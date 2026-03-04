@@ -34,6 +34,12 @@ Extended preferences, rosters, and long-form notes were moved to `USER-EXTENDED.
 - This reporting contract applies to both direct assistant replies and delegated/sub-agent outputs.
 - When spawning sub-agents, require concise natural-language output only: verdict + one short context line; include evidence details only if explicitly requested.
 
+## Cron Notification Noise Gate (Must Enforce)
+- For routine cron completion announces that indicate **no state change**, reply with `NO_REPLY` (send nothing to user).
+- Treat these as no-change/noise signals (non-exhaustive): `no pending order`, `status: noop`, `promoted_count: 0`, "none", or equivalent PASS-with-no-action outcomes.
+- Only send a user-facing message when something actually changed, needs action, failed, or materially affects decisions.
+- If uncertain whether an event is meaningful, send one concise update.
+
 ## Delegation Capability Gate (Must Enforce)
 - Before spawning a sub-agent, verify the task’s required capabilities match the agent/session capabilities.
 - For any task requiring writes, edits, commits, or command execution, require write + shell/git capability.
