@@ -17,7 +17,7 @@ fi
 
 STATE_DIR="$ROOT_DIR/data/state"
 STATE_FILE="$STATE_DIR/quandalf_handoff_state.json"
-LOCK_DIR="$STATE_DIR/locks/quandalf_auto_execute.lockdir"
+LOCK_DIR="$STATE_DIR/locks/quandalf_pipeline.lockdir"
 ACTIONS_FILE="$ROOT_DIR/data/logs/actions.ndjson"
 
 mkdir -p "$STATE_DIR" "$ROOT_DIR/data/state/locks"

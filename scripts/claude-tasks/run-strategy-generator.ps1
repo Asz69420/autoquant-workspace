@@ -4,9 +4,21 @@ Set-Location $ROOT
 
 New-Item -ItemType Directory -Force -Path "$ROOT\artifacts\claude-specs" | Out-Null
 New-Item -ItemType Directory -Force -Path "$ROOT\data\logs\claude-tasks" | Out-Null
+New-Item -ItemType Directory -Force -Path "$ROOT\data\state\locks" | Out-Null
 
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
 $logFile = "$ROOT\data\logs\claude-tasks\generator_$timestamp.log"
+$sharedLockDir = "$ROOT\data\state\locks\quandalf_pipeline.lockdir"
+
+if (Test-Path -LiteralPath $sharedLockDir) {
+  try { python scripts/log_event.py --agent "claude-advisor" --action "strategy_generate" --status WARN --summary "Skipped: shared Quandalf pipeline lock is held by another task." | Out-Null } catch {}
+  Write-Output "[$timestamp] Skipped: shared Quandalf pipeline lock held" | Tee-Object -FilePath $logFile -Append
+  exit 0
+}
+
+New-Item -ItemType Directory -Path $sharedLockDir | Out-Null
+
+try {
 
 function Test-IsModelRateLimited([string]$text) {
   if ([string]::IsNullOrWhiteSpace($text)) { return $false }
@@ -107,4 +119,8 @@ if (Test-Path $journal) {
   powershell -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "$ROOT\scripts\claude-tasks\send-quandalf-cycle-summary.ps1" `
     -TaskLabel "generator cycle" `
     -Summary $summary | Out-Null
+}
+}
+finally {
+  Remove-Item -LiteralPath $sharedLockDir -Recurse -Force -ErrorAction SilentlyContinue
 }
