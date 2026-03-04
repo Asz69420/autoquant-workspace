@@ -1,18 +1,18 @@
 ﻿{
     "id":  "bundle_T-Nf7ZfarOs",
-    "created_at":  "2026-03-04T00:07:52.734142+00:00",
+    "created_at":  "2026-03-04T02:34:59.798680+00:00",
     "source":  "youtube",
     "video_id":  "T-Nf7ZfarOs",
     "source_channel_name":  "IntoTheCryptoverse",
     "source_channel_id":  "UCRvqjQPSeaWn-uEx-w0XOIg",
     "content_category":  "MACRO_CONTEXT",
-    "research_card_path":  "artifacts/research/20260304/research-20260304-f25dd5058bc3.research_card.json",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-5704266e452b.research_card.json",
     "indicator_record_paths":  [
 
                                ],
-    "linkmap_path":  "artifacts/links/20260304/research-20260304-f25dd5058bc3.linkmap.json",
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-5704266e452b.linkmap.json",
     "status":  "REVIEW_REQUIRED",
-    "last_processed_at":  "2026-03-04T00:49:38.4404921Z",
+    "last_processed_at":  "2026-03-04T02:46:47.3211187Z",
     "attempts":  1,
     "last_error":  "ADAPTIVE_PROMOTION_GATE"
 }

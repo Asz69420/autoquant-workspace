@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-9e51648fe0a9",
+  "created_at": "2026-03-04T02:55:57.390071Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=FiztJuyl7p4",
+  "title": "Business Cycles Ends With Recessions",
+  "author": "IntoTheCryptoverse",
+  "summary_bullets": [
+    "Hey, everyone, and thanks for jumping back into the macroverse today, we're going to talk about how business cycles end with recessions.",
+    "Let's go ahead and jump in.",
+    "Now, a couple of days ago, I released a video called Visualizing the Business Cycle.",
+    "And in that video, we showed some interesting charts, like this one, which helps us to visualize where we are within the business cycle.",
+    "Now, we're going to actually make an improvement to that chart in this video.",
+    "If you did not watch the Visualizing the Business Cycle video, make sure you check it out, it's over 30 minutes long, and I go into a lot of the details about how you can better visualize where we are in the business cycle.",
+    "It is my assessment that we are in a late business cycle environment.",
+    "Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and also interest rates, which the Federal Reserve sets themselves.",
+    "And so one of the things we can do is we can take the S&P 500 and divide it by the unemployment rate squared, multiply it by inflation, the inflation US inflation rate year over year, and multiply that by interest rates.",
+    "Now when you do that, you get a chart that looks like this."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Hey, everyone, and thanks for jumping back into the macroverse today, we're going to talk about how business cycles end with recessions.",
+      "note": "Meaning: Hey, everyone, and thanks for jumping back into the macroverse today, we're going to talk about how business cycles end with recessions."
+    },
+    {
+      "timestamp": null,
+      "quote": "Let's go ahead and jump in.",
+      "note": "Meaning: Let's go ahead and jump in."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now, a couple of days ago, I released a video called Visualizing the Business Cycle.",
+      "note": "Meaning: Now, a couple of days ago, I released a video called Visualizing the Business Cycle."
+    },
+    {
+      "timestamp": null,
+      "quote": "And in that video, we showed some interesting charts, like this one, which helps us to visualize where we are within the business cycle.",
+      "note": "Meaning: And in that video, we showed some interesting charts, like this one, which helps us to visualize where we are within the business cycle."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now, we're going to actually make an improvement to that chart in this video.",
+      "note": "Meaning: Now, we're going to actually make an improvement to that chart in this video."
+    },
+    {
+      "timestamp": null,
+      "quote": "If you did not watch the Visualizing the Business Cycle video, make sure you check it out, it's over 30 minutes long, and I go into a lot of the details about how you can better visualize where we are",
+      "note": "Meaning: If you did not watch the Visualizing the Business Cycle video, make sure you check it out, it's over 30 minutes long, and I go into a lot of the detail"
+    },
+    {
+      "timestamp": null,
+      "quote": "It is my assessment that we are in a late business cycle environment.",
+      "note": "Meaning: It is my assessment that we are in a late business cycle environment."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and also interest rates, which the Federal Reserve sets",
+      "note": "Meaning: Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and al"
+    },
+    {
+      "timestamp": null,
+      "quote": "And so one of the things we can do is we can take the S&P 500 and divide it by the unemployment rate squared, multiply it by inflation, the inflation US inflation rate year over year, and multiply tha",
+      "note": "Meaning: And so one of the things we can do is we can take the S&P 500 and divide it by the unemployment rate squared, multiply it by inflation, the inflation U"
+    },
+    {
+      "timestamp": null,
+      "quote": "Now when you do that, you get a chart that looks like this.",
+      "note": "Meaning: Now when you do that, you get a chart that looks like this."
+    },
+    {
+      "timestamp": null,
+      "quote": "The green shaded regions are recessions.",
+      "note": "Meaning: The green shaded regions are recessions."
+    },
+    {
+      "timestamp": null,
+      "quote": "And I actually have one that includes the one here in 2020.",
+      "note": "Meaning: And I actually have one that includes the one here in 2020."
+    }
+  ],
+  "extracted_rules": [
+    "If you did not watch the Visualizing the Business Cycle video, make sure you check it out, it's over 30 minutes long, and I go into a lot of the details about how you can better visualize where we are in the business cycle.",
+    "Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and also interest rates, which the Federal Reserve sets themselves.",
+    "Now when you do that, you get a chart that looks like this.",
+    "If I just go to my own scripts, I believe I have an ITC recession indicator.",
+    "So just because you have a top in this metric does not mean that that corresponds to when the stock market ultimately tops out.",
+    "For instance, if you were to overlay the S&P 500 onto this chart, you'll see what I'm talking about.",
+    "We even said back then that that was the window of weakness was February to early to mid April, if you guys remember, and that's essentially where that drawdown occurred at.",
+    "So if you were to look at M2, the argument is that, hey, this can also affect the business cycle, the money supply.",
+    "So what if we were to normalize this chart by the money supply?",
+    "So because of that, when we look at the updated chart, it's not going to include the business cycles that were in the 70s because we don't have data for the money supply on TradingView right before that.",
+    "Now if you were to look at a lot of the data right now, if you were to look at layoffs and initial claims, they're still really, really low.",
+    "One of the things I want people to remember is that if we get a recession, which likely will happen by the end of this business cycle, which I do think Max has two to three years left and it could be shorter, right?",
+    "When you look at a chart like this, it makes sense to assume that it'll eventually go back down to the lows, but it has been doing that for years, but it still hasn't gotten to the lows yet.",
+    "If you look at real GDP, it is still positive.",
+    "If you look at layoffs, they still remain low.",
+    "If you were to look at job openings, you'll see that those continue to collapse.",
+    "If the stock market were to start to drop at all, then it could lead to a layoffs pretty quickly, which would then develop into a negative feedback loop because layoffs would cause people to struggle to find a new job, those people would then spend less money, the companies would then make less money because there's not as much demand, and therefore the companies would lay more people off, which then leads to that negative feedback loop.",
+    "If we were in that negative feedback loop, this metric would be already collapsing to the lows.",
+    "A lot of people want to be the hero and call the recession when it happens.",
+    "And historically, on average, it is a mistake to wait for a recession to be announced to then decide you're going to become bearish on risk assets."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "And historically, on average, it is a mistake to wait for a recession to be announced to then decide you're going to become bearish on risk assets."
+    },
+    {
+      "type": "risk",
+      "description": "And so, for instance, over here on this channel, we have communicated for the last several months that the higher risk assets sell off first, and that includes crypto, Bitcoin, Ethereum, and the altcoins."
+    },
+    {
+      "type": "risk",
+      "description": "So, the riskiest stuff, the altcoins, they bleed first."
+    },
+    {
+      "type": "risk",
+      "description": "After Bitcoin has gone through this process for a while, then we work our way down the risk curve, and then the stock market starts to bleed out."
+    },
+    {
+      "type": "risk",
+      "description": "Now, if the stock market gets that typical drawdown, which it frequently, but not always, but frequently gets in the midterm year, the risk is that it leads to the negative feedback loop."
+    },
+    {
+      "type": "risk",
+      "description": "I mean, I still own risk assets, not like I own anything, but I've been able to hedge out of some of the normal ones and into some of the ones that seem a little bit safer, especially in a late business cycle environment"
+    },
+    {
+      "type": "risk",
+      "description": "And recently, we published a macro risk memo on February 15th."
+    },
+    {
+      "type": "risk",
+      "description": "We also have a crypto macro risk memo on January 15th."
+    }
+  ],
+  "explicit_conditions": [
+    "And historically, on average, it is a mistake to wait for a recession to be announced to then decide you're going to become bearish on risk assets.",
+    "And so, for instance, over here on this channel, we have communicated for the last several months that the higher risk assets sell off first, and that includes crypto, Bitcoin, Ethereum, and the altcoins.",
+    "After Bitcoin has gone through this process for a while, then we work our way down the risk curve, and then the stock market starts to bleed out.",
+    "Now, if the stock market gets that typical drawdown, which it frequently, but not always, but frequently gets in the midterm year, the risk is that it leads to the negative feedback loop.",
+    "I mean, I still own risk assets, not like I own anything, but I've been able to hedge out of some of the normal ones and into some of the ones that seem a little bit safer, especially in a late business cycle environment.",
+    "And recently, we published a macro risk memo on February 15th.",
+    "We also have a crypto macro risk memo on January 15th."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "SPX"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-9e51648fe0a9.raw.txt",
+  "sha256": "afcf00cc38531093b26d1cdee168ceea3354d81a44c1104f80000d7433ec4d39",
+  "truncated": false
+}

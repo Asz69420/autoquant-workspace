@@ -1,11 +1,12 @@
-﻿⚠️ Frodex ⏱ 8m 32s GPT5.3
+﻿📊 Algo Testing
+Status: ⚠️ | Duration: 11m 9s
 ○───activity─────────────────────
-Ingested: 0
-Submitted: 0
-Passed: 0
+Ingested: 1
+Submitted: 1
+Passed: 1
 Backtests: 0
-Promoted: 0
+Promoted: 1
 Forwardtests: 0
 Queue lag: 0
 ○───note─────────────────────────
-Quiet cycle; no actionable changes in this window.
+Strong cycle: 1 promoted cleanly.

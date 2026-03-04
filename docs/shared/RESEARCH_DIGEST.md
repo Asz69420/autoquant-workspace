@@ -4,25 +4,12 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-04 02:25 UTC
+**Last updated:** 2026-03-04 02:43 UTC
 **Entries:** 25
 
 ---
 
-## 1. GK Smart Trend HUD TP1-TP3
-*hgavin780 | tradingview_catalog | 2026-03-03*
-Source: https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/
-
-**Summary:** TradingView indicator: GK Smart Trend HUD TP1-TP3 by hgavin780. GK Smart Trend HUD TP1-TP3 — Full Description GK Smart Trend HUD TP1-TP3 is a complete trend + trade-management HUD built around a Zero-Lag moving average ribbon with ATR deviation bands, designed to deliver clean GK BUY / GK SELL signals and then manage the trade visually with: Entry price TP1 / TP2 / TP3 (ATR-based targets) Band-based SL (with ATR buffer) Live hit tracking (✅/❌) TP2 “SECURE PROFITS NOW” banner SESSION label (ASIA / LONDON / NEW YORK / OFF) POWER strength reading OB/OS … GK Sma Source URL: https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/.
-**Strategy Components:**
-- [trend] TradingView indicator: GK Smart Trend HUD TP1-TP3 by hgavin780.
-- [trend] GK Smart Trend HUD TP1-TP3 — Full Description GK Smart Trend HUD TP1-TP3 is a complete trend + trade-management HUD built around a Zero-Lag moving average ribbon with ATR deviation bands, designed to 
-- [trend] Source URL: https://www.tradingview.com/script/lN4QuOF7-GK-Smart-Trend-HUD-TP1-TP3/.
-**Indicators:** ATR
-
----
-
-## 2. Bitcoin: Bull Market Support Band Indicator Any Good? Take care!
+## 1. Bitcoin: Bull Market Support Band Indicator Any Good? Take care!
 *MichaelIonita | asr_transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=rAQUKGtNMD4
 
@@ -52,7 +39,7 @@ Source: https://www.youtube.com/watch?v=rAQUKGtNMD4
 
 ---
 
-## 3. NEW OpenClaw AI Good For Trading Strategies? (watch ASAP) (Clawdbot / Moltbot)
+## 2. NEW OpenClaw AI Good For Trading Strategies? (watch ASAP) (Clawdbot / Moltbot)
 *MichaelIonita | asr_transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=CEJ_R5226xE
 
@@ -81,7 +68,7 @@ Source: https://www.youtube.com/watch?v=CEJ_R5226xE
 
 ---
 
-## 4. Awesome Gold Trading Strategy (modified Gaussian Channel on TradingView)
+## 3. Awesome Gold Trading Strategy (modified Gaussian Channel on TradingView)
 *MichaelIonita | asr_transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=lQ3ZbZcOeU4
 
@@ -109,7 +96,7 @@ Source: https://www.youtube.com/watch?v=lQ3ZbZcOeU4
 
 ---
 
-## 5. NEW ChatGPT Atlas CREATES Trading Strategy by ITSELF (Agent Mode) (TradingView + PineScript)
+## 4. NEW ChatGPT Atlas CREATES Trading Strategy by ITSELF (Agent Mode) (TradingView + PineScript)
 *MichaelIonita | asr_transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=D4_rO7qK2rY
 
@@ -131,7 +118,7 @@ Source: https://www.youtube.com/watch?v=D4_rO7qK2rY
 
 ---
 
-## 6. NEW GPT 5.2 AI Good For TradingView Strategies? (watch ASAP)
+## 5. NEW GPT 5.2 AI Good For TradingView Strategies? (watch ASAP)
 *MichaelIonita | asr_transcript | 2026-03-03*
 Source: https://www.youtube.com/watch?v=HzA8o5fg5T8
 
@@ -144,7 +131,7 @@ Source: https://www.youtube.com/watch?v=HzA8o5fg5T8
 
 ---
 
-## 7. Bitcoin: A Bear Market State of Mind
+## 6. Bitcoin: A Bear Market State of Mind
 *IntoTheCryptoverse | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=T-Nf7ZfarOs
 
@@ -170,7 +157,7 @@ Source: https://www.youtube.com/watch?v=T-Nf7ZfarOs
 
 ---
 
-## 8. NEW GEMINI 3 AI Good For TradingView Strategies? (watch ASAP)
+## 7. NEW GEMINI 3 AI Good For TradingView Strategies? (watch ASAP)
 *MichaelIonita | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=2LC979UiRns
 
@@ -200,7 +187,7 @@ Source: https://www.youtube.com/watch?v=2LC979UiRns
 
 ---
 
-## 9. How to TRADE the Crypto Market and WIN (avoided the crash)
+## 8. How to TRADE the Crypto Market and WIN (avoided the crash)
 *MichaelIonita | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=qMHd7NMu_Gc
 
@@ -226,7 +213,7 @@ Source: https://www.youtube.com/watch?v=qMHd7NMu_Gc
 
 ---
 
-## 10. Business Cycles Ends With Recessions
+## 9. Business Cycles Ends With Recessions
 *IntoTheCryptoverse | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=FiztJuyl7p4
 
@@ -246,7 +233,7 @@ Source: https://www.youtube.com/watch?v=FiztJuyl7p4
 
 ---
 
-## 11. Bitcoin: Dubious Speculation
+## 10. Bitcoin: Dubious Speculation
 *IntoTheCryptoverse | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=6hszLDlcrxg
 
@@ -257,7 +244,7 @@ Source: https://www.youtube.com/watch?v=6hszLDlcrxg
 
 ---
 
-## 12. Visualizing the Business Cycle
+## 11. Visualizing the Business Cycle
 *IntoTheCryptoverse | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=2ehTz4A5yJQ
 
@@ -292,7 +279,7 @@ Source: https://www.youtube.com/watch?v=2ehTz4A5yJQ
 
 ---
 
-## 13. How to Reverse Engineer a Closed Source TradingView Indicator with AI (IT WORKS)
+## 12. How to Reverse Engineer a Closed Source TradingView Indicator with AI (IT WORKS)
 *MichaelIonita | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=WW16O1JDdj4
 
@@ -325,7 +312,7 @@ Source: https://www.youtube.com/watch?v=WW16O1JDdj4
 
 ---
 
-## 14. SPX & Gold Flash Warning Signs | Bitcoin Still Holding + My Risky Trade
+## 13. SPX & Gold Flash Warning Signs | Bitcoin Still Holding + My Risky Trade
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=qk2h-MS74YQ
 
@@ -354,7 +341,7 @@ Source: https://www.youtube.com/watch?v=qk2h-MS74YQ
 
 ---
 
-## 15. Bitcoin’s Major Long-Term Signals Are Aligning (March Strategy Update)
+## 14. Bitcoin’s Major Long-Term Signals Are Aligning (March Strategy Update)
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=G_D_weW9744
 
@@ -380,7 +367,7 @@ Source: https://www.youtube.com/watch?v=G_D_weW9744
 
 ---
 
-## 16. 4 Major ETFs I’m Preparing to Buy — Plus a Quick Bitcoin Update
+## 15. 4 Major ETFs I’m Preparing to Buy — Plus a Quick Bitcoin Update
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=afA-470E0vY
 
@@ -405,7 +392,7 @@ Source: https://www.youtube.com/watch?v=afA-470E0vY
 
 ---
 
-## 17. Bitcoin Consolidation Pattern - Trade This Setup
+## 16. Bitcoin Consolidation Pattern - Trade This Setup
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=DiT_PPgkTm0
 
@@ -435,7 +422,7 @@ Source: https://www.youtube.com/watch?v=DiT_PPgkTm0
 
 ---
 
-## 18. Bitcoin Timing Cycle Repeating? Macro Low Imminent!
+## 17. Bitcoin Timing Cycle Repeating? Macro Low Imminent!
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=qGDI2580NS4
 
@@ -448,7 +435,7 @@ Source: https://www.youtube.com/watch?v=qGDI2580NS4
 
 ---
 
-## 19. Ако си начинаещ трейдър – започни с това!
+## 18. Ако си начинаещ трейдър – започни с това!
 *TradeTravelChill | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=xh2X82YVPRc
 
@@ -484,7 +471,7 @@ Source: https://www.youtube.com/watch?v=xh2X82YVPRc
 
 ---
 
-## 20. Хийтмап трейдинг за за напреднали и начинаещи
+## 19. Хийтмап трейдинг за за напреднали и начинаещи
 *TradeTravelChill | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=gKBVFCvLSXM
 
@@ -507,7 +494,7 @@ Source: https://www.youtube.com/watch?v=gKBVFCvLSXM
 
 ---
 
-## 21. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
+## 20. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
@@ -537,7 +524,7 @@ Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
 ---
 
-## 22. I lost $120k trading signals 😭💸
+## 21. I lost $120k trading signals 😭💸
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=rzcdWq_jV0k
 
@@ -550,7 +537,7 @@ Source: https://www.youtube.com/watch?v=rzcdWq_jV0k
 
 ---
 
-## 23. My Community Found a FREE Smart Money TradingView Indicator… One Change Fixed Everything
+## 22. My Community Found a FREE Smart Money TradingView Indicator… One Change Fixed Everything
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
@@ -587,7 +574,7 @@ Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
 ---
 
-## 24. Bitcoin: Bull Market Support Band Indicator Any Good? Take care!
+## 23. Bitcoin: Bull Market Support Band Indicator Any Good? Take care!
 *MichaelIonita | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=rAQUKGtNMD4
 
@@ -617,7 +604,7 @@ Source: https://www.youtube.com/watch?v=rAQUKGtNMD4
 
 ---
 
-## 25. NEW ChatGPT Atlas CREATES Trading Strategy by ITSELF (Agent Mode) (TradingView + PineScript)
+## 24. NEW ChatGPT Atlas CREATES Trading Strategy by ITSELF (Agent Mode) (TradingView + PineScript)
 *MichaelIonita | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=D4_rO7qK2rY
 
@@ -636,5 +623,31 @@ Source: https://www.youtube.com/watch?v=D4_rO7qK2rY
 - [risk] You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market.
 **Entry/Exit Conditions:**
 - You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market.
+
+---
+
+## 25. Bitcoin: A Bear Market State of Mind
+*IntoTheCryptoverse | asr_transcript | 2026-03-04*
+Source: https://www.youtube.com/watch?v=T-Nf7ZfarOs
+
+**Summary:** Hey everyone and thanks for jumping back into the Cryptoverse. Today, we're going to talk about Bitcoin, a bear market state of mind. Let's go ahead and jump in. So yesterday, we put out a video talking about what Bitcoin normally does in the first week of March. And I had some people reach out and ask, why does it have to yield a lower high?
+**Trading Rules:**
+- It can be difficult, of course, to pivot to being in a bear market state of mind even when you're just used to watching Bitcoin go up three years in a row.
+- But if you're going to pivot to that bear market state of mind, the best time to do so usually is in the fourth quarter of the post-having year.
+- If we go look at all the days for each year, we could sort of put those in like a table like we did yesterday.
+- If it is, that's the more most pathetic bear market move in March we've seen.
+- And one of the reasons is when you look at the prior bear market rallies in March that have occurred, they got us back up to the bear market resistance band, right?
+- Maybe like 85K when we look at like weekly candles.
+- And what I would say is, you have to at least look at this pattern right here as well, where after Bitcoin broke down from the highs, after I broke down from the highs last cycle, if you exclude seaso
+- Sometimes that could be when the next major low for Bitcoin forms and if you look at the year to date ROI, let me actually reload this because it probably hasn't updated with today's data.
+**Strategy Components:**
+- [trend] Now we're a little bit below it, but ultimately, it's hard to ignore this trend.
+- [risk] Remember, Bitcoin sells off first and it eventually works its way down the risk curve and gets to sort of higher risk assets.
+- [risk] And Bitcoin is, you know, risky.
+- [risk] It's further up the risk curve than the S&P, like the S&P 500, like an index fund that tracks the U.S.
+**Entry/Exit Conditions:**
+- Remember, Bitcoin sells off first and it eventually works its way down the risk curve and gets to sort of higher risk assets.
+- It's further up the risk curve than the S&P, like the S&P 500, like an index fund that tracks the U.S.
+**Context:** Timeframes: weekly
 
 ---

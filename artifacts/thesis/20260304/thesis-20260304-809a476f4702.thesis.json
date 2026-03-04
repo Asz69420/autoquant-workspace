@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-809a476f4702",
+  "created_at": "2026-03-04T02:45:09.996529Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260304/research-20260304-5704266e452b.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260304/research-20260304-5704266e452b.linkmap.json"
+    ]
+  },
+  "title": "Bitcoin: A Bear Market State of Mind",
+  "thesis_bullets": [
+    "Hey everyone and thanks for jumping back into the Cryptoverse.",
+    "Today, we're going to talk about Bitcoin, a bear market state of mind.",
+    "Let's go ahead and jump in.",
+    "So yesterday, we put out a video talking about what Bitcoin normally does in the first week of March.",
+    "And I had some people reach out and ask, why does it have to yield a lower high?",
+    "First of all, it doesn't have to do anything.",
+    "I could absolutely be wrong about the market.",
+    "But for me, ever since Q4 of last year, I've been operating under a bear market state of mind where I just naturally assume that, especially early in a midterm year, that lower highs will in fact be lower highs and they will not yield higher highs, and that lows will eventually lead to lower lows.",
+    "So I want to talk about that and kind of go through some of the prior midterm years.",
+    "In the first midterm year we had, after like a major rally, you can see that Bitcoin had several lower lows throughout the entire year."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on weekly.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on weekly: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "weekly",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "BTC OHLCV on weekly",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "809a476f47021c02dbb8fb1048857257df4568e8c261ca0190e09f2f15205db9"
+}
