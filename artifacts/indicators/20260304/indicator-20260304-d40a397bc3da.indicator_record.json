@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260304-d40a397bc3da",
+  "created_at": "2026-03-04T07:30:07.102862Z",
+  "tv_ref": "tradingview:sqdd7Tgo",
+  "url": "https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/",
+  "name": "Aura Trend Momentum [Pineify]",
+  "author": "Pineify",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_trending",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "109b85b1ccec04514c3f948fdaa356a2a1895d486593462c00ba97a167010075",
+  "truncated": false
+}

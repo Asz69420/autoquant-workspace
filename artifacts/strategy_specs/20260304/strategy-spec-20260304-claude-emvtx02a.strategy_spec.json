@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-emvtx02a",
+  "name": "EMA200 Vortex v2 Structural Trend 4h",
+  "created_at": "2026-03-04T19:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "EMA200 as structural trend anchor separates bull/bear regimes with minimal noise. Vortex crossovers time entries within the confirmed trend. v1 on SOL achieved PF=1.185 with ranging PF=2.176 but DD=55.2% killed it. Moving to ETH (the dominant asset — 0 BTC ACCEPTs) and widening stops to 2.5 ATR should reduce whipsaw exits. The Vortex indicator captures directional momentum shifts that precede sustained moves — combining with EMA200 structural bias should filter false crosses. This tests whether the Vortex transition architecture (proven in v3a champion at PF=2.034) works with a simpler trend anchor than KAMA.",
+  "regime_assumption": "all-regime",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ema200_vortex_v2_8to1",
+      "description": "Core 8:1 R:R variant. EMA200 structural bias + Vortex cross timing. 2.5 ATR stop to reduce whipsaw.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > EMA_200",
+        "VTXP_14 crosses_above VTXM_14"
+      ],
+      "entry_short": [
+        "close < EMA_200",
+        "VTXP_14 crosses_below VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.5x ATR_14.",
+        "Take profit at 20.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "EMA_200",
+          "role": "baseline",
+          "notes": "EMA200 as structural trend anchor — only long above, short below. Minimal noise, high-conviction regime separation."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Positive Vortex crossing above Negative Vortex signals directional momentum shift."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Negative Vortex — cross below by VTXP confirms bearish momentum."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop and take-profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ema200_vortex_v2_12to1",
+      "description": "Extended 12:1 R:R tail-harvester. Tests whether wider TP captures full Vortex transition moves on ETH 4h.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > EMA_200",
+        "VTXP_14 crosses_above VTXM_14"
+      ],
+      "entry_short": [
+        "close < EMA_200",
+        "VTXP_14 crosses_below VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 24.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (24x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 24.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "EMA_200",
+          "role": "baseline",
+          "notes": "EMA200 structural trend anchor."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex positive — cross above VTXM for bullish timing."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex negative — cross reference."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based risk framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["EMA_200", "VTXP_14", "VTXM_14", "ATR_14", "close"],
+  "indicator_roles": {
+    "baseline": "EMA_200 provides structural trend bias — separates bull/bear regimes with minimal whipsaw.",
+    "confirmation": "Vortex indicator crossovers (VTXP/VTXM) time entries at momentum shift points within the established trend.",
+    "volume_volatility": "ATR_14 for dynamic stop/TP sizing."
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-6cc19f806c6a",
+  "created_at": "2026-03-04T07:30:06.036648Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/",
+  "title": "TIKOLE S.P.ADX-DI Trend Indication 9503888883",
+  "author": "TIKOLE14",
+  "summary_bullets": [
+    "TradingView indicator: TIKOLE S.P.ADX-DI Trend Indication 9503888883 by TIKOLE14.",
+    "This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier.",
+    "Unlike a standard ADX which stays positive (0–100), this script creates a Zero-Line Histogram to clearly separate bullish and bearish territory.",
+    "Key Components Dominant Strength Histogram (momentprod): This is the core visual element.",
+    "It multiplies the DI Difference (DI+ minus DI-) by the ADX.",
+    "Green Histogram: Bullish momentum (DI+ is … This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier.",
+    "Green Histogram: Bullish momentum (DI+ is … Possible indicators: ADX.",
+    "Source URL: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: TIKOLE S.P.ADX-DI Trend Indication 9503888883 by TIKOLE14.",
+      "note": "Meaning: TradingView indicator: TIKOLE S.P.ADX-DI Trend Indication 9503888883 by TIKOLE14."
+    },
+    {
+      "timestamp": null,
+      "quote": "This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier.",
+      "note": "Meaning: This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multipl"
+    },
+    {
+      "timestamp": null,
+      "quote": "Unlike a standard ADX which stays positive (0–100), this script creates a Zero-Line Histogram to clearly separate bullish and bearish territory.",
+      "note": "Meaning: Unlike a standard ADX which stays positive (0–100), this script creates a Zero-Line Histogram to clearly separate bullish and bearish territory."
+    },
+    {
+      "timestamp": null,
+      "quote": "Key Components Dominant Strength Histogram (momentprod): This is the core visual element.",
+      "note": "Meaning: Key Components Dominant Strength Histogram (momentprod): This is the core visual element."
+    },
+    {
+      "timestamp": null,
+      "quote": "It multiplies the DI Difference (DI+ minus DI-) by the ADX.",
+      "note": "Meaning: It multiplies the DI Difference (DI+ minus DI-) by the ADX."
+    },
+    {
+      "timestamp": null,
+      "quote": "Green Histogram: Bullish momentum (DI+ is … This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier.",
+      "note": "Meaning: Green Histogram: Bullish momentum (DI+ is … This indicator measures the strength and direction of a market trend by combining the Directional Movement "
+    },
+    {
+      "timestamp": null,
+      "quote": "Green Histogram: Bullish momentum (DI+ is … Possible indicators: ADX.",
+      "note": "Meaning: Green Histogram: Bullish momentum (DI+ is … Possible indicators: ADX."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "TradingView indicator: TIKOLE S.P.ADX-DI Trend Indication 9503888883 by TIKOLE14."
+    },
+    {
+      "type": "trend",
+      "description": "This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier."
+    },
+    {
+      "type": "momentum",
+      "description": "Unlike a standard ADX which stays positive (0–100), this script creates a Zero-Line Histogram to clearly separate bullish and bearish territory."
+    },
+    {
+      "type": "momentum",
+      "description": "Key Components Dominant Strength Histogram (momentprod): This is the core visual element."
+    },
+    {
+      "type": "trend",
+      "description": "Green Histogram: Bullish momentum (DI+ is … This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier."
+    },
+    {
+      "type": "trend",
+      "description": "Source URL: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/."
+    }
+  ],
+  "indicators_mentioned": [
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-6cc19f806c6a.raw.txt",
+  "sha256": "61af24945dfb2f1ad100c9483b5b0a340769e67f53025e161e07f58a53a577c1",
+  "truncated": false
+}

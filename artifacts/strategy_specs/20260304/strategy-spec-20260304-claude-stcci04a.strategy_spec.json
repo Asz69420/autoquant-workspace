@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-stcci04a",
+  "name": "Supertrend CCI v4 Confirmation 4h",
+  "created_at": "2026-03-04T19:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "CCI as trend-CONFIRMATION (not mean-reversion) with Supertrend direction proved profitable at 1h (PF=1.480, all-regime). The DD=36.43% was the sole rejection reason. Porting to 4h should compress drawdown via fewer whipsaw trades while preserving the CCI confirmation edge. CCI crossing -100 from oversold during an uptrend (SUPERTd=1) captures momentum resumption after pullbacks. This is a direct test of whether the 1h signal quality survives the 4h noise reduction.",
+  "regime_assumption": "all-regime",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "supert_cci_v4_8to1",
+      "description": "Core 8:1 R:R variant. SUPERTd direction + CCI crossing out of oversold/overbought zones. 2.0 ATR stop for 4h volatility.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction as primary trend filter. +1 = uptrend, -1 = downtrend."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI crossing -100/+100 confirms momentum resumption after pullback into oversold/overbought."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop and take-profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supert_cci_v4_10to1",
+      "description": "Extended 10:1 R:R variant for tail-harvesting. Tests whether wider TP captures more of 4h trend moves.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction as primary trend filter."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI crossing -100/+100 for momentum confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop and take-profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["SUPERTd_7_3.0", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "Supertrend direction (SUPERTd) provides structural trend bias — only trade in direction of established trend.",
+    "confirmation": "CCI crossing out of extreme zones (-100/+100) confirms momentum resumption after pullback.",
+    "volume_volatility": "ATR_14 for dynamic stop/TP sizing adapted to current volatility."
+  }
+}

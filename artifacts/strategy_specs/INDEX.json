@@ -1,26 +1,17 @@
-[
-  "artifacts/strategy_specs/20260304/strategy-spec-20260304-e1b85ed4057e.strategy_spec.json",
-  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-t3vwap01.strategy_spec.json",
-  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-kamcci01.strategy_spec.json",
-  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-almavtx1.strategy_spec.json",
-  {
-    "value": [
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-b63281d28d32.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-6d0727b1f82d.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-7a21386a372b.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-7f349899378f.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-3eba3aced75c.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-a07e1f629153.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-0807a1122234.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-24399f4c253e.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-vwstmr01.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-stcci01a.strategy_spec.json",
-      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ikkama01.strategy_spec.json",
-      {
-        "value": "artifacts/strategy_specs/20260304/strategy-spec-20260304-b6d55d185f99.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-809a476f4702.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-d158d4f4b7fc.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-9285dd0ab266.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-0fd9a53b5ec7.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-1063269b234c.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-emvtx01.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ccit3z01.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-bbmrsi01.strategy_spec.json ",
-        "Count": 10
-      }
-    ],
-    "Count": 12
-  }
+﻿[
+    "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-stcci04a.strategy_spec.json",
+    "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-emvtx02a.strategy_spec.json",
+    {
+        "value":  [
+                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-e1b85ed4057e.strategy_spec.json",
+                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-t3vwap01.strategy_spec.json",
+                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-kamcci01.strategy_spec.json",
+                      "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-almavtx1.strategy_spec.json",
+                      {
+                          "value":  "artifacts/strategy_specs/20260304/strategy-spec-20260304-b63281d28d32.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-6d0727b1f82d.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-7a21386a372b.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-7f349899378f.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-3eba3aced75c.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-a07e1f629153.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-0807a1122234.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-24399f4c253e.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-vwstmr01.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-stcci01a.strategy_spec.json artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ikkama01.strategy_spec.json ",
+                          "Count":  12
+                      }
+                  ],
+        "Count":  5
+    }
 ]

@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-fa1566dfd5c4",
+  "created_at": "2026-03-04T07:30:07.361373Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/",
+  "title": "Aura Trend Momentum [Pineify]",
+  "author": "Pineify",
+  "summary_bullets": [
+    "TradingView indicator: Aura Trend Momentum [Pineify] by Pineify.",
+    "``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum oscillator that combines double exponential smoothing with normalized momentum calculations to provide clear, noise-filtered trend signals.",
+    "Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing technique on both the raw momentum and its absolute value, … ``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum oscillator that combines double exponential smoothing with normalized momentum calculations to provide clear, noise-filtered trend signals.",
+    "Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing technique on both the raw momentum and its absolute value, … Source URL: https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Aura Trend Momentum [Pineify] by Pineify.",
+      "note": "Meaning: TradingView indicator: Aura Trend Momentum [Pineify] by Pineify."
+    },
+    {
+      "timestamp": null,
+      "quote": "``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum oscillator that combines double exponential smoo",
+      "note": "Meaning: ``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum"
+    },
+    {
+      "timestamp": null,
+      "quote": "Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing technique on both the raw momentum and its absolute valu",
+      "note": "Meaning: Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing techniq"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "TradingView indicator: Aura Trend Momentum [Pineify] by Pineify."
+    },
+    {
+      "type": "trend",
+      "description": "``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum oscillator that combines double exponential smoothing with normalize"
+    },
+    {
+      "type": "trend",
+      "description": "Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing technique on both the raw momentum and its absolute value, … ``` Aura Trend "
+    }
+  ],
+  "indicators_mentioned": [
+    "EMA"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-fa1566dfd5c4.raw.txt",
+  "sha256": "cb202848686f85bd98775265a01ef262ac1b8fdc8d613c655655a0d2cef6fba0",
+  "truncated": false
+}
