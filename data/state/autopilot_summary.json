@@ -1,6 +1,6 @@
 ﻿{
     "event":  "LAB_SUMMARY",
-    "created_at":  "2026-03-04T17:30:06.6138985Z",
+    "created_at":  "2026-03-04T18:00:07.7966176Z",
     "bundles_processed":  0,
     "promotions_processed":  0,
     "refinements_run":  0,
@@ -25,8 +25,8 @@
     "max_strategies_per_run":  10,
     "strategy_contract_ok":  true,
     "strategy_contract_shortfall":  0,
-    "quandalf_queue_generated":  1,
-    "queue_backlog":  23,
-    "queued_for_testing":  1,
-    "directive_loop_stall_cycles":  12
+    "quandalf_queue_generated":  23,
+    "queue_backlog":  24,
+    "queued_for_testing":  23,
+    "directive_loop_stall_cycles":  15
 }
