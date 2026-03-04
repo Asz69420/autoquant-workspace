@@ -616,6 +616,19 @@ if ($true) {
     }
   }
 
+  $statusSentence = switch ($statusTag) {
+    "OK" { "System status is healthy this cycle." }
+    "WARN" { "System status needs attention this cycle." }
+    "FAIL" { "System status is blocked this cycle." }
+    default { "System status is unknown this cycle." }
+  }
+
+  if ([string]::IsNullOrWhiteSpace($noteText)) {
+    $noteText = $statusSentence
+  } else {
+    $noteText = "$statusSentence $noteText"
+  }
+
   $noteText = ($noteText -replace '\s+', ' ').Trim()
   if ($noteText.Length -gt 365) { $noteText = $noteText.Substring(0, 365) }
   if ([string]::IsNullOrWhiteSpace($noteText)) { $noteText = 'All clear this cycle.' }
