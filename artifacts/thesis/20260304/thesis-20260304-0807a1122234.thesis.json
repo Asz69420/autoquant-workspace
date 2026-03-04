@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-0807a1122234",
+  "created_at": "2026-03-04T03:30:14.705239Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260304/research-20260304-a3a86c4577b2.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260304/research-20260304-a3a86c4577b2.linkmap.json"
+    ]
+  },
+  "title": "Bitcoin’s Major Long-Term Signals Are Aligning (March Strategy Update)",
+  "thesis_bullets": [
+    "Several major signals are coalescing into one major opportunity in which I will be making a lot of long-term decisions based upon We'll go over Bitcoin some traditional marks as well and even some gold action here, too Anyways before we get to that I actually want to let you know that I did release very quietly the new TA 101 ultimate beginner playlist You can find it here in the post section on o",
+    "It is literally 0.00 dollars or 100 million doggy coins No, but it is basically free or it is quite literally free And you can secure yours right now and it is again a very much beginner focused playlist So if you're more advanced might not be so much value for you But if you are certainly new or maybe even intermediate as well It can be incredibly incredibly useful just because it is going to go ",
+    "It is idiot proof dare I say but idiot proof for me really and in this case We did see this one lose the mid-band which gave a downside bias all the way back on over here on January 18th when Bitcoin was trading above 93,000 bucks ever since then it's just been a General downside drift as Bitcoin continues to play off the lower band right here And once again, we can see Bitcoin is actually bouncin",
+    "All right, sweet So that's basically the low-term time frames for Bitcoin now Let's go over to the higher-term time frames because I do think that we are incredibly close to The next major bounce maybe even a macro reversal is definitely possible But you know first things major bounce then validate potentially a reversal later on as that, you know One thing has to be has to happen before the next ",
+    "We can see back on over in 2022 That was a beautiful value area.",
+    "Some people would probably argue that if the FTX Black Swan if it was a black swan Didn't happen then you would have seen effectively Bitcoin just bottom out at this 200 some moon average In which basically any buys alongside of it or even near it were phenomenally high value areas long term Of course in the cycles before that we did see Bitcoin over here in 2020 on the rona dump on a literal blac",
+    "I'm looking at any sort of price action down around there as a very high value long-term buy area Now the question is is Bitcoin gonna actually test that move an average on this current move?",
+    "Or does it try to bounce first and then drag this moving average up and then test it later in which?",
+    "Maybe it's closer to 60,000 bucks when it actually does end up testing it Of course in the short term while the Revin ribbons are still given a downside buys I have to be open to downside here It's just the more likely thing to be happening and so as long as bitcoins below that I would still hold off on the most big buys if you will until Bitcoin gets somewhere down around a little bit closer to h",
+    "That's how I'm playing it myself Yes, I did buy in the low $60,000 territory on that first move down in early February But I will put a lot more money to work if and when we do see that major moving average test That the real question is does it happen sooner in which case we probably expect a quick quick down around here And maybe the mid $50,000 territory or does it happen later in which this mo"
+  ],
+  "hypotheses": [
+    {
+      "statement": "GOLD continuation edge appears when signal alignment persists on daily.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest GOLD on daily: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "EMA",
+        "RSI",
+        "Stochastic"
+      ],
+      "timeframe_bias": "daily",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "GOLD OHLCV on daily",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "0807a11222343920d1e962bd694c98140795d084ca4050e11ee490e7cdbda1ef"
+}

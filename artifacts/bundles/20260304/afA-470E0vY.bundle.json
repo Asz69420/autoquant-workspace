@@ -1,13 +1,13 @@
 {
   "id": "bundle_afA-470E0vY",
-  "created_at": "2026-03-04T00:41:23.492093+00:00",
+  "created_at": "2026-03-04T03:35:51.011869+00:00",
   "source": "youtube",
   "video_id": "afA-470E0vY",
   "source_channel_name": "ECKrown",
   "source_channel_id": "UCnwxzpFzZNtLH8NgTeAROFA",
   "content_category": "REVIEW_REQUIRED",
-  "research_card_path": "artifacts/research/20260304/research-20260304-00ba463f2684.research_card.json",
+  "research_card_path": "artifacts/research/20260304/research-20260304-e4da6c93c2f6.research_card.json",
   "indicator_record_paths": [],
-  "linkmap_path": "artifacts/links/20260304/research-20260304-00ba463f2684.linkmap.json",
+  "linkmap_path": "artifacts/links/20260304/research-20260304-e4da6c93c2f6.linkmap.json",
   "status": "REVIEW_REQUIRED"
 }
