@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-7da37d4208e8",
+  "created_at": "2026-03-04T01:50:50.578481Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=D4_rO7qK2rY",
+  "title": "NEW ChatGPT Atlas CREATES Trading Strategy by ITSELF (Agent Mode) (TradingView + PineScript)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right guys, you want to know if the new Chachi PT Atlas browser that OpenAI just released is any good for creating and improving trading strategies.",
+    "That's exactly what I will show you in this video and oh my god, it's an absolute game changer.",
+    "The AI is built into this browser.",
+    "Look at this guys, it clicks around my trading view and improves the strategy, changes the code, checks the KPIs in the back tester until it reached a good result.",
+    "The crazy thing is that it's very easy to use and look at these numbers that it produced from a simple prompt to create a smart hodl strategy.",
+    "Very impressive for the first try.",
+    "Just imagine what you can do after watching this video.",
+    "In the next 10 minutes I will change your game forever.",
+    "Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.",
+    "Also remember, this is not financial advice, crypto is risky, you can lose all of your money and that is why I run this educational channel so that you can be ahead of the herd."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right guys, you want to know if the new Chachi PT Atlas browser that OpenAI just released is any good for creating and improving trading strategies.",
+      "note": "Meaning: That's right guys, you want to know if the new Chachi PT Atlas browser that OpenAI just released is any good for creating and improving trading strateg"
+    },
+    {
+      "timestamp": null,
+      "quote": "That's exactly what I will show you in this video and oh my god, it's an absolute game changer.",
+      "note": "Meaning: That's exactly what I will show you in this video and oh my god, it's an absolute game changer."
+    },
+    {
+      "timestamp": null,
+      "quote": "The AI is built into this browser.",
+      "note": "Meaning: The AI is built into this browser."
+    },
+    {
+      "timestamp": null,
+      "quote": "Look at this guys, it clicks around my trading view and improves the strategy, changes the code, checks the KPIs in the back tester until it reached a good result.",
+      "note": "Meaning: Look at this guys, it clicks around my trading view and improves the strategy, changes the code, checks the KPIs in the back tester until it reached a "
+    },
+    {
+      "timestamp": null,
+      "quote": "The crazy thing is that it's very easy to use and look at these numbers that it produced from a simple prompt to create a smart hodl strategy.",
+      "note": "Meaning: The crazy thing is that it's very easy to use and look at these numbers that it produced from a simple prompt to create a smart hodl strategy."
+    },
+    {
+      "timestamp": null,
+      "quote": "Very impressive for the first try.",
+      "note": "Meaning: Very impressive for the first try."
+    },
+    {
+      "timestamp": null,
+      "quote": "Just imagine what you can do after watching this video.",
+      "note": "Meaning: Just imagine what you can do after watching this video."
+    },
+    {
+      "timestamp": null,
+      "quote": "In the next 10 minutes I will change your game forever.",
+      "note": "Meaning: In the next 10 minutes I will change your game forever."
+    },
+    {
+      "timestamp": null,
+      "quote": "Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.",
+      "note": "Meaning: Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know."
+    },
+    {
+      "timestamp": null,
+      "quote": "Also remember, this is not financial advice, crypto is risky, you can lose all of your money and that is why I run this educational channel so that you can be ahead of the herd.",
+      "note": "Meaning: Also remember, this is not financial advice, crypto is risky, you can lose all of your money and that is why I run this educational channel so that you"
+    },
+    {
+      "timestamp": null,
+      "quote": "First of all, go to chachipt.com slash atlas to download the browser and right now it's available for macOS but it will be available for Windows and other platforms very very soon.",
+      "note": "Meaning: First of all, go to chachipt.com slash atlas to download the browser and right now it's available for macOS but it will be available for Windows and ot"
+    },
+    {
+      "timestamp": null,
+      "quote": "Go there, install it and then open a new tab and here you can see it looks like Chachi PT but it's actually a browser.",
+      "note": "Meaning: Go there, install it and then open a new tab and here you can see it looks like Chachi PT but it's actually a browser."
+    }
+  ],
+  "extracted_rules": [
+    "That's right guys, you want to know if the new Chachi PT Atlas browser that OpenAI just released is any good for creating and improving trading strategies.",
+    "Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.",
+    "The magic happens when you click on ask chachipt which opens up this panel on the right side which I will show you exactly how to use to automate trading trading strategies.",
+    "Then I said I wanted to do a buy and hold strategy that's called smart hodl that takes advantage of the cycles and I said that it should check the strategy tester to check the creation to see the KPIs and if it's not good then just improve it until you found a version which has the best, like I said, ratio.",
+    "This is cool if you want to analyze a strategy on multiple assets.",
+    "And if you need further help, then join the telegram group with 16,000 people.",
+    "If you want a ready made system that you can use out of the box and has been working for many years, then consider the auto trading masterclass.",
+    "You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market.",
+    "So if this sounds interesting to you, then do a little bit of research to see if this is really for you.",
+    "If you're new to the market, it might not be for you.",
+    "But if you're already in the crypto market for a while, you have seen how good and bad it can be, and you've tried some other things, and you are still searching for the right program and the right process for you, then this might be the solution you're looking for.",
+    "And if this is for you, okay, if this makes a lot of sense for you, then click on the apply for access button over here, and we will talk and if it's a good match, then I love to have you with us."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Also remember, this is not financial advice, crypto is risky, you can lose all of your money and that is why I run this educational channel so that you can be ahead of the herd."
+    },
+    {
+      "type": "risk",
+      "description": "You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market."
+    }
+  ],
+  "explicit_conditions": [
+    "You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-7da37d4208e8.raw.txt",
+  "sha256": "adb4f506d7f8271b050a65df3a55004b36ee45e30d63edd8ef276f9072995493",
+  "truncated": false
+}
