@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-1a2ae79544b4",
+  "created_at": "2026-03-04T00:46:45.203417Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260304/research-20260304-d6f377aaf661.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260304/research-20260304-d6f377aaf661.linkmap.json"
+    ]
+  },
+  "title": "SPX & Gold Flash Warning Signs | Bitcoin Still Holding + My Risky Trade",
+  "thesis_bullets": [
+    "S&P 500 and gold leading the major correction or perhaps beginning the major correction that I think many people have been waiting for.",
+    "And Bitcoin hanging in there in which I've actually taken my next major trade.",
+    "It might go absolutely terribly for me.",
+    "I'll discuss exactly what that looks like a little bit later, how I'll be managing that.",
+    "Essentially what I'm looking for on Bitcoin as Bitcoin actually is starting to really look like it wants to put in a base here.",
+    "But before that, I should let you know that we actually do have the TA one-to-one, the brand new, I should say, TA one-to-one playlist completely live, completely free.",
+    "And it is available to you in the link in the description below.",
+    "It comes with quizzes, comes with even a certificate of completion.",
+    "If you get there, to be fair, it is actually about the long, but it is available again in that teachable link in the description below 100% free, satia one-to-one playlist.",
+    "Let's start it off with Bitcoin."
+  ],
+  "hypotheses": [
+    {
+      "statement": "GOLD continuation edge appears when signal alignment persists on daily.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest GOLD on daily: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "EMA",
+        "Stochastic"
+      ],
+      "timeframe_bias": "daily",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "GOLD OHLCV on daily",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "1a2ae79544b4bf0e709809ca0bc1b28746ff5641843285b494571e29794d15d9"
+}

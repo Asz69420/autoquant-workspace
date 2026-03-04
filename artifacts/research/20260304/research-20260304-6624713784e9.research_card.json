@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-6624713784e9",
+  "created_at": "2026-03-04T00:58:29.748826Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=gKBVFCvLSXM",
+  "title": "Хийтмап трейдинг за за напреднали и начинаещи",
+  "author": "TradeTravelChill",
+  "summary_bullets": [
+    "If someone was surprised by why the price of the spear is at the same level, it is there after the explosion, or why you take 100% with one spike and one is back.",
+    "In 90% of the points, the answer is the same.",
+    "In this video, I will show you how to see them in real time through hipmaps.",
+    "Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are the spoofing orders, what is Iceberg actually and how to use this information in order to avoid the spoofing and to get better at the entrance.",
+    "The hipmap is a visual instrument that shows where the orders are found in the folder book.",
+    "That is, what prices are expected, if the amount of money is bought or sold.",
+    "Imagine it as a thermal market card.",
+    "The more bright the color is given on the level, the more orders there are.",
+    "These zones are important because they often work as a temporary resistance support.",
+    "The prices are attracted to the magnet, showing where the large participants are ready to interact with the market."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "If someone was surprised by why the price of the spear is at the same level, it is there after the explosion, or why you take 100% with one spike and one is back.",
+      "note": "Meaning: If someone was surprised by why the price of the spear is at the same level, it is there after the explosion, or why you take 100% with one spike and o"
+    },
+    {
+      "timestamp": null,
+      "quote": "In 90% of the points, the answer is the same.",
+      "note": "Meaning: In 90% of the points, the answer is the same."
+    },
+    {
+      "timestamp": null,
+      "quote": "In this video, I will show you how to see them in real time through hipmaps.",
+      "note": "Meaning: In this video, I will show you how to see them in real time through hipmaps."
+    },
+    {
+      "timestamp": null,
+      "quote": "Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are the spoofing orders, what is Iceberg actually and how to use this informa",
+      "note": "Meaning: Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are the spoofing orders, wha"
+    },
+    {
+      "timestamp": null,
+      "quote": "The hipmap is a visual instrument that shows where the orders are found in the folder book.",
+      "note": "Meaning: The hipmap is a visual instrument that shows where the orders are found in the folder book."
+    },
+    {
+      "timestamp": null,
+      "quote": "That is, what prices are expected, if the amount of money is bought or sold.",
+      "note": "Meaning: That is, what prices are expected, if the amount of money is bought or sold."
+    },
+    {
+      "timestamp": null,
+      "quote": "Imagine it as a thermal market card.",
+      "note": "Meaning: Imagine it as a thermal market card."
+    },
+    {
+      "timestamp": null,
+      "quote": "The more bright the color is given on the level, the more orders there are.",
+      "note": "Meaning: The more bright the color is given on the level, the more orders there are."
+    },
+    {
+      "timestamp": null,
+      "quote": "These zones are important because they often work as a temporary resistance support.",
+      "note": "Meaning: These zones are important because they often work as a temporary resistance support."
+    },
+    {
+      "timestamp": null,
+      "quote": "The prices are attracted to the magnet, showing where the large participants are ready to interact with the market.",
+      "note": "Meaning: The prices are attracted to the magnet, showing where the large participants are ready to interact with the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "The hipmap does not show you where the market will go.",
+      "note": "Meaning: The hipmap does not show you where the market will go."
+    },
+    {
+      "timestamp": null,
+      "quote": "It shows you where there is significant interest.",
+      "note": "Meaning: It shows you where there is significant interest."
+    }
+  ],
+  "extracted_rules": [
+    "If someone was surprised by why the price of the spear is at the same level, it is there after the explosion, or why you take 100% with one spike and one is back.",
+    "That is, what prices are expected, if the amount of money is bought or sold.",
+    "The real power comes when you combine it with the structure, liquidity and volume.",
+    "If you press Buy Market, you buy in one of the closest prices.",
+    "And when there is a huge limit of order in one place, it can make the price, to play the movement, to create a bounce, or to be the file or the output, and then the price to pass aggressively.",
+    "This means that if there is a 100 Bitcoin limit order short, it should enter more aggressive buyers on this level to fill all these 100 orders and to continue the price up.",
+    "If in the situation, limit orders manage to absorb all aggressive buyers with their short limit positions, the price would go back and hold this level.",
+    "But if the aggressive buyers are significantly more than these limit orders, this means that they will start filling them little by little and then they will continue up.",
+    "Because if you are a child you will be absolutely all these market makers orders that sit around the price and just play with sales.",
+    "Here we can see when we separate our C7000 and 200 we had 670 and 3 bitcoins that were there at a certain time this is a minute time frame but if we come to the unit you will see how much time they appear and disappear these orders.",
+    "In our trade-by design course we enter a new level.",
+    "If you really want to learn and you are serious you want to meet serious people and people who every day work together to succeed you can download some of the links or scan the QR code that you see below.",
+    "When the price is approaching buy and sell wall the sellers start to meet with the opposite if the price is real.",
+    "When the price is approaching to sell wall the buyers meet the pressure or we get the pressure down if they manage to keep this level.",
+    "Moreover, we return when we have sell wall.",
+    "I told them to drop it in order to buy someone has to sell it if someone sells it you have to buy it and that's exactly what they get this is the end of such a movement."
+  ],
+  "strategy_components": [
+    {
+      "type": "filter",
+      "description": "Until the end of the video, you will know what the hipmap is, how to distinguish the real orders from the false ones, what are the spoofing orders, what is Iceberg actually and how to use this information in order to avo"
+    },
+    {
+      "type": "momentum",
+      "description": "Then you start seeing the momentum for the movement."
+    },
+    {
+      "type": "trend",
+      "description": "You have all kinds of tools almost all of them in Tradingville like Trendline, you can change colors to make them look better."
+    },
+    {
+      "type": "trend",
+      "description": "Here we will give an example for which we will talk a little in a situation in which we go one time to this village they try to keep this level we receive a reaction but this reaction is not like this reaction because th"
+    },
+    {
+      "type": "trend",
+      "description": "Without orders it is used to create a false feeling for a fortified and continuous trend."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-6624713784e9.raw.txt",
+  "sha256": "35badd09faefb4bfb8a4a024eca222c16b93f7def364fb300209c3749567972e",
+  "truncated": false
+}
