@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-chopsup1",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T20:00:00Z",
+  "edge_hypothesis": "Choppiness Index (CHOP) measures whether a market is trending or ranging on a 0-100 scale. When CHOP drops below 38.2 (Fibonacci level), the market has definitively transitioned from congestion into directional movement. This is a fundamentally different transition-detection mechanism from Vortex (directional intensity), Ichimoku TK (median-price cross), or MACD (momentum acceleration). CHOP measures the market's structural tendency to chop — its decline signals regime change at the market-structure level. The dead choppiness_donchian_fade used HIGH CHOP (>61.8) for ranging entries — this spec uses LOW CHOP (<38.2) for trend-emergence entries, the opposite regime and logic. Supertrend direction gate determines which way the trend is going once CHOP confirms trending conditions exist.",
+  "variants": [
+    {
+      "name": "chop_supertrend_regime_breakout_8to1",
+      "description": "Core variant. CHOP crossing below 38.2 as regime-transition signal + Supertrend direction gate. 8:1 sweet spot R:R.",
+      "entry_long": [
+        "CHOP_14_1_100 crosses_below 38.2",
+        "SUPERTd_7_3.0 > 0"
+      ],
+      "entry_short": [
+        "CHOP_14_1_100 crosses_below 38.2",
+        "SUPERTd_7_3.0 < 0"
+      ],
+      "filters": [
+        "no repaint", "bot-friendly", "chart timeframe only", "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CHOP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": ["Exit on opposite signal.", "Exit on max bars."],
+      "risk_rules": ["Risk note: ATR-based stop and TP.", "Risk note: 1% risk per trade."],
+      "parameters": [{"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "CHOP", "role": "baseline", "notes": "CHOP crosses below 38.2 — regime transitions from ranging to trending. Novel transition mechanism."},
+        {"indicator": "Supertrend", "role": "confirmation", "notes": "SUPERTd direction gate determines trend direction once CHOP confirms trending regime"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "chop_supertrend_regime_breakout_10to1",
+      "description": "Higher R:R variant (10:1). If CHOP breakdown catches genuine regime shifts, these should be large moves justifying wider TP targets.",
+      "entry_long": [
+        "CHOP_14_1_100 crosses_below 38.2",
+        "SUPERTd_7_3.0 > 0"
+      ],
+      "entry_short": [
+        "CHOP_14_1_100 crosses_below 38.2",
+        "SUPERTd_7_3.0 < 0"
+      ],
+      "filters": [
+        "no repaint", "bot-friendly", "chart timeframe only", "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CHOP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": ["Exit on opposite signal.", "Exit on max bars."],
+      "risk_rules": ["Risk note: ATR-based stop and TP.", "Risk note: 1% risk per trade."],
+      "parameters": [{"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "CHOP", "role": "baseline", "notes": "CHOP regime breakdown — testing if regime-shift entries produce larger moves"},
+        {"indicator": "Supertrend", "role": "confirmation", "notes": "Direction gate for trend commitment"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "chop_supertrend_permissive_8to1",
+      "description": "More permissive threshold (CHOP < 45). Generates more signals by catching earlier trend emergence. Tests whether waiting for full trend confirmation (38.2) vs early detection (45) produces better results.",
+      "entry_long": [
+        "CHOP_14_1_100 crosses_below 45",
+        "SUPERTd_7_3.0 > 0"
+      ],
+      "entry_short": [
+        "CHOP_14_1_100 crosses_below 45",
+        "SUPERTd_7_3.0 < 0"
+      ],
+      "filters": [
+        "no repaint", "bot-friendly", "chart timeframe only", "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CHOP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": ["Exit on opposite signal.", "Exit on max bars."],
+      "risk_rules": ["Risk note: ATR-based stop and TP.", "Risk note: 1% risk per trade."],
+      "parameters": [{"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "CHOP", "role": "baseline", "notes": "CHOP < 45 permissive threshold — earlier trend detection, more signals"},
+        {"indicator": "Supertrend", "role": "confirmation", "notes": "Direction gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow"],
+    "novel_combination": true,
+    "parent_edges": ["Supertrend 8:1 tail harvester PF=1.921 (ACCEPT)", "CHOP never tested as trend-emergence signal (only as ranging gate in dead choppiness_donchian_fade)"]
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "RSI", "MACD", "ATR", "Bollinger Bands", "ADX", "Supertrend", "Stochastic", "CCI", "WILLR", "OBV", "VWAP", "Donchian", "Ichimoku", "CHOP", "KAMA", "T3", "ALMA", "VTXP", "STC", "QQE"],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "RSI": "rsi", "MACD": "macd", "ATR": "atr",
+    "Bollinger Bands": "bbands", "ADX": "adx", "Supertrend": "supertrend",
+    "Stochastic": "stoch", "CCI": "cci", "WILLR": "willr", "OBV": "obv",
+    "VWAP": "vwap", "Donchian": "donchian", "Ichimoku": "ichimoku",
+    "CHOP": "chop", "KAMA": "kama", "T3": "t3", "ALMA": "alma",
+    "VTXP": "vortex", "STC": "stc", "QQE": "qqe"
+  },
+  "indicator_roles": {
+    "baseline": ["EMA", "SMA", "Supertrend", "Ichimoku", "KAMA", "T3", "ALMA"],
+    "confirmation": ["RSI", "MACD", "Stochastic", "CCI", "WILLR", "ADX", "VTXP", "STC", "QQE", "OBV"],
+    "volume_volatility": ["ATR", "Bollinger Bands", "VWAP", "CHOP", "Donchian"]
+  }
+}
