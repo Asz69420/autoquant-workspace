@@ -1,5 +1,5 @@
 {
-  "top_cursor": 5113,
+  "top_cursor": 5173,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -125,7 +125,8 @@
     "htf reversal divergences [mr. quant]|jacob_luxalgo",
     "institutional accumulation and distribution detector - phenlabs|phenlabs",
     "gk smart trend hud tp1-tp3|hgavin780",
-    "rsi, ema &amp; volume reversal by smartrader|smartrader19"
+    "rsi, ema &amp; volume reversal by smartrader|smartrader19",
+    "rsi extension + divergence|therealdrip2rip"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -252,7 +253,8 @@
     "ifkYLkyC",
     "MoK4KeHY",
     "lN4QuOF7",
-    "NN9D2zT4"
+    "NN9D2zT4",
+    "4KCjePxd"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",
@@ -269,5 +271,5 @@
     "crr trendlines priority levels|rivero8894",
     "zero lag kalman structure [boswaves]|boswaves"
   ],
-  "trending_cursor": 239
+  "trending_cursor": 278
 }

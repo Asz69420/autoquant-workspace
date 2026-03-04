@@ -1,16 +1,16 @@
 ﻿{
-    "directive_loop_stall_cycles":  100,
+    "directive_loop_stall_cycles":  102,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-24399f4c253e.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-stcci01a.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ikkama01.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-b6d55d185f99.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-809a476f4702.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-bbmrsi01.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-d158d4f4b7fc.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-ccit3z01.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-claude-emvtx01.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-9285dd0ab266.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-0fd9a53b5ec7.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-1063269b234c.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-633745ae7293.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-3bb22757643d.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-9285dd0ab266.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-04T03:00:06.0556254Z"
+    "updated_at":  "2026-03-04T03:22:18.7336213Z"
 }

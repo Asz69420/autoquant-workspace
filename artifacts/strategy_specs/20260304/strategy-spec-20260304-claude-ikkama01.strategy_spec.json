@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-ikkama01",
+  "name": "Ichimoku KAMA Dual-Adaptive Trend",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Two adaptive systems combined for all-regime edge. Ichimoku's Tenkan-sen (ITS_9) vs Kijun-sen (IKS_26) captures the relationship between short-term and medium-term equilibrium — when Tenkan > Kijun, short-term momentum exceeds the medium-term average, confirming bullish pressure. KAMA (Kaufman Adaptive Moving Average) adapts its smoothing speed to market conditions: fast in trends, slow in ranges — proven adaptive architecture (KAMA Stoch v1 PF=1.857, ranging PF=4.87). The combination: Ichimoku momentum direction + KAMA adaptive trend confirmation = two independent adaptive systems that both agree on direction. Neither uses fixed parameters in the traditional sense — both self-adjust. Ichimoku has never been tested as a primary signal in this system. KAMA is a validated all-regime performer. This tests whether Ichimoku momentum + KAMA adaptation creates a new all-regime architecture. Both conditions are zone-based (continuous) for reliable signal frequency.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ichi_kama_v1_8to1",
+      "description": "Core thesis: Tenkan > Kijun (Ichimoku momentum) + close > KAMA (adaptive trend). Dual-adaptive confirmation. 8:1 R:R. Zone-based conditions ensure reliable trade frequency.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 > IKS_26",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "ITS_9 < IKS_26",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Ichimoku Tenkan-sen (9-period equilibrium). Short-term momentum direction."
+        },
+        {
+          "indicator": "IKS_26",
+          "role": "baseline",
+          "notes": "Ichimoku Kijun-sen (26-period equilibrium). Medium-term reference. Tenkan > Kijun = bullish momentum."
+        },
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "confirmation",
+          "notes": "Kaufman Adaptive MA — proven adaptive architecture. Fast in trends, slow in ranges. Validates direction with speed-adaptive smoothing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_kama_v2_6to1",
+      "description": "Tighter 6:1 R:R (9x ATR TP). Tests whether dual-adaptive entries produce more frequent, shorter-duration wins. If both adaptive systems confirm direction accurately, faster TP capture may improve win rate and compound more effectively.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 > IKS_26",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "ITS_9 < IKS_26",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (9x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 9x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Ichimoku Tenkan-sen — short-term equilibrium."
+        },
+        {
+          "indicator": "IKS_26",
+          "role": "baseline",
+          "notes": "Ichimoku Kijun-sen — medium-term reference."
+        },
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "confirmation",
+          "notes": "KAMA adaptive trend confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R — tighter 6:1 for faster captures."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_kama_v3_wide_10to1",
+      "description": "Extended 10:1 R:R with wider 2.0 ATR stop. Gives trades more room to breathe while targeting larger moves. If dual-adaptive entry produces high-conviction signals, wider stops reduce noise exits and larger TP captures full trend extensions.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ITS_9 > IKS_26",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "ITS_9 < IKS_26",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=KAMA",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Ichimoku Tenkan-sen — short-term equilibrium."
+        },
+        {
+          "indicator": "IKS_26",
+          "role": "baseline",
+          "notes": "Ichimoku Kijun-sen — medium-term reference."
+        },
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "confirmation",
+          "notes": "KAMA adaptive trend confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Wider 2.0 ATR stop + 20x TP for full trend capture."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ITS_9", "IKS_26", "KAMA_10_2_30", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ITS_9 / IKS_26 — Ichimoku Tenkan-sen vs Kijun-sen. Short-term vs medium-term equilibrium momentum.",
+    "confirmation": "KAMA_10_2_30 — Kaufman Adaptive MA. Speed-adaptive trend confirmation.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}

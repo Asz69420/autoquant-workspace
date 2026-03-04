@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-stcci01a",
+  "name": "Supertrend CCI Momentum Continuation",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Building on the proven Supertrend architecture (two ACCEPTs: PF=1.921 and PF=1.907) with a different confirmation signal. Supertrend direction (SUPERTd_7_3.0 == 1/-1) is a binary trend state — the trend is either bullish or bearish based on ATR-envelope price action. CCI (Commodity Channel Index) measures how far price deviates from its statistical mean, normalized by mean deviation. CCI > 0 means price is above its average — bullish momentum zone. CCI < 0 means bearish momentum. The combination: Supertrend confirms the macro trend state, CCI confirms current momentum is aligned with that trend. This filters out Supertrend signals where direction is set but momentum has stalled or reversed. Unlike ADX (which kills mean-reversion edge), CCI is a momentum measure that works in all regimes — ranging markets oscillate CCI around zero, trending markets push CCI to extremes. Recent outcome: CCI+T3 showed transitional PF=2.32, confirming CCI has alpha. Both conditions are zone-based (continuous) for maximum signal frequency.",
+  "regime_assumption": "all",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "supert_cci_v1_8to1",
+      "description": "Core thesis: Supertrend bullish (SUPERTd == 1) + CCI > 0 (positive momentum zone). Supertrend provides binary trend state, CCI confirms momentum alignment. 8:1 R:R. Both zone-based for reliable frequency.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 > 0"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 < 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction — binary trend state (1=bullish, -1=bearish). ATR-envelope based, proven architecture with 2 existing ACCEPTs."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "Commodity Channel Index — statistical mean deviation. CCI > 0 = bullish momentum zone, < 0 = bearish. Works across all regimes."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supert_cci_v2_strong_8to1",
+      "description": "Stronger CCI threshold: CCI > 100 (long) / CCI < -100 (short). CCI > 100 means price is one mean-deviation above average — confirmed strong momentum. More selective than zero-line, but still zone-based. Tests whether stronger momentum filtering improves PF vs the zero-line variant.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 > 100"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 < -100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction — binary trend state."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI > 100 = strong momentum confirmation. More selective than zero-line."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supert_cci_v3_wide_10to1",
+      "description": "Extended 10:1 R:R with wider 2.0 ATR stop. Supertrend trends can run for extended periods — wider stops avoid noise exits while larger TP captures the full trend move. CCI zero-line confirmation to keep trade frequency up.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 > 0"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 < 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction — binary trend state."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-line momentum zone — aligned with Supertrend direction."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Wider 2.0 ATR stop + 20x TP for full trend continuation capture."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["SUPERTd_7_3.0", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "SUPERTd_7_3.0 — Supertrend direction. Binary trend state from ATR-envelope price action.",
+    "confirmation": "CCI_20_0.015 — Commodity Channel Index. Statistical mean deviation measures momentum zone.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}

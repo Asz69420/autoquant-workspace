@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-vwstmr01",
+  "name": "VWAP Stochastic Mean Reversion",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "VWAP (Volume-Weighted Average Price) represents institutional fair value — the average price weighted by volume, showing where the most capital has transacted. When price deviates below VWAP, it is 'cheap' relative to where volume has traded; when above, it is 'expensive'. This creates natural mean-reversion gravity. Stochastic K in oversold territory (<20) or overbought territory (>80) confirms that the deviation has reached an extreme likely to snap back. Together: VWAP identifies the fair-value anchor, Stochastic times the entry at extremes. This is a pure ranging-regime play — the universal profit base where every ACCEPT strategy performs. Both conditions are zone-based (continuous), ensuring reliable signal frequency. First system test of VWAP_D as a primary signal generator.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH", "BTC"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "vwap_stoch_mr_v1_8to1",
+      "description": "Core thesis: price below VWAP + oversold Stochastic = mean-reversion long. Price above VWAP + overbought Stochastic = mean-reversion short. Both conditions are zone-based for reliable signal frequency. 8:1 R:R — the proven sweet spot.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < VWAP_D",
+        "STOCHk_14_3_3 < 20"
+      ],
+      "entry_short": [
+        "close > VWAP_D",
+        "STOCHk_14_3_3 > 80"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "VWAP_D",
+          "role": "baseline",
+          "notes": "Volume-Weighted Average Price — institutional fair-value anchor. Price vs VWAP measures deviation from volume-weighted mean. First system test as primary signal."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic K — oscillator extremes (<20 oversold, >80 overbought) time mean-reversion entries at deviation peaks."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "vwap_stoch_mr_v2_tight",
+      "description": "Tighter Stochastic thresholds (15/85) to select only the deepest mean-reversion extremes. Tests whether selectivity improves PF by filtering out shallow pullbacks that reverse too early. Same 8:1 R:R.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < VWAP_D",
+        "STOCHk_14_3_3 < 15"
+      ],
+      "entry_short": [
+        "close > VWAP_D",
+        "STOCHk_14_3_3 > 85"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "VWAP_D",
+          "role": "baseline",
+          "notes": "VWAP fair-value anchor."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Tighter thresholds (15/85) — only deepest extremes."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "vwap_stoch_mr_v3_10to1",
+      "description": "Extended 10:1 R:R (15x ATR TP). If VWAP mean-reversion captures extended snapback moves, wider TP captures the full reversion. Tests whether mean-reversion moves are large enough for 10:1 payoff.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < VWAP_D",
+        "STOCHk_14_3_3 < 20"
+      ],
+      "entry_short": [
+        "close > VWAP_D",
+        "STOCHk_14_3_3 > 80"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=VWAP",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "VWAP_D",
+          "role": "baseline",
+          "notes": "VWAP fair-value anchor."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic extremes — standard 20/80 thresholds."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for full mean-reversion capture."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["VWAP_D", "STOCHk_14_3_3", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "VWAP_D — Volume-Weighted Average Price. Institutional fair-value anchor where most capital transacted.",
+    "confirmation": "STOCHk_14_3_3 — Stochastic K oscillator. Zone-based extremes time mean-reversion entries.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework."
+  }
+}

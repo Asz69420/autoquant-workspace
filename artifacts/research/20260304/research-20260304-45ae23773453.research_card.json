@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-45ae23773453",
+  "created_at": "2026-03-04T03:15:06.510226Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/4KCjePxd-RSI-Extension-Divergence/",
+  "title": "RSI Extension + Divergence",
+  "author": "TheRealDrip2Rip",
+  "summary_bullets": [
+    "TradingView indicator: RSI Extension + Divergence by TheRealDrip2Rip.",
+    "RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay.",
+    "Divergences are drawn directly on price: Bullish Divergence (price makes a lower low while RSI makes a higher low) Bearish Divergence (price makes a higher high while RSI makes a lower high) Hidden Bullish / Hidden Bearish divergences (trend-continuation variants) Pivot dots help visualize the swing points used to confirm divergence.",
+    "Optional OB/OS … RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay.",
+    "Optional OB/OS … Possible indicators: RSI.",
+    "Source URL: https://www.tradingview.com/script/4KCjePxd-RSI-Extension-Divergence/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: RSI Extension + Divergence by TheRealDrip2Rip.",
+      "note": "Meaning: TradingView indicator: RSI Extension + Divergence by TheRealDrip2Rip."
+    },
+    {
+      "timestamp": null,
+      "quote": "RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay.",
+      "note": "Meaning: RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay."
+    },
+    {
+      "timestamp": null,
+      "quote": "Divergences are drawn directly on price: Bullish Divergence (price makes a lower low while RSI makes a higher low) Bearish Divergence (price makes a higher high while RSI makes a lower high) Hidden Bu",
+      "note": "Meaning: Divergences are drawn directly on price: Bullish Divergence (price makes a lower low while RSI makes a higher low) Bearish Divergence (price makes a hi"
+    },
+    {
+      "timestamp": null,
+      "quote": "Optional OB/OS … RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay.",
+      "note": "Meaning: Optional OB/OS … RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean ove"
+    },
+    {
+      "timestamp": null,
+      "quote": "Optional OB/OS … Possible indicators: RSI.",
+      "note": "Meaning: Optional OB/OS … Possible indicators: RSI."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/4KCjePxd-RSI-Extension-Divergence/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/4KCjePxd-RSI-Extension-Divergence/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay."
+    },
+    {
+      "type": "trend",
+      "description": "Divergences are drawn directly on price: Bullish Divergence (price makes a lower low while RSI makes a higher low) Bearish Divergence (price makes a higher high while RSI makes a lower high) Hidden Bullish / Hidden Beari"
+    },
+    {
+      "type": "trend",
+      "description": "Optional OB/OS … RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay."
+    }
+  ],
+  "indicators_mentioned": [
+    "RSI"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-45ae23773453.raw.txt",
+  "sha256": "0eb61408818e412e1439f6f70dfe2950ff1619e0b034393d1ceee3ce0d192c16",
+  "truncated": false
+}
