@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260304-add4900376d6",
+  "created_at": "2026-03-04T09:18:20.958952Z",
+  "tv_ref": "tradingview:nyyInUl8",
+  "url": "https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/",
+  "name": "Gamma Exposure Levels [BackQuant]",
+  "author": "BackQuant",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "5d18a912b0ee9de7ca404d0068b2ab5500c083b0d9ce7d6993683291fa330a5e",
+  "truncated": false
+}

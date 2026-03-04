@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-775d67dbabc3",
+  "created_at": "2026-03-04T09:18:21.210222Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/",
+  "title": "Gamma Exposure Levels [BackQuant]",
+  "author": "BackQuant",
+  "summary_bullets": [
+    "TradingView indicator: Gamma Exposure Levels [BackQuant] by BackQuant.",
+    "Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsing the values and plotting them as labeled horizontal lines on your chart.",
+    "It is designed for traders who use options-derived gamma exposure data as part of their technical analysis and want a fast, visual way to overlay those key price levels onto any chart and timeframe.",
+    "Rather than manually drawing lines for each level, this script reads a … Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsing the values and plotting them as labeled horizontal lines on your chart.",
+    "Rather than manually drawing lines for each level, this script reads a … Source URL: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Gamma Exposure Levels [BackQuant] by BackQuant.",
+      "note": "Meaning: TradingView indicator: Gamma Exposure Levels [BackQuant] by BackQuant."
+    },
+    {
+      "timestamp": null,
+      "quote": "Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsing the values and plotting them as labeled horizo",
+      "note": "Meaning: Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsi"
+    },
+    {
+      "timestamp": null,
+      "quote": "It is designed for traders who use options-derived gamma exposure data as part of their technical analysis and want a fast, visual way to overlay those key price levels onto any chart and timeframe.",
+      "note": "Meaning: It is designed for traders who use options-derived gamma exposure data as part of their technical analysis and want a fast, visual way to overlay those"
+    },
+    {
+      "timestamp": null,
+      "quote": "Rather than manually drawing lines for each level, this script reads a … Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingV",
+      "note": "Meaning: Rather than manually drawing lines for each level, this script reads a … Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) "
+    },
+    {
+      "timestamp": null,
+      "quote": "Rather than manually drawing lines for each level, this script reads a … Source URL: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/.",
+      "note": "Meaning: Rather than manually drawing lines for each level, this script reads a … Source URL: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-775d67dbabc3.raw.txt",
+  "sha256": "0ec189bb25fbbdbb1d44a95842b8eb6936d96baf82fb35ee86b26d503f5ec623",
+  "truncated": false
+}

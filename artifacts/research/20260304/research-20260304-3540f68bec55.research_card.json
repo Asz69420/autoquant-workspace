@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-3540f68bec55",
+  "created_at": "2026-03-04T09:18:22.322163Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/zRJwbqRU/",
+  "title": "SMC Completo [PFX]",
+  "author": "prodigiofx26",
+  "summary_bullets": [
+    "TradingView indicator: SMC Completo [PFX] by prodigiofx26.",
+    "This TradingView Pine Script identifies and plots Supply and Demand zones (Order Blocks) and Fair Value Gaps (FVG) based on swing highs and lows.",
+    "It allows configurable limits for the number of internal OBs, swing OBs, and FVGs displayed, while maintaining market structure detection and trailing swing levels.&#34; If you want, I can also make an even shorter 1-line version that’s perfect for a TradingView publish description.",
+    "Do you want me to do that?",
+    "Source URL: https://www.tradingview.com/script/zRJwbqRU/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: SMC Completo [PFX] by prodigiofx26.",
+      "note": "Meaning: TradingView indicator: SMC Completo [PFX] by prodigiofx26."
+    },
+    {
+      "timestamp": null,
+      "quote": "This TradingView Pine Script identifies and plots Supply and Demand zones (Order Blocks) and Fair Value Gaps (FVG) based on swing highs and lows.",
+      "note": "Meaning: This TradingView Pine Script identifies and plots Supply and Demand zones (Order Blocks) and Fair Value Gaps (FVG) based on swing highs and lows."
+    },
+    {
+      "timestamp": null,
+      "quote": "It allows configurable limits for the number of internal OBs, swing OBs, and FVGs displayed, while maintaining market structure detection and trailing swing levels.&#34; If you want, I can also make a",
+      "note": "Meaning: It allows configurable limits for the number of internal OBs, swing OBs, and FVGs displayed, while maintaining market structure detection and trailing "
+    },
+    {
+      "timestamp": null,
+      "quote": "Do you want me to do that?",
+      "note": "Meaning: Do you want me to do that?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/zRJwbqRU/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/zRJwbqRU/."
+    }
+  ],
+  "extracted_rules": [
+    "It allows configurable limits for the number of internal OBs, swing OBs, and FVGs displayed, while maintaining market structure detection and trailing swing levels.&#34; If you want, I can also make an even shorter 1-line version that’s perfect for a TradingView publish description."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-3540f68bec55.raw.txt",
+  "sha256": "b11a7ba9ab8ea4ca3472f55a6d2d876c0299015316b341e928fd116cbb727aa2",
+  "truncated": false
+}

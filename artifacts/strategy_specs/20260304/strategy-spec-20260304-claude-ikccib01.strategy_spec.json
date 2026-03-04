@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-ikccib01",
+  "name": "Ichimoku Cloud CCI Breakout 4h",
+  "created_at": "2026-03-04T21:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Ichimoku TK v1 ACCEPT (PF=1.604) validated Tenkan/Kijun crossover as transition-detection. This spec tests a DIFFERENT Ichimoku mechanism: the cloud itself (Senkou Span A) as structural support/resistance. When price breaks above ISA_9, it clears a dynamic resistance zone that most Ichimoku traders watch — this is a structural breakout, not a crossover. Adding CCI > 100 as momentum confirmation ensures the breakout has genuine momentum behind it (CCI validated as trend-confirmation in journal entry 13, CCI Chop Fade v2 ACCEPT). This tests whether Ichimoku's cloud boundary works as a structural filter (like EMA200 does for Vortex, where EMA200 amplified transitional PF to 4.321 record). The cloud boundary adapts to price structure — potentially better than static EMA200.",
+  "regime_assumption": "all-regime",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ichi_cloud_cci_8to1",
+      "description": "Core 8:1 R:R. Price above Ichimoku cloud (ISA_9) + CCI momentum burst. Tests cloud as dynamic structural filter.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "CCI_20_0.015 > 100"
+      ],
+      "entry_short": [
+        "close < ISA_9",
+        "CCI_20_0.015 < -100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Ichimoku Senkou Span A (Leading Span A) — dynamic cloud boundary. Price above ISA = cleared structural resistance."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI > 100 confirms strong bullish momentum at cloud breakout. CCI < -100 for bearish."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop and take-profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_cloud_cci_10to1",
+      "description": "Extended 10:1 R:R. Wider TP for larger transition captures. Tests whether cloud breakouts initiate extended moves.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "CCI_20_0.015 > 100"
+      ],
+      "entry_short": [
+        "close < ISA_9",
+        "CCI_20_0.015 < -100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Ichimoku cloud boundary as structural filter."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI momentum confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based risk framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_cloud_cci_cross_8to1",
+      "description": "Cross-based CCI variant. CCI crosses_above 100 for precise timing vs zone condition. Fewer trades but higher-conviction entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "CCI_20_0.015 crosses_above 100"
+      ],
+      "entry_short": [
+        "close < ISA_9",
+        "CCI_20_0.015 crosses_below -100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Ichimoku Senkou Span A as structural breakout level."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI crosses_above 100 = exact momentum initiation bar."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based risk framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ISA_9", "CCI_20_0.015", "ATR_14", "close"],
+  "indicator_roles": {
+    "baseline": "ISA_9 (Ichimoku Senkou Span A) provides dynamic structural support/resistance — adapts to price structure unlike static EMAs.",
+    "confirmation": "CCI_20 crossing +100/-100 confirms genuine momentum behind cloud breakout.",
+    "volume_volatility": "ATR_14 for dynamic stop/TP sizing."
+  }
+}

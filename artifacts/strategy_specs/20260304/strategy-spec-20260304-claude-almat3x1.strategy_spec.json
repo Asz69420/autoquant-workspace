@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-almat3x1",
+  "name": "ALMA T3 Adaptive Crossover 4h",
+  "created_at": "2026-03-04T21:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ALMA (Gaussian-smoothed, low lag) and T3 (triple-exponential, ultra-smooth) respond to price changes at fundamentally different speeds. ALMA_9 reacts faster due to its Gaussian kernel offset; T3_10 is smoother but lags behind. When ALMA crosses above T3, it detects early momentum shifts before traditional EMA crossovers would fire — a transition-detection mechanism using two adaptive smoothing methods that have NEVER been tested in any strategy. Both indicators exist in the dataframe but remain completely untested. This exploits the validated general edge: transition-detection using change-of-direction indicators (proven by Vortex v3a PF=2.034 and Ichimoku TK v1 PF=1.604 using different math). ALMA-T3 crossover is a third mathematical approach to the same underlying phenomenon.",
+  "regime_assumption": "all-regime",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "alma_t3_cross_8to1",
+      "description": "Core 8:1 R:R variant. ALMA crosses T3 for adaptive transition timing. Single-condition entry for maximum signal frequency.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ALMA_9_6.0_0.85 crosses_above T3_10_0.7"
+      ],
+      "entry_short": [
+        "ALMA_9_6.0_0.85 crosses_below T3_10_0.7"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=T3",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "ALMA with Gaussian kernel — low lag, fast response to price transitions. Offset 6.0, sigma 0.85."
+        },
+        {
+          "indicator": "T3_10_0.7",
+          "role": "confirmation",
+          "notes": "Triple-exponential smoothed MA — ultra-smooth reference. Cross by ALMA signals adaptive transition."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop and take-profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_t3_cross_10to1",
+      "description": "Extended 10:1 R:R tail-harvester. Wider TP captures larger transition moves on ETH 4h.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "ALMA_9_6.0_0.85 crosses_above T3_10_0.7"
+      ],
+      "entry_short": [
+        "ALMA_9_6.0_0.85 crosses_below T3_10_0.7"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 20.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=T3",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (20x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 20.0x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "ALMA fast-response baseline."
+        },
+        {
+          "indicator": "T3_10_0.7",
+          "role": "confirmation",
+          "notes": "T3 smooth reference for crossover timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based risk framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ALMA_9_6.0_0.85", "T3_10_0.7", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ALMA_9 provides fast-adapting price reference via Gaussian kernel smoothing — reacts to transitions before traditional MAs.",
+    "confirmation": "T3_10 provides ultra-smooth reference. ALMA crossing T3 signals genuine directional change vs noise.",
+    "volume_volatility": "ATR_14 for dynamic stop/TP sizing."
+  }
+}
