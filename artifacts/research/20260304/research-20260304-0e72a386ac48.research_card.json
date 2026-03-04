@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-0e72a386ac48",
+  "created_at": "2026-03-04T13:12:37.771778Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/",
+  "title": "Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)",
+  "author": "seantrading2",
+  "summary_bullets": [
+    "TradingView indicator: Unified 4-Indicator Buy/Sell System (60pt62, PMO exact) by seantrading2.",
+    "use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of next candle, stops to high or low of signal candle and take profit at 1rr.",
+    "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of next candle, stops to high or low of signal candle and take profit at 1rr.",
+    "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show Source URL: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Unified 4-Indicator Buy/Sell System (60pt62, PMO exact) by seantrading2.",
+      "note": "Meaning: TradingView indicator: Unified 4-Indicator Buy/Sell System (60pt62, PMO exact) by seantrading2."
+    },
+    {
+      "timestamp": null,
+      "quote": "use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of n",
+      "note": "Meaning: use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo,"
+    },
+    {
+      "timestamp": null,
+      "quote": "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings",
+      "note": "Meaning: if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alon"
+    },
+    {
+      "timestamp": null,
+      "quote": "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show Source URL: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indi",
+      "note": "Meaning: if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show Source URL: https://w"
+    }
+  ],
+  "extracted_rules": [
+    "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of next candle, stops to high or low of signal candle and take profit at 1rr.",
+    "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show Source URL: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of next candle, stops to"
+    },
+    {
+      "type": "momentum",
+      "description": "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO"
+    }
+  ],
+  "explicit_conditions": [
+    "if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of next candle, stops to high or low of signal candle and take profit at 1rr."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-0e72a386ac48.raw.txt",
+  "sha256": "d46534f1899a8bde3ac40243e6584c0b66df14ea40be0abe5ea1a6408b7a6803",
+  "truncated": false
+}

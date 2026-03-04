@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-75bf1a034f94",
+  "created_at": "2026-03-04T13:12:39.124378Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/",
+  "title": "Smoothed Stochastic Momentum Index [Mr. Quant]",
+  "author": "Jacob_LuxAlgo",
+  "summary_bullets": [
+    "TradingView indicator: Smoothed Stochastic Momentum Index [Mr.",
+    "From Live stream on March 3rd 2026 The Smoothed Stochastic Momentum Index (SSMI) is a high-precision scalping tool designed to filter out market noise and align fast-paced momentum entries with broader market structure.",
+    "Here is a breakdown of how the logic works from the core &#34;engine&#34; to the final entry signals: 1.",
+    "The Core Engine: Double Smoothing Unlike a standard Stochastic oscillator that can be very &#34;choppy,&#34; the SSMI uses a Double Smoothed Stochastic (DSS) calculation.",
+    "It takes the … Possible indicators: STOCH.",
+    "Source URL: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Smoothed Stochastic Momentum Index [Mr.",
+      "note": "Meaning: TradingView indicator: Smoothed Stochastic Momentum Index [Mr."
+    },
+    {
+      "timestamp": null,
+      "quote": "From Live stream on March 3rd 2026 The Smoothed Stochastic Momentum Index (SSMI) is a high-precision scalping tool designed to filter out market noise and align fast-paced momentum entries with broade",
+      "note": "Meaning: From Live stream on March 3rd 2026 The Smoothed Stochastic Momentum Index (SSMI) is a high-precision scalping tool designed to filter out market noise "
+    },
+    {
+      "timestamp": null,
+      "quote": "Here is a breakdown of how the logic works from the core &#34;engine&#34; to the final entry signals: 1.",
+      "note": "Meaning: Here is a breakdown of how the logic works from the core &#34;engine&#34; to the final entry signals: 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "The Core Engine: Double Smoothing Unlike a standard Stochastic oscillator that can be very &#34;choppy,&#34; the SSMI uses a Double Smoothed Stochastic (DSS) calculation.",
+      "note": "Meaning: The Core Engine: Double Smoothing Unlike a standard Stochastic oscillator that can be very &#34;choppy,&#34; the SSMI uses a Double Smoothed Stochastic"
+    },
+    {
+      "timestamp": null,
+      "quote": "It takes the … Possible indicators: STOCH.",
+      "note": "Meaning: It takes the … Possible indicators: STOCH."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "TradingView indicator: Smoothed Stochastic Momentum Index [Mr."
+    },
+    {
+      "type": "momentum",
+      "description": "From Live stream on March 3rd 2026 The Smoothed Stochastic Momentum Index (SSMI) is a high-precision scalping tool designed to filter out market noise and align fast-paced momentum entries with broader market structure."
+    },
+    {
+      "type": "momentum",
+      "description": "Source URL: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/."
+    }
+  ],
+  "indicators_mentioned": [
+    "Stochastic"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-75bf1a034f94.raw.txt",
+  "sha256": "7d2e94d87651752d070382635c7da656211f1dc35a96e38b686897889df26656",
+  "truncated": false
+}

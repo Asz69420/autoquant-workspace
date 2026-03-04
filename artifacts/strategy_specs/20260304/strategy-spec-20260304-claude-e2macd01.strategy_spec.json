@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-e2macd01",
+  "name": "EMA200 MACD Macro Momentum",
+  "created_at": "2026-03-04T13:30:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "EMA_200 is proven to amplify transitional alpha (EMA200 Vortex v2 trans PF=4.321, the system record). But that test used Vortex as confirmation. This spec tests whether EMA_200's macro-trend filtering works with MACD histogram instead — a simpler, more liquid signal. The hypothesis: when close crosses above EMA_200, a major regime shift is underway. MACD histogram positive at that moment confirms the shift has momentum. This targets rare but high-conviction macro transitions where the market crosses a major structural level with genuine force. Unlike EMA_200 as a static filter (close > EMA_200), here the CROSSING is the signal — the exact bar where price transitions through the 200-period structural level.",
+  "regime_assumption": "transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ema200_macd_v1_cross_8to1",
+      "description": "Core thesis: EMA_200 price crossing + MACD histogram positive. 8:1 R:R. The crossing IS the signal — catching exact macro regime transitions.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above EMA_200",
+        "MACDh_12_26_9 > 0"
+      ],
+      "entry_short": [
+        "close crosses_below EMA_200",
+        "MACDh_12_26_9 < 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2x ATR_14.",
+        "Take profit at 16x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "EMA_200",
+          "role": "baseline",
+          "notes": "EMA_200 — macro structural level. Price crossing this is a rare, high-conviction regime transition event."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram positive = momentum confirms the macro crossing has force behind it."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R. Wider 2x stop for macro plays to survive initial volatility."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ema200_macd_v2_hcross_8to1",
+      "description": "Both signals cross simultaneously: close crosses EMA_200 + MACD histogram crosses zero. Maximum confluence — both the structural break and momentum birth happen on same bar. Fewest entries but highest conviction.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above EMA_200",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close crosses_below EMA_200",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2x ATR_14.",
+        "Take profit at 16x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "EMA_200",
+          "role": "baseline",
+          "notes": "EMA_200 crossing — macro regime transition."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram zero-cross — simultaneous momentum birth. Maximum confluence filter."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R at 8:1."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["EMA_200", "MACDh_12_26_9", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "EMA_200 — 200-period exponential MA. The macro structural level in any market. Price crossing this is a regime transition event, not noise.",
+    "confirmation": "MACDh_12_26_9 — MACD histogram. Confirms the macro crossing has genuine momentum, not a wick-driven false break.",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework. Wider stops (2x) for macro plays."
+  }
+}

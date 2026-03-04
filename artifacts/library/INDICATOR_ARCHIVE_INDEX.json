@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "smoothed stochastic momentum index [mr. quant]|jacob_luxalgo",
+    "script_id": "d7dD0rJ1",
+    "name": "Smoothed Stochastic Momentum Index [Mr. Quant]",
+    "author": "Jacob_LuxAlgo",
+    "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-a1b573df54cc.indicator_record.json",
+    "first_seen_ts": "2026-03-04T13:12:39.527482+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "unified 4-indicator buy/sell system (60pt62, pmo exact)|seantrading2",
+    "script_id": "DMtUM2Xn",
+    "name": "Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)",
+    "author": "seantrading2",
+    "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-dbf4703f3d7a.indicator_record.json",
+    "first_seen_ts": "2026-03-04T13:12:38.095819+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "[tl5 macd] macd pro =&gt; rsi + alma adaptive momentum|aquaticktrader",
     "script_id": "upCCJN6B",
     "name": "[TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum",

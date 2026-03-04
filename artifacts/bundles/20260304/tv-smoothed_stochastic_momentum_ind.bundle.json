@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_smoothed stochas",
+    "created_at":  "2026-03-04T13:12:39.279853+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-75bf1a034f94.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260304/indicator-20260304-a1b573df54cc.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-75bf1a034f94.linkmap.json",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-04T13:14:26.4340701Z",
+    "attempts":  1,
+    "last_error":  "QUANDALF_DECISION_REQUIRED"
+}

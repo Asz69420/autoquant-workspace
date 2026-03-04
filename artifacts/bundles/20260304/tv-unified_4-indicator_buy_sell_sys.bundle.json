@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_unified 4-indica",
+    "created_at":  "2026-03-04T13:12:37.891934+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-0e72a386ac48.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260304/indicator-20260304-dbf4703f3d7a.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-0e72a386ac48.linkmap.json",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-04T13:16:14.5035592Z",
+    "attempts":  1,
+    "last_error":  "QUANDALF_DECISION_REQUIRED"
+}
