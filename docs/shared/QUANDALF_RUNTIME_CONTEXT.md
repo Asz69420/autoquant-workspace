@@ -46,6 +46,6 @@ Note format:
 ## Strategy Source Policy (Current)
 
 - Strategy creation is **Quandalf-only**.
-- Frodex autopilot remains active for operations/monitoring/reporting, but bundle-driven strategy generation is disabled in scheduled runs via:
-  - `scripts/automation/run_autopilot_task.ps1` using `-MaxBundlesPerRun 0`
-- Execution/backtesting/promotion tasks continue under Frodex using queued/explicit strategy specs.
+- Frodex autopilot remains active for operations/monitoring/reporting, but strategy-routing from TV/catalog is removed from the 15m loop and bundle-driven strategy generation is disabled in scheduled runs via:
+  - `scripts/automation/run_autopilot_task.ps1` using `-MaxBundlesPerRun 0` (without `-RunTVCatalogWorker`)
+- Execution/backtesting/promotion tasks continue under Frodex using queued/explicit strategy specs from Quandalf.
