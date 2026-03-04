@@ -473,7 +473,7 @@ $emojiCommander = [System.Char]::ConvertFromUtf32(0x1F451)
 $titleLine = switch ($mode) {
   'quandalf' { $emojiReflect + ' Reflecting' }
   'oragorn' { $emojiCommander + ' Commander Actions' }
-  default { $emojiAlgo + ' Algo Cooking' }
+  default { '🍳 Cooking' }
 }
 
 $lines = @()
