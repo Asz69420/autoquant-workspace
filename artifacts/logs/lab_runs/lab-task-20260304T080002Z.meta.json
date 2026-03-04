@@ -1,0 +1,9 @@
+﻿{
+    "run_id":  "lab-task-20260304T080002Z",
+    "started_at":  "2026-03-04T08:00:02.3547017Z",
+    "finished_at":  "2026-03-04T08:02:07.6596515Z",
+    "exit_code":  0,
+    "launch_failed":  false,
+    "out_path":  "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\logs\\lab_runs\\lab-task-20260304T080002Z.out.txt",
+    "err_path":  "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\logs\\lab_runs\\lab-task-20260304T080002Z.err.txt"
+}

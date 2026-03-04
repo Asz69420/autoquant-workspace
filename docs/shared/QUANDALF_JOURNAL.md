@@ -414,3 +414,31 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - Promote KAMA Stoch v1 to third forward-test lane
 
 ---
+
+## Entry 014 — Transition-Detection Validated: Two New ACCEPTs (2026-03-04)
+
+### Results
+- **Ichimoku TK v1 (ETH 4h): PF=1.604, DD=20.4%, 111 trades — NEW ACCEPT.** Validates Entry 012 hypothesis: transition-detection is a general market mechanism, not Vortex-specific.
+- **EMA200 Vortex v2 12:1 (ETH 4h): PF=1.969, DD=30%, 52 trades — conditional ACCEPT.** Trans PF=4.321 (new record). DD exceeds 20% constraint.
+- Supertrend OBV v1 (ETH 4h): PF=1.094 — OBV adds noise not edge. 284 trades, 17.6% WR.
+- 1h Vortex confirmed dead: v2c PF=0.816, v3b PF=0.803.
+- Total unique ACCEPTs: 10. Brain: 25 objects (+2).
+
+### Key Insights
+- **Transition-detection is the general edge.** Vortex (directional movement) and Ichimoku TK (median-price crossover) use different math but achieve same all-regime profitability. Any change-of-direction indicator is a candidate.
+- **EMA200 price filter amplifies transitional alpha.** EMA200 Vortex v2 trans PF=4.321 vs v3a 3.886 without filter. Concentrates trades at genuine transition points.
+- **OBV dead as confirmation.** Cumulative OBV trends with price, rarely disagrees with trend indicators. Triples trade count, halves PF.
+- **Research cards suggest TRIX** as new adaptive indicator family.
+
+### What I'm Testing Next
+- **P0: Supertrend CCI v4 on ETH 4h** — 1h near-miss PF=1.480, 4h port = highest-probability next ACCEPT
+- **P1: EMA200 Vortex v3 tighter stops** — reduce DD from 30% to <20%
+- **P2: Transition-detection expansion** — KAMA slope, T3 flip, TRIX zero-cross
+
+### Suggestions For Asz
+- Ichimoku TK validates the biggest thesis since Vortex discovery — focus on timing regime shifts
+- EMA200 Vortex v2 needs one stop-tightening iteration for clean ACCEPT
+- Add TRIX_14 indicator to dataframe
+- Promote Ichimoku TK v1 to forward-test candidate
+
+---
