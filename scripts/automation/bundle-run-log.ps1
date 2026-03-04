@@ -646,7 +646,7 @@ if ($mode -eq 'frodex') {
   $intakeSkipped = [int]$grabSkipped + [int]$videoSkipped
   $intakeFailed = [int]$grabFailed + [int]$videoFailed
   $intakeLines = @()
-  $intakeLines += '⚡ Speedster — Intake'
+  $intakeLines += '⚡ Intake'
   $intakeLines += ('Status: ' + $statusIcon + ' | Duration: ' + $durationLabel)
   $intakeLines += '○───intake─────────────────'
   $intakeLines += ('Videos: ' + [int]$videosGrabbed)
@@ -797,6 +797,7 @@ if ($skipDuplicateSend) {
 
 $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8
 Write-Host "Done"
+
 
 
 
