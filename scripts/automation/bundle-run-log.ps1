@@ -33,7 +33,23 @@ $logPath = "$ROOT\data\logs\actions.ndjson"
 if (-not (Test-Path $logPath)) { Write-Host "No action log"; exit 0 }
 
 $effectiveWindow = if ($WindowMinutes -lt 1) { 1 } else { $WindowMinutes }
-$cutoff = (Get-Date).AddMinutes(-1 * $effectiveWindow).ToUniversalTime()
+$nowUtc = (Get-Date).ToUniversalTime()
+$windowStartUtc = $nowUtc.AddMinutes(-1 * $effectiveWindow)
+$windowEndUtc = $nowUtc
+
+# For frodex 15m cadence, anchor window to quarter-hour slots so delayed sends
+# still report the intended cycle (e.g., 12:15 report = 12:00-12:15 activity).
+if ($mode -eq 'frodex') {
+  $slotMinutes = 15
+  $anchorUtc = [DateTime]::new($nowUtc.Year, $nowUtc.Month, $nowUtc.Day, $nowUtc.Hour, $nowUtc.Minute, 0, [DateTimeKind]::Utc)
+  $minuteRemainder = $anchorUtc.Minute % $slotMinutes
+  $windowEndUtc = $anchorUtc.AddMinutes(-1 * $minuteRemainder)
+  if ($windowEndUtc -gt $nowUtc) {
+    $windowEndUtc = $windowEndUtc.AddMinutes(-1 * $slotMinutes)
+  }
+  $windowStartUtc = $windowEndUtc.AddMinutes(-1 * $slotMinutes)
+}
+
 $tailLines = switch ($mode) {
   'oragorn' { 5000 }
   'quandalf' { 1500 }
@@ -46,7 +62,7 @@ foreach ($line in (Get-Content $logPath -Encoding UTF8 -Tail $tailLines)) {
     $tsRaw = if ($entry.ts_iso) { $entry.ts_iso } elseif ($entry.ts) { $entry.ts } else { $null }
     if (-not $tsRaw) { continue }
     try { $ts = [DateTime]::Parse($tsRaw).ToUniversalTime() } catch { continue }
-    if ($ts -ge $cutoff) { $events += $entry }
+    if ($ts -ge $windowStartUtc -and $ts -lt $windowEndUtc) { $events += $entry }
   } catch { continue }
 }
 if ($events.Count -eq 0) {
@@ -297,7 +313,7 @@ if ($mode -eq 'frodex') {
         $entry = $line | ConvertFrom-Json
         if (-not $entry.ts_iso) { continue }
         $fts = [DateTime]::Parse([string]$entry.ts_iso).ToUniversalTime()
-        if ($fts -lt $cutoff) { continue }
+        if ($fts -lt $windowStartUtc -or $fts -ge $windowEndUtc) { continue }
 
         $evt = [string]$entry.event
         switch ($evt) {
