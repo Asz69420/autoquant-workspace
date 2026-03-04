@@ -95,7 +95,42 @@ function Get-ResultsReviewInfo {
   return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; is_live = $false }
 }
 
+function Get-RunScopedActions {
+  param([string]$RunId)
+  $items = @()
+  if ([string]::IsNullOrWhiteSpace($RunId)) { return $items }
+  if (-not (Test-Path -LiteralPath $actionsPath)) { return $items }
+  try {
+    $rows = Get-Content -LiteralPath $actionsPath -Tail 4000 -Encoding UTF8
+    foreach ($line in $rows) {
+      try { $e = $line | ConvertFrom-Json } catch { continue }
+      $rid = [string]$e.run_id
+      if ($rid.StartsWith($RunId + '-')) { $items += $e }
+    }
+  } catch {}
+  return $items
+}
+
+function Get-RunSummaryMetricTotal {
+  param(
+    [array]$Events,
+    [string]$Action,
+    [string]$MetricName
+  )
+  $total = 0
+  foreach ($e in @($Events)) {
+    if ([string]$e.action -ne $Action) { continue }
+    $summary = [string]$e.summary
+    $m = [regex]::Match($summary, ('(?i)' + [regex]::Escape($MetricName) + '=(\d+)'))
+    if ($m.Success) {
+      try { $total += [int]$m.Groups[1].Value } catch {}
+    }
+  }
+  return [int]$total
+}
+
 function Get-LiveReviewInfo {
+  param([string]$RunId = '')
   if (-not (Test-Path -LiteralPath $autopilotSummaryPath)) {
     return $null
   }
@@ -119,6 +154,21 @@ function Get-LiveReviewInfo {
       elseif ($null -ne $s.frodex_queue_backlog) { $qQueued = [int]$s.frodex_queue_backlog }
       elseif ($null -ne $s.quandalf_queue_ready) { $qQueued = [int]$s.quandalf_queue_ready }
     } catch {}
+
+    # Prefer run-scoped metrics for card correctness (new-cycle values, not aggregate drift).
+    if (-not [string]::IsNullOrWhiteSpace($RunId)) {
+      $runEvents = Get-RunScopedActions -RunId $RunId
+      if (@($runEvents).Count -gt 0) {
+        $runGenerated = @($runEvents | Where-Object { [string]$_.action -eq 'BUNDLE_SPEC_RESULT' }).Count
+        $runPassed = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_pass'
+        $runAborted = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_fail'
+
+        $qGenerated = [int]$runGenerated
+        $passing = [int]$runPassed
+        $errors = [int]$runAborted
+        $qQueued = [Math]::Max(0, ([int]$qGenerated + [int]$passing - [int]$errors))
+      }
+    }
 
     return [PSCustomObject]@{
       reviewed = $ingested
@@ -149,7 +199,7 @@ function Send-QuandalfCard {
 
   $orderInfo = Get-CurrentOrderInfo
   $resultsInfo = Get-ResultsReviewInfo
-  $liveInfo = Get-LiveReviewInfo
+  $liveInfo = Get-LiveReviewInfo -RunId $RunId
   if ($null -ne $liveInfo -and $liveInfo.is_live) {
     $resultsInfo = $liveInfo
   }
@@ -291,7 +341,7 @@ try {
     $statusWord = [string]$entry.status
     $durLabel = Format-DurationLabelFromMs -DurationMs ([Nullable[Int64]]$entry.durationMs)
     $summary = [string]$entry.summary
-    $liveNow = Get-LiveReviewInfo
+    $liveNow = Get-LiveReviewInfo -RunId $latestRunId
     $qGenNow = 0
     $qQueuedNow = 0
     if ($null -ne $liveNow) {
