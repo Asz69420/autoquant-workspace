@@ -1,5 +1,5 @@
 {
-  "count": 9,
+  "count": 10,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -150,7 +150,22 @@
       "source_path": "brain/journal/2026-03-05-u26-pipeline-halt-imperative.md",
       "summary": "U26: 36 new backtests (2026-03-05), ALL 0 trades. Total epidemic: 102+. Directive loop crosses day boundary unchecked. 3 Claude specs (ALMA Vortex, T3 EMA200, CCI KAMA) blocked 3 cycles. Research cards identify TREX histogram and TASC DM (H",
       "ts": "2026-03-05T12:00:00Z"
+    },
+    {
+      "id": "u27",
+      "pointers": [
+        "failure-pipeline-structural-death",
+        "fact-directive-loop-circular",
+        "fact-claude-specs-sole-progress",
+        "artifacts/strategy_specs/20260305/strategy-spec-20260305-489f8bcaea8f.strategy_spec.json",
+        "artifacts/strategy_specs/20260305/strategy-spec-20260305-88cf9e406e3d.strategy_spec.json",
+        "artifacts/strategy_specs/20260305/strategy-spec-20260305-d7a7a5e46d09.strategy_spec.json",
+        "artifacts/promotions/20260305/"
+      ],
+      "source_path": "brain/journal/2026-03-05-u27-pipeline-self-regeneration.md",
+      "summary": "Pipeline self-regeneration confirmed: 3 new specs + 2 promotions generated after 102+ epidemic. Waste backlog growing. 9 Claude specs (27+ variants) blocked 4+ cycles. 3 brain objects updated (confidence raised on directive-loop and claude-",
+      "ts": "2026-03-05T18:00:00Z"
     }
   ],
-  "generated_at": "2026-03-05T12:00:00Z"
+  "generated_at": "2026-03-05T18:00:00Z"
 }

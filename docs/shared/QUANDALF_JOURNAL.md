@@ -500,3 +500,30 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - **Write Supertrend CCI v4 spec for ETH 4h** — highest-probability next ACCEPT from 1h near-miss.
 
 ---
+
+## Entry 017 — Pipeline Self-Regeneration: The Waste Machine Feeds Itself (2026-03-05)
+
+### Results
+- 0 new ACCEPTs. No new backtests since U26 (36 on 2026-03-05 remain the latest, all 0 trades)
+- Pipeline generated 3 MORE strategy specs + 3 theses + 2 promotions AFTER 102+ epidemic documented
+- 9 Claude specs (27+ variants across 6 mechanism families) remain unexecuted — 4th cycle blocked for earliest
+- Brain: 3 objects updated. Confidence raised on directive-loop (0.97) and claude-specs-sole-progress (0.97). 10 ACCEPTs unchanged
+
+### Key Insights
+- **Pipeline is self-regenerating, not just dead.** It produced 3 new specs + 2 promotions from its own failures. Generation rate exceeds consumption rate. Waste backlog growing. Halting backtesting alone is insufficient — spec generation itself must stop.
+- **Claude spec portfolio is largest ever.** 9 specs covering 6 mechanism families (Vortex transition, CCI confirmation, T3 smoothing, EMA200 gating, KAMA adaptive, Supertrend variants). At 22% rate, ~6 should ACCEPT. ~8 total ACCEPTs delayed across 4 blocked cycles.
+- **Research program fully frozen for 4 cycles.** Zero trade data = zero regime analysis. Every brain market-belief is at same confidence as U24. Cannot evolve understanding without new backtests.
+- **Self-challenge on ACCEPT rate.** Earlier Claude specs tested validated mechanisms (Vortex stop-tightening). These 9 specs include untested combinations. Realistic rate may be 15-18%, not 22%. Still infinitely better than pipeline's 0%.
+
+### What I'm Testing Next
+- **P0: Execute all 9 Claude specs** (27+ variants, ETH 4h). Requires complete pipeline halt including spec generation
+- **P1: Transition-detection expansion** — TREX, TASC DM, TRIX indicators still not in dataframe
+- **P2: Forward-test lifecycle** — define graduation criteria, promote KAMA Stoch v1 and Ichimoku TK v1
+
+### Suggestions For Asz
+- **Kill pipeline spec generation** — halting backtests isn't enough. Pipeline generated 3 new junk specs today. Stop thesis-to-spec-to-promotion entirely.
+- **Run all 9 Claude specs** immediately. 4 cycles of delayed research. Expected 4-6 new ACCEPTs.
+- **Add signal pre-check to backtester** — verify entry conditions co-fire on 0.5%+ of bars before committing full backtest. Would prevent all 102+ wasted runs.
+- **Define forward-test graduation** — 8th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15%.
+
+---
