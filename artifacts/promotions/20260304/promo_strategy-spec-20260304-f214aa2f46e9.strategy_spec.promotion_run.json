@@ -1,0 +1,13 @@
+﻿{
+    "schema_version":  "1.0",
+    "id":  "promo_strategy-spec-20260304-f214aa2f46e9.strategy_spec",
+    "created_at":  "2026-03-04T11:09:49.1278645Z",
+    "status":  "BLOCKED",
+    "reason_code":  "ADAPTIVE_PROMOTION_GATE",
+    "suggestion":  "Quality gate blocked promotion; improve PF / DD / expectancy before retry.",
+    "input_linkmap_path":  "",
+    "thesis_artifact_path":  "artifacts/thesis/20260304/thesis-20260304-f214aa2f46e9.thesis.json",
+    "strategy_spec_artifact_path":  "artifacts/strategy_specs/20260304/strategy-spec-20260304-f214aa2f46e9.strategy_spec.json",
+    "batch_backtest_artifact_path":  "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\batches\\20260304\\batch_20260304_521dc08c.batch_backtest.json",
+    "experiment_plan_artifact_path":  "artifacts\\experiments\\20260304\\exp_20260304_f9362e1d.experiment_plan.json"
+}

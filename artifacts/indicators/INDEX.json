@@ -1,4 +1,5 @@
 [
+  "artifacts/indicators/20260304/indicator-20260304-dd50f02e1662.indicator_record.json",
   "artifacts/indicators/20260304/indicator-20260304-d124b1d50df4.indicator_record.json",
   "artifacts/indicators/20260304/indicator-20260304-add4900376d6.indicator_record.json",
   "artifacts/indicators/20260304/indicator-20260304-ea7f538a2688.indicator_record.json",
@@ -197,6 +198,5 @@
   "fake/59.json",
   "fake/60.json",
   "fake/61.json",
-  "fake/62.json",
-  "fake/63.json"
+  "fake/62.json"
 ]

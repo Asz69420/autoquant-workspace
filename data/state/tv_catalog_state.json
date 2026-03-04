@@ -1,5 +1,5 @@
 {
-  "top_cursor": 5818,
+  "top_cursor": 5858,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -132,7 +132,8 @@
     "aura trend momentum [pineify]|pineify",
     "candle genome scanner [forexobroker]|forexobroker",
     "gamma exposure levels [backquant]|backquant",
-    "smc completo [pfx]|prodigiofx26"
+    "smc completo [pfx]|prodigiofx26",
+    "[tl5 macd] macd pro =&gt; rsi + alma adaptive momentum|aquaticktrader"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -266,7 +267,8 @@
     "sqdd7Tgo",
     "HUVPAVTC",
     "nyyInUl8",
-    "zRJwbqRU"
+    "zRJwbqRU",
+    "upCCJN6B"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",
@@ -284,5 +286,5 @@
     "zero lag kalman structure [boswaves]|boswaves",
     "aura trend momentum [pineify]|pineify"
   ],
-  "trending_cursor": 686
+  "trending_cursor": 712
 }

@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-8e7d0e3fd71c",
+  "created_at": "2026-03-04T11:30:05.369546Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/",
+  "title": "[TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum",
+  "author": "AquaTickTrader",
+  "summary_bullets": [
+    "TradingView indicator: [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum by AquaTickTrader.",
+    "MACD Pro – RSI + ALMA Adaptive Momentum 🔎 Overview TL5 MACD Pro is a structurally enhanced version of the classic MACD indicator that integrates trend filtering, momentum confirmation, and adaptive bias analysis — while preserving the original MACD calculation.",
+    "The core MACD formula remains standard.",
+    "This version adds multi-layer confirmation using RSI, ALMA, and short-term structure alignment to help traders identify higher-quality momentum shifts.",
+    "🚀 What … Possible indicators: MACD, RSI, ALMA.",
+    "Source URL: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum by AquaTickTrader.",
+      "note": "Meaning: TradingView indicator: [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum by AquaTickTrader."
+    },
+    {
+      "timestamp": null,
+      "quote": "MACD Pro – RSI + ALMA Adaptive Momentum 🔎 Overview TL5 MACD Pro is a structurally enhanced version of the classic MACD indicator that integrates trend filtering, momentum confirmation, and adaptive bi",
+      "note": "Meaning: MACD Pro – RSI + ALMA Adaptive Momentum 🔎 Overview TL5 MACD Pro is a structurally enhanced version of the classic MACD indicator that integrates trend "
+    },
+    {
+      "timestamp": null,
+      "quote": "The core MACD formula remains standard.",
+      "note": "Meaning: The core MACD formula remains standard."
+    },
+    {
+      "timestamp": null,
+      "quote": "This version adds multi-layer confirmation using RSI, ALMA, and short-term structure alignment to help traders identify higher-quality momentum shifts.",
+      "note": "Meaning: This version adds multi-layer confirmation using RSI, ALMA, and short-term structure alignment to help traders identify higher-quality momentum shifts."
+    },
+    {
+      "timestamp": null,
+      "quote": "🚀 What … Possible indicators: MACD, RSI, ALMA.",
+      "note": "Meaning: 🚀 What … Possible indicators: MACD, RSI, ALMA."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "TradingView indicator: [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum by AquaTickTrader."
+    },
+    {
+      "type": "trend",
+      "description": "MACD Pro – RSI + ALMA Adaptive Momentum 🔎 Overview TL5 MACD Pro is a structurally enhanced version of the classic MACD indicator that integrates trend filtering, momentum confirmation, and adaptive bias analysis — while "
+    },
+    {
+      "type": "momentum",
+      "description": "This version adds multi-layer confirmation using RSI, ALMA, and short-term structure alignment to help traders identify higher-quality momentum shifts."
+    },
+    {
+      "type": "momentum",
+      "description": "Source URL: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/."
+    }
+  ],
+  "indicators_mentioned": [
+    "RSI",
+    "MACD"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-8e7d0e3fd71c.raw.txt",
+  "sha256": "887f56fd705f3e0cc09f7bc6bdd498eca360c686298aa341799879327ef1aa1b",
+  "truncated": false
+}

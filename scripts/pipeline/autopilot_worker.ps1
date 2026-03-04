@@ -1584,27 +1584,20 @@ if (-not $DryRun) {
   Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " q_gen=" + [int]$quandalfQueueGenerated + " q_ready=" + [int]$quandalfQueueReady + " q_backlog=" + [int]$frodexQueueBacklog + " errors=" + $errorsCount) $aStatus 'oQ'
 }
 
-if (-not $DryRun -and $strategyShortfall -gt 0 -and $RetryDepth -lt $MaxImmediateRetries) {
-  $nextRetryDepth = [int]$RetryDepth + 1
-  Emit-Summary 'STRATEGY_IMMEDIATE_RETRY' ("Immediate retry triggered: retry_depth=" + $nextRetryDepth + " shortfall=" + [int]$strategyShortfall) 'WARN' 'Autopilot'
-  try {
-    $retryArgs = @(
-      '-NoProfile','-ExecutionPolicy','Bypass','-File','scripts/pipeline/autopilot_worker.ps1',
-      '-MaxBundlesPerRun',$MaxBundlesPerRun,
-      '-MaxRefinementsPerRun',$MaxRefinementsPerRun,
-      '-MinStrategiesPerRun',$strategyShortfall,
-      '-MaxStrategiesPerRun',$MaxStrategiesPerRun,
-      '-RetryDepth',$nextRetryDepth,
-      '-MaxImmediateRetries',$MaxImmediateRetries,
-      '-RepoHygieneMode',$RepoHygieneMode,
-      '-ForceRecombine'
-    )
-    if ($RunYouTubeWatcher) { $retryArgs += '-RunYouTubeWatcher' }
-    if ($RunTVCatalogWorker) { $retryArgs += '-RunTVCatalogWorker' }
-    & powershell @retryArgs | Out-Null
-  } catch {
-    Emit-Summary 'STRATEGY_IMMEDIATE_RETRY' 'Immediate retry failed to execute' 'FAIL' 'Autopilot'
+if (-not $DryRun -and $strategyShortfall -gt 0) {
+  $seedAttempts = [Math]::Min([int]$strategyShortfall, [Math]::Max(1, [int]$MaxImmediateRetries))
+  $seeded = 0
+  for ($i = 0; $i -lt $seedAttempts; $i++) {
+    try {
+      $rcSeed = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
+      $seedCreated = 0
+      try { $seedCreated = [int]$rcSeed.created } catch { $seedCreated = 0 }
+      if (($seedCreated -ge 1 -or $rcSeed.bundle_path) -and $rcSeed.bundle_path) {
+        $seeded += 1
+      }
+    } catch {}
   }
+  Emit-Summary 'STRATEGY_IMMEDIATE_RETRY' ("In-process seed chase: shortfall=" + [int]$strategyShortfall + " seeded=" + [int]$seeded + " mode=next-cycle-ready") 'WARN' 'Autopilot'
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)

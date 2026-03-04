@@ -1,5 +1,16 @@
 [
   {
+    "tv_key": "[tl5 macd] macd pro =&gt; rsi + alma adaptive momentum|aquaticktrader",
+    "script_id": "upCCJN6B",
+    "name": "[TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum",
+    "author": "AquaTickTrader",
+    "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-dd50f02e1662.indicator_record.json",
+    "first_seen_ts": "2026-03-04T11:30:05.711137+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "smc completo [pfx]|prodigiofx26",
     "script_id": "zRJwbqRU",
     "name": "SMC Completo [PFX]",

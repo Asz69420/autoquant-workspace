@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_[tl5 macd] macd ",
+    "created_at":  "2026-03-04T11:30:05.500459+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-8e7d0e3fd71c.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260304/indicator-20260304-dd50f02e1662.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-8e7d0e3fd71c.linkmap.json",
+    "status":  "IN_PROGRESS",
+    "last_processed_at":  "2026-03-04T11:30:07.1560502Z",
+    "attempts":  1,
+    "last_error":  null
+}
