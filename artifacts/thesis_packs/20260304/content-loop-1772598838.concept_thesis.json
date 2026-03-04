@@ -1,0 +1,21 @@
+{
+  "id": "concept-thesis-1772598838",
+  "created_at": "2026-03-04T04:33:58.857545+00:00",
+  "source": "analyser_content_worker",
+  "processed_research_cards": [
+    "artifacts/research/20260304/research-20260304-5704266e452b.research_card.json",
+    "artifacts/research/20260304/research-20260304-9e51648fe0a9.research_card.json"
+  ],
+  "key_ideas": [
+    "Bitcoin: A Bear Market State of Mind: extract repeatable concept from source context",
+    "Business Cycles Ends With Recessions: extract repeatable concept from source context"
+  ],
+  "trading_relevant_concept_hooks": [
+    "Bitcoin: A Bear Market State of Mind: convert concept to testable entry/exit hypothesis",
+    "Business Cycles Ends With Recessions: convert concept to testable entry/exit hypothesis"
+  ],
+  "proposed_automation_improvements_for_autoquant": [
+    "Bitcoin: A Bear Market State of Mind: record ingestion evidence pointer for doctrine traceability",
+    "Business Cycles Ends With Recessions: record ingestion evidence pointer for doctrine traceability"
+  ]
+}
