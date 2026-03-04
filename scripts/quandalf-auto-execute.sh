@@ -34,7 +34,8 @@ if not status_match:
     print("ERROR: status_line_missing")
     sys.exit(2)
 
-if status_match.group(1).upper() != "PENDING":
+status = status_match.group(1).upper()
+if status not in {"PENDING", "NEW"}:
     print("NO_PENDING")
     sys.exit(10)
 

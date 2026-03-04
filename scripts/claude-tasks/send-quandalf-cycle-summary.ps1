@@ -182,11 +182,11 @@ try {
       if (-not [string]::IsNullOrWhiteSpace($raw)) {
         $journalMatches = [System.Text.RegularExpressions.Regex]::Matches($raw, '(?ms)^## Entry\b.*?(?=^## Entry\b|\z)')
         if ($journalMatches.Count -gt 0) {
-          $effectiveSummary = Build-JournalDigest -entryText $journalMatches[$journalMatches.Count - 1].Value -maxChars 1400
+          $effectiveSummary = Normalize-JournalEntry -text $journalMatches[$journalMatches.Count - 1].Value
           $isJournalEntry = $true
         }
         else {
-          $effectiveSummary = Convert-ToCompactText -rawText (Normalize-JournalEntry -text $raw) -maxChars 1400
+          $effectiveSummary = Normalize-JournalEntry -text $raw
         }
       }
     }
