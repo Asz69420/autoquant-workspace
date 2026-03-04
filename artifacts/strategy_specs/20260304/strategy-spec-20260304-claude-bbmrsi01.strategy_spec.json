@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-bbmrsi01",
+  "name": "BBM RSI Mean-Reversion Snap",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Bollinger Middle Band (BBM_20_2.0 = SMA_20) is the statistical mean of price over the last 20 bars. In ranging markets — where ALL 8 ACCEPTs profit — price oscillates around this mean. When price crosses BACK through BBM from below, it signals the mean-reversion snap: price was extended downward and is now reverting to equilibrium. RSI < 45 confirms the move came from a weak position (not already overbought), ensuring we enter during the reversion phase rather than chasing an extended bounce. BBM has NEVER been tested as a signal in any strategy. This is fundamentally different from bollinger_breakout (which tests BBU/BBL breaks and is DEAD with 0 trades). The hypothesis: BBM crossing IS the canonical ranging signal because the middle band literally represents the range's center of gravity. If ranging markets dominate our alpha (PF 1.12-4.87 across all ACCEPTs), a signal that explicitly targets the range equilibrium should produce consistent edge.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "bbm_rsi_snap_v1_8to1",
+      "description": "Core thesis: BBM cross + RSI weakness filter. 8:1 R:R at 1.5 ATR stop. Tests whether BBM mean-reversion generates enough signal frequency on 4h while capturing consistent ranging alpha.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above BBM_20_2.0",
+        "RSI_14 < 45"
+      ],
+      "entry_short": [
+        "close crosses_below BBM_20_2.0",
+        "RSI_14 > 55"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger Middle Band (SMA_20). First ever BBM test. Statistical mean of price — the equilibrium level in ranging markets."
+        },
+        {
+          "indicator": "RSI_14",
+          "role": "confirmation",
+          "notes": "RSI weakness/strength filter. < 45 for longs ensures entry during reversion phase, not overbought extension."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bbm_rsi_snap_v2_tighter_rsi",
+      "description": "Tighter RSI gate (< 40 long, > 60 short). Tests whether deeper weakness before the BBM cross produces higher quality entries at the cost of signal frequency. If PF rises vs v1: deeper pullbacks before mean-reversion are higher conviction. If PF falls: the extra selectivity removes good trades.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above BBM_20_2.0",
+        "RSI_14 < 40"
+      ],
+      "entry_short": [
+        "close crosses_below BBM_20_2.0",
+        "RSI_14 > 60"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "BBM equilibrium cross signal."
+        },
+        {
+          "indicator": "RSI_14",
+          "role": "confirmation",
+          "notes": "Tighter RSI gate (40/60). Tests deeper weakness before snap = higher conviction."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bbm_rsi_snap_v3_tight_stop",
+      "description": "Champion-style tight stop geometry: 1.0 ATR stop, 10 ATR TP. The Vortex v3a champion proved that tighter stops improve PF because losers get cut faster while winners exit via natural reversal/TP. Tests the same tight-stop principle on a mean-reversion signal.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above BBM_20_2.0",
+        "RSI_14 < 45"
+      ],
+      "entry_short": [
+        "close crosses_below BBM_20_2.0",
+        "RSI_14 > 55"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10x).",
+        "Exit on ATR stop hit (1.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14.",
+        "Take profit at 10x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "BBM equilibrium cross signal."
+        },
+        {
+          "indicator": "RSI_14",
+          "role": "confirmation",
+          "notes": "RSI weakness filter (45/55)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Tight 1.0 ATR stop, 10 ATR TP — champion geometry."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["BBM_20_2.0", "RSI_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "BBM_20_2.0 — Bollinger Middle Band (SMA_20). Statistical mean of price. Range equilibrium level. First system test.",
+    "confirmation": "RSI_14 — Weakness/strength directional filter. Ensures entry during reversion phase.",
+    "volume_volatility": "ATR_14 — Position sizing and R:R framework."
+  }
+}

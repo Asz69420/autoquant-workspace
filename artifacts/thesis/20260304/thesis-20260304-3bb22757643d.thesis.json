@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260304-3bb22757643d",
+  "created_at": "2026-03-04T01:01:45.833167Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260304/research-20260304-f160d10aa29b.research_card.json"
+    ],
+    "indicator_record_paths": [],
+    "linkmap_paths": [
+      "artifacts/links/20260304/research-20260304-f160d10aa29b.linkmap.json"
+    ]
+  },
+  "title": "Bitcoin Timing Cycle Repeating? Macro Low Imminent!",
+  "thesis_bullets": [
+    "Bitcoin's timing cycle is repeating and a macro low very well may already be in or at least in terms of timing very very close Now I'm sure many people are already familiar with of course the general idea of Bitcoin's timing cycle Which is on the Bitcoin versus dollar chart right here anytime Bitcoin puts in a major macro high It spends about a year coming down to find that macro low in 2022 you c",
+    "There's a lot of geopolitical things going on in the background there's a lot of manipulation if you will and Gold in a way is the more steady asset as well one gold bar equals one gold bar as the same goes No, I don't actually think about that, but I do want to bring up this for gold There has been a similar timing cycle if we go back to 2014 this cycle from high to low took about 395 days.",
+    "Okay interesting then the 2018 cycle from high to low took about 367 days again about a year and then of course in 2022.",
+    "We saw a cycle that took 365 days basically the same as 2018 a year on the dot But here's the thing about the Bitcoin versus gold chart This one didn't top out in October of 2025 It actually topped out here in December of 2024 and if we measure from December 2024 to the current low that would be 427 days so still very much within the context of that data if we go down to a weekly time frame and ge",
+    "I do think that we are very close to a low in terms of timing and we probably don't see price deviate too much When we're at right now on a closing basis.",
+    "Yes, there can be stray wicks anywhere Of course, it can get really really nasty, you know on a big bad day, you know big bad announcement World War 3 Whatever but in terms of a closing price, you know Maybe Bitcoin wicks down into like the mid or low 50s and then you know fulfills back up above 60 Because looking at this time you're right here I do like Bitcoin in these regions for this value aga"
+  ],
+  "hypotheses": [
+    {
+      "statement": "GOLD continuation edge appears when signal alignment persists on weekly.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest GOLD on weekly: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [],
+      "timeframe_bias": "weekly",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [],
+  "mutation_catalog": [],
+  "required_data": [
+    "GOLD OHLCV on weekly",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "3bb22757643d62ab0eef4f5d9a9fb5a02f7ddfb925f41db0a0a4f6ff55b6e8c7"
+}

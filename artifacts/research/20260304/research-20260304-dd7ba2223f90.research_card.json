@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-dd7ba2223f90",
+  "created_at": "2026-03-04T01:03:02.427985Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=rzcdWq_jV0k",
+  "title": "I lost $120k trading signals 😭💸",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "In a couple of hours I lost 120k to trading strategies I just didn't understand.",
+    "I've been trading and dabbling in bots throughout the whole of the period of COVID, documenting every single win and loss on YouTube and consistently changing and tweaking my trading strategies and simply second guessing myself.",
+    "The loss has made one thing obvious, the problem was that I blindly followed these signals without understanding how they actually worked.",
+    "Here's one thing that traders just don't want to hear.",
+    "Signals are tempting because they promise, set it and forget it profits, but that is an illusion.",
+    "When markets move differently than expected, these systems tend to break and you end up losing money.",
+    "And don't get me wrong, the problem is not the strategy, it's the lack of transparency and the human control.",
+    "You blindly trust other people's signals that you don't understand and that invites mistakes, overconfidence and emotional trading and emotional reactions when things go wrong.",
+    "Once I figured this out I went all in on rules based systematic trading.",
+    "Every strategy I built, tested and ran was coded by me live and transparently."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "In a couple of hours I lost 120k to trading strategies I just didn't understand.",
+      "note": "Meaning: In a couple of hours I lost 120k to trading strategies I just didn't understand."
+    },
+    {
+      "timestamp": null,
+      "quote": "I've been trading and dabbling in bots throughout the whole of the period of COVID, documenting every single win and loss on YouTube and consistently changing and tweaking my trading strategies and si",
+      "note": "Meaning: I've been trading and dabbling in bots throughout the whole of the period of COVID, documenting every single win and loss on YouTube and consistently c"
+    },
+    {
+      "timestamp": null,
+      "quote": "The loss has made one thing obvious, the problem was that I blindly followed these signals without understanding how they actually worked.",
+      "note": "Meaning: The loss has made one thing obvious, the problem was that I blindly followed these signals without understanding how they actually worked."
+    },
+    {
+      "timestamp": null,
+      "quote": "Here's one thing that traders just don't want to hear.",
+      "note": "Meaning: Here's one thing that traders just don't want to hear."
+    },
+    {
+      "timestamp": null,
+      "quote": "Signals are tempting because they promise, set it and forget it profits, but that is an illusion.",
+      "note": "Meaning: Signals are tempting because they promise, set it and forget it profits, but that is an illusion."
+    },
+    {
+      "timestamp": null,
+      "quote": "When markets move differently than expected, these systems tend to break and you end up losing money.",
+      "note": "Meaning: When markets move differently than expected, these systems tend to break and you end up losing money."
+    },
+    {
+      "timestamp": null,
+      "quote": "And don't get me wrong, the problem is not the strategy, it's the lack of transparency and the human control.",
+      "note": "Meaning: And don't get me wrong, the problem is not the strategy, it's the lack of transparency and the human control."
+    },
+    {
+      "timestamp": null,
+      "quote": "You blindly trust other people's signals that you don't understand and that invites mistakes, overconfidence and emotional trading and emotional reactions when things go wrong.",
+      "note": "Meaning: You blindly trust other people's signals that you don't understand and that invites mistakes, overconfidence and emotional trading and emotional reacti"
+    },
+    {
+      "timestamp": null,
+      "quote": "Once I figured this out I went all in on rules based systematic trading.",
+      "note": "Meaning: Once I figured this out I went all in on rules based systematic trading."
+    },
+    {
+      "timestamp": null,
+      "quote": "Every strategy I built, tested and ran was coded by me live and transparently.",
+      "note": "Meaning: Every strategy I built, tested and ran was coded by me live and transparently."
+    },
+    {
+      "timestamp": null,
+      "quote": "I knew exactly why a trade happens, which trades work and which don't and this completely changed the game for me.",
+      "note": "Meaning: I knew exactly why a trade happens, which trades work and which don't and this completely changed the game for me."
+    },
+    {
+      "timestamp": null,
+      "quote": "And that's why I built a complete strategy library.",
+      "note": "Meaning: And that's why I built a complete strategy library."
+    }
+  ],
+  "extracted_rules": [
+    "When markets move differently than expected, these systems tend to break and you end up losing money.",
+    "You blindly trust other people's signals that you don't understand and that invites mistakes, overconfidence and emotional trading and emotional reactions when things go wrong.",
+    "Once I figured this out I went all in on rules based systematic trading.",
+    "If you want to learn more about becoming a better trader, follow me for more trading education."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-dd7ba2223f90.raw.txt",
+  "sha256": "2d9529ce86992218cb225fd6df6ca49eddb22aa3e6762fddcd0fa945e295c849",
+  "truncated": false
+}

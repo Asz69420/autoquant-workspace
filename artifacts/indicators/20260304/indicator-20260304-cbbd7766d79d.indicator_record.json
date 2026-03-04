@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260304-cbbd7766d79d",
+  "created_at": "2026-03-04T01:15:05.305426Z",
+  "tv_ref": "tradingview:NN9D2zT4",
+  "url": "https://www.tradingview.com/script/NN9D2zT4-RSI-EMA-Volume-Reversal-By-SmarTrader/",
+  "name": "RSI, EMA &amp; Volume Reversal By SmarTrader",
+  "author": "smartrader19",
+  "version": "v1",
+  "key_inputs": [
+    "EMA",
+    "SMA",
+    "RSI"
+  ],
+  "signals_described": [
+    "EMA",
+    "SMA",
+    "RSI"
+  ],
+  "notes": [
+    "catalog_top",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "f28ee55c28d0ba780deccbe9c88c27b70902fa7f1b411628a3c1cc962b034ff5",
+  "truncated": false
+}

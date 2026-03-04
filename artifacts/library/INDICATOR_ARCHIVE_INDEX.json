@@ -1,5 +1,16 @@
 [
   {
+    "tv_key": "rsi, ema &amp; volume reversal by smartrader|smartrader19",
+    "script_id": "NN9D2zT4",
+    "name": "RSI, EMA &amp; Volume Reversal By SmarTrader",
+    "author": "smartrader19",
+    "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-cbbd7766d79d.indicator_record.json",
+    "first_seen_ts": "2026-03-04T01:15:06.146596+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "gk smart trend hud tp1-tp3|hgavin780",
     "script_id": "lN4QuOF7",
     "name": "GK Smart Trend HUD TP1-TP3",

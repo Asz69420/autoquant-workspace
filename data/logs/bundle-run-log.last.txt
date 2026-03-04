@@ -1,11 +1,11 @@
-﻿⚠️ Frodex ⏱ 13m 30s GPT5.3
+﻿⚠️ Frodex ⏱ 7m 16s GPT5.3
 ○───activity─────────────────────
-Ingested: 3
-Submitted: 3
-Passed: 3
-Backtests: 0
-Promoted: 3
+Ingested: 1
+Submitted: 1
+Passed: 1
+Backtests: 7
+Promoted: 1
 Forwardtests: 0
 Queue lag: 0
 ○───note─────────────────────────
-Strong cycle: 3 promoted cleanly.
+Strong cycle: 1 promoted cleanly.

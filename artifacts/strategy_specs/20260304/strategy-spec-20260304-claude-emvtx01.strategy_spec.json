@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-emvtx01",
+  "name": "EMA200 Vortex Macro Trend Confluence",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The Vortex Transition family is the system champion (v3a PF=2.034). Its edge comes from Vortex crossover (VTXP_14 crosses VTXM_14) detecting directional momentum shifts. The champion uses CHOP-based transition detection as a regime gate — sophisticated but complex. This spec tests a radically simpler approach: EMA_200 as macro trend alignment + Vortex crossover as entry timing. EMA_200 is the most universal institutional trend arbiter — price above = macro bullish, below = macro bearish. The hypothesis: Vortex crossover is inherently powerful enough that it only needs basic macro trend alignment, not complex regime gating. If PF approaches the champion's 2.034, it proves the Vortex signal IS the edge (not the transition detection). If PF is significantly lower, it proves transition-detection is essential — the Vortex signal needs regime context to work. Either outcome advances our understanding. This also tests portfolio diversification: EMA_200-gated Vortex triggers in different conditions than CHOP-gated Vortex, potentially offering decorrelated exposure.",
+  "regime_assumption": "transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ema200_vortex_v1_8to1",
+      "description": "Core thesis: EMA_200 macro trend + Vortex crossover. Champion-style tight geometry (1.0 ATR stop, 8 ATR TP). Tests the simplest possible Vortex implementation against the champion's sophisticated transition logic.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > EMA_200",
+        "VTXP_14 crosses_above VTXM_14"
+      ],
+      "entry_short": [
+        "close < EMA_200",
+        "VTXP_14 crosses_below VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (8x).",
+        "Exit on ATR stop hit (1.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14.",
+        "Take profit at 8x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "EMA_200",
+          "role": "baseline",
+          "notes": "200-period EMA — most universal macro trend filter. Institutional standard. Price above = bullish regime."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex Positive (14). Crossover with VTXM_14 detects directional momentum shifts. Champion signal family."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex Negative (14). Counter-directional component of Vortex crossover."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R. Champion-style tight 1.0 ATR stop."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ema200_vortex_v2_10to1",
+      "description": "Extended R:R variant: 1.0 ATR stop, 10 ATR TP (10:1 — exact champion geometry). If EMA_200 alignment produces cleaner trend-aligned entries, positions should run further without being whipsawed. Tests whether macro trend conviction enables larger profit targets.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > EMA_200",
+        "VTXP_14 crosses_above VTXM_14"
+      ],
+      "entry_short": [
+        "close < EMA_200",
+        "VTXP_14 crosses_below VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10x).",
+        "Exit on ATR stop hit (1.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14.",
+        "Take profit at 10x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "EMA_200",
+          "role": "baseline",
+          "notes": "EMA_200 macro trend alignment."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex crossover entry timing."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex crossover counter-component."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "10:1 R:R — champion exact geometry."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "sma200_vortex_v3_8to1",
+      "description": "A/B test: SMA_200 instead of EMA_200 as macro trend filter. SMA weights all bars equally (pure statistical average) vs EMA which overweights recent bars (recency bias). If SMA_200 outperforms: Vortex needs a stable, slow-moving trend reference. If EMA_200 wins: recency sensitivity helps the Vortex signal align with current momentum. This is a clean indicator A/B test — same signal logic, different baseline math.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > SMA_200",
+        "VTXP_14 crosses_above VTXM_14"
+      ],
+      "entry_short": [
+        "close < SMA_200",
+        "VTXP_14 crosses_below VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=SMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (8x).",
+        "Exit on ATR stop hit (1.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14.",
+        "Take profit at 8x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SMA_200",
+          "role": "baseline",
+          "notes": "SMA_200 — equally-weighted 200-bar average. A/B test vs EMA_200. Tests whether pure statistical average or recency-weighted average is better for Vortex trend alignment."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex crossover entry timing."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex crossover counter-component."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["EMA_200", "SMA_200", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "EMA_200/SMA_200 — Macro trend direction filter. Institutional standard. v1/v2 use EMA, v3 uses SMA for A/B comparison.",
+    "confirmation": "VTXP_14/VTXM_14 — Vortex crossover. Champion signal family (PF 2.034). Detects directional momentum shifts.",
+    "volume_volatility": "ATR_14 — Position sizing and R:R framework. Champion-style tight stop geometry."
+  }
+}

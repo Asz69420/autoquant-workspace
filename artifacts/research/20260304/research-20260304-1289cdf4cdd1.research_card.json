@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-1289cdf4cdd1",
+  "created_at": "2026-03-04T01:15:05.652934Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/NN9D2zT4-RSI-EMA-Volume-Reversal-By-SmarTrader/",
+  "title": "RSI, EMA &amp; Volume Reversal By SmarTrader",
+  "author": "smartrader19",
+  "summary_bullets": [
+    "TradingView indicator: RSI, EMA &amp; Volume Reversal By SmarTrader by smartrader19.",
+    "Using RSI, 13 ema and volume to determine reversals.",
+    "Best used on 15 minute chart and larger time frame charts.",
+    "Source URL: https://www.tradingview.com/script/NN9D2zT4-RSI-EMA-Volume-Reversal-By-SmarTrader/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: RSI, EMA &amp; Volume Reversal By SmarTrader by smartrader19.",
+      "note": "Meaning: TradingView indicator: RSI, EMA &amp; Volume Reversal By SmarTrader by smartrader19."
+    },
+    {
+      "timestamp": null,
+      "quote": "Using RSI, 13 ema and volume to determine reversals.",
+      "note": "Meaning: Using RSI, 13 ema and volume to determine reversals."
+    },
+    {
+      "timestamp": null,
+      "quote": "Best used on 15 minute chart and larger time frame charts.",
+      "note": "Meaning: Best used on 15 minute chart and larger time frame charts."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/NN9D2zT4-RSI-EMA-Volume-Reversal-By-SmarTrader/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/NN9D2zT4-RSI-EMA-Volume-Reversal-By-SmarTrader/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-1289cdf4cdd1.raw.txt",
+  "sha256": "fed01f858e0501e3c94b902d996ce4b43d91a0f0ae1088770ce21b2818449c10",
+  "truncated": false
+}

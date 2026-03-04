@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-ea63bd943247",
+  "created_at": "2026-03-04T01:02:22.195723Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=jUJ0tMsHm1M",
+  "title": "Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)",
+  "author": "DaviddTech",
+  "summary_bullets": [
+    "Okay, let me take you back to January 2025.",
+    "CryptoBanta kindly invited me to be a host as their bot expert on their main channel.",
+    "And very quickly, one topic took over the room.",
+    "Bots vs humans, who would actually win?",
+    "So they put me on the spot.",
+    "They bet me that they could beat my trading bots with manual trading over a 30 day period.",
+    "Not knowing how competitive I was, I loaded 10k up their account with a mission in hand.",
+    "I was going to annihilate all manual trading and show them how good my bots were.",
+    "I didn't even make second place.",
+    "Embarrassing, yes I know, but here's the twist."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Okay, let me take you back to January 2025.",
+      "note": "Meaning: Okay, let me take you back to January 2025."
+    },
+    {
+      "timestamp": null,
+      "quote": "CryptoBanta kindly invited me to be a host as their bot expert on their main channel.",
+      "note": "Meaning: CryptoBanta kindly invited me to be a host as their bot expert on their main channel."
+    },
+    {
+      "timestamp": null,
+      "quote": "And very quickly, one topic took over the room.",
+      "note": "Meaning: And very quickly, one topic took over the room."
+    },
+    {
+      "timestamp": null,
+      "quote": "Bots vs humans, who would actually win?",
+      "note": "Meaning: Bots vs humans, who would actually win?"
+    },
+    {
+      "timestamp": null,
+      "quote": "So they put me on the spot.",
+      "note": "Meaning: So they put me on the spot."
+    },
+    {
+      "timestamp": null,
+      "quote": "They bet me that they could beat my trading bots with manual trading over a 30 day period.",
+      "note": "Meaning: They bet me that they could beat my trading bots with manual trading over a 30 day period."
+    },
+    {
+      "timestamp": null,
+      "quote": "Not knowing how competitive I was, I loaded 10k up their account with a mission in hand.",
+      "note": "Meaning: Not knowing how competitive I was, I loaded 10k up their account with a mission in hand."
+    },
+    {
+      "timestamp": null,
+      "quote": "I was going to annihilate all manual trading and show them how good my bots were.",
+      "note": "Meaning: I was going to annihilate all manual trading and show them how good my bots were."
+    },
+    {
+      "timestamp": null,
+      "quote": "I didn't even make second place.",
+      "note": "Meaning: I didn't even make second place."
+    },
+    {
+      "timestamp": null,
+      "quote": "Embarrassing, yes I know, but here's the twist.",
+      "note": "Meaning: Embarrassing, yes I know, but here's the twist."
+    },
+    {
+      "timestamp": null,
+      "quote": "Their P&L looked like roller coasters, and mine looked like this.",
+      "note": "Meaning: Their P&L looked like roller coasters, and mine looked like this."
+    },
+    {
+      "timestamp": null,
+      "quote": "No disrespect to them, they absolutely did win fair and square.",
+      "note": "Meaning: No disrespect to them, they absolutely did win fair and square."
+    }
+  ],
+  "extracted_rules": [
+    "I use ADX to stay out of markets when they go sideways.",
+    "And that's it, simple rules, automated execution.",
+    "They don't use the same logic and I'm very careful not to stack risk and I do my best to spread it.",
+    "Yes, I have a system to know when to turn off a bot.",
+    "Yes, I know it's a bit like when you're holding Bitcoin and you can feel it going down and you're trying to catch those lower lows.",
+    "The problem is, is that when markets do plummet, you just end up buying, buying, buying and eventually getting liquidated.",
+    "We can diversify, set stop rules and we can use AI responsibly to actually help us trade better."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "They're simple trend following systems that I do and build here live on YouTube every single week."
+    },
+    {
+      "type": "trend",
+      "description": "I use simple tools like a Trendilio indicator for entries."
+    },
+    {
+      "type": "trend",
+      "description": "I use a T3 for trend direction."
+    },
+    {
+      "type": "trend",
+      "description": "And yes, they are all trend following, but they don't all enter at the same time."
+    },
+    {
+      "type": "risk",
+      "description": "They don't have the same stop losses and they certainly don't have the same way of taking profit."
+    },
+    {
+      "type": "risk",
+      "description": "They don't use the same logic and I'm very careful not to stack risk and I do my best to spread it."
+    },
+    {
+      "type": "risk",
+      "description": "In December, my account dropped by 11%, which was extreme pain for myself."
+    },
+    {
+      "type": "trend",
+      "description": "We went back into a trending market where Bitcoin, unfortunately for those holding it, absolutely dropped all the way down to almost $60,000."
+    }
+  ],
+  "explicit_conditions": [
+    "They don't use the same logic and I'm very careful not to stack risk and I do my best to spread it."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low.",
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [
+    "ADX"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "weekly",
+    "daily"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-ea63bd943247.raw.txt",
+  "sha256": "97b0057975b8388ef07f16cf3c2e7f9e158585e7b2330d0d9f09733178e0c718",
+  "truncated": false
+}

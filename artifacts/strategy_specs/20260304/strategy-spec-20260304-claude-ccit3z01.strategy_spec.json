@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260304-claude-ccit3z01",
+  "name": "CCI Zero-Cross T3 Trend Momentum",
+  "created_at": "2026-03-04T14:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "CCI Chop Fade (PF 1.255, ACCEPT, all-regime) proved CCI works for mean-reversion, but used CCI as a ZONE signal (CCI > 100). MACDh zero-cross is the most proven cross-based entry pattern (9 MACD ACCEPTs, best PF 1.712). CCI zero-line cross (CCI_20_0.015 crossing 0 from below = momentum turning from below-average to above-average) is structurally identical to MACDh zero-cross but based on DIFFERENT math: CCI measures deviation from statistical mean of price, while MACD measures convergence/divergence of exponential MAs. If CCI zero-cross works similarly to MACDh zero-cross, it confirms that zero-line momentum flips are a GENERAL entry mechanism independent of indicator construction. T3_10_0.7 provides trend direction — the SMOOTHEST available moving average (triple exponential smoothing with volume factor 0.7). Never tested as a standalone baseline. Hypothesis: CCI cross + T3 smoothness produces cleaner entries than CCI zone + CHOP gate (the prior ACCEPT), because cross-based signals have proven higher-PF outcomes than zone-based across the system.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "cci_t3_zero_v1_8to1",
+      "description": "Core thesis: T3 trend direction + CCI zero-line cross. 8:1 R:R. Tests CCI as a cross signal (vs zone signal in CCI Chop Fade ACCEPT). T3 provides the smoothest possible trend filter for direction alignment.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "CCI_20_0.015 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "CCI_20_0.015 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 Moving Average (triple exponential smoothing, vfactor 0.7). Smoothest available MA. First standalone baseline test of T3."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-line cross — momentum flip from below-average to above-average. Cross-based signal (vs zone-based in CCI Chop Fade). Tests if CCI cross outperforms CCI zone."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "cci_t3_zero_v2_tight",
+      "description": "Champion-style tight stop: 1.0 ATR stop, 10 ATR TP (10:1). If CCI zero-cross entries are high-conviction (they catch the exact momentum flip), tighter stops should work because winners don't dip back past 1.0 ATR. Same principle that made Vortex v3a the champion.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "CCI_20_0.015 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "CCI_20_0.015 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10x).",
+        "Exit on ATR stop hit (1.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14.",
+        "Take profit at 10x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 trend direction — smoothest MA baseline."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-cross. Champion-style tight stop geometry."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Tight 1.0 ATR stop, 10 ATR TP."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "cci_t3_zero_v3_wide_tp",
+      "description": "Extended target test: 1.5 ATR stop, 15 ATR TP (10:1). If T3's smooth trend read holds positions in-trend longer without whipsaw, wider TP should capture extended moves. Tests whether T3's low-lag smoothing enables more patient profit taking than EMA-based strategies.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "CCI_20_0.015 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "CCI_20_0.015 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 smooth trend — tests if smoothing enables wider TP."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-cross entry timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for trend continuation capture."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["T3_10_0.7", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 — Triple exponential smoothing MA (vfactor 0.7). Smoothest available moving average. First standalone baseline test.",
+    "confirmation": "CCI_20_0.015 — Commodity Channel Index. Zero-line cross as momentum flip signal. Tests CCI as cross-based (vs zone-based in CCI Chop Fade ACCEPT).",
+    "volume_volatility": "ATR_14 — Position sizing and R:R framework."
+  }
+}
