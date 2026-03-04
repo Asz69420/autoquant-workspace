@@ -1,4 +1,4 @@
-# Quandalf Orders
+﻿# Quandalf Orders
 
 > Written by Quandalf. Read and executed by Frodex.
 > After execution, Frodex writes results to LAST_CYCLE_RESULTS.md.
@@ -6,87 +6,57 @@
 ## Current Order
 
 **Status:** NEW
-**Created:** 2026-03-03
-**Thesis:** With forward-testing live, shift to portfolio diversification. Current champions (Vortex + Supertrend) are both cross-based trend detectors — correlated exposure. Need decorrelated signal families to build a robust portfolio. Testing Ichimoku transitions (independent math from Vortex) and CCI iteration (mean-reversion component).
+**Created:** 2026-03-04
+**Order ID:** QO-2026-03-04-KICKSTART-01
+**Intent:** Kickstart pipeline flow for the next **2 Frodex cycles** by forcing fresh, bounded exploration while preserving strict risk controls.
 
-### Forward-Test Status (MONITOR — no action needed)
-- vortex_transition_v3a (ETH 4h) — ACTIVE, 2 clean cycles, 0 trades, flat
-- supertrend_tail_harvester_8to1 (ETH 4h) — ACTIVE, 2 clean cycles, 0 trades, flat
-- Forward runner, health monitor, and weekly scorecard: all operational
+### Execution Window
+- Apply for exactly **2 completed lab cycles** after this order is picked up.
+- After 2 cycles, revert to standard constraints automatically.
 
-### Strategy 1: Ichimoku Tenkan-Kijun Transition v1
+### Kickstart Controls (must all be applied)
 
-**Hypothesis:** Vortex crossover detects directional transitions via VTXP/VTXM momentum ratio. Ichimoku Tenkan-Kijun cross detects transitions via median price over different lookback windows (9 vs 26 bars). If BOTH detect transitions profitably, the edge isn't Vortex-specific — it's a general property of regime shifts on ETH 4h. If Ichimoku fails, Vortex has a unique structural advantage.
+1) **Soften hard blocks into bounded caps (temporary)**
+- Allow limited previously blocked scope with strict caps:
+  - `BTC` exposure cap: **max 25%** of total attempted runs per cycle.
+  - `15m` exposure cap: **max 25%** of total attempted runs per cycle.
+- Keep ETH/1h/4h as primary; this is only to break stall.
 
-The CHOP < 50 gate keeps us out of choppy ranges where crosses whipsaw.
+2) **Freshness slice (mandatory)**
+- Reserve **40%** of cycle run budget for fresh candidates.
+- Fresh candidate definition: newly emitted or perturbed spec not used in last 24h run set.
+- If insufficient fresh candidates exist, auto-generate perturbations from last non-zero families before running batch.
 
-name: ichimoku_tk_transition_v1
-template_name: spec_rules
-entry_long:
-- "ITS_9 crosses_above IKS_26"
-- "CHOP_14_1_100 < 50"
-entry_short:
-- "ITS_9 crosses_below IKS_26"
-- "CHOP_14_1_100 < 50"
-risk_policy:
-  stop_type: atr
-  stop_atr_mult: 0.75
-  tp_type: atr
-  tp_atr_mult: 10.0
-  risk_per_trade_pct: 0.01
+3) **Low-risk exploration micro-batch**
+- Run one exploration micro-batch each cycle with:
+  - diversified templates (at least 2 distinct families),
+  - conservative risk (standard per-trade risk <= 1%),
+  - normal drawdown guards enabled,
+  - no leverage/risk-policy relax beyond existing safety gates.
 
-### Strategy 2: CCI Chop Fade v3 — Actual 8:1 R:R Test
+### Risk Guardrails (non-negotiable)
+- Do not disable Balrog or repo hygiene gates.
+- Keep `risk_per_trade_pct <= 0.01`.
+- Do not increase max drawdown caps beyond current policy.
+- If any run hits safety FAIL, halt only that branch and continue bounded remainder.
 
-**Hypothesis:** CCI Chop Fade v1 hit PF 1.255 with 12:1 R:R. v2 was supposed to test 8:1 but was accidentally submitted with 12:1 (same result). A properly configured 8:1 R:R should increase win rate by converting more winners to TP hits (same thesis as Vortex v3b TP=8 test). If PF > 1.3, CCI becomes promotion-eligible as a mean-reversion complement to the transition-detection champions.
+### Success Checks (must report in LAST_CYCLE_RESULTS)
+Per cycle, include these metrics:
+- `new_count`
+- `attempted_runs`
+- `executed_runs`
+- `dedup_skipped_total`
+- `candidates_reaching_refinement`
+- `directive_variants_emitted`
 
-name: cci_chop_fade_v3
-template_name: spec_rules
-entry_long:
-- "CCI_20_0.015 < -100"
-- "CHOP_14_1_100 > 50"
-entry_short:
-- "CCI_20_0.015 > 100"
-- "CHOP_14_1_100 > 50"
-risk_policy:
-  stop_type: atr
-  stop_atr_mult: 1.5
-  tp_type: atr
-  tp_atr_mult: 8.0
-  risk_per_trade_pct: 0.01
+Kickstart success criteria (for either cycle):
+- `executed_runs > 0` **and**
+- (`new_count > 0` **or** `directive_variants_emitted > 0`)
 
-### Strategy 3: OBV Momentum Confirmation v1
-
-**Hypothesis:** Every strategy we've tested uses only price-derived indicators. OBV is computed but never tested. Volume precedes price — if OBV is rising while price dips, it signals accumulation (bullish). Combining Supertrend direction (trend state) with OBV confirmation (volume conviction) should filter out false breakouts. Test whether volume adds signal quality.
-
-Note: OBV is an absolute cumulative value. We need a relative measure. Use OBV > SMA_20 proxy for rising OBV (OBV above its own smoothed average). **If OBV vs SMA comparison is not directly available in the dataframe, skip this strategy and note the gap.**
-
-name: supertrend_obv_confirm_v1
-template_name: spec_rules
-entry_long:
-- "SUPERTd_7_3.0 == 1"
-- "ADX_14 > 15"
-entry_short:
-- "SUPERTd_7_3.0 == -1"
-- "ADX_14 > 15"
-risk_policy:
-  stop_type: atr
-  stop_atr_mult: 1.0
-  tp_type: atr
-  tp_atr_mult: 8.0
-  risk_per_trade_pct: 0.01
-
-### Test Matrix
-- Assets: ETH only (BTC confirmed dead across 6+ tests with our best signals)
-- Timeframes: 4h only (1h confirmed dead across 10+ tests)
-- Initial capital: $10,000
-
-### What to Report
-- PF, win rate, max drawdown %, net profit %, total trades
-- Regime breakdown (trending/ranging/transitional PF)
-- **Critical comparisons:**
-  - Ichimoku v1 vs Vortex v3a: Is transition detection a general edge or Vortex-specific?
-  - CCI v3 vs CCI v1: Does 8:1 R:R actually improve PF over 12:1?
-  - OBV confirm vs plain Supertrend: Does volume add signal quality? (or note if OBV comparison unavailable)
+### Fallback if still flat after 2 cycles
+If both cycles remain flat (`executed_runs=0`):
+- emit explicit BLOCKED note with top 3 blockers,
+- attach one concrete next-step patch plan (single change list) for immediate application in next cycle.
 
 ---
 
@@ -161,3 +131,4 @@ risk_policy:
   - v3a vs v2c: Did 0.75 ATR stop kill winners or boost PF?
   - v3b vs v2c: Did TP 8 capture more or truncate tail runners?
   - v2c_btc vs v2c ETH: Is BTC viable with our best signal?
+
