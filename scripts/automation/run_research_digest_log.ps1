@@ -3,6 +3,7 @@ param()
 $ErrorActionPreference = 'Stop'
 $ROOT = 'C:\Users\Clamps\.openclaw\workspace'
 Set-Location -LiteralPath $ROOT
+$scriptStart = Get-Date
 
 function Escape-Html {
   param([string]$Text)
@@ -57,7 +58,10 @@ if ([string]::IsNullOrWhiteSpace($telegramSendToken)) { throw 'Missing Telegram 
 $lines = @()
 $brainEmoji = [System.Char]::ConvertFromUtf32(0x1F9E0)
 $activityDivider = ([char]0x25CB) + (([string][char]0x2500) * 3) + 'activity' + (([string][char]0x2500) * 21)
-$lines += ($brainEmoji + " Research Digest Update")
+$dur = New-TimeSpan -Start $scriptStart -End (Get-Date)
+$durLabel = (([int]$dur.TotalMinutes).ToString() + 'm ' + $dur.Seconds.ToString('00') + 's')
+$lines += ($brainEmoji + " Research Digest")
+$lines += ("Status: ✅ | Duration: " + $durLabel)
 $lines += $activityDivider
 $lines += "Scanned: $scanned"
 $lines += "Digest: $digestEntries"
