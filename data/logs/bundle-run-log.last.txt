@@ -1,12 +1,12 @@
 ﻿🍳 Cooking
-Status: ⚠️ | Duration: 5m 20s
+Status: ⚠️ | Duration: 6m 27s
 ○───activity─────────────────────
-Ingested: 3
-Submitted: 3
-Passed: 3
-Backtests: 15
-Promoted: 3
+Ingested: 0
+Submitted: 0
+Passed: 0
+Backtests: 11
+Promoted: 0
 Forwardtests: 0
-Queue lag: 0
+Queue lag: 4
 ○───note─────────────────────────
-System status needs attention this cycle. Strong cycle: 3 promoted cleanly.
+System status needs attention this cycle. Cycle complete: 11 backtests run; no strong promotion yet.

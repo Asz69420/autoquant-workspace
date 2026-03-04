@@ -8,6 +8,9 @@
     "first_seen_ts": "2026-03-04T09:18:22.666043+00:00",
     "sources": [
       "top",
+      "librarian",
+      "librarian",
+      "librarian",
       "librarian"
     ]
   },
@@ -20,6 +23,9 @@
     "first_seen_ts": "2026-03-04T09:18:21.565706+00:00",
     "sources": [
       "top",
+      "librarian",
+      "librarian",
+      "librarian",
       "librarian"
     ]
   },
@@ -31,7 +37,8 @@
     "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-ea7f538a2688.indicator_record.json",
     "first_seen_ts": "2026-03-04T07:45:06.415977+00:00",
     "sources": [
-      "top",
+      "librarian",
+      "librarian",
       "librarian",
       "librarian",
       "librarian",
@@ -50,7 +57,7 @@
     "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-d40a397bc3da.indicator_record.json",
     "first_seen_ts": "2026-03-04T07:30:07.741746+00:00",
     "sources": [
-      "trending",
+      "librarian",
       "librarian",
       "librarian",
       "librarian",
@@ -70,7 +77,7 @@
     "indicator_record_path": "artifacts/indicators/20260304/indicator-20260304-f0d488a6020f.indicator_record.json",
     "first_seen_ts": "2026-03-04T07:30:06.381232+00:00",
     "sources": [
-      "top",
+      "librarian",
       "librarian",
       "librarian",
       "librarian",

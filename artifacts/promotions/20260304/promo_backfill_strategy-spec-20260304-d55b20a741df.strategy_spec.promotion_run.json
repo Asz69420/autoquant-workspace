@@ -1,0 +1,13 @@
+﻿{
+    "schema_version":  "1.0",
+    "id":  "promo_backfill_strategy-spec-20260304-d55b20a741df.strategy_spec",
+    "created_at":  "2026-03-04T09:49:09.8510892Z",
+    "status":  "OK",
+    "reason_code":  null,
+    "suggestion":  null,
+    "input_linkmap_path":  "",
+    "thesis_artifact_path":  "",
+    "strategy_spec_artifact_path":  "artifacts/strategy_specs/20260304/strategy-spec-20260304-d55b20a741df.strategy_spec.json",
+    "batch_backtest_artifact_path":  "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\batches\\20260304\\batch_20260304_2d6d1cb9.batch_backtest.json",
+    "experiment_plan_artifact_path":  "artifacts\\experiments\\20260304\\exp_20260304_a875fb1b.experiment_plan.json"
+}
