@@ -15,6 +15,87 @@ if command -v python3 >/dev/null 2>&1; then
   PY_BIN="python3"
 fi
 
+STATE_DIR="$ROOT_DIR/data/state"
+STATE_FILE="$STATE_DIR/quandalf_handoff_state.json"
+LOCK_DIR="$STATE_DIR/locks/quandalf_auto_execute.lockdir"
+ACTIONS_FILE="$ROOT_DIR/data/logs/actions.ndjson"
+
+mkdir -p "$STATE_DIR" "$ROOT_DIR/data/state/locks"
+
+cleanup_lock() {
+  rmdir "$LOCK_DIR" >/dev/null 2>&1 || true
+}
+
+if ! mkdir "$LOCK_DIR" >/dev/null 2>&1; then
+  echo "SKIP: quandalf-auto-execute already running (lock held)."
+  exit 0
+fi
+trap cleanup_lock EXIT
+
+readarray -t GATE_INFO < <("$PY_BIN" - "$ACTIONS_FILE" "$STATE_FILE" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+actions_path = Path(sys.argv[1])
+state_path = Path(sys.argv[2])
+
+def base_run_id(run_id: str) -> str | None:
+    m = re.match(r'^(autopilot-\d+)', run_id or '')
+    return m.group(1) if m else None
+
+last_processed = ''
+if state_path.exists():
+    try:
+        state = json.loads(state_path.read_text(encoding='utf-8'))
+        last_processed = str(state.get('last_processed_run_id') or '')
+    except Exception:
+        last_processed = ''
+
+latest = ''
+latest_ts = ''
+if actions_path.exists():
+    for raw in actions_path.read_text(encoding='utf-8', errors='ignore').splitlines():
+        t = raw.strip()
+        if not t:
+            continue
+        try:
+            obj = json.loads(t)
+        except Exception:
+            continue
+        if str(obj.get('action') or '') != 'LAB_SUMMARY':
+            continue
+        rid = base_run_id(str(obj.get('run_id') or ''))
+        if not rid:
+            continue
+        ts = str(obj.get('ts_iso') or '')
+        if not latest or ts > latest_ts:
+            latest = rid
+            latest_ts = ts
+
+print(f"LATEST_RUN_ID={latest}")
+print(f"LAST_PROCESSED_RUN_ID={last_processed}")
+print(f"SHOULD_RUN={1 if latest and latest != last_processed else 0}")
+PY
+)
+
+LATEST_RUN_ID=""
+LAST_PROCESSED_RUN_ID=""
+SHOULD_RUN="0"
+for line in "${GATE_INFO[@]}"; do
+  case "$line" in
+    LATEST_RUN_ID=*) LATEST_RUN_ID="${line#LATEST_RUN_ID=}" ;;
+    LAST_PROCESSED_RUN_ID=*) LAST_PROCESSED_RUN_ID="${line#LAST_PROCESSED_RUN_ID=}" ;;
+    SHOULD_RUN=*) SHOULD_RUN="${line#SHOULD_RUN=}" ;;
+  esac
+done
+
+if [[ "$SHOULD_RUN" != "1" ]]; then
+  echo "No new completed Frodex run. last=$LAST_PROCESSED_RUN_ID latest=$LATEST_RUN_ID"
+  exit 0
+fi
+
 set +e
 "$PY_BIN" - "$ROOT_DIR" "$ORDERS_FILE" "$RESULTS_FILE" <<'PY'
 import json
@@ -263,15 +344,42 @@ def render_md(results):
 
 
 results_path.write_text(render_md(rows), encoding='utf-8')
-updated = re.sub(r"(\*\*Status:\*\*\s*)PENDING", r"\1COMPLETE", text, count=1)
+updated = re.sub(r"(\*\*Status:\*\*\s*)(?:PENDING|NEW)", r"\1COMPLETE", text, count=1)
 orders_path.write_text(updated, encoding='utf-8')
 print(f"EXECUTED {len(rows)} RUNS")
 PY
 py_rc=$?
 set -e
 
+mark_processed_run() {
+  "$PY_BIN" - "$STATE_FILE" "$LATEST_RUN_ID" <<'PY'
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+state_path = Path(sys.argv[1])
+run_id = str(sys.argv[2] or '').strip()
+if not run_id:
+    raise SystemExit(0)
+state = {}
+if state_path.exists():
+    try:
+        state = json.loads(state_path.read_text(encoding='utf-8'))
+        if not isinstance(state, dict):
+            state = {}
+    except Exception:
+        state = {}
+state['last_processed_run_id'] = run_id
+state['updated_at'] = datetime.now(timezone.utc).isoformat()
+state_path.parent.mkdir(parents=True, exist_ok=True)
+state_path.write_text(json.dumps(state, indent=2), encoding='utf-8')
+PY
+}
+
 if [[ $py_rc -eq 10 ]]; then
-  echo "No pending Quandalf order."
+  mark_processed_run
+  echo "No pending Quandalf order for completed run $LATEST_RUN_ID."
   exit 0
 elif [[ $py_rc -ne 0 ]]; then
   echo "Quandalf execution failed."
@@ -289,4 +397,6 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass \
   -TaskLabel "Strategy Cycle" \
   -SourceFile "$ROOT_DIR/docs/shared/QUANDALF_JOURNAL.md"
 
-echo "Quandalf pending order processed."
+mark_processed_run
+
+echo "Quandalf pending order processed for run $LATEST_RUN_ID."
