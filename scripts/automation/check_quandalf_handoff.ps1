@@ -163,12 +163,16 @@ function Send-QuandalfCard {
   $lines += ($mirrorEmoji + ' Reflecting')
   $lines += ('Status: ' + $statusIcon + ' | Duration: ' + $DurationLabel)
   $lines += $activityDivider
+  $queuedValue = 0
+  try {
+    if ($null -ne $resultsInfo.q_backlog) { $queuedValue = [int]$resultsInfo.q_backlog }
+    else { $queuedValue = [int]$orderInfo.queued }
+  } catch { $queuedValue = [int]$orderInfo.queued }
+
   $lines += ('Reviewed: ' + [int]$resultsInfo.reviewed)
   $lines += ('Advanced: ' + [int]$resultsInfo.advanced)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
-  $lines += ('Generated: ' + [int]$resultsInfo.q_generated)
-  $lines += ('Queued for Frodex: ' + [int]$resultsInfo.q_backlog)
-  $lines += ('Queued Orders: ' + [int]$orderInfo.queued)
+  $lines += ('Queued: ' + [int]$queuedValue)
   $lines += $noteDivider
   $lines += $NoteSentence
 
