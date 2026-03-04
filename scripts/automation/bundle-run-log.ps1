@@ -468,10 +468,10 @@ $statusIcon = switch ($statusTag) {
 }
 
 $emojiAlgo = [System.Char]::ConvertFromUtf32(0x1F4CA)
-$emojiResearch = [System.Char]::ConvertFromUtf32(0x1F4DA)
+$emojiReflect = [System.Char]::ConvertFromUtf32(0x1FA9E)
 $emojiCommander = [System.Char]::ConvertFromUtf32(0x1F451)
 $titleLine = switch ($mode) {
-  'quandalf' { $emojiResearch + ' Researching' }
+  'quandalf' { $emojiReflect + ' Reflecting' }
   'oragorn' { $emojiCommander + ' Commander Actions' }
   default { $emojiAlgo + ' Algo Testing' }
 }
@@ -487,11 +487,16 @@ $backtestAuditCount = @($reportEvents | Where-Object { [string]$_.action -eq 'ba
 $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
 
 if ($mode -eq 'quandalf') {
+  $reviewedCount = $strategyResearchCount + $backtestAuditCount
+  $advancedCount = $strategyGenerateCount
+  $abortedCount = $errors
+  $queuedCount = $strategyGenerateCount
+
   $lines += "○───activity─────────────────────"
-  $lines += "Research cycles: $strategyResearchCount"
-  $lines += "Strategy drafts: $strategyGenerateCount"
-  $lines += "Doctrine updates: $doctrineSynthesisCount"
-  $lines += "Audits: $backtestAuditCount"
+  $lines += "Reviewed: $reviewedCount"
+  $lines += "Advanced: $advancedCount"
+  $lines += "Aborted: $abortedCount"
+  $lines += "Queued: $queuedCount"
 } elseif (-not $isOragornSubagentNoteOnly) {
   $lines += "○───activity─────────────────────"
 

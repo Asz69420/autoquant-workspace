@@ -74,6 +74,7 @@ READ these files:
 8. QUANDALF_BRAIN contract: docs/CONTRACTS/QUANDALF_BRAIN.md
 9. Current brain objects in brain/{facts,rules,constraints,failures}
 10. Current brain journal entries in brain/journal/
+11. Runtime context: docs/shared/QUANDALF_RUNTIME_CONTEXT.md
 
 ANALYSE for:
 - Durable market/regime knowledge (not just one-off ideas)

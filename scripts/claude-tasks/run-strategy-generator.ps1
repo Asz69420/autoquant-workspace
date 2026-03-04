@@ -72,6 +72,7 @@ READ these files:
 6. scripts/backtester/signal_templates.py
 7. TEMPLATE_COMBOS in scripts/pipeline/emit_strategy_spec.py
 8. One recent strategy spec in artifacts/strategy_specs/ (format reference)
+9. Runtime context: docs/shared/QUANDALF_RUNTIME_CONTEXT.md
 
 DESIGN 2-3 creative strategy specs that:
 - Use DIFFERENT templates from recent specs where possible
