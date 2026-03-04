@@ -231,6 +231,18 @@ if ($durationLabel -eq '<1s') {
   }
 }
 
+$reportEvents = $mainEvents
+if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey)) {
+  $reportEvents = @(
+    $allTailEvents |
+    Where-Object {
+      $rid = [string]$_.run_id
+      if ([string]::IsNullOrWhiteSpace($rid)) { return $false }
+      (Get-RunGroupKey -RunId $rid -Mode $mode) -eq $selectedRunKey
+    }
+  )
+}
+
 # --- Banner selection ---
 $primaryAgent = if ($mode -eq 'quandalf') { "quandalf" } elseif ($mode -eq 'oragorn') { "oragorn" } else { "frodex" }
 
@@ -260,7 +272,7 @@ $batchAttempts = 0; $batchExecutedTotal = 0; $batchSkippedTotal = 0; $batchBlock
 $promotionChecks = 0; $promotionOk = 0; $promotionBlocked = 0; $promotionSkipped = 0
 $outboxLag = 0
 
-foreach ($e in $mainEvents) {
+foreach ($e in $reportEvents) {
   $sum = if ($e.summary) { $e.summary } else { "" }
   $act = if ($e.action) { $e.action } else { "" }
   $stat = if ($e.status_word) { $e.status_word.ToUpper() } else { "OK" }
@@ -440,10 +452,10 @@ $lines = @()
 $lines += $titleLine
 $lines += ("Status: " + $statusIcon + " | Duration: " + $durationLabel)
 
-$strategyGenerateCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
-$strategyResearchCount = @($mainEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
-$doctrineSynthesisCount = @($mainEvents | Where-Object { [string]$_.action -eq 'doctrine_synthesis' }).Count
-$backtestAuditCount = @($mainEvents | Where-Object { [string]$_.action -eq 'backtest_audit' }).Count
+$strategyGenerateCount = @($reportEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
+$strategyResearchCount = @($reportEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
+$doctrineSynthesisCount = @($reportEvents | Where-Object { [string]$_.action -eq 'doctrine_synthesis' }).Count
+$backtestAuditCount = @($reportEvents | Where-Object { [string]$_.action -eq 'backtest_audit' }).Count
 $totalStrictRuns = $strategyGenerateCount + $strategyResearchCount + $doctrineSynthesisCount + $backtestAuditCount
 
 if ($mode -eq 'quandalf') {
@@ -456,10 +468,10 @@ if ($mode -eq 'quandalf') {
   $lines += "○───activity─────────────────────"
 
   if ($mode -eq 'oragorn') {
-    $delegated = @($mainEvents | Where-Object { [string]$_.action -eq 'DELEGATION_SENT' }).Count
-    $spawned = @($mainEvents | Where-Object { @('SUBAGENT_SPAWN','SUBAGENT_SPAWNED') -contains ([string]$_.action) }).Count
-    $completed = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
-    $failed = @($mainEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FAIL' }).Count
+    $delegated = @($reportEvents | Where-Object { [string]$_.action -eq 'DELEGATION_SENT' }).Count
+    $spawned = @($reportEvents | Where-Object { @('SUBAGENT_SPAWN','SUBAGENT_SPAWNED') -contains ([string]$_.action) }).Count
+    $completed = @($reportEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FINISH' }).Count
+    $failed = @($reportEvents | Where-Object { [string]$_.action -eq 'SUBAGENT_FAIL' }).Count
     $totalActions = $delegated + $spawned + $completed + $failed
 
     $lines += "Delegations: $delegated"
