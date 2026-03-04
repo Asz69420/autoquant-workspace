@@ -4,6 +4,8 @@
   [int]$MaxBundlesPerRun = 3,
   [int]$MinStrategiesPerRun = 3,
   [int]$MaxStrategiesPerRun = 10,
+  [int]$RetryDepth = 0,
+  [int]$MaxImmediateRetries = 2,
   [switch]$RunYouTubeWatcher,
   [switch]$RunTVCatalogWorker,
   [switch]$ForceRecombine,
@@ -544,6 +546,10 @@ $directiveNotesSeen = 0
 $directiveVariantsEmitted = 0
 $explorationVariantsEmitted = 0
 $directiveBackfillSpecsGenerated = 0
+$quandalfQueueReady = 0
+$quandalfQueueGenerated = 0
+$frodexQueueConsumed = 0
+$frodexQueueBacklog = 0
 $libraryLessons = 0
 $libraryRunCount = 0
 $candidatesIngested = 0
@@ -718,6 +724,7 @@ try {
       } catch {}
     }
     $selected = if (@($bundlePaths).Count -gt 0) { [string]$bundlePaths[0] } else { '' }
+    $quandalfQueueReady = [int]@($newCandidates).Count
     Emit-Summary 'BUNDLE_SELECT_DIAG' ('Bundle select: new_count=' + [string]@($newCandidates).Count + ' selected=' + $selected + ' new_paths=' + ((@($newCandidates) -join ';'))) 'INFO' 'Autopilot'
 
     Emit-Summary 'BUNDLE_SCAN_DIAG' ('Bundle scan: index_exists=' + (Test-Path $bundleIndexPath) + ' paths=' + [string]@($bundlePaths).Count) 'INFO' 'Autopilot'
@@ -1449,7 +1456,27 @@ $summary = [ordered]@{
   max_strategies_per_run = [int]$MaxStrategiesPerRun
   strategy_contract_ok = $true
   strategy_contract_shortfall = 0
+  quandalf_queue_generated = 0
+  quandalf_queue_ready = 0
+  frodex_queue_consumed = 0
+  frodex_queue_backlog = 0
 }
+
+$frodexQueueConsumed = [int]$candidatesIngested
+$frodexQueueBacklog = [int]$quandalfQueueReady
+$queueStatePath = 'data/state/queue_telemetry_state.json'
+$prevQueueReady = 0
+if (Test-Path -LiteralPath $queueStatePath) {
+  try {
+    $qPrev = Get-Content -LiteralPath $queueStatePath -Raw | ConvertFrom-Json
+    if ($null -ne $qPrev.quandalf_queue_ready) { $prevQueueReady = [int]$qPrev.quandalf_queue_ready }
+  } catch {}
+}
+$quandalfQueueGenerated = [Math]::Max(0, ([int]$quandalfQueueReady - [int]$prevQueueReady + [int]$frodexQueueConsumed))
+$summary.quandalf_queue_generated = [int]$quandalfQueueGenerated
+$summary.quandalf_queue_ready = [int]$quandalfQueueReady
+$summary.frodex_queue_consumed = [int]$frodexQueueConsumed
+$summary.frodex_queue_backlog = [int]$frodexQueueBacklog
 
 $strategyShortfall = [Math]::Max(0, [int]$MinStrategiesPerRun - [int]$candidatesIngested)
 if ($strategyShortfall -gt 0) {
@@ -1481,6 +1508,14 @@ if ($strategyShortfall -gt 0) {
 $stateDir = 'data/state'
 if (-not (Test-Path $stateDir)) { New-Item -ItemType Directory -Path $stateDir | Out-Null }
 $summary.errors_count = $errorsCount
+$queueStateObj = [ordered]@{
+  updated_at = [DateTime]::UtcNow.ToString('o')
+  quandalf_queue_ready = [int]$quandalfQueueReady
+  quandalf_queue_generated = [int]$quandalfQueueGenerated
+  frodex_queue_consumed = [int]$frodexQueueConsumed
+  frodex_queue_backlog = [int]$frodexQueueBacklog
+}
+($queueStateObj | ConvertTo-Json -Depth 4) | Set-Content -Path (Join-Path $stateDir 'queue_telemetry_state.json') -Encoding utf8
 
 $countersPath = Join-Path $stateDir 'autopilot_counters.json'
 $counters = [ordered]@{ throughput_drought_cycles = 0; drought_cycles = 0; updated_at = [DateTime]::UtcNow.ToString('o') }
@@ -1546,7 +1581,30 @@ if (-not $DryRun) {
   }
 
   $aStatus = if ($errorsCount -gt 0) { 'FAIL' } else { 'OK' }
-  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " errors=" + $errorsCount) $aStatus 'oQ'
+  Emit-Summary 'LAB_SUMMARY' ("Lab: ingested=" + $candidatesIngested + " reached_refinement=" + $candidatesReachingRefinement + " passing_gate=" + $candidatesPassingGate + " throughput_drought_cycles=" + [int]$counters.throughput_drought_cycles + " directive_notes_seen=" + [int]$directiveNotesSeen + " directive_variants_emitted=" + [int]$directiveVariantsEmitted + " directive_backfill_specs_generated=" + [int]$directiveBackfillSpecsGenerated + " active_library_size=" + $activeLibrarySize + " bundles=" + $bundlesProcessed + " promotions=" + $promotionsProcessed + " refinements=" + $refinementsRun + " q_gen=" + [int]$quandalfQueueGenerated + " q_ready=" + [int]$quandalfQueueReady + " q_backlog=" + [int]$frodexQueueBacklog + " errors=" + $errorsCount) $aStatus 'oQ'
+}
+
+if (-not $DryRun -and $strategyShortfall -gt 0 -and $RetryDepth -lt $MaxImmediateRetries) {
+  $nextRetryDepth = [int]$RetryDepth + 1
+  Emit-Summary 'STRATEGY_IMMEDIATE_RETRY' ("Immediate retry triggered: retry_depth=" + $nextRetryDepth + " shortfall=" + [int]$strategyShortfall) 'WARN' 'Autopilot'
+  try {
+    $retryArgs = @(
+      '-NoProfile','-ExecutionPolicy','Bypass','-File','scripts/pipeline/autopilot_worker.ps1',
+      '-MaxBundlesPerRun',$MaxBundlesPerRun,
+      '-MaxRefinementsPerRun',$MaxRefinementsPerRun,
+      '-MinStrategiesPerRun',$strategyShortfall,
+      '-MaxStrategiesPerRun',$MaxStrategiesPerRun,
+      '-RetryDepth',$nextRetryDepth,
+      '-MaxImmediateRetries',$MaxImmediateRetries,
+      '-RepoHygieneMode',$RepoHygieneMode,
+      '-ForceRecombine'
+    )
+    if ($RunYouTubeWatcher) { $retryArgs += '-RunYouTubeWatcher' }
+    if ($RunTVCatalogWorker) { $retryArgs += '-RunTVCatalogWorker' }
+    & powershell @retryArgs | Out-Null
+  } catch {
+    Emit-Summary 'STRATEGY_IMMEDIATE_RETRY' 'Immediate retry failed to execute' 'FAIL' 'Autopilot'
+  }
 }
 
 Write-Output ($summary | ConvertTo-Json -Depth 5)
