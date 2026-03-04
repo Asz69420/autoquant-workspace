@@ -281,7 +281,7 @@ if (Test-Path $bannerDir) {
 }
 
 # --- Extract metrics ---
-$grabbed = 0; $grabFailed = 0
+$grabbed = 0; $grabFailed = 0; $grabSkipped = 0; $videosGrabbed = 0; $videoFailed = 0; $videoSkipped = 0
 $btRuns = 0; $btExecuted = 0; $btSkipped = 0
 $promoted = 0
 $refined = 0
@@ -308,6 +308,14 @@ foreach ($e in $reportEvents) {
     "GRABBER_SUMMARY" {
       if ($sum -match 'fetched=(\d+)') { $grabbed = [int]$matches[1] }
       if ($sum -match 'failed=(\d+)') { $grabFailed = [int]$matches[1] }
+      if ($sum -match 'dedup=(\d+)') { $grabSkipped += [int]$matches[1] }
+      if ($sum -match 'too_large_skipped_count=(\d+)') { $grabSkipped += [int]$matches[1] }
+    }
+    "YT_WATCH_SUMMARY" {
+      if ($sum -match 'new=(\d+)') { $videosGrabbed = [int]$matches[1] }
+      elseif ($sum -match 'processed=(\d+)') { $videosGrabbed = [int]$matches[1] }
+      if ($sum -match 'failed=(\d+)') { $videoFailed = [int]$matches[1] }
+      if ($sum -match 'dedup=(\d+)') { $videoSkipped = [int]$matches[1] }
     }
     "BUNDLE_SCAN_DIAG" {
       if ($sum -match 'new=(\d+)') { $bundlesScanned = [int]$matches[1] }
@@ -520,21 +528,18 @@ if ($mode -eq 'quandalf') {
     $lines += "Sub-agents finished: $completed"
     $lines += "Sub-agents failed: $failed"
   } else {
-    $submittedCount = 0
-    if ($bundleStarts -gt 0) {
-      $submittedCount = $bundleStarts
-    } elseif ($bundlesSelected -gt 0) {
-      $submittedCount = $bundlesSelected
-    } else {
-      $submittedCount = ($specOk + $specBlocked + $specReview)
-    }
+    $intakeSkipped = [int]$grabSkipped + [int]$videoSkipped
+    $intakeFailed = [int]$grabFailed + [int]$videoFailed
 
-    $lines += "Ingested: $ingested"
-    $lines += "Submitted: $submittedCount"
+    $lines += "Waiting: $outboxLag"
     $lines += "Backtests: $batchExecutedTotal"
-    $lines += "Promoted: $promotionOk"
     $lines += "Forwardtests: $forwardRuns"
-    $lines += "Queue lag: $outboxLag"
+
+    $lines += "○───intake─────────────────"
+    $lines += "Videos: $videosGrabbed"
+    $lines += "Indicators: $grabbed"
+    $lines += "Skipped: $intakeSkipped"
+    $lines += "Failed: $intakeFailed"
   }
 }
 # Shared bottom note block (up to 3 lines)
@@ -760,5 +765,7 @@ if ($skipDuplicateSend) {
 
 $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8
 Write-Host "Done"
+
+
 
 
