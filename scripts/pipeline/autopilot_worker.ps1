@@ -2,7 +2,7 @@
   [switch]$DryRun,
   [int]$MaxRefinementsPerRun = 1,
   [int]$MaxBundlesPerRun = 3,
-  [int]$MinStrategiesPerRun = 3,
+  [int]$MinStrategiesPerRun = 1,
   [int]$MaxStrategiesPerRun = 10,
   [int]$RetryDepth = 0,
   [int]$MaxImmediateRetries = 2,

@@ -108,10 +108,23 @@ function Get-LiveReviewInfo {
     $passing = [int]($s.candidates_passing_gate)
     $errors = [int]($s.errors_count)
 
+    $qGenerated = 0
+    $qReady = 0
+    $qConsumed = 0
+    $qBacklog = 0
+    try { if ($null -ne $s.quandalf_queue_generated) { $qGenerated = [int]$s.quandalf_queue_generated } } catch {}
+    try { if ($null -ne $s.quandalf_queue_ready) { $qReady = [int]$s.quandalf_queue_ready } } catch {}
+    try { if ($null -ne $s.frodex_queue_consumed) { $qConsumed = [int]$s.frodex_queue_consumed } } catch {}
+    try { if ($null -ne $s.frodex_queue_backlog) { $qBacklog = [int]$s.frodex_queue_backlog } } catch {}
+
     return [PSCustomObject]@{
       reviewed = $ingested
       advanced = $passing
       aborted = $errors
+      q_generated = $qGenerated
+      q_ready = $qReady
+      q_consumed = $qConsumed
+      q_backlog = $qBacklog
       is_live = $true
     }
   } catch {
@@ -155,6 +168,10 @@ function Send-QuandalfCard {
   $lines += ('Reviewed: ' + [int]$resultsInfo.reviewed)
   $lines += ('Advanced: ' + [int]$resultsInfo.advanced)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
+  $lines += ('Generated: ' + [int]$resultsInfo.q_generated)
+  $lines += ('Ready: ' + [int]$resultsInfo.q_ready)
+  $lines += ('Consumed: ' + [int]$resultsInfo.q_consumed)
+  $lines += ('Backlog: ' + [int]$resultsInfo.q_backlog)
   $lines += ('Queued: ' + [int]$orderInfo.queued)
   $lines += $noteDivider
   $lines += $NoteSentence
