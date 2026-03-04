@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-f799ed6e685a",
+  "created_at": "2026-03-04T07:45:06.083450Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/",
+  "title": "Candle Genome Scanner [forexobroker]",
+  "author": "forexobroker",
+  "summary_bullets": [
+    "TradingView indicator: Candle Genome Scanner [forexobroker] by forexobroker.",
+    "Candle Genome Scanner goes beyond simple pattern identification.",
+    "While most candlestick scripts just flag patterns, this scanner analyzes the &#34;DNA&#34; of each candle formation — detecting 28 patterns, measuring their historical reliability on the current instrument, grouping aligned signals into cluster signals, and giving you a clear directional bias based on real follow-through data.",
+    "WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Candle Genome Scanner goes beyond simple pattern identification.",
+    "WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Source URL: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Candle Genome Scanner [forexobroker] by forexobroker.",
+      "note": "Meaning: TradingView indicator: Candle Genome Scanner [forexobroker] by forexobroker."
+    },
+    {
+      "timestamp": null,
+      "quote": "Candle Genome Scanner goes beyond simple pattern identification.",
+      "note": "Meaning: Candle Genome Scanner goes beyond simple pattern identification."
+    },
+    {
+      "timestamp": null,
+      "quote": "While most candlestick scripts just flag patterns, this scanner analyzes the &#34;DNA&#34; of each candle formation — detecting 28 patterns, measuring their historical reliability on the current instr",
+      "note": "Meaning: While most candlestick scripts just flag patterns, this scanner analyzes the &#34;DNA&#34; of each candle formation — detecting 28 patterns, measuring "
+    },
+    {
+      "timestamp": null,
+      "quote": "WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Candle Genome Scanner goes beyond simple pattern identification.",
+      "note": "Meaning: WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Candle Genome Scanner goes beyond simple pat"
+    },
+    {
+      "timestamp": null,
+      "quote": "WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Source URL: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/.",
+      "note": "Meaning: WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Source URL: https://www.tradingview.com/scri"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Candle Genome Scanner goes beyond simple pattern identification."
+    },
+    {
+      "type": "confirmation",
+      "description": "WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Source URL: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-f799ed6e685a.raw.txt",
+  "sha256": "000c33e0aea9c5a25240edfcd99c1af6586925d0a31c5a679fd7368c743286da",
+  "truncated": false
+}

@@ -1,5 +1,5 @@
 {
-  "top_cursor": 5493,
+  "top_cursor": 5533,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -129,7 +129,8 @@
     "rsi extension + divergence|therealdrip2rip",
     "dumb money concepts [theultimator5]|theultimator5",
     "tikole s.p.adx-di trend indication 9503888883|tikole14",
-    "aura trend momentum [pineify]|pineify"
+    "aura trend momentum [pineify]|pineify",
+    "candle genome scanner [forexobroker]|forexobroker"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -260,7 +261,8 @@
     "4KCjePxd",
     "8qgtThms",
     "O7pBV79n",
-    "sqdd7Tgo"
+    "sqdd7Tgo",
+    "HUVPAVTC"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",
@@ -278,5 +280,5 @@
     "zero lag kalman structure [boswaves]|boswaves",
     "aura trend momentum [pineify]|pineify"
   ],
-  "trending_cursor": 478
+  "trending_cursor": 504
 }

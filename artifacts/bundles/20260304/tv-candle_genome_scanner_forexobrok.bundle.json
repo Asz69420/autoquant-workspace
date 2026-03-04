@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_candle genome sc",
+    "created_at":  "2026-03-04T07:45:06.212933+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260304/research-20260304-f799ed6e685a.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260304/indicator-20260304-ea7f538a2688.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260304/research-20260304-f799ed6e685a.linkmap.json",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-04T07:46:49.0930989Z",
+    "attempts":  1,
+    "last_error":  "ADAPTIVE_PROMOTION_GATE"
+}
