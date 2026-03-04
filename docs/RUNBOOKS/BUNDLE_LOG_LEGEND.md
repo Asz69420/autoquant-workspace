@@ -31,7 +31,7 @@ This file is the canonical meaning of the compact activity labels used in `scrip
   - Number of unsent events waiting in `data/logs/outbox`.
   - `0` is healthy.
 
-- **Tested**
+- **Forwardtests**
   - Forward-testing checks/runs executed in the window.
   - Primary source: `data/forward/FORWARD_LOG.ndjson` (`RUN_OK`).
 
