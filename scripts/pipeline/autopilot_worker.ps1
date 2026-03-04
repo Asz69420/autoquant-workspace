@@ -6,6 +6,7 @@
   [int]$MaxStrategiesPerRun = 10,
   [int]$RetryDepth = 0,
   [int]$MaxImmediateRetries = 2,
+  [switch]$QuandalfOwnsDecisions = $true,
   [switch]$RunYouTubeWatcher,
   [switch]$RunTVCatalogWorker,
   [switch]$ForceRecombine,
@@ -903,11 +904,15 @@ try {
             Emit-Summary 'PROMOTION_SUMMARY' 'Promote: bundles=1 thesis=OK spec=BLOCKED variants=0 status=REVIEW_REQUIRED' 'WARN' 'Promotion'
             Set-BundleState -bundlePath $bp -status 'REVIEW_REQUIRED' -lastError 'NO_VARIANTS_COMPILED' -incrementAttempt $false
           } else {
-            Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'OK' 'Promotion'
+            if ($QuandalfOwnsDecisions) {
+              Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=EVIDENCE_READY decision=QUANDALF_REQUIRED") 'INFO' 'Promotion'
+            } else {
+              Emit-Summary 'PROMOTION_SUMMARY' ("Promote: bundles=1 thesis=OK spec=OK variants=" + $variantCount + " status=OK") 'OK' 'Promotion'
+            }
           }
           $promotionEmitted = $true
           $bundlesProcessed += 1
-          if ($promoStatus -ne 'BLOCKED') { $promotionsProcessed += 1 }
+          if ($promoStatus -eq 'OK' -and -not $QuandalfOwnsDecisions) { $promotionsProcessed += 1 }
           $bundleSlotsUsed += 1
 
           $batch = $null
@@ -969,7 +974,7 @@ try {
             }
           }
 
-          if ($promoStatus -ne 'BLOCKED' -and $adaptivePolicyEnabled -and (Test-Path -LiteralPath $adaptiveGateScript)) {
+          if ($promoStatus -ne 'BLOCKED' -and -not $QuandalfOwnsDecisions -and $adaptivePolicyEnabled -and (Test-Path -LiteralPath $adaptiveGateScript)) {
             try {
               $gateBatchPath = ''
               if ($null -ne $batchArtifactPath -and -not [string]::IsNullOrWhiteSpace([string]$batchArtifactPath)) {
@@ -1001,6 +1006,14 @@ try {
           $promoPath = "artifacts/promotions/" + (Get-Date -Format 'yyyyMMdd') + "/promo_" + $promoId + ".promotion_run.json"
           $promoReasonCode = $null
           $promoSuggestion = $null
+
+          if ($QuandalfOwnsDecisions -and $promoStatus -eq 'OK') {
+            $promoStatus = 'REVIEW_REQUIRED'
+            $promoReasonCode = 'QUANDALF_DECISION_REQUIRED'
+            $promoSuggestion = 'Evidence package ready. Quandalf must decide pass/promote/revise and next matrix.'
+            Emit-Summary 'DECISION_HANDOFF' 'Decision handoff: evidence ready for Quandalf review' 'INFO' 'Promotion'
+            Set-BundleState -bundlePath $bp -status 'REVIEW_REQUIRED' -lastError 'QUANDALF_DECISION_REQUIRED' -incrementAttempt $false
+          }
           if ($promoStatus -eq 'BLOCKED') {
             if ($promoBlockedByAdaptiveGate) {
               $promoReasonCode = 'ADAPTIVE_PROMOTION_GATE'
@@ -1014,7 +1027,7 @@ try {
             schema_version = '1.0'
             id = "promo_" + $promoId
             created_at = [DateTime]::UtcNow.ToString('o')
-            status = $(if ($promoStatus -eq 'BLOCKED') { 'BLOCKED' } else { 'OK' })
+            status = $(if ($promoStatus -eq 'BLOCKED') { 'BLOCKED' } elseif ($promoStatus -eq 'REVIEW_REQUIRED') { 'REVIEW_REQUIRED' } else { 'OK' })
             reason_code = $promoReasonCode
             suggestion = $promoSuggestion
             input_linkmap_path = $lm
@@ -1026,7 +1039,7 @@ try {
           New-Item -ItemType Directory -Force -Path ([IO.Path]::GetDirectoryName($promoPath)) | Out-Null
           ($promoObj | ConvertTo-Json -Depth 8) | Set-Content -Path $promoPath -Encoding utf8
 
-          if ($promoStatus -eq 'BLOCKED') {
+          if ($promoStatus -ne 'OK') {
             Emit-Summary 'REFINEMENT_SUMMARY' 'Refine: iters=0 variants=0 explore=0 delta=n/a status=SKIPPED' 'OK' 'Refinement'
             $refineEmitted = $true
           } elseif ($MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
@@ -1052,8 +1065,10 @@ try {
             }
           }
 
-          if ($promoStatus -ne 'BLOCKED') {
+          if ($promoStatus -eq 'OK') {
             Set-BundleState -bundlePath $bp -status 'DONE' -lastError '' -incrementAttempt $false
+          } elseif ($promoStatus -eq 'REVIEW_REQUIRED') {
+            Set-BundleState -bundlePath $bp -status 'REVIEW_REQUIRED' -lastError 'QUANDALF_DECISION_REQUIRED' -incrementAttempt $false
           }
         }
       } catch {
@@ -1218,7 +1233,7 @@ try {
           $batchEmitted = $true
 
           $backfillRefPath = ''
-          if ($execCount -gt 0 -and $MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
+          if ($execCount -gt 0 -and -not $QuandalfOwnsDecisions -and $MaxRefinementsPerRun -gt 0 -and $refinementsRun -lt $MaxRefinementsPerRun) {
             try {
               $promoId = [IO.Path]::GetFileNameWithoutExtension([string]$spPath)
               $promoPath = "artifacts/promotions/" + (Get-Date -Format 'yyyyMMdd') + "/promo_backfill_" + $promoId + ".promotion_run.json"
