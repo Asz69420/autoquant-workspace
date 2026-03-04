@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-e12c79c95fd5",
+  "created_at": "2026-03-04T00:08:09.968475Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=2LC979UiRns",
+  "title": "NEW GEMINI 3 AI Good For TradingView Strategies? (watch ASAP)",
+  "author": "MichaelIonita",
+  "summary_bullets": [
+    "That's right, guys, Google launched Gemini 3 and I've tested it for trading strategies and I've given it a very hard time.",
+    "So if you watch this video, you know exactly what is good for and what is not good for.",
+    "Can it convert an indicator into a trading strategy efficiently and with good results and spoiler alert, pretty good?",
+    "Can it also improve an existing trading strategy to squeeze out better performance?",
+    "Can it create a new trading strategy from the scratch with good numbers?",
+    "And the newest challenge in my test suite is can it recreate a closed source indicator?",
+    "So let's see if it is true.",
+    "This is not the usual background.",
+    "Well, yes, this is my office.",
+    "So I put out a studio in my office because the living room where I usually film is busy."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "That's right, guys, Google launched Gemini 3 and I've tested it for trading strategies and I've given it a very hard time.",
+      "note": "Meaning: That's right, guys, Google launched Gemini 3 and I've tested it for trading strategies and I've given it a very hard time."
+    },
+    {
+      "timestamp": null,
+      "quote": "So if you watch this video, you know exactly what is good for and what is not good for.",
+      "note": "Meaning: So if you watch this video, you know exactly what is good for and what is not good for."
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it convert an indicator into a trading strategy efficiently and with good results and spoiler alert, pretty good?",
+      "note": "Meaning: Can it convert an indicator into a trading strategy efficiently and with good results and spoiler alert, pretty good?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it also improve an existing trading strategy to squeeze out better performance?",
+      "note": "Meaning: Can it also improve an existing trading strategy to squeeze out better performance?"
+    },
+    {
+      "timestamp": null,
+      "quote": "Can it create a new trading strategy from the scratch with good numbers?",
+      "note": "Meaning: Can it create a new trading strategy from the scratch with good numbers?"
+    },
+    {
+      "timestamp": null,
+      "quote": "And the newest challenge in my test suite is can it recreate a closed source indicator?",
+      "note": "Meaning: And the newest challenge in my test suite is can it recreate a closed source indicator?"
+    },
+    {
+      "timestamp": null,
+      "quote": "So let's see if it is true.",
+      "note": "Meaning: So let's see if it is true."
+    },
+    {
+      "timestamp": null,
+      "quote": "This is not the usual background.",
+      "note": "Meaning: This is not the usual background."
+    },
+    {
+      "timestamp": null,
+      "quote": "Well, yes, this is my office.",
+      "note": "Meaning: Well, yes, this is my office."
+    },
+    {
+      "timestamp": null,
+      "quote": "So I put out a studio in my office because the living room where I usually film is busy.",
+      "note": "Meaning: So I put out a studio in my office because the living room where I usually film is busy."
+    },
+    {
+      "timestamp": null,
+      "quote": "Let's just say my wife is there.",
+      "note": "Meaning: Let's just say my wife is there."
+    },
+    {
+      "timestamp": null,
+      "quote": "So today, this is the scene of the crime.",
+      "note": "Meaning: So today, this is the scene of the crime."
+    }
+  ],
+  "extracted_rules": [
+    "So if you watch this video, you know exactly what is good for and what is not good for.",
+    "So let's see if it is true.",
+    "And guys, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.",
+    "Okay, let's see if that helps us.",
+    "And multimodality, which could be super interesting when giving the AI multiple files to work with screenshots and CSV exports and other things, this could be very interesting.",
+    "But it says it has a million tokens, two million tokens, that is if you pay for the pro version, right?",
+    "And then when it comes to Grog, it's also a little bit funny because it says it has access to current events, of course, because it has the current tweets, but then also unfiltered chat.",
+    "Let's see if it helps us with trading strategies.",
+    "First of all, I wanted to convert this indicator behind me into a trading strategy, and I wanted to decide fully by itself when to go in and when to go out.",
+    "Because, in my opinion, it has a very nice indication when it turns green that you should go in, and then as well, it has a very nice indication that when it falls over cliff, it turns red, and then it's a good idea to go out, right?",
+    "Go back to trading view and zoom out so that you have enough data from 2018 into the future, at least because when you export the data, going here, by the way, and clicking on export chart data, it will export only what you have loaded in the chart, right?",
+    "And when you open up that CSV file, it should look something like this, right?",
+    "More columns if you have turned on volume or you have turned on this, but it will have too much data and the AI would get confused which data to use.",
+    "So it gave me the source code, but it also gave me a diagram showing me when it buys, when it sells, the equity line and the indicator itself.",
+    "Let's see if these numbers match at all.",
+    "But before we look at the KPIs actually, let's see if it is trading the way we would be trading, okay, because we said that we wanted to buy when it turns green and sell when there is a cliff.",
+    "It goes in here when it turns green and it sells after the cliff.",
+    "So the first trade, if I scroll way down here on the list of trades, you can see was on January 6th, 2018, okay?",
+    "But I'm still quite impressed with the results it had on Ethereum and Solana, and I'm sure that if you use it on your portfolio coins, you might find nice combinations.",
+    "Because if it doesn't add value, why would I go short, right?"
+  ],
+  "strategy_components": [
+    {
+      "type": "filter",
+      "description": "And then when it comes to Grog, it's also a little bit funny because it says it has access to current events, of course, because it has the current tweets, but then also unfiltered chat."
+    },
+    {
+      "type": "filter",
+      "description": "Avoid a couple of things and respect these things here."
+    },
+    {
+      "type": "risk",
+      "description": "And then 0.1% commission, one tick slippage."
+    },
+    {
+      "type": "risk",
+      "description": "But still not impressive because without any shorting logic, this strategy is way better off and also takes less risk."
+    },
+    {
+      "type": "risk",
+      "description": "Click on these screenshots and you will see every single trade they took but you need the education to properly build a risk adjusted portfolio to know how to play the markets depending on the cycles and how to rebalance"
+    },
+    {
+      "type": "risk",
+      "description": "This is the most advanced program that you can find and this is just for higher net worth individuals for people who have enough money to understand that risk management is the most important thing, okay?"
+    }
+  ],
+  "explicit_conditions": [
+    "But still not impressive because without any shorting logic, this strategy is way better off and also takes less risk.",
+    "Click on these screenshots and you will see every single trade they took but you need the education to properly build a risk adjusted portfolio to know how to play the markets depending on the cycles and how to rebalance how to use all of this to your advantage, right?",
+    "This is the most advanced program that you can find and this is just for higher net worth individuals for people who have enough money to understand that risk management is the most important thing, okay?"
+  ],
+  "risk_management_notes": [
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "BTC"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-e12c79c95fd5.raw.txt",
+  "sha256": "721c799420f36f785dc68e66e1224bd6a42fa0005421a0c5b70145864e0c148b",
+  "truncated": false
+}

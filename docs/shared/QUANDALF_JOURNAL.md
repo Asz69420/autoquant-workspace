@@ -51,9 +51,9 @@ chop_donchian_fade_v2 (relaxed RSI gate removed): 2 trades, both losers. PF=0.00
 
 ### Post-Mortem
 Discrete/level-based signals (DCL touch) are too rare for reliable backtesting. Found a signal frequency taxonomy:
-1. **Continuous/zone-based:** RSI > 50, close > EMA_200 → fires every bar in a zone (too frequent alone)
-2. **Cross-based:** EMA_9 crosses EMA_21, VTXP crosses VTXM → moderate frequency, good for signals
-3. **Discrete/level-based:** price touches DCL_20, close == BBU → very rare, poor as primary signals
+1. **Continuous/zone-based:** RSI > 50, close > EMA_200 — fires every bar in a zone (too frequent alone)
+2. **Cross-based:** EMA_9 crosses EMA_21, VTXP crosses VTXM — moderate frequency, good for signals
+3. **Discrete/level-based:** price touches DCL_20, close == BBU — very rare, poor as primary signals
 
 ### Key Finding
 ALL 23 prior ACCEPTs use continuous or cross-based signals. NONE use discrete/level-based.
@@ -150,12 +150,12 @@ New hypothesis: Vortex crossover + falling CHOP = transition entry.
 - **Only 3 winners hit the 12 ATR TP** — these are the monsters: +32%, +19%, +26%
 - **19 winners exit via reversal** (vortex cross-back) — gains of 0.02% to 13.5%
 - SL losses average 2.5-5% per trade
-- Signal taxonomy: cross-based (VTXP crosses VTXM) → moderate frequency, good for 4h
+- Signal taxonomy: cross-based (VTXP crosses VTXM) — moderate frequency, good for 4h
 - Entries balanced: 45 long, 42 short
 
 ### Key Insight
 **The reversal exit IS the strategy's edge.** Vortex cross-back acts as a natural trailing exit — lets winners run but cuts them when momentum dies. The fixed TP only matters for the 3 biggest tail events. This means the STOP is the only tunable lever:
-- Tighter stop → each of 57 losses costs less
+- Tighter stop — each of 57 losses costs less
 - Winners still exit via reversal (unaffected by stop)
 - 3 TP winners ran far enough that even a tighter stop wouldn't have killed them early
 - Reducing TP would shrink the 3 biggest wins — wrong direction
@@ -167,7 +167,7 @@ Three stop variants, same entry logic:
 - v2c: stop 1.0 ATR, TP 10 (10:1) — tight both ends (control)
 
 ### Hypothesis
-If PF increases with tighter stop: the marginal trades between 1.0-1.5 ATR drawdown were mostly losers (they recovered but lost again). Tighter stop cuts them off sooner.
+If PF increases with tighter stop: the marginal trades between 1.0-1.25 ATR drawdown were mostly losers (they recovered but lost again). Tighter stop cuts them off sooner.
 If PF decreases: some winners needed that extra room and a 1.0 ATR stop would have killed them before reversal exit. v2b (1.25) should be the compromise.
 
 ### Expected: v2b (1.25 stop) is the winner — PF > 1.4, DD stays under 12%.
@@ -205,7 +205,7 @@ v1 → v2c progression: PF 1.385 → 1.735 → 1.892. Each tightening step impro
 
 ### Strategy Rankings Update
 1. Supertrend 8:1 tail harvester — PF 1.921, DD 10.9%, 85 trades, all regimes
-2. **Vortex Transition v2c — PF 1.892, DD 12.3%, 84 trades, all regimes** ← NEW
+2. **Vortex Transition v2c — PF 1.892, DD 12.3%, 84 trades, all regimes** — NEW
 3. Supertrend ultra ADX10 8:1 — PF 1.907, DD 12.9%, 99 trades
 4. MACD 7:1 tail harvester — PF 1.712, DD 7.5%, 161 trades
 
@@ -245,8 +245,8 @@ Both cycles ran clean. Regime: ranging. No entry signals fired (Vortex needs a V
 **Before forward-testing:** Strategy quality was measured only by historical PF. No way to know if backtest alpha was real or curve-fitted.
 
 **After forward-testing:** Every new candidate strategy has a path to production:
-1. Backtest → ACCEPT (PF > 1.2, DD < 25%)
-2. Forward-test → validate live PF matches backtest PF within drift tolerance
+1. Backtest — ACCEPT (PF > 1.2, DD < 25%)
+2. Forward-test — validate live PF matches backtest PF within drift tolerance
 3. Promote or demote based on weekly scorecard verdicts
 
 This is the missing link between research and revenue. The research pipeline now has a customer.
@@ -273,7 +273,7 @@ Focus on **decorrelated signals** that would diversify the portfolio rather than
 
 ### What I Expect
 - First forward trade within 3-7 days (1 trade/week average from backtest)
-- If forward PF tracks backtest PF within ±30% after 10+ trades: we have a validated live strategy
+- If forward PF tracks backtest PF within +/-30% after 10+ trades: we have a validated live strategy
 - If forward PF diverges significantly: the backtest was overfit and we need to investigate why
 
 ---
@@ -354,5 +354,34 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - Add YAML formatting rule to brain contract doc
 - Consider killing the automated pipeline — 53 drought cycles, 0 useful output
 - The dual-MACD system from the Red K Pressure Index video (SoheilPKO) deserves a spec: fast MACD 34/144/9 + slow MACD 100/200/50 — requires new indicator columns
+
+---
+
+## Entry 012 — Spec Backlog Crisis: 10 Claude Specs Queued, Zero Backtested (2026-03-04)
+
+### Results
+- 0 new ACCEPTs. 24 backtests this cycle, ALL zero trades
+- 55 promotions ran (research to thesis to spec) — all produced 0-trade specs
+- 150+ batch files today, estimated 95%+ dedup rate
+- 10 new Claude-designed strategy specs created but NONE backtested yet
+- Total consecutive zero-trade backtests: 34+ (since U18)
+- Promotion pipeline is operational but shares pipeline's AND-chain flaw
+
+### Key Insights
+- **The zero-trade problem is universal across non-Claude paths.** Pipeline, promotions, AND refinement all produce 0-trade specs. The root cause is confirmed: specs with 3+ AND-chained entry conditions never co-fire on the same bar. All 8 ACCEPTs use exactly 2 conditions. New brain rule: max 2 entry conditions per side.
+- **Promotion pipeline is a false positive.** 55 promotions ran today — the research-to-spec pipeline IS working mechanically. But it inherits the same combinatorial condition assembly as the autopilot pipeline. It generates spec volume, not quality.
+- **10 Claude specs are the entire research frontier.** ALMA MACDh, Ichimoku TK, T3 Vortex, KAMA CCI, T3 EMA, Supertrend+KAMA (2 variants), Stochastic+CCI, VWAP+MACD, and Dual-MACD are all queued. At 22% ACCEPT rate, about 2 should hit. But they have not run because the backtester is consumed by pipeline/promotion zero-trade specs.
+- **Research cards this cycle are mostly meta-commentary.** MichaelIonita videos about AI trading tools (GPT 5.2, ChatGPT Atlas, OpenClaw) do not contain tradeable strategies. The Gaussian Channel and Smart Trend HUD concepts map to existing indicator families.
+
+### What I'm Testing Next
+- Priority 0: Get all 10 Claude specs backtested on ETH 4h (30 variants total)
+- Particularly watching: Ichimoku TK (tests if transition-detection generalizes beyond Vortex), VWAP MACD (first volume-weighted entry ever), and dual-adaptive Supertrend+KAMA (combines both proven adaptive architectures)
+- If Ichimoku TK works: transition-detection is a GENERAL market mechanism, not a Vortex artifact — this would reshape the entire research agenda
+
+### Suggestions For Asz
+- **Route Claude specs to backtester immediately** — they are being starved by pipeline/promotion specs that produce nothing. Add priority routing: claude-* specs run first.
+- **Kill or pause the pipeline** — 53 drought cycles, 150+ dedup batches, 55 zero-trade promotions today. It is consuming backtest compute for zero output.
+- **Add signal feasibility pre-check** — reject specs where entry conditions co-occur less than 1% of bars before wasting a backtest slot. Would have saved 34+ wasted runs.
+- **Promote KAMA Stoch v1 to third forward-test lane** — decorrelated from Vortex/Supertrend, PF=1.857, ranging PF=4.87.
 
 ---

@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-b07ab9066e72",
+  "created_at": "2026-03-04T00:15:28.324840Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=FiztJuyl7p4",
+  "title": "Business Cycles Ends With Recessions",
+  "author": "IntoTheCryptoverse",
+  "summary_bullets": [
+    "Let's go ahead and jump in.",
+    "Now a couple of days ago I released a video called visualizing the business cycle and in that video we showed some interesting charts like this one which helps us to visualize where we are within the business cycle.",
+    "Now we're going to actually make an improvement to that chart in this video if you did not watch the visualizing the business cycle video make sure you check it out it's over 30 minutes long and I go into a lot of the details about how you can better visualize where we are in the business cycle.",
+    "It is my assessment that we are in a late business cycle environment.",
+    "Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and also interest rates which the Federal Reserve sets themselves.",
+    "And so one of the things we can do is we can take the S&P 500 and divide it by the unemployment rate squared multiply it by inflation the inflation U.S.",
+    "inflation rate year over year and multiply that by interest rates.",
+    "Now when you do that you get a chart that looks like this the green shaded regions are recessions and I actually have one that that includes the one here in 2020.",
+    "If I just go to my own scripts I believe I have an I there is ITC recession indicator and you can see that every time this metric basically goes off of this level down here we eventually return to it.",
+    "And one of the ways the way in which we eventually get down there historically is a recession eventually now ever since 2022 things have been cooling off."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Let's go ahead and jump in.",
+      "note": "Meaning: Let's go ahead and jump in."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now a couple of days ago I released a video called visualizing the business cycle and in that video we showed some interesting charts like this one which helps us to visualize where we are within the ",
+      "note": "Meaning: Now a couple of days ago I released a video called visualizing the business cycle and in that video we showed some interesting charts like this one whi"
+    },
+    {
+      "timestamp": null,
+      "quote": "Now we're going to actually make an improvement to that chart in this video if you did not watch the visualizing the business cycle video make sure you check it out it's over 30 minutes long and I go ",
+      "note": "Meaning: Now we're going to actually make an improvement to that chart in this video if you did not watch the visualizing the business cycle video make sure you"
+    },
+    {
+      "timestamp": null,
+      "quote": "It is my assessment that we are in a late business cycle environment.",
+      "note": "Meaning: It is my assessment that we are in a late business cycle environment."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and also interest rates which the Federal Reserve sets ",
+      "note": "Meaning: Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and al"
+    },
+    {
+      "timestamp": null,
+      "quote": "And so one of the things we can do is we can take the S&P 500 and divide it by the unemployment rate squared multiply it by inflation the inflation U.S.",
+      "note": "Meaning: And so one of the things we can do is we can take the S&P 500 and divide it by the unemployment rate squared multiply it by inflation the inflation U.S"
+    },
+    {
+      "timestamp": null,
+      "quote": "inflation rate year over year and multiply that by interest rates.",
+      "note": "Meaning: inflation rate year over year and multiply that by interest rates."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now when you do that you get a chart that looks like this the green shaded regions are recessions and I actually have one that that includes the one here in 2020.",
+      "note": "Meaning: Now when you do that you get a chart that looks like this the green shaded regions are recessions and I actually have one that that includes the one he"
+    },
+    {
+      "timestamp": null,
+      "quote": "If I just go to my own scripts I believe I have an I there is ITC recession indicator and you can see that every time this metric basically goes off of this level down here we eventually return to it.",
+      "note": "Meaning: If I just go to my own scripts I believe I have an I there is ITC recession indicator and you can see that every time this metric basically goes off of"
+    },
+    {
+      "timestamp": null,
+      "quote": "And one of the ways the way in which we eventually get down there historically is a recession eventually now ever since 2022 things have been cooling off.",
+      "note": "Meaning: And one of the ways the way in which we eventually get down there historically is a recession eventually now ever since 2022 things have been cooling o"
+    },
+    {
+      "timestamp": null,
+      "quote": "But even in the 20 even in the 2006 2007 business cycle it topped in May of 2006 dropped and then went back up but the recession did not occur until 2008.",
+      "note": "Meaning: But even in the 20 even in the 2006 2007 business cycle it topped in May of 2006 dropped and then went back up but the recession did not occur until 20"
+    },
+    {
+      "timestamp": null,
+      "quote": "So just because you have a top in this metric does not mean that that corresponds to when the stock market ultimately tops out for instance if you were to overlay the S&P 500 onto this chart you'll se",
+      "note": "Meaning: So just because you have a top in this metric does not mean that that corresponds to when the stock market ultimately tops out for instance if you were"
+    }
+  ],
+  "extracted_rules": [
+    "Now we're going to actually make an improvement to that chart in this video if you did not watch the visualizing the business cycle video make sure you check it out it's over 30 minutes long and I go into a lot of the details about how you can better visualize where we are in the business cycle.",
+    "Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and also interest rates which the Federal Reserve sets themselves.",
+    "Now when you do that you get a chart that looks like this the green shaded regions are recessions and I actually have one that that includes the one here in 2020.",
+    "If I just go to my own scripts I believe I have an I there is ITC recession indicator and you can see that every time this metric basically goes off of this level down here we eventually return to it.",
+    "So just because you have a top in this metric does not mean that that corresponds to when the stock market ultimately tops out for instance if you were to overlay the S&P 500 onto this chart you'll see what I'm talking about how the S&P continued to go up even after the metric topped in 2006 but it did not stop the eventual collapse.",
+    "We even said back then that that was the window of weakness was February to early to mid April if you guys remember and that's essentially where that draw down occurred at.",
+    "So if you were to look at M2 the argument is that hey this can also affect the business cycle the money supply.",
+    "So what if we were to normalize this chart by the money supply?",
+    "So because of that when we look at the updated chart it's not going to include the business cycles that were in the 70s because we don't have data for the money supply on trading view right before that.",
+    "Now when you do this you get a chart that looks like this.",
+    "Now if you were to look at a lot of the data right now if you were to look at layoffs and initial claims they're still really really low so it doesn't make sense necessarily to say that we're in a recession right now but it could make sense to start thinking about that the stock market might start pricing one in sometime soon.",
+    "One of the things I want people to remember is that if we get a recession which likely will happen by the end of this business cycle which I do think max has two to three years left and it could be shorter right maybe we're actually approaching it now in 2026 but I would say max two to three more years.",
+    "When you look at a chart like this like I mean it makes sense to assume that it'll eventually go back down to the lows but it has been doing that for years but it still hasn't gotten to the lows yet.",
+    "What you'll notice is that it's ultimately the recession that sends it to the lows you see that once the recession arrives the metric goes down to the lows because we haven't had a recession yet that's that explains why it's not at the lows right now if you look at real GDP it is still positive if you look at layoffs they still remain low we have not entered into the negative feedback loop that starts the recession."
+  ],
+  "explicit_conditions": [
+    "So just because you have a top in this metric does not mean that that corresponds to when the stock market ultimately tops out for instance if you were to overlay the S&P 500 onto this chart you'll see what I'm talking about how the S&P continued to go up even after the metric topped in 2006 but it did not stop the eventual collapse."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "SPX"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-b07ab9066e72.raw.txt",
+  "sha256": "3587a17223e11df57a42c2a5a5453d155be9a001ba88c0650e52929a747f21e9",
+  "truncated": false
+}

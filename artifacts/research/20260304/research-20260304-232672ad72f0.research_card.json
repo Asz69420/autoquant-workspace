@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260304-232672ad72f0",
+  "created_at": "2026-03-04T00:26:15.983936Z",
+  "source_type": "asr_transcript",
+  "source_ref": "https://www.youtube.com/watch?v=2ehTz4A5yJQ",
+  "title": "Visualizing the Business Cycle",
+  "author": "IntoTheCryptoverse",
+  "summary_bullets": [
+    "Hey everyone and thanks for dropping back into the Macroverse.",
+    "Today we are going to visualize the business cycle.",
+    "Or if you want to read the recent report that we published about a week ago now, the Macro Risk Memo, which I think does a pretty good job of outlining my thoughts on where we are in the business cycle.",
+    "But in this video, I want to go through a thoughtful exercise on how we can better visualize them.",
+    "The reality is that a lot of millennials, like myself, haven't really experienced a full business cycle.",
+    "If you were born in the 90s, which I was, if you were born in the 90s, then you haven't really been an adult when the last major business cycle played out.",
+    "Now just because we haven't really seen one, yes there was the pandemic, but that's not really the same thing.",
+    "Just because we haven't seen it doesn't mean it won't ever happen.",
+    "So what I want to do is try to better visualize them.",
+    "Now one of the really interesting things is just when you look at the S&P 500, when we're looking at monthly candles going all the way back to the 1870s, what do you notice?"
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "Hey everyone and thanks for dropping back into the Macroverse.",
+      "note": "Meaning: Hey everyone and thanks for dropping back into the Macroverse."
+    },
+    {
+      "timestamp": null,
+      "quote": "Today we are going to visualize the business cycle.",
+      "note": "Meaning: Today we are going to visualize the business cycle."
+    },
+    {
+      "timestamp": null,
+      "quote": "Or if you want to read the recent report that we published about a week ago now, the Macro Risk Memo, which I think does a pretty good job of outlining my thoughts on where we are in the business cycl",
+      "note": "Meaning: Or if you want to read the recent report that we published about a week ago now, the Macro Risk Memo, which I think does a pretty good job of outlining"
+    },
+    {
+      "timestamp": null,
+      "quote": "But in this video, I want to go through a thoughtful exercise on how we can better visualize them.",
+      "note": "Meaning: But in this video, I want to go through a thoughtful exercise on how we can better visualize them."
+    },
+    {
+      "timestamp": null,
+      "quote": "The reality is that a lot of millennials, like myself, haven't really experienced a full business cycle.",
+      "note": "Meaning: The reality is that a lot of millennials, like myself, haven't really experienced a full business cycle."
+    },
+    {
+      "timestamp": null,
+      "quote": "If you were born in the 90s, which I was, if you were born in the 90s, then you haven't really been an adult when the last major business cycle played out.",
+      "note": "Meaning: If you were born in the 90s, which I was, if you were born in the 90s, then you haven't really been an adult when the last major business cycle played "
+    },
+    {
+      "timestamp": null,
+      "quote": "Now just because we haven't really seen one, yes there was the pandemic, but that's not really the same thing.",
+      "note": "Meaning: Now just because we haven't really seen one, yes there was the pandemic, but that's not really the same thing."
+    },
+    {
+      "timestamp": null,
+      "quote": "Just because we haven't seen it doesn't mean it won't ever happen.",
+      "note": "Meaning: Just because we haven't seen it doesn't mean it won't ever happen."
+    },
+    {
+      "timestamp": null,
+      "quote": "So what I want to do is try to better visualize them.",
+      "note": "Meaning: So what I want to do is try to better visualize them."
+    },
+    {
+      "timestamp": null,
+      "quote": "Now one of the really interesting things is just when you look at the S&P 500, when we're looking at monthly candles going all the way back to the 1870s, what do you notice?",
+      "note": "Meaning: Now one of the really interesting things is just when you look at the S&P 500, when we're looking at monthly candles going all the way back to the 1870"
+    },
+    {
+      "timestamp": null,
+      "quote": "One of the things we could argue is that a lot of business cycles end with a recession.",
+      "note": "Meaning: One of the things we could argue is that a lot of business cycles end with a recession."
+    },
+    {
+      "timestamp": null,
+      "quote": "The hard part, the tricky part, the part that so many people get wrong is predicting when that will actually end because the reality is no one really knows.",
+      "note": "Meaning: The hard part, the tricky part, the part that so many people get wrong is predicting when that will actually end because the reality is no one really k"
+    }
+  ],
+  "extracted_rules": [
+    "Or if you want to read the recent report that we published about a week ago now, the Macro Risk Memo, which I think does a pretty good job of outlining my thoughts on where we are in the business cycle.",
+    "If you were born in the 90s, which I was, if you were born in the 90s, then you haven't really been an adult when the last major business cycle played out.",
+    "Now one of the really interesting things is just when you look at the S&P 500, when we're looking at monthly candles going all the way back to the 1870s, what do you notice?",
+    "The hard part, the tricky part, the part that so many people get wrong is predicting when that will actually end because the reality is no one really knows.",
+    "When you look at this chart, it kind of makes you realize how if you always assume that patterns repeat themselves, how so many people before us would have gotten wrecked looking at some of these charts.",
+    "Look at this period over here in the 1900s when the market was just going sideways and then we had a big move up and then there was this drop.",
+    "Now, you could argue that a lot of people after this drop in 1987 might have said, oh, what if that's the same thing as this drop before we just go lower?",
+    "As we've talked about many times, but the S&P has respected it as well many, many times, but when you look at the way this has gone, recessions used to be a lot more frequent back over in the 1800s and going into the early 1900s, but then you can see they started to become less and less common, right?",
+    "But simply if you look at the S&P 500 divided by the unemployment rate squared.",
+    "The metric we're creating make really make it start to drop if the unemployment rate goes up, because historically, when the unemployment rate starts to go up, that's when you lead into the final phases of the business cycle.",
+    "When it goes up, it matters a lot.",
+    "If you guys remember, the Federal Reserve has two mandates.",
+    "Now, when we look at the metric this creates, what you'll notice is that it creates a fairly common pattern.",
+    "What's interesting is when you look at this, you can see that you can really clearly visualize the business cycle, right?",
+    "Now, if we continue, you can see that there is this business cycle here that really started to turn into bubble-like behavior in 2016, 2017, 2018.",
+    "But if you just bear with me for a moment and we put a price label on all of these and we just look at this not in terms of what the number means, but just relative to other numbers, that was 473 or so.",
+    "So what's interesting is when you look at the difference between 1974 and 2000, that's about a five to six X difference from that peak to that one right there.",
+    "I don't know if I got it perfectly, but let's just call it somewhere between a four to five X move.",
+    "If you were to overlay the S&P 500 onto this chart, what you'll see is that there are times when the stock market corrects 50 percent in order to get back down to the lows.",
+    "And and, you know, it's not like as well, it's not like the market has to bottom when we get down here."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Or if you want to read the recent report that we published about a week ago now, the Macro Risk Memo, which I think does a pretty good job of outlining my thoughts on where we are in the business cycle."
+    },
+    {
+      "type": "risk",
+      "description": "And for a long time, the higher-risk assets within each asset class bleed to the lower-risk assets within each asset class because we've been under tighter and tighter monetary policy."
+    },
+    {
+      "type": "risk",
+      "description": "And that's why if you go further up the risk curve, a lot of altcoins have been bleeding to Bitcoin for years."
+    },
+    {
+      "type": "risk",
+      "description": "So we're basically rolling down the risk curve as the business cycle goes on."
+    },
+    {
+      "type": "risk",
+      "description": "The problem is that we run the risk of a hard landing."
+    },
+    {
+      "type": "risk",
+      "description": "The argument is what if Bitcoin is further up the risk curve than the stock market, which it is."
+    },
+    {
+      "type": "filter",
+      "description": "So if we were to just simply look at the unemployment rate, what we want to avoid is a scary moment where it just becomes non-linear and goes up far quicker than a lot of people are thinking it's going to."
+    },
+    {
+      "type": "trend",
+      "description": "Now for years, the unemployment rate has been trending higher."
+    },
+    {
+      "type": "trend",
+      "description": "And for years, hiring has trended down."
+    },
+    {
+      "type": "trend",
+      "description": "You can see that's been trending down for a long time."
+    },
+    {
+      "type": "trend",
+      "description": "Job openings have been trending down as well."
+    },
+    {
+      "type": "risk",
+      "description": "And so the way I do it is I think making sure you have some investments in other things besides high-risk assets makes a lot of sense."
+    },
+    {
+      "type": "risk",
+      "description": "You can go to reports and you can download the macro risk memo for February."
+    },
+    {
+      "type": "risk",
+      "description": "In fact, if the S&P were to rally 2%, less than 2%, a little over 1%, we'd be at another all-time high."
+    }
+  ],
+  "explicit_conditions": [
+    "Or if you want to read the recent report that we published about a week ago now, the Macro Risk Memo, which I think does a pretty good job of outlining my thoughts on where we are in the business cycle.",
+    "And for a long time, the higher-risk assets within each asset class bleed to the lower-risk assets within each asset class because we've been under tighter and tighter monetary policy.",
+    "And that's why if you go further up the risk curve, a lot of altcoins have been bleeding to Bitcoin for years.",
+    "So we're basically rolling down the risk curve as the business cycle goes on.",
+    "The problem is that we run the risk of a hard landing.",
+    "The argument is what if Bitcoin is further up the risk curve than the stock market, which it is.",
+    "And so the way I do it is I think making sure you have some investments in other things besides high-risk assets makes a lot of sense.",
+    "You can go to reports and you can download the macro risk memo for February."
+  ],
+  "risk_management_notes": [
+    "Apply 1% risk rule."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "monthly"
+  ],
+  "assets_mentioned": [
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260304/research-20260304-232672ad72f0.raw.txt",
+  "sha256": "c23c2bf755456cde2ba2475930f7828a9422a203893dff4aab018ede95596d5d",
+  "truncated": false
+}

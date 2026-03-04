@@ -1,28 +1,33 @@
 ---
 id: fact-zero-trade-signal-bottleneck
 type: fact
-title: Pipeline-generated specs produce zero trades due to signal condition misalignment
+title: All non-Claude spec sources produce zero trades due to AND-chain misalignment
 status: active
-confidence: 0.92
+confidence: 0.96
 evidence_paths:
   - artifacts/backtests/20260304/
   - artifacts/batches/20260304/
+  - artifacts/promotions/20260304/
 tags:
   - pipeline
   - signal
   - zero-trades
   - bottleneck
+  - promotions
 supporting_ids:
   - failure-pipeline-structural-death
-validated_at: "2026-03-04T18:00:00Z"
-updated_at: "2026-03-04T18:00:00Z"
+validated_at: "2026-03-04T22:00:00Z"
+updated_at: "2026-03-04T22:00:00Z"
 ---
 
-The latest 10 backtests ALL produced exactly 0 trades. Pipeline-generated entry conditions (AND-chains of 3-5 indicators) never simultaneously fire within the same bar. Signal clustering detected on 1h timeframe (conditions fire on adjacent bars but not the same bar). Post-BALROG-fix, backtests execute without schema errors but produce no trading signals.
+34+ consecutive backtests have produced exactly 0 trades across ALL non-Claude spec sources: pipeline, promotions, and refinement. Entry conditions with 3+ AND-chained indicators never simultaneously fire within the same bar. The problem now extends beyond the pipeline to the promotion system (research → thesis → spec).
 
-- 10/10 latest backtests: 0 trades (gate reason: INSUFFICIENT_TRADES)
-- Batch dedup rate: 87%+ (27-run full-grid batches 100% deduplicated)
-- Signal clustering flagged: ETH 1h, SOL 1h (SIGNAL_CLUSTERED feasibility failure)
-- Pipeline targets BTC 1h despite EXCLUDE_ASSET:BTC directives
-- Root cause: combinatorial condition assembly without hypothesis-driven co-occurrence analysis
-- Counter-evidence: Claude-designed specs on same indicators generate 42-179 trades (sufficient)
+- 34/34 consecutive backtests: 0 trades (U21: 10, U22: 24 more)
+- Promotion pipeline: 55 promotions today, ALL 0-trade specs
+- Batch dedup rate: 95%+ (150+ batch files, near-total dedup)
+- Refinement: refine-8d9a5d5c and refine-d89fb280 both 0 trades across all variants
+- Signal clustering flagged: ETH 1h, SOL 1h, SOL 4h
+- Pipeline ignores EXCLUDE_ASSET:BTC and EXCLUDE_TIMEFRAME:1h directives
+- Root cause: combinatorial condition assembly (3-5 AND conditions) without co-occurrence analysis
+- Counter-evidence: Claude specs use max 2 conditions and generate 42-179 trades
+- Structural insight: specs with <=2 entry conditions produce trades; specs with 3+ do not

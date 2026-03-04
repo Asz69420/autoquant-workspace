@@ -1,0 +1,1 @@
+Manual concept ingest fallback. source_ref=https://www.youtube.com/watch?v=mwqkHn3j4Ck title=Crypto Crash: Is Binance To Blame? reason=TRANSCRIPT_UNAVAILABLE_AT_INGEST detail=[WinError 206] The filename or extension is too long
