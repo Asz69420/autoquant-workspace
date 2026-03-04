@@ -123,7 +123,12 @@ def _load_advisory_enforcement(advisory_path: str) -> dict:
     return out
 
 
-def _variant_resolved_signature(variant_obj: dict, symbol: str, timeframe: str) -> str:
+def _variant_resolved_signature(
+    variant_obj: dict,
+    symbol: str,
+    timeframe: str,
+    strategy_scope: str = '',
+) -> str:
     template_name = ''
     if resolve_template is not None:
         try:
@@ -140,6 +145,7 @@ def _variant_resolved_signature(variant_obj: dict, symbol: str, timeframe: str) 
     execution_policy = variant_obj.get('execution_policy') or {}
 
     sig_obj = {
+        'strategy_scope': strategy_scope,
         'template': template_name,
         'params': params,
         'risk_policy': {
@@ -212,7 +218,13 @@ def _index_historical_signatures(lookback_days: int = 90, max_entries: int = 500
             if not isinstance(variant_obj, dict):
                 continue
 
-            sig = _variant_resolved_signature(variant_obj, symbol, timeframe)
+            strategy_scope = str(spec.get('id') or Path(abs_spec).stem)
+            sig = _variant_resolved_signature(
+                variant_obj,
+                symbol,
+                timeframe,
+                strategy_scope=strategy_scope,
+            )
             out.add(sig)
         except Exception:
             continue
@@ -260,7 +272,13 @@ def _index_recent_batch_signatures(lookback_days: int = 14, max_batch_files: int
                 variant_obj = next((v for v in variants if str(v.get('name')) == variant_name), None)
                 if not isinstance(variant_obj, dict):
                     continue
-                sig = _variant_resolved_signature(variant_obj, symbol, timeframe)
+                strategy_scope = str(spec.get('id') or Path(abs_spec).stem)
+                sig = _variant_resolved_signature(
+                    variant_obj,
+                    symbol,
+                    timeframe,
+                    strategy_scope=strategy_scope,
+                )
                 out.add(sig)
         except Exception:
             continue
@@ -281,6 +299,7 @@ def main() -> int:
     args = ap.parse_args()
 
     spec = _load_json(args.strategy_spec)
+    strategy_scope = str(spec.get('id') or Path(args.strategy_spec).stem)
     enforcement = _load_advisory_enforcement(args.advisory_path)
     variant_objects = {str(v.get('name')): v for v in spec.get('variants', []) if isinstance(v, dict) and v.get('name')}
     variants = [v['name'] for v in spec.get('variants', [])]
@@ -315,7 +334,12 @@ def main() -> int:
             meta = _load_json(dataset_meta)
             symbol = str(meta.get('symbol') or '')
             timeframe = str(meta.get('timeframe') or '')
-            sig = _variant_resolved_signature(variant_obj, symbol, timeframe)
+            sig = _variant_resolved_signature(
+                variant_obj,
+                symbol,
+                timeframe,
+                strategy_scope=strategy_scope,
+            )
 
             if sig in historical_seen:
                 history_skips += 1
