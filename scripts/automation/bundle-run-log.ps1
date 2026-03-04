@@ -528,18 +528,9 @@ if ($mode -eq 'quandalf') {
     $lines += "Sub-agents finished: $completed"
     $lines += "Sub-agents failed: $failed"
   } else {
-    $intakeSkipped = [int]$grabSkipped + [int]$videoSkipped
-    $intakeFailed = [int]$grabFailed + [int]$videoFailed
-
     $lines += "Waiting: $outboxLag"
     $lines += "Backtests: $batchExecutedTotal"
     $lines += "Forwardtests: $forwardRuns"
-
-    $lines += "○───intake─────────────────"
-    $lines += "Videos: $videosGrabbed"
-    $lines += "Indicators: $grabbed"
-    $lines += "Skipped: $intakeSkipped"
-    $lines += "Failed: $intakeFailed"
   }
 }
 # Shared bottom note block (up to 3 lines)
@@ -650,6 +641,21 @@ if ($true) {
 }
 $messageBody = ($lines -join "`n").TrimEnd()
 
+$intakeBody = $null
+if ($mode -eq 'frodex') {
+  $intakeSkipped = [int]$grabSkipped + [int]$videoSkipped
+  $intakeFailed = [int]$grabFailed + [int]$videoFailed
+  $intakeLines = @()
+  $intakeLines += '⚡ Speedster — Intake'
+  $intakeLines += ('Status: ' + $statusIcon + ' | Duration: ' + $durationLabel)
+  $intakeLines += '○───intake─────────────────'
+  $intakeLines += ('Videos: ' + [int]$videosGrabbed)
+  $intakeLines += ('Indicators: ' + [int]$grabbed)
+  $intakeLines += ('Skipped: ' + [int]$intakeSkipped)
+  $intakeLines += ('Failed: ' + [int]$intakeFailed)
+  $intakeBody = ($intakeLines -join "`n").TrimEnd()
+}
+
 function Escape-Html {
   param([string]$Text)
   if ($null -eq $Text) { return "" }
@@ -663,6 +669,13 @@ function Escape-Html {
 $escapedBody = Escape-Html -Text $messageBody
 if ($escapedBody.Length -gt 985) { $escapedBody = $escapedBody.Substring(0, 982) + "..." }
 $caption = "<pre>" + $escapedBody + "</pre>"
+
+$intakeCaption = $null
+if (-not [string]::IsNullOrWhiteSpace($intakeBody)) {
+  $escapedIntake = Escape-Html -Text $intakeBody
+  if ($escapedIntake.Length -gt 985) { $escapedIntake = $escapedIntake.Substring(0, 982) + "..." }
+  $intakeCaption = "<pre>" + $escapedIntake + "</pre>"
+}
 
 if ($mode -eq 'frodex' -and [string]::IsNullOrWhiteSpace($selectedRunKey)) {
   Write-Host "No completed Frodex run found; skipping bundle send"
@@ -754,6 +767,25 @@ if ($skipDuplicateSend) {
       $reportState[$stateKey] = @{ hash = $hashHex; sent_at = [DateTime]::UtcNow.ToString('o'); last_run_id = $selectedRunKey }
       ($reportState | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $reportStatePath -Encoding utf8
       Write-Host "Bundle sent to log channel with banner"
+      if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($intakeCaption)) {
+        try {
+          $boundary2 = [System.Guid]::NewGuid().ToString()
+          $parts2 = @()
+          $parts2 += "--$boundary2`r`nContent-Disposition: form-data; name=`"chat_id`"`r`n`r`n$logChannel"
+          $parts2 += "--$boundary2`r`nContent-Disposition: form-data; name=`"caption`"`r`n`r`n$intakeCaption"
+          $parts2 += "--$boundary2`r`nContent-Disposition: form-data; name=`"parse_mode`"`r`n`r`nHTML"
+          $parts2 += "--$boundary2`r`nContent-Disposition: form-data; name=`"photo`"; filename=`"banner.jpg`"`r`nContent-Type: image/jpeg`r`n"
+          $preBytes2 = [System.Text.Encoding]::UTF8.GetBytes(($parts2 -join "`r`n") + "`r`n")
+          $fullBody2 = New-Object byte[] ($preBytes2.Length + $photoBytes.Length + $endBytes.Length)
+          [System.Buffer]::BlockCopy($preBytes2, 0, $fullBody2, 0, $preBytes2.Length)
+          [System.Buffer]::BlockCopy($photoBytes, 0, $fullBody2, $preBytes2.Length, $photoBytes.Length)
+          [System.Buffer]::BlockCopy($endBytes, 0, $fullBody2, ($preBytes2.Length + $photoBytes.Length), $endBytes.Length)
+          Invoke-RestMethod -Uri $uri -Method Post -Body $fullBody2 -ContentType "multipart/form-data; boundary=$boundary2" | Out-Null
+          Write-Host "Speedster intake card sent with banner"
+        } catch {
+          Write-Host "Intake photo failed: $_"
+        }
+      }
     } catch {
       Write-Host "Photo failed: $_"
       Write-Host "Skipped text fallback (images-only mode)"
@@ -765,6 +797,7 @@ if ($skipDuplicateSend) {
 
 $messageBody | Out-File "$ROOT\data\logs\bundle-run-log.last.txt" -Encoding UTF8
 Write-Host "Done"
+
 
 
 
