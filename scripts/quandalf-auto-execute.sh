@@ -32,6 +32,18 @@ if ! mkdir "$LOCK_DIR" >/dev/null 2>&1; then
 fi
 trap cleanup_lock EXIT
 
+# Claude Code reflection first (Opus via run_claude_skill); non-fatal fallback to existing executor path.
+echo "Quandalf reflection: trying Claude Code (Opus)..."
+set +e
+powershell.exe -NoProfile -ExecutionPolicy Bypass \
+  -File "$ROOT_DIR/scripts/automation/run_claude_skill.ps1" \
+  -Mode research -RetryCount 1 >/dev/null 2>&1
+claude_rc=$?
+set -e
+if [[ $claude_rc -ne 0 ]]; then
+  echo "WARN: Claude reflection unavailable; continuing with fallback executor path."
+fi
+
 readarray -t GATE_INFO < <("$PY_BIN" - "$ACTIONS_FILE" "$STATE_FILE" <<'PY'
 import json
 import re
@@ -84,6 +96,7 @@ LATEST_RUN_ID=""
 LAST_PROCESSED_RUN_ID=""
 SHOULD_RUN="0"
 for line in "${GATE_INFO[@]}"; do
+  line="${line%$'\r'}"
   case "$line" in
     LATEST_RUN_ID=*) LATEST_RUN_ID="${line#LATEST_RUN_ID=}" ;;
     LAST_PROCESSED_RUN_ID=*) LAST_PROCESSED_RUN_ID="${line#LAST_PROCESSED_RUN_ID=}" ;;

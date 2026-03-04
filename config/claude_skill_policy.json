@@ -7,5 +7,5 @@
   ],
   "default_retry_count": 1,
   "timeout_seconds": 900,
-  "model_preference": "claude-sonnet-4-5"
+  "model_preference": "opus"
 }
