@@ -40,8 +40,8 @@ Funding rate arbitrage, liquidation hunting, market making, event-driven trading
 Find the most promising strategy or approach and make it better.
 Primary scoring objective:
 - Maximize PPR to produce promotable candidates.
-- Prepare for cPPR by improving cross-asset robustness and consistency.
-- Live-trading readiness = sustained high PPR, ideally high cPPR once available.
+- Prepare for xPPR by improving cross-asset robustness and consistency.
+- Live-trading readiness = sustained high PPR, ideally high xPPR once available.
 How you do that is up to you — but here is guidance that has worked:
 
 - Reading trade-by-trade results and understanding WHY trades won or lost tends to produce better improvements than random parameter changes

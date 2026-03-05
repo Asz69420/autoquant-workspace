@@ -111,7 +111,7 @@ Buckets:
 - `--bucket passed`: only `1.0 <= PPR < 3.0`
 - `--bucket all`: no PPR bucket filter
 
-Display includes PPR, cPPR (placeholder), PF, WR, TC, DD.
+Display includes PPR, xPPR (placeholder), PF, WR, TC, DD.
 
 ---
 
@@ -136,9 +136,9 @@ python scripts/pipeline/render_leaderboard.py --bucket passed --json
 
 ## Reporting Integration
 - `scripts/pipeline/write_leaderboard_txt.py` now reads `PROMOTED_INDEX.json` and ranks by PPR.
-- `scripts/pipeline/write_daily_intel_txt.py` now reads `PROMOTED_INDEX.json` and includes PPR/cPPR columns.
-- cPPR is currently a placeholder (`--`) until the cPPR scorer is implemented.
+- `scripts/pipeline/write_daily_intel_txt.py` now reads `PROMOTED_INDEX.json` and includes PPR/xPPR columns.
+- xPPR is currently a placeholder (`--`) until the xPPR scorer is implemented.
 
 ## Future Extension
-- cPPR (combined robustness score) can be added post-promotion.
+- xPPR (cross-performance robustness score) can be added post-promotion.
 - PPR remains the pass/promote gate unless policy is revised.

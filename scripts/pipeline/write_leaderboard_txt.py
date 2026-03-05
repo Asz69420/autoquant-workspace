@@ -121,7 +121,7 @@ class Row:
     strategy_key: str
     strategy_name: str
     ppr: float
-    cppr: float | None
+    xppr: float | None
     pf: float
     wr: float | None
     tc: int
@@ -233,22 +233,22 @@ def collect_rows() -> tuple[list[Row], dict]:
             continue
 
         ppr = as_float(r.get('ppr_score')) or 0.0
-        cppr = as_float(r.get('cppr_score'))
-        staged.append((created, asset, tf, skey, sname, ppr, cppr, pf, wr, tc, dd, pnl))
+        xppr = as_float(r.get('xppr_score'))
+        staged.append((created, asset, tf, skey, sname, ppr, xppr, pf, wr, tc, dd, pnl))
         pf_hist[skey].append((created, pf))
 
     for k in pf_hist:
         pf_hist[k].sort(key=lambda x: x[0])
 
     rows = []
-    for created, asset, tf, skey, sname, ppr, cppr, pf, wr, tc, dd, pnl in staged:
+    for created, asset, tf, skey, sname, ppr, xppr, pf, wr, tc, dd, pnl in staged:
         prev = None
         for dt, p in pf_hist[skey]:
             if dt < created:
                 prev = p
             else:
                 break
-        rows.append(Row(created, asset, tf, skey, sname, ppr, cppr, pf, wr, tc, dd, pnl, trend(prev, pf)))
+        rows.append(Row(created, asset, tf, skey, sname, ppr, xppr, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
     cycles = 0
     backtests = sum(1 for r in rows if r.created_at >= SINCE_24H)
@@ -287,7 +287,7 @@ def render_top(rows: list[Row], asset: str) -> list[str]:
         title = "🔵 TOP 5 ETH (by PPR)"
     else:
         title = "🟣 TOP 5 SOL (by PPR)"
-    out = [title, "# △ TF Strategy PPR CPR PF WR% TC DD%", "──────────────────────────────────────────"]
+    out = [title, "# △ TF Strategy PPR XPR PF WR% TC DD%", "──────────────────────────────────────────"]
 
     pool = [r for r in rows if r.asset == asset]
     # Dedup by displayed strategy alias: keep best PPR once.
@@ -301,8 +301,8 @@ def render_top(rows: list[Row], asset: str) -> list[str]:
 
     for i, r in enumerate(ranked, 1):
         # compact mobile row (target <= ~42 chars)
-        cppr_txt = "-" if r.cppr is None else f"{r.cppr:.1f}"
-        out.append(f"{i} {r.delta} {r.tf} {r.strategy_name} {r.ppr:.1f} {cppr_txt} {r.pf:.2f} {fmt(r.wr)} {r.tc} {fmt(r.dd)}")
+        xppr_txt = "-" if r.xppr is None else f"{r.xppr:.1f}"
+        out.append(f"{i} {r.delta} {r.tf} {r.strategy_name} {r.ppr:.1f} {xppr_txt} {r.pf:.2f} {fmt(r.wr)} {r.tc} {fmt(r.dd)}")
 
     if not ranked:
         out.append("- no backtested rows")

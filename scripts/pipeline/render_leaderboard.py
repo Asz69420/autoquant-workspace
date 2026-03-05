@@ -97,7 +97,7 @@ def render_leaderboard(rows: list[dict]) -> tuple[str, dict]:
             any_tf = True
 
             lines.append(_fit(f'{asset} {tf}'))
-            lines.append(_fit('TF  PPR  CPR   PF  WR  TC   DD'))
+            lines.append(_fit('TF  PPR  XPR   PF  WR  TC   DD'))
             lines.append(DIVIDER)
 
             for x in deduped:
@@ -105,13 +105,13 @@ def render_leaderboard(rows: list[dict]) -> tuple[str, dict]:
                     break
                 tfv = str(x['tf'])[:2].ljust(2)
                 ppr = f"{float(x.get('ppr', 0.0)):.1f}"[:4].rjust(4)
-                cppr_v = float(x.get('cppr', 0.0) or 0.0)
-                cppr = ('--' if cppr_v <= 0 else f"{cppr_v:.1f}")[:4].rjust(4)
+                xppr_v = float(x.get('xppr', 0.0) or 0.0)
+                xppr = ('--' if xppr_v <= 0 else f"{xppr_v:.1f}")[:4].rjust(4)
                 pf = f"{x['pf']:.2f}"[:4].rjust(4)
                 wr = ('n/a' if x['wr'] is None else f"{x['wr']:.0f}%")[:3].rjust(3)
                 tc = str(x['tc'])[:3].rjust(3)
                 dd = _fmt_dd(x.get('dd'))[:5].rjust(5)
-                lines.append(_fit(f'{tfv} {ppr} {cppr} {pf} {wr} {tc} {dd}'))
+                lines.append(_fit(f'{tfv} {ppr} {xppr} {pf} {wr} {tc} {dd}'))
                 emitted += 1
 
             lines.append('')
@@ -184,7 +184,7 @@ def main() -> int:
             'pnl': (net / 10000.0) * 100.0,
             'pf': pf,
             'ppr': ppr,
-            'cppr': float(r.get('cppr_score', 0.0) or 0.0),
+            'xppr': float(r.get('xppr_score', 0.0) or 0.0),
             'wr': wr,
             'tc': tc,
             'dd': dd,

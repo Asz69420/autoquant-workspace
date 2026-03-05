@@ -30,7 +30,7 @@ MAX_WIDTH = 56
 NAME_WIDTH = 9
 
 # Locked alignment format (header uses the exact same format string)
-FMT = "{name:<9} {ppr:>5} {cppr:>5} {pf:>6} {wr:>6} {tc:>5} {dd:>6} {pnl:>7}"
+FMT = "{name:<9} {ppr:>5} {xppr:>5} {pf:>6} {wr:>6} {tc:>5} {dd:>6} {pnl:>7}"
 MIN_TRADES = 50
 
 ALIAS = {
@@ -60,7 +60,7 @@ class Row:
     name: str
     key: str
     ppr: float
-    cppr: float | None
+    xppr: float | None
     pf: float
     wr: float | None
     tc: int
@@ -240,22 +240,22 @@ def collect_rows():
             continue
 
         ppr = fnum(r.get('ppr_score')) or 0.0
-        cppr = fnum(r.get('cppr_score'))
-        staged.append((created, asset, tf, name, key, ppr, cppr, pf, wr, tc, dd, pnl))
+        xppr = fnum(r.get('xppr_score'))
+        staged.append((created, asset, tf, name, key, ppr, xppr, pf, wr, tc, dd, pnl))
         hist[(asset, tf, key)].append((created, pf))
 
     for k in hist:
         hist[k].sort(key=lambda x: x[0])
 
     rows: list[Row] = []
-    for created, asset, tf, name, key, ppr, cppr, pf, wr, tc, dd, pnl in staged:
+    for created, asset, tf, name, key, ppr, xppr, pf, wr, tc, dd, pnl in staged:
         prev = None
         for hdt, hpf in hist[(asset, tf, key)]:
             if hdt < created:
                 prev = hpf
             else:
                 break
-        rows.append(Row(created, asset, tf, name, key, ppr, cppr, pf, wr, tc, dd, pnl, trend(prev, pf)))
+        rows.append(Row(created, asset, tf, name, key, ppr, xppr, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
     # Dedup 1: each strategy once (best) per asset/timeframe.
     best = {}
@@ -294,7 +294,7 @@ def render_tables(rows: list[Row]) -> list[str]:
     lines: list[str] = []
     assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
 
-    header = FMT.format(name="Strat", ppr="PPR", cppr="CPR", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
+    header = FMT.format(name="Strat", ppr="PPR", xppr="XPR", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
     width = min(MAX_WIDTH, len(header))
 
     for asset in assets:
@@ -315,7 +315,7 @@ def render_tables(rows: list[Row]) -> list[str]:
                 row = FMT.format(
                     name=r.name[:NAME_WIDTH],
                     ppr=format_v(r.ppr, d=1),
-                    cppr=(format_v(r.cppr, d=1) if r.cppr is not None else '-'),
+                    xppr=(format_v(r.xppr, d=1) if r.xppr is not None else '-'),
                     pf=format_v(r.pf, d=2),
                     wr=format_pct(r.wr, d=0),
                     tc=str(int(r.tc)),
@@ -531,8 +531,8 @@ def main():
     meta = collect_activity(rows)
 
     # Required alignment printout before write.
-    header = FMT.format(arrow="△", name="Strategy", ppr="PPR", cppr="CPR", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
-    sample = FMT.format(arrow="↑", name="ADX_Suprtr", ppr="3.2", cppr="-", pf="1.29", wr="34", tc="172", dd="12", pnl="+1")
+    header = FMT.format(arrow="△", name="Strategy", ppr="PPR", xppr="XPR", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
+    sample = FMT.format(arrow="↑", name="ADX_Suprtr", ppr="3.2", xppr="-", pf="1.29", wr="34", tc="172", dd="12", pnl="+1")
     print(header)
     print(sample)
 
