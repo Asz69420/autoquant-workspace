@@ -1,7 +1,7 @@
 ---
 id: fact-zero-trade-signal-bottleneck
 type: fact
-title: All non-Claude spec sources produce zero trades due to AND-chain misalignment
+title: All non-Claude spec sources produce zero trades due to AND-chain misalignment — 1826/day at industrial scale
 status: active
 confidence: 0.99
 evidence_paths:
@@ -10,27 +10,33 @@ evidence_paths:
   - artifacts/batches/20260304/
   - artifacts/promotions/20260304/
   - artifacts/outcomes/20260304/outcome_notes_autopilot-1772624702.json
+  - artifacts/outcomes/20260305/
 tags:
   - pipeline
   - signal
   - zero-trades
   - bottleneck
   - promotions
+  - industrial-scale
 supporting_ids:
   - failure-pipeline-structural-death
   - fact-directive-loop-circular
-validated_at: "2026-03-05T12:00:00Z"
-updated_at: "2026-03-05T12:00:00Z"
+  - fact-ppr-validates-claude-monopoly
+validated_at: "2026-03-05T23:30:00Z"
+updated_at: "2026-03-05T23:30:00Z"
 ---
 
-102+ consecutive backtests have produced exactly 0 trades across ALL non-Claude spec sources: pipeline, promotions, refinement, and recombine. Entry conditions with 3+ AND-chained indicators never simultaneously fire within the same bar. The directive remediation loop amplifies the problem — every failure generates variant specs that fail identically.
+1826 backtests on 2026-03-05 alone — ALL zero trades. Pipeline has scaled to industrial-level waste, an order of magnitude beyond U29's "130+" estimate. Entry conditions with 3+ AND-chained indicators never simultaneously fire within the same bar.
 
-- 102+ consecutive backtests: 0 trades (U21: 10, U22: 24, U23: 17, U24-U25: 15+, U26: +36 on 2026-03-05)
-- Promotion pipeline: 55 promotions, ALL 0-trade specs
-- Recombine system: also generating 0-trade specs (BTC 1h despite EXCLUDE_ASSET)
-- Directive loop: every 0-trade outcome generates same 5 remediation directives → variant specs → 0 trades again
-- Batch dedup rate: 95%+ (150+ batch files, near-total dedup)
-- All 4 latest spec families (5063f4f1f99b, f5bcc194e9c3, 14c5a03a3c34, dcbc1d66558b) share identical EMA+RSI+ATR+confidence_threshold architecture
+- U30: 1826 backtests on 2026-03-05 (3652 files), ALL 0-trade — 10x escalation from U29 estimate of 130+
+- U30: 2028 feasibility reports, 134 promotion runs, 96 bundles, 140 experiments — ALL waste
+- U30: 5 new REVIEW_REQUIRED promotions from dead pipeline await rejection
+- U29: 30 outcome notes ALL 0-trade REJECTED with identical remediation directives
+- U28: spec-5df8f61c0c71 tested 10x, 0 trades every time
+- Promotion pipeline: 55+ promotions from 2026-03-04, ALL 0-trade specs
+- Recombine system: generating BTC 1h specs despite EXCLUDE_ASSET
+- Directive loop: every 0-trade outcome generates same 5 remediation directives → variant specs → 0 trades
+- Directive specs reference confidence_threshold (not a real dataframe column) — formally invalid
 - Root cause: combinatorial condition assembly (3-5 AND conditions) without co-occurrence analysis
 - Counter-evidence: Claude specs use max 2 conditions and generate 42-179 trades
-- Structural insight: specs with <=2 entry conditions produce trades; specs with 3+ do not
+- PPR scoring independently confirms: pipeline specs score near-zero, only Claude specs score >3.0 (PROMOTE)

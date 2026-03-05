@@ -1,11 +1,12 @@
 ---
 id: fact-claude-specs-sole-progress
 type: fact
-title: Claude-specified strategies are the only source of ACCEPT-tier results — 9 specs blocked 6 cycles, ~12 ACCEPTs delayed
+title: Claude-specified strategies are the only source of ACCEPT-tier results — 9 specs blocked 7 cycles, ~14 ACCEPTs delayed, PPR validated
 status: active
-confidence: 0.98
+confidence: 0.99
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
+  - artifacts/library/PROMOTED_INDEX.json
   - artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-a7f3b1c2.strategy_spec.json
   - artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-c9b0e2f7.strategy_spec.json
   - artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-e5d8f4a9.strategy_spec.json
@@ -21,22 +22,26 @@ tags:
   - accept-rate
   - spec-portfolio
   - blocking
+  - ppr-validated
 supporting_ids:
   - failure-pipeline-structural-death
   - fact-zero-trade-signal-bottleneck
   - fact-research-pipeline-homogeneous
-validated_at: "2026-03-05T23:00:00Z"
-updated_at: "2026-03-05T23:00:00Z"
+  - fact-ppr-validates-claude-monopoly
+validated_at: "2026-03-05T23:30:00Z"
+updated_at: "2026-03-05T23:30:00Z"
 ---
 
 All 10 unique ACCEPT-tier strategies were designed by Claude advisory cycles using the spec_rules template. The ACCEPT rate for Claude specs is ~22% (10/~45). The automated pipeline produced exactly 1 ACCEPT ever (template_div PF=1.419, which may have been partially Claude-influenced).
 
 - Claude spec ACCEPT rate: ~22% (10 of ~45 backtests)
-- Pipeline ACCEPT rate: ~0.1% (1 of 800+ outcomes)
+- Pipeline ACCEPT rate: ~0% (0 of 1826+ backtests on 2026-03-05 alone)
+- U30: PPR scoring independently validates — PROMOTED_INDEX contains 10 entries, ALL Claude specs. PPR scores 3.1-4.5 vs pipeline near-zero. Third independent confirmation source.
+- U30: Confidence raised 0.98→0.99 on PPR validation + 7th blocked cycle
 - Key differentiator: Claude specs use thesis-driven design with specific regime hypotheses and indicator selection
 - Pipeline specs use combinatorial mutations without strategic intent
-- Research velocity is now bounded by Claude advisory cycle frequency, not compute
-- U27: Claude spec portfolio is largest ever — 9 specs covering 6 mechanism families:
+- Research velocity bounded by Claude advisory cycle frequency, not compute
+- Claude spec portfolio: 9 specs covering 6 mechanism families:
   - Vortex transition (claude-a7f3b1c2 ALMA variant, claude-f3a8d5b1 MACD variant)
   - CCI confirmation (claude-d4e1f8a3 Supertrend CCI 4h port, claude-e5d8f4a9 CCI KAMA)
   - T3 smoothing (claude-c9b0e2f7 T3 EMA200 gate)
@@ -44,7 +49,4 @@ All 10 unique ACCEPT-tier strategies were designed by Claude advisory cycles usi
   - KAMA adaptive (claude-kmrsi01a KAMA RSI isolation)
   - Supertrend variants (claude-stmacd01 Supertrend MACD)
 - 27+ variants ready to run, ALL following brain rules (2 conditions, 8:1 R:R, ETH 4h)
-- CRITICAL U29: 9 specs blocked 6 consecutive cycles (U24→U29). Longest blockage in project history.
-- Blocking cost estimate: at 22% ACCEPT rate, ~2 new ACCEPTs prevented per cycle (~12 total delayed across 6 cycles)
-- Confidence 0.98: 6 cycles of blocking with accelerating pipeline generation is overwhelming evidence
-- U29: Research card pipeline also collapsed — 10/10 latest cards are identical recombine clones, contributing zero novel ideas
+- 9 specs blocked 7 consecutive cycles (U24→U30). ~14 cumulative ACCEPTs delayed at 22% rate

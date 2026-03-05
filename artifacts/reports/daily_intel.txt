@@ -1,50 +1,30 @@
 📊 DAILY INTEL — 2026-03-05 5:30 AEST
 
-🟠 BTC
-Strat          PF     WR%     TC     DD%     P&L%
-○── 4h ──────────────────────────────────────────
-Templa_Di    1.26     31%     61     83%      +3%
-RSI_Shall    1.04     24%    180    172%     +61%
-EMA_RSI      1.00     21%    198   1048%      +4%
-
 🔵 ETH
-Strat          PF     WR%     TC     DD%     P&L%
-○── 4h ──────────────────────────────────────────
-Ema200_Vo    1.97     17%     52     30%    +139%
-Supert_CC    1.54     37%     81     50%    +154%
-Templa_Di    1.29     24%     92     84%     +19%
-○── 1h ──────────────────────────────────────────
-Supert_CC    1.48     24%     63     36%     +63%
-Templa_Di    1.42     19%    140     54%     +16%
-EMA_RSI      1.33     19%    162     55%     +16%
-
-🟣 SOL
-Strat          PF     WR%     TC     DD%     P&L%
-○── 4h ──────────────────────────────────────────
-Vortex_Tr    1.20     19%     94     23%     +18%
-Ema200_Vo    1.18     15%    106     55%     +54%
-○── 1h ──────────────────────────────────────────
-Ichi_Kama    1.09     27%    241     70%     +31%
+Strat       PPR   XPR     PF    WR%    TC    DD%    P&L%
+○── 4h ─────────────────────────────────────────────────
+Suprtrnd_   4.5     -   1.92    24%    85    24%    +44%
+○── 1h ─────────────────────────────────────────────────
+MACD_Tigh   3.9     -   1.71    20%   161    21%    +32%
 
 ⚡ 24H ACTIVITY
-Cycles:123 Backtests:6 Specs:6 Errors:132
+Cycles:196 Backtests:0 Specs:0 Errors:90
 
 🎯 MILESTONES
-• PF>1 firsts: Supert_CC, Ema200_Vo
-• New records: Ema200_Vo 1.97, Supert_CC 1.54
+• New records: Suprtrnd_ 1.92, MACD_Tigh 1.71
 • Near-promotion
 
 ⚠️ ATTENTION
-• FAIL errors:132/24h
-• Top:LAB_SUMMARY x43
+• FAIL errors:90/24h
+• Top:LAB_SUMMARY x36
 
 ⚡ ERRORS (24h)
  No errors in last 24h
  🔥 Balrog: all clear
 
 🧙 QUANDALF SUGGESTS
- Kill the pipeline.** Not pause — kill. 102+ zero-trade across 2 days is conclusive. Reallocate ALL backtest capacity to Claude specs.
- Run the 3 Claude specs** (ALMA Vortex, T3 EMA200, CCI KAMA) immediately. They are the entire research frontier, blocked 3 cycles.
- Add TRIX_14, TREX, and TASC DM to the dataframe.** Next transition-detection candidates. Without them the most promising research direction is stuck.
- Define forward-test graduation criteria.** 7 cycles overdue. Proposed: 30 days + PF > 1.2 + DD < 15% = graduate to small live allocation.
- Write Supertrend CCI v4 spec for ETH 4h** — highest-probability next ACCEPT from 1h near-miss PF=1.480.
+ EMERGENCY: Kill the entire autonomous pipeline.** 1826 backtests/day at 0% success is not "broken" — it's industrial-scale compute burn. This is 10x worse than documented in U29. Every hour the pipeline runs wastes resources that should run Claude specs.
+ Run all 9 Claude specs immediately.** 7 cycles delayed. PPR independently confirms only Claude specs merit PROMOTE status.
+ Reject the 5 pending REVIEW_REQUIRED promotions.** They come from the dead pipeline. Don't waste backtest capacity.
+ Run kama_vortex_divergence on ETH 4h.** Zero spec effort. Combines two proven families.
+ Add pipeline volume alerting.** The pipeline scaled 10x without triggering any alert. Add a hard cap (e.g., max 50 backtests/day from automated sources).

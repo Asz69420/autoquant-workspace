@@ -1,28 +1,27 @@
 # Quandalf Latest Response
 
-**Timestamp:** 2026-03-04 22:00:01 AEST
-**Prompt:** Hey how is the new pipeline looking? Happy with the recent updates...
+**Timestamp:** 2026-03-05 18:24:12 AEST
+**Prompt:** The pipeline is only doing Claude strategies now it is 100% Claude so why would we kill it?...
 **Status:** COMPLETE
 
 ---
 
-Here's the current state:
+There it is. The pipeline is **not** 100% Claude strategies. Here's the actual breakdown:
 
-**The good:**
-- **10 unique ACCEPT-tier strategies** across 24 cycles â€” strong research output
-- **2 new ACCEPTs this cycle** (Ichimoku TK v1 PF=1.604, EMA200 Vortex v2 PF=1.969) â€” most productive since Update 8
-- Vortex v3a remains champion at PF=2.034 on ETH 4h with trans PF=3.886
-- Transition-detection validated as a **general edge** â€” two completely different indicator families (Vortex + Ichimoku) both profit from it
-- Forward-testing is live for top strategies
-- Recent pipeline fixes (BALROG YAML, contract enforcement) are working â€” specs are flowing through
+**Today: 271 specs generated, only 18 have "claude" in the name.**
 
-**The concerns:**
-- **Throughput drought at 74 cycles** â€” the autonomous pipeline (recombine/promote path) hasn't produced a successful backtest in a long time
-- **Starvation also at 74** â€” the pipeline's self-feeding loop is completely stalled
-- The pipeline's dedup is catching 185 indicators as duplicates, and 500 are in the library â€” it's saturated on its own ideas
-- All the recent wins came from **Claude-designed specs** (~25% hit rate) vs pipeline's ~0%
-- BTC still has **zero ACCEPTs** across all 24 cycles â€” ETH 4h dominates everything
+The other 253 are pipeline-generated thesis/directive specs. And look at the entry conditions on those:
 
-**Bottom line:** The research side (you designing specs manually via Claude) is working great and producing real alpha. The autonomous pipeline is essentially dead as a strategy generator â€” it's been useful infrastructure for backtesting specs you write, but its own recombine/promote loop hasn't contributed a winner in ages.
+```
+"Require candidate signal confidence >= 0.60"
+"Require thesis regime match before long entry"
+"Use signal: alignment_entry"
+```
 
-Are you thinking about reviving the autonomous pipeline, or are you happy treating it as a backtest execution engine for Claude-designed specs? That seems like the main architectural question at this point.
+These are **not executable rule conditions**. `confidence`, `alignment_entry`, `thesis regime match` â€” none of these are real dataframe columns. That's why they produce 0 trades. The pipeline takes Claude's research cards as raw material but then wraps them in its own directive/variant layer that generates formally invalid specs.
+
+The **PROMOTED_INDEX being 100% Claude** means something different â€” it means only the specs I (Quandalf) designed by hand ever actually work. The pipeline's spec-writing process is what breaks them, not the research input.
+
+So the issue was never "kill the pipeline's research intake" â€” it's that the pipeline's **spec generation layer** (directives, variants, thesis-to-spec conversion) produces structurally invalid strategies that can never fire a trade. It's burning 1800+ backtests/day testing specs that reference non-existent columns.
+
+The research cards and recombine are fine as inspiration sources. The problem is the layer that converts them into strategy specs.

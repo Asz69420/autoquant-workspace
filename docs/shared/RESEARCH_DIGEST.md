@@ -4,157 +4,12 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-04 20:01 UTC
+**Last updated:** 2026-03-05 08:01 UTC
 **Entries:** 25
 
 ---
 
-## 1. Bitcoin: Bull Market Support Band Indicator Any Good? Take care!
-*MichaelIonita | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=rAQUKGtNMD4
-
-**Summary:** That's right guys, you want to know if the bull market support band is actually a good indicator. I turned it into a trading strategy using AI so we can all see the performance. And the reason I'm doing this video now is because more and more influencers are talking about this indicator including Benjamin Cohen. He's using this indicator in a lot of his videos lately. The problem is though that this indicator is in this video.
-**Trading Rules:**
-- That's right guys, you want to know if the bull market support band is actually a good indicator.
-- And in my opinion Benjamin Cohen, if you're watching this, love you man, you're amazing.
-- You should be using these other better strategies to decide if Bitcoin's price action is healthy or not.
-- Before we start make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.
-- I'm just analyzing the historic performance of this indicator before we can decide if this is a good result or not.
-- Also by the way this is education for you if you convert other indicators into strategies.
-- For example in this particular case it can go long when the lines cross but it can also go long when the close price closes above one of the lines or something else entirely.
-- So you need to know which version I just showed you and also you need to know if the other versions I just mentioned are better.
-**Strategy Components:**
-- [filter] And so the next idea version three is to go long above the red line to avoid trades like these for example and as well avoid this trade over here and also this trade over here.
-- [filter] As you can see it's now avoiding this trade which is exactly what we wanted.
-- [filter] It avoids this one over here and that is also the reason why the drawdown is lower.
-- [risk] Risk management is the most important thing in trading especially in crypto.
-- [risk] If your crypto portfolio is $25,000 or more then you need more than just trading strategies consider the auto trading masterclass where I teach you my entire process including my trading strategies of
-- [risk] Do your homework by the way check the reviews watch the video here on the website and you will understand that this is a limited access program for thousand people only we still have some seeds becaus
-**Entry/Exit Conditions:**
-- Risk management is the most important thing in trading especially in crypto.
-- If your crypto portfolio is $25,000 or more then you need more than just trading strategies consider the auto trading masterclass where I teach you my entire process including my trading strategies of
-- Do your homework by the way check the reviews watch the video here on the website and you will understand that this is a limited access program for thousand people only we still have some seeds becaus
-**Indicators:** EMA, SMA
-**Context:** Assets: GOLD
-
----
-
-## 2. NEW ChatGPT Atlas CREATES Trading Strategy by ITSELF (Agent Mode) (TradingView + PineScript)
-*MichaelIonita | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=D4_rO7qK2rY
-
-**Summary:** That's right guys, you want to know if the new Chachi PT Atlas browser that OpenAI just released is any good for creating and improving trading strategies. That's exactly what I will show you in this video and oh my god, it's an absolute game changer. The AI is built into this browser. Look at this guys, it clicks around my trading view and improves the strategy, changes the code, checks the KPIs in the back tester until it reached a good result. The crazy thing is that it's very easy to use and look at these numbers that it produced from a simple prompt to create a smart hodl strategy.
-**Trading Rules:**
-- That's right guys, you want to know if the new Chachi PT Atlas browser that OpenAI just released is any good for creating and improving trading strategies.
-- Before we start, make sure to like this video if it adds value to you because otherwise the YouTube algorithm will never know.
-- The magic happens when you click on ask chachipt which opens up this panel on the right side which I will show you exactly how to use to automate trading trading strategies.
-- Then I said I wanted to do a buy and hold strategy that's called smart hodl that takes advantage of the cycles and I said that it should check the strategy tester to check the creation to see the KPIs
-- This is cool if you want to analyze a strategy on multiple assets.
-- And if you need further help, then join the telegram group with 16,000 people.
-- If you want a ready made system that you can use out of the box and has been working for many years, then consider the auto trading masterclass.
-- You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market.
-**Strategy Components:**
-- [risk] Also remember, this is not financial advice, crypto is risky, you can lose all of your money and that is why I run this educational channel so that you can be ahead of the herd.
-- [risk] You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market.
-**Entry/Exit Conditions:**
-- You will also learn how to build a risk adjusted portfolio, which is an absolute game changer for anyone in this market.
-
----
-
-## 3. Bitcoin: A Bear Market State of Mind
-*IntoTheCryptoverse | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=T-Nf7ZfarOs
-
-**Summary:** Hey everyone and thanks for jumping back into the Cryptoverse. Today, we're going to talk about Bitcoin, a bear market state of mind. Let's go ahead and jump in. So yesterday, we put out a video talking about what Bitcoin normally does in the first week of March. And I had some people reach out and ask, why does it have to yield a lower high?
-**Trading Rules:**
-- It can be difficult, of course, to pivot to being in a bear market state of mind even when you're just used to watching Bitcoin go up three years in a row.
-- But if you're going to pivot to that bear market state of mind, the best time to do so usually is in the fourth quarter of the post-having year.
-- If we go look at all the days for each year, we could sort of put those in like a table like we did yesterday.
-- If it is, that's the more most pathetic bear market move in March we've seen.
-- And one of the reasons is when you look at the prior bear market rallies in March that have occurred, they got us back up to the bear market resistance band, right?
-- Maybe like 85K when we look at like weekly candles.
-- And what I would say is, you have to at least look at this pattern right here as well, where after Bitcoin broke down from the highs, after I broke down from the highs last cycle, if you exclude seaso
-- Sometimes that could be when the next major low for Bitcoin forms and if you look at the year to date ROI, let me actually reload this because it probably hasn't updated with today's data.
-**Strategy Components:**
-- [trend] Now we're a little bit below it, but ultimately, it's hard to ignore this trend.
-- [risk] Remember, Bitcoin sells off first and it eventually works its way down the risk curve and gets to sort of higher risk assets.
-- [risk] And Bitcoin is, you know, risky.
-- [risk] It's further up the risk curve than the S&P, like the S&P 500, like an index fund that tracks the U.S.
-**Entry/Exit Conditions:**
-- Remember, Bitcoin sells off first and it eventually works its way down the risk curve and gets to sort of higher risk assets.
-- It's further up the risk curve than the S&P, like the S&P 500, like an index fund that tracks the U.S.
-**Context:** Timeframes: weekly
-
----
-
-## 4. Business Cycles Ends With Recessions
-*IntoTheCryptoverse | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=FiztJuyl7p4
-
-**Summary:** Hey, everyone, and thanks for jumping back into the macroverse today, we're going to talk about how business cycles end with recessions. Let's go ahead and jump in. Now, a couple of days ago, I released a video called Visualizing the Business Cycle. And in that video, we showed some interesting charts, like this one, which helps us to visualize where we are within the business cycle. Now, we're going to actually make an improvement to that chart in this video.
-**Trading Rules:**
-- If you did not watch the Visualizing the Business Cycle video, make sure you check it out, it's over 30 minutes long, and I go into a lot of the details about how you can better visualize where we are
-- Now some of the evidence for that is looking at the S&P 500 when evaluated against a lot of the macro metrics that influence the Federal Reserve and also interest rates, which the Federal Reserve sets
-- Now when you do that, you get a chart that looks like this.
-- If I just go to my own scripts, I believe I have an ITC recession indicator.
-- So just because you have a top in this metric does not mean that that corresponds to when the stock market ultimately tops out.
-- For instance, if you were to overlay the S&P 500 onto this chart, you'll see what I'm talking about.
-- We even said back then that that was the window of weakness was February to early to mid April, if you guys remember, and that's essentially where that drawdown occurred at.
-- So if you were to look at M2, the argument is that, hey, this can also affect the business cycle, the money supply.
-**Strategy Components:**
-- [risk] And historically, on average, it is a mistake to wait for a recession to be announced to then decide you're going to become bearish on risk assets.
-- [risk] And so, for instance, over here on this channel, we have communicated for the last several months that the higher risk assets sell off first, and that includes crypto, Bitcoin, Ethereum, and the altco
-- [risk] So, the riskiest stuff, the altcoins, they bleed first.
-**Entry/Exit Conditions:**
-- And historically, on average, it is a mistake to wait for a recession to be announced to then decide you're going to become bearish on risk assets.
-- And so, for instance, over here on this channel, we have communicated for the last several months that the higher risk assets sell off first, and that includes crypto, Bitcoin, Ethereum, and the altco
-- After Bitcoin has gone through this process for a while, then we work our way down the risk curve, and then the stock market starts to bleed out.
-- Now, if the stock market gets that typical drawdown, which it frequently, but not always, but frequently gets in the midterm year, the risk is that it leads to the negative feedback loop.
-- I mean, I still own risk assets, not like I own anything, but I've been able to hedge out of some of the normal ones and into some of the ones that seem a little bit safer, especially in a late busine
-- And recently, we published a macro risk memo on February 15th.
-**Context:** Assets: SPX
-
----
-
-## 5. Bitcoin: Dubious Speculation
-*IntoTheCryptoverse | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=6hszLDlcrxg
-
-**Summary:** Let's go through some dubious speculation shall we though Bitcoin has sold off into early February it is now looking like it's selling off into late February. This is actually a common thing we've seen before now we don't always get the second sell off in the late February but it does tend to happen but the thing that has historically happened in midterm years whether there's a sell off in the late February or not is oftentimes there's a little bit of a surge going into the first week of March now we're not quite there yet but we will be there within a week or so. So let's go back and look at a lot of the times where Bitcoin's been weak in February in the midterm year so if you look at 2014 you'll see that Bitcoin was weak into early February and then it had a slow bleed down into late February there is a green candle the first week of March and then another sell off into April. So weak into February a little bit of strength in early March and then another sell off now what you'll notice is that the first week of March where it marked a local top now look at 2018 now in 2018 February also marked a local low we did not have as much weakness in late February but you will notice in fact that the first week of March marked a local top and then we came back down into April now continuing on into 2022 you'll notice something similar not exactly the same but a little some simi
-**Trading Rules:**
-- So let's go back and look at a lot of the times where Bitcoin's been weak in February in the midterm year so if you look at 2014 you'll see that Bitcoin was weak into early February and then it had a 
-
----
-
-## 6. SPX & Gold Flash Warning Signs | Bitcoin Still Holding + My Risky Trade
-*ECKrown | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=qk2h-MS74YQ
-
-**Summary:** S&P 500 and gold leading the major correction or perhaps beginning the major correction that I think many people have been waiting for and Bitcoin hanging in there in which I've actually taken my next major trade. It might go absolutely terribly for me. I'll discuss exactly what that looks like a little bit later, how I'll be managing that. Essentially what I'm looking for on Bitcoin as Bitcoin actually is starting to really look like it wants to put in a base here. But before that, I should let you know that we actually do have the TA one-on-one, the brand new, I should say, TA one-on-one playlist completely live, completely free, and it is available to you in the link in the description below.
-**Trading Rules:**
-- It comes with quizzes, comes with even a certificate of completion if you get there, to be fair.
-- And when it comes to options, I'm very, very happy to be as patient as possible, because you almost always do get your opportunity at a perfect setup, or at least a beautiful setup.
-- And if Bitcoin comes back down below last Friday's low, which is a beautiful invalidation just under $63,000, I would be happy to cover that position by shorting Bitcoin equal to the amount of short p
-- Well, one, if Bitcoin comes back down below last Friday's low, that would be my confirmation that Bitcoin is going to be going probably much lower, you know, probably with a big five handle on there.
-- So it'll actually be, you know, it'll actually be a little bit more than this if that even happened.
-- If you've been watching this channel out for a lot for, for about three, four months since it started showing these options trades again, but it just offer a super easy invalidation.
-- Look, if Bitcoin takes out Friday's low, all right, I'm bearish and I'm looking for this thing to come down, you know, pretty recently from there and I'm having to take a short position, which covers 
-- If you were to blindly play this from full moon to new moon, it actually would be positive over time.
-**Strategy Components:**
-- [confirmation] But basically, this trade, again, requires, as it stands right now, requires me or requires Bitcoin to remain above $61,000 minimum by end of March in order for that to pull in the full maximum profit
-- [confirmation] So I would be looking for that happen, assuming that this is confirmed.
-- [confirmation] I think that I very likely will be confirmed.
-- [momentum] And in this case, if we see the weekly stochastic also to cross the upside, which will happen at the end of this week, if Bitcoin closes, if it finishes this week above sixty three thousand dollars, w
-**Entry/Exit Conditions:**
-- Look, if Bitcoin takes out Friday's low, all right, I'm bearish and I'm looking for this thing to come down, you know, pretty recently from there and I'm having to take a short position, which covers 
-- And if that does play out, the obvious target or the easy target, as I like to say is that yellow 21 EMA, which is at 47 20 or so.
-- So, so, you know, if these things get confirmed, it's going to lead into a major correction very likely and silver is still, in my opinion, the canary in the coal mine.
-**Indicators:** EMA, Stochastic
-**Context:** Timeframes: daily, weekly | Assets: GOLD
-
----
-
-## 7. RSI Extension + Divergence
+## 1. RSI Extension + Divergence
 *TheRealDrip2Rip | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/4KCjePxd-RSI-Extension-Divergence/
 
@@ -167,7 +22,7 @@ Source: https://www.tradingview.com/script/4KCjePxd-RSI-Extension-Divergence/
 
 ---
 
-## 8. Bitcoin’s Major Long-Term Signals Are Aligning (March Strategy Update)
+## 2. Bitcoin’s Major Long-Term Signals Are Aligning (March Strategy Update)
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=G_D_weW9744
 
@@ -193,7 +48,7 @@ Source: https://www.youtube.com/watch?v=G_D_weW9744
 
 ---
 
-## 9. 4 Major ETFs I’m Preparing to Buy — Plus a Quick Bitcoin Update
+## 3. 4 Major ETFs I’m Preparing to Buy — Plus a Quick Bitcoin Update
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=afA-470E0vY
 
@@ -220,7 +75,7 @@ Source: https://www.youtube.com/watch?v=afA-470E0vY
 
 ---
 
-## 10. Bitcoin Consolidation Pattern - Trade This Setup
+## 4. Bitcoin Consolidation Pattern - Trade This Setup
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=DiT_PPgkTm0
 
@@ -250,7 +105,7 @@ Source: https://www.youtube.com/watch?v=DiT_PPgkTm0
 
 ---
 
-## 11. Bitcoin Timing Cycle Repeating? Macro Low Imminent!
+## 5. Bitcoin Timing Cycle Repeating? Macro Low Imminent!
 *ECKrown | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=qGDI2580NS4
 
@@ -262,7 +117,7 @@ Source: https://www.youtube.com/watch?v=qGDI2580NS4
 
 ---
 
-## 12. Ако си начинаещ трейдър – започни с това!
+## 6. Ако си начинаещ трейдър – започни с това!
 *TradeTravelChill | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=xh2X82YVPRc
 
@@ -298,7 +153,7 @@ Source: https://www.youtube.com/watch?v=xh2X82YVPRc
 
 ---
 
-## 13. Хийтмап трейдинг за за напреднали и начинаещи
+## 7. Хийтмап трейдинг за за напреднали и начинаещи
 *TradeTravelChill | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=gKBVFCvLSXM
 
@@ -320,7 +175,7 @@ Source: https://www.youtube.com/watch?v=gKBVFCvLSXM
 
 ---
 
-## 14. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
+## 8. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
@@ -350,7 +205,7 @@ Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
 ---
 
-## 15. I lost $120k trading signals 😭💸
+## 9. I lost $120k trading signals 😭💸
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=rzcdWq_jV0k
 
@@ -363,7 +218,7 @@ Source: https://www.youtube.com/watch?v=rzcdWq_jV0k
 
 ---
 
-## 16. My Community Found a FREE Smart Money TradingView Indicator… One Change Fixed Everything
+## 10. My Community Found a FREE Smart Money TradingView Indicator… One Change Fixed Everything
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
@@ -400,7 +255,7 @@ Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
 ---
 
-## 17. Dumb Money Concepts [theUltimator5]
+## 11. Dumb Money Concepts [theUltimator5]
 *TheUltimator5 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltimator5/
 
@@ -409,7 +264,7 @@ Source: https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltim
 
 ---
 
-## 18. TIKOLE S.P.ADX-DI Trend Indication 9503888883
+## 12. TIKOLE S.P.ADX-DI Trend Indication 9503888883
 *TIKOLE14 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/
 
@@ -424,7 +279,7 @@ Source: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indi
 
 ---
 
-## 19. Aura Trend Momentum [Pineify]
+## 13. Aura Trend Momentum [Pineify]
 *Pineify | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/
 
@@ -437,7 +292,7 @@ Source: https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/
 
 ---
 
-## 20. Candle Genome Scanner [forexobroker]
+## 14. Candle Genome Scanner [forexobroker]
 *forexobroker | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/
 
@@ -448,7 +303,7 @@ Source: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexo
 
 ---
 
-## 21. Gamma Exposure Levels [BackQuant]
+## 15. Gamma Exposure Levels [BackQuant]
 *BackQuant | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/
 
@@ -457,7 +312,7 @@ Source: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQu
 
 ---
 
-## 22. SMC Completo [PFX]
+## 16. SMC Completo [PFX]
 *prodigiofx26 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/zRJwbqRU/
 
@@ -467,7 +322,7 @@ Source: https://www.tradingview.com/script/zRJwbqRU/
 
 ---
 
-## 23. [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum
+## 17. [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum
 *AquaTickTrader | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/
 
@@ -481,7 +336,7 @@ Source: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-A
 
 ---
 
-## 24. Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)
+## 18. Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)
 *seantrading2 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/
 
@@ -497,7 +352,7 @@ Source: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell
 
 ---
 
-## 25. Smoothed Stochastic Momentum Index [Mr. Quant]
+## 19. Smoothed Stochastic Momentum Index [Mr. Quant]
 *Jacob_LuxAlgo | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/
 
@@ -507,5 +362,75 @@ Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum
 - [momentum] From Live stream on March 3rd 2026 The Smoothed Stochastic Momentum Index (SSMI) is a high-precision scalping tool designed to filter out market noise and align fast-paced momentum entries with broade
 - [momentum] Source URL: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/.
 **Indicators:** Stochastic
+
+---
+
+## 20. Bitcoin: We Really Do Live in a Simulation
+*IntoTheCryptoverse | transcript | 2026-03-04*
+Source: https://www.youtube.com/watch?v=i3WIoS9Echo
+
+**Summary:** Hey everyone and thanks for jumping back into the cryptoverse. Today we're going to talk about Bitcoin and how it still really really feels like we live in a simulation. Give the video a thumbs up and check out Into the Cryptoverse Premium at into the cryptoverse.com. What's fascinating about Bitcoin is how repetitive cycle behavior is. And every single time it's like, is this really going to happen again?
+**Trading Rules:**
+- And if if you watch the video a couple days ago, you know what where we were discussing this early March rally.
+- And one of the reasons we've been talking about it is if you just look at the year-to- date ROI of Bitcoin and look at 2026 and you compare that to the average of prior midterm years and you add on on
+- So, if you go into a bare market early on last year, it was tough, you know, sort of bringing you guys the bare market message when many didn't want to hear it.
+- One of the reasons it was so easy to be a bear was because Q4 of the post having year when Bitcoin tops, right?
+- All right, that's always when Bitcoin tops Q4 of every post having year.
+- For instance, if you panic sold Bitcoin on the first wick down in November, you probably felt like a fool if you sold it at 80K.
+- you really felt like you made a mistake when it was trading back at $98,000, but then ultimately the floor dropped out and we went to 60K.
+- But one counterpoint to that in compar if you think that we can't compare it to 2022 because of that.
+**Strategy Components:**
+- [filter] Bitcoin rallied up, got rejected, put in a lower high and came down.
+- [filter] I I I think it's most likely going to get rejected um in March.
+- [trend] a a counter trend rally to a lower high, a low in February, another low in February, rally into the first week of March, capitulate into April.
+- [trend] Like I would say the sort of the best case scenario for a counter trend rally is to go to the bare market resistance band.
+
+---
+
+## 21. Yaduvansi Precision Entry System
+*yaduvansiit | tradingview_catalog | 2026-03-04*
+Source: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-System/
+
+**Summary:** TradingView indicator: Yaduvansi Precision Entry System by yaduvansiit. Yaduvansi-V1 – Advanced Price Action Smart Money Indicator Yaduvansi-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo market structure ko clearly visualize karta hai. Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide karta hai. 🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Yaduvansi-V1 – Advanced Price Action Smart Money Indicator Yaduvansi-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo market structure ko clearly visualize karta hai. 🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Source URL: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-System/.
+**Strategy Components:**
+- [trend] Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide karta hai.
+
+---
+
+## 22. GuarDeer Precision Entry System
+*yaduvansiit | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-System/
+
+**Summary:** TradingView indicator: GuarDeer Precision Entry System by yaduvansiit. GUARDEER-V1 – Advanced Price Action Smart Money Indicator GUARDEER-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo market structure ko clearly visualize karta hai. Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide karta hai. 🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … GUARDEER-V1 – Advanced Price Action Smart Money Indicator GUARDEER-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo market structure ko clearly visualize karta hai. 🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Source URL: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-System/.
+**Strategy Components:**
+- [trend] Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide karta hai.
+
+---
+
+## 23. Future Roll Monitor
+*QuantNomad | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/
+
+**Summary:** TradingView indicator: Future Roll Monitor by QuantNomad. Rolling futures is not just a mechanical action — it is a structural decision. When you move from one contract to the next, you are exposed to changes in price, liquidity, and term structure. The difference between contracts (the “roll”) can quietly add cost, generate yield, or signal shifts in supply and demand dynamics. Future Roll Monitor helps you understand what is happening beneath the surface during contract transitions.
+**Trading Rules:**
+- When you move from one contract to the next, you are exposed to changes in price, liquidity, and term structure.
+
+---
+
+## 24. Smart Pivot Reversals [identityKa]
+*IdentityKa | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/H64WPT4Q/
+
+**Summary:** TradingView indicator: Smart Pivot Reversals [identityKa] by IdentityKa. Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa. The Smart Pivot Reversals is a highly sensitive price action engine designed to map out market structure by identifying key swing highs (TOPS) and swing lows (BOTTOMS) with absolute precision. Unlike traditional delayed oscillators, this script directly analyzes raw candlestick formations to detect precise turning points in the market. 🔥 Key Features: Dynamic Pivot Engine: … Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa.
+**Raw Concepts:** TradingView indicator: Smart Pivot Reversals [identityKa] by IdentityKa. Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa. The Smart Pivot Reversals is a highly sensitive price action engine designed to map out market structure by identifying key swing highs (TOPS) and swing lows (BOTTOMS) with absolute precision. Unlike traditional delayed oscillators, this script directly analyzes raw candlestick formations to detect precise turning points in the market. 🔥 Key Features: Dynamic Pivot Engine: … Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa. The Smart Pivot Reversals is a highly sensitive price action engine designed to map out market structure by identifying key swing highs (...
+
+---
+
+## 25. Weekly Distribution Levels
+*const | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/engdMsy0/
+
+**Summary:** TradingView indicator: Weekly Distribution Levels by const. █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution. It answers the question: &#34;How far has price moved this week compared to what&#39;s normal?&#34; Works on any instrument — futures, stocks, forex, crypto. Everything is computed dynamically from the chart&#39;s own price history. █ HOW IT WORKS At the start of each trading week, the … █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution.
+**Context:** Timeframes: weekly
 
 ---

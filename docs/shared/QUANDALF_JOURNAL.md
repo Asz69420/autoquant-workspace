@@ -585,3 +585,84 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - Define forward-test graduation: 10th cycle requesting.
 
 ---
+
+## Entry 020 — Industrial-Scale Waste: 1826 Backtests/Day at 0% (2026-03-05)
+
+### Results
+- 0 new ACCEPTs. 1826 backtests on 2026-03-05 alone, ALL zero trades — 10x escalation from U29's 130+ estimate
+- Pipeline output today: 2028 feasibility reports, 134 promotions, 96 bundles, 140 experiments — ALL waste
+- PPR scoring system independently validates: PROMOTED_INDEX = 10 entries, ALL Claude specs (PPR 3.1-4.5). Pipeline specs score near-zero
+- 5 new REVIEW_REQUIRED promotions from pipeline await rejection
+- 9 Claude specs blocked 7th consecutive cycle (U24-U30). ~14 cumulative ACCEPTs delayed
+- Brain: 30 to 31 objects (+1 new fact: ppr-validates-claude-monopoly, 3 updated). 10 ACCEPTs unchanged since U24
+
+### Key Insights
+- **Pipeline has gone exponential.** From "100+ specs/day" (U28) to 1826 backtests/day. Generation, feasibility, backtesting, and promotion all running at full speed on formally invalid specs. Every backtest consumes compute that should run Claude specs. The pipeline isn't broken — it's a runaway process with no governor.
+- **PPR provides independent validation.** The new PPR scoring system (0-10 scale, PROMOTE threshold 3.0) was built without brain input. It independently concludes the same thing: only Claude specs merit promotion. Top PPR: Supertrend 8:1 at 4.47, KAMA Stoch v1 at 4.27. Pipeline specs: 0.0. Three independent sources now agree (brain analysis, historical ACCEPT rates, PPR scoring).
+- **5 pending promotions are dead.** All 5 REVIEW_REQUIRED promotions in artifacts/promotions/20260305/ originate from the dead pipeline. All parent specs produce 0 trades. Reject without backtest.
+- **7 cycles of frozen research.** No new trade data, no new regime analysis, no belief evolution since U24. Every market-belief at U24 confidence. The longer the pipeline runs, the further behind research falls.
+
+### What I'm Testing Next
+- P0: Execute all 9 Claude specs (7 cycles overdue, ~14 ACCEPTs delayed, PPR-validated priority)
+- P1: Run kama_vortex_divergence on ETH 4h (built-in, never tested, exhaustion-detection)
+- P2: Supertrend CCI v4 on ETH 4h (1h near-miss PF=1.480, 8th cycle waiting)
+- P3: Add TRIX_14 (7th cycle requesting)
+
+### Suggestions For Asz
+- **EMERGENCY: Kill the pipeline immediately.** 1826 backtests/day at 0% is not "inefficient" — it's a runaway process burning compute exponentially. Halt spec generation, recombine, feasibility, AND backtest execution for all non-Claude sources.
+- **Add pipeline volume alerting.** The 10x escalation went undetected. Add hard cap (e.g., max 50 backtests/day from automated sources) and alert on breach.
+- **Reject the 5 pending promotions.** All from dead pipeline. Don't waste review time.
+- **Define forward-test graduation.** 11th cycle requesting. Proposed: 30 days live + PF > 1.2 + DD < 15%.
+
+---
+
+## Entry 021 — Pipeline Killed: First Claude-Only Results + New ACCEPT (2026-03-05)
+
+### Results
+- **Supertrend CCI v4 4h (ETH): PF=1.290, DD=11.63%, 112 trades — NEW ACCEPT (#11).**
+  - Ranging PF=1.989, Transitional PF=2.777 — excellent in both
+  - Trending PF=0.562 — loses money. NOT all-regime. Ranging/transitional specialist only.
+  - Win rate 26.79%, 24.57% return
+- **EMA200 Vortex v3 tight (ETH 4h): PF=1.365, DD=40.06%, 134 trades — REJECT.**
+  - All regimes profitable (trend 1.292, range 1.453, trans 1.230) but DD=40% is catastrophic
+  - Win rate 9.7% — 0.75 ATR stop too tight, generating excessive stop-outs
+  - WORSE than v2 (PF=1.969, DD=30%) in every meaningful dimension
+- Pipeline officially killed. Claude-only execution confirmed. First clean runway since U24.
+- Only 2 of 14 ordered specs ran. Remaining 12 Claude specs still queued.
+- Total unique ACCEPTs: **11** (was 10 since U24)
+
+### Key Insights
+
+1. **4h-dominance pattern CONFIRMED but with a caveat.** Supertrend CCI 1h→4h: DD fixed (36.43%→11.63%) exactly as predicted. But trending PF degraded (1.638→0.562). The 4h timeframe smooths out noise AND trend signals. On 1h, CCI captures short trends; on 4h, those trends resolve too fast for 4h bar granularity. The prediction was half-right.
+
+2. **EMA200 filter changes stop dynamics.** Pure Vortex with 0.75 ATR stop = PF=2.034 (champion). EMA200 Vortex with 0.75 ATR stop = PF=1.365 (degraded). The EMA200 filter concentrates entries near the EMA200 crossover zone where price volatility is HIGHEST (by definition — it's a transition point). Tight stop + high-volatility entry zone = whipsaw. To fix EMA200 Vortex DD, don't tighten the stop — try reducing position size or adding a volatility gate.
+
+3. **CCI-as-confirmation is a new paradigm.** All 10 prior ACCEPTs use either transition-detection (Vortex, Ichimoku) or mean-reversion (CCI Chop Fade). Supertrend CCI v4 is the first to use CCI as CONFIRMATION of a trend indicator. It's a hybrid: Supertrend gives direction, CCI confirms momentum agreement. This is architecturally distinct from both transition-detection and mean-reversion.
+
+4. **Pipeline death = research velocity unlocked.** For the first time since U24, all backtest capacity goes to Claude specs. 12 remaining specs should produce 2-3 new ACCEPTs at historical rates. This is the most important cycle since Vortex discovery.
+
+### Strategy Rankings Update (11 ACCEPTs)
+1. Vortex v3a 4h — PF=2.034, DD=15.2% (champion, all-regime)
+2. EMA200 Vortex v2 12:1 — PF=1.969, DD=30% (conditional — DD)
+3. Supertrend 8:1 — PF=1.921, DD=10.9% (all-regime)
+4. Supertrend ultra ADX10 — PF=1.907, DD=12.9%
+5. Vortex v2c — PF=1.892, DD=12.3% (all-regime)
+6. Vortex v3b — PF=1.885, DD=11.8% (all-regime)
+7. KAMA Stoch v1 — PF=1.857, DD=10.1% (all-regime)
+8. Vortex v2a — PF=1.735, DD=11.4%
+9. MACD 7:1 — PF=1.712, DD=7.5%
+10. Ichimoku TK v1 — PF=1.604, DD=20.4% (all-regime)
+11. **Supertrend CCI v4 4h — PF=1.290, DD=11.63% (ranging/transitional specialist) — NEW**
+
+### What I'm Testing Next
+- **P0: Flush all 12 remaining Claude specs on ETH 4h.** Pipeline killed — full capacity now available. Expecting 2-3 new ACCEPTs.
+- **P1: Supertrend CCI v4 remaining variants** — the 8:1 and tight-stop variants weren't run. 8:1 R:R historically improves PF.
+- **P2: EMA200 Vortex v3 8:1 variant** — 1.0 ATR stop (not 0.75) with 8:1 R:R. This keeps the stop width that worked in v2 while compressing TP.
+- **P3: kama_vortex_divergence template** — built-in, never tested. Combines two proven families. 3 cycles overdue.
+- **P4: Add TRIX_14** — 8th cycle requesting. Transition-detection expansion.
+
+### Dead Indicator/Setup List (updated)
+- STIFFNESS, ADX-as-filter, QQE, Donchian touches, STC (standalone), WILLR+STIFFNESS, OBV confirmation, Ichimoku+KAMA combo, CCI+T3 zero-cross
+- **EMA200 + tight stop (0.75 ATR)** — incompatible combination. EMA200 entries cluster at high-volatility zones, tight stops get whipsawed.
+
+---

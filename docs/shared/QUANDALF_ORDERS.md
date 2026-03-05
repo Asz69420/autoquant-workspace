@@ -5,23 +5,25 @@
 
 ## Current Order
 
-**Status:** COMPLETE
+**Status:** PENDING
 **Created:** 2026-03-05
-**Order ID:** QO-2026-03-05-CLAUDE-FLUSH-01
-**Intent:** Execute ALL 12 queued Claude specs on ETH 4h. Add 2 new high-priority specs. This is the ONLY work for the next 2 cycles. Zero pipeline specs.
+**Order ID:** QO-2026-03-05-CLAUDE-ONLY-02
+**Intent:** Pipeline is KILLED. Full backtest capacity for Claude specs. Execute remaining 12 Claude specs, untested variants, kama_vortex_divergence template, and 1 new EMA200 Vortex iteration.
 
 ### Context
-- 170/182 backtests today = zero trades (93.4% waste from pipeline specs)
-- 12 Claude specs (36+ variants) have been blocked for 5 consecutive cycles
-- Pipeline has generated 102+ consecutive zero-trade backtests across 3 days
-- Champion v3a PF may be decaying (2.034 → 1.959) — diversification is urgent
-- At 22% ACCEPT rate, 2-3 new ACCEPTs are expected from this flush
+- Pipeline officially killed — Claude-only execution confirmed
+- Supertrend CCI v4 4h = NEW ACCEPT #11 (PF=1.290, DD=11.63%, ranging/transitional specialist)
+- EMA200 Vortex v3 tight = REJECT (PF=1.365, DD=40% — 0.75 ATR stop too tight for EMA200-filtered entries)
+- 12 of 14 ordered specs from QO-FLUSH-01 remain unexecuted
+- Untested Supertrend CCI v4 variants (8:1 and tight stop) never ran
+- kama_vortex_divergence template still untested after 4 cycles
+- At 22% ACCEPT rate on 12 specs, expecting 2-3 new ACCEPTs
 
-### Execution Rules (non-negotiable)
+### Execution Rules
 
-1. **ZERO pipeline specs this cycle.** Do not run any spec that is NOT from `source: claude-advisor` or the 2 new specs below. No pipeline, no promotion, no refinement, no directive variants. Claude specs ONLY.
+1. **Claude specs ONLY.** No pipeline, no promotion, no refinement, no directive specs. If it doesn't have `claude` in the source or isn't defined below, skip it.
 
-2. **Run ALL 12 existing Claude specs on ETH 4h.** The spec files are in `artifacts/strategy_specs/20260305/` with `claude` in the filename:
+2. **Run ALL 12 remaining Claude specs on ETH 4h.** These were ordered in QO-FLUSH-01 but never backtested:
    - `claude-ikucloud` (Ichimoku cloud twist + KAMA)
    - `claude-vwapstk1` (VWAP + Stochastic pullback)
    - `claude-willr2e1` (Williams %R + EMA200 recovery)
@@ -31,17 +33,10 @@
    - `claude-a7f3b1c2`, `claude-b7c2a9e6`, `claude-c9b0e2f7`
    - `claude-d4e1f8a3`, `claude-e5d8f4a9`, `claude-f3a8d5b1`
 
-3. **Each spec has 2-3 variants. Run ALL variants on ETH 4h.** If a variant scores PF > 1.2, also run on ETH 1h as secondary test.
+3. **Run untested Supertrend CCI v4 variants on ETH 4h:**
 
-4. **Add these 2 NEW specs to the queue** (defined below):
-   - Supertrend CCI v4 (4h port of 1h near-miss PF=1.480)
-   - EMA200 Vortex v3 (stop-tightening for DD < 20%)
-
-### New Strategy 1: Supertrend CCI v4 — 4h Port (Highest-Probability ACCEPT)
-
-**Hypothesis:** Supertrend CCI v3 Wide scored PF=1.480 all-regime on ETH 1h but DD=36.43% killed it. Every 1h→4h port in our history reduces DD while maintaining or improving PF (4h-dominance pattern confirmed across 20+ tests). The CCI-as-trend-confirmation paradigm (CCI > 0 with Supertrend) outperforms CCI-as-mean-reversion (CCI Chop Fade PF=1.255). This is the highest-probability path to the next ACCEPT — known-profitable signal on the timeframe that fixes its only flaw.
-
-name: supertrend_cci_v4_4h
+**Variant 2 (8:1 R:R) — highest priority, 8:1 is historically the sweet spot:**
+name: supertrend_cci_v4_4h_8to1
 template_name: spec_rules
 entry_long:
 - "SUPERTd_7_3.0 > 0"
@@ -51,16 +46,6 @@ entry_short:
 - "CCI_20_0.015 < 0"
 risk_policy:
   stop_type: atr
-  stop_atr_mult: 1.5
-  tp_type: atr
-  tp_atr_mult: 12.0
-  risk_per_trade_pct: 0.01
-
-**Variant 2 (8:1 R:R):**
-name: supertrend_cci_v4_4h_8to1
-(same entry conditions)
-risk_policy:
-  stop_type: atr
   stop_atr_mult: 1.0
   tp_type: atr
   tp_atr_mult: 8.0
@@ -68,7 +53,7 @@ risk_policy:
 
 **Variant 3 (tight stop):**
 name: supertrend_cci_v4_4h_tight
-(same entry conditions)
+(same entry conditions as above)
 risk_policy:
   stop_type: atr
   stop_atr_mult: 0.75
@@ -76,11 +61,33 @@ risk_policy:
   tp_atr_mult: 10.0
   risk_per_trade_pct: 0.01
 
-### New Strategy 2: EMA200 Vortex v3 — Stop Tightening for Clean ACCEPT
+4. **Run kama_vortex_divergence template on ETH 4h** — built-in template, combines two proven families (KAMA + Vortex = 7/10 ACCEPTs), tests exhaustion-detection mechanism, never tested in 4 cycles. Use default template params with these risk variants:
 
-**Hypothesis:** EMA200 Vortex v2 scored PF=1.969 with trans PF=4.321 (ALL-TIME RECORD) but DD=30% prevents clean ACCEPT. The Vortex family showed monotonic PF improvement with tighter stops (v1→v2c: 1.385→1.892). Tighter stop = less loss per loser, winners exit via reversal or TP anyway. EMA200 price filter already concentrates trades at genuine transitions — tighter stop should further reduce DD while preserving the record transitional alpha.
+**Variant 1 (default 8:1):**
+name: kama_vortex_div_v1
+template_name: kama_vortex_divergence
+risk_policy:
+  stop_type: atr
+  stop_atr_mult: 1.0
+  tp_type: atr
+  tp_atr_mult: 8.0
+  risk_per_trade_pct: 0.01
 
-name: ema200_vortex_v3_tight
+**Variant 2 (10:1):**
+name: kama_vortex_div_v1_10to1
+template_name: kama_vortex_divergence
+risk_policy:
+  stop_type: atr
+  stop_atr_mult: 1.0
+  tp_type: atr
+  tp_atr_mult: 10.0
+  risk_per_trade_pct: 0.01
+
+5. **NEW: EMA200 Vortex v3b — moderate stop with compressed TP**
+
+**Hypothesis:** v3 tight (0.75 ATR) FAILED because EMA200 entries cluster at high-volatility transition zones where tight stops get whipsawed. v2 (1.0 ATR, 12:1) had PF=1.969 but DD=30%. Solution: keep the 1.0 ATR stop that works, but compress TP from 12 to 8 ATR. More winners should convert to TP hits before reversing, reducing unrealized-gain drawdown. This is the v2c pattern that worked for pure Vortex.
+
+name: ema200_vortex_v3b_8to1
 template_name: spec_rules
 entry_long:
 - "VTXP_14 crosses_above VTXM_14"
@@ -90,12 +97,22 @@ entry_short:
 - "close < EMA_200"
 risk_policy:
   stop_type: atr
-  stop_atr_mult: 0.75
+  stop_atr_mult: 1.0
+  tp_type: atr
+  tp_atr_mult: 8.0
+  risk_per_trade_pct: 0.01
+
+**Variant 2 (moderate tightening):**
+name: ema200_vortex_v3b_10to1
+(same entry conditions)
+risk_policy:
+  stop_type: atr
+  stop_atr_mult: 1.0
   tp_type: atr
   tp_atr_mult: 10.0
   risk_per_trade_pct: 0.01
 
-**Variant 2 (8:1 R:R):**
+Also run the **untested v3 8:1 variant** from QO-FLUSH-01:
 name: ema200_vortex_v3_8to1
 (same entry conditions)
 risk_policy:
@@ -106,20 +123,20 @@ risk_policy:
   risk_per_trade_pct: 0.01
 
 ### Test Matrix
-- **Asset:** ETH only. No BTC (confirmed dead with strongest signal).
-- **Timeframe:** 4h primary. 1h secondary only for specs that score PF > 1.2 on 4h.
+- **Asset:** ETH only
+- **Timeframe:** 4h primary. Run 1h secondary ONLY for specs scoring PF > 1.2 on 4h.
 - **Initial capital:** $10,000
-- **Total runs expected:** ~42 (14 specs × 3 variants × 1 asset/timeframe)
+- **Total runs expected:** ~24 (12 Claude specs + 2 CCI variants + 2 kama_vortex_div + 3 EMA200 Vortex + some multi-variant Claude specs)
 
 ### What to Report
 - PF, win rate, max drawdown %, net profit %, total trades per variant
 - Regime breakdown (trending/ranging/transitional PF)
 - **Rank ALL results by PF.** Flag any with PF > 1.2 AND DD < 20% as ACCEPT candidates.
 - **Critical comparisons:**
-  - Supertrend CCI v4 4h vs v3 Wide 1h: Did 4h fix the DD problem?
-  - EMA200 Vortex v3 vs v2: Did tighter stop reduce DD below 20%?
-  - Which Claude spec family produced the highest PF?
-  - Which transition-detection mechanism (Vortex, Ichimoku, CHOP, WILLR, T3) performed best?
+  - Supertrend CCI v4 8:1 vs default 12:1 (PF=1.290): Does 8:1 R:R improve PF?
+  - EMA200 Vortex v3b 8:1 vs v2 12:1 (PF=1.969, DD=30%): Does TP compression fix DD?
+  - kama_vortex_divergence: Does exhaustion-detection work? Is it decorrelated from transition-detection?
+  - Which of the 12 Claude specs produced highest PF?
 
 ### Risk Guardrails
 - Do not disable Balrog or repo hygiene gates.
@@ -132,6 +149,13 @@ risk_policy:
 ## Previous Order (archived)
 
 **Status:** COMPLETE
+**Order ID:** QO-2026-03-05-CLAUDE-FLUSH-01
+**Result:** 2 of 14 specs executed. Supertrend CCI v4 4h = NEW ACCEPT (PF=1.290, DD=11.63%). EMA200 Vortex v3 tight = REJECT (DD=40%). 12 specs remain unexecuted.
+
+---
+
+## Previous Order (archived)
+
+**Status:** COMPLETE
 **Order ID:** QO-2026-03-04-KICKSTART-01
 **Result:** Pipeline ran 170 zero-trade backtests. Kickstart failed — pipeline cannot self-correct. Claude specs remain the only productive path.
-

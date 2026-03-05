@@ -1,5 +1,5 @@
 {
-  "count": 11,
+  "count": 12,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -180,7 +180,23 @@
       "source_path": "brain/journal/2026-03-05-u29-research-pipeline-collapse.md",
       "summary": "U29: 30 new outcomes ALL 0-trade (epidemic 130+). NEW: research card pipeline collapsed — 10/10 latest cards are identical \"Adaptive Flag Patterns\" recombine clones on BTC 1h. Three-layer collapse confirmed: homogeneous research → homogeneo",
       "ts": "2026-03-05T23:00:00Z"
+    },
+    {
+      "id": "journal-2026-03-05-u30-industrial-scale-waste",
+      "pointers": [
+        "fact-zero-trade-signal-bottleneck",
+        "failure-pipeline-structural-death",
+        "fact-claude-specs-sole-progress",
+        "fact-ppr-validates-claude-monopoly",
+        "artifacts/library/PROMOTED_INDEX.json",
+        "artifacts/backtests/20260305/",
+        "artifacts/feasibility/20260305/",
+        "artifacts/promotions/20260305/"
+      ],
+      "source_path": "brain/journal/2026-03-05-u30-industrial-scale-waste.md",
+      "summary": "U30: Pipeline scaled to industrial waste — 1826 backtests/day (10x U29), 2028 feasibility reports, 134 promotions, 96 bundles, 140 experiments, ALL 0-trade. NEW: PPR scoring independently validates brain belief that only Claude specs merit ",
+      "ts": "2026-03-05T23:30:00Z"
     }
   ],
-  "generated_at": "2026-03-05T23:00:00Z"
+  "generated_at": "2026-03-05T23:30:00Z"
 }
