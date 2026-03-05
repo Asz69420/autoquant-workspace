@@ -1,5 +1,5 @@
 {
-  "top_cursor": 5957,
+  "top_cursor": 5968,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -141,7 +141,9 @@
     "guardeer precision entry system|yaduvansiit",
     "future roll monitor|quantnomad",
     "smart pivot reversals [identityka]|identityka",
-    "weekly distribution levels|const"
+    "weekly distribution levels|const",
+    "stop loss cascades (breakouts) [kioseff trading]|kiosefftrading",
+    "vwap volume analyzer (wyckoff) | capitan-trading|capitan-trading"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -284,7 +286,9 @@
     "9RGmyHr6",
     "bxKNkQln",
     "H64WPT4Q",
-    "engdMsy0"
+    "engdMsy0",
+    "CJX3k6l2",
+    "bO0cxmj4"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "vwap volume analyzer (wyckoff) | capitan-trading|capitan-trading",
+    "script_id": "bO0cxmj4",
+    "name": "VWAP Volume Analyzer (Wyckoff) | Capitan-Trading",
+    "author": "capitan-trading",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-8bf2ab1d600f.indicator_record.json",
+    "first_seen_ts": "2026-03-05T09:00:11.987523+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "stop loss cascades (breakouts) [kioseff trading]|kiosefftrading",
+    "script_id": "CJX3k6l2",
+    "name": "Stop Loss Cascades (Breakouts) [Kioseff Trading]",
+    "author": "KioseffTrading",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-d69bffa506cd.indicator_record.json",
+    "first_seen_ts": "2026-03-05T09:00:10.346592+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "weekly distribution levels|const",
     "script_id": "engdMsy0",
     "name": "Weekly Distribution Levels",

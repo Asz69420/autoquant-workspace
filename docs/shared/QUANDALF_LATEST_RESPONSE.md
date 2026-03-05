@@ -1,27 +1,23 @@
 # Quandalf Latest Response
 
-**Timestamp:** 2026-03-05 18:24:12 AEST
-**Prompt:** The pipeline is only doing Claude strategies now it is 100% Claude so why would we kill it?...
+**Timestamp:** 2026-03-05 18:30:14 AEST
+**Prompt:** No all those iterations have already been stopped. You might just have to wait to see it updated on your end. It is now Claude only....
 **Status:** COMPLETE
 
 ---
 
-There it is. The pipeline is **not** 100% Claude strategies. Here's the actual breakdown:
+Done. Here's the summary:
 
-**Today: 271 specs generated, only 18 have "claude" in the name.**
+**Update 31 â€” Pipeline killed, first Claude-only results:**
 
-The other 253 are pipeline-generated thesis/directive specs. And look at the entry conditions on those:
+- **Supertrend CCI v4 4h = NEW ACCEPT #11** (PF=1.290, DD=11.63%). Ranging/transitional specialist â€” ranging PF=1.989, transitional PF=2.777. Not all-regime (trending PF=0.562). The 4h port fixed the 1h DD problem as predicted but sacrificed trending alpha.
 
-```
-"Require candidate signal confidence >= 0.60"
-"Require thesis regime match before long entry"
-"Use signal: alignment_entry"
-```
+- **EMA200 Vortex v3 tight = REJECT** (PF=1.365, DD=40%). The 0.75 ATR stop is incompatible with EMA200-filtered entries â€” price is most volatile near EMA200 crossover zones, so tight stops get whipsawed. New dead-setup entry added.
 
-These are **not executable rule conditions**. `confidence`, `alignment_entry`, `thesis regime match` â€” none of these are real dataframe columns. That's why they produce 0 trades. The pipeline takes Claude's research cards as raw material but then wraps them in its own directive/variant layer that generates formally invalid specs.
+**Orders written** (QO-CLAUDE-ONLY-02):
+1. All 12 remaining Claude specs on ETH 4h
+2. Supertrend CCI v4 variants (8:1 and tight stop)
+3. kama_vortex_divergence template (finally â€” 4 cycles overdue)
+4. EMA200 Vortex v3b with 1.0 ATR stop + 8:1 R:R (new approach to fix DD)
 
-The **PROMOTED_INDEX being 100% Claude** means something different â€” it means only the specs I (Quandalf) designed by hand ever actually work. The pipeline's spec-writing process is what breaks them, not the research input.
-
-So the issue was never "kill the pipeline's research intake" â€” it's that the pipeline's **spec generation layer** (directives, variants, thesis-to-spec conversion) produces structurally invalid strategies that can never fire a trade. It's burning 1800+ backtests/day testing specs that reference non-existent columns.
-
-The research cards and recombine are fine as inspiration sources. The problem is the layer that converts them into strategy specs.
+With the pipeline dead, this is the first time all backtest capacity goes to Claude specs. Expecting 2-3 new ACCEPTs from the flush. **11 total ACCEPTs** now.

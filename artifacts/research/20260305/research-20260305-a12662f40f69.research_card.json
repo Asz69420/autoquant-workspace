@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-a12662f40f69",
+  "created_at": "2026-03-05T09:00:11.420304Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/bO0cxmj4/",
+  "title": "VWAP Volume Analyzer (Wyckoff) | Capitan-Trading",
+  "author": "capitan-trading",
+  "summary_bullets": [
+    "TradingView indicator: VWAP Volume Analyzer (Wyckoff) | Capitan-Trading by capitan-trading.",
+    "Most traders focus only on price.",
+    "But price shows what happened, not necessarily why it happened.",
+    "https://www.tradingview.com/x/kq5lmcxe/ The Anchored VWAP Volume Analyzer (Wyckoff Concept) is designed to help traders visualize market participation and better contextualize price movements using anchored volume analysis and VWAP-based structure.",
+    "Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Most traders focus only on price.",
+    "Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Possible indicators: VWAP.",
+    "Source URL: https://www.tradingview.com/script/bO0cxmj4/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: VWAP Volume Analyzer (Wyckoff) | Capitan-Trading by capitan-trading.",
+      "note": "Meaning: TradingView indicator: VWAP Volume Analyzer (Wyckoff) | Capitan-Trading by capitan-trading."
+    },
+    {
+      "timestamp": null,
+      "quote": "Most traders focus only on price.",
+      "note": "Meaning: Most traders focus only on price."
+    },
+    {
+      "timestamp": null,
+      "quote": "But price shows what happened, not necessarily why it happened.",
+      "note": "Meaning: But price shows what happened, not necessarily why it happened."
+    },
+    {
+      "timestamp": null,
+      "quote": "https://www.tradingview.com/x/kq5lmcxe/ The Anchored VWAP Volume Analyzer (Wyckoff Concept) is designed to help traders visualize market participation and better contextualize price movements using an",
+      "note": "Meaning: https://www.tradingview.com/x/kq5lmcxe/ The Anchored VWAP Volume Analyzer (Wyckoff Concept) is designed to help traders visualize market participation "
+    },
+    {
+      "timestamp": null,
+      "quote": "Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Most traders focus only on price.",
+      "note": "Meaning: Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Most traders focus only on price"
+    },
+    {
+      "timestamp": null,
+      "quote": "Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Possible indicators: VWAP.",
+      "note": "Meaning: Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Possible indicators: VWAP."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/bO0cxmj4/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/bO0cxmj4/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-a12662f40f69.raw.txt",
+  "sha256": "ddbcf268a75ac23ddab3fc7155bd1643247200a34b722940a81ee2904819f245",
+  "truncated": false
+}

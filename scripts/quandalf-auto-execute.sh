@@ -186,39 +186,55 @@ if status not in {"PENDING", "NEW"}:
     print("NO_PENDING")
     sys.exit(10)
 
-
-def _grab_block(src: str, start_header: str, end_header_regex: str) -> str:
-    pat = re.compile(start_header + r"\n\n(.*?)\n" + end_header_regex, re.S)
-    m = pat.search(src)
-    return m.group(1) if m else ""
+current_order_text = text
+m_current = re.search(r"##\s+Current Order(.*?)(?:\n---\n\s*\n##\s+Previous Order|\Z)", text, re.S | re.I)
+if m_current:
+    current_order_text = m_current.group(1)
 
 
 def parse_strategies(src: str):
-    blocks = re.findall(r"###\s+(?:New\s+)?Strategy[^\n]*\n\n(.*?)(?=\n###\s+(?:New\s+)?Strategy|\n###\s+Test Matrix|\n##\s+Test Matrix|\Z)", src, re.S)
     out = []
-    for blk in blocks:
-        name_m = re.search(r"^name:\s*([\w_\-]+)\s*$", blk, re.M)
-        if not name_m:
+    seen = set()
+    last_entry_long = []
+    last_entry_short = []
+
+    def parse_list(blk: str, label: str):
+        m = re.search(rf"(?m)^{label}:\s*\n((?:\s*-\s*.*\n)+)", blk)
+        if not m:
+            return []
+        vals = []
+        for ln in m.group(1).splitlines():
+            t = ln.strip()
+            if not t.startswith('-'):
+                continue
+            v = t[1:].strip()
+            if (v.startswith('"') and v.endswith('"')) or (v.startswith("'") and v.endswith("'")):
+                v = v[1:-1]
+            vals.append(v)
+        return vals
+
+    name_iter = list(re.finditer(r"(?m)^name:\s*([\w_\-]+)\s*$", src))
+    for i, nm in enumerate(name_iter):
+        start = nm.start()
+        end = name_iter[i + 1].start() if i + 1 < len(name_iter) else len(src)
+        blk = src[start:end]
+
+        name = nm.group(1).strip()
+        if not name or name in seen:
             continue
-        name = name_m.group(1).strip()
 
-        def parse_list(label: str):
-            m = re.search(rf"^{label}:\s*\n((?:-\s*\".*\"\s*\n?)+)", blk, re.M)
-            if not m:
-                return []
-            lines = [ln.strip() for ln in m.group(1).strip().splitlines() if ln.strip().startswith('-')]
-            vals = []
-            for ln in lines:
-                v = ln[1:].strip()
-                if v.startswith('"') and v.endswith('"'):
-                    v = v[1:-1]
-                vals.append(v)
-            return vals
+        t_m = re.search(r"(?m)^template_name:\s*([\w_\-]+)\s*$", blk)
+        template_name = t_m.group(1).strip() if t_m else 'spec_rules'
 
-        entry_long = parse_list('entry_long')
-        entry_short = parse_list('entry_short')
+        entry_long = parse_list(blk, 'entry_long')
+        entry_short = parse_list(blk, 'entry_short')
+        if (not entry_long or not entry_short) and 'same entry conditions' in blk.lower():
+            if not entry_long:
+                entry_long = list(last_entry_long)
+            if not entry_short:
+                entry_short = list(last_entry_short)
 
-        risk_block_m = re.search(r"^risk_policy:\s*\n((?:\s{2}[^\n]+\n?)+)", blk, re.M)
+        risk_block_m = re.search(r"(?m)^risk_policy:\s*\n((?:\s{2}[^\n]+\n?)+)", blk)
         risk = {
             "stop_type": "atr",
             "stop_atr_mult": 1.5,
@@ -240,16 +256,26 @@ def parse_strategies(src: str):
                     except ValueError:
                         risk[k] = v
 
+        if template_name == 'spec_rules' and (not entry_long or not entry_short):
+            continue
+
+        if entry_long:
+            last_entry_long = list(entry_long)
+        if entry_short:
+            last_entry_short = list(entry_short)
+
         out.append({
             'name': name,
+            'template_name': template_name,
             'entry_long': entry_long,
             'entry_short': entry_short,
             'risk_policy': risk,
         })
+        seen.add(name)
     return out
 
 
-strategies = parse_strategies(text)
+strategies = parse_strategies(current_order_text)
 if not strategies:
     print("ERROR: no_strategy_blocks_parsed")
     sys.exit(3)
@@ -316,28 +342,32 @@ tmp_dir.mkdir(parents=True, exist_ok=True)
 
 rows = []
 for strat in strategies:
+    variant = {
+        'name': strat['name'],
+        'template_name': strat.get('template_name', 'spec_rules'),
+        'risk_policy': strat['risk_policy'],
+        'execution_policy': {
+            'entry_fill': 'bar_close',
+            'tie_break': 'worst_case',
+            'allow_reverse': True,
+        },
+        'parameters': [],
+        'filters': [],
+        'exit_rules': [],
+        'risk_rules': [],
+        'constraints': ['bar_close_execution', 'no_pyramiding'],
+    }
+    if strat.get('entry_long'):
+        variant['entry_long'] = strat['entry_long']
+    if strat.get('entry_short'):
+        variant['entry_short'] = strat['entry_short']
+
     spec = {
         'schema_version': '1.0',
         'id': strat['name'],
         'created_at': datetime.now(timezone.utc).isoformat(),
         'source_thesis_path': 'docs/shared/QUANDALF_ORDERS.md',
-        'variants': [{
-            'name': strat['name'],
-            'template_name': 'spec_rules',
-            'entry_long': strat['entry_long'],
-            'entry_short': strat['entry_short'],
-            'risk_policy': strat['risk_policy'],
-            'execution_policy': {
-                'entry_fill': 'bar_close',
-                'tie_break': 'worst_case',
-                'allow_reverse': True,
-            },
-            'parameters': [],
-            'filters': [],
-            'exit_rules': [],
-            'risk_rules': [],
-            'constraints': ['bar_close_execution', 'no_pyramiding'],
-        }],
+        'variants': [variant],
     }
     spec_path = tmp_dir / f"{strat['name']}.auto.json"
     spec_path.write_text(json.dumps(spec), encoding='utf-8')

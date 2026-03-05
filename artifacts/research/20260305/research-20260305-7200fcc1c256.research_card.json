@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-7200fcc1c256",
+  "created_at": "2026-03-05T09:00:09.986773Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts-Kioseff-Trading/",
+  "title": "Stop Loss Cascades (Breakouts) [Kioseff Trading]",
+  "author": "KioseffTrading",
+  "summary_bullets": [
+    "TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading.",
+    "🔹Introduction This indicator &#34;Stop-Loss Clustering (Breakouts)&#34; attempts to model trader stop-loss placement logic and identify price areas where a large amount of stop losses might cluster.",
+    "The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow.",
+    "I&#39;ll cover this topic more thoroughly throughout the description.",
+    "For now, just know that stop … Hello friends and traders!",
+    "For now, just know that stop … Source URL: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts-Kioseff-Trading/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading.",
+      "note": "Meaning: TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading."
+    },
+    {
+      "timestamp": null,
+      "quote": "🔹Introduction This indicator &#34;Stop-Loss Clustering (Breakouts)&#34; attempts to model trader stop-loss placement logic and identify price areas where a large amount of stop losses might cluster.",
+      "note": "Meaning: 🔹Introduction This indicator &#34;Stop-Loss Clustering (Breakouts)&#34; attempts to model trader stop-loss placement logic and identify price areas whe"
+    },
+    {
+      "timestamp": null,
+      "quote": "The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow.",
+      "note": "Meaning: The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout con"
+    },
+    {
+      "timestamp": null,
+      "quote": "I&#39;ll cover this topic more thoroughly throughout the description.",
+      "note": "Meaning: I&#39;ll cover this topic more thoroughly throughout the description."
+    },
+    {
+      "timestamp": null,
+      "quote": "For now, just know that stop … Hello friends and traders!",
+      "note": "Meaning: For now, just know that stop … Hello friends and traders!"
+    },
+    {
+      "timestamp": null,
+      "quote": "For now, just know that stop … Source URL: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts-Kioseff-Trading/.",
+      "note": "Meaning: For now, just know that stop … Source URL: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts-Kioseff-Trading/."
+    }
+  ],
+  "extracted_rules": [
+    "TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading.",
+    "The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading."
+    },
+    {
+      "type": "risk",
+      "description": "🔹Introduction This indicator &#34;Stop-Loss Clustering (Breakouts)&#34; attempts to model trader stop-loss placement logic and identify price areas where a large amount of stop losses might cluster."
+    },
+    {
+      "type": "risk",
+      "description": "The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow."
+    }
+  ],
+  "explicit_conditions": [
+    "TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading.",
+    "The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow."
+  ],
+  "risk_management_notes": [
+    "Stop below previous swing low."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-7200fcc1c256.raw.txt",
+  "sha256": "88f1a427c4a4fa37eac1e1d7642e6b32ee50657f2022e8f7087ee363ea1552a2",
+  "truncated": false
+}

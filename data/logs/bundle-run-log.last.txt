@@ -1,9 +1,9 @@
 ﻿🍳 Cooking
-Status: ⚠️ | Duration: 2m 23s
+Status: ⚠️ | Duration: 4m 43s
 ○───activity─────────────────────
 Waiting: 0
-Backtests: 8
+Backtests: 16
 Skipped: 0
 Forwardtests: 0
 ○───note─────────────────────────
-System status needs attention this cycle. Cycle complete: 8 backtests run; no strong promotion yet.
+System status needs attention this cycle. Cycle complete: 16 backtests run; no strong promotion yet.
