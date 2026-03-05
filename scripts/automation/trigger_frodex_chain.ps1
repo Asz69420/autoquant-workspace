@@ -48,11 +48,17 @@ if ($running) {
 }
 
 $taskName = '\frodex-ops-loop-15m'
+$ranViaTask = $false
 try {
-  schtasks /Run /TN $taskName | Out-Null
-  Write-Host 'Triggered: frodex-ops-loop-15m'
-} catch {
-  # Fallback if scheduler trigger path is unavailable.
+  $taskOut = schtasks /Run /TN $taskName 2>&1
+  if ($LASTEXITCODE -eq 0) {
+    $ranViaTask = $true
+    Write-Host 'Triggered: frodex-ops-loop-15m'
+  }
+} catch {}
+
+if (-not $ranViaTask) {
+  # Fallback for hyper mode when the schedule task is intentionally disabled.
   Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-WindowStyle','Hidden','-ExecutionPolicy','Bypass','-File', (Join-Path $ROOT 'scripts\automation\run_autopilot_task.ps1')) -WorkingDirectory $ROOT -WindowStyle Hidden | Out-Null
   Write-Host 'Triggered: run_autopilot_task.ps1 fallback'
 }
