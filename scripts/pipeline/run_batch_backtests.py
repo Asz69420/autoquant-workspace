@@ -82,6 +82,11 @@ def _run(cmd: list[str]) -> str:
     return p.stdout.strip()
 
 
+def _is_allowed_spec_source(spec: dict) -> bool:
+    src = str(spec.get('source') or '').strip().lower()
+    return src == 'claude-advisor'
+
+
 def _load_advisory_enforcement(advisory_path: str) -> dict:
     out = {
         'exclude_assets': set(),
@@ -301,6 +306,8 @@ def main() -> int:
     args = ap.parse_args()
 
     spec = _load_json(args.strategy_spec)
+    if not _is_allowed_spec_source(spec):
+        raise SystemExit('SPEC_SOURCE_NOT_ALLOWED: source must be claude-advisor')
     strategy_scope = str(spec.get('id') or Path(args.strategy_spec).stem)
     enforcement = _load_advisory_enforcement(args.advisory_path)
     variant_objects = {str(v.get('name')): v for v in spec.get('variants', []) if isinstance(v, dict) and v.get('name')}

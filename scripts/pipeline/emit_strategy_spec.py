@@ -1153,6 +1153,7 @@ def main() -> int:
         'schema_version': '1.1',
         'id': sid,
         'created_at': now_iso(),
+        'source': 'claude-advisor',
         'variants': variants,
         'advisory_context': spec_meta_advisory if spec_meta_advisory else None,
         'backtester_executable_indicators': list(EXECUTABLE_INDICATORS.keys()),
