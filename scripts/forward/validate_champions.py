@@ -37,6 +37,8 @@ def main() -> int:
 
     ids: set[str] = set()
     active = 0
+    per_bucket_active: dict[tuple[str, str], list[str]] = {}
+    max_active_per_bucket = 3
     for c in champions:
         if not isinstance(c, dict):
             return fail("CHAMPIONS_INVALID_ITEM")
@@ -51,6 +53,12 @@ def main() -> int:
         status = str(c.get("status"))
         if status in {"active", "watch"}:
             active += 1
+            asset = str(c.get("asset") or "").upper()
+            timeframe = str(c.get("timeframe") or "").lower()
+            bucket = (asset, timeframe)
+            if bucket not in per_bucket_active:
+                per_bucket_active[bucket] = []
+            per_bucket_active[bucket].append(cid)
 
         rp = c.get("risk_policy") or {}
         for rk in ["stop_type", "stop_atr_mult", "tp_type", "tp_atr_mult", "risk_per_trade_pct"]:
@@ -62,10 +70,16 @@ def main() -> int:
             if ek not in ep:
                 return fail(f"CHAMPION_EXEC_MISSING: {cid}:{ek}")
 
+    for (asset, timeframe), ids_in_bucket in per_bucket_active.items():
+        if len(ids_in_bucket) > max_active_per_bucket:
+            return fail(
+                f"CHAMPION_BUCKET_CAP_EXCEEDED: {asset}/{timeframe} count={len(ids_in_bucket)} cap={max_active_per_bucket} ids={','.join(ids_in_bucket)}"
+            )
+
     if active < 1:
         return fail("CHAMPIONS_NO_ACTIVE")
 
-    print(json.dumps({"ok": True, "champions": len(champions), "active_or_watch": active}))
+    print(json.dumps({"ok": True, "champions": len(champions), "active_or_watch": active, "max_active_per_asset_tf": max_active_per_bucket}))
     return 0
 
 
