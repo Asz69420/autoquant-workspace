@@ -10,6 +10,11 @@ $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
 $logFile = "$ROOT\data\logs\claude-tasks\bt_auditor_$timestamp.log"
 $sharedLockDir = "$ROOT\data\state\locks\quandalf_pipeline.lockdir"
 
+$gov = & "$ROOT\scripts\claude-tasks\resolve-quandalf-governor.ps1" -Mode "backtest_auditor" -Root $ROOT
+$maxBacktestHours = [int]$gov.max_backtest_hours
+$maxBacktestResults = [int]$gov.max_backtest_results
+$governorTier = [string]$gov.tier
+
 if (Test-Path -LiteralPath $sharedLockDir) {
   try { python scripts/log_event.py --agent "claude-auditor" --action "backtest_audit" --status WARN --summary "Skipped: shared Quandalf pipeline lock is held by another task." | Out-Null } catch {}
   Write-Output "[$timestamp] Skipped: shared Quandalf pipeline lock held" | Tee-Object -FilePath $logFile -Append
@@ -26,8 +31,8 @@ MODE: BACKTEST_AUDITOR
 You are the Backtest Quality Auditor for AutoQuant.
 Catch overfitting and data quality issues before bad strategies waste more iteration cycles.
 
-READ these files:
-1. All backtest results from last 48 hours in artifacts/backtests/
+READ these files (governor tier: $governorTier):
+1. Backtest results from last $maxBacktestHours hours in artifacts/backtests/ (cap $maxBacktestResults files)
 2. Corresponding trade lists in the same folders (*.trade_list.json)
 3. docs/claude-reports/STRATEGY_ADVISORY.md (for context, if exists)
 
@@ -64,6 +69,7 @@ python scripts/log_event.py --agent "claude-auditor" --action "backtest_audit" -
 "@
 
 Write-Output "[$timestamp] Starting Backtest Auditor..." | Tee-Object -FilePath $logFile -Append
+Write-Output "[$timestamp] Governor tier=$governorTier backtest_hours=$maxBacktestHours backtests=$maxBacktestResults" | Tee-Object -FilePath $logFile -Append
 claude -p $prompt --allowedTools "Read,Write,Bash(python scripts/log_event.py*)" 2>&1 | Tee-Object -FilePath $logFile -Append
 Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
 

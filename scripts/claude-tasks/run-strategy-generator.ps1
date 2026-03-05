@@ -10,6 +10,12 @@ $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
 $logFile = "$ROOT\data\logs\claude-tasks\generator_$timestamp.log"
 $sharedLockDir = "$ROOT\data\state\locks\quandalf_pipeline.lockdir"
 
+$gov = & "$ROOT\scripts\claude-tasks\resolve-quandalf-governor.ps1" -Mode "strategy_generator" -Root $ROOT
+$maxOutcomeNotes = [int]$gov.max_outcome_notes
+$maxClaudeSpecs = [int]$gov.max_claude_specs
+$maxLibraryRows = [int]$gov.max_library_rows
+$governorTier = [string]$gov.tier
+
 if (Test-Path -LiteralPath $sharedLockDir) {
   try { python scripts/log_event.py --agent "claude-advisor" --action "strategy_generate" --status WARN --summary "Skipped: shared Quandalf pipeline lock is held by another task." | Out-Null } catch {}
   Write-Output "[$timestamp] Skipped: shared Quandalf pipeline lock held" | Tee-Object -FilePath $logFile -Append
@@ -63,23 +69,23 @@ MODE: STRATEGY_GENERATOR
 You are the Creative Strategist for AutoQuant.
 Design novel strategy specs that are informed by Quandalf's evolving knowledge, not random indicator mashups.
 
-READ these files:
+READ these files (governor tier: $governorTier):
 1. docs/claude-reports/STRATEGY_ADVISORY.md (if exists)
 2. docs/shared/QUANDALF_BRAIN.md (if exists)
 3. docs/shared/QUANDALF_JOURNAL.md
 4. docs/DOCTRINE/analyser-doctrine.md
-5. Latest 5 outcome notes in artifacts/outcomes/
+5. Latest $maxOutcomeNotes outcome notes in artifacts/outcomes/
 6. scripts/backtester/signal_templates.py
 7. TEMPLATE_COMBOS in scripts/pipeline/emit_strategy_spec.py
-8. One recent strategy spec in artifacts/strategy_specs/ (format reference)
+8. Up to $maxClaudeSpecs recent strategy specs in artifacts/strategy_specs/ (format reference)
 9. Runtime context: docs/shared/QUANDALF_RUNTIME_CONTEXT.md
 10. Passed library summary: artifacts/library/PASSED_INDEX_SUMMARY.json (if exists)
 11. Passed hot window (7d): artifacts/library/PASSED_HOT_7D.json (if exists)
 12. Passed warm window (14d): artifacts/library/PASSED_WARM_14D.json (if exists)
 13. Promoted library summary: artifacts/library/PROMOTED_INDEX_SUMMARY.json (if exists)
 14. Promoted index (all-time leaderboard set): artifacts/library/PROMOTED_INDEX.json (if exists)
-15. Passed shard archive (read only when needed): artifacts/library/passed/*.passed.ndjson
-16. Promoted shard archive (read only when needed): artifacts/library/promoted/*.promoted.ndjson
+15. Passed shard archive: read at most $maxLibraryRows rows total from artifacts/library/passed/*.passed.ndjson when needed
+16. Promoted shard archive: read at most $maxLibraryRows rows total from artifacts/library/promoted/*.promoted.ndjson when needed
 
 DESIGN 2-3 creative strategy specs that:
 - Use DIFFERENT templates from recent specs where possible
@@ -108,6 +114,7 @@ python scripts/log_event.py --agent "claude-advisor" --action "strategy_generate
 "@
 
 Write-Output "[$timestamp] Starting Strategy Generator..." | Tee-Object -FilePath $logFile -Append
+Write-Output "[$timestamp] Governor tier=$governorTier outcome_notes=$maxOutcomeNotes claude_specs=$maxClaudeSpecs library_rows=$maxLibraryRows" | Tee-Object -FilePath $logFile -Append
 $taskExit = Invoke-ClaudeWithRetry -promptText $prompt -logPath $logFile -maxAttempts 2
 Write-Output "[$timestamp] Completed: $taskExit" | Tee-Object -FilePath $logFile -Append
 

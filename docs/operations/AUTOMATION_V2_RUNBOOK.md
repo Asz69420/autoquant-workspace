@@ -89,3 +89,15 @@ Then apply installer again in dry-run/apply sequence.
 2. `install_v2_tasks.ps1 -Apply -NoStart`
 3. `verify_v2_tasks.ps1`
 4. Investigate any `FAIL` before production promotion
+
+---
+
+## Quandalf Governor
+
+Scheduled Quandalf Claude tasks now run under a context/token governor.
+
+- Config: `config/quandalf_governor.json`
+- Resolver: `scripts/claude-tasks/resolve-quandalf-governor.ps1`
+- Guide: `docs/operations/QUANDALF_GOVERNOR.md`
+
+This keeps runs efficient by default and escalates scope only when needed (e.g., pending strategy orders).

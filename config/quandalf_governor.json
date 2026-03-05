@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "default_tier": "standard",
+  "tiers": {
+    "lite": {
+      "max_outcome_notes": 8,
+      "max_backtest_hours": 24,
+      "max_backtest_results": 12,
+      "max_research_cards": 4,
+      "max_claude_specs": 6,
+      "max_library_rows": 12
+    },
+    "standard": {
+      "max_outcome_notes": 20,
+      "max_backtest_hours": 48,
+      "max_backtest_results": 24,
+      "max_research_cards": 8,
+      "max_claude_specs": 16,
+      "max_library_rows": 24
+    },
+    "deep": {
+      "max_outcome_notes": 30,
+      "max_backtest_hours": 72,
+      "max_backtest_results": 40,
+      "max_research_cards": 12,
+      "max_claude_specs": 28,
+      "max_library_rows": 40
+    }
+  },
+  "mode_defaults": {
+    "strategy_generator": "standard",
+    "strategy_researcher": "standard",
+    "doctrine_synthesizer": "lite",
+    "backtest_auditor": "lite"
+  },
+  "escalation": {
+    "pending_order_to_deep": true,
+    "rate_limit_downgrade_to_lite": true
+  }
+}

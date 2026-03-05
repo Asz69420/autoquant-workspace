@@ -10,6 +10,10 @@ $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm"
 $logFile = "$ROOT\data\logs\claude-tasks\doctrine_$timestamp.log"
 $sharedLockDir = "$ROOT\data\state\locks\quandalf_pipeline.lockdir"
 
+$gov = & "$ROOT\scripts\claude-tasks\resolve-quandalf-governor.ps1" -Mode "doctrine_synthesizer" -Root $ROOT
+$maxOutcomeNotes = [int]$gov.max_outcome_notes
+$governorTier = [string]$gov.tier
+
 if (Test-Path -LiteralPath $sharedLockDir) {
   try { python scripts/log_event.py --agent "claude-advisor" --action "doctrine_synthesis" --status WARN --summary "Skipped: shared Quandalf pipeline lock is held by another task." | Out-Null } catch {}
   Write-Output "[$timestamp] Skipped: shared Quandalf pipeline lock held" | Tee-Object -FilePath $logFile -Append
@@ -26,9 +30,9 @@ MODE: DOCTRINE_SYNTHESIZER
 You are the Doctrine Curator for AutoQuant.
 Keep the Analyser doctrine clean, actionable, and free of noise.
 
-READ these files:
+READ these files (governor tier: $governorTier):
 1. docs/DOCTRINE/analyser-doctrine.md (current doctrine)
-2. Latest 20 outcome notes in artifacts/outcomes/
+2. Latest $maxOutcomeNotes outcome notes in artifacts/outcomes/
 3. docs/claude-reports/STRATEGY_ADVISORY.md (if exists)
 
 TASKS:
@@ -47,6 +51,7 @@ python scripts/log_event.py --agent "claude-advisor" --action "doctrine_synthesi
 "@
 
 Write-Output "[$timestamp] Starting Doctrine Synthesizer..." | Tee-Object -FilePath $logFile -Append
+Write-Output "[$timestamp] Governor tier=$governorTier outcome_notes=$maxOutcomeNotes" | Tee-Object -FilePath $logFile -Append
 claude -p $prompt --allowedTools "Read,Write,Bash(python scripts/log_event.py*)" 2>&1 | Tee-Object -FilePath $logFile -Append
 Write-Output "[$timestamp] Completed: $LASTEXITCODE" | Tee-Object -FilePath $logFile -Append
 
