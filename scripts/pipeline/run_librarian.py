@@ -124,6 +124,8 @@ def main() -> int:
     run_idx_p = lib_root / 'RUN_INDEX.json'
     top_idx_p = lib_root / 'TOP_CANDIDATES.json'
     lessons_p = lib_root / 'LESSONS_INDEX.json'
+    passed_idx_p = lib_root / 'PASSED_INDEX.json'
+    passed_summary_p = lib_root / 'PASSED_INDEX_SUMMARY.json'
 
     since = datetime.now(UTC) - timedelta(days=args.since_days)
 
@@ -207,6 +209,37 @@ def main() -> int:
 
     _write(run_idx_p, combined)
 
+    # Passed-index: compact improvement bucket for strategy iteration.
+    passed_pool = [e for e in combined if bool(e.get('gate_pass', False))]
+    passed_pool = sorted(passed_pool, key=lambda x: x.get('created_at', ''), reverse=True)
+    passed = _cap(passed_pool, 200)
+    _write(passed_idx_p, passed)
+
+    # Future-proof summary index (small payload): aggregate by family/template.
+    by_family_passed = {}
+    by_template_passed = {}
+    for e in passed:
+        fam = Path(e.get('strategy_spec_path', 'unknown')).stem
+        by_family_passed[fam] = by_family_passed.get(fam, 0) + 1
+        tmpl = str(e.get('variant_name', '')).strip().lower() or 'unknown'
+        by_template_passed[tmpl] = by_template_passed.get(tmpl, 0) + 1
+
+    passed_summary = {
+        'generated_at': datetime.now(UTC).isoformat(),
+        'source': str(run_idx_p).replace('\\', '/'),
+        'passed_index_path': str(passed_idx_p).replace('\\', '/'),
+        'passed_count': len(passed),
+        'top_families': [
+            {'family': k, 'count': v}
+            for k, v in sorted(by_family_passed.items(), key=lambda kv: kv[1], reverse=True)[:50]
+        ],
+        'top_templates': [
+            {'template': k, 'count': v}
+            for k, v in sorted(by_template_passed.items(), key=lambda kv: kv[1], reverse=True)[:50]
+        ],
+    }
+    _write(passed_summary_p, passed_summary)
+
     top_pool = [e for e in combined if e.get('status') != 'DUPLICATE']
     for e in top_pool:
         e['score'] = _score(e)
@@ -284,9 +317,12 @@ def main() -> int:
         'top_candidates_path': str(top_idx_p),
         'lessons_index_path': str(lessons_p),
         'run_index_path': str(run_idx_p),
+        'passed_index_path': str(passed_idx_p),
+        'passed_summary_path': str(passed_summary_p),
         'top_count': len(top),
         'run_count': len(combined),
         'lessons_count': len(lessons),
+        'passed_count': len(passed),
         'example_top': top[0] if top else None,
         'new_indicators_added': new_indicators_added,
         'skipped_indicators_dedup': skipped_indicators_dedup,

@@ -73,6 +73,8 @@ READ these files:
 7. TEMPLATE_COMBOS in scripts/pipeline/emit_strategy_spec.py
 8. One recent strategy spec in artifacts/strategy_specs/ (format reference)
 9. Runtime context: docs/shared/QUANDALF_RUNTIME_CONTEXT.md
+10. Passed library summary: artifacts/library/PASSED_INDEX_SUMMARY.json (if exists)
+11. Passed library index: artifacts/library/PASSED_INDEX.json (if exists; sample top 50, do not exhaustively read if large)
 
 DESIGN 2-3 creative strategy specs that:
 - Use DIFFERENT templates from recent specs where possible
@@ -80,6 +82,7 @@ DESIGN 2-3 creative strategy specs that:
 - Include proper regime gates (ADX/trend structure where relevant)
 - Follow exact JSON format of existing strategy specs
 - Represent different underlying ideas (do not clone one concept)
+- Use PASSED_INDEX as an optional improvement bucket: mutate proven families without duplicating prior specs
 
 FORMAT RULES:
 - Each variant MUST have proper RoleFramework filters matching template

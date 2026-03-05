@@ -27,6 +27,8 @@ Funding rate arbitrage, liquidation hunting, market making, event-driven trading
 - Trade lists inside backtest results (individual trade entries)
 - Doctrine: docs/DOCTRINE/analyser-doctrine.md
 - Research cards from videos: artifacts/research_cards/
+- Passed library summary: artifacts/library/PASSED_INDEX_SUMMARY.json (if exists)
+- Passed library index: artifacts/library/PASSED_INDEX.json (if exists; sample top 50 if large)
 - Your previous iteration log: docs/claude-reports/DEEP_ITERATION_LOG.md
 
 ## What We Want From You
@@ -38,6 +40,7 @@ How you do that is up to you — but here is guidance that has worked:
 - Thinking in percentages rather than dollar values gives more meaningful comparisons
 - Strategies that work across multiple instruments are more likely to be real edge than single-asset results
 - If the current best approach seems stuck or fundamentally limited, it may be better to suggest a completely different direction than to keep tweaking
+- Use PASSED_INDEX as a selectable improvement bucket when useful (iterate proven families), but still maintain novelty and avoid clone drift
 
 ## What To Produce
 1. If you have an improvement idea: write ONE new strategy spec to artifacts/claude-specs/ with a clear description of what you changed and why
