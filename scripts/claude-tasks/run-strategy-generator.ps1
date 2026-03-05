@@ -89,6 +89,9 @@ DESIGN 2-3 creative strategy specs that:
 - Represent different underlying ideas (do not clone one concept)
 - Use PASSED libraries as optional improvement buckets: mutate promising families without duplicating prior specs
 - Use PROMOTED libraries to learn what is currently strongest and anchor high-conviction design choices
+- Primary objective: improve promotion readiness by increasing PPR outcomes
+- Future objective: improve cPPR readiness via cross-asset robustness and consistency (avoid one-off overfit spikes)
+- Optimize for repeatable score quality, not single-run outlier wins
 
 FORMAT RULES:
 - Each variant MUST have proper RoleFramework filters matching template
