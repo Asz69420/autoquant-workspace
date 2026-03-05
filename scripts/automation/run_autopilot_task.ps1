@@ -7,3 +7,10 @@ if (Test-Path -LiteralPath $lockPath) {
 }
 
 & '.\scripts\pipeline\autopilot_worker.ps1' -RepoHygieneMode FAIL -MaxBundlesPerRun 3
+
+# Fire the Frodex card immediately after cycle completion (event-driven logging).
+try {
+  & '.\scripts\automation\bundle-run-log.ps1' -Pipeline frodex -WindowMinutes 16 | Out-Null
+} catch {
+  Write-Host ('WARN: immediate frodex log send failed: ' + $_.Exception.Message)
+}
