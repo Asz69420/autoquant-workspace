@@ -13,8 +13,8 @@
                       "indicator_name":  "Adaptive Flag Patterns [The_lurker]",
                       "indicator_tv_key":  "adaptive flag patterns [the_lurker]|tradingview"
                   },
-    "status":  "IN_PROGRESS",
-    "last_processed_at":  "2026-03-05T22:00:05.4941324Z",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-05T22:00:49.5892854Z",
     "attempts":  1,
-    "last_error":  null
+    "last_error":  "QUANDALF_DECISION_REQUIRED"
 }
