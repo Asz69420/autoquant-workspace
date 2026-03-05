@@ -1,4 +1,6 @@
-param()
+param(
+  [string]$RunIdHint = ''
+)
 
 $ErrorActionPreference = 'Stop'
 $ROOT = 'C:\Users\Clamps\.openclaw\workspace'
@@ -476,34 +478,18 @@ try {
 
   $hyperMode = Get-HyperMode
   $lastTriggered = ''
-  $pendingRunId = ''
-  $stateObj = @{}
   if (Test-Path -LiteralPath $statePath) {
     try {
       $st = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
-      if ($st) {
-        if ($st.PSObject.Properties.Name -contains 'last_triggered_run_id') { $lastTriggered = [string]$st.last_triggered_run_id }
-        if ($st.PSObject.Properties.Name -contains 'pending_run_id') { $pendingRunId = [string]$st.pending_run_id }
+      if ($st -and $st.PSObject.Properties.Name -contains 'last_triggered_run_id') {
+        $lastTriggered = [string]$st.last_triggered_run_id
       }
     } catch {}
   }
 
-  if ($hyperMode) {
-    # Durable at-least-once handoff selection:
-    # prefer pending token, but never allow stale pending to block newer completed runs.
-    if ([string]::IsNullOrWhiteSpace($pendingRunId)) {
-      $pendingRunId = $latestRunId
-    } elseif (-not [string]::IsNullOrWhiteSpace($latestRunId)) {
-      $pendingSeq = Get-RunSequence -RunId $pendingRunId
-      $latestSeq = Get-RunSequence -RunId $latestRunId
-      if ($latestSeq -gt $pendingSeq) {
-        $pendingRunId = $latestRunId
-      }
-    }
-
-    if (-not [string]::IsNullOrWhiteSpace($pendingRunId)) {
-      $latestRunId = $pendingRunId
-    }
+  # In hyper mode, trust explicit handoff target from caller to avoid state drift races.
+  if ($hyperMode -and -not [string]::IsNullOrWhiteSpace($RunIdHint)) {
+    $latestRunId = [string]$RunIdHint
   }
 
   if ([string]::IsNullOrWhiteSpace($latestRunId)) {
@@ -512,14 +498,6 @@ try {
   }
 
   if ($lastTriggered -eq $latestRunId) {
-    if ($hyperMode -and $pendingRunId -eq $latestRunId) {
-      $state = @{
-        last_triggered_run_id = $lastTriggered
-        pending_run_id = ''
-        updated_at = [DateTime]::UtcNow.ToString('o')
-      }
-      ($state | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $statePath -Encoding UTF8
-    }
     Write-Host ('No new run. latest=' + $latestRunId)
     exit 0
   }
@@ -558,7 +536,7 @@ try {
     if ($hyperMode) {
       $failState = @{
         last_triggered_run_id = $lastTriggered
-        pending_run_id = $latestRunId
+        last_failed_run_id = $latestRunId
         updated_at = [DateTime]::UtcNow.ToString('o')
       }
       ($failState | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $statePath -Encoding UTF8
@@ -633,7 +611,7 @@ try {
 
   $state = @{
     last_triggered_run_id = $latestRunId
-    pending_run_id = $(if ($hyperMode) { '' } else { $pendingRunId })
+    last_failed_run_id = ''
     updated_at = [DateTime]::UtcNow.ToString('o')
   }
   ($state | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $statePath -Encoding UTF8

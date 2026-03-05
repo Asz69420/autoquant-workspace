@@ -31,7 +31,6 @@ try {
 
 if ($hyperMode) {
   try {
-    $statePath = '.\data\state\quandalf_handoff_poll_state.json'
     $latestRunId = ''
     if (Test-Path -LiteralPath '.\data\logs\actions.ndjson') {
       $rows = Get-Content -LiteralPath '.\data\logs\actions.ndjson' -Tail 300 -Encoding UTF8
@@ -44,25 +43,10 @@ if ($hyperMode) {
     }
 
     if (-not [string]::IsNullOrWhiteSpace($latestRunId)) {
-      $lastTriggered = ''
-      if (Test-Path -LiteralPath $statePath) {
-        try {
-          $tmp = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ($tmp -and $tmp.PSObject.Properties.Name -contains 'last_triggered_run_id') {
-            $lastTriggered = [string]$tmp.last_triggered_run_id
-          }
-        } catch { $lastTriggered = '' }
-      }
-
-      $st = @{
-        last_triggered_run_id = $lastTriggered
-        pending_run_id = $latestRunId
-        updated_at = [DateTime]::UtcNow.ToString('o')
-      }
-      ($st | ConvertTo-Json -Depth 6) | Set-Content -LiteralPath $statePath -Encoding UTF8
+      & '.\scripts\automation\check_quandalf_handoff.ps1' -RunIdHint $latestRunId | Out-Null
+    } else {
+      & '.\scripts\automation\check_quandalf_handoff.ps1' | Out-Null
     }
-
-    & '.\scripts\automation\check_quandalf_handoff.ps1' | Out-Null
   } catch {
     Write-Host ('WARN: hyper handoff trigger failed: ' + $_.Exception.Message)
   }
