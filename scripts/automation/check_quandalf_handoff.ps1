@@ -338,6 +338,15 @@ function Get-HyperMode {
   return $false
 }
 
+function Get-RunSequence {
+  param([string]$RunId)
+  if ([string]::IsNullOrWhiteSpace($RunId)) { return -1 }
+  if ($RunId -match '^autopilot-(\d+)') {
+    try { return [int64]$matches[1] } catch { return -1 }
+  }
+  return -1
+}
+
 function Test-AutopilotProcessRunning {
   try {
     $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
@@ -479,8 +488,22 @@ try {
     } catch {}
   }
 
-  if ($hyperMode -and -not [string]::IsNullOrWhiteSpace($pendingRunId)) {
-    $latestRunId = $pendingRunId
+  if ($hyperMode) {
+    # Durable at-least-once handoff selection:
+    # prefer pending token, but never allow stale pending to block newer completed runs.
+    if ([string]::IsNullOrWhiteSpace($pendingRunId)) {
+      $pendingRunId = $latestRunId
+    } elseif (-not [string]::IsNullOrWhiteSpace($latestRunId)) {
+      $pendingSeq = Get-RunSequence -RunId $pendingRunId
+      $latestSeq = Get-RunSequence -RunId $latestRunId
+      if ($latestSeq -gt $pendingSeq) {
+        $pendingRunId = $latestRunId
+      }
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($pendingRunId)) {
+      $latestRunId = $pendingRunId
+    }
   }
 
   if ([string]::IsNullOrWhiteSpace($latestRunId)) {
@@ -532,6 +555,14 @@ try {
       $note = 'Reflection trigger skipped because another run was already active; it will retry next cycle.'
     }
     Send-QuandalfCard -StatusWord 'warn' -DurationLabel '0m 00s' -RunId $latestRunId -NoteSentence $note
+    if ($hyperMode) {
+      $failState = @{
+        last_triggered_run_id = $lastTriggered
+        pending_run_id = $latestRunId
+        updated_at = [DateTime]::UtcNow.ToString('o')
+      }
+      ($failState | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $statePath -Encoding UTF8
+    }
     Write-Host ('WARN trigger failed for run ' + $latestRunId + ': ' + $triggerText)
     exit 0
   }
@@ -602,7 +633,7 @@ try {
 
   $state = @{
     last_triggered_run_id = $latestRunId
-    pending_run_id = $(if ($hyperMode -and $pendingRunId -eq $latestRunId) { '' } else { $pendingRunId })
+    pending_run_id = $(if ($hyperMode) { '' } else { $pendingRunId })
     updated_at = [DateTime]::UtcNow.ToString('o')
   }
   ($state | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $statePath -Encoding UTF8

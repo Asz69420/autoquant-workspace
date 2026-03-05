@@ -44,15 +44,21 @@ if ($hyperMode) {
     }
 
     if (-not [string]::IsNullOrWhiteSpace($latestRunId)) {
-      $st = @{}
+      $lastTriggered = ''
       if (Test-Path -LiteralPath $statePath) {
         try {
           $tmp = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ($null -ne $tmp) { $st = @{} + $tmp.PSObject.Properties.ForEach({ @{$_.Name = $_.Value} }) }
-        } catch { $st = @{} }
+          if ($tmp -and $tmp.PSObject.Properties.Name -contains 'last_triggered_run_id') {
+            $lastTriggered = [string]$tmp.last_triggered_run_id
+          }
+        } catch { $lastTriggered = '' }
       }
-      $st.pending_run_id = $latestRunId
-      $st.updated_at = [DateTime]::UtcNow.ToString('o')
+
+      $st = @{
+        last_triggered_run_id = $lastTriggered
+        pending_run_id = $latestRunId
+        updated_at = [DateTime]::UtcNow.ToString('o')
+      }
       ($st | ConvertTo-Json -Depth 6) | Set-Content -LiteralPath $statePath -Encoding UTF8
     }
 
