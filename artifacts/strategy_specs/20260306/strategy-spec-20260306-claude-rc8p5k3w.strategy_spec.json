@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-rc8p5k3w",
+  "name": "RSI CHOP Trend-Gated Pullback Recovery",
+  "created_at": "2026-03-06T03:30:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "RSI pullback at 8:1 R:R is a proven ACCEPT (PF=1.442, 156 trades). CHOP_14 is validated as a regime discriminator in the CCI Chop Fade v2 ACCEPT (PF=1.255, 179 trades). They have NEVER been combined. The mechanism: RSI_14 crossing above 45 means momentum was below the structural midpoint and has recovered — this is NOT an oversold bounce (RSI < 30) but a MID-RANGE RECOVERY where the pullback stayed within trend bounds. CHOP_14 < 50 mathematically confirms the market is trending (Choppiness Index measures price efficiency — low values = directional movement). The thesis: RSI pullback strategies fail in ranging markets because RSI oscillates around 50 without directional resolution. CHOP < 50 as a regime gate eliminates these false signals at the source. Every ACCEPT is profitable in ranging regimes, but RSI specifically needs TRENDING environments to produce directional follow-through. CHOP provides the exact filter RSI needs — it answers 'is the market moving directionally?' before asking 'has momentum recovered?' Expected outcome: higher PF than RSI pullback alone by eliminating 30-40% of false entries that occur in choppy conditions.",
+  "regime_assumption": "trending_primary_ranging_secondary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "rsi_chop_recovery_v1_8to1",
+      "description": "Core variant. RSI crosses above 45 (mid-range recovery) + CHOP < 50 (trending regime confirmed). 8:1 R:R proven optimal for RSI entries, 1.5 ATR stop. Direct improvement over standalone RSI pullback ACCEPT.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "RSI_14 crosses_above 45",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "RSI_14 crosses_below 55",
+        "CHOP_14_1_100 < 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "RSI_14",
+          "role": "confirmation",
+          "notes": "RSI mid-range recovery (crosses 45). Proven ACCEPT family (PF=1.442). Mid-range recovery is structurally different from oversold bounce."
+        },
+        {
+          "indicator": "CHOP_14_1_100",
+          "role": "baseline",
+          "notes": "Choppiness Index trend gate (< 50 = trending). Validated in CCI Chop Fade ACCEPT (PF=1.255). Eliminates RSI's ranging false signals."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R — proven optimal for RSI family."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "rsi_chop_recovery_v2_7to1",
+      "description": "Tighter TP variant. 7:1 R:R (10.5x ATR TP). RSI mid-range recoveries may produce shorter moves than deep oversold bounces — tighter TP captures more complete winners. Matches the RSI pullback 1h tail harvester promoted entry (PPR=3.86).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "RSI_14 crosses_above 45",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "RSI_14 crosses_below 55",
+        "CHOP_14_1_100 < 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10.5x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 10.5x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "RSI_14",
+          "role": "confirmation",
+          "notes": "RSI mid-range recovery. Tighter TP for shorter momentum cycles."
+        },
+        {
+          "indicator": "CHOP_14_1_100",
+          "role": "baseline",
+          "notes": "Choppiness trend gate — filters ranging noise from RSI signals."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "7:1 R:R framework — tighter capture for mid-range moves."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "rsi_chop_recovery_v3_relaxed_8to1",
+      "description": "Relaxed RSI threshold variant. RSI crosses above 40 instead of 45 — catches deeper pullbacks that recover within trend structure. More trades expected. Tests whether CHOP's trend gate is strong enough to make even moderate RSI recoveries profitable. If so, CHOP is the dominant filter and RSI threshold matters less.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "RSI_14 crosses_above 40",
+        "CHOP_14_1_100 < 50"
+      ],
+      "entry_short": [
+        "RSI_14 crosses_below 60",
+        "CHOP_14_1_100 < 50"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "RSI_14",
+          "role": "confirmation",
+          "notes": "Relaxed RSI recovery (crosses 40). Deeper pullback entry — tests CHOP dominance as filter."
+        },
+        {
+          "indicator": "CHOP_14_1_100",
+          "role": "baseline",
+          "notes": "Choppiness trend gate. If profitable with relaxed RSI, confirms CHOP is the dominant signal."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Standard 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["rsi_pullback"],
+    "design_target": "rsi_chop_trend_gated_recovery",
+    "novel_element": "FIRST EVER RSI + CHOP combination. Both individually validated in separate ACCEPTs but never combined. CHOP as regime gate addresses RSI's primary weakness (ranging false signals)."
+  },
+  "backtester_executable_indicators": ["RSI_14", "CHOP_14_1_100", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "CHOP_14_1_100 — Choppiness Index regime discriminator, validated in CCI Chop Fade ACCEPT",
+    "confirmation": "RSI_14 — mid-range momentum recovery, validated in RSI pullback ACCEPT (PF=1.442)",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

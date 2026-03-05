@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-st7m4h2c",
+  "name": "Supertrend MACDh Dual-Family Momentum Sync",
+  "created_at": "2026-03-06T03:30:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend is the #1 promoted family (PPR=4.47, 4 ACCEPTs including PF=1.921 tail harvester). MACD is the #3 promoted family (PPR=3.86, 2 ACCEPTs including PF=1.712). They have NEVER been combined despite being the two most independently validated signal families in the system. The mechanism: SUPERTd_7_3.0 gives binary trend structure (1=uptrend, -1=downtrend) based on price vs. the Supertrend line. MACDh_12_26_9 crossing zero marks the exact bar where momentum changes direction — the histogram is the derivative of MACD, so its zero-cross is the inflection point. When Supertrend says 'uptrend' AND MACD histogram turns positive on the same bar cluster, you have STRUCTURAL trend confirmation (Supertrend) synchronized with MOMENTUM acceleration (MACDh). This should filter out both Supertrend entries during momentum exhaustion and MACD entries during structural downtrends. Expected edge: higher PF than either family alone due to dual-confirmation, with ranging regime benefiting most since both indicators are strongest there (Supertrend ranging PF=2.914, MACD ranging PF=2.06).",
+  "regime_assumption": "ranging_primary_allregime_target",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "supertrend_macdh_sync_v1_8to1",
+      "description": "Core variant. Supertrend uptrend confirmed + MACDh zero-cross momentum. 8:1 R:R sweet spot (proven optimal across both families), 1.5 ATR stop. Direct test of dual-family synergy.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction — #1 promoted family (PPR 4.47). Binary trend structure filter."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram zero-cross — #3 promoted family (PPR 3.86). Exact momentum inflection timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R framework — proven optimal across both source families."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supertrend_macdh_sync_v2_7to1",
+      "description": "Tighter TP variant. 7:1 R:R (10.5x ATR TP) matches the promoted MACD tail harvester 7:1 entry (PPR=3.86). MACD momentum cycles may complete before 12x ATR is reached — 7:1 captures more complete winners. Tests whether MACDh timing benefits from tighter targets.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10.5x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 10.5x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend binary trend direction."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACDh zero-cross. 7:1 R:R matches top promoted MACD entry."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Tighter 10.5x TP for MACD momentum cycle capture."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supertrend_macdh_sync_v3_wide_8to1",
+      "description": "Wide stop variant. 2.0 ATR stop + 16x ATR TP (8:1 R:R maintained). Supertrend entries sometimes occur at trend reversal points where initial volatility is high — wider stop gives the dual-confirmation setup room to breathe through the transition without being whipsawed. Tests stop-width sensitivity for combined signals.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend direction — wider stop for transition-zone volatility."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACDh zero-cross with wider stop to survive initial reversal volatility."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "2.0x stop / 16x TP — wider framework maintaining 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow", "macd_confirmation"],
+    "design_target": "dual_family_momentum_sync",
+    "novel_element": "FIRST EVER combination of #1 (Supertrend PPR 4.47) and #3 (MACD PPR 3.86) promoted families. Two independently validated signal families synchronized."
+  },
+  "backtester_executable_indicators": ["SUPERTd_7_3.0", "MACDh_12_26_9", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "SUPERTd_7_3.0 — binary trend structure from #1 promoted family",
+    "confirmation": "MACDh_12_26_9 — momentum inflection timing from #3 promoted family",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

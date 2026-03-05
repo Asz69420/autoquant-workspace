@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-sa6c9n1e",
+  "name": "Supertrend CCI Breakout Acceleration",
+  "created_at": "2026-03-06T03:30:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend CCI v4 is an ACCEPT (PF=1.290, DD=11.63%, 112 trades) that uses CCI to CONFIRM trend direction — CCI oscillation within normal bounds validates the Supertrend signal. This spec tests the INVERSE thesis: CCI crossing ABOVE +100 in a Supertrend uptrend means momentum is ACCELERATING beyond normal bounds. CCI > +100 mathematically means price is more than 1 standard deviation above its 20-bar statistical mean — this is not exhaustion, it is BREAKOUT ACCELERATION. In physics terms: v4 detects constant velocity (confirmation), this spec detects acceleration (breakout force). The difference matters because acceleration entries should produce larger moves (the trend is strengthening, not just continuing). Supertrend CCI v4 is a ranging/transitional specialist (ranging PF=1.989, trans PF=2.777, but trend PF=0.562). By entering on CCI breakout rather than CCI confirmation, we should capture the TRENDING regime edge that v4 misses — when CCI breaks +100, the market has committed to a directional move. Expected regime profile: trending-primary (where v4 is weakest), making this a COMPLEMENT rather than a clone.",
+  "regime_assumption": "trending_primary_transitional_secondary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "supertrend_cci_accel_v1_8to1",
+      "description": "Core variant. Supertrend uptrend + CCI breakout above +100 = acceleration entry. 8:1 R:R (12x ATR TP), 1.5 ATR stop. Tests whether CCI breakout captures trending regime edge that v4 misses.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above 100"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below -100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend trend direction — #1 promoted family. Structural uptrend confirmation."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI breakout above +100 = momentum acceleration beyond 1 std dev. INVERSE of v4 logic (which uses CCI confirmation, not breakout)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supertrend_cci_accel_v2_10to1",
+      "description": "Extended TP variant. 10:1 R:R (15x ATR TP). Acceleration entries should produce LARGER moves than confirmation entries — the trend is strengthening, justifying wider targets. If acceleration thesis is correct, 10:1 should outperform 8:1 (opposite of what happens with ranging/fade entries).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above 100"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below -100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend structural trend filter."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI acceleration breakout. Extended 15x TP tests whether acceleration produces larger moves."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "10:1 R:R — extended target for acceleration-driven entries."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "supertrend_cci_accel_v3_relaxed_8to1",
+      "description": "Relaxed CCI threshold variant. CCI crosses above 80 instead of 100 — captures earlier-stage acceleration before the full breakout. More trades expected. Tests whether the acceleration thesis holds at a moderate statistical threshold (0.8 std dev vs 1.0 std dev). If profitable, suggests acceleration detection doesn't require extreme readings.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "CCI_20_0.015 crosses_above 80"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "CCI_20_0.015 crosses_below -80"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Supertrend structural direction."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "Relaxed CCI threshold (80 vs 100). Earlier acceleration detection — more trades, tests moderate breakout thesis."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Standard 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow"],
+    "design_target": "supertrend_cci_acceleration_breakout",
+    "novel_element": "INVERSE of Supertrend CCI v4 logic — CCI breakout ABOVE +100 (acceleration) vs CCI within bounds (confirmation). Targets TRENDING regime where v4 is weakest (PF=0.562). Designed as COMPLEMENT to existing Supertrend CCI ACCEPT."
+  },
+  "backtester_executable_indicators": ["SUPERTd_7_3.0", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "SUPERTd_7_3.0 — Supertrend trend structure from #1 promoted family",
+    "confirmation": "CCI_20_0.015 — statistical breakout acceleration (>1 std dev), inverse of v4 confirmation logic",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}
