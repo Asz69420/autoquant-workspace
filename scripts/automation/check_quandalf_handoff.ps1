@@ -215,20 +215,25 @@ function Get-LiveReviewInfo {
       $runEvents = Get-RunScopedActions -RunId $RunId
       if (@($runEvents).Count -gt 0) {
         $runGenerated = @($runEvents | Where-Object { [string]$_.action -eq 'BUNDLE_SPEC_RESULT' }).Count
-        $runVariants = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BUNDLE_SPEC_RESULT' -MetricName 'variants'
+        $runSpecVariantTotal = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BUNDLE_SPEC_RESULT' -MetricName 'variants'
+        $runDirectiveVariants = Get-RunSummaryMetricTotal -Events $runEvents -Action 'DIRECTIVE_LOOP_SUMMARY' -MetricName 'directive_variants'
         $runPprPass = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'ppr_pass'
         $runPprPromote = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'ppr_promote'
         $runGateFail = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_fail'
         $runSkipped = Get-RunSummaryMetricTotal -Events $runEvents -Action 'REQUEUE_REQUIRED' -MetricName 'count'
 
         $qGenerated = [int]$runGenerated
-        $qVariants = [int]$runVariants
+        # Variants bucket is extra work only (does not include base strategies).
+        # Prefer explicit directive_variants from loop summary (includes legacy/backfill improvement variants).
+        # Fallback: derive extras from BUNDLE_SPEC_RESULT total variants minus generated base specs.
+        $derivedExtra = [Math]::Max(0, ([int]$runSpecVariantTotal - [int]$runGenerated))
+        $qVariants = [int]([Math]::Max([int]$runDirectiveVariants, [int]$derivedExtra))
         $advanced = [int]$runPprPromote
         $passing = [int]$runPprPass
         $errors = [int]$runGateFail
         $qSkipped = [int]$runSkipped
-        # Queue should reflect total work items sent for testing (variants), not just spec count.
-        $qQueued = [Math]::Max(0, [Math]::Max([int]$qGenerated, [int]$qVariants))
+        # Queue reflects all work items sent: base strategies + extra variants.
+        $qQueued = [Math]::Max(0, ([int]$qGenerated + [int]$qVariants))
       }
     }
 
