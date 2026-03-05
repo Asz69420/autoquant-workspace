@@ -87,7 +87,7 @@ function Get-ResultsReviewInfo {
   $aborted = 0
 
   if (-not (Test-Path -LiteralPath $resultsPath)) {
-    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; q_skipped = 0; is_live = $false }
+    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_variants = 0; q_queued = 0; q_skipped = 0; is_live = $false }
   }
 
   $lines = Get-Content -LiteralPath $resultsPath -Encoding UTF8
@@ -102,7 +102,7 @@ function Get-ResultsReviewInfo {
     elseif ($line -match '\|\s*FAIL') { $aborted++ }
   }
 
-  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; q_skipped = 0; is_live = $false }
+  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_variants = 0; q_queued = 0; q_skipped = 0; is_live = $false }
 }
 
 function Get-RunScopedActions {
@@ -199,6 +199,7 @@ function Get-LiveReviewInfo {
     $errors = [int]($s.errors_count)
 
     $qGenerated = 0
+    $qVariants = 0
     $qQueued = 0
     $qSkipped = 0
     try { if ($null -ne $s.quandalf_queue_generated) { $qGenerated = [int]$s.quandalf_queue_generated } } catch {}
@@ -214,15 +215,17 @@ function Get-LiveReviewInfo {
       $runEvents = Get-RunScopedActions -RunId $RunId
       if (@($runEvents).Count -gt 0) {
         $runGenerated = @($runEvents | Where-Object { [string]$_.action -eq 'BUNDLE_SPEC_RESULT' }).Count
+        $runVariants = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BUNDLE_SPEC_RESULT' -MetricName 'variants'
         $runPassed = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_pass'
         $runAborted = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_fail'
         $runSkipped = Get-RunSummaryMetricTotal -Events $runEvents -Action 'REQUEUE_REQUIRED' -MetricName 'count'
 
         $qGenerated = [int]$runGenerated
+        $qVariants = [int]$runVariants
         $passing = [int]$runPassed
         $errors = [int]$runAborted
         $qSkipped = [int]$runSkipped
-        $qQueued = [Math]::Max(0, ([int]$qGenerated + [int]$passing - [int]$errors + [int]$qSkipped))
+        $qQueued = [Math]::Max(0, ([int]$qGenerated + [int]$qVariants))
       }
     }
 
@@ -232,6 +235,7 @@ function Get-LiveReviewInfo {
       passed = $passing
       aborted = $errors
       q_generated = $qGenerated
+      q_variants = $qVariants
       q_queued = $qQueued
       q_skipped = $qSkipped
       is_live = $true
@@ -284,6 +288,7 @@ function Send-QuandalfCard {
   $lines += ('Passed: ' + [int]$resultsInfo.passed)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
   $lines += ('Generated: ' + [int]$resultsInfo.q_generated)
+  $lines += ('Variants: ' + [int]$resultsInfo.q_variants)
   $lines += ('Queued: ' + [int]$queuedValue)
   $lines += $noteDivider
   $lines += $NoteSentence

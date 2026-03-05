@@ -1145,6 +1145,10 @@ def main() -> int:
         }
     variants = _deduplicate_variants(variants)
     variants, roles_fixed = _ensure_role_compliant_variants(variants)
+
+    # Strategy-variant contract: keep variants focused (1..5 max) so generation stays dominant.
+    if len(variants) > 5:
+        variants = variants[:5]
     spec = {
         'schema_version': '1.1',
         'id': sid,
