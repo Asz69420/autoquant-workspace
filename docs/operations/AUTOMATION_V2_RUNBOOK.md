@@ -101,3 +101,22 @@ Scheduled Quandalf Claude tasks now run under a context/token governor.
 - Guide: `docs/operations/QUANDALF_GOVERNOR.md`
 
 This keeps runs efficient by default and escalates scope only when needed (e.g., pending strategy orders).
+
+---
+
+## Cycle Contract (Frodex ➜ Quandalf Sync)
+
+Automation V2 now uses a cycle-level handoff contract to keep cards and queue/backtest counts aligned by run identity.
+
+- Contract guide: `docs/operations/CYCLE_CONTRACT.md`
+- Upstream card emitter: `scripts/automation/bundle-run-log.ps1` (`-RunIdHint` supported)
+- Handoff orchestrator: `scripts/automation/check_quandalf_handoff.ps1`
+
+Operationally:
+1. Detect completed Frodex cycle (`autopilot-<id>`)
+2. Wait for settle + lock clear
+3. Emit Frodex card for that exact cycle
+4. Trigger Quandalf reflection
+5. Emit Quandalf card for that same cycle
+
+This is additive and backward-compatible with existing logs/events/state files.

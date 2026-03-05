@@ -4,7 +4,8 @@
 param(
   [ValidateSet('frodex','quandalf','oragorn')]
   [string]$Pipeline = 'frodex',
-  [int]$WindowMinutes = 16
+  [int]$WindowMinutes = 16,
+  [string]$RunIdHint = ''
 )
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
@@ -224,6 +225,33 @@ if ($mainWithRun.Count -gt 0) {
         }
       }
       $selectedRunKey = $latest
+    }
+  }
+}
+
+if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($RunIdHint)) {
+  $hintKey = $null
+  if ($RunIdHint -match '^(autopilot-\d+)') {
+    $hintKey = [string]$matches[1]
+  } else {
+    $hintKey = [string]$RunIdHint
+  }
+
+  if (-not [string]::IsNullOrWhiteSpace($hintKey)) {
+    $hintHasEvents = @(
+      $allTailEvents |
+      Where-Object {
+        $rid = [string]$_.run_id
+        if ([string]::IsNullOrWhiteSpace($rid)) { return $false }
+        (Get-RunGroupKey -RunId $rid -Mode $mode) -eq $hintKey
+      }
+    ).Count -gt 0
+
+    if ($hintHasEvents) {
+      $selectedRunKey = $hintKey
+      Write-Host ("Using RunIdHint for frodex card: " + $selectedRunKey)
+    } else {
+      Write-Host ("RunIdHint not found in tail window; falling back to inferred run: " + $hintKey)
     }
   }
 }
