@@ -1,0 +1,1 @@
+Library recombine candidate. Indicator: Adaptive Flag Patterns [The_lurker] by tradingview. Template scaffold: EMA trend + ATR exits. Use as trend/confirmation/regime gate and emit executable strategy variants.
