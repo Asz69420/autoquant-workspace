@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-7c83fa06",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T17:01:00Z",
+  "edge_hypothesis": "Cross-family synergy test: Supertrend direction flips (2 ACCEPTs in family, up to PF=1.921) are powerful trend-change signals but generate false signals during consolidation. Ichimoku cloud position (ISA_9) acts as a regime gate — only take Supertrend signals when price is on the correct side of the Ichimoku leading span. This combines two independently proven ACCEPT mechanisms: Supertrend trend-following (PF=1.907-1.921) and Ichimoku median-price transition detection (PF=1.604). Hypothesis: combining two proven families into one strategy creates a higher-quality signal filter, reducing false positives and improving profit factor above either family alone.",
+  "variants": [
+    {
+      "name": "supertrend_ichimoku_cloud_8to1",
+      "description": "Supertrend direction flip confirmed by Ichimoku cloud position. 8:1 R:R. Only enters when Supertrend flips AND price is on correct side of Ichimoku span A.",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > ISA_9"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < ISA_9"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit on opposite Supertrend direction flip.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "Direction flip as primary entry signal — 2 ACCEPTs in family"},
+        {"indicator": "Ichimoku", "role": "confirmation", "notes": "Span A cloud position as regime gate — proven ACCEPT mechanism"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "supertrend_ichimoku_cloud_10to1",
+      "description": "Wider TP variant. Tests whether the dual-family filter produces high-enough quality signals to support extended holds.",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > ISA_9"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < ISA_9"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit on opposite Supertrend direction flip.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "10:1 R:R — wider target testing quality of dual-family filter."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 80, "step": 5, "default": 40}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "Direction flip entry signal"},
+        {"indicator": "Ichimoku", "role": "confirmation", "notes": "Span A regime gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    },
+    {
+      "name": "supertrend_ichimoku_tight_stop",
+      "description": "Tighter stop variant. Tests whether 1.0 ATR stop reduces DD below 15% while maintaining signal quality from the dual-family filter.",
+      "entry_long": [
+        "SUPERTd_7_3.0 crosses_above 0",
+        "close > ISA_9"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 crosses_below 0",
+        "close < ISA_9"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=ADX",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit on opposite Supertrend direction flip.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "Tighter 1.0 ATR stop to reduce max drawdown below 15%."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "Direction flip entry"},
+        {"indicator": "Ichimoku", "role": "confirmation", "notes": "Cloud regime gate"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Tight volatility sizing"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow"]
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD", "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels", "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"],
+  "backtester_executable_indicator_map": {"EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma", "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands", "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr", "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend", "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop", "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"},
+  "indicator_roles": {"baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"], "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"], "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]}
+}

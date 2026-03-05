@@ -1,0 +1,21 @@
+MODE: RESEARCH
+
+Task:
+Design a practical scoring system for AutoQuant strategy evaluation that is as timeframe-agnostic as possible.
+
+Goal:
+One single score used for ranking + pass + promote, while still keeping raw metrics.
+
+Constraints:
+1) Timeframes differ in trade frequency and window length; score must not unfairly penalize higher timeframes.
+2) Must scale for many strategies.
+3) Include confidence/anti-overfit handling.
+4) Provide exact formulas and thresholds for PASS and PROMOTE.
+5) If true agnostic single score is impossible, provide fallback design by timeframe.
+
+Output format (strict):
+A) One concise chart/table with components, weights, normalization, and thresholds.
+B) Implementation notes for logging PPR fields.
+C) Recommendation YES/NO for single-score viability, with one-paragraph rationale.
+
+Keep it concise and executable.

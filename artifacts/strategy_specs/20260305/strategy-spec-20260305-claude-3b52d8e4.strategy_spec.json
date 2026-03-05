@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-3b52d8e4",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T17:02:00Z",
+  "edge_hypothesis": "Bollinger Band breakouts detect volatility expansion — when price breaks above BBU or below BBL, a compressed market is expanding directionally. This mechanism is fundamentally different from existing ACCEPTs which are transition-detection (Vortex, Ichimoku) or mean-reversion (KAMA). Adding Vortex directional dominance (VTXP vs VTXM comparison, not crossover) as a confirmation filter ensures we only enter breakouts that have genuine directional pressure behind them, not random wicks. The bollinger_breakout template has been blacklisted by the pipeline but was never tested with Vortex confirmation — a novel combination. Hypothesis: volatility expansion breakouts filtered by directional momentum produce a distinct edge profile in transitional and trending regimes.",
+  "variants": [
+    {
+      "name": "bb_vortex_breakout_8to1",
+      "description": "Bollinger Band breakout with Vortex directional confirmation. 8:1 R:R. Only enters when price breaks the band AND Vortex shows directional dominance.",
+      "entry_long": [
+        "close > BBU_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < BBL_20_2.0",
+        "VTXM_14 > VTXP_14"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit when price returns inside Bollinger bands.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Bollinger Bands", "role": "baseline", "notes": "Band breakout detects volatility expansion from compression"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "Directional dominance (VTXP vs VTXM) confirms breakout has momentum"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "bb_vortex_breakout_10to1",
+      "description": "Wider TP variant. Volatility expansion breakouts often initiate extended moves — tests whether 10:1 captures more of the expansion phase.",
+      "entry_long": [
+        "close > BBU_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < BBL_20_2.0",
+        "VTXM_14 > VTXP_14"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit when price returns inside Bollinger bands.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "10:1 R:R — wider target for extended volatility expansion captures."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 80, "step": 5, "default": 40}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Bollinger Bands", "role": "baseline", "notes": "Volatility expansion breakout"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "Directional momentum confirmation"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    },
+    {
+      "name": "bb_vortex_breakout_tight_stop",
+      "description": "Tight stop variant. 1.0 ATR stop with 8:1 TP. Tests whether breakout entries have enough initial momentum to avoid tight stop hits.",
+      "entry_long": [
+        "close > BBU_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < BBL_20_2.0",
+        "VTXM_14 > VTXP_14"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit when price returns inside Bollinger bands.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "Tighter 1.0 ATR stop — breakouts should have immediate follow-through."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 25}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Bollinger Bands", "role": "baseline", "notes": "Band breakout entry"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "Directional dominance filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Tight stop sizing"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal"],
+    "prefer_templates": ["bollinger_breakout"]
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD", "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels", "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"],
+  "backtester_executable_indicator_map": {"EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma", "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands", "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr", "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend", "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop", "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"},
+  "indicator_roles": {"baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"], "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"], "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]}
+}

@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-e4d29b71",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T17:00:00Z",
+  "edge_hypothesis": "CCI crossing +100/-100 thresholds detects momentum acceleration — a fundamentally different mechanism from the dead CCI zero-cross approach. When CCI breaks above +100, buying pressure is statistically extreme and likely to continue in trending regimes. T3 (triple-smoothed EMA with volume factor 0.7) provides smoother trend confirmation than raw EMA, filtering out false CCI breakouts during chop. This targets ETH 4h where all 10 ACCEPTs live. Hypothesis: momentum breakout detection via CCI thresholds combined with adaptive trend filtering produces a distinct edge profile from the existing transition-detection and mean-reversion families.",
+  "variants": [
+    {
+      "name": "cci_t3_momentum_breakout_8to1",
+      "description": "CCI momentum breakout with T3 adaptive trend filter. 8:1 R:R sweet spot. CCI >100 = strong momentum, T3 confirms trend direction.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above 100",
+        "close > T3_10_0.7"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below -100",
+        "close < T3_10_0.7"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "CCI", "role": "confirmation", "notes": "Momentum acceleration detection via +100/-100 threshold crossing"},
+        {"indicator": "T3", "role": "baseline", "notes": "Triple-smoothed EMA — smoother trend filter than raw EMA, reduces whipsaw"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "cci_t3_momentum_breakout_10to1",
+      "description": "Wider TP variant. Tests whether CCI momentum breakouts can sustain longer moves when filtered by T3 trend confirmation.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above 100",
+        "close > T3_10_0.7"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below -100",
+        "close < T3_10_0.7"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "10:1 R:R — wider target for extended momentum captures."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 80, "step": 5, "default": 40}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "CCI", "role": "confirmation", "notes": "Momentum acceleration detection via threshold crossing"},
+        {"indicator": "T3", "role": "baseline", "notes": "Triple-smoothed EMA trend filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    },
+    {
+      "name": "cci_t3_momentum_tight_6to1",
+      "description": "Tighter R:R variant. Tests whether CCI momentum signals work better with quicker take-profit — capturing initial burst rather than extended move.",
+      "entry_long": [
+        "CCI_20_0.015 crosses_above 100",
+        "close > T3_10_0.7"
+      ],
+      "entry_short": [
+        "CCI_20_0.015 crosses_below -100",
+        "close < T3_10_0.7"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based stop or take-profit hit.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "6:1 R:R — capture initial momentum burst."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 40, "step": 5, "default": 20}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "CCI", "role": "confirmation", "notes": "Momentum acceleration detection"},
+        {"indicator": "T3", "role": "baseline", "notes": "Adaptive trend filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["ema_rsi_atr"]
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD", "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels", "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"],
+  "backtester_executable_indicator_map": {"EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma", "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands", "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr", "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend", "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop", "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"},
+  "indicator_roles": {"baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"], "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"], "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]}
+}

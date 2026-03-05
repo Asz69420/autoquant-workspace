@@ -6,8 +6,8 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class PPRThresholds:
-    fail_max: float = 0.10
-    promote_min: float = 0.30
+    pass_min: float = 1.0
+    promote_min: float = 3.0
 
 
 @dataclass(frozen=True)
