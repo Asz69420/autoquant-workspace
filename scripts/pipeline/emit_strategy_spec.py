@@ -1136,10 +1136,13 @@ def main() -> int:
         spec_meta_advisory = {
             "avoid_templates": advisory.get("avoid_templates", []),
             "prefer_templates": advisory.get("prefer_templates", []),
+            "coverage_option": "Optional (non-blocking): expand qualified strategies to multi-asset and/or multi-timeframe test matrix when confidence is high.",
         }
         print(f"ADVISORY_READ avoid={advisory.get('avoid_templates', [])} prefer={advisory.get('prefer_templates', [])}", file=sys.stderr)
     else:
-        spec_meta_advisory = {}
+        spec_meta_advisory = {
+            "coverage_option": "Optional (non-blocking): expand qualified strategies to multi-asset and/or multi-timeframe test matrix when confidence is high.",
+        }
     variants = _deduplicate_variants(variants)
     variants, roles_fixed = _ensure_role_compliant_variants(variants)
     spec = {
