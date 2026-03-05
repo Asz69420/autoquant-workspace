@@ -87,7 +87,7 @@ function Get-ResultsReviewInfo {
   $aborted = 0
 
   if (-not (Test-Path -LiteralPath $resultsPath)) {
-    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; is_live = $false }
+    return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; q_skipped = 0; is_live = $false }
   }
 
   $lines = Get-Content -LiteralPath $resultsPath -Encoding UTF8
@@ -102,7 +102,7 @@ function Get-ResultsReviewInfo {
     elseif ($line -match '\|\s*FAIL') { $aborted++ }
   }
 
-  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; is_live = $false }
+  return [PSCustomObject]@{ reviewed = $reviewed; advanced = $advanced; passed = $advanced; aborted = $aborted; q_generated = 0; q_queued = 0; q_skipped = 0; is_live = $false }
 }
 
 function Get-RunScopedActions {
@@ -200,6 +200,7 @@ function Get-LiveReviewInfo {
 
     $qGenerated = 0
     $qQueued = 0
+    $qSkipped = 0
     try { if ($null -ne $s.quandalf_queue_generated) { $qGenerated = [int]$s.quandalf_queue_generated } } catch {}
     try {
       if ($null -ne $s.queued_for_testing) { $qQueued = [int]$s.queued_for_testing }
@@ -215,11 +216,13 @@ function Get-LiveReviewInfo {
         $runGenerated = @($runEvents | Where-Object { [string]$_.action -eq 'BUNDLE_SPEC_RESULT' }).Count
         $runPassed = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_pass'
         $runAborted = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_fail'
+        $runSkipped = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'skipped'
 
         $qGenerated = [int]$runGenerated
         $passing = [int]$runPassed
         $errors = [int]$runAborted
-        $qQueued = [Math]::Max(0, ([int]$qGenerated + [int]$passing - [int]$errors))
+        $qSkipped = [int]$runSkipped
+        $qQueued = [Math]::Max(0, ([int]$qGenerated + [int]$passing - [int]$errors + [int]$qSkipped))
       }
     }
 
@@ -230,6 +233,7 @@ function Get-LiveReviewInfo {
       aborted = $errors
       q_generated = $qGenerated
       q_queued = $qQueued
+      q_skipped = $qSkipped
       is_live = $true
     }
   } catch {
@@ -279,6 +283,7 @@ function Send-QuandalfCard {
   $lines += ('Promoted: ' + [int]$resultsInfo.advanced)
   $lines += ('Passed: ' + [int]$resultsInfo.passed)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
+  $lines += ('Skipped: ' + [int]$resultsInfo.q_skipped)
   $lines += ('Generated: ' + [int]$resultsInfo.q_generated)
   $lines += ('Queued: ' + [int]$queuedValue)
   $lines += $noteDivider
@@ -571,9 +576,11 @@ try {
     $liveNow = Get-LiveReviewInfo -RunId $latestRunId
     $qGenNow = 0
     $qQueuedNow = 0
+    $qSkippedNow = 0
     if ($null -ne $liveNow) {
       try { $qGenNow = [int]$liveNow.q_generated } catch {}
       try { $qQueuedNow = [int]$liveNow.q_queued } catch {}
+      try { $qSkippedNow = [int]$liveNow.q_skipped } catch {}
     }
 
     if ($statusWord -ne 'ok') {
@@ -587,8 +594,10 @@ try {
       } else {
         $noteSentence = 'Cycle hit an execution issue; remediation is required before throughput can normalize.'
       }
+    } elseif ($qSkippedNow -gt 0) {
+      $noteSentence = ('Frodex skipped ' + [int]$qSkippedNow + ' strategy test(s); Quandalf must rectify or abort those items next cycle.')
     } elseif ($qGenNow -eq 0 -and $qQueuedNow -eq 0) {
-      $noteSentence = 'No novel strategies generated or queued this cycle — generation contract breached.'
+      $noteSentence = 'No novel strategies generated or queued this cycle - generation contract breached.'
     } elseif ($qGenNow -eq 0 -and $qQueuedNow -gt 0) {
       $noteSentence = ('No new generation this cycle; ' + [int]$qQueuedNow + ' strategies remain queued for testing.')
     } else {

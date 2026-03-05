@@ -573,6 +573,7 @@ if ($mode -eq 'quandalf') {
   } else {
     $lines += "Waiting: $outboxLag"
     $lines += "Backtests: $batchExecutedTotal"
+    $lines += "Skipped: $batchSkippedTotal"
     $lines += "Forwardtests: $forwardRuns"
   }
 }
@@ -630,6 +631,8 @@ if ($true) {
       $noteText = "Strong cycle: $promotionOk promoted, $promotionBlocked held for review."
     } elseif ($promotionOk -gt 0) {
       $noteText = "Strong cycle: $promotionOk promoted cleanly."
+    } elseif ($batchSkippedTotal -gt 0) {
+      $noteText = "Cycle complete with skips: $batchSkippedTotal item(s) were returned for rectify/abort."
     } elseif ($batchExecutedTotal -gt 0) {
       $noteText = "Cycle complete: $batchExecutedTotal backtests run; no strong promotion yet."
     } elseif ($ingested -gt 0 -or $bundlesSelected -gt 0 -or ($specOk + $specBlocked + $specReview) -gt 0) {
