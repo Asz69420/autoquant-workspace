@@ -552,6 +552,7 @@ $explorationVariantsEmitted = 0
 $directiveBackfillSpecsGenerated = 0
 $quandalfQueueReady = 0
 $quandalfQueueGenerated = 0
+$decisionHandoffNeeded = $false
 $frodexQueueConsumed = 0
 $frodexQueueBacklog = 0
 $libraryLessons = 0
@@ -1009,7 +1010,7 @@ try {
             $promoStatus = 'REVIEW_REQUIRED'
             $promoReasonCode = 'QUANDALF_DECISION_REQUIRED'
             $promoSuggestion = 'Evidence package ready. Quandalf must decide pass/promote/revise and next matrix.'
-            Emit-Summary 'DECISION_HANDOFF' 'Decision handoff: evidence ready for Quandalf review' 'INFO' 'Promotion'
+            $decisionHandoffNeeded = $true
             Set-BundleState -bundlePath $bp -status 'REVIEW_REQUIRED' -lastError 'QUANDALF_DECISION_REQUIRED' -incrementAttempt $false
           }
           if ($promoStatus -eq 'BLOCKED') {
@@ -1585,6 +1586,10 @@ $summary.directive_loop_stall_cycles = [int]$labCounters.directive_loop_stall_cy
 ($summary | ConvertTo-Json -Depth 5) | Set-Content -Path 'data/state/autopilot_summary.json' -Encoding utf8
 
 if (-not $DryRun) {
+
+  if ($decisionHandoffNeeded) {
+    Emit-Summary 'DECISION_HANDOFF' 'Decision handoff: evidence ready for Quandalf review' 'INFO' 'Promotion'
+  }
 
   $directiveLoopStatus = if (([int]$directiveNotesSeen -eq 1) -and ([int]$directiveVariantsEmitted -gt 0)) { 'OK' } else { 'WARN' }
   Emit-Summary 'DIRECTIVE_LOOP_SUMMARY' ("Directive loop: notes=" + [int]$directiveNotesSeen + " directive_variants=" + [int]$directiveVariantsEmitted + " exploration_variants=" + [int]$explorationVariantsEmitted) $directiveLoopStatus 'oQ'
