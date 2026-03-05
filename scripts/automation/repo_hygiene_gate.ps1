@@ -113,7 +113,8 @@ $allowUntrackedPrefixes = @(
   'data/',
   'docs/',
   'memory/',
-  'brain/'
+  'brain/',
+  'scripts/automation/'
 )
 
 $untracked = Get-UntrackedPaths
