@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-92b57a6c9cd3",
+  "created_at": "2026-03-05T10:00:10.026044Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/jtSbvZaZ-4H-Candle-Overlay/",
+  "title": "4H Candle Overlay",
+  "author": "xyxc",
+  "summary_bullets": [
+    "TradingView indicator: 4H Candle Overlay by xyxc.",
+    "Creates 4-hour candlestick overlay with fixed-width developing candle that maintains exact 4-hour duration regardless of chart timeframe.",
+    "Source URL: https://www.tradingview.com/script/jtSbvZaZ-4H-Candle-Overlay/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: 4H Candle Overlay by xyxc.",
+      "note": "Meaning: TradingView indicator: 4H Candle Overlay by xyxc."
+    },
+    {
+      "timestamp": null,
+      "quote": "Creates 4-hour candlestick overlay with fixed-width developing candle that maintains exact 4-hour duration regardless of chart timeframe.",
+      "note": "Meaning: Creates 4-hour candlestick overlay with fixed-width developing candle that maintains exact 4-hour duration regardless of chart timeframe."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/jtSbvZaZ-4H-Candle-Overlay/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/jtSbvZaZ-4H-Candle-Overlay/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "4h"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-92b57a6c9cd3.raw.txt",
+  "sha256": "79218f974c04cac8920114d5be50030549e8f2894110b4ed0f9523d13c62272a",
+  "truncated": false
+}

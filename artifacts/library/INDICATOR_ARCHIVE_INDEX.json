@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "gex levels dashboard - nq/ndx/qqq gamma exposure|tlade_tradelikeadealer",
+    "script_id": "EbaHGKsz",
+    "name": "GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure",
+    "author": "TLADe_TradeLikeaDealer",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-6c0c82106b55.indicator_record.json",
+    "first_seen_ts": "2026-03-05T10:00:11.681403+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "4h candle overlay|xyxc",
+    "script_id": "jtSbvZaZ",
+    "name": "4H Candle Overlay",
+    "author": "xyxc",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-d1c1ff7bd954.indicator_record.json",
+    "first_seen_ts": "2026-03-05T10:00:10.447736+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "vwap volume analyzer (wyckoff) | capitan-trading|capitan-trading",
     "script_id": "bO0cxmj4",
     "name": "VWAP Volume Analyzer (Wyckoff) | Capitan-Trading",

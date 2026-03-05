@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-a7d2ab59e5fd",
+  "created_at": "2026-03-05T10:00:11.243277Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/EbaHGKsz/",
+  "title": "GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure",
+  "author": "TLADe_TradeLikeaDealer",
+  "summary_bullets": [
+    "TradingView indicator: GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure by TLADe_TradeLikeaDealer.",
+    "DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma Exposure analysis on NASDAQ-100 instruments.",
+    "Companion to the ES/SPX/SPY GEX Dashboard — same engine, dedicated to NQ.",
+    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT THIS INDICATOR DOES This indicator visualizes key strategic levels derived from Gamma Exposure (GEX) analysis — the zones where dealer hedging flows create measurable support and resistance.",
+    "What you see: - Call Walls — resistance zones where dealers hedge against … DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma Exposure analysis on NASDAQ-100 instruments.",
+    "What you see: - Call Walls — resistance zones where dealers hedge against … Source URL: https://www.tradingview.com/script/EbaHGKsz/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure by TLADe_TradeLikeaDealer.",
+      "note": "Meaning: TradingView indicator: GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure by TLADe_TradeLikeaDealer."
+    },
+    {
+      "timestamp": null,
+      "quote": "DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma Exposure analysis on NASDAQ-100 instruments.",
+      "note": "Meaning: DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma Exposure analysis on NASDAQ-100 instruments."
+    },
+    {
+      "timestamp": null,
+      "quote": "Companion to the ES/SPX/SPY GEX Dashboard — same engine, dedicated to NQ.",
+      "note": "Meaning: Companion to the ES/SPX/SPY GEX Dashboard — same engine, dedicated to NQ."
+    },
+    {
+      "timestamp": null,
+      "quote": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT THIS INDICATOR DOES This indicator visualizes key strategic levels derived from Gamma Exposure (GEX) analysis — the zones where dealer hedging flows create measurable",
+      "note": "Meaning: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT THIS INDICATOR DOES This indicator visualizes key strategic levels derived from Gamma Exposure (GEX) analysis — the z"
+    },
+    {
+      "timestamp": null,
+      "quote": "What you see: - Call Walls — resistance zones where dealers hedge against … DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma Exposure analysis on NASDAQ-100 instruments.",
+      "note": "Meaning: What you see: - Call Walls — resistance zones where dealers hedge against … DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma"
+    },
+    {
+      "timestamp": null,
+      "quote": "What you see: - Call Walls — resistance zones where dealers hedge against … Source URL: https://www.tradingview.com/script/EbaHGKsz/.",
+      "note": "Meaning: What you see: - Call Walls — resistance zones where dealers hedge against … Source URL: https://www.tradingview.com/script/EbaHGKsz/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "NASDAQ",
+    "SPX"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-a7d2ab59e5fd.raw.txt",
+  "sha256": "50b2ed05b766006ab024f60c03bcc0984c92106158a18e4253946323bc0e9dbc",
+  "truncated": false
+}

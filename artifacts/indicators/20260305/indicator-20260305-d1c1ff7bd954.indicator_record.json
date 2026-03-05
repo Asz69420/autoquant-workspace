@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260305-d1c1ff7bd954",
+  "created_at": "2026-03-05T10:00:09.716723Z",
+  "tv_ref": "tradingview:jtSbvZaZ",
+  "url": "https://www.tradingview.com/script/jtSbvZaZ-4H-Candle-Overlay/",
+  "name": "4H Candle Overlay",
+  "author": "xyxc",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "a51b489548832465d7fee4300fb46f5ef243ba23b6a73a3b2cd547d4a0137d8b",
+  "truncated": false
+}
