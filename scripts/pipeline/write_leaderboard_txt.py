@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN_INDEX = ROOT / "artifacts" / "library" / "RUN_INDEX.json"
+RUN_INDEX = ROOT / "artifacts" / "library" / "PROMOTED_INDEX.json"
 OUT_PATH = ROOT / "artifacts" / "reports" / "leaderboard.txt"
 BATCH_ROOT = ROOT / "artifacts" / "batches"
 PROMO_ROOT = ROOT / "artifacts" / "promotions"
@@ -120,6 +120,8 @@ class Row:
     tf: str
     strategy_key: str
     strategy_name: str
+    ppr: float
+    cppr: float | None
     pf: float
     wr: float | None
     tc: int
@@ -230,21 +232,23 @@ def collect_rows() -> tuple[list[Row], dict]:
         if tc is None or tc <= 0:
             continue
 
-        staged.append((created, asset, tf, skey, sname, pf, wr, tc, dd, pnl))
+        ppr = as_float(r.get('ppr_score')) or 0.0
+        cppr = as_float(r.get('cppr_score'))
+        staged.append((created, asset, tf, skey, sname, ppr, cppr, pf, wr, tc, dd, pnl))
         pf_hist[skey].append((created, pf))
 
     for k in pf_hist:
         pf_hist[k].sort(key=lambda x: x[0])
 
     rows = []
-    for created, asset, tf, skey, sname, pf, wr, tc, dd, pnl in staged:
+    for created, asset, tf, skey, sname, ppr, cppr, pf, wr, tc, dd, pnl in staged:
         prev = None
         for dt, p in pf_hist[skey]:
             if dt < created:
                 prev = p
             else:
                 break
-        rows.append(Row(created, asset, tf, skey, sname, pf, wr, tc, dd, pnl, trend(prev, pf)))
+        rows.append(Row(created, asset, tf, skey, sname, ppr, cppr, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
     cycles = 0
     backtests = sum(1 for r in rows if r.created_at >= SINCE_24H)
@@ -278,26 +282,27 @@ def fmt(v: float | None, d: int = 1, signed: bool = False) -> str:
 
 def render_top(rows: list[Row], asset: str) -> list[str]:
     if asset == "BTC":
-        title = "🏆 TOP 5 BTC (by PF)"
+        title = "🏆 TOP 5 BTC (by PPR)"
     elif asset == "ETH":
-        title = "🔵 TOP 5 ETH (by PF)"
+        title = "🔵 TOP 5 ETH (by PPR)"
     else:
-        title = "🟣 TOP 5 SOL (by PF)"
-    out = [title, "# △ TF Strategy PF WR% TC DD% P&L%", "──────────────────────────────────────────"]
+        title = "🟣 TOP 5 SOL (by PPR)"
+    out = [title, "# △ TF Strategy PPR CPR PF WR% TC DD%", "──────────────────────────────────────────"]
 
     pool = [r for r in rows if r.asset == asset]
-    # Dedup by displayed strategy alias: keep best PF once.
+    # Dedup by displayed strategy alias: keep best PPR once.
     best_by_strategy = {}
     for r in pool:
         cur = best_by_strategy.get(r.strategy_name)
-        if cur is None or (r.pf, r.wr or -999, r.pnl or -999) > (cur.pf, cur.wr or -999, cur.pnl or -999):
+        if cur is None or (r.ppr, r.pf, r.wr or -999) > (cur.ppr, cur.pf, cur.wr or -999):
             best_by_strategy[r.strategy_name] = r
 
-    ranked = sorted(best_by_strategy.values(), key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:5]
+    ranked = sorted(best_by_strategy.values(), key=lambda r: (r.ppr, r.pf, r.wr or -999), reverse=True)[:5]
 
     for i, r in enumerate(ranked, 1):
         # compact mobile row (target <= ~42 chars)
-        out.append(f"{i} {r.delta} {r.tf} {r.strategy_name} {r.pf:.2f} {fmt(r.wr)} {r.tc} {fmt(r.dd)} {fmt(r.pnl,1,True)}")
+        cppr_txt = "-" if r.cppr is None else f"{r.cppr:.1f}"
+        out.append(f"{i} {r.delta} {r.tf} {r.strategy_name} {r.ppr:.1f} {cppr_txt} {r.pf:.2f} {fmt(r.wr)} {r.tc} {fmt(r.dd)}")
 
     if not ranked:
         out.append("- no backtested rows")

@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN_INDEX = ROOT / "artifacts" / "library" / "RUN_INDEX.json"
+RUN_INDEX = ROOT / "artifacts" / "library" / "PROMOTED_INDEX.json"
 OUT_PATH = ROOT / "artifacts" / "reports" / "daily_intel.txt"
 ACTIONS_LOG = ROOT / "data" / "logs" / "actions.ndjson"
 PROMO_ROOT = ROOT / "artifacts" / "promotions"
@@ -30,7 +30,7 @@ MAX_WIDTH = 56
 NAME_WIDTH = 9
 
 # Locked alignment format (header uses the exact same format string)
-FMT = "{name:<9} {pf:>7} {wr:>7} {tc:>6} {dd:>7} {pnl:>8}"
+FMT = "{name:<9} {ppr:>5} {cppr:>5} {pf:>6} {wr:>6} {tc:>5} {dd:>6} {pnl:>7}"
 MIN_TRADES = 50
 
 ALIAS = {
@@ -59,6 +59,8 @@ class Row:
     tf: str
     name: str
     key: str
+    ppr: float
+    cppr: float | None
     pf: float
     wr: float | None
     tc: int
@@ -237,21 +239,23 @@ def collect_rows():
         if tc is None or tc < MIN_TRADES:
             continue
 
-        staged.append((created, asset, tf, name, key, pf, wr, tc, dd, pnl))
+        ppr = fnum(r.get('ppr_score')) or 0.0
+        cppr = fnum(r.get('cppr_score'))
+        staged.append((created, asset, tf, name, key, ppr, cppr, pf, wr, tc, dd, pnl))
         hist[(asset, tf, key)].append((created, pf))
 
     for k in hist:
         hist[k].sort(key=lambda x: x[0])
 
     rows: list[Row] = []
-    for created, asset, tf, name, key, pf, wr, tc, dd, pnl in staged:
+    for created, asset, tf, name, key, ppr, cppr, pf, wr, tc, dd, pnl in staged:
         prev = None
         for hdt, hpf in hist[(asset, tf, key)]:
             if hdt < created:
                 prev = hpf
             else:
                 break
-        rows.append(Row(created, asset, tf, name, key, pf, wr, tc, dd, pnl, trend(prev, pf)))
+        rows.append(Row(created, asset, tf, name, key, ppr, cppr, pf, wr, tc, dd, pnl, trend(prev, pf)))
 
     # Dedup 1: each strategy once (best) per asset/timeframe.
     best = {}
@@ -290,7 +294,7 @@ def render_tables(rows: list[Row]) -> list[str]:
     lines: list[str] = []
     assets = sorted({r.asset for r in rows}, key=lambda a: ASSET_ORDER.get(a, 99))
 
-    header = FMT.format(name="Strat", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
+    header = FMT.format(name="Strat", ppr="PPR", cppr="CPR", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
     width = min(MAX_WIDTH, len(header))
 
     for asset in assets:
@@ -300,7 +304,7 @@ def render_tables(rows: list[Row]) -> list[str]:
         a_rows = [r for r in rows if r.asset == asset]
         for tf in sorted({r.tf for r in a_rows}, key=tf_sort_key):
             t_rows = [r for r in a_rows if r.tf == tf]
-            top3 = sorted(t_rows, key=lambda r: (r.pf, r.wr or -999, r.pnl or -999), reverse=True)[:3]
+            top3 = sorted(t_rows, key=lambda r: (r.ppr, r.pf, r.wr or -999), reverse=True)[:3]
             if not top3:
                 continue
 
@@ -310,6 +314,8 @@ def render_tables(rows: list[Row]) -> list[str]:
             for r in top3:
                 row = FMT.format(
                     name=r.name[:NAME_WIDTH],
+                    ppr=format_v(r.ppr, d=1),
+                    cppr=(format_v(r.cppr, d=1) if r.cppr is not None else '-'),
                     pf=format_v(r.pf, d=2),
                     wr=format_pct(r.wr, d=0),
                     tc=str(int(r.tc)),
@@ -525,8 +531,8 @@ def main():
     meta = collect_activity(rows)
 
     # Required alignment printout before write.
-    header = FMT.format(arrow="△", name="Strategy", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
-    sample = FMT.format(arrow="↑", name="ADX_Suprtrnd", pf="1.09", wr="34.3", tc="172", dd="2.5", pnl="+1.8")
+    header = FMT.format(arrow="△", name="Strategy", ppr="PPR", cppr="CPR", pf="PF", wr="WR%", tc="TC", dd="DD%", pnl="P&L%")
+    sample = FMT.format(arrow="↑", name="ADX_Suprtr", ppr="3.2", cppr="-", pf="1.29", wr="34", tc="172", dd="12", pnl="+1")
     print(header)
     print(sample)
 
