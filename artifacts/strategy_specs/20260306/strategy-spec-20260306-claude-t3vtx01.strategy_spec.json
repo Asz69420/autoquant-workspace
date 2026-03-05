@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-t3vtx01",
+  "name": "T3 Vortex Transition Capture",
+  "created_at": "2026-03-06T01:16:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Transition-detection is a validated general edge: Vortex v3a (PF=2.034, PPR champion), Ichimoku TK v1 (PF=1.604), and conceptually SMC CHoCH/BOS all detect regime transitions using different math and all produce all-regime profitability. The Vortex indicator (VTXP crosses VTXM) detects directional momentum shifts — the moment one side overwhelms the other. T3 (Triple Exponential MA) provides an ultra-smooth, near-zero-lag trend filter that should reduce whipsaw compared to EMA-based filters. The hypothesis: using T3 as the trend direction baseline instead of raw Vortex-only (which the champion uses) creates a dual-confirmation system — Vortex detects the transition moment while T3 confirms the trend direction is established. This should filter out false Vortex crosses that occur during choppy sideways markets. T3's smoothing is mathematically distinct from both EMA and KAMA, making this a genuinely novel baseline test.",
+  "regime_assumption": "transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "t3_vortex_transition_v1_8to1",
+      "description": "Core thesis: T3 smooth trend filter + Vortex transition detection. 8:1 R:R. VTXP crossing above VTXM signals bullish transition; T3 confirms bullish trend direction (close > T3). Only 2 entry conditions. Tests whether T3 baseline improves on raw Vortex by filtering choppy false crosses.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > T3_10_0.7"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < T3_10_0.7"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "Triple Exponential MA — ultra-smooth trend filter with near-zero lag. Period 10, volume factor 0.7. Confirms trend direction established before Vortex transition entry."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex Positive — crosses above VTXM to signal bullish directional momentum shift (transition detection)."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex Negative — reference line for VTXP crossover. Crosses above VTXP for bearish transition."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_vortex_transition_v1_12to1",
+      "description": "Extended TP variant: 18 ATR TP for 12:1 R:R. The proven Vortex family shows strong transitional PF (v3a trans PF=3.886, EMA200 Vortex v2 trans PF=4.321). Wider TP tests whether T3's smooth trend filter allows trades to ride longer without premature exits. Historical data: the Vortex family benefits from wider TPs because transition moves tend to be large.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > T3_10_0.7"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < T3_10_0.7"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=T3",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (18x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 18x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "T3 smooth trend direction — wider TP tests trend persistence under T3 filter."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex transition signal for long entries."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex transition signal for short entries."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 18x ATR TP for 12:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["T3_10_0.7", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 — triple-smoothed EMA with near-zero lag, confirms trend direction is established before transition entry",
+    "confirmation": "VTXP_14/VTXM_14 — Vortex crossover detects directional momentum transitions (proven edge: PF=2.034 champion)",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-almcci01",
+  "name": "ALMA CCI Momentum Exhaustion Pullback",
+  "created_at": "2026-03-06T01:15:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "ALMA (Arnaud Legoux Moving Average) uses a Gaussian-weighted kernel centered near the most recent price, giving it adaptive smoothing with minimal lag — similar to KAMA's speed-adaptation edge but using a fundamentally different algorithm. KAMA adapts via efficiency ratio; ALMA adapts via Gaussian offset parameter. Since KAMA-based strategies are the #2 highest PPR family (PPR 4.268 for kama_stoch_pullback_v1), testing ALMA as an alternative adaptive baseline explores whether the speed-adaptation edge generalizes beyond KAMA. CCI measures price deviation from its statistical mean — when CCI crosses above -100 from below, it signals the end of a bearish momentum extreme and the start of a bullish momentum reset. This is NOT a mean-reversion play (fading extremes) but a momentum-exhaustion play: entering as selling pressure exhausts and momentum begins to shift. The combination of ALMA trend direction + CCI exhaustion timing should capture entries at the precise moment a pullback completes within an adaptive trend.",
+  "regime_assumption": "ranging_to_transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "alma_cci_exhaustion_v1_8to1",
+      "description": "Core thesis: ALMA adaptive trend + CCI momentum exhaustion from -100 zone. 8:1 R:R (12 ATR TP / 1.5 ATR stop). CCI crossing above -100 signals bearish exhaustion in a bullish ALMA trend. Only 2 entry conditions (within max-2 rule).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "Arnaud Legoux MA — Gaussian-weighted adaptive smoothing. Period 9, offset 6.0, sigma 0.85. Provides trend direction with minimal lag."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "Commodity Channel Index — crossing above -100 signals bearish momentum exhaustion. Entry times pullback completion within ALMA trend."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_cci_exhaustion_v1_10to1",
+      "description": "Extended TP variant: 15 ATR TP for 10:1 R:R. Tests whether ALMA's adaptive trend holds long enough for wider profit targets. If ALMA identifies sustained trends better than fixed-period MAs, wider TP should capture more of the move without increasing whipsaw.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "ALMA adaptive trend direction — wider TP tests trend persistence."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI momentum exhaustion entry from -100 zone."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for 10:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "alma_cci_exhaustion_v1_relaxed_8to1",
+      "description": "Relaxed CCI threshold: crossing above -80 (instead of -100). This captures shallower pullbacks where momentum hasn't fully reached extreme exhaustion. Tests whether moderate CCI pullbacks into ALMA trend generate enough trades with sufficient edge. Historical pattern: relaxed thresholds increase trade count at the cost of per-trade conviction.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ALMA_9_6.0_0.85",
+        "CCI_20_0.015 crosses_above -80"
+      ],
+      "entry_short": [
+        "close < ALMA_9_6.0_0.85",
+        "CCI_20_0.015 crosses_below 80"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=ALMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ALMA_9_6.0_0.85",
+          "role": "baseline",
+          "notes": "ALMA adaptive trend direction."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "Relaxed CCI threshold (-80/80) for higher trade frequency on 4h."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ALMA_9_6.0_0.85", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ALMA_9_6.0_0.85 — Gaussian-weighted adaptive MA, provides trend direction with minimal lag via offset centering",
+    "confirmation": "CCI_20_0.015 — measures price deviation from statistical mean, crossing from extreme zones times momentum exhaustion entries",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}
