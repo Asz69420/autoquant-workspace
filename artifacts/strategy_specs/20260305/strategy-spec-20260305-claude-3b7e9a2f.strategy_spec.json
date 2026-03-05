@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-3b7e9a2f",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T15:10:00Z",
+  "edge_hypothesis": "KAMA's adaptive speed naturally flattens when momentum exhausts. When Vortex simultaneously crosses, it confirms a regime transition at the precise exhaustion point. This combines the two most successful ACCEPT families (KAMA: speed-adaptation PF=1.857, Vortex: transition-detection PF=2.034) in a novel pairing that detects the moment of trend exhaustion. The kama_vortex_divergence template has never been backtested — this is the first test of whether combining these two proven edge mechanisms compounds their alpha.",
+  "variants": [
+    {
+      "name": "kama_vortex_exhaust_8to1",
+      "description": "KAMA adaptive baseline + Vortex transition crossover. 8:1 R:R proven sweet spot.",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite Vortex crossover signal.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "Adaptive MA — flattens when momentum exhausts, providing natural exhaustion detection"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "Transition detection — VTXP/VTXM crossover signals regime shift"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "kama_vortex_exhaust_10to1",
+      "description": "KAMA + Vortex exhaustion with 10:1 R:R. Tests whether exhaustion entries allow wider targets.",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite Vortex crossover signal.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "10:1 R:R — testing if exhaustion-timed entries allow wider targets."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 80, "step": 5, "default": 40}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "Adaptive MA — exhaustion detection via speed flattening"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "Transition detection crossover"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "kama_vortex_exhaust_6to1_tight",
+      "description": "KAMA + Vortex exhaustion with tighter 6:1 R:R and closer stops. Tests lower-DD variant.",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite Vortex crossover signal.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "6:1 R:R — tighter stops for lower drawdown."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 40, "step": 5, "default": 20}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.2,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "Adaptive MA — exhaustion detection"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "Transition detection crossover"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "Volatility-based stop/TP sizing, tighter multiplier"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["kama_vortex_divergence"],
+    "rationale": "First test of kama_vortex_divergence concept — combines two top ACCEPT families (KAMA PF=1.857, Vortex PF=2.034) that have never been paired."
+  },
+  "backtester_executable_indicators": [
+    "KAMA", "Vortex", "ATR"
+  ]
+}

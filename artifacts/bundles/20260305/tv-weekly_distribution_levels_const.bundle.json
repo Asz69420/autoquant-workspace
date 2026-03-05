@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_weekly distribut",
+    "created_at":  "2026-03-05T05:00:12.545390+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260305/research-20260305-9d309d578f41.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260305/indicator-20260305-880eea5da1f3.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260305/research-20260305-9d309d578f41.linkmap.json",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-05T05:01:22.5571609Z",
+    "attempts":  1,
+    "last_error":  "QUANDALF_DECISION_REQUIRED"
+}

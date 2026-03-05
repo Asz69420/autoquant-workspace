@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.1",
+  "id": "thesis-20260305-4268a3d4d3ff",
+  "created_at": "2026-03-05T05:00:14.921985Z",
+  "inputs": {
+    "research_card_paths": [
+      "artifacts/research/20260305/research-20260305-9d309d578f41.research_card.json"
+    ],
+    "indicator_record_paths": [
+      "artifacts/indicators/20260305/indicator-20260305-880eea5da1f3.indicator_record.json"
+    ],
+    "linkmap_paths": [
+      "artifacts/links/20260305/research-20260305-9d309d578f41.linkmap.json"
+    ]
+  },
+  "title": "Weekly Distribution Levels",
+  "thesis_bullets": [
+    "TradingView indicator: Weekly Distribution Levels by const.",
+    "█ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution.",
+    "It answers the question: &#34;How far has price moved this week compared to what&#39;s normal?&#34; Works on any instrument — futures, stocks, forex, crypto.",
+    "Everything is computed dynamically from the chart&#39;s own price history.",
+    "█ HOW IT WORKS At the start of each trading week, the … █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution.",
+    "█ HOW IT WORKS At the start of each trading week, the … Source URL: https://www.tradingview.com/script/engdMsy0/."
+  ],
+  "hypotheses": [
+    {
+      "statement": "BTC continuation edge appears when signal alignment persists on weekly.",
+      "rationale": "Research and indicator mentions converge on trend-continuation logic with confirmation filters.",
+      "falsifiable_test": "Backtest BTC on weekly: require >=55% win rate and positive expectancy over 200+ trades; reject if unmet.",
+      "expected_regime": "Trending, medium-volatility sessions",
+      "failure_modes": [
+        "Range-bound chop erodes edge",
+        "Signal lag after volatility shock",
+        "Indicator disagreement at entry"
+      ]
+    }
+  ],
+  "candidate_signals": [
+    {
+      "name": "alignment_entry",
+      "description": "Enter only when primary trend signal and confirmation filter agree on bar close.",
+      "uses_indicators": [
+        "Weekly Distribution Levels"
+      ],
+      "timeframe_bias": "weekly",
+      "confidence": 0.68
+    }
+  ],
+  "role_catalog": [
+    "trend",
+    "entry",
+    "confirmation",
+    "regime_gate",
+    "exit"
+  ],
+  "combo_proposals": [
+    {
+      "indicator": "Weekly Distribution Levels",
+      "role": "confirmation",
+      "description": "Confirm long only when Weekly Distribution Levels bullish pressure is above control level (>=30) on weekly bar close.",
+      "confidence": 0.76,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "MACD-long",
+      "role": "trend",
+      "description": "Use longer MACD side of zero as trend direction gate before entries.",
+      "confidence": 0.71,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "MACD-short",
+      "role": "entry",
+      "description": "Trigger entries when shorter MACD aligns with longer MACD direction.",
+      "confidence": 0.69,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "Weekly Distribution Levels",
+      "role": "regime_gate",
+      "description": "Gate entries when Weekly Distribution Levels stays above control threshold to avoid weak-pressure chop.",
+      "confidence": 0.66,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    },
+    {
+      "indicator": "ATR14",
+      "role": "exit",
+      "description": "Derived idea: use ATR-based stop/TP envelope for deterministic testability of swing-style stops.",
+      "confidence": 0.62,
+      "doctrine_hint": "Every hypothesis should include explicit regime assumptions and invalidate conditions."
+    }
+  ],
+  "mutation_catalog": [
+    {
+      "type": "threshold",
+      "suggestion": "Sweep TPX control level",
+      "bounds": "20,30,40",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    },
+    {
+      "type": "risk",
+      "suggestion": "Sweep ATR stop/TP multipliers",
+      "bounds": "stop:1.2-2.0,tp:1.8-3.0",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    },
+    {
+      "type": "execution",
+      "suggestion": "Entry fill rule sweep",
+      "bounds": "bar_close|next_open",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    },
+    {
+      "type": "filter",
+      "suggestion": "Role swap TPX confirmation/filter",
+      "bounds": "confirmation|filter|entry",
+      "doctrine_hint": "Keep human approval checkpoints for high-impact automation and deployment transitions."
+    }
+  ],
+  "required_data": [
+    "BTC OHLCV on weekly",
+    "Indicator values at bar close",
+    "Fee/slippage assumptions"
+  ],
+  "constraints": [
+    "no repaint",
+    "bot-friendly",
+    "chart timeframe only",
+    "bar-close execution"
+  ],
+  "tags": [
+    "thesis",
+    "pipeline-stage2"
+  ],
+  "guidance": {
+    "doctrine_path": "docs/DOCTRINE/analyser-doctrine.md",
+    "strategy_heuristics_used": [
+      "Every hypothesis should include explicit regime assumptions and invalidate conditions.",
+      "Separate signal logic from execution logic to reduce confounded performance attribution.",
+      "Require risk gating concepts before scaling complexity in entry or exit rules."
+    ],
+    "automation_heuristics_used": [
+      "Keep human approval checkpoints for high-impact automation and deployment transitions.",
+      "Enforce deterministic session gating before any live-capable execution pathway is enabled.",
+      "Invest first in telemetry for risk, latency, and execution drift before adding new automation features."
+    ]
+  },
+  "sha256_inputs": "4268a3d4d3ff88bda457883a331dc69e32dea575ed8ef93dfd381e6431349514"
+}

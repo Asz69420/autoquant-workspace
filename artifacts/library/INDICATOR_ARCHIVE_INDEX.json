@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "weekly distribution levels|const",
+    "script_id": "engdMsy0",
+    "name": "Weekly Distribution Levels",
+    "author": "const",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-880eea5da1f3.indicator_record.json",
+    "first_seen_ts": "2026-03-05T05:00:12.942382+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "smart pivot reversals [identityka]|identityka",
+    "script_id": "H64WPT4Q",
+    "name": "Smart Pivot Reversals [identityKa]",
+    "author": "IdentityKa",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-5be42f97775b.indicator_record.json",
+    "first_seen_ts": "2026-03-05T05:00:11.426598+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "future roll monitor|quantnomad",
     "script_id": "bxKNkQln",
     "name": "Future Roll Monitor",

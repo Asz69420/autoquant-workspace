@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-5f2a8c6d",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T15:10:00Z",
+  "edge_hypothesis": "MACD histogram zero-cross (PF=1.712, ACCEPT #9) and Supertrend direction flip (PF=1.921, ACCEPT #3) are independently two of the top 5 performing signals. When both agree simultaneously — MACD histogram turns positive AND Supertrend confirms bullish — the entry timing should be superior because two independent mathematical frameworks (momentum oscillator vs volatility-trend) validate the same regime shift. This tests a critical research question: does synergy between proven signals compound edge, or just reduce frequency without benefit? The answer informs all future multi-signal designs.",
+  "variants": [
+    {
+      "name": "macd_supert_synergy_8to1",
+      "description": "MACD histogram zero-cross + Supertrend direction alignment. 8:1 R:R. Tests if dual-confirmation compounds edge.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "SUPERTd_7_3.0 > 0"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "SUPERTd_7_3.0 < 0"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on Supertrend direction flip (SUPERTd reversal).",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "Volatility-based trend direction — proven PF=1.921 standalone"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "Histogram zero-cross for momentum timing — proven PF=1.712 standalone"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "macd_supert_synergy_10to1",
+      "description": "MACD + Supertrend synergy with 10:1 R:R. If dual-confirmation improves entry quality, wider targets should be feasible.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "SUPERTd_7_3.0 > 0"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "SUPERTd_7_3.0 < 0"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on Supertrend direction flip.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "10:1 R:R — dual-confirmation should enable wider targets."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 80, "step": 5, "default": 40}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "Volatility-based trend direction"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "Histogram zero-cross for momentum timing"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "macd_supert_synergy_6to1_conservative",
+      "description": "MACD + Supertrend with conservative 6:1 R:R and tighter stops. Higher win rate target for portfolio diversification.",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "SUPERTd_7_3.0 > 0"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "SUPERTd_7_3.0 < 0"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on Supertrend direction flip.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "6:1 R:R — conservative for higher win rate and lower DD."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 40, "step": 5, "default": 20}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.2,
+        "tp_type": "atr",
+        "tp_atr_mult": 7.2,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Supertrend", "role": "baseline", "notes": "Volatility-based trend direction"},
+        {"indicator": "MACD", "role": "confirmation", "notes": "Histogram zero-cross for momentum timing"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "Tighter stop/TP for conservative variant"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow", "macd_confirmation"],
+    "rationale": "Synergy test — both MACD (PF=1.712) and Supertrend (PF=1.921) are independently top-5 ACCEPTs. Testing if dual-confirmation compounds or dilutes edge answers a critical research question for all future multi-signal designs."
+  },
+  "backtester_executable_indicators": [
+    "Supertrend", "MACD", "ATR"
+  ]
+}

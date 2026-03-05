@@ -1,16 +1,16 @@
 ﻿{
     "directive_loop_stall_cycles":  0,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-81ce512688b2-1fc2ee17.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-81ce512688b2.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-4efae1bdc9e3.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-ed953fec6c14-55c56a3f.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-ed953fec6c14.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-8db8e3d13410.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-3fb992b3a875-b95291c9.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee-565b20ac.strategy_spec.json",
                                   "artifacts/strategy_specs/20260304/strategy-spec-20260304-6ee-34882b88-cea057db.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee-34882b88.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-3fb992b3a875.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-535-1fde8a09-8147ca85.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260304/strategy-spec-20260304-3b51bf41c6ee-34882b88.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-05T04:59:20.0257865Z"
+    "updated_at":  "2026-03-05T05:24:47.9426507Z"
 }

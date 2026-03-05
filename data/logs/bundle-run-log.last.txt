@@ -1,7 +1,7 @@
 ﻿🍳 Cooking
 Status: ✅ | Duration: 2m 1s
 ○───activity─────────────────────
-Waiting: 17
+Waiting: 0
 Backtests: 5
 Skipped: 19
 Aborted: 

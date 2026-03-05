@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-fffba541116f",
+  "created_at": "2026-03-05T05:00:11.018210Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/H64WPT4Q/",
+  "title": "Smart Pivot Reversals [identityKa]",
+  "author": "IdentityKa",
+  "summary_bullets": [
+    "TradingView indicator: Smart Pivot Reversals [identityKa] by IdentityKa.",
+    "Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa.",
+    "The Smart Pivot Reversals is a highly sensitive price action engine designed to map out market structure by identifying key swing highs (TOPS) and swing lows (BOTTOMS) with absolute precision.",
+    "Unlike traditional delayed oscillators, this script directly analyzes raw candlestick formations to detect precise turning points in the market.",
+    "🔥 Key Features: Dynamic Pivot Engine: … Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa.",
+    "🔥 Key Features: Dynamic Pivot Engine: … Possible indicators: SMA.",
+    "Source URL: https://www.tradingview.com/script/H64WPT4Q/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Smart Pivot Reversals [identityKa] by IdentityKa.",
+      "note": "Meaning: TradingView indicator: Smart Pivot Reversals [identityKa] by IdentityKa."
+    },
+    {
+      "timestamp": null,
+      "quote": "Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa.",
+      "note": "Meaning: Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa."
+    },
+    {
+      "timestamp": null,
+      "quote": "The Smart Pivot Reversals is a highly sensitive price action engine designed to map out market structure by identifying key swing highs (TOPS) and swing lows (BOTTOMS) with absolute precision.",
+      "note": "Meaning: The Smart Pivot Reversals is a highly sensitive price action engine designed to map out market structure by identifying key swing highs (TOPS) and swin"
+    },
+    {
+      "timestamp": null,
+      "quote": "Unlike traditional delayed oscillators, this script directly analyzes raw candlestick formations to detect precise turning points in the market.",
+      "note": "Meaning: Unlike traditional delayed oscillators, this script directly analyzes raw candlestick formations to detect precise turning points in the market."
+    },
+    {
+      "timestamp": null,
+      "quote": "🔥 Key Features: Dynamic Pivot Engine: … Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa.",
+      "note": "Meaning: 🔥 Key Features: Dynamic Pivot Engine: … Title: Smart Pivot Reversals Description: Welcome to another high-performance trading tool by identityKa."
+    },
+    {
+      "timestamp": null,
+      "quote": "🔥 Key Features: Dynamic Pivot Engine: … Possible indicators: SMA.",
+      "note": "Meaning: 🔥 Key Features: Dynamic Pivot Engine: … Possible indicators: SMA."
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/H64WPT4Q/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/H64WPT4Q/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-fffba541116f.raw.txt",
+  "sha256": "2dcdb0a0776624c2552aa6ae3f4bbff628482b7c7e9fcdf88755936977cfde82",
+  "truncated": false
+}

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-9d309d578f41",
+  "created_at": "2026-03-05T05:00:12.379806Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/engdMsy0/",
+  "title": "Weekly Distribution Levels",
+  "author": "const",
+  "summary_bullets": [
+    "TradingView indicator: Weekly Distribution Levels by const.",
+    "█ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution.",
+    "It answers the question: &#34;How far has price moved this week compared to what&#39;s normal?&#34; Works on any instrument — futures, stocks, forex, crypto.",
+    "Everything is computed dynamically from the chart&#39;s own price history.",
+    "█ HOW IT WORKS At the start of each trading week, the … █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution.",
+    "█ HOW IT WORKS At the start of each trading week, the … Source URL: https://www.tradingview.com/script/engdMsy0/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Weekly Distribution Levels by const.",
+      "note": "Meaning: TradingView indicator: Weekly Distribution Levels by const."
+    },
+    {
+      "timestamp": null,
+      "quote": "█ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution.",
+      "note": "Meaning: █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands rel"
+    },
+    {
+      "timestamp": null,
+      "quote": "It answers the question: &#34;How far has price moved this week compared to what&#39;s normal?&#34; Works on any instrument — futures, stocks, forex, crypto.",
+      "note": "Meaning: It answers the question: &#34;How far has price moved this week compared to what&#39;s normal?&#34; Works on any instrument — futures, stocks, forex, c"
+    },
+    {
+      "timestamp": null,
+      "quote": "Everything is computed dynamically from the chart&#39;s own price history.",
+      "note": "Meaning: Everything is computed dynamically from the chart&#39;s own price history."
+    },
+    {
+      "timestamp": null,
+      "quote": "█ HOW IT WORKS At the start of each trading week, the … █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move sta",
+      "note": "Meaning: █ HOW IT WORKS At the start of each trading week, the … █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open pri"
+    },
+    {
+      "timestamp": null,
+      "quote": "█ HOW IT WORKS At the start of each trading week, the … Source URL: https://www.tradingview.com/script/engdMsy0/.",
+      "note": "Meaning: █ HOW IT WORKS At the start of each trading week, the … Source URL: https://www.tradingview.com/script/engdMsy0/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [
+    "weekly"
+  ],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-9d309d578f41.raw.txt",
+  "sha256": "9d1a3cc1f8624bdca2a0f7c65d406591ac7bc6e6443f0c585bfc17e52a3f6c36",
+  "truncated": false
+}
