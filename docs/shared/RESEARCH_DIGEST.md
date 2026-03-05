@@ -4,156 +4,12 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-05 08:01 UTC
+**Last updated:** 2026-03-05 14:01 UTC
 **Entries:** 25
 
 ---
 
-## 1. RSI Extension + Divergence
-*TheRealDrip2Rip | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/4KCjePxd-RSI-Extension-Divergence/
-
-**Summary:** TradingView indicator: RSI Extension + Divergence by TheRealDrip2Rip. RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay. Divergences are drawn directly on price: Bullish Divergence (price makes a lower low while RSI makes a higher low) Bearish Divergence (price makes a higher high while RSI makes a lower high) Hidden Bullish / Hidden Bearish divergences (trend-continuation variants) Pivot dots help visualize the swing points used to confirm divergence. Optional OB/OS … RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay. Optional OB/OS … Possible indicators: RSI.
-**Strategy Components:**
-- [trend] RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay.
-- [trend] Divergences are drawn directly on price: Bullish Divergence (price makes a lower low while RSI makes a higher low) Bearish Divergence (price makes a higher high while RSI makes a lower high) Hidden Bu
-- [trend] Optional OB/OS … RSI Div+ combines RSI overbought/oversold context, regular + hidden divergence signals, and a trend “ribbon” filter into one clean overlay.
-**Indicators:** RSI
-
----
-
-## 2. Bitcoin’s Major Long-Term Signals Are Aligning (March Strategy Update)
-*ECKrown | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=G_D_weW9744
-
-**Summary:** Several major signals are coalescing into one major opportunity in which I will be making a lot of long-term decisions based upon We'll go over Bitcoin some traditional marks as well and even some gold action here, too Anyways before we get to that I actually want to let you know that I did release very quietly the new TA 101 ultimate beginner playlist You can find it here in the post section on on YouTube almost at discord right there Although it is on discord too But on YouTube if you just go It is literally 0.00 dollars or 100 million doggy coins No, but it is basically free or it is quite literally free And you can secure yours right now and it is again a very much beginner focused playlist So if you're more advanced might not be so much value for you But if you are certainly new or maybe even intermediate as well It can be incredibly incredibly useful just because it is going to go over the concepts in detail and also provide quizzes So that you can actually validate that you actu It is idiot proof dare I say but idiot proof for me really and in this case We did see this one lose the mid-band which gave a downside bias all the way back on over here on January 18th when Bitcoin was trading above 93,000 bucks ever since then it's just been a General downside drift as Bitcoin continues to play off the lower band right here And once again, we can see Bitcoin is actually bouncing off of that dotted line in the first lower band So that is traditionally sort of like your walk-do All right, sweet So that's basically the low-term time frames for Bitcoin now Let's go over to the higher-term time frames because I do think that we are incredibly close to The next major bounce maybe even a macro reversal is definitely possible But you know first things major bounce then validate potentially a reversal later on as that, you know One thing has to be has to happen before the next so first things first go any going over here to the 10-day time frame I do want to acknowledge that We can see back on over in 2022 That was a beautiful value area.
-**Trading Rules:**
-- Several major signals are coalescing into one major opportunity in which I will be making a lot of long-term decisions based upon We'll go over Bitcoin some traditional marks as well and even some gol
-- It is literally 0.00 dollars or 100 million doggy coins No, but it is basically free or it is quite literally free And you can secure yours right now and it is again a very much beginner focused playl
-- It is idiot proof dare I say but idiot proof for me really and in this case We did see this one lose the mid-band which gave a downside bias all the way back on over here on January 18th when Bitcoin 
-- Some people would probably argue that if the FTX Black Swan if it was a black swan Didn't happen then you would have seen effectively Bitcoin just bottom out at this 200 some moon average In which bas
-- Maybe it's closer to 60,000 bucks when it actually does end up testing it Of course in the short term while the Revin ribbons are still given a downside buys I have to be open to downside here It's ju
-- That's how I'm playing it myself Yes, I did buy in the low $60,000 territory on that first move down in early February But I will put a lot more money to work if and when we do see that major moving a
-- This is the highest volatility that we've seen basically since November of 2024 when Bitcoin was on a rally phase right here And of course volatility is direction neutral So, you know when it spikes u
-- I'm open to more downside basically So yes, that is there and that is there But we do see the signals kind of compounding in the background here on top of that when we go over to the daily time frame 
-**Strategy Components:**
-- [trend] This is the highest volatility that we've seen basically since November of 2024 when Bitcoin was on a rally phase right here And of course volatility is direction neutral So, you know when it spikes u
-- [trend] What do you know beautiful bounce off that red five EMA and you know assets love to trend on that During these mega massive moves You can see almost always a retest of these before big big big big big
-- [momentum] I won't be waiting for any more short-term downside By the same token it could very well be that at the end of this week Bitcoin is still below that pivot in which kind of still have to have a downsid
-- [risk] 20 spots 61% to the downside to find that next major low That's interesting looks pretty fucking familiar right and then of course we go to the cycle before that that was 2014 And what do you know rig
-**Risk Management:**
-- Apply 1% risk rule.
-**Indicators:** EMA, RSI, Stochastic
-**Context:** Timeframes: daily, weekly, monthly | Assets: GOLD
-
----
-
-## 3. 4 Major ETFs I’m Preparing to Buy — Plus a Quick Bitcoin Update
-*ECKrown | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=afA-470E0vY
-
-**Summary:** In this video, I want to go over four major ETFs that I'm looking to accumulate myself on whatever market correction that we've ever seen in the next, well, month or two, especially if, you know, the old war talk start to get really drummed up and produce some sort of volatility. We'll also go over a bit of Bitcoin action at the end of this video. But first things first, let's go over the first major ETF that I'm looking to accumulate, which is symbol AIQ. I'll give you a quick synopsis of it and then I'll tell you, you know, kind of what I'm looking for on whatever sort of a correction that we may be getting. Over here, AIQ, according to GROC, is very lovely, very nice.
-**Trading Rules:**
-- In this video, I want to go over four major ETFs that I'm looking to accumulate myself on whatever market correction that we've ever seen in the next, well, month or two, especially if, you know, the 
-- All of these things, in my opinion, are, well, probably going to be massively beneficial, you know, massively useful, massively valuable, and likely that equates to price going up, especially when we 
-- But if we are going to get a further dump off, I would be looking very specifically at the $43.5 dollarish number right here to accumulate more.
-- So, you know, if it does break down, that's where I'm looking for.
-- But as always, you know, I never know if I'm going to be exactly right on that or not.
-- If it does, I know where I'm buying next because I do want to accumulate this thing a long term.
-- But, but, you know, if this thing does come back down to range there, yeah, that's where I'm interested in it.
-- And then of course, if we were to break down further, again, this might be a little bit of a hope for me.
-**Strategy Components:**
-- [trend] And as of right now, you know, I'm still respecting the overall uptrend.
-- [trend] I think you might even get a week down to these green dots right here, which is typically your trending targets at 60,100 or so.
-- [trend] I mean, it's just trend and the trend is your friend.
-- [risk] But until then, this is still a risk to the downside.
-- [momentum] And, you know, even though that the weekly still cast also is heavily in the bearish controls on and is angled to the downside when you're in areas like this, it's just very difficult to keep the mome
-**Entry/Exit Conditions:**
-- But until then, this is still a risk to the downside.
-**Indicators:** Stochastic
-**Context:** Timeframes: weekly, monthly, daily | Assets: GOLD
-
----
-
-## 4. Bitcoin Consolidation Pattern - Trade This Setup
-*ECKrown | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=DiT_PPgkTm0
-
-**Summary:** Heavy metals and heavy markets as Bitcoin and the rest of markets look like they are poised to retest some lows Maybe make some new lows here, too We are seeing a few major signals that are gonna about to be firing off in fact are already firing off in this case And I do want to talk about downside targets for all of these major assets And what she started off over here with Bitcoin with one of the most prized signals that everyone loves in that of course is the Witches signals the moon signals I know it sounds fucking crazy to anyone who is uninitiated here But whenever you get that new moon higher probability of a two week period of downside The most recent one that we did see was back on over on the 18th of January right here You can see Bitcoin came down from about 94,000 bucks to I mean kind of a rat right now Before that this signal over here more or less sideways and down not really much damage in that current Signal the one previous to that did produce a nice downside move the Well, we were calling out on last Friday's stream that hey Bitcoin on the weekly time frame has a shot has a chance It has an opportunity to turn the weekly stochastic momentum back to the upside if Bitcoin were to close that weekly above 69,500 Bitcoin obviously failed that pivot and not only did this week open up with more downside momentum But now the momentum pivot has actually gone up and usually that it's a very strong signal for Downside risk in this case and the new momentum pivot is act So, you know over this next week or two. Yeah risk is to the downside I do expect Bitcoin to you know come somewhere around the lows maybe slightly lower Let's go for targets in just a moment here.
-**Trading Rules:**
-- Well, we were calling out on last Friday's stream that hey Bitcoin on the weekly time frame has a shot has a chance It has an opportunity to turn the weekly stochastic momentum back to the upside if B
-- Yeah risk is to the downside I do expect Bitcoin to you know come somewhere around the lows maybe slightly lower Let's go for targets in just a moment here.
-- In fact, let me make sure that I'm actually hidden everything Yeah, we got that we got that and then of course when we go over here Oh, when we go over here I should also add 12 our time frame has hid
-- Maybe it's a little bit higher but somewhere down around there And then if I see Bitcoin on that same week Recover back above about 60 000 bucks by the closure That would be a really really really rea
-- And so you know, I'm I'm fast forwarding all the way out there And I'm looking at these as just general good value areas if you're more of a short-term time frame trader Well, you know, most of my pos
-- Yes, there was a long, you know, a long call strike on that as well Lost about 2000 on that made 17 on the short 100 000 dollar call strike Those all expired worthless, of course And then I still hold
-- So my opportunity is not there I'm happy to wait back if you're if all this options talk sounds like fucking garbly good to you fair enough I do have options, uh, t or sorry options one-on-one playlis
-- Maybe i'm right at the end of the day I want to make sure that my free shit is way better than anyone's pay shit And then if you do you want to go a little bit deeper, which is probably very few of pe
-**Strategy Components:**
-- [risk] Well, we were calling out on last Friday's stream that hey Bitcoin on the weekly time frame has a shot has a chance It has an opportunity to turn the weekly stochastic momentum back to the upside if B
-- [risk] Yeah risk is to the downside I do expect Bitcoin to you know come somewhere around the lows maybe slightly lower Let's go for targets in just a moment here.
-- [trend] I did it again You can see bitcoin's being walked upon these sort of dotted green Um, uh, well these green dots right here On this downtrend and anywhere between there and sort of this boundary, which
-**Risk Management:**
-- Target at 2R.
-**Entry/Exit Conditions:**
-- Well, we were calling out on last Friday's stream that hey Bitcoin on the weekly time frame has a shot has a chance It has an opportunity to turn the weekly stochastic momentum back to the upside if B
-- Yeah risk is to the downside I do expect Bitcoin to you know come somewhere around the lows maybe slightly lower Let's go for targets in just a moment here.
-- In fact, let me make sure that I'm actually hidden everything Yeah, we got that we got that and then of course when we go over here Oh, when we go over here I should also add 12 our time frame has hid
-- You know, it's It's not reversing necessarily here Or at least on the short term when we when I go to the weekly it can also kind of help govern the sort of General spike targets to the downside.
-**Indicators:** Stochastic
-**Context:** Timeframes: weekly, daily, monthly | Assets: GOLD, NASDAQ
-
----
-
-## 5. Bitcoin Timing Cycle Repeating? Macro Low Imminent!
-*ECKrown | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=qGDI2580NS4
-
-**Summary:** Bitcoin's timing cycle is repeating and a macro low very well may already be in or at least in terms of timing very very close Now I'm sure many people are already familiar with of course the general idea of Bitcoin's timing cycle Which is on the Bitcoin versus dollar chart right here anytime Bitcoin puts in a major macro high It spends about a year coming down to find that macro low in 2022 you can see over here from high to low It was 378 days in 2018 same idea 364 days and pretty much a year It's going down There's a lot of geopolitical things going on in the background. There's a lot of manipulation if you will and Gold in a way is the more steady asset as well one gold bar equals one gold bar as the same goes No, I don't actually think about that, but I do want to bring up this for gold There has been a similar timing cycle if we go back to 2014 this cycle from high to low took about 395 days Okay, interesting then the 2018 cycle from high to low took about 367 days again about a year and then of course in 2022. We saw a cycle that took 365 days basically the same as 2018 a year on the dot But here's the thing about the Bitcoin versus gold chart this one didn't top out in October of 2025 It actually topped out here in December of 2024 and if we measure from December 2024 to the current low That would be when 427 days so still very much within the context of that data if we go down to a weekly timeframe and get an even more Grandlier idea of the amount of days it would be 413 So here's the thing while Bi Yes, there can be stray wicks anywhere Of course it can get really really nasty, you know on a big bad day, you know big bad announcement World War 3 Whatever but in terms of a closing price, you know Maybe Bitcoin wicks down into like the mid or low 50s and then you know fulfills back up above 60 Because looking at this time you're right here.
-**Trading Rules:**
-- There's a lot of manipulation if you will and Gold in a way is the more steady asset as well one gold bar equals one gold bar as the same goes No, I don't actually think about that, but I do want to b
-- We saw a cycle that took 365 days basically the same as 2018 a year on the dot But here's the thing about the Bitcoin versus gold chart this one didn't top out in October of 2025 It actually topped ou
-**Context:** Timeframes: weekly | Assets: GOLD
-
----
-
-## 6. Ако си начинаещ трейдър – започни с това!
-*TradeTravelChill | asr_transcript | 2026-03-04*
-Source: https://www.youtube.com/watch?v=xh2X82YVPRc
-
-**Summary:** Hello friends and welcome back to the list of how to start trading in 2026. Until then, we were going through quite important things, we talked about what trading is and what type of traders exist. We were looking at the most common mistakes that destroy the account of the start. After that, we were looking at the basics of technical analysis. We showed you something, a trade-by-design system and how we look at the market.
-**Trading Rules:**
-- You need to grab some of the movement and the most important thing is to stop losing money when you are trading with a trend.
-- If you start trading first, you will see a whole trading playlist for beginners.
-- When the price falls, they buy it, when the price rises, they sell it.
-- The trend is a king and if you learn how to trade in a trend, it automatically increases the success rate.
-- When the fish are very separated, for example, the zones in which you can expect a sharp test before and after the movement.
-- Or zones that, if I try the trend, I will turn back.
-- In short, when the fish is under the price and the price rises, it is colored in green and the market is bullish.
-- When the fish is above the price and the price falls in red, the market is cheap.
-**Strategy Components:**
-- [trend] I will show you a strategy that we use as a basis for trading with a trend, namely, Ani's fish.
-- [trend] You need to grab some of the movement and the most important thing is to stop losing money when you are trading with a trend.
-- [trend] The trend is a king and if you learn how to trade in a trend, it automatically increases the success rate.
-- [confirmation] At the moment in which you get a bullish candle stick, namely this hammer, this bullish engulfing, you have to enter the trade if you understand the computer and all the requirements are covered.
-- [risk] The third rule, which is extremely important in any strategy and in any moment in which you will open the trade, is the correct positioning of your stop loss.
-- [risk] Your stop loss is where you want to close the whole position and to admit that you have not made the right decision to look for a good entry in the show.
-- [risk] Your entry is here, your stop loss is under all the fish, not under the yellow, not under the yellow, not under the yellow, not under all the fish.
-**Risk Management:**
-- Stop below previous swing low.
-- Apply 1% risk rule.
-**Entry/Exit Conditions:**
-- You need to grab some of the movement and the most important thing is to stop losing money when you are trading with a trend.
-- When the price moves above the TMA and above all the fish, this means that the trend is bullish and we are looking for a long entry.
-- We often use this indicator when there is such a strong movement and we do not get serious trades to find an entry, followed by some kind of a poker test and so on.
-- If 255 EMA moves below the TMA and the price is under 255 EMA, and as in the case, I will look to find my entry for a short position.
-- And when you see that you are getting, take a fish test, find your entry and enter the position.
-- And when you want to look for a long position, first find your short entry for a fish.
-**Indicators:** EMA
-
----
-
-## 7. Хийтмап трейдинг за за напреднали и начинаещи
+## 1. Хийтмап трейдинг за за напреднали и начинаещи
 *TradeTravelChill | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=gKBVFCvLSXM
 
@@ -175,7 +31,7 @@ Source: https://www.youtube.com/watch?v=gKBVFCvLSXM
 
 ---
 
-## 8. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
+## 2. Best AI Trading Bots of 2026? My Plan for AI. (INSANE Profit)
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
@@ -205,7 +61,7 @@ Source: https://www.youtube.com/watch?v=jUJ0tMsHm1M
 
 ---
 
-## 9. I lost $120k trading signals 😭💸
+## 3. I lost $120k trading signals 😭💸
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=rzcdWq_jV0k
 
@@ -218,7 +74,7 @@ Source: https://www.youtube.com/watch?v=rzcdWq_jV0k
 
 ---
 
-## 10. My Community Found a FREE Smart Money TradingView Indicator… One Change Fixed Everything
+## 4. My Community Found a FREE Smart Money TradingView Indicator… One Change Fixed Everything
 *DaviddTech | asr_transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
@@ -255,7 +111,7 @@ Source: https://www.youtube.com/watch?v=YvGITxuf7zg
 
 ---
 
-## 11. Dumb Money Concepts [theUltimator5]
+## 5. Dumb Money Concepts [theUltimator5]
 *TheUltimator5 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltimator5/
 
@@ -264,7 +120,7 @@ Source: https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltim
 
 ---
 
-## 12. TIKOLE S.P.ADX-DI Trend Indication 9503888883
+## 6. TIKOLE S.P.ADX-DI Trend Indication 9503888883
 *TIKOLE14 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/
 
@@ -279,7 +135,7 @@ Source: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indi
 
 ---
 
-## 13. Aura Trend Momentum [Pineify]
+## 7. Aura Trend Momentum [Pineify]
 *Pineify | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/
 
@@ -292,7 +148,7 @@ Source: https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/
 
 ---
 
-## 14. Candle Genome Scanner [forexobroker]
+## 8. Candle Genome Scanner [forexobroker]
 *forexobroker | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/
 
@@ -303,7 +159,7 @@ Source: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexo
 
 ---
 
-## 15. Gamma Exposure Levels [BackQuant]
+## 9. Gamma Exposure Levels [BackQuant]
 *BackQuant | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/
 
@@ -312,7 +168,7 @@ Source: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQu
 
 ---
 
-## 16. SMC Completo [PFX]
+## 10. SMC Completo [PFX]
 *prodigiofx26 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/zRJwbqRU/
 
@@ -322,7 +178,7 @@ Source: https://www.tradingview.com/script/zRJwbqRU/
 
 ---
 
-## 17. [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum
+## 11. [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum
 *AquaTickTrader | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/
 
@@ -336,7 +192,7 @@ Source: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-A
 
 ---
 
-## 18. Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)
+## 12. Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)
 *seantrading2 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/
 
@@ -352,7 +208,7 @@ Source: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell
 
 ---
 
-## 19. Smoothed Stochastic Momentum Index [Mr. Quant]
+## 13. Smoothed Stochastic Momentum Index [Mr. Quant]
 *Jacob_LuxAlgo | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/
 
@@ -365,7 +221,7 @@ Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum
 
 ---
 
-## 20. Bitcoin: We Really Do Live in a Simulation
+## 14. Bitcoin: We Really Do Live in a Simulation
 *IntoTheCryptoverse | transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=i3WIoS9Echo
 
@@ -387,7 +243,7 @@ Source: https://www.youtube.com/watch?v=i3WIoS9Echo
 
 ---
 
-## 21. Yaduvansi Precision Entry System
+## 15. Yaduvansi Precision Entry System
 *yaduvansiit | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-System/
 
@@ -397,7 +253,7 @@ Source: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-Sy
 
 ---
 
-## 22. GuarDeer Precision Entry System
+## 16. GuarDeer Precision Entry System
 *yaduvansiit | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-System/
 
@@ -407,7 +263,7 @@ Source: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-Sys
 
 ---
 
-## 23. Future Roll Monitor
+## 17. Future Roll Monitor
 *QuantNomad | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/
 
@@ -417,7 +273,7 @@ Source: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/
 
 ---
 
-## 24. Smart Pivot Reversals [identityKa]
+## 18. Smart Pivot Reversals [identityKa]
 *IdentityKa | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/H64WPT4Q/
 
@@ -426,11 +282,90 @@ Source: https://www.tradingview.com/script/H64WPT4Q/
 
 ---
 
-## 25. Weekly Distribution Levels
+## 19. Weekly Distribution Levels
 *const | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/engdMsy0/
 
 **Summary:** TradingView indicator: Weekly Distribution Levels by const. █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution. It answers the question: &#34;How far has price moved this week compared to what&#39;s normal?&#34; Works on any instrument — futures, stocks, forex, crypto. Everything is computed dynamically from the chart&#39;s own price history. █ HOW IT WORKS At the start of each trading week, the … █ OVERVIEW Weekly Distribution Levels plots standard deviation bands around the weekly open price, showing where the current week&#39;s move stands relative to its historical distribution.
 **Context:** Timeframes: weekly
+
+---
+
+## 20. Stop Loss Cascades (Breakouts) [Kioseff Trading]
+*KioseffTrading | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts-Kioseff-Trading/
+
+**Summary:** TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading. 🔹Introduction This indicator &#34;Stop-Loss Clustering (Breakouts)&#34; attempts to model trader stop-loss placement logic and identify price areas where a large amount of stop losses might cluster. The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow. I&#39;ll cover this topic more thoroughly throughout the description. For now, just know that stop … Hello friends and traders!
+**Trading Rules:**
+- TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading.
+- The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow.
+**Strategy Components:**
+- [risk] TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading.
+- [risk] 🔹Introduction This indicator &#34;Stop-Loss Clustering (Breakouts)&#34; attempts to model trader stop-loss placement logic and identify price areas where a large amount of stop losses might cluster.
+- [risk] The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow.
+**Risk Management:**
+- Stop below previous swing low.
+**Entry/Exit Conditions:**
+- TradingView indicator: Stop Loss Cascades (Breakouts) [Kioseff Trading] by KioseffTrading.
+- The idea is, if stop losses are indeed highly concentrated in a specific area, price extending through that area may produce high-velocity breakout conditions via forced order flow.
+
+---
+
+## 21. VWAP Volume Analyzer (Wyckoff) | Capitan-Trading
+*capitan-trading | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/bO0cxmj4/
+
+**Summary:** TradingView indicator: VWAP Volume Analyzer (Wyckoff) | Capitan-Trading by capitan-trading. Most traders focus only on price. But price shows what happened, not necessarily why it happened. https://www.tradingview.com/x/kq5lmcxe/ The Anchored VWAP Volume Analyzer (Wyckoff Concept) is designed to help traders visualize market participation and better contextualize price movements using anchored volume analysis and VWAP-based structure. Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Most traders focus only on price.
+**Raw Concepts:** TradingView indicator: VWAP Volume Analyzer (Wyckoff) | Capitan-Trading by capitan-trading. Most traders focus only on price. But price shows what happened, not necessarily why it happened. Volume reveals participation. https://www.tradingview.com/x/kq5lmcxe/ The Anchored VWAP Volume Analyzer (Wyckoff Concept) is designed to help traders visualize market participation and better contextualize price movements using anchored volume analysis and VWAP-based structure. Inspired by Wyckoff principles, this indicator focuses on the relationship between price, effort, and participation, … Most traders focus only on price. But price shows what happened, not necessarily why it happened. Volume reveals participation. https://www.tradingview.com/x/kq5lmcxe/ The Anchored VWAP Volume Analyzer (Wyckoff C...
+
+---
+
+## 22. GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure
+*TLADe_TradeLikeaDealer | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/EbaHGKsz/
+
+**Summary:** TradingView indicator: GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure by TLADe_TradeLikeaDealer. DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma Exposure analysis on NASDAQ-100 instruments. Companion to the ES/SPX/SPY GEX Dashboard — same engine, dedicated to NQ. ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT THIS INDICATOR DOES This indicator visualizes key strategic levels derived from Gamma Exposure (GEX) analysis — the zones where dealer hedging flows create measurable support and resistance. What you see: - Call Walls — resistance zones where dealers hedge against … DESCRIPTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ A professional framework for Gamma Exposure analysis on NASDAQ-100 instruments.
+**Context:** Assets: NASDAQ, SPX
+
+---
+
+## 23. Topdown Delta Analysis [Mr. Quant]
+*Jacob_LuxAlgo | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Quant/
+
+**Summary:** TradingView indicator: Topdown Delta Analysis [Mr. The Core Calculation: Delta The foundation of the entire indicator is the Delta calculation. It measures the volume relative to the bar&#39;s direction: Formula: Volume * (Close &gt;= Open ? If a bar closes higher than it opened, the volume is considered &#34;Bullish Delta&#34; (Green). If a bar closes lower, it is &#34;Bearish Delta&#34; (Red).
+**Trading Rules:**
+- If a bar closes higher than it opened, the volume is considered &#34;Bullish Delta&#34; (Green).
+- If a bar closes lower, it is &#34;Bearish Delta&#34; (Red).
+
+---
+
+## 24. XAUUSD GoldScalper Pro v8+Session
+*hwarang11 | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/Q2PxJ3RB/
+
+**Summary:** TradingView indicator: XAUUSD GoldScalper Pro v8+Session by hwarang11. Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Language Pine Script v5 Visibility Public License Mozilla Public License 2.0 Tags gold, xauusd, scalping, ema, macd, atr, breakeven, session-filter, risk-management 2. Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … 1. Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … Source URL: https://www.tradingview.com/script/Q2PxJ3RB/.
+**Trading Rules:**
+- Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Langu
+- Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … 1.
+- Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … Source URL: https://www.tradingview.com/script/Q2PxJ3RB/.
+**Strategy Components:**
+- [risk] Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Langu
+**Entry/Exit Conditions:**
+- Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Langu
+**Indicators:** EMA, MACD, ATR
+**Context:** Assets: XAUUSD, GOLD
+
+---
+
+## 25. Tori Trend2.2 by PJPF - Confluence Optimized
+*pjpfowler | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/xnvk2H4w-Tori-Trend2-2-by-PJPF-Confluence-Optimized/
+
+**Summary:** TradingView indicator: Tori Trend2.2 by PJPF - Confluence Optimized by pjpfowler. This indicator further enhances the Tori Trend approach with new updates: 1. Trend line changes colour to indicate more than one touch point - configurable 2. &#34;Proximity&#34; of valid touch points to trend line sensitivity, in pips - configurable This indicator further enhances the Tori Trend approach with new updates: 1. &#34;Proximity&#34; of valid touch points to trend line sensitivity, in pips - configurable Source URL: https://www.tradingview.com/script/xnvk2H4w-Tori-Trend2-2-by-PJPF-Confluence-Optimized/.
+**Strategy Components:**
+- [trend] TradingView indicator: Tori Trend2.2 by PJPF - Confluence Optimized by pjpfowler.
+- [trend] This indicator further enhances the Tori Trend approach with new updates: 1.
+- [trend] Trend line changes colour to indicate more than one touch point - configurable 2.
 
 ---
