@@ -12,6 +12,12 @@ $ordersPath = Join-Path $ROOT 'docs\shared\QUANDALF_ORDERS.md'
 $resultsPath = Join-Path $ROOT 'docs\shared\LAST_CYCLE_RESULTS.md'
 $autopilotSummaryPath = Join-Path $ROOT 'data\state\autopilot_summary.json'
 $quandalfReflectionStatePath = Join-Path $ROOT 'data\state\quandalf_reflection_state.json'
+$autopilotWorkerLockPath = Join-Path $ROOT 'data\state\locks\autopilot_worker.lock'
+
+# Handoff guard timing: ensure upstream run is settled, then apply cooldown.
+$settleQuietSeconds = 4
+$handoffBufferSeconds = 10
+$settleTimeoutSeconds = 180
 
 function Escape-Html {
   param([string]$Text)
@@ -320,6 +326,85 @@ function Format-DurationLabelFromMs {
   return ($mins.ToString() + 'm ' + $secs.ToString('00') + 's')
 }
 
+function Test-AutopilotProcessRunning {
+  try {
+    $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
+      ($_.Name -match 'powershell') -and (
+        ($_.CommandLine -match 'autopilot_worker\.ps1') -or
+        ($_.CommandLine -match 'run_autopilot_task\.ps1')
+      )
+    }
+    return (@($procs).Count -gt 0)
+  } catch {
+    return $false
+  }
+}
+
+function Get-RunLastTimestampUtc {
+  param([string]$RunId)
+  if ([string]::IsNullOrWhiteSpace($RunId)) { return $null }
+  if (-not (Test-Path -LiteralPath $actionsPath)) { return $null }
+
+  $hits = @()
+  try {
+    $rows = Get-Content -LiteralPath $actionsPath -Tail 5000 -Encoding UTF8
+    foreach ($line in $rows) {
+      try { $e = $line | ConvertFrom-Json } catch { continue }
+      $rid = [string]$e.run_id
+      if (-not $rid.StartsWith($RunId + '-')) { continue }
+      $tsRaw = [string]$e.ts_iso
+      if ([string]::IsNullOrWhiteSpace($tsRaw)) { continue }
+      try { $hits += [DateTime]::Parse($tsRaw).ToUniversalTime() } catch {}
+    }
+  } catch {}
+
+  if (@($hits).Count -eq 0) { return $null }
+  return (@($hits | Sort-Object) | Select-Object -Last 1)
+}
+
+function Wait-ForFrodexRunSettle {
+  param(
+    [string]$RunId,
+    [int]$TimeoutSeconds = 180,
+    [int]$QuietSeconds = 4
+  )
+
+  $deadline = [DateTime]::UtcNow.AddSeconds([Math]::Max(10, $TimeoutSeconds))
+  $lastReason = 'unknown'
+
+  while ([DateTime]::UtcNow -lt $deadline) {
+    if (Test-Path -LiteralPath $autopilotWorkerLockPath) {
+      $lastReason = 'autopilot lock still present'
+      Start-Sleep -Seconds 2
+      continue
+    }
+
+    if (Test-AutopilotProcessRunning) {
+      $lastReason = 'autopilot process still running'
+      Start-Sleep -Seconds 2
+      continue
+    }
+
+    $lastTs = Get-RunLastTimestampUtc -RunId $RunId
+    if ($null -eq $lastTs) {
+      $lastReason = 'no run events found yet'
+      Start-Sleep -Seconds 2
+      continue
+    }
+
+    $ageSec = ([DateTime]::UtcNow - $lastTs).TotalSeconds
+    if ($ageSec -lt $QuietSeconds) {
+      $lastReason = ('run still hot (' + [int][Math]::Floor($ageSec) + 's since last event)')
+      Start-Sleep -Seconds 2
+      continue
+    }
+
+    return [PSCustomObject]@{ ok = $true; reason = 'settled'; age_seconds = [int][Math]::Floor($ageSec) }
+  }
+
+  return [PSCustomObject]@{ ok = $false; reason = $lastReason; age_seconds = -1 }
+}
+
 New-Item -ItemType Directory -Force -Path (Split-Path $statePath -Parent) | Out-Null
 New-Item -ItemType Directory -Force -Path (Split-Path $lockDir -Parent) | Out-Null
 
@@ -367,8 +452,27 @@ try {
   }
 
   Write-Host ('New completed run detected: ' + $latestRunId + ' -> triggering quandalf-auto-execute')
+
+  # Ensure Frodex run is fully settled before handoff trigger.
+  $settle = Wait-ForFrodexRunSettle -RunId $latestRunId -TimeoutSeconds $settleTimeoutSeconds -QuietSeconds $settleQuietSeconds
+  if (-not $settle.ok) {
+    $note = ('Upstream run has not settled yet (' + [string]$settle.reason + '), so I deferred this handoff and will retry shortly.')
+    Send-QuandalfCard -StatusWord 'warn' -DurationLabel '0m 00s' -RunId $latestRunId -NoteSentence $note
+    Write-Host ('WARN handoff deferred for run ' + $latestRunId + ': ' + [string]$settle.reason)
+    exit 0
+  }
+
+  if ($handoffBufferSeconds -gt 0) {
+    Start-Sleep -Seconds $handoffBufferSeconds
+  }
+
   $triggerStarted = Get-Date
   $triggerOutput = @(& openclaw cron run $jobId --timeout 120000 2>&1)
+  if ($LASTEXITCODE -ne 0) {
+    # retry once with a short backoff for transient gateway pressure
+    Start-Sleep -Seconds 5
+    $triggerOutput = @(& openclaw cron run $jobId --timeout 120000 2>&1)
+  }
   if ($LASTEXITCODE -ne 0) {
     $triggerText = ($triggerOutput -join ' ')
     $note = 'Triggering reflection timed out at the gateway; I will retry on the next completed run.'
