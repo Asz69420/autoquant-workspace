@@ -6,7 +6,7 @@ if (Test-Path -LiteralPath $lockPath) {
   exit 0
 }
 
-& '.\scripts\pipeline\autopilot_worker.ps1' -RepoHygieneMode FAIL -MaxBundlesPerRun 3
+& '.\scripts\pipeline\autopilot_worker.ps1' -RepoHygieneMode FAIL
 
 # Fire the Frodex card immediately after cycle completion (event-driven logging).
 try {
