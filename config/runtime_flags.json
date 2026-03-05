@@ -1,3 +1,4 @@
 ﻿{
-    "warningsEnabled":  false
+    "warningsEnabled": false,
+    "hyperMode": false
 }

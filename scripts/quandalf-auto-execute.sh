@@ -20,11 +20,35 @@ STATE_FILE="$STATE_DIR/quandalf_handoff_state.json"
 REFLECTION_STATE_FILE="$STATE_DIR/quandalf_reflection_state.json"
 LOCK_DIR="$STATE_DIR/locks/quandalf_pipeline.lockdir"
 ACTIONS_FILE="$ROOT_DIR/data/logs/actions.ndjson"
+RUNTIME_FLAGS_FILE="$ROOT_DIR/config/runtime_flags.json"
 
 mkdir -p "$STATE_DIR" "$ROOT_DIR/data/state/locks"
 
+HYPER_MODE="0"
+if [[ -f "$RUNTIME_FLAGS_FILE" ]]; then
+  HYPER_MODE=$("$PY_BIN" - "$RUNTIME_FLAGS_FILE" <<'PY'
+import json, sys
+from pathlib import Path
+p = Path(sys.argv[1])
+try:
+    obj = json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
+except Exception:
+    obj = {}
+print('1' if bool(obj.get('hyperMode')) else '0')
+PY
+)
+fi
+
 cleanup_lock() {
   rmdir "$LOCK_DIR" >/dev/null 2>&1 || true
+}
+
+trigger_frodex_chain() {
+  if [[ "$HYPER_MODE" != "1" ]]; then
+    return 0
+  fi
+  powershell.exe -NoProfile -ExecutionPolicy Bypass \
+    -File "$ROOT_DIR/scripts/automation/trigger_frodex_chain.ps1" >/dev/null 2>&1 || true
 }
 
 if ! mkdir "$LOCK_DIR" >/dev/null 2>&1; then
@@ -421,6 +445,7 @@ PY
 
 if [[ $py_rc -eq 10 ]]; then
   mark_processed_run
+  trigger_frodex_chain
   echo "No pending Quandalf order for completed run $LATEST_RUN_ID."
   exit 0
 elif [[ $py_rc -ne 0 ]]; then
@@ -441,5 +466,6 @@ fi
 #   -SourceFile "$ROOT_DIR/docs/shared/QUANDALF_JOURNAL.md"
 
 mark_processed_run
+trigger_frodex_chain
 
 echo "Quandalf pending order processed for run $LATEST_RUN_ID."
