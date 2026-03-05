@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-c18d7f330979",
+  "created_at": "2026-03-05T14:00:12.719447Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/Q2PxJ3RB/",
+  "title": "XAUUSD GoldScalper Pro v8+Session",
+  "author": "hwarang11",
+  "summary_bullets": [
+    "TradingView indicator: XAUUSD GoldScalper Pro v8+Session by hwarang11.",
+    "Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Language Pine Script v5 Visibility Public License Mozilla Public License 2.0 Tags gold, xauusd, scalping, ema, macd, atr, breakeven, session-filter, risk-management 2.",
+    "Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … 1.",
+    "Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … Source URL: https://www.tradingview.com/script/Q2PxJ3RB/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: XAUUSD GoldScalper Pro v8+Session by hwarang11.",
+      "note": "Meaning: TradingView indicator: XAUUSD GoldScalper Pro v8+Session by hwarang11."
+    },
+    {
+      "timestamp": null,
+      "quote": "Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Langu",
+      "note": "Meaning: Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAU"
+    },
+    {
+      "timestamp": null,
+      "quote": "Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … 1.",
+      "note": "Meaning: Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … 1."
+    },
+    {
+      "timestamp": null,
+      "quote": "Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … Source URL: https://www.tradingview.com/script/Q2PxJ3RB/.",
+      "note": "Meaning: Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … Source URL: http"
+    }
+  ],
+  "extracted_rules": [
+    "Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Language Pine Script v5 Visibility Public License Mozilla Public License 2.0 Tags gold, xauusd, scalping, ema, macd, atr, breakeven, session-filter, risk-management 2.",
+    "Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … 1.",
+    "Script Description Text (paste into TradingView) Copy the text below directly into the Description field when publishing your script … Source URL: https://www.tradingview.com/script/Q2PxJ3RB/."
+  ],
+  "strategy_components": [
+    {
+      "type": "risk",
+      "description": "Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Language Pine Script v5 V"
+    }
+  ],
+  "explicit_conditions": [
+    "Script Title &amp; Category Field Recommended Value Script Title XAUUSD GoldScalper Pro v8 | EMA + MACD + Asymmetric R:R Category Strategies Symbol XAUUSD, GOLD Timeframe 5 (5-minute, optimized) Language Pine Script v5 Visibility Public License Mozilla Public License 2.0 Tags gold, xauusd, scalping, ema, macd, atr, breakeven, session-filter, risk-management 2."
+  ],
+  "indicators_mentioned": [
+    "EMA",
+    "MACD",
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [
+    "XAUUSD",
+    "GOLD"
+  ],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-c18d7f330979.raw.txt",
+  "sha256": "2e7002e1f6aa20e6dc526b36dc83d11e38e488b89d44ecc27fa81b9f75c2dcf0",
+  "truncated": false
+}

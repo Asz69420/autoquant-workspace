@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "tori trend2.2 by pjpf - confluence optimized|pjpfowler",
+    "script_id": "xnvk2H4w",
+    "name": "Tori Trend2.2 by PJPF - Confluence Optimized",
+    "author": "pjpfowler",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-02b3994da450.indicator_record.json",
+    "first_seen_ts": "2026-03-05T14:00:15.801270+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "xauusd goldscalper pro v8+session|hwarang11",
+    "script_id": "Q2PxJ3RB",
+    "name": "XAUUSD GoldScalper Pro v8+Session",
+    "author": "hwarang11",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-00edff5ab486.indicator_record.json",
+    "first_seen_ts": "2026-03-05T14:00:13.155847+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "topdown delta analysis [mr. quant]|jacob_luxalgo",
     "script_id": "Xlm8itga",
     "name": "Topdown Delta Analysis [Mr. Quant]",
