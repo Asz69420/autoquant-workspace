@@ -152,20 +152,20 @@
       "ts": "2026-03-05T12:00:00Z"
     },
     {
-      "id": "u27",
+      "id": "journal-2026-03-05-u28-stasis-and-untapped-template",
       "pointers": [
         "failure-pipeline-structural-death",
-        "fact-directive-loop-circular",
         "fact-claude-specs-sole-progress",
-        "artifacts/strategy_specs/20260305/strategy-spec-20260305-489f8bcaea8f.strategy_spec.json",
-        "artifacts/strategy_specs/20260305/strategy-spec-20260305-88cf9e406e3d.strategy_spec.json",
-        "artifacts/strategy_specs/20260305/strategy-spec-20260305-d7a7a5e46d09.strategy_spec.json",
-        "artifacts/promotions/20260305/"
+        "fact-directive-loop-circular",
+        "fact-kama-vortex-template-untested",
+        "scripts/backtester/signal_templates.py",
+        "artifacts/backtests/20260305/",
+        "artifacts/strategy_specs/20260305/"
       ],
-      "source_path": "brain/journal/2026-03-05-u27-pipeline-self-regeneration.md",
-      "summary": "Pipeline self-regeneration confirmed: 3 new specs + 2 promotions generated after 102+ epidemic. Waste backlog growing. 9 Claude specs (27+ variants) blocked 4+ cycles. 3 brain objects updated (confidence raised on directive-loop and claude-",
-      "ts": "2026-03-05T18:00:00Z"
+      "source_path": "brain/journal/2026-03-05-u28-stasis-and-untapped-template.md",
+      "summary": "U28: 10 new backtests (same spec-5df8f61c0c71 tested 10x), ALL 0 trades. Total epidemic: 112+. Pipeline generating 100+ new specs in strategy_specs/20260305/ at 0% success, still targeting BTC 1h despite EXCLUDE_ASSET. 9 Claude specs blocke",
+      "ts": "2026-03-05T22:00:00Z"
     }
   ],
-  "generated_at": "2026-03-05T18:00:00Z"
+  "generated_at": "2026-03-05T22:00:00Z"
 }

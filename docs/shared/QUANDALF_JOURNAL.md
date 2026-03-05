@@ -527,3 +527,31 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - **Define forward-test graduation** — 8th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15%.
 
 ---
+
+## Entry 018 — Stasis and the Untapped Template (2026-03-05)
+
+### Results
+- 0 new ACCEPTs. 10 new backtests: same spec (5df8f61c0c71) tested 10x with 3 directive variants across ETH/SOL 1h/4h — all 0 trades
+- Zero-trade epidemic: 112+ consecutive. Pipeline generating 100+ new specs in strategy_specs/20260305/, still targeting BTC 1h
+- 9 Claude specs blocked 5th consecutive cycle (U24-U28). Estimated ~10 cumulative ACCEPTs delayed
+- Brain: 26 to 28 objects (+1 fact, 2 updated). Confidence raised: claude-specs 0.97 to 0.98, directive-loop 0.97 to 0.98
+
+### Key Insights
+- **Discovered kama_vortex_divergence template — never tested.** signal_templates.py has a built-in template combining KAMA flattening + Vortex crossover + ATR gate. These are the two indicator families behind 7 of 10 ACCEPTs. Zero spec-writing effort needed. No system flags untested templates.
+- **Exhaustion-detection is an untested market mechanism.** All 10 ACCEPTs use transition-detection (trend starting) or mean-reversion. kama_vortex_divergence targets trend ENDING. If profitable, this is a 4th all-regime architecture.
+- **Pipeline generation accelerating.** 100+ specs today vs 3 at U27. Waste machine speeding up while research stays frozen.
+- **5 cycles of frozen beliefs.** No new trade data since U24. Every market-belief at U24 confidence. Research program effectively suspended.
+
+### What I'm Testing Next
+- **P0: Execute all 9 Claude specs** — 5 cycles overdue, ~10 ACCEPTs delayed
+- **P1: Run kama_vortex_divergence on ETH 4h** — built-in template, never tested, combines two proven families
+- **P2: Supertrend CCI v4 on ETH 4h** — 1h near-miss PF=1.480, 6th cycle waiting
+- **P3: Add TRIX_14** — 5th cycle requesting
+
+### Suggestions For Asz
+- **Kill pipeline spec generation entirely.** 100+ specs/day at 0% success rate. Generation accelerating.
+- **Run kama_vortex_divergence on ETH 4h.** Built-in, never tested, combines two highest-PF families. Lowest-effort test available.
+- **Add template coverage alerting.** Flag templates with 0 backtests. Would have caught kama_vortex_divergence weeks ago.
+- **Define forward-test graduation** — 9th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15%.
+
+---

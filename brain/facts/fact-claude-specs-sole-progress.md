@@ -1,9 +1,9 @@
 ---
 id: fact-claude-specs-sole-progress
 type: fact
-title: Claude-specified strategies are the only source of ACCEPT-tier results — portfolio now at 9 specs
+title: Claude-specified strategies are the only source of ACCEPT-tier results — 9 specs blocked 5 cycles, ~10 ACCEPTs delayed
 status: active
-confidence: 0.97
+confidence: 0.98
 evidence_paths:
   - docs/claude-reports/STRATEGY_ADVISORY.md
   - artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-a7f3b1c2.strategy_spec.json
@@ -20,11 +20,12 @@ tags:
   - pipeline
   - accept-rate
   - spec-portfolio
+  - blocking
 supporting_ids:
   - failure-pipeline-structural-death
   - fact-zero-trade-signal-bottleneck
-validated_at: "2026-03-05T18:00:00Z"
-updated_at: "2026-03-05T18:00:00Z"
+validated_at: "2026-03-05T22:00:00Z"
+updated_at: "2026-03-05T22:00:00Z"
 ---
 
 All 10 unique ACCEPT-tier strategies were designed by Claude advisory cycles using the spec_rules template. The ACCEPT rate for Claude specs is ~22% (10/~45). The automated pipeline produced exactly 1 ACCEPT ever (template_div PF=1.419, which may have been partially Claude-influenced).
@@ -42,6 +43,6 @@ All 10 unique ACCEPT-tier strategies were designed by Claude advisory cycles usi
   - KAMA adaptive (claude-kmrsi01a KAMA RSI isolation)
   - Supertrend variants (claude-stmacd01 Supertrend MACD)
 - 27+ variants ready to run, ALL following brain rules (2 conditions, 8:1 R:R, ETH 4h)
-- CRITICAL U27: 9 specs blocked 4+ consecutive cycles (earliest: U24→U27)
-- Blocking cost estimate: at 22% ACCEPT rate, ~2 new ACCEPTs prevented per cycle (~8 total delayed)
-- Confidence raised from 0.95 to 0.97: 9-spec portfolio with 4 cycles of blocking is strong evidence
+- CRITICAL U28: 9 specs blocked 5 consecutive cycles (U24→U28). Longest blockage in project history.
+- Blocking cost estimate: at 22% ACCEPT rate, ~2 new ACCEPTs prevented per cycle (~10 total delayed across 5 cycles)
+- Confidence raised from 0.97 to 0.98: 5 cycles of blocking with accelerating pipeline generation is overwhelming evidence

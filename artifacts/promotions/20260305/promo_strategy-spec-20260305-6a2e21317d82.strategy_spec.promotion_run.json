@@ -1,0 +1,13 @@
+﻿{
+    "schema_version":  "1.0",
+    "id":  "promo_strategy-spec-20260305-6a2e21317d82.strategy_spec",
+    "created_at":  "2026-03-05T00:17:14.4532806Z",
+    "status":  "REVIEW_REQUIRED",
+    "reason_code":  "QUANDALF_DECISION_REQUIRED",
+    "suggestion":  "Evidence package ready. Quandalf must decide pass/promote/revise and next matrix.",
+    "input_linkmap_path":  "",
+    "thesis_artifact_path":  "artifacts/thesis/20260305/thesis-20260305-6a2e21317d82.thesis.json",
+    "strategy_spec_artifact_path":  "artifacts/strategy_specs/20260305/strategy-spec-20260305-6a2e21317d82.strategy_spec.json",
+    "batch_backtest_artifact_path":  "C:\\Users\\Clamps\\.openclaw\\workspace\\artifacts\\batches\\20260305\\batch_20260305_d5ca91de.batch_backtest.json",
+    "experiment_plan_artifact_path":  "artifacts\\experiments\\20260305\\exp_20260305_1f9d637c.experiment_plan.json"
+}

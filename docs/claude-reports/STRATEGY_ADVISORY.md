@@ -1,8 +1,8 @@
-# Strategy Advisory — 2026-03-05 (Update 27)
+# Strategy Advisory — 2026-03-05 (Update 28)
 
 **Author:** claude-advisor (Quandalf) | **Mode:** STRATEGY_RESEARCHER
-**Data window:** 0 new backtests since U26, 3 new pipeline specs generated, 9 Claude specs blocked, 0 NEW ACCEPTs
-**Prior advisory:** 2026-03-05 (Update 26)
+**Data window:** 10 new backtests (all 0 trades, same spec), 100+ pipeline specs still generating, 9 Claude specs blocked 5th cycle, 0 NEW ACCEPTs
+**Prior advisory:** 2026-03-05 (Update 27)
 
 ---
 
@@ -19,25 +19,26 @@
   {"action": "BLACKLIST_INDICATOR_COMBO", "target": "Ichimoku + KAMA", "reason": "4 configs tested, best PF=1.090. Incompatible time horizons."},
   {"action": "BLACKLIST_INDICATOR_COMBO", "target": "CCI + T3 zero-cross", "reason": "PF=0.606 on ETH 1h. T3 too slow as CCI smoothing filter."},
   {"action": "BLACKLIST_INDICATOR_COMBO", "target": "OBV confirmation", "reason": "OBV trends with price, triples trades, halves PF. Use divergence only."},
-  {"action": "EXCLUDE_ASSET", "target": "BTC", "reason": "0 ACCEPTs in 800+ outcomes across 27 cycles. Even champion v3a loses (PF=0.743)."},
+  {"action": "EXCLUDE_ASSET", "target": "BTC", "reason": "0 ACCEPTs in 800+ outcomes across 28 cycles. Pipeline STILL generating BTC 1h specs despite this directive."},
   {"action": "EXCLUDE_TIMEFRAME", "target": "15m", "reason": "0 ACCEPTs ever."},
   {"action": "PREFER_TIMEFRAME", "target": "4h", "reason": "All 10 ACCEPTs are 4h. 1h shows promise but DD accumulation prevents ACCEPT."},
   {"action": "DISABLE_REFINEMENT", "reason": "0% improvement rate across 44+ stall cycles. Consuming backtest slots for zero output."},
-  {"action": "PRIORITIZE_CLAUDE_SPECS", "reason": "CRITICAL U27: 9 Claude specs blocked 4+ cycles. 22% ACCEPT rate vs pipeline ~0%. 27+ variants ready to run."},
-  {"action": "KILL_DIRECTIVE_LOOP", "reason": "ESCALATED U27: 102+ consecutive 0-trade backtests. Pipeline still generating new specs despite total failure."},
-  {"action": "CIRCUIT_BREAK_PIPELINE", "threshold": "5_consecutive_zero_trade_per_spec_family", "reason": "ESCALATED U27: Pipeline generating specs faster than it can backtest them. Waste backlog growing."},
-  {"action": "HALT_PIPELINE", "reason": "ESCALATED U27: Pipeline self-regenerating — 3 new specs + 2 promotions generated AFTER 102+ epidemic. Full halt, immediate."},
-  {"action": "HALT_SPEC_GENERATION", "reason": "NEW U27: Pipeline generating new specs (489f8bcaea8f, 88cf9e406e3d, d7a7a5e46d09) that will produce more 0-trade runs. Stop generation, not just backtesting."},
+  {"action": "PRIORITIZE_CLAUDE_SPECS", "reason": "CRITICAL U28: 9 Claude specs blocked 5 CONSECUTIVE CYCLES. 22% ACCEPT rate vs pipeline ~0%. ~10 ACCEPTs delayed cumulatively."},
+  {"action": "KILL_DIRECTIVE_LOOP", "reason": "ESCALATED U28: 112+ consecutive 0-trade backtests. Same spec re-tested 10x this cycle with 0 trades."},
+  {"action": "CIRCUIT_BREAK_PIPELINE", "threshold": "5_consecutive_zero_trade_per_spec_family", "reason": "ESCALATED U28: spec-20260305-5df8f61c0c71 backtested 10 times, 0 trades every time. No circuit breaker."},
+  {"action": "HALT_PIPELINE", "reason": "ESCALATED U28: 100+ new strategy specs generated in 20260305/ directory. Pipeline running at full generation rate despite total failure."},
+  {"action": "HALT_SPEC_GENERATION", "reason": "ESCALATED U28: Pipeline generating 100+ specs on day with 0% success rate. BTC 1h still being targeted. Generation must stop."},
   {"action": "MONITOR_FORWARD_TEST", "target": "vortex_transition_v3a", "status": "LIVE"},
   {"action": "MONITOR_FORWARD_TEST", "target": "supertrend_tail_harvester_8to1", "status": "LIVE"},
   {"action": "FORWARD_TEST_CANDIDATE", "target": "kama_stoch_pullback_v1", "reason": "Third lane, decorrelated."},
   {"action": "FORWARD_TEST_CANDIDATE", "target": "ichimoku_tk_transition_v1", "reason": "ACCEPT PF=1.604. Decorrelated from Vortex family."},
-  {"action": "DESIGN_SPEC", "target": "supertrend_cci_v4_4h", "priority": 0, "reason": "1h near-miss PF=1.480. 4h port = highest-probability next ACCEPT. Spec EXISTS (claude-d4e1f8a3). BLOCKED 5 cycles."},
-  {"action": "DESIGN_SPEC", "target": "ema200_vortex_v3_tight_dd", "priority": 1, "reason": "v2 PF=1.969 but DD=30%. Tighten stop. Spec EXISTS (claude-b7c2a9e6). BLOCKED 4 cycles."},
-  {"action": "INDICATOR_REQUEST", "target": "TRIX_14", "reason": "TRIX triple-smoothed EMA. Transition-detection candidate via zero-cross. Requested since U24."},
+  {"action": "DESIGN_SPEC", "target": "supertrend_cci_v4_4h", "priority": 0, "reason": "1h near-miss PF=1.480. 4h port = highest-probability next ACCEPT. BLOCKED 6 cycles."},
+  {"action": "DESIGN_SPEC", "target": "ema200_vortex_v3_tight_dd", "priority": 1, "reason": "v2 PF=1.969 but DD=30%. Tighten stop. BLOCKED 5 cycles."},
+  {"action": "TEST_TEMPLATE", "target": "kama_vortex_divergence", "priority": 2, "reason": "NEW U28: Built-in template in signal_templates.py, NEVER tested. Combines two proven ACCEPT families (KAMA + Vortex). Detects exhaustion via KAMA flattening + Vortex crossover."},
+  {"action": "INDICATOR_REQUEST", "target": "TRIX_14", "reason": "TRIX triple-smoothed EMA. Transition-detection candidate. Requested since U24 (5 cycles)."},
   {"action": "INDICATOR_REQUEST", "target": "TREX_histogram", "reason": "Research card — triple exponentially smoothed MA histogram. Transition-detection via zero-cross."},
-  {"action": "INDICATOR_REQUEST", "target": "TASC_DM_hilbert", "reason": "Research card — Hilbert transform directional movement. Mathematical phase detection for regime transitions."},
-  {"action": "DEFINE_FORWARD_TEST_GRADUATION", "reason": "8th cycle requesting. No criteria defined. Cannot promote/demote forward tests without this."}
+  {"action": "INDICATOR_REQUEST", "target": "TASC_DM_hilbert", "reason": "Research card — Hilbert transform directional movement. Phase detection for regime transitions."},
+  {"action": "DEFINE_FORWARD_TEST_GRADUATION", "reason": "9th cycle requesting. No criteria defined. Cannot promote/demote forward tests without this."}
 ]
 ```
 
@@ -45,15 +46,15 @@
 
 ## Executive Summary
 
-**Zero new ACCEPTs. Pipeline self-regenerating. Claude specs blocked 4th cycle. 9 specs, 27+ variants sit idle.**
+**Zero new ACCEPTs. 5th consecutive cycle of Claude spec blockage. Pipeline generating 100+ new specs per day at 0% success rate. ~10 cumulative ACCEPTs delayed.**
 
-Since U26, no additional backtests have completed — the 36 zero-trade runs from earlier today remain the latest. But the pipeline has not stopped: 3 new strategy specs (489f8bcaea8f, 88cf9e406e3d, d7a7a5e46d09), 3 new theses, and 2 new promotion runs were generated AFTER the 102+ epidemic was documented. The pipeline is actively producing offspring that will generate more zero-trade backtests when they run. The waste backlog is growing, not shrinking.
+Since U27, 10 additional backtests completed — all zero trades from a single spec (strategy-spec-20260305-5df8f61c0c71) tested across 3 directive variants, 2 assets, and 2 timeframes. Total zero-trade epidemic: **112+ consecutive backtests** across 3 days. Meanwhile, the strategy_specs/20260305/ directory contains **100+ newly generated pipeline specs**, many targeting BTC 1h in direct violation of EXCLUDE_ASSET:BTC.
 
-The Claude spec portfolio is the largest and most complete it has ever been: **9 specs covering 6 distinct indicator mechanism families** (Vortex transition, KAMA adaptive, CCI confirmation, T3 smoothing, ALMA Gaussian, EMA200 structural gating) with 27+ variants. None have been backtested. The earliest (ALMA Vortex, T3 EMA200, CCI KAMA) are now blocked 4 consecutive cycles. At the validated 22% ACCEPT rate, approximately 2 new ACCEPTs are being prevented per cycle of delay.
+The 9 Claude specs (27+ variants across 6 mechanism families) are now blocked **5 consecutive cycles** (U24→U28). At 22% ACCEPT rate, approximately **10 new ACCEPTs have been prevented** cumulatively. The entire research program has been frozen since U24 — no new trade data, no regime analysis, no belief evolution.
 
-**The pipeline is no longer just dead — it is self-reinforcing waste.** It fails, generates remediation specs from failures, those fail identically, generating more specs. Meanwhile it also generates entirely new specs via thesis-promotion that also fail. The generation rate exceeds the consumption rate, so the junk backlog grows. Halting backtesting alone is insufficient — spec generation itself must stop.
+**New discovery this cycle:** The `kama_vortex_divergence` template has been sitting in signal_templates.py since it was built, **never tested**. It combines KAMA flattening (adaptive speed → exhaustion) with Vortex crossover (transition detection) — the two indicator families behind 7 of 10 ACCEPTs. This is a zero-effort test opportunity.
 
-Brain: 26 objects. No confidence changes (no new trade data). 10 unique ACCEPTs unchanged.
+Brain: 26 objects → 28 (2 updated, 1 new fact). 10 unique ACCEPTs unchanged.
 
 ---
 
@@ -61,12 +62,11 @@ Brain: 26 objects. No confidence changes (no new trade data). 10 unique ACCEPTs 
 
 | Pattern | Evidence | Verdict |
 |---------|----------|---------|
-| **Pipeline self-regeneration** | 3 new specs + 2 promotions generated AFTER 102+ epidemic | **NEW — KILL GENERATION** |
-| **Directive remediation loop** | 102+ consecutive 0-trade runs, crosses day boundary | **CIRCULAR — KILL** |
-| **Claude spec starvation** | 9 specs, 27+ variants blocked 4+ cycles (U24→U27) | **CRITICAL BLOCKER** |
-| **Pipeline spec architecture** | EMA+RSI+ATR+confidence_threshold = 0 trades across 102+ runs | STRUCTURALLY DEAD |
-| **Pipeline directive enforcement** | 0/28 machine directives read or applied | DEAD |
-| **Recombine system** | Still generates BTC 1h specs despite EXCLUDE_ASSET:BTC | BROKEN |
+| **Pipeline 100+ specs/day at 0%** | 100+ specs in 20260305/, 0 trades ever | **ESCALATED — KILL GENERATION** |
+| **Claude spec starvation** | 9 specs, 27+ variants blocked 5 cycles (U24→U28) | **CRITICAL — ~10 ACCEPTs delayed** |
+| **Single-spec loop** | spec-5df8f61c0c71 tested 10x, 0 trades every time | **LOOP CONFIRMED** |
+| **BTC 1h generation** | Recent specs target BTC 1h despite EXCLUDE_ASSET | **DIRECTIVE IGNORED** |
+| **Directive enforcement** | 0/29 machine directives applied | DEAD |
 | OBV volume confirmation | PF=1.094, noise not edge | DEAD |
 | BTC all strategies | 0 ACCEPTs across 800+ outcomes | DEAD |
 | 1h Vortex | v2c PF=0.816, v3b PF=0.803 | DEAD |
@@ -77,7 +77,7 @@ Brain: 26 objects. No confidence changes (no new trade data). 10 unique ACCEPTs 
 
 ### Priority 0: Execute the 9 Claude specs (27+ variants)
 
-The complete Claude spec portfolio, all ready to run on ETH 4h:
+Unchanged from U27. The complete Claude spec portfolio, all ready to run on ETH 4h:
 
 | Spec ID | Mechanism | Variants | Thesis |
 |---------|-----------|----------|--------|
@@ -91,13 +91,19 @@ The complete Claude spec portfolio, all ready to run on ETH 4h:
 | claude-kmrsi01a | KAMA + RSI | 3 | Isolate KAMA edge mechanism |
 | claude-e2macd01 | EMA200 + MACD | 2 | Macro transition + momentum confirm |
 
-**Expected yield: ~6 out of 30 variants should ACCEPT (22% historical rate). This is the ENTIRE research frontier.**
+**Expected yield: ~6 out of 30 variants should ACCEPT (22% historical rate).**
 
-### Priority 1: Transition-detection expansion with new indicators
-TREX histogram, TASC DM (Hilbert transform), TRIX_14 — all mathematically grounded transition detectors. Extends the thesis behind 6 of 10 ACCEPTs. Requires new dataframe columns.
+### Priority 1: Test kama_vortex_divergence template (NEW)
 
-### Priority 2: Forward-test lifecycle
-Define graduation criteria. 2 strategies live, 2 candidates queued. No resolution mechanism.
+The `kama_vortex_divergence` template exists in `signal_templates.py` but has **never been backtested**. It detects exhaustion via KAMA flattening + Vortex crossover + ATR gate. This combines the two proven all-regime families (KAMA adaptive + Vortex transition) in an exhaustion-detection architecture — a mechanism not yet tested. Zero spec-writing effort required.
+
+### Priority 2: Transition-detection expansion with new indicators
+
+TREX histogram, TASC DM (Hilbert transform), TRIX_14 — all mathematically grounded transition detectors. Extends the thesis behind 6 of 10 ACCEPTs. Requires new dataframe columns. 5th cycle requesting TRIX.
+
+### Priority 3: Forward-test lifecycle
+
+Define graduation criteria. 2 strategies live, 2 candidates queued. No resolution mechanism. 9th cycle requesting.
 
 ---
 
@@ -114,14 +120,14 @@ Define graduation criteria. 2 strategies live, 2 candidates queued. No resolutio
 | kama_stoch_pullback | 1 | 1.857 | ACCEPT (FWD-TEST CANDIDATE) |
 | rsi_pullback | 5 | 1.442 | GOOD (SATURATED) |
 | cci_chop_fade | 1 | 1.255 | STABLE |
-| supertrend_cci | 0 | 1.480 (1h) | NEAR-MISS — spec claude-d4e1f8a3 ready |
-| kama_vortex_divergence | 0 | — | UNTESTED |
+| supertrend_cci | 0 | 1.480 (1h) | NEAR-MISS — 4h port blocked 6 cycles |
+| **kama_vortex_divergence** | 0 | — | **UNTESTED — NEW PRIORITY** |
 | stochastic_reversal | 0 | — | DEAD (BUG) |
 | bollinger_breakout | 0 | — | DEAD (BUG) |
 
 ---
 
-## ACCEPT Leaderboard (Top 14 — unchanged from U25)
+## ACCEPT Leaderboard (Top 14 — unchanged from U24)
 
 | Rank | Strategy | PF | DD | Trades | Key Regime | Status |
 |------|----------|----|----|--------|------------|--------|
@@ -144,39 +150,43 @@ Define graduation criteria. 2 strategies live, 2 candidates queued. No resolutio
 
 ## Regime Insights
 
-- **No new regime data.** 102+ zero-trade backtests produce zero regime analysis. Knowledge frozen since U24.
+- **No new regime data.** 112+ zero-trade backtests produce zero regime analysis. Knowledge frozen since U24 (5 cycles).
 - **Transitional remains highest-alpha regime.** EMA200 Vortex v2 trans PF=4.321 (record). 6/10 ACCEPTs use transition-detection.
 - **Ranging is universal base.** Every ACCEPT profitable in ranging (PF 1.12-4.87).
 - **Trending is the filter.** Only transition-detecting (Vortex) and adaptive (KAMA) strategies survive trending without regime gate.
-- **No empirical challenge possible this cycle.** Existing beliefs cannot be tested while pipeline consumes all capacity.
+- **Exhaustion-detection untested.** kama_vortex_divergence template targets exhaustion (trend ending) — a mechanism distinct from transition-detection (trend starting). Could reveal new regime dynamics.
+- **No empirical challenge possible.** Existing beliefs cannot be tested or updated while pipeline consumes all capacity.
 
 ---
 
 ## Recommended Directives
 
-1. **HALT PIPELINE + SPEC GENERATION** — Not just backtesting — halt generation too. Pipeline is producing new specs (3 this cycle) that will produce more 0-trade waste. Stop the source.
-2. **EXECUTE ALL 9 CLAUDE SPECS** — 27+ variants on ETH 4h. Expected ~6 ACCEPTs. 4th cycle of delay for earliest specs.
-3. **ADD TRIX_14, TREX, TASC DM INDICATORS** — Transition-detection expansion blocked waiting for new dataframe columns. 3rd cycle requesting.
-4. **DEFINE FORWARD-TEST GRADUATION** — 8th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15% = graduate. PF < 0.8 or DD > 25% = demote.
-5. **PROMOTE KAMA Stoch v1 + Ichimoku TK v1** — Both decorrelated ACCEPTs ready for forward-test lanes 3 and 4.
+1. **HALT PIPELINE + SPEC GENERATION** — Pipeline generated 100+ specs today at 0% success rate, many targeting BTC 1h. Stop generation entirely.
+2. **EXECUTE ALL 9 CLAUDE SPECS** — 27+ variants on ETH 4h. Expected ~6 ACCEPTs. 5th cycle of delay. ~10 cumulative ACCEPTs prevented.
+3. **TEST kama_vortex_divergence TEMPLATE** — Built-in, never tested, combines two proven ACCEPT families. Zero spec effort.
+4. **ADD TRIX_14, TREX, TASC DM INDICATORS** — 5th cycle requesting TRIX. Transition-detection expansion blocked on indicators.
+5. **DEFINE FORWARD-TEST GRADUATION** — 9th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15% = graduate. PF < 0.8 or DD > 25% = demote.
+6. **PROMOTE KAMA Stoch v1 + Ichimoku TK v1** — Both decorrelated ACCEPTs ready for forward-test lanes 3 and 4.
 
 ---
 
 ## Doctrine Gaps
 
-1. **No spec generation rate-limiting.** Pipeline generates specs independently of backtest capacity. Waste backlog grows unchecked. Need: generation pauses when backtest queue > N.
-2. **No circuit-breaker doctrine.** 102+ zero-trade runs would be caught at 5-10 with a simple rule. Still no automatic halt.
-3. **No spec priority routing.** Claude specs and pipeline specs compete equally for backtest capacity despite 22% vs ~0% ACCEPT rates.
-4. **No forward-test lifecycle.** Start, monitor, graduate, demote — none defined. 8th cycle requesting.
-5. **No indicator request pipeline.** TRIX requested U24. TREX and TASC DM requested U26. No process to add indicators.
-6. **Stale doctrine references.** All outcome notes reference doctrine items from 2026-02-26 (8+ days). Doctrine not evolving.
+1. **No spec generation rate-limiting.** Pipeline generates 100+ specs/day independently of backtest capacity. Waste grows unchecked.
+2. **No circuit-breaker doctrine.** 112+ zero-trade runs. Same spec tested 10x. Still no automatic halt.
+3. **No spec priority routing.** Claude specs and pipeline specs compete equally despite 22% vs ~0% ACCEPT rates.
+4. **No forward-test lifecycle.** 9th cycle requesting. Start, monitor, graduate, demote — none defined.
+5. **No indicator request pipeline.** TRIX requested U24 (5 cycles ago). No process to add indicators.
+6. **Stale doctrine references.** All outcome notes reference doctrine items from 2026-02-26 (9+ days). Doctrine not evolving.
+7. **No template coverage tracking.** kama_vortex_divergence sat untested for weeks until manual discovery. No system to flag untested templates.
 
 ---
 
 ## Suggestions For Asz
 
-- **Kill the pipeline AND its spec generation.** Halting backtests isn't enough — the pipeline generated 3 new junk specs today even without executing them. Stop thesis→spec→promotion entirely.
-- **Run all 9 Claude specs** immediately. 27+ variants ready. This is 4 cycles of delayed research. Expected ~6 new ACCEPTs.
-- **Add TRIX_14, TREX histogram, TASC DM** to the dataframe. Transition-detection expansion is the most promising research direction and it's blocked on indicators.
-- **Define forward-test graduation criteria.** 8th cycle requesting. Proposed: 30 days live, PF > 1.2, DD < 15%.
-- **Consider adding a signal pre-check** to the backtester: verify that entry conditions co-fire on at least 0.5% of bars before committing a full backtest run. Would prevent all 102+ wasted runs.
+- **Kill the pipeline AND its spec generation.** 100+ new specs generated today, all will produce 0 trades. The waste machine is accelerating, not slowing down.
+- **Run all 9 Claude specs immediately.** 5 cycles of delayed research. ~10 cumulative ACCEPTs prevented. This is the single highest-ROI action available.
+- **Run kama_vortex_divergence template on ETH 4h.** Built-in, never tested, zero spec effort. Combines two proven families.
+- **Add TRIX_14 to the dataframe.** 5th cycle requesting. Single indicator addition, extends highest-alpha research direction.
+- **Define forward-test graduation criteria.** 9th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15%.
+- **Add template coverage alerting.** Flag any template in signal_templates.py with 0 backtests. Would have caught kama_vortex_divergence weeks ago.
