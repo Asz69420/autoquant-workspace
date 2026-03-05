@@ -1,37 +1,44 @@
 ---
 id: fact-supertrend-cci-1h-allregime
 type: fact
-title: Supertrend CCI v3 Wide achieves all-regime profitability on ETH 1h (first 1h success)
+title: Supertrend CCI architecture validated across timeframes — 1h all-regime (DD kills), 4h default ACCEPT, 4h 8:1 PF improves but DD blows out
 status: active
-confidence: 0.82
+confidence: 0.88
 tags:
   - supertrend
   - cci
   - 1h
+  - 4h
   - all-regime
   - near-miss
+  - regime-tradeoff
 evidence_paths:
   - artifacts/backtests/20260304/hl_20260304_dfdae944.backtest_result.json
+  - docs/shared/LAST_CYCLE_RESULTS.md
 supporting_ids:
   - fact-eth-4h-dominance
   - rule-4h-only
 contradictory_ids:
   - failure-1h-degradation
-updated_at: "2026-03-04T23:00:00Z"
-validated_at: "2026-03-04T23:00:00Z"
+updated_at: "2026-03-06T01:00:00Z"
+validated_at: "2026-03-06T01:00:00Z"
 ---
 
-Supertrend CCI v3 Wide on ETH 1h achieved PF=1.480, 63 trades, +62.5% return with all-regime profitability:
-- Trending PF=1.638 (30 trades)
-- Ranging PF=1.470 (13 trades)
-- Transitional PF=1.283 (20 trades)
+Supertrend CCI architecture tested across multiple configurations:
 
-This is the FIRST 1h strategy to show profitable signals across all three regimes. However, DD=36.43% exceeds the 20% constraint, preventing ACCEPT status.
+**ETH 1h (U23):** PF=1.480, 63 trades, DD=36.43%. All-regime: trending 1.638, ranging 1.470, transitional 1.283. FIRST 1h all-regime but DD prevents ACCEPT.
 
-Key implications:
-1. The 4h-only rule (rule-4h-only) needs nuance: 1h CAN produce profitable all-regime signals. The issue is DD accumulation, not signal quality.
-2. CCI as trend-CONFIRMATION (with Supertrend direction) outperforms CCI as mean-reversion fade (CCI Chop Fade PF=1.255).
-3. A 4h port of this architecture should reduce DD while maintaining PF (per 4h-dominance pattern).
-4. If 4h port succeeds with DD<20%, this becomes a new ACCEPT and validates CCI-confirmation as a new signal paradigm.
+**ETH 4h default (U31 ACCEPT):** PF=1.290, 112 trades, DD=11.63%. Ranging/transitional specialist: trending 0.562, ranging 1.989, transitional 2.777.
 
-Confidence set at 0.82 (single backtest, 63 trades — needs 4h validation).
+**ETH 4h 8:1 variant (U33):** PF=1.358, 193 trades, DD=25.36%. Regime shift: trending 0.742, ranging 1.548, transitional 3.291.
+- PF improvement (+0.068) but DD blowout (11.63% → 25.36%)
+- 8:1 R:R shifts alpha toward transitional (bigger wins) while degrading ranging (more frequent smaller losses)
+- Trade count nearly doubles (112 → 193) — wider TP catches more marginal entries
+
+**ETH 4h tight variant (U33):** PF=1.179, 202 trades, DD=26.86%. Worse on all metrics.
+
+Key insights:
+1. CCI as trend-CONFIRMATION outperforms CCI as mean-reversion fade (CCI Chop Fade PF=1.255)
+2. Default 4h variant (PF=1.290, DD=11.63%) is optimal — wider R:R doesn't improve risk-adjusted returns
+3. 8:1 R:R regime shift pattern: more transitional alpha but more ranging bleed
+4. Confidence raised to 0.88: 4 variants tested across 2 timeframes, consistent architecture behavior

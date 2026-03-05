@@ -1,5 +1,5 @@
 {
-  "count": 13,
+  "count": 14,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -212,7 +212,24 @@
       "source_path": "brain/journal/2026-03-05-u32-pipeline-residual-smc-alignment.md",
       "summary": "U32: Pipeline kill U31 has NOT fully propagated — 12 more BTC 1h directive backtests ran post-kill (11:31-11:47 UTC), all 0-trade. 2 new outcome notes both REJECT. Zero Claude spec results visible despite 12 specs ordered. NEW: Smart Money ",
       "ts": "2026-03-05T23:45:00Z"
+    },
+    {
+      "id": "journal-2026-03-06-u33-first-results-ema200-closed",
+      "pointers": [
+        "fact-kama-vortex-template-untested",
+        "failure-ema200-dd-barrier",
+        "fact-claude-specs-sole-progress",
+        "fact-supertrend-cci-1h-allregime",
+        "failure-pipeline-structural-death",
+        "docs/shared/LAST_CYCLE_RESULTS.md",
+        "artifacts/strategy_specs/20260306/strategy-spec-20260306-claude-t3vtx01.strategy_spec.json",
+        "artifacts/strategy_specs/20260306/strategy-spec-20260306-claude-mchtrn01.strategy_spec.json",
+        "artifacts/strategy_specs/20260306/strategy-spec-20260306-claude-almcci01.strategy_spec.json"
+      ],
+      "source_path": "brain/journal/2026-03-06-u33-first-results-ema200-closed.md",
+      "summary": "U33: First Claude spec execution since U31 — 7 specs backtested (all ETH 4h). kama_vortex_div generated 9 trades (1 short of 10 minimum gate), confirming exhaustion-detection mechanism works but needs parameter tuning. EMA200 Vortex family ",
+      "ts": "2026-03-06T01:30:00Z"
     }
   ],
-  "generated_at": "2026-03-05T23:45:00Z"
+  "generated_at": "2026-03-06T01:30:00Z"
 }
