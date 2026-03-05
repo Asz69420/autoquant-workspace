@@ -15,6 +15,7 @@ from pathlib import Path
 
 MAX_JSON_BYTES = 60 * 1024
 MAX_INDEX = 200
+MAX_VARIANTS = 10
 ROOT = Path(__file__).resolve().parents[2]
 
 # Indicator Role Framework (from DaviddTech methodology)
@@ -611,10 +612,10 @@ def _collect_v2_directives(limit_notes: int = 5, strategy_family: str = '', temp
         template_ok = (not template) or (template == note_template)
         if not (family_ok or template_ok):
             continue
-        for d in (obj.get('directives') or [])[:5]:
+        for d in (obj.get('directives') or [])[:MAX_VARIANTS]:
             if isinstance(d, dict) and d.get('id') and d.get('type'):
                 directives.append(d)
-    return directives[:5]
+    return directives[:MAX_VARIANTS]
 
 
 def _replace_conf_threshold_in_rules(rules: list[str], old_val: float, new_val: float) -> list[str]:
@@ -768,76 +769,18 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     if not filtered_directives:
         return []
 
-    chosen = filtered_directives[:3]
+    # Quandalf-owned variant plan: one variant per directive (up to MAX_VARIANTS).
+    chosen = filtered_directives[:MAX_VARIANTS]
     out: list[dict] = []
-    for i, d in enumerate(chosen[:2], start=1):
-        out.append(_apply_directive(seed, d, i, magnitude=1.0))
+    for i, d in enumerate(chosen, start=1):
+        v = _apply_directive(seed, d, i, magnitude=1.0)
+        vn = str(v.get('name') or '')
+        if vn and vn in blacklisted_variants:
+            print(f"VARIANT_SKIPPED_BLACKLIST name={vn}", file=sys.stderr)
+            continue
+        out.append(v)
 
-    if 'directive_exploration' not in blacklisted_variants:
-        explore = copy.deepcopy(seed)
-        explore['name'] = 'directive_exploration'
-        explore['description'] = 'Exploration variant generated from directive context.'
-        explore['origin'] = 'EXPLORATION'
-        explore['directive_refs'] = [str(d.get('id')) for d in chosen]
-        for j, d in enumerate(chosen[:2], start=1):
-            explore = _apply_directive(explore, d, j, magnitude=0.5)
-        explore['name'] = 'directive_exploration'
-        explore['description'] = 'Exploration variant generated from directive context.'
-        explore['origin'] = 'EXPLORATION'
-        explore['directive_refs'] = [str(d.get('id')) for d in chosen]
-        out.append(explore)
-    else:
-        print("VARIANT_SKIPPED_BLACKLIST name=directive_exploration", file=sys.stderr)
-
-    # Template diversity: always include one variant with a different signal template
-    import hashlib as _div_hl
-    diversity = copy.deepcopy(seed)
-    family_hash = _div_hl.sha256(str(seed.get('name', '')).encode()).hexdigest()
-    all_templates = list(TEMPLATE_COMBOS.keys())
-    # Read advisory to avoid failing templates
-    avoid = set(advisory.get("avoid_templates", []))
-    prefer = list(advisory.get("prefer_templates", []))
-
-    # Remove current template and avoided templates from candidates
-    current_filters = [str(f) for f in seed.get('filters', []) if 'RoleFramework' in str(f)]
-    current_key = next((k for k, combo in TEMPLATE_COMBOS.items() if any(combo['confirmation'] in f for f in current_filters)), '')
-    candidates = [t for t in all_templates if t != current_key and t not in avoid]
-    if not candidates:
-        candidates = [t for t in all_templates if t != current_key]
-
-    # Prefer advisory-recommended templates, otherwise rotate by cycle count
-    if prefer:
-        preferred_available = [t for t in prefer if t in candidates]
-        if preferred_available:
-            # Rotate through preferred templates using timestamp to avoid repetition
-            cycle_idx = int(datetime.now().strftime('%H')) // 2
-            pick = preferred_available[cycle_idx % len(preferred_available)]
-        else:
-            cycle_idx = int(datetime.now().strftime('%H%M'))
-            pick = candidates[cycle_idx % len(candidates)]
-    else:
-        cycle_idx = int(datetime.now().strftime('%H%M'))
-        pick = candidates[cycle_idx % len(candidates)]
-
-    diversity['filters'] = [f for f in (diversity.get('filters') or []) if 'RoleFramework' not in str(f)]
-    diversity_directive = {'id': 'd_diversity', 'type': 'TEMPLATE_SWITCH', 'params': {'target': pick}}
-    diversity = _apply_directive(diversity, diversity_directive, len(out) + 1, magnitude=1.0)
-    diversity['name'] = 'template_diversity'
-    diversity['description'] = f"Forced template diversity: {pick}"
-    diversity['origin'] = 'DIVERSITY'
-    out.append(diversity)
-
-    if blacklisted_variants:
-        kept = []
-        for v in out:
-            vn = str(v.get('name') or '')
-            if vn and vn in blacklisted_variants:
-                print(f"VARIANT_SKIPPED_BLACKLIST name={vn}", file=sys.stderr)
-                continue
-            kept.append(v)
-        out = kept
-
-    return out[:4]
+    return out[:MAX_VARIANTS]
 
 
 def _apply_outcome_guidance(variants: list[dict], limit: int = 5) -> list[dict]:
@@ -900,16 +843,30 @@ def _spec_keywords(spec: dict) -> set[str]:
 
 
 def _load_library_candidates(limit: int = 10) -> list[dict]:
-    idx = ROOT / 'artifacts' / 'library' / 'INDICATOR_INDEX.json'
-    if not idx.exists():
+    # Strategy improvement candidates come from passed/promoted libraries (not indicator scraping).
+    candidates: list[dict] = []
+    for idx in [
+        ROOT / 'artifacts' / 'library' / 'PROMOTED_INDEX.json',
+        ROOT / 'artifacts' / 'library' / 'PASSED_INDEX.json',
+    ]:
+        if not idx.exists():
+            continue
+        try:
+            rows = json.loads(idx.read_text(encoding='utf-8-sig'))
+        except Exception:
+            continue
+        if not isinstance(rows, list):
+            continue
+        for r in rows:
+            if isinstance(r, dict):
+                candidates.append(r)
+
+    if not candidates:
         return []
-    try:
-        rows = json.loads(idx.read_text(encoding='utf-8-sig'))
-    except Exception:
-        return []
-    if not isinstance(rows, list):
-        return []
-    return [r for r in rows[: max(10, limit * 5)] if isinstance(r, dict)]
+
+    # Keep recent, cap scan size for token/runtime cost.
+    candidates = sorted(candidates, key=lambda x: str(x.get('created_at') or ''), reverse=True)
+    return candidates[: max(MAX_VARIANTS, limit * 5)]
 
 
 def _pick_library_augmented_variant_for_keywords(keywords: set[str], variants: list[dict], max_candidates: int = 10) -> dict | None:
@@ -924,13 +881,15 @@ def _pick_library_augmented_variant_for_keywords(keywords: set[str], variants: l
 
     scored: list[tuple[int, dict, list[str]]] = []
     for row in lib_rows:
+        ds = row.get('datasets_tested') or []
+        d0 = ds[0] if isinstance(ds, list) and ds else {}
         text_parts = [
-            str(row.get('name') or ''),
-            str(row.get('tv_key') or ''),
-            str(row.get('author') or ''),
-            str(row.get('script_id') or ''),
-            ' '.join(str(x) for x in (row.get('tags') or []) if x),
-            ' '.join(str(x) for x in (row.get('keywords') or []) if x),
+            str(row.get('strategy_spec_path') or ''),
+            str(row.get('variant_name') or ''),
+            str(row.get('ppr_decision') or ''),
+            str((row.get('pointers') or {}).get('backtest_result') or ''),
+            str(d0.get('symbol') or ''),
+            str(d0.get('timeframe') or ''),
         ]
         toks = _tokenize(' '.join(text_parts))
         overlap = sorted(list(keywords.intersection(toks)))
@@ -943,7 +902,7 @@ def _pick_library_augmented_variant_for_keywords(keywords: set[str], variants: l
     scored.sort(key=lambda x: (-x[0], str(x[1].get('name') or '').lower()))
     top = scored[:max_candidates]
     refs = unique([
-        str(item[1].get('indicator_record_path') or item[1].get('script_id') or item[1].get('tv_key') or item[1].get('name') or '')
+        str(item[1].get('strategy_spec_path') or item[1].get('variant_name') or item[1].get('id') or '')
         for item in top
     ], max_candidates)
     if not refs:
@@ -951,10 +910,10 @@ def _pick_library_augmented_variant_for_keywords(keywords: set[str], variants: l
 
     base = copy.deepcopy(variants[0])
     base['name'] = 'library_augmented'
-    base['description'] = 'Library-augmented variant selected by keyword overlap.'
+    base['description'] = 'Library-augmented variant selected from passed/promoted strategy history.'
     base['origin'] = 'LIBRARY_AUGMENTED'
-    base['indicator_refs'] = refs
-    base['filters'] = unique((base.get('filters') or []) + ['Library augmented: indicator candidates attached from INDICATOR_INDEX keyword overlap.'], 10)
+    base['library_refs'] = refs
+    base['filters'] = unique((base.get('filters') or []) + ['Library augmented: candidates selected from PASSED/PROMOTED index overlap.'], 10)
     return base
 
 
@@ -973,7 +932,7 @@ def _directives_from_outcome_notes(path: str) -> list[dict]:
     except Exception:
         return []
     out: list[dict] = []
-    for d in (obj.get('directives') or [])[:5]:
+    for d in (obj.get('directives') or [])[:MAX_VARIANTS]:
         if isinstance(d, dict) and d.get('id') and d.get('type'):
             out.append(d)
     return out
@@ -1040,7 +999,7 @@ def main() -> int:
             consumed_outcome_verdict = str(jload(args.outcome_notes).get('verdict') or '').upper()
         except Exception:
             consumed_outcome_verdict = ''
-        consumed_directives = directives[:5]
+        consumed_directives = directives[:MAX_VARIANTS]
         if directives:
             variants = _directive_variants(source_variants[0], directives)
         else:
@@ -1050,7 +1009,7 @@ def main() -> int:
         variants = _apply_outcome_guidance(variants, limit=5)
         kw = _spec_keywords(source_spec)
         lib_aug = _pick_library_augmented_variant_for_keywords(kw, variants, max_candidates=10)
-        if lib_aug is not None and len(variants) < 5:
+        if lib_aug is not None and len(variants) < MAX_VARIANTS:
             variants = variants + [lib_aug]
     else:
         if not args.thesis_path:
@@ -1062,12 +1021,7 @@ def main() -> int:
 
         if candidate_signals:
             baseline = build_baseline(thesis)
-            variants = [
-                baseline,
-                variant_perturbation(baseline),
-                variant_remove_component(baseline),
-                variant_threshold_mutation(baseline),
-            ][:5]
+            variants = [baseline][:MAX_VARIANTS]
         else:
             if not _indicator_evaluable(thesis):
                 print(json.dumps({
@@ -1090,7 +1044,7 @@ def main() -> int:
         if llm_path:
             consumed_outcome_path = llm_path
             consumed_outcome_verdict = llm_verdict
-            consumed_directives = llm_directives[:5]
+            consumed_directives = llm_directives[:MAX_VARIANTS]
             consumed_tags = ','.join([str(d.get('type')) for d in consumed_directives])
             print(f"STRATEGIST_DIRECTIVES_CONSUMED source={llm_path} verdict={llm_verdict} directives={consumed_tags}", file=sys.stderr)
 
@@ -1112,12 +1066,12 @@ def main() -> int:
             directives = _collect_v2_directives(limit_notes=5, strategy_family=strategy_family, template=template)
             if directives:
                 variants = _directive_variants(variants[0], directives)
-                consumed_directives = directives[:5]
+                consumed_directives = directives[:MAX_VARIANTS]
 
         variants = _apply_outcome_guidance(variants, limit=5)
 
         lib_aug = _pick_library_augmented_variant(thesis, variants, max_candidates=10)
-        if lib_aug is not None and len(variants) < 5:
+        if lib_aug is not None and len(variants) < MAX_VARIANTS:
             variants = variants + [lib_aug]
 
     if len(variants) == 0 and args.mode == 'thesis':
@@ -1126,12 +1080,7 @@ def main() -> int:
         candidate_signals = thesis.get('candidate_signals', []) if isinstance(thesis, dict) else []
         if candidate_signals:
             baseline = build_baseline(thesis)
-            fallback_variants = [
-                baseline,
-                variant_perturbation(baseline),
-                variant_remove_component(baseline),
-                variant_threshold_mutation(baseline),
-            ][:5]
+            fallback_variants = [baseline][:MAX_VARIANTS]
         elif _indicator_evaluable(thesis):
             fallback_variants = _fallback_templates(thesis)
 
@@ -1168,8 +1117,8 @@ def main() -> int:
     variants = _deduplicate_variants(variants)
     variants, roles_fixed = _ensure_role_compliant_variants(variants)
 
-    # Frodex contract: emit exactly one variant. Strategy scope is controlled by Quandalf directives.
-    variants = variants[:1]
+    # Quandalf contract: allow up to MAX_VARIANTS variants per run.
+    variants = variants[:MAX_VARIANTS]
     spec = {
         'schema_version': '1.1',
         'id': sid,

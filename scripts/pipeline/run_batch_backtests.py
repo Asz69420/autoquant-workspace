@@ -348,9 +348,9 @@ def main() -> int:
     variant_objects = {str(v.get('name')): v for v in spec.get('variants', []) if isinstance(v, dict) and v.get('name')}
     variants = [v['name'] for v in spec.get('variants', [])]
     selected_variants = variants if args.variant == 'all' else [args.variant]
-    # Frodex execution contract: one variant unless an explicit variant name is requested.
-    if args.variant == 'all' and selected_variants:
-        selected_variants = selected_variants[:1]
+    # Quandalf-controlled variant scope: allow up to 10 variants when --variant all.
+    if args.variant == 'all' and len(selected_variants) > 10:
+        selected_variants = selected_variants[:10]
     for v in selected_variants:
         if v not in variants:
             raise ValueError(f'variant not found in spec: {v}')
