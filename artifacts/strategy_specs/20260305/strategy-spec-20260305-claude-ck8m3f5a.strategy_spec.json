@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-ck8m3f5a",
+  "name": "CCI KAMA Momentum Alignment",
+  "created_at": "2026-03-05T19:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "KAMA is the #1 PPR baseline in the promoted library (PPR 4.27, PF 1.857). CCI-as-confirmation is validated by Supertrend CCI v4 (PF 1.290, ACCEPT). This spec combines KAMA's adaptive trend detection with CCI directional momentum confirmation. When KAMA adapts to trending conditions (price above KAMA), CCI crossing zero confirms genuine momentum alignment — filtering the ranging noise that causes false entries. Different from dead CCI+T3 zero-cross because KAMA discriminates regime via adaptive speed (fast in trends, slow in ranges) while T3 merely smooths. The hypothesis: KAMA's built-in regime sensitivity + CCI's momentum confirmation produces higher-quality entries than either alone.",
+  "regime_assumption": "trending_and_ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "cci_kama_momentum_v1_8to1",
+      "description": "Core thesis: KAMA trend direction + CCI zero-cross momentum confirmation. 8:1 R:R (sweet spot from promoted library). CCI crossing above 0 = momentum turning positive in KAMA-confirmed uptrend.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "Kaufman Adaptive MA — adapts smoothing speed to market volatility. #1 PPR baseline in promoted library."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-cross confirms directional momentum. Validated by Supertrend CCI v4 ACCEPT."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "cci_kama_momentum_v2_10to1",
+      "description": "Extended TP variant: 10:1 R:R (15x ATR TP). Tests whether KAMA's adaptive trend detection sustains long enough for larger profit targets. If KAMA truly identifies sustained trends better than fixed MAs, wider TP captures more of the move.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "KAMA adaptive trend direction."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-cross momentum confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for trend continuation test."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "cci_kama_deep_pullback_v1_8to1",
+      "description": "Mean-reversion variant: CCI crossing above -100 (exiting extreme oversold) while KAMA still confirms uptrend. This catches deep pullbacks within KAMA-confirmed trends — buying the fear dip when momentum starts recovering. Tests whether deeper pullback entries improve PF by entering at cheaper prices.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "KAMA confirms macro trend direction — deep pullbacks within confirmed trend."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI crossing above -100 = exiting extreme oversold, momentum recovering from deep pullback."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["KAMA_10_2_30", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "KAMA_10_2_30 — self-adapting MA, #1 PPR baseline (4.27), provides trend direction with built-in regime sensitivity",
+    "confirmation": "CCI_20_0.015 — momentum confirmation via zero-cross or extreme-zone exit, validated by Supertrend CCI v4",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-bc9q1w6x",
+  "name": "Bollinger CCI Mean Reversion",
+  "created_at": "2026-03-05T19:00:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Ranging regime is the universal profitability base — every ACCEPT is profitable in ranging (PF 1.12-4.87). This spec is designed as a dedicated ranging specialist, explicitly FADING Bollinger Bands rather than trading breakouts (bollinger_breakout template is dead). Bollinger Bands define the ranging envelope via standard deviation. CCI exiting extreme zones (-100 for long, +100 for short) confirms that mean-reversion momentum is starting — the oscillator stops getting worse and begins recovering. The hypothesis: when price is below the Bollinger midline (in the lower half of the range) and CCI exits extreme oversold, the price is reverting to the mean with confirmed momentum. This is the exact opposite of bollinger_breakout — we BUY weakness, not strength. Ranging strategies have lower R:R requirements since moves are bounded, but we maintain 5:1+ per the proven sweet spot.",
+  "regime_assumption": "ranging",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "boll_cci_mean_revert_v1_6to1",
+      "description": "Core thesis: price below Bollinger midline (lower half of range) + CCI exiting extreme oversold (crosses above -100). Mean-reversion entry with momentum confirmation. 6:1 R:R — tighter than trend-following because ranging moves are bounded, but still above 5:1 minimum.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < BBM_20_2.0",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close > BBM_20_2.0",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (9x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 9x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger midline — defines range center. Price below midline = lower half of range, mean-reversion zone."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI crossing above -100 confirms momentum recovering from extreme oversold. Mean-reversion trigger."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and 6:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "boll_cci_mean_revert_v2_8to1",
+      "description": "Extended TP variant: 8:1 R:R (12x ATR TP). Tests whether ranging mean-reversion entries can capture larger moves — if the mean reversion is actually a trend resumption in disguise, the wider TP captures the continuation. Matches the promoted library sweet spot.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < BBM_20_2.0",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close > BBM_20_2.0",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger midline range filter."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI extreme zone exit — mean-reversion momentum trigger."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "8:1 R:R — tests if ranging entries capture trend continuation."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "boll_cci_deep_fade_v1_6to1",
+      "description": "Deep fade variant: price below lower Bollinger Band (BBL) + CCI exiting extreme. Only fires at the extreme of the range — price has pierced the 2-sigma lower band and CCI is recovering. Fewer trades but higher conviction entries at maximum discount.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close < BBL_20_2.0",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close > BBU_20_2.0",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (9x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 9x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "BBL_20_2.0",
+          "role": "baseline",
+          "notes": "Lower Bollinger Band (2-sigma) — price below this is at statistical extreme of range."
+        },
+        {
+          "indicator": "BBU_20_2.0",
+          "role": "baseline",
+          "notes": "Upper Bollinger Band (2-sigma) — short entries at upper extreme."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI extreme zone exit confirms mean-reversion momentum starting at band extreme."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["BBM_20_2.0", "BBL_20_2.0", "BBU_20_2.0", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "BBM_20_2.0/BBL_20_2.0/BBU_20_2.0 — Bollinger Bands define ranging envelope, used as mean-reversion zone boundaries",
+    "confirmation": "CCI_20_0.015 — extreme zone exit confirms momentum recovering, triggers mean-reversion entry",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

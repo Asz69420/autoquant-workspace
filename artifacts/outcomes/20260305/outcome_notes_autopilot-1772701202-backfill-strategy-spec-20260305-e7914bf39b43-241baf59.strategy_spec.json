@@ -1,0 +1,134 @@
+{
+  "schema_version": "2.0",
+  "id": "outcome-notes-autopilot-1772701202-backfill-strategy-spec-20260305-e7914bf39b43-241baf59.strategy_spec",
+  "run_id": "autopilot-1772701202-backfill-strategy-spec-20260305-e7914bf39b43-241baf59.strategy_spec",
+  "created_at": "2026-03-05T09:02:50.667097+00:00",
+  "verdict": "REJECT",
+  "strategy_family": "strategy-spec-20260305-e7914bf39b43-241baf59.strategy_spec",
+  "template": "directive_variant_1_gate_adjust",
+  "metrics": {
+    "profit_factor_after_costs": 0.0,
+    "max_drawdown": 1.0,
+    "trades": 0,
+    "regime_breakdown": {},
+    "regime_pf": {},
+    "regime_wr": {},
+    "dominant_regime": ""
+  },
+  "regime_analysis": {
+    "available": false,
+    "good_regimes": [],
+    "bad_regimes": [],
+    "all_good": false,
+    "all_bad": false,
+    "single_good": false
+  },
+  "failure_reasons": [
+    {
+      "code": "LOW_TRADE_COUNT",
+      "short": "Trade count below gate: 0 < 20",
+      "evidence_pointer": "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260305/batch_20260305_f6640a1d.batch_backtest.json"
+    },
+    {
+      "code": "HIGH_DRAWDOWN",
+      "short": "Max drawdown too high: 1.000 > 0.30",
+      "evidence_pointer": "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260305/batch_20260305_f6640a1d.batch_backtest.json"
+    },
+    {
+      "code": "PF_BELOW_1",
+      "short": "Profit factor after costs below 1.0: 0.000",
+      "evidence_pointer": "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260305/batch_20260305_f6640a1d.batch_backtest.json"
+    }
+  ],
+  "directives": [
+    {
+      "id": "d1",
+      "type": "GATE_ADJUST",
+      "params": {
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "rationale": "Doctrine: risk gating before complexity on drawdown-heavy strategies.",
+      "priority": 1
+    },
+    {
+      "id": "d2",
+      "type": "ENTRY_RELAX",
+      "params": {
+        "confidence_threshold_delta": -0.05
+      },
+      "rationale": "Increase participation to clear minimum trade gate.",
+      "priority": 1
+    },
+    {
+      "id": "d3",
+      "type": "THRESHOLD_SWEEP",
+      "params": {
+        "parameter": "confidence_threshold",
+        "range": [
+          0.5,
+          0.7
+        ],
+        "step": 0.05
+      },
+      "rationale": "Sweep entry threshold to recover trade frequency.",
+      "priority": 2
+    },
+    {
+      "id": "d4",
+      "type": "ENTRY_TIGHTEN",
+      "params": {
+        "confidence_threshold_delta": 0.05
+      },
+      "rationale": "Tighten entry quality to reduce adverse excursions.",
+      "priority": 1
+    },
+    {
+      "id": "d5",
+      "type": "EXIT_CHANGE",
+      "params": {
+        "stop_atr_mult": 1.2,
+        "tp_atr_mult": 1.8
+      },
+      "rationale": "Adjust exits to cap drawdown.",
+      "priority": 2
+    }
+  ],
+  "analysis_source": "rules",
+  "doctrine_refs": [
+    {
+      "id": "20260226-08|conf:0.73",
+      "theme": "risk_gating",
+      "text": "Require risk gating concepts before scaling complexity in entry or exit rules."
+    },
+    {
+      "id": "20260226-21|conf:0.72",
+      "theme": "risk_gating",
+      "text": "Embed concept hook into testable hypothesis design: Risk limit enforcement as non-optional pre-trade check"
+    }
+  ],
+  "directive_history": {
+    "notes_considered": 0,
+    "history_window": [],
+    "directive_type_stats": {},
+    "doctrine_enabled": true,
+    "doctrine_principles": {
+      "regime_required": true,
+      "risk_gating": true,
+      "macd_confirmation_over_entry": false
+    }
+  },
+  "next_experiments": [
+    "Apply GATE_ADJUST with params={\"max_drawdown_cap\": 0.2, \"risk_gate_required\": true}",
+    "Apply ENTRY_RELAX with params={\"confidence_threshold_delta\": -0.05}",
+    "Apply THRESHOLD_SWEEP with params={\"parameter\": \"confidence_threshold\", \"range\": [0.5, 0.7], \"step\": 0.05}",
+    "Apply ENTRY_TIGHTEN with params={\"confidence_threshold_delta\": 0.05}",
+    "Apply EXIT_CHANGE with params={\"stop_atr_mult\": 1.2, \"tp_atr_mult\": 1.8}"
+  ],
+  "sources_used": [
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/batches/20260305/batch_20260305_f6640a1d.batch_backtest.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/refinement/20260304/refine_20260304_00ef1c15.refinement_cycle.json",
+    "C:/Users/Clamps/.openclaw/workspace/artifacts/library/LESSONS_INDEX.json"
+  ],
+  "_batch_hash": "6077ed5bc661840f"
+}

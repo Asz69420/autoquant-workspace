@@ -1,9 +1,9 @@
 ﻿🍳 Cooking
-Status: ⚠️ | Duration: 4m 43s
+Status: ❌ | Duration: 1s
 ○───activity─────────────────────
 Waiting: 0
-Backtests: 16
+Backtests: 0
 Skipped: 0
 Forwardtests: 0
 ○───note─────────────────────────
-System status needs attention this cycle. Cycle complete: 16 backtests run; no strong promotion yet.
+System status is blocked this cycle. I hit 1 issue(s); the main one was Autopilot: another run was active, so this attempt could not take the lock.

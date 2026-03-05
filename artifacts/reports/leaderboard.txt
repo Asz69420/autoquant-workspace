@@ -15,12 +15,12 @@
 5 NEW 1h RSI_Pull 3.9 - 1.71 19.9 161 21.3
 
 ⚡ 24H ACTIVITY
-Cycles: 209 | Backtests: 0 | New specs: 0 | Errors: 3683
+Cycles: 218 | Backtests: 0 | New specs: 0 | Errors: 3738
 
 🎯 MILESTONES
 • Promoted/near: Stra_Spec, Stra_Spec, Stra_Spec
 
 ⚠️ ATTENTION
-• Repeated errors: 3683 failed runs/24h
+• Repeated errors: 3738 failed runs/24h
 • Note: investigate error sources next session
 • Starvation warning: no backtests in 24h
