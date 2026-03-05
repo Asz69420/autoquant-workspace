@@ -24,13 +24,17 @@ if ($flags.PSObject.Properties.Name -contains 'hyperMode') {
 }
 $flags | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $runtimeFlagsPath -Encoding UTF8
 
-$taskName = '\frodex-ops-loop-15m'
+$frodexTask = '\frodex-ops-loop-15m'
+$handoffTask = '\quandalf-handoff-check-1m'
+
 if ($Enabled) {
-  schtasks /Change /TN $taskName /Disable | Out-Null
-  Write-Host 'Hyper mode ENABLED: frodex-ops-loop-15m schedule disabled.'
+  schtasks /Change /TN $frodexTask /Disable | Out-Null
+  schtasks /Change /TN $handoffTask /Disable | Out-Null
+  Write-Host 'Hyper mode ENABLED: disabled frodex 15m schedule + quandalf handoff poller (event chain active).'
 } else {
-  schtasks /Change /TN $taskName /Enable | Out-Null
-  Write-Host 'Hyper mode DISABLED: frodex-ops-loop-15m schedule enabled.'
+  schtasks /Change /TN $frodexTask /Enable | Out-Null
+  schtasks /Change /TN $handoffTask /Enable | Out-Null
+  Write-Host 'Hyper mode DISABLED: enabled frodex 15m schedule + quandalf handoff poller (normal mode).'
 }
 
 Write-Host ('runtime_flags.hyperMode=' + ([string]([bool]$Enabled)).ToLowerInvariant())

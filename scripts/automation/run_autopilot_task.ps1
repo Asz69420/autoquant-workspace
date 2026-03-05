@@ -14,3 +14,25 @@ try {
 } catch {
   Write-Host ('WARN: immediate frodex log send failed: ' + $_.Exception.Message)
 }
+
+# Hyper mode: event-chain handoff (Frodex completion -> Quandalf trigger path) without schedule polling.
+$hyperMode = $false
+try {
+  $flagsPath = '.\config\runtime_flags.json'
+  if (Test-Path -LiteralPath $flagsPath) {
+    $flags = Get-Content -LiteralPath $flagsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($flags -and $flags.PSObject.Properties.Name -contains 'hyperMode') {
+      $hyperMode = [bool]$flags.hyperMode
+    }
+  }
+} catch {
+  $hyperMode = $false
+}
+
+if ($hyperMode) {
+  try {
+    & '.\scripts\automation\check_quandalf_handoff.ps1' | Out-Null
+  } catch {
+    Write-Host ('WARN: hyper handoff trigger failed: ' + $_.Exception.Message)
+  }
+}
