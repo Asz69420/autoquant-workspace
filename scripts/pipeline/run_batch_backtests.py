@@ -390,6 +390,8 @@ def main() -> int:
                     'trades': 0,
                     'profit_factor': 0.0,
                     'max_drawdown': 0.0,
+                    'ppr_score': 0.0,
+                    'ppr_decision': 'SKIPPED',
                 })
                 continue
 
@@ -422,6 +424,8 @@ def main() -> int:
                     'trades': 0,
                     'profit_factor': 0.0,
                     'max_drawdown': 0.0,
+                    'ppr_score': 0.0,
+                    'ppr_decision': 'SKIPPED',
                 }
                 runs.append(run)
                 continue
@@ -453,6 +457,8 @@ def main() -> int:
                 'trades': bt.get('results', {}).get('total_trades', 0),
                 'profit_factor': bt.get('results', {}).get('profit_factor', 0.0),
                 'max_drawdown': bt.get('results', {}).get('max_drawdown', 0.0),
+                'ppr_score': bt.get('ppr', {}).get('score', 0.0) if isinstance(bt.get('ppr'), dict) else 0.0,
+                'ppr_decision': bt.get('ppr', {}).get('decision', 'NA') if isinstance(bt.get('ppr'), dict) else 'NA',
             }
             if info.get('relax_suggestion_path'):
                 run['relax_suggestion_path'] = info['relax_suggestion_path']
@@ -474,6 +480,10 @@ def main() -> int:
         'trades': int(sum(int(r.get('trades', 0)) for r in runs)),
         'profit_factor': round(sum(float(r.get('profit_factor', 0.0)) for r in runs) / len(runs), 8) if runs else 0.0,
         'max_drawdown': round(max((float(r.get('max_drawdown', 0.0)) for r in runs), default=0.0), 8),
+        'ppr_pass_count': sum(1 for r in runs if str(r.get('ppr_decision', '')).upper() == 'PASS'),
+        'ppr_promote_count': sum(1 for r in runs if str(r.get('ppr_decision', '')).upper() == 'PROMOTE'),
+        'ppr_fail_count': sum(1 for r in runs if str(r.get('ppr_decision', '')).upper() == 'FAIL'),
+        'ppr_suspect_count': sum(1 for r in runs if str(r.get('ppr_decision', '')).upper() == 'SUSPECT'),
     }
 
     batch = {
@@ -510,6 +520,10 @@ def main() -> int:
         'dedup_skipped_history': summary['dedup_skipped_history'],
         'dedup_skipped_batch': summary['dedup_skipped_batch'],
         'directive_blocked_skips': summary['directive_blocked_skips'],
+        'ppr_pass_count': summary['ppr_pass_count'],
+        'ppr_promote_count': summary['ppr_promote_count'],
+        'ppr_fail_count': summary['ppr_fail_count'],
+        'ppr_suspect_count': summary['ppr_suspect_count'],
     }))
     return 0
 

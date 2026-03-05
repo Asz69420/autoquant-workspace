@@ -19,6 +19,15 @@ except Exception:
 
 ROOT = Path(__file__).resolve().parents[2]
 
+# Shared scoring framework (PPR).
+_PIPELINE_DIR = str((ROOT / 'scripts' / 'pipeline').resolve())
+if _PIPELINE_DIR not in sys.path:
+    sys.path.insert(0, _PIPELINE_DIR)
+try:
+    from ppr_score import compute_ppr
+except Exception:
+    compute_ppr = None
+
 
 INDICATOR_REGISTRY: dict[str, dict] = {
     'EMA': {'engine': 'pandas_ta', 'columns': ['EMA_9', 'EMA_21', 'EMA_50', 'EMA_200']},
@@ -444,6 +453,17 @@ def main() -> int:
     gate_pass = total >= min_trades_required if min_trades_required > 0 else True
     gate_reason = 'OK' if gate_pass else 'INSUFFICIENT_TRADES'
 
+    ppr = None
+    if compute_ppr is not None:
+        try:
+            ppr = compute_ppr(
+                profit_factor=round((sum(wins) / abs(sum(losses))) if losses else (999.0 if wins else 0.0), 8),
+                max_drawdown_pct=round((maxdd / args.initial_capital * 100), 4) if args.initial_capital else 0.0,
+                trade_count=total,
+            )
+        except Exception:
+            ppr = None
+
     result = {
         'schema_version': '1.0',
         'id': f"hl_{datetime.now().strftime('%Y%m%d')}_{uuid.uuid4().hex[:8]}",
@@ -491,7 +511,8 @@ def main() -> int:
             'min_trades_required': min_trades_required,
             'gate_pass': gate_pass,
             'gate_reason': gate_reason,
-        }
+        },
+        'ppr': ppr,
     }
 
     day = ROOT / 'artifacts' / 'backtests' / datetime.now().strftime('%Y%m%d')
