@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-f65003d1a8f0",
+  "created_at": "2026-03-05T02:00:11.644257Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/",
+  "title": "Future Roll Monitor",
+  "author": "QuantNomad",
+  "summary_bullets": [
+    "TradingView indicator: Future Roll Monitor by QuantNomad.",
+    "Rolling futures is not just a mechanical action — it is a structural decision.",
+    "When you move from one contract to the next, you are exposed to changes in price, liquidity, and term structure.",
+    "The difference between contracts (the “roll”) can quietly add cost, generate yield, or signal shifts in supply and demand dynamics.",
+    "Future Roll Monitor helps you understand what is happening beneath the surface during contract transitions.",
+    "Why Roll Analysis Matters Most traders focus only on … Rolling futures is not just a mechanical action — it is a structural decision.",
+    "Why Roll Analysis Matters Most traders focus only on … Source URL: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Future Roll Monitor by QuantNomad.",
+      "note": "Meaning: TradingView indicator: Future Roll Monitor by QuantNomad."
+    },
+    {
+      "timestamp": null,
+      "quote": "Rolling futures is not just a mechanical action — it is a structural decision.",
+      "note": "Meaning: Rolling futures is not just a mechanical action — it is a structural decision."
+    },
+    {
+      "timestamp": null,
+      "quote": "When you move from one contract to the next, you are exposed to changes in price, liquidity, and term structure.",
+      "note": "Meaning: When you move from one contract to the next, you are exposed to changes in price, liquidity, and term structure."
+    },
+    {
+      "timestamp": null,
+      "quote": "The difference between contracts (the “roll”) can quietly add cost, generate yield, or signal shifts in supply and demand dynamics.",
+      "note": "Meaning: The difference between contracts (the “roll”) can quietly add cost, generate yield, or signal shifts in supply and demand dynamics."
+    },
+    {
+      "timestamp": null,
+      "quote": "Future Roll Monitor helps you understand what is happening beneath the surface during contract transitions.",
+      "note": "Meaning: Future Roll Monitor helps you understand what is happening beneath the surface during contract transitions."
+    },
+    {
+      "timestamp": null,
+      "quote": "Why Roll Analysis Matters Most traders focus only on … Rolling futures is not just a mechanical action — it is a structural decision.",
+      "note": "Meaning: Why Roll Analysis Matters Most traders focus only on … Rolling futures is not just a mechanical action — it is a structural decision."
+    },
+    {
+      "timestamp": null,
+      "quote": "Why Roll Analysis Matters Most traders focus only on … Source URL: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/.",
+      "note": "Meaning: Why Roll Analysis Matters Most traders focus only on … Source URL: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/."
+    }
+  ],
+  "extracted_rules": [
+    "When you move from one contract to the next, you are exposed to changes in price, liquidity, and term structure."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-f65003d1a8f0.raw.txt",
+  "sha256": "400692703a892d98d649658b8b47642992f51d761d2882a43e29ec0e9615f032",
+  "truncated": false
+}

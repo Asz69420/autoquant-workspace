@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "future roll monitor|quantnomad",
+    "script_id": "bxKNkQln",
+    "name": "Future Roll Monitor",
+    "author": "QuantNomad",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-124d4300fa8b.indicator_record.json",
+    "first_seen_ts": "2026-03-05T02:00:12.016039+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "guardeer precision entry system|yaduvansiit",
+    "script_id": "9RGmyHr6",
+    "name": "GuarDeer Precision Entry System",
+    "author": "yaduvansiit",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-d6f0c226efc0.indicator_record.json",
+    "first_seen_ts": "2026-03-05T02:00:10.854159+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "yaduvansi precision entry system|yaduvansiit",
     "script_id": "2IsRscca",
     "name": "Yaduvansi Precision Entry System",

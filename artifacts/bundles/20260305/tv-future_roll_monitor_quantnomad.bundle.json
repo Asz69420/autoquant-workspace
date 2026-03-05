@@ -1,0 +1,14 @@
+﻿{
+    "id":  "bundle_tv_future roll moni",
+    "created_at":  "2026-03-05T02:00:11.788877+00:00",
+    "source":  "tradingview_catalog",
+    "research_card_path":  "artifacts/research/20260305/research-20260305-f65003d1a8f0.research_card.json",
+    "indicator_record_paths":  [
+                                   "artifacts/indicators/20260305/indicator-20260305-124d4300fa8b.indicator_record.json"
+                               ],
+    "linkmap_path":  "artifacts/links/20260305/research-20260305-f65003d1a8f0.linkmap.json",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-05T02:01:21.2169896Z",
+    "attempts":  1,
+    "last_error":  "QUANDALF_DECISION_REQUIRED"
+}

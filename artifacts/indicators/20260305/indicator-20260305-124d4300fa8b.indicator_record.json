@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260305-124d4300fa8b",
+  "created_at": "2026-03-05T02:00:11.387101Z",
+  "tv_ref": "tradingview:bxKNkQln",
+  "url": "https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/",
+  "name": "Future Roll Monitor",
+  "author": "QuantNomad",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "ecd79640b602a158633c2abc611b8933a4e377f48771abe29c796f4c66ea5738",
+  "truncated": false
+}

@@ -1,0 +1,36 @@
+﻿[2026-03-05 12:01:20] Balrog post-backtest check: ALL CLEAR
+[2026-03-05 12:02:26] Balrog post-backtest check: ALL CLEAR
+[2026-03-05 12:03:33] Balrog post-backtest check: ALL CLEAR
+{
+    "event":  "LAB_SUMMARY",
+    "created_at":  "2026-03-05T02:03:37.8834509Z",
+    "bundles_processed":  3,
+    "promotions_processed":  0,
+    "refinements_run":  0,
+    "new_candidates_count":  100,
+    "candidates_ingested":  3,
+    "candidates_reaching_refinement":  0,
+    "candidates_passing_gate":  15,
+    "directive_notes_seen":  1,
+    "directive_variants_emitted":  6,
+    "directive_backfill_specs_generated":  1,
+    "active_library_size":  500,
+    "new_indicators_added":  2,
+    "skipped_indicators_dedup":  160,
+    "errors_count":  0,
+    "dry_run":  false,
+    "insight_new":  0,
+    "insight_processed":  0,
+    "insight_failed":  0,
+    "recombine_created":  0,
+    "recombine_bundle_path":  "",
+    "min_strategies_per_run":  1,
+    "max_strategies_per_run":  10,
+    "strategy_contract_ok":  true,
+    "strategy_contract_shortfall":  0,
+    "quandalf_queue_generated":  1,
+    "queue_backlog":  3,
+    "queued_for_testing":  1,
+    "directive_loop_stall_cycles":  0
+}
+
