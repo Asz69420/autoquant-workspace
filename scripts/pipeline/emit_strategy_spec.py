@@ -16,8 +16,9 @@ from pathlib import Path
 MAX_JSON_BYTES = 60 * 1024
 MAX_INDEX = 200
 MAX_VARIANTS = 10
-TARGET_MIN_VARIANTS = 3
-TARGET_MAX_VARIANTS = 7
+# Policy: 1-2 material variants + baseline retest (total target 2-3)
+TARGET_MIN_VARIANTS = 2
+TARGET_MAX_VARIANTS = 3
 ROOT = Path(__file__).resolve().parents[2]
 
 # Indicator Role Framework (from DaviddTech methodology)
@@ -752,6 +753,32 @@ def _apply_directive(base: dict, directive: dict, idx: int, magnitude: float = 1
     return v
 
 
+def _is_material_directive(directive: dict) -> bool:
+    d_type = str((directive or {}).get('type') or '').upper()
+    if not d_type:
+        return False
+
+    # Material: structural/mechanism-level changes only.
+    explicit = {
+        'TEMPLATE_SWITCH',
+        'ROLE_SWAP',
+        'INDICATOR_SWAP',
+        'FILTER_STACK_CHANGE',
+        'ENTRY_LOGIC_REWRITE',
+        'MECHANISM_SWAP',
+    }
+    if d_type in explicit:
+        return True
+
+    # Generic allow for future structural directive names.
+    structural_tokens = ('SWAP', 'REWRITE', 'MECHANISM', 'STRUCTURAL')
+    if any(tok in d_type for tok in structural_tokens):
+        return True
+
+    # Micro tuning directives are not variants under current policy.
+    return False
+
+
 def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     if not directives:
         return []
@@ -766,10 +793,18 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
         if d_type and d_type in blacklisted_directive_types:
             print(f"DIRECTIVE_SKIPPED_BLACKLIST type={d_type}", file=sys.stderr)
             continue
+        if not _is_material_directive(d):
+            print(f"DIRECTIVE_SKIPPED_MICRO type={d_type}", file=sys.stderr)
+            continue
         filtered_directives.append(d)
 
     if not filtered_directives:
-        return []
+        # Keep baseline retest so cycle remains accountable even when all directives are micro.
+        baseline = copy.deepcopy(seed)
+        baseline['name'] = 'directive_baseline_retest'
+        baseline['description'] = 'Baseline retest (all candidate directives were micro/non-material).'
+        baseline['origin'] = 'BASELINE_RETEST'
+        return [baseline]
 
     # Push multi-variant behavior while keeping flexibility.
     chosen = filtered_directives[:MAX_VARIANTS]

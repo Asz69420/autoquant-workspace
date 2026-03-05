@@ -1,10 +1,10 @@
 ﻿param(
   [switch]$DryRun,
   [int]$MaxRefinementsPerRun = 1,
-  [int]$MaxBundlesPerRun = 3,
+  [int]$MaxBundlesPerRun = 5,
   [int]$MinStrategiesPerRun = 1,
   [int]$TargetStrategiesPerRun = 3,
-  [int]$MaxStrategiesPerRun = 10,
+  [int]$MaxStrategiesPerRun = 5,
   [int]$RetryDepth = 0,
   [int]$MaxImmediateRetries = 2,
   [switch]$QuandalfOwnsDecisions = $true,
