@@ -158,4 +158,4 @@ Collision rules:
 - Keep unattended execution model (S4U/background) and highest-privilege posture as configured.
 - Keep task working directory and command action unchanged unless explicitly re-approved.
 
-See also: `docs/RUNBOOKS/01-adding-indicators.md`, `docs/RUNBOOKS/02-running-backtest.md`, `docs/SCHEMA-sqlite.md`
+See also: `docs/RUNBOOKS/01-adding-indicators.md`, `docs/RUNBOOKS/02-running-backtest.md`, `docs/RUNBOOKS/ppr-scoring.md`, `docs/SCHEMA-sqlite.md`
