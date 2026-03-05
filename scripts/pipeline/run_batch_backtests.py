@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 from __future__ import annotations
 
 import argparse
@@ -457,13 +457,14 @@ def main() -> int:
     if args.max_runs > 0:
         runs = runs[:args.max_runs]
     attempted = len(selected_variants) * len(dataset_metas)
-    dedup_skipped_total = history_skips + in_batch_skips
+    dedup_skipped_total = history_skips + in_batch_skips + directive_blocked_skips
     summary = {
         'total_runs': len(runs),
         'attempted_runs': attempted,
         'dedup_skipped_total': dedup_skipped_total,
         'dedup_skipped_history': history_skips,
         'dedup_skipped_batch': in_batch_skips,
+        'directive_blocked_skips': directive_blocked_skips,
         'failed_runs': sum(1 for r in runs if not r['gate_pass']),
         'net_profit': round(sum(float(r.get('net_profit', 0.0)) for r in runs), 8),
         'trades': int(sum(int(r.get('trades', 0)) for r in runs)),
@@ -504,9 +505,11 @@ def main() -> int:
         'dedup_skipped_total': summary['dedup_skipped_total'],
         'dedup_skipped_history': summary['dedup_skipped_history'],
         'dedup_skipped_batch': summary['dedup_skipped_batch'],
+        'directive_blocked_skips': summary['directive_blocked_skips'],
     }))
     return 0
 
 
 if __name__ == '__main__':
     raise SystemExit(main())
+
