@@ -1,12 +1,12 @@
 ﻿{
     "quandalf_last":  {
-                          "sent_at":  "2026-03-04T21:00:19.6470702Z",
-                          "last_run_id":  "advisory-u27-1741196400",
-                          "hash":  "82e1ab5aab860b8ff445a2369074876132aa2b1700d3fdb2658db78c2801797e"
+                          "sent_at":  "2026-03-04T23:00:19.9481966Z",
+                          "last_run_id":  "claude-gen-20260305-batch3",
+                          "hash":  "5103d5e4b4ebb0d5a3aa15d2e7e2f6a6199d700a3e60f60abe46cca0a9529059"
                       },
     "frodex_last":  {
-                        "sent_at":  "2026-03-04T22:49:06.3103964Z",
-                        "last_run_id":  "autopilot-1772664302",
-                        "hash":  "22e6071dc7ed4d7a23533864be0ded486333d87995ff6bb88746eb838b0e50ab"
+                        "sent_at":  "2026-03-04T23:49:05.7576231Z",
+                        "last_run_id":  "autopilot-1772667902",
+                        "hash":  "c78fe595da7e7c9e57b59d87c0faebd483b245861acf06058f51938fff1573cb"
                     }
 }

@@ -101,12 +101,14 @@ fi
 # Claude Code reflection first (Opus via run_claude_skill); non-fatal fallback to executor path.
 echo "Quandalf reflection: trying Claude Code (Opus)..."
 set +e
-powershell.exe -NoProfile -ExecutionPolicy Bypass \
+timeout 45s powershell.exe -NoProfile -ExecutionPolicy Bypass \
   -File "$ROOT_DIR/scripts/automation/run_claude_skill.ps1" \
   -Mode research -RetryCount 1 >/dev/null 2>&1
 claude_rc=$?
 set -e
-if [[ $claude_rc -ne 0 ]]; then
+if [[ $claude_rc -eq 124 ]]; then
+  echo "WARN: Claude reflection timed out; continuing with fallback executor path."
+elif [[ $claude_rc -ne 0 ]]; then
   echo "WARN: Claude reflection unavailable; continuing with fallback executor path."
 fi
 

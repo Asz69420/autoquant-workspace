@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "yaduvansi precision entry system|yaduvansiit",
+    "script_id": "2IsRscca",
+    "name": "Yaduvansi Precision Entry System",
+    "author": "yaduvansiit",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-051094fdb57b.indicator_record.json",
+    "first_seen_ts": "2026-03-04T23:00:05.021543+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "ccl jang 1h close turn signal|wtr7848",
+    "script_id": "pOokQELY",
+    "name": "CCL JANG 1H Close Turn Signal",
+    "author": "wtr7848",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-ad401794235f.indicator_record.json",
+    "first_seen_ts": "2026-03-04T23:00:03.623691+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "smoothed stochastic momentum index [mr. quant]|jacob_luxalgo",
     "script_id": "d7dD0rJ1",
     "name": "Smoothed Stochastic Momentum Index [Mr. Quant]",

@@ -1,27 +1,40 @@
 [
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-42ccf170722c-cec7c692.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-42ccf170722c.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-808e46266e5b.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-8080503b5809.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-ddfc49a77668.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-4958781fb44a.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-14a69aa27392.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-t3suprt1.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-kamasma1.strategy_spec.json",
-  "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-chopsup1.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-59894ffe509d-a1424907.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-59894ffe509d.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-4a67cfd0cf39.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-51af8288c53f.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-5e38c4725bb9-c1d740df.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-5e38c4725bb9.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-71cb7009005a.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-fe7cf75bc4a6.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-05a191c7b826-0ffdaa2c.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-05a191c7b826.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-0fb28c6bbd1a.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-58fa0da4ccb0.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-willr2e1.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-vwapstk1.strategy_spec.json",
+  "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-ikucloud.strategy_spec.json",
   {
     "value": [
-      "artifacts/strategy_specs/20260305/strategy-spec-20260305-d7a7a5e46d09.strategy_spec.json",
-      "artifacts/strategy_specs/20260305/strategy-spec-20260305-88cf9e406e3d.strategy_spec.json",
-      "artifacts/strategy_specs/20260305/strategy-spec-20260305-489f8bcaea8f.strategy_spec.json",
-      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-f3a8d5b1.strategy_spec.json",
-      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-d4e1f8a3.strategy_spec.json",
-      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-b7c2a9e6.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-ce54af9cda3c-2e644418.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-ce54af9cda3c.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-d956aa30005c.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-4c3d55bd0109.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-42ccf170722c-cec7c692.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-42ccf170722c.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-808e46266e5b.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-8080503b5809.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-ddfc49a77668.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-4958781fb44a.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-14a69aa27392.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-t3suprt1.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-kamasma1.strategy_spec.json",
+      "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-chopsup1.strategy_spec.json",
       {
-        "value": "artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-e5d8f4a9.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-c9b0e2f7.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-a7f3b1c2.strategy_spec.json ",
-        "Count": 4
+        "value": "artifacts/strategy_specs/20260305/strategy-spec-20260305-d7a7a5e46d09.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-88cf9e406e3d.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-489f8bcaea8f.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-f3a8d5b1.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-d4e1f8a3.strategy_spec.json artifacts/strategy_specs/20260305/strategy-spec-20260305-claude-b7c2a9e6.strategy_spec.json ",
+        "Count": 7
       }
     ],
-    "Count": 7
+    "Count": 15
   }
 ]

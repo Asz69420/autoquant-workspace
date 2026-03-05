@@ -524,7 +524,7 @@ if ($mode -eq 'quandalf') {
 
   $lines += "○───activity─────────────────────"
   $lines += "Reviewed: $reviewedCount"
-  $lines += "Advanced: $advancedCount"
+  $lines += "Promoted: $advancedCount"
   $lines += "Passed: $passedCount"
   $lines += "Aborted: $abortedCount"
   $lines += "Generated: $generatedCount"

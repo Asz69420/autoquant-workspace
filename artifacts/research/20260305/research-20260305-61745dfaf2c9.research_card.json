@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-61745dfaf2c9",
+  "created_at": "2026-03-04T23:00:04.405401Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-System/",
+  "title": "Yaduvansi Precision Entry System",
+  "author": "yaduvansiit",
+  "summary_bullets": [
+    "TradingView indicator: Yaduvansi Precision Entry System by yaduvansiit.",
+    "Yaduvansi-V1 – Advanced Price Action Smart Money Indicator Yaduvansi-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo market structure ko clearly visualize karta hai.",
+    "Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide karta hai.",
+    "🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Yaduvansi-V1 – Advanced Price Action Smart Money Indicator Yaduvansi-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo market structure ko clearly visualize karta hai.",
+    "🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Source URL: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-System/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Yaduvansi Precision Entry System by yaduvansiit.",
+      "note": "Meaning: TradingView indicator: Yaduvansi Precision Entry System by yaduvansiit."
+    },
+    {
+      "timestamp": null,
+      "quote": "Yaduvansi-V1 – Advanced Price Action Smart Money Indicator Yaduvansi-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo market structure ko clearly visualize karta hai.",
+      "note": "Meaning: Yaduvansi-V1 – Advanced Price Action Smart Money Indicator Yaduvansi-V1 ek powerful Price Action &amp; Smart Money Concept (SMC) based indicator hai jo"
+    },
+    {
+      "timestamp": null,
+      "quote": "Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide karta hai.",
+      "note": "Meaning: Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide "
+    },
+    {
+      "timestamp": null,
+      "quote": "🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Yaduvansi-V1 – Advanced Price Action Smart Money Indicat",
+      "note": "Meaning: 🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Yaduvan"
+    },
+    {
+      "timestamp": null,
+      "quote": "🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Source URL: https://www.tradingview.com/script/2IsRscca-",
+      "note": "Meaning: 🔥 Key Features: ✅ Market Structure Detection Internal &amp; Swing BOS (Break of Structure) CHoCH &amp; CHoCH+ (Change of Character) Dynamic / … Source "
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Yeh indicator traders ko BOS, CHoCH, Order Blocks, Fair Value Gaps, Premium/Discount Zones aur Multi-Timeframe trend direction ek hi chart par provide karta hai."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-61745dfaf2c9.raw.txt",
+  "sha256": "8271f715ea721c10d77d1ac905c75eca5f3a63e1092b18d6eed963c384dcf790",
+  "truncated": false
+}

@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-vwapstk1",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T23:45:00Z",
+  "edge_hypothesis": "VWAP_D is the volume-weighted average price — the institutional fair-value level where the most volume has transacted. It has NEVER been tested in any strategy despite being available since the indicator library was built. When price reclaims VWAP from below while stochastic is in the lower zone (below 40), it catches pullback entries at institutional value — mean-reversion anchored to actual traded volume rather than arbitrary time-based averages. This is fundamentally different from EMA-based pullbacks because VWAP weights by participation (volume), making it a natural magnet for institutional order flow. Stochastic in the lower zone (not extreme oversold) ensures we enter during pullbacks with room to run, not at exhaustion peaks. All ACCEPTs profit in ranging regimes — VWAP mean-reversion should be strongest in ranging markets where price oscillates around fair value.",
+  "variants": [
+    {
+      "name": "vwap_stoch_pullback_8to1",
+      "description": "Core variant. Price reclaims VWAP while stochastic confirms pullback zone. 8:1 R:R sweet spot with 1.5 ATR stop.",
+      "entry_long": [
+        "close crosses_above VWAP_D",
+        "STOCHk_14_3_3 < 40"
+      ],
+      "entry_short": [
+        "close crosses_below VWAP_D",
+        "STOCHk_14_3_3 > 60"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite VWAP crossover signal.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "VWAP", "role": "baseline", "notes": "Volume-weighted institutional fair-value level — first ever VWAP strategy test"},
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "Pullback zone filter — STOCHk in lower/upper zone confirms pullback timing"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "vwap_stoch_pullback_10to1",
+      "description": "Wider target variant. Tests whether VWAP-based entries support extended runs as price moves away from institutional value. 10:1 R:R.",
+      "entry_long": [
+        "close crosses_above VWAP_D",
+        "STOCHk_14_3_3 < 40"
+      ],
+      "entry_short": [
+        "close crosses_below VWAP_D",
+        "STOCHk_14_3_3 > 60"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite VWAP crossover signal.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "10:1 R:R — wider target for extended trend captures from institutional value."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 80, "step": 5, "default": 40}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "VWAP", "role": "baseline", "notes": "Volume-weighted institutional fair-value level"},
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "Pullback zone filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    },
+    {
+      "name": "vwap_stoch_pullback_tight_stop",
+      "description": "Tight stop variant. 1.0 ATR stop to test whether tighter risk at institutional levels reduces DD below 15%. 8:1 effective R:R.",
+      "entry_long": [
+        "close crosses_above VWAP_D",
+        "STOCHk_14_3_3 < 40"
+      ],
+      "entry_short": [
+        "close crosses_below VWAP_D",
+        "STOCHk_14_3_3 > 60"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite VWAP crossover signal.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "Tighter 1.0 ATR stop for DD control at institutional value levels."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "VWAP", "role": "baseline", "notes": "Volume-weighted institutional fair-value level"},
+        {"indicator": "Stochastic", "role": "confirmation", "notes": "Pullback zone filter"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Tight 1.0x for DD control"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["ema_rsi_atr"],
+    "design_target": "vwap_stoch_institutional_pullback",
+    "novel_element": "FIRST EVER VWAP-based strategy — tests volume-weighted institutional value as mean-reversion anchor"
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD", "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels", "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"],
+  "backtester_executable_indicator_map": {"EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma", "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands", "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr", "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend", "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop", "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"},
+  "indicator_roles": {"baseline": ["ema", "sma", "t3", "kama", "alma", "supertrend", "ichimoku", "vwap"], "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"], "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]}
+}

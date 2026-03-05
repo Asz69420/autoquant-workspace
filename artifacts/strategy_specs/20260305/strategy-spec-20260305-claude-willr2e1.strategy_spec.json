@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-willr2e1",
+  "source": "claude-advisor",
+  "created_at": "2026-03-05T23:45:01Z",
+  "edge_hypothesis": "Williams %R has NEVER been tested as a standalone signal — it was only paired with dead STIFFNESS (which killed the combo, not necessarily WILLR itself). WILLR at -80 boundary detects oversold recovery (transition from selling exhaustion to buying interest) — a transition-detection mechanism using momentum math. EMA200 has been proven to amplify transitional alpha (EMA200 Vortex v2 trans PF=4.321, all-time record). This tests whether EMA200 amplification generalizes beyond Vortex to oscillator-based transition signals. If WILLR crossing -80 captures genuine momentum transitions at the macro trend level (above EMA200 for longs), we discover a new transition-detection family using a completely untested standalone indicator.",
+  "variants": [
+    {
+      "name": "willr_ema200_recovery_8to1",
+      "description": "Core variant. WILLR recovers from oversold (-80) while price is above EMA200 macro trend. 8:1 R:R sweet spot, 1.5 ATR stop.",
+      "entry_long": [
+        "WILLR_14 crosses_above -80",
+        "close > EMA_200"
+      ],
+      "entry_short": [
+        "WILLR_14 crosses_below -20",
+        "close < EMA_200"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite WILLR extreme crossover.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "8:1 R:R proven sweet spot across all ACCEPTs."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA200 macro trend filter — proven to amplify transitional alpha (trans PF=4.321 record)"},
+        {"indicator": "Williams %R", "role": "confirmation", "notes": "WILLR crossing -80/-20 as oversold/overbought recovery signal — FIRST standalone test"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility-based stop/TP sizing"}
+      ]
+    },
+    {
+      "name": "willr_ema200_recovery_6to1",
+      "description": "Conservative R:R variant. Tests whether WILLR reversals are shorter-lived than Vortex transitions, requiring tighter TP. 6:1 R:R with 1.5 ATR stop.",
+      "entry_long": [
+        "WILLR_14 crosses_above -80",
+        "close > EMA_200"
+      ],
+      "entry_short": [
+        "WILLR_14 crosses_below -20",
+        "close < EMA_200"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite WILLR extreme crossover.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "6:1 R:R — conservative target for oscillator-based reversals."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 50, "step": 5, "default": 25}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 9.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA200 macro trend filter"},
+        {"indicator": "Williams %R", "role": "confirmation", "notes": "WILLR extreme recovery signal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Volatility sizing"}
+      ]
+    },
+    {
+      "name": "willr_ema200_recovery_tight_stop",
+      "description": "Tight stop variant. 1.0 ATR stop to control DD while maintaining 8:1 R:R. Tests whether tight stops work with oscillator entries at macro trend levels.",
+      "entry_long": [
+        "WILLR_14 crosses_above -80",
+        "close > EMA_200"
+      ],
+      "entry_short": [
+        "WILLR_14 crosses_below -20",
+        "close < EMA_200"
+      ],
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on opposite WILLR extreme crossover.",
+        "Exit on max bars in trade threshold."
+      ],
+      "risk_rules": [
+        "Risk note: ATR-based stop and TP for deterministic execution.",
+        "Risk note: risk per trade target is 1%.",
+        "Tighter 1.0 ATR stop for DD control at EMA200 trend levels."
+      ],
+      "parameters": [
+        {"name": "max_bars_in_trade", "min": 10, "max": 60, "step": 5, "default": 30}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "EMA", "role": "baseline", "notes": "EMA200 macro trend filter"},
+        {"indicator": "Williams %R", "role": "confirmation", "notes": "WILLR extreme recovery signal"},
+        {"indicator": "ATR", "role": "regime_gate", "notes": "Tight 1.0x stop for DD control"}
+      ]
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["ema_rsi_atr"],
+    "design_target": "willr_ema200_macro_recovery",
+    "novel_element": "FIRST standalone WILLR test (previous WILLR+STIFFNESS death was STIFFNESS, not WILLR). Tests EMA200 amplification generalization beyond Vortex."
+  },
+  "backtester_executable_indicators": ["EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD", "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R", "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels", "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"],
+  "backtester_executable_indicator_map": {"EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma", "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands", "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr", "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend", "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop", "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"},
+  "indicator_roles": {"baseline": ["ema", "sma", "t3", "kama", "alma", "supertrend", "ichimoku", "vwap"], "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"], "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]}
+}
