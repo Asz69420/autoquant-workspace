@@ -1,0 +1,4 @@
+﻿created_at=2026-03-06 09:25:18 +10:00
+tag=restorepoint-cycle-sync-pre-20260306-092356
+head_commit=240387a39534c5c1cce8ace62b247b0b303dc0ec
+restore_cmd=git -C "C:\Users\Clamps\.openclaw\workspace" checkout restorepoint-cycle-sync-pre-20260306-092356 -- scripts/automation docs/operations

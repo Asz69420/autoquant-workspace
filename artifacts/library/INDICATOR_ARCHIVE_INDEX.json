@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "top-down htf candles [confirmed]|ariscodes",
+    "script_id": "RbdOG5gE",
+    "name": "Top-Down HTF Candles [Confirmed]",
+    "author": "ArisCodes",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-16fd707aad30.indicator_record.json",
+    "first_seen_ts": "2026-03-05T23:00:05.906023+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "mad for-loop ~ charonquant|charonquant",
+    "script_id": "RSok89Q5",
+    "name": "MAD For-Loop ~ CharonQuant",
+    "author": "CharonQuant",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-628307f3a185.indicator_record.json",
+    "first_seen_ts": "2026-03-05T23:00:04.407373+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "euphoria indicator (ei) [r2d2]|r2d2_4life",
     "script_id": "HV0KvORW",
     "name": "Euphoria Indicator (EI) [R2D2]",

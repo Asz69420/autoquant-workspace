@@ -6,4 +6,9 @@
     "indicator_record_paths":  [
                                    "artifacts/indicators/20260306/indicator-20260306-628307f3a185.indicator_record.json"
                                ],
-    "linkmap_path":  "a
+    "linkmap_path":  "artifacts/links/20260306/research-20260306-b0da399f5e7a.linkmap.json",
+    "status":  "REVIEW_REQUIRED",
+    "last_processed_at":  "2026-03-05T23:00:49.6700679Z",
+    "attempts":  1,
+    "last_error":  "QUANDALF_DECISION_REQUIRED"
+}
