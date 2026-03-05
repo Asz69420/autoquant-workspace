@@ -76,7 +76,11 @@ READ these files:
 10. Passed library summary: artifacts/library/PASSED_INDEX_SUMMARY.json (if exists)
 11. Passed hot window (7d): artifacts/library/PASSED_HOT_7D.json (if exists)
 12. Passed warm window (14d): artifacts/library/PASSED_WARM_14D.json (if exists)
-13. Passed shard archive (read only when needed): artifacts/library/passed/*.passed.ndjson
+13. Promoted library summary: artifacts/library/PROMOTED_INDEX_SUMMARY.json (if exists)
+14. Promoted hot window (7d): artifacts/library/PROMOTED_HOT_7D.json (if exists)
+15. Promoted warm window (14d): artifacts/library/PROMOTED_WARM_14D.json (if exists)
+16. Passed shard archive (read only when needed): artifacts/library/passed/*.passed.ndjson
+17. Promoted shard archive (read only when needed): artifacts/library/promoted/*.promoted.ndjson
 
 DESIGN 2-3 creative strategy specs that:
 - Use DIFFERENT templates from recent specs where possible
@@ -84,7 +88,8 @@ DESIGN 2-3 creative strategy specs that:
 - Include proper regime gates (ADX/trend structure where relevant)
 - Follow exact JSON format of existing strategy specs
 - Represent different underlying ideas (do not clone one concept)
-- Use PASSED_INDEX as an optional improvement bucket: mutate proven families without duplicating prior specs
+- Use PASSED libraries as optional improvement buckets: mutate promising families without duplicating prior specs
+- Use PROMOTED libraries to learn what is currently strongest and anchor high-conviction design choices
 
 FORMAT RULES:
 - Each variant MUST have proper RoleFramework filters matching template

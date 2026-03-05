@@ -76,20 +76,29 @@ Producer:
 ---
 
 ## Libraries (Scalable)
-PASS/PROMOTE strategies are stored in a scalable multi-tier library:
+Two separate libraries are maintained:
 
+### PASS Library (iteration bucket)
 - **Hot (7d):** `artifacts/library/PASSED_HOT_7D.json`
 - **Warm (14d):** `artifacts/library/PASSED_WARM_14D.json`
 - **Alias (compat):** `artifacts/library/PASSED_INDEX.json` (points to hot)
 - **Archive (uncapped):** `artifacts/library/passed/YYYY-MM.passed.ndjson`
 - **Summary metadata:** `artifacts/library/PASSED_INDEX_SUMMARY.json`
 
+### PROMOTED Library (winner bucket)
+- **Hot (7d):** `artifacts/library/PROMOTED_HOT_7D.json`
+- **Warm (14d):** `artifacts/library/PROMOTED_WARM_14D.json`
+- **Alias (compat):** `artifacts/library/PROMOTED_INDEX.json` (points to hot)
+- **Archive (uncapped):** `artifacts/library/promoted/YYYY-MM.promoted.ndjson`
+- **Summary metadata:** `artifacts/library/PROMOTED_INDEX_SUMMARY.json`
+
 Builder:
 - `scripts/pipeline/run_librarian.py`
 
 Notes:
-- Inclusion is PPR-driven (`PASS` or `PROMOTE`), not legacy gate-only.
-- Summary includes `score_system` metadata and hot/warm decision counts.
+- PASS library includes only `ppr_decision=PASS`.
+- PROMOTED library includes only `ppr_decision=PROMOTE`.
+- Both summaries include `score_system` metadata and hot/warm counts.
 
 ---
 
@@ -98,6 +107,11 @@ Leaderboard prioritizes PPR ranking.
 
 Renderer:
 - `scripts/pipeline/render_leaderboard.py`
+
+Buckets:
+- `--bucket promoted` (default): only `PPR >= 3.0`
+- `--bucket passed`: only `1.0 <= PPR < 3.0`
+- `--bucket all`: no PPR bucket filter
 
 Display includes PPR, PF, WR, TC, DD.
 
@@ -110,9 +124,14 @@ Rebuild library windows and summary:
 python scripts/pipeline/run_librarian.py --hot-days 7 --warm-days 14
 ```
 
-Render leaderboard JSON:
+Render promoted leaderboard JSON (default):
 ```powershell
-python scripts/pipeline/render_leaderboard.py --json
+python scripts/pipeline/render_leaderboard.py --bucket promoted --json
+```
+
+Render pass watchlist JSON:
+```powershell
+python scripts/pipeline/render_leaderboard.py --bucket passed --json
 ```
 
 ---

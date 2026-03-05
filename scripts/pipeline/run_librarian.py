@@ -201,20 +201,25 @@ def _write_ndjson(path: Path, rows: list[dict]) -> None:
     path.write_text(body, encoding='utf-8')
 
 
-def _is_ppr_pass_like(entry: dict) -> bool:
+def _is_ppr_pass(entry: dict) -> bool:
     d = str(entry.get('ppr_decision', '') or '').strip().upper()
-    return d in {'PASS', 'PROMOTE'}
+    return d == 'PASS'
 
 
-def _collect_recent_passed(shards_dir: Path, days: int) -> list[dict]:
+def _is_ppr_promote(entry: dict) -> bool:
+    d = str(entry.get('ppr_decision', '') or '').strip().upper()
+    return d == 'PROMOTE'
+
+
+def _collect_recent_bucket(shards_dir: Path, days: int, predicate) -> list[dict]:
     since = datetime.now(UTC) - timedelta(days=days)
     rows: list[dict] = []
     if not shards_dir.exists():
         return rows
-    for p in sorted(shards_dir.glob('*.passed.ndjson')):
+    for p in sorted(shards_dir.glob('*.ndjson')):
         for r in _load_ndjson(p):
             rr = _ensure_ppr(r)
-            if _parse_created_at(str(rr.get('created_at') or '')) >= since and _is_ppr_pass_like(rr):
+            if _parse_created_at(str(rr.get('created_at') or '')) >= since and predicate(rr):
                 rows.append(rr)
     dedup: dict[str, dict] = {}
     for r in rows:
@@ -242,6 +247,12 @@ def main() -> int:
     passed_warm_p = lib_root / 'PASSED_WARM_14D.json'
     passed_summary_p = lib_root / 'PASSED_INDEX_SUMMARY.json'
     passed_shards_dir = lib_root / 'passed'
+
+    promoted_idx_p = lib_root / 'PROMOTED_INDEX.json'  # backward-compat alias (hot window)
+    promoted_hot_p = lib_root / 'PROMOTED_HOT_7D.json'
+    promoted_warm_p = lib_root / 'PROMOTED_WARM_14D.json'
+    promoted_summary_p = lib_root / 'PROMOTED_INDEX_SUMMARY.json'
+    promoted_shards_dir = lib_root / 'promoted'
 
     since = datetime.now(UTC) - timedelta(days=args.since_days)
 
@@ -325,41 +336,47 @@ def main() -> int:
 
     _write(run_idx_p, combined)
 
-    # Passed library (scalable): append/merge into monthly shards (never capped), then expose hot/warm windows.
-    if not passed_shards_dir.exists():
-        passed_shards_dir.mkdir(parents=True, exist_ok=True)
+    # Dual libraries (scalable): PASS bucket and PROMOTED bucket, each sharded monthly.
+    for d in (passed_shards_dir, promoted_shards_dir):
+        if not d.exists():
+            d.mkdir(parents=True, exist_ok=True)
 
-    passed_source = [_ensure_ppr(e) for e in new_entries if _is_ppr_pass_like(_ensure_ppr(e))]
-    # One-time seed when shards are empty: bootstrap from current combined view.
-    if not list(passed_shards_dir.glob('*.passed.ndjson')):
-        passed_source = [_ensure_ppr(e) for e in combined if _is_ppr_pass_like(_ensure_ppr(e))]
+    def _append_bucket(shards_dir: Path, ext: str, predicate):
+        src = [_ensure_ppr(e) for e in new_entries if predicate(_ensure_ppr(e))]
+        if not list(shards_dir.glob(f'*.{ext}.ndjson')):
+            src = [_ensure_ppr(e) for e in combined if predicate(_ensure_ppr(e))]
+        by_month: dict[str, list[dict]] = {}
+        for e in src:
+            dt = _parse_created_at(str(e.get('created_at') or ''))
+            mon = dt.strftime('%Y-%m')
+            by_month.setdefault(mon, []).append(e)
+        for mon, items in by_month.items():
+            shard = shards_dir / f'{mon}.{ext}.ndjson'
+            existing = _load_ndjson(shard)
+            merged: dict[str, dict] = {}
+            for r in existing:
+                merged[_passed_key(r)] = r
+            for r in items:
+                merged[_passed_key(r)] = r
+            out_rows = sorted(merged.values(), key=lambda x: x.get('created_at', ''), reverse=True)
+            _write_ndjson(shard, out_rows)
 
-    by_month: dict[str, list[dict]] = {}
-    for e in passed_source:
-        dt = _parse_created_at(str(e.get('created_at') or ''))
-        mon = dt.strftime('%Y-%m')
-        by_month.setdefault(mon, []).append(e)
+    _append_bucket(passed_shards_dir, 'passed', _is_ppr_pass)
+    _append_bucket(promoted_shards_dir, 'promoted', _is_ppr_promote)
 
-    for mon, items in by_month.items():
-        shard = passed_shards_dir / f'{mon}.passed.ndjson'
-        existing = _load_ndjson(shard)
-        merged: dict[str, dict] = {}
-        for r in existing:
-            merged[_passed_key(r)] = r
-        for r in items:
-            merged[_passed_key(r)] = r
-        out_rows = sorted(merged.values(), key=lambda x: x.get('created_at', ''), reverse=True)
-        _write_ndjson(shard, out_rows)
+    passed_hot = _collect_recent_bucket(passed_shards_dir, days=args.hot_days, predicate=_is_ppr_pass)
+    passed_warm = _collect_recent_bucket(passed_shards_dir, days=args.warm_days, predicate=_is_ppr_pass)
+    promoted_hot = _collect_recent_bucket(promoted_shards_dir, days=args.hot_days, predicate=_is_ppr_promote)
+    promoted_warm = _collect_recent_bucket(promoted_shards_dir, days=args.warm_days, predicate=_is_ppr_promote)
 
-    passed_hot = _collect_recent_passed(passed_shards_dir, days=args.hot_days)
-    passed_warm = _collect_recent_passed(passed_shards_dir, days=args.warm_days)
-
-    # Backward compat: PASSED_INDEX.json points at hot window for lightweight consumers.
     _write(passed_hot_p, passed_hot)
     _write(passed_warm_p, passed_warm)
     _write(passed_idx_p, passed_hot)
 
-    # Future-proof summary index (small payload): aggregate windows + templates/families from warm window.
+    _write(promoted_hot_p, promoted_hot)
+    _write(promoted_warm_p, promoted_warm)
+    _write(promoted_idx_p, promoted_hot)
+
     by_family_passed: dict[str, int] = {}
     by_template_passed: dict[str, int] = {}
     for e in passed_warm:
@@ -368,16 +385,16 @@ def main() -> int:
         tmpl = str(e.get('variant_name', '')).strip().lower() or 'unknown'
         by_template_passed[tmpl] = by_template_passed.get(tmpl, 0) + 1
 
-    shard_files = sorted(passed_shards_dir.glob('*.passed.ndjson'))
+    by_family_promoted: dict[str, int] = {}
+    by_template_promoted: dict[str, int] = {}
+    for e in promoted_warm:
+        fam = Path(e.get('strategy_spec_path', 'unknown')).stem
+        by_family_promoted[fam] = by_family_promoted.get(fam, 0) + 1
+        tmpl = str(e.get('variant_name', '')).strip().lower() or 'unknown'
+        by_template_promoted[tmpl] = by_template_promoted.get(tmpl, 0) + 1
 
-    hot_decisions = {
-        'pass': sum(1 for e in passed_hot if str(e.get('ppr_decision', '')).upper() == 'PASS'),
-        'promote': sum(1 for e in passed_hot if str(e.get('ppr_decision', '')).upper() == 'PROMOTE'),
-    }
-    warm_decisions = {
-        'pass': sum(1 for e in passed_warm if str(e.get('ppr_decision', '')).upper() == 'PASS'),
-        'promote': sum(1 for e in passed_warm if str(e.get('ppr_decision', '')).upper() == 'PROMOTE'),
-    }
+    passed_shard_files = sorted(passed_shards_dir.glob('*.passed.ndjson'))
+    promoted_shard_files = sorted(promoted_shards_dir.glob('*.promoted.ndjson'))
 
     passed_summary = {
         'generated_at': datetime.now(UTC).isoformat(),
@@ -386,7 +403,7 @@ def main() -> int:
         'storage': {
             'type': 'monthly_ndjson_shards',
             'dir': str(passed_shards_dir).replace('\\', '/'),
-            'shards': [p.name for p in shard_files],
+            'shards': [p.name for p in passed_shard_files],
         },
         'windows': {
             'hot_days': int(args.hot_days),
@@ -395,8 +412,6 @@ def main() -> int:
             'warm_path': str(passed_warm_p).replace('\\', '/'),
             'hot_count': len(passed_hot),
             'warm_count': len(passed_warm),
-            'hot_decisions': hot_decisions,
-            'warm_decisions': warm_decisions,
         },
         'passed_index_path': str(passed_idx_p).replace('\\', '/'),
         'top_families': [
@@ -410,10 +425,42 @@ def main() -> int:
     }
     _write(passed_summary_p, passed_summary)
 
-    top_pool = [e for e in combined if e.get('status') != 'DUPLICATE']
+    promoted_summary = {
+        'generated_at': datetime.now(UTC).isoformat(),
+        'source': str(run_idx_p).replace('\\', '/'),
+        'score_system': {'name': 'PPR', 'scale': '0-10', 'pass_min': 1.0, 'promote_min': 3.0},
+        'storage': {
+            'type': 'monthly_ndjson_shards',
+            'dir': str(promoted_shards_dir).replace('\\', '/'),
+            'shards': [p.name for p in promoted_shard_files],
+        },
+        'windows': {
+            'hot_days': int(args.hot_days),
+            'warm_days': int(args.warm_days),
+            'hot_path': str(promoted_hot_p).replace('\\', '/'),
+            'warm_path': str(promoted_warm_p).replace('\\', '/'),
+            'hot_count': len(promoted_hot),
+            'warm_count': len(promoted_warm),
+        },
+        'promoted_index_path': str(promoted_idx_p).replace('\\', '/'),
+        'top_families': [
+            {'family': k, 'count': v}
+            for k, v in sorted(by_family_promoted.items(), key=lambda kv: kv[1], reverse=True)[:50]
+        ],
+        'top_templates': [
+            {'template': k, 'count': v}
+            for k, v in sorted(by_template_promoted.items(), key=lambda kv: kv[1], reverse=True)[:50]
+        ],
+    }
+    _write(promoted_summary_p, promoted_summary)
+
+    top_pool = [
+        e for e in combined
+        if e.get('status') != 'DUPLICATE' and str(e.get('ppr_decision', '')).upper() == 'PROMOTE' and float(e.get('ppr_score', 0.0) or 0.0) >= 3.0
+    ]
     for e in top_pool:
         e['score'] = _score(e)
-    top_pool.sort(key=lambda x: x.get('score', -999), reverse=True)
+    top_pool.sort(key=lambda x: (float(x.get('ppr_score', 0.0) or 0.0), x.get('score', -999)), reverse=True)
     top = _cap(top_pool, 100)
     _write(top_idx_p, top)
 
@@ -492,11 +539,18 @@ def main() -> int:
         'passed_warm_path': str(passed_warm_p),
         'passed_summary_path': str(passed_summary_p),
         'passed_shards_dir': str(passed_shards_dir),
+        'promoted_index_path': str(promoted_idx_p),
+        'promoted_hot_path': str(promoted_hot_p),
+        'promoted_warm_path': str(promoted_warm_p),
+        'promoted_summary_path': str(promoted_summary_p),
+        'promoted_shards_dir': str(promoted_shards_dir),
         'top_count': len(top),
         'run_count': len(combined),
         'lessons_count': len(lessons),
         'passed_hot_count': len(passed_hot),
         'passed_warm_count': len(passed_warm),
+        'promoted_hot_count': len(promoted_hot),
+        'promoted_warm_count': len(promoted_warm),
         'example_top': top[0] if top else None,
         'new_indicators_added': new_indicators_added,
         'skipped_indicators_dedup': skipped_indicators_dedup,

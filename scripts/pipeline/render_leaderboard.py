@@ -139,6 +139,7 @@ def main() -> int:
 
     ap = argparse.ArgumentParser()
     ap.add_argument('--assets', default='')
+    ap.add_argument('--bucket', default='promoted', choices=['promoted', 'passed', 'all'])
     ap.add_argument('--json', action='store_true', dest='as_json')
     args = ap.parse_args()
 
@@ -165,6 +166,11 @@ def main() -> int:
         except Exception:
             continue
         if tc <= 0:
+            continue
+
+        if args.bucket == 'promoted' and ppr < 3.0:
+            continue
+        if args.bucket == 'passed' and (ppr < 1.0 or ppr >= 3.0):
             continue
 
         bt = str((r.get('pointers') or {}).get('backtest_result') or '')

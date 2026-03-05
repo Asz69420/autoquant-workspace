@@ -30,7 +30,11 @@ Funding rate arbitrage, liquidation hunting, market making, event-driven trading
 - Passed library summary: artifacts/library/PASSED_INDEX_SUMMARY.json (if exists)
 - Passed hot window (7d): artifacts/library/PASSED_HOT_7D.json (if exists)
 - Passed warm window (14d): artifacts/library/PASSED_WARM_14D.json (if exists)
+- Promoted library summary: artifacts/library/PROMOTED_INDEX_SUMMARY.json (if exists)
+- Promoted hot window (7d): artifacts/library/PROMOTED_HOT_7D.json (if exists)
+- Promoted warm window (14d): artifacts/library/PROMOTED_WARM_14D.json (if exists)
 - Passed shard archive (read on-demand): artifacts/library/passed/*.passed.ndjson
+- Promoted shard archive (read on-demand): artifacts/library/promoted/*.promoted.ndjson
 - Your previous iteration log: docs/claude-reports/DEEP_ITERATION_LOG.md
 
 ## What We Want From You
@@ -42,7 +46,8 @@ How you do that is up to you — but here is guidance that has worked:
 - Thinking in percentages rather than dollar values gives more meaningful comparisons
 - Strategies that work across multiple instruments are more likely to be real edge than single-asset results
 - If the current best approach seems stuck or fundamentally limited, it may be better to suggest a completely different direction than to keep tweaking
-- Use PASSED_INDEX as a selectable improvement bucket when useful (iterate proven families), but still maintain novelty and avoid clone drift
+- Use PASSED libraries as selectable improvement buckets when useful (iterate promising families)
+- Use PROMOTED libraries to study what is currently strongest and transfer those learnings to new ideas
 
 ## What To Produce
 1. If you have an improvement idea: write ONE new strategy spec to artifacts/claude-specs/ with a clear description of what you changed and why
