@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-t3macd01",
+  "name": "T3 MACD Histogram Trend Continuation",
+  "created_at": "2026-03-06T00:15:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "T3_10_0.7 is a triple-exponentially-smoothed moving average (Tillson T3) that has NEVER been tested as a standalone strategy baseline. Triple smoothing eliminates high-frequency noise while its volume factor (0.7) preserves responsiveness — theoretically superior to single EMA for trend direction identification. MACD histogram crossing zero is the strongest MACD momentum signal — it marks the exact bar where momentum shifts direction. MACD is the #3 promoted family (PPR 3.86, 4 promoted entries including macd_tail_harvester_7to1, macd_tight_stop_4h_7to1). All promoted MACD entries use EMA_50 as baseline — T3 should provide smoother trend filtering with fewer whipsaw entries. The hypothesis: replacing EMA_50 with T3_10 as the trend filter for MACD entries will improve PF by reducing false signals in choppy markets, while T3's responsiveness ensures we don't miss genuine trend starts. If T3 outperforms EMA as baseline, it opens a new family applicable to ALL confirmation indicators.",
+  "regime_assumption": "trending_primary_allregime_target",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "t3_macdh_zero_v1_8to1",
+      "description": "Core variant. Price above T3 triple-smooth average + MACD histogram crosses zero (momentum turns positive). 8:1 R:R sweet spot, 1.5 ATR stop. Direct comparison to EMA_50-based MACD entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "Triple-smoothed moving average — FIRST EVER T3 baseline test. Volume factor 0.7 balances smoothing and responsiveness."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram zero-cross = momentum direction change. MACD is #3 promoted family (PPR 3.86)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_macdh_zero_v2_7to1",
+      "description": "Tighter TP variant. 7:1 R:R (10.5x ATR TP) — matches the R:R of the highest-performing promoted MACD entries (macd_tail_harvester_7to1, PPR 3.86). MACD momentum cycles may be shorter than Supertrend trends, so 7:1 could capture more complete winners.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10.5x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 10.5x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "Triple-smoothed trend direction."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram zero-cross. 7:1 R:R matches top promoted MACD PPR."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "7:1 R:R framework — tighter TP for MACD momentum cycles."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "t3_macdh_zero_v3_wide_stop_8to1",
+      "description": "Wide stop variant. 2.0 ATR stop + 16x ATR TP (8:1 R:R maintained). T3's smoother signal should produce entries closer to trend centers, justifying wider stops. Tests whether giving T3-filtered entries more breathing room improves win rate without sacrificing R:R.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > T3_10_0.7",
+        "MACDh_12_26_9 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < T3_10_0.7",
+        "MACDh_12_26_9 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "T3_10_0.7",
+          "role": "baseline",
+          "notes": "Triple-smoothed entries — wider stop gives more room at smooth trend centers."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram zero-cross with wider stop for fewer whipsaw stops."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "2.0x stop / 16x TP — wider framework maintaining 8:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["macd_confirmation"],
+    "design_target": "t3_macd_trend_continuation",
+    "novel_element": "FIRST EVER T3 baseline test — triple-smoothed filter replacing standard EMA for MACD entries. If T3 > EMA as baseline, opens new family."
+  },
+  "backtester_executable_indicators": ["T3_10_0.7", "MACDh_12_26_9", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "T3_10_0.7 — triple-exponentially-smoothed moving average, never tested as standalone baseline",
+    "confirmation": "MACDh_12_26_9 — MACD histogram zero-cross, #3 promoted family (PPR 3.86)",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

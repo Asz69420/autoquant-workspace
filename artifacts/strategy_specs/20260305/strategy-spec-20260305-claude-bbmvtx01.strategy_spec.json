@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-bbmvtx01",
+  "name": "Bollinger Midline Vortex Trend Resumption",
+  "created_at": "2026-03-06T00:15:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "The Bollinger Midline (BBM_20_2.0 = SMA_20) is the statistical center of the last 20 bars' price distribution — the fair value anchor for mean-reversion. It has NEVER been used as an entry trigger despite Bollinger Bands being available since inception. All prior BB strategies used the outer bands for breakouts (DEAD — bollinger_breakout template failed). The midline is a fundamentally different signal: it identifies when price RECLAIMS its statistical center after a pullback, not when price breaks to extremes. Vortex is the #1 overall family (Vortex Transition v3a = PF 2.034, champion). VTXP_14 > VTXM_14 confirms positive rotational momentum. The combination: price crossing back above its 20-bar statistical mean (BBM) while rotational momentum is positive (Vortex) = trend resumption from the center of gravity. This is structurally different from Vortex Transition specs (which use Vortex CROSSOVER as the primary trigger) — here Vortex is a FILTER confirming direction, while BBM reclaim is the timing signal. Ranging regimes should benefit from BBM oscillation; transitional regimes should benefit from Vortex's direction detection.",
+  "regime_assumption": "ranging_transitional_primary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "bbm_vortex_resume_v1_8to1",
+      "description": "Core variant. Price reclaims Bollinger midline (statistical mean) while Vortex confirms positive rotational momentum. 8:1 R:R sweet spot, 1.5 ATR stop. Novel entry mechanism: midline reclaim + direction filter.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above BBM_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close crosses_below BBM_20_2.0",
+        "VTXP_14 < VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger Midline (SMA_20) — FIRST EVER midline-as-entry test. Statistical center of price distribution, not outer band breakout."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex positive > negative = rotational momentum confirming direction. Vortex is #1 family (PF 2.034)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing and 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bbm_vortex_resume_v2_10to1",
+      "description": "Extended TP variant. 10:1 R:R (15x ATR TP). Midline entries start from the statistical center — if the trend is genuine and Vortex confirms, there should be significant runway above the mean. Tests whether midline entries support extended captures better than extreme entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above BBM_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close crosses_below BBM_20_2.0",
+        "VTXP_14 < VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger Midline — statistical center entry for extended captures."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex direction filter with wider TP target."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for trend continuation from mean."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bbm_vortex_resume_v3_tight_stop_8to1",
+      "description": "Tight stop variant. 1.0 ATR stop + 8.0 ATR TP (8:1 R:R maintained). Thesis: BBM entries are AT the statistical mean — price should move decisively if the signal is valid. Tight stop tests this conviction. NOTE: tight stops with EMA200 failed (v3 DD=40%), but BBM is a shorter-term mean where whipsaw may be less severe on 4h.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above BBM_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close crosses_below BBM_20_2.0",
+        "VTXP_14 < VTXM_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=RSI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (8x).",
+        "Exit on ATR stop hit (1.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14.",
+        "Take profit at 8x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "BBM_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger Midline — tight stop conviction test at statistical mean."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex direction filter. Tight stop tests decisive mean-reclaim thesis."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Tight 1.0x stop / 8x TP — conviction-based DD control."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["ema_rsi_atr"],
+    "design_target": "bbm_vortex_trend_resumption",
+    "novel_element": "FIRST EVER Bollinger Midline entry test — statistical mean reclaim (NOT outer band breakout) + champion Vortex direction filter"
+  },
+  "backtester_executable_indicators": ["BBM_20_2.0", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "BBM_20_2.0 — Bollinger Midline (SMA_20), statistical center of price distribution, never tested as entry trigger",
+    "confirmation": "VTXP_14 > VTXM_14 — Vortex positive momentum, #1 family overall (PF 2.034)",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

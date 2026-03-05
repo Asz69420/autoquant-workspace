@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "topdown delta analysis [mr. quant]|jacob_luxalgo",
+    "script_id": "Xlm8itga",
+    "name": "Topdown Delta Analysis [Mr. Quant]",
+    "author": "Jacob_LuxAlgo",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-18e64300dea6.indicator_record.json",
+    "first_seen_ts": "2026-03-05T11:00:15.042019+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "cisd wick sand|resonancetrader",
+    "script_id": "mw3Pqxbu",
+    "name": "CISD Wick SAND",
+    "author": "resonancetrader",
+    "indicator_record_path": "artifacts/indicators/20260305/indicator-20260305-578bd6f355da.indicator_record.json",
+    "first_seen_ts": "2026-03-05T11:00:12.283050+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "gex levels dashboard - nq/ndx/qqq gamma exposure|tlade_tradelikeadealer",
     "script_id": "EbaHGKsz",
     "name": "GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure",

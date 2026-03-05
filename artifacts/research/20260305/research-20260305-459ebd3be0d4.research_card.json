@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-459ebd3be0d4",
+  "created_at": "2026-03-05T11:00:11.956532Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/mw3Pqxbu-CISD-Wick-SAND/",
+  "title": "CISD Wick SAND",
+  "author": "resonancetrader",
+  "summary_bullets": [
+    "TradingView indicator: CISD Wick SAND by resonancetrader.",
+    "CISD Wick SAND Change in State of Delivery Based on Candle Wicks versus Bodies CISD Wick SAND Change in State of Delivery Based on Candle Wicks versus Bodies Source URL: https://www.tradingview.com/script/mw3Pqxbu-CISD-Wick-SAND/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: CISD Wick SAND by resonancetrader.",
+      "note": "Meaning: TradingView indicator: CISD Wick SAND by resonancetrader."
+    },
+    {
+      "timestamp": null,
+      "quote": "CISD Wick SAND Change in State of Delivery Based on Candle Wicks versus Bodies CISD Wick SAND Change in State of Delivery Based on Candle Wicks versus Bodies Source URL: https://www.tradingview.com/sc",
+      "note": "Meaning: CISD Wick SAND Change in State of Delivery Based on Candle Wicks versus Bodies CISD Wick SAND Change in State of Delivery Based on Candle Wicks versus "
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-459ebd3be0d4.raw.txt",
+  "sha256": "c35aa163f70781cc1ca36ee01a010a2a339f61335cd132640ea65dae10149e58",
+  "truncated": false
+}

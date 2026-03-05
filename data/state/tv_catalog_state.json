@@ -1,5 +1,5 @@
 {
-  "top_cursor": 5974,
+  "top_cursor": 5977,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -145,7 +145,9 @@
     "stop loss cascades (breakouts) [kioseff trading]|kiosefftrading",
     "vwap volume analyzer (wyckoff) | capitan-trading|capitan-trading",
     "4h candle overlay|xyxc",
-    "gex levels dashboard - nq/ndx/qqq gamma exposure|tlade_tradelikeadealer"
+    "gex levels dashboard - nq/ndx/qqq gamma exposure|tlade_tradelikeadealer",
+    "cisd wick sand|resonancetrader",
+    "topdown delta analysis [mr. quant]|jacob_luxalgo"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -292,7 +294,9 @@
     "CJX3k6l2",
     "bO0cxmj4",
     "jtSbvZaZ",
-    "EbaHGKsz"
+    "EbaHGKsz",
+    "mw3Pqxbu",
+    "Xlm8itga"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

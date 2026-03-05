@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260305-5d5ad9acfa80",
+  "created_at": "2026-03-05T11:00:14.598744Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Quant/",
+  "title": "Topdown Delta Analysis [Mr. Quant]",
+  "author": "Jacob_LuxAlgo",
+  "summary_bullets": [
+    "TradingView indicator: Topdown Delta Analysis [Mr.",
+    "The Core Calculation: Delta The foundation of the entire indicator is the Delta calculation.",
+    "It measures the volume relative to the bar&#39;s direction: Formula: Volume * (Close &gt;= Open ?",
+    "If a bar closes higher than it opened, the volume is considered &#34;Bullish Delta&#34; (Green).",
+    "If a bar closes lower, it is &#34;Bearish Delta&#34; (Red).",
+    "Current TF Labels: These appear below every candle on your active chart, formatted in thousands (k) for readability (e.g., 12.5k).* 2.",
+    "Multi-Timeframe Data … Source URL: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Quant/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Topdown Delta Analysis [Mr.",
+      "note": "Meaning: TradingView indicator: Topdown Delta Analysis [Mr."
+    },
+    {
+      "timestamp": null,
+      "quote": "The Core Calculation: Delta The foundation of the entire indicator is the Delta calculation.",
+      "note": "Meaning: The Core Calculation: Delta The foundation of the entire indicator is the Delta calculation."
+    },
+    {
+      "timestamp": null,
+      "quote": "It measures the volume relative to the bar&#39;s direction: Formula: Volume * (Close &gt;= Open ?",
+      "note": "Meaning: It measures the volume relative to the bar&#39;s direction: Formula: Volume * (Close &gt;= Open ?"
+    },
+    {
+      "timestamp": null,
+      "quote": "If a bar closes higher than it opened, the volume is considered &#34;Bullish Delta&#34; (Green).",
+      "note": "Meaning: If a bar closes higher than it opened, the volume is considered &#34;Bullish Delta&#34; (Green)."
+    },
+    {
+      "timestamp": null,
+      "quote": "If a bar closes lower, it is &#34;Bearish Delta&#34; (Red).",
+      "note": "Meaning: If a bar closes lower, it is &#34;Bearish Delta&#34; (Red)."
+    },
+    {
+      "timestamp": null,
+      "quote": "Current TF Labels: These appear below every candle on your active chart, formatted in thousands (k) for readability (e.g., 12.5k).* 2.",
+      "note": "Meaning: Current TF Labels: These appear below every candle on your active chart, formatted in thousands (k) for readability (e.g., 12.5k).* 2."
+    },
+    {
+      "timestamp": null,
+      "quote": "Multi-Timeframe Data … Source URL: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Quant/.",
+      "note": "Meaning: Multi-Timeframe Data … Source URL: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Quant/."
+    }
+  ],
+  "extracted_rules": [
+    "If a bar closes higher than it opened, the volume is considered &#34;Bullish Delta&#34; (Green).",
+    "If a bar closes lower, it is &#34;Bearish Delta&#34; (Red)."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260305/research-20260305-5d5ad9acfa80.raw.txt",
+  "sha256": "d7c0a9a127fd4339afaa7569cbc1c640bf2cef7e78e410be89cceefb81ba2601",
+  "truncated": false
+}
