@@ -48,7 +48,7 @@ trigger_frodex_chain() {
     return 0
   fi
   powershell.exe -NoProfile -ExecutionPolicy Bypass \
-    -File "$ROOT_DIR/scripts/automation/trigger_frodex_chain.ps1" >/dev/null 2>&1 || true
+    -File "$ROOT_DIR/scripts/automation/trigger_frodex_chain.ps1" || true
 }
 
 if ! mkdir "$LOCK_DIR" >/dev/null 2>&1; then

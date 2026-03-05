@@ -24,27 +24,45 @@ if (-not $hyperMode) {
   exit 0
 }
 
-if (Test-Path -LiteralPath $lockPath) {
-  Write-Host 'Skip: autopilot worker lock present.'
-  exit 0
-}
+$maxWaitSeconds = 180
+$pollSeconds = 2
+$handoffBufferSeconds = 10
 
-$running = $false
-try {
-  $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
-    ($_.Name -match 'powershell') -and (
-      ($_.CommandLine -match 'autopilot_worker\.ps1') -or
-      ($_.CommandLine -match 'run_autopilot_task\.ps1')
-    )
+function Test-AutopilotRunning {
+  try {
+    $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
+      ($_.Name -match 'powershell') -and (
+        ($_.CommandLine -match 'autopilot_worker\.ps1') -or
+        ($_.CommandLine -match 'run_autopilot_task\.ps1')
+      )
+    }
+    return (@($procs).Count -gt 0)
+  } catch {
+    return $false
   }
-  $running = (@($procs).Count -gt 0)
-} catch {
-  $running = $false
 }
 
-if ($running) {
-  Write-Host 'Skip: autopilot process still running.'
+$ready = $false
+$deadline = [DateTime]::UtcNow.AddSeconds($maxWaitSeconds)
+while ([DateTime]::UtcNow -lt $deadline) {
+  $lockPresent = Test-Path -LiteralPath $lockPath
+  $running = Test-AutopilotRunning
+
+  if (-not $lockPresent -and -not $running) {
+    $ready = $true
+    break
+  }
+
+  Start-Sleep -Seconds $pollSeconds
+}
+
+if (-not $ready) {
+  Write-Host 'Skip: upstream did not settle before timeout.'
   exit 0
+}
+
+if ($handoffBufferSeconds -gt 0) {
+  Start-Sleep -Seconds $handoffBufferSeconds
 }
 
 $taskName = '\frodex-ops-loop-15m'
@@ -62,3 +80,5 @@ if (-not $ranViaTask) {
   Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile','-WindowStyle','Hidden','-ExecutionPolicy','Bypass','-File', (Join-Path $ROOT 'scripts\automation\run_autopilot_task.ps1')) -WorkingDirectory $ROOT -WindowStyle Hidden | Out-Null
   Write-Host 'Triggered: run_autopilot_task.ps1 fallback'
 }
+
+exit 0
