@@ -227,7 +227,8 @@ function Get-LiveReviewInfo {
         $passing = [int]$runPprPass
         $errors = [int]$runGateFail
         $qSkipped = [int]$runSkipped
-        $qQueued = [Math]::Max(0, [int]$qGenerated)
+        # Queue should reflect total work items sent for testing (variants), not just spec count.
+        $qQueued = [Math]::Max(0, [Math]::Max([int]$qGenerated, [int]$qVariants))
       }
     }
 
