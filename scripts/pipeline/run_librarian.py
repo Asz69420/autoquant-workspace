@@ -38,6 +38,38 @@ def _recent(path: Path, since: datetime) -> bool:
     return datetime.fromtimestamp(path.stat().st_mtime, tz=UTC) >= since
 
 
+_SPEC_SOURCE_CACHE: dict[str, str] = {}
+
+
+def _resolve_spec_path(path_txt: str) -> Path | None:
+    if not path_txt:
+        return None
+    p = Path(path_txt)
+    if not p.is_absolute():
+        p = (ROOT / p).resolve()
+    return p
+
+
+def _spec_source(path_txt: str) -> str:
+    key = str(path_txt or '')
+    if key in _SPEC_SOURCE_CACHE:
+        return _SPEC_SOURCE_CACHE[key]
+    p = _resolve_spec_path(key)
+    src = ''
+    if p is not None and p.exists() and p.is_file():
+        try:
+            obj = _j(p)
+            src = str(obj.get('source') or '').strip().lower()
+        except Exception:
+            src = ''
+    _SPEC_SOURCE_CACHE[key] = src
+    return src
+
+
+def _is_claude_spec(path_txt: str) -> bool:
+    return _spec_source(path_txt) == 'claude-advisor'
+
+
 def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | None = None, refinement_ptr: str | None = None) -> dict | None:
     bt_raw = str(r.get('backtest_result_path', '') or '')
     if not bt_raw:
@@ -48,6 +80,8 @@ def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | No
     bt = _j(bt_path)
     dataset_meta = str(r.get('dataset_meta_path', ''))
     strategy_spec = str(bt.get('inputs', {}).get('strategy_spec') or bt.get('inputs', {}).get('strategy_spec_path') or '')
+    if not _is_claude_spec(strategy_spec):
+        return None
     variant = str(bt.get('inputs', {}).get('variant') or r.get('variant_name') or '')
     sha = _hash_key(strategy_spec, variant, dataset_meta)
     res = bt.get('results', {})
@@ -219,6 +253,8 @@ def _collect_recent_bucket(shards_dir: Path, days: int, predicate) -> list[dict]
     for p in sorted(shards_dir.glob('*.ndjson')):
         for r in _load_ndjson(p):
             rr = _ensure_ppr(r)
+            if not _is_claude_spec(str(rr.get('strategy_spec_path') or '')):
+                continue
             if _parse_created_at(str(rr.get('created_at') or '')) >= since and predicate(rr):
                 rows.append(rr)
     dedup: dict[str, dict] = {}
@@ -254,7 +290,11 @@ def main() -> int:
 
     since = datetime.now(UTC) - timedelta(days=args.since_days)
 
-    existing_runs = [_ensure_ppr(_ensure_fee_model_hash(x)) for x in _load_index(run_idx_p)]
+    existing_runs = [
+        _ensure_ppr(_ensure_fee_model_hash(x))
+        for x in _load_index(run_idx_p)
+        if _is_claude_spec(str((x or {}).get('strategy_spec_path') or ''))
+    ]
     seen_sha = {x.get('sha256_inputs') for x in existing_runs if isinstance(x, dict)}
 
     promo_map = {}
@@ -353,6 +393,8 @@ def main() -> int:
             existing = _load_ndjson(shard)
             merged: dict[str, dict] = {}
             for r in existing:
+                if not _is_claude_spec(str((r or {}).get('strategy_spec_path') or '')):
+                    continue
                 merged[_passed_key(r)] = r
             for r in items:
                 merged[_passed_key(r)] = r
