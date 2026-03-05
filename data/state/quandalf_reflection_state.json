@@ -1,7 +1,7 @@
 {
-  "last_run_id": "autopilot-1772703902",
-  "last_claude_rc": 0,
-  "last_reflection_status": "ok",
-  "last_reflection_at": "2026-03-05T09:48:33.896228+00:00",
-  "last_note": "Claude reflection ok."
+  "last_run_id": "autopilot-1772705702",
+  "last_claude_rc": 124,
+  "last_reflection_status": "fallback_gpt",
+  "last_reflection_at": "2026-03-05T10:19:08.493828+00:00",
+  "last_note": "Claude reflection failed; used GPT fallback executor path."
 }

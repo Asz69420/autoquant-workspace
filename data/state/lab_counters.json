@@ -1,16 +1,16 @@
 ﻿{
     "directive_loop_stall_cycles":  0,
     "recent_backfill_specs":  [
+                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-9ff41fd9e747-3de3cfea.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-9ff41fd9e747.strategy_spec.json",
+                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-de16cf7c3765.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-e7914bf39b43-241baf59.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-e7914bf39b43.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-12f3c7e30553.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-e38192d9cd20.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-3ecab3f89076-990001fa.strategy_spec.json",
                                   "artifacts/strategy_specs/20260305/strategy-spec-20260305-3ecab3f89076.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-81ce512688b2-1fc2ee17.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-81ce512688b2.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-4efae1bdc9e3.strategy_spec.json",
-                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-ed953fec6c14-55c56a3f.strategy_spec.json"
+                                  "artifacts/strategy_specs/20260305/strategy-spec-20260305-81ce512688b2-1fc2ee17.strategy_spec.json"
                               ],
-    "updated_at":  "2026-03-05T09:47:23.4855752Z"
+    "updated_at":  "2026-03-05T10:17:10.7951626Z"
 }
