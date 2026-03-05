@@ -417,8 +417,30 @@ function Wait-ForFrodexRunSettle {
   return [PSCustomObject]@{ ok = $false; reason = $lastReason; age_seconds = -1 }
 }
 
+function Test-HandoffPollProcessRunning {
+  try {
+    $selfPid = $PID
+    $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
+      ($_.ProcessId -ne $selfPid) -and ($_.Name -match 'powershell') -and ($_.CommandLine -match 'check_quandalf_handoff\.ps1')
+    }
+    return (@($procs).Count -gt 0)
+  } catch {
+    return $false
+  }
+}
+
 New-Item -ItemType Directory -Force -Path (Split-Path $statePath -Parent) | Out-Null
 New-Item -ItemType Directory -Force -Path (Split-Path $lockDir -Parent) | Out-Null
+
+if (Test-Path -LiteralPath $lockDir) {
+  $activePoll = Test-HandoffPollProcessRunning
+  if (-not $activePoll) {
+    try {
+      Remove-Item -LiteralPath $lockDir -Recurse -Force -ErrorAction SilentlyContinue
+      Write-Host 'Recovered stale handoff poll lock.'
+    } catch {}
+  }
+}
 
 if (Test-Path -LiteralPath $lockDir) {
   Write-Host 'Skip: handoff poll lock held.'
