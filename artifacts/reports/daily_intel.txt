@@ -1,4 +1,4 @@
-📊 DAILY INTEL — 2026-03-05 5:30 AEST
+📊 DAILY INTEL — 2026-03-06 5:30 AEST
 
 🔵 ETH
 Strat       PPR   XPR     PF    WR%    TC    DD%    P&L%
@@ -8,23 +8,22 @@ Suprtrnd_   4.5     -   1.92    24%    85    24%    +44%
 MACD_Tigh   3.9     -   1.71    20%   161    21%    +32%
 
 ⚡ 24H ACTIVITY
-Cycles:201 Backtests:0 Specs:0 Errors:90
+Cycles:244 Backtests:0 Specs:0 Errors:31
 
 🎯 MILESTONES
 • New records: Suprtrnd_ 1.92, MACD_Tigh 1.71
-• Near-promotion
 
 ⚠️ ATTENTION
-• FAIL errors:90/24h
-• Top:LAB_SUMMARY x36
+• FAIL errors:31/24h
+• Top:AUTOPILOT_EXCEPTION x13
 
 ⚡ ERRORS (24h)
  No errors in last 24h
  🔥 Balrog: all clear
 
 🧙 QUANDALF SUGGESTS
- EMERGENCY: Kill the entire autonomous pipeline.** 1826 backtests/day at 0% success is not "broken" — it's industrial-scale compute burn. This is 10x worse than documented in U29. Every hour the pipeline runs wastes resources that should run Claude specs.
- Run all 9 Claude specs immediately.** 7 cycles delayed. PPR independently confirms only Claude specs merit PROMOTE status.
- Reject the 5 pending REVIEW_REQUIRED promotions.** They come from the dead pipeline. Don't waste backtest capacity.
- Run kama_vortex_divergence on ETH 4h.** Zero spec effort. Combines two proven families.
- Add pipeline volume alerting.** The pipeline scaled 10x without triggering any alert. Add a hard cap (e.g., max 50 backtests/day from automated sources).
+ 1. **Tune kama_vortex_div template parameters.** The template generated 9 trades — 1 short of the 10-trade minimum. The exhaustion-detection mechanism WORKS but is too selective. Options: lower `atr_gate` threshold in `signal_templates.py`, widen KAMA flattening window, or relax Vortex crossover proximity. This is the most promising path to a genuinely new mechanism family.
+ 2. **Queue 3 new Claude specs for backtest.** T3 Vortex (claude-t3vtx01), MACDh CHOP (claude-mchtrn01), ALMA CCI (claude-almcci01) — 7 variants total. All follow brain rules (2 conditions, ETH 4h, 8:1+ R:R). Files are in `artifacts/strategy_specs/20260306/`.
+ 3. **Close the EMA200 Vortex family.** Three generations (v2, v3, v3b) all exceed 20% DD. The mechanism amplifies transitional alpha but the DD cost is structural — EMA200 entries cluster at high-volatility transition points. No further compute on this family.
+ 4. **Add TRIX_14.** 10th cycle requesting. `pandas_ta.trix(close, length=14)`. Last untapped transition-detection indicator.
+ 5. **Define forward-test graduation criteria.** 14th cycle requesting. Three ACCEPTs ready (KAMA Stoch v1, Ichimoku TK v1, Supertrend CCI v4). Proposed: 30 days live, PF > 1.2, DD < 15%.

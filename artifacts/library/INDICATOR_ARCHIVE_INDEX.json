@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "euphoria indicator (ei) [r2d2]|r2d2_4life",
+    "script_id": "HV0KvORW",
+    "name": "Euphoria Indicator (EI) [R2D2]",
+    "author": "R2D2_4Life",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-b22b079519cf.indicator_record.json",
+    "first_seen_ts": "2026-03-05T19:02:08.276658+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "topdown delta analysis [mr. quant]|mrquant_jacob",
+    "script_id": "Xlm8itga",
+    "name": "Topdown Delta Analysis [Mr. Quant]",
+    "author": "MrQuant_Jacob",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-18e64300dea6.indicator_record.json",
+    "first_seen_ts": "2026-03-05T19:02:07.027462+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "vix-vixeq regime detector|henriquecentieiro",
     "script_id": "V7aBVr8v",
     "name": "VIX-VIXEQ Regime Detector",

@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-9869751ff6b5",
+  "created_at": "2026-03-05T19:02:07.859395Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/",
+  "title": "Euphoria Indicator (EI) [R2D2]",
+  "author": "R2D2_4Life",
+  "summary_bullets": [
+    "TradingView indicator: Euphoria Indicator (EI) [R2D2] by R2D2_4Life.",
+    "Euphoria &amp; Fear Momentum Oscillator (EI) - Precision Reversals Overview Financial markets are driven by two primal emotions: Greed and Fear.",
+    "The Euphoria Indicator (EI) is a highly reactive, custom momentum oscillator designed to visualize the exact moments when market emotion reaches an unsustainable extreme.",
+    "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Euphoria &amp; Fear Momentum Oscillator (EI) - Precision Reversals Overview Financial markets are driven by two primal emotions: Greed and Fear.",
+    "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Source URL: https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Euphoria Indicator (EI) [R2D2] by R2D2_4Life.",
+      "note": "Meaning: TradingView indicator: Euphoria Indicator (EI) [R2D2] by R2D2_4Life."
+    },
+    {
+      "timestamp": null,
+      "quote": "Euphoria &amp; Fear Momentum Oscillator (EI) - Precision Reversals Overview Financial markets are driven by two primal emotions: Greed and Fear.",
+      "note": "Meaning: Euphoria &amp; Fear Momentum Oscillator (EI) - Precision Reversals Overview Financial markets are driven by two primal emotions: Greed and Fear."
+    },
+    {
+      "timestamp": null,
+      "quote": "The Euphoria Indicator (EI) is a highly reactive, custom momentum oscillator designed to visualize the exact moments when market emotion reaches an unsustainable extreme.",
+      "note": "Meaning: The Euphoria Indicator (EI) is a highly reactive, custom momentum oscillator designed to visualize the exact moments when market emotion reaches an uns"
+    },
+    {
+      "timestamp": null,
+      "quote": "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Euphoria &amp; Fea",
+      "note": "Meaning: By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visu"
+    },
+    {
+      "timestamp": null,
+      "quote": "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Source URL: https:",
+      "note": "Meaning: By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visu"
+    }
+  ],
+  "extracted_rules": [
+    "The Euphoria Indicator (EI) is a highly reactive, custom momentum oscillator designed to visualize the exact moments when market emotion reaches an unsustainable extreme.",
+    "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Euphoria &amp; Fear Momentum Oscillator (EI) - Precision Reversals Overview Financial markets are driven by two primal emotions: Greed and Fear.",
+    "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Source URL: https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/."
+  ],
+  "strategy_components": [
+    {
+      "type": "momentum",
+      "description": "Euphoria &amp; Fear Momentum Oscillator (EI) - Precision Reversals Overview Financial markets are driven by two primal emotions: Greed and Fear."
+    },
+    {
+      "type": "momentum",
+      "description": "The Euphoria Indicator (EI) is a highly reactive, custom momentum oscillator designed to visualize the exact moments when market emotion reaches an unsustainable extreme."
+    },
+    {
+      "type": "momentum",
+      "description": "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Euphoria &amp; Fear Momentum Oscillato"
+    },
+    {
+      "type": "momentum",
+      "description": "By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Source URL: https://www.tradingview.co"
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-9869751ff6b5.raw.txt",
+  "sha256": "df55b39c2b4494ba1913c6a25bffb8adcf1485c41b40e1b9247262d76b13e8cc",
+  "truncated": false
+}

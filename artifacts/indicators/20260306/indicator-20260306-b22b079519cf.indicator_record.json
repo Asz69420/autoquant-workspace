@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260306-b22b079519cf",
+  "created_at": "2026-03-05T19:02:07.574263Z",
+  "tv_ref": "tradingview:HV0KvORW",
+  "url": "https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/",
+  "name": "Euphoria Indicator (EI) [R2D2]",
+  "author": "R2D2_4Life",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "6665c1adc830c9b2bdb1679a6abfaf546a6263fd17fd6b4e45b978699eeff46b",
+  "truncated": false
+}
