@@ -573,7 +573,7 @@ if ($mode -eq 'quandalf') {
   } else {
     $lines += "Waiting: $outboxLag"
     $lines += "Backtests: $batchExecutedTotal"
-    $lines += "Requeued: $batchSkippedTotal"
+    $lines += "Skipped: $batchSkippedTotal"
     $lines += "Aborted: $batchGateFail"
     $lines += "Forwardtests: $forwardRuns"
   }

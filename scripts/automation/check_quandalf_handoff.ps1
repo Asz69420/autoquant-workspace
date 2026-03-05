@@ -283,7 +283,7 @@ function Send-QuandalfCard {
   $lines += ('Promoted: ' + [int]$resultsInfo.advanced)
   $lines += ('Passed: ' + [int]$resultsInfo.passed)
   $lines += ('Aborted: ' + [int]$resultsInfo.aborted)
-  $lines += ('Requeued: ' + [int]$resultsInfo.q_skipped)
+  $lines += ('Skipped: ' + [int]$resultsInfo.q_skipped)
   $lines += ('Generated: ' + [int]$resultsInfo.q_generated)
   $lines += ('Queued: ' + [int]$queuedValue)
   $lines += $noteDivider
