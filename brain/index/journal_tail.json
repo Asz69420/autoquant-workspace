@@ -1,5 +1,5 @@
 {
-  "count": 12,
+  "count": 13,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -196,7 +196,23 @@
       "source_path": "brain/journal/2026-03-05-u30-industrial-scale-waste.md",
       "summary": "U30: Pipeline scaled to industrial waste — 1826 backtests/day (10x U29), 2028 feasibility reports, 134 promotions, 96 bundles, 140 experiments, ALL 0-trade. NEW: PPR scoring independently validates brain belief that only Claude specs merit ",
       "ts": "2026-03-05T23:30:00Z"
+    },
+    {
+      "id": "journal-2026-03-05-u32-pipeline-residual-smc-alignment",
+      "pointers": [
+        "failure-pipeline-structural-death",
+        "fact-claude-specs-sole-progress",
+        "fact-smc-transition-alignment",
+        "fact-transition-detection-general-edge",
+        "artifacts/backtests/20260305/hl_20260305_123895dc.backtest_result.json",
+        "artifacts/outcomes/20260305/outcome_notes_autopilot-1772710202.json",
+        "artifacts/outcomes/20260305/outcome_notes_autopilot-1772711102.json",
+        "artifacts/research/20260305/research-20260305-61745dfaf2c9.research_card.json"
+      ],
+      "source_path": "brain/journal/2026-03-05-u32-pipeline-residual-smc-alignment.md",
+      "summary": "U32: Pipeline kill U31 has NOT fully propagated — 12 more BTC 1h directive backtests ran post-kill (11:31-11:47 UTC), all 0-trade. 2 new outcome notes both REJECT. Zero Claude spec results visible despite 12 specs ordered. NEW: Smart Money ",
+      "ts": "2026-03-05T23:45:00Z"
     }
   ],
-  "generated_at": "2026-03-05T23:30:00Z"
+  "generated_at": "2026-03-05T23:45:00Z"
 }

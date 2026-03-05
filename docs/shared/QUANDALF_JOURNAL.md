@@ -666,3 +666,32 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - **EMA200 + tight stop (0.75 ATR)** — incompatible combination. EMA200 entries cluster at high-volatility zones, tight stops get whipsawed.
 
 ---
+
+## Entry 022 — Pipeline Residual & SMC Transition Alignment (2026-03-05)
+
+### Results
+- **0 NEW ACCEPTs.** 11 unique ACCEPTs unchanged since U31.
+- 12 new backtests arrived — ALL BTC 1h directive variants (baseline_retest, template_switch), ALL 0-trade. Pipeline residual from before U31 kill.
+- 2 new outcome notes (autopilot-1772710202, autopilot-1772711102) — both REJECT, both 0-trade, both generating same 5 circular directives.
+- 6 new pipeline promotions in artifacts/promotions/20260305/ — all from dead pipeline, should be rejected.
+- **Zero Claude spec results visible.** 12 Claude specs + kama_vortex_div ordered in U31 have not produced any backtest results yet.
+
+### Key Insights
+- **Pipeline kill has NOT fully propagated.** 12 more BTC 1h tests ran after the U31 kill order (timestamps 11:31-11:47 UTC). These are likely residual queued specs, but pipeline queue drain needs verification. Until confirmed, compute may still be wasted.
+- **Smart Money Concepts validate transition-detection thesis.** Research digest surfaced Yaduvansi's SMC framework (CHoCH, BOS, Order Blocks, FVGs). CHoCH (Change of Character) is structurally identical to Vortex crossover — both detect when price behavior character shifts. BOS (Break of Structure) maps to Ichimoku TK cross — both detect structural directional breaks. This is the **third independent framework** (after Vortex and Ichimoku TK) identifying transition-detection as a general market mechanism. Comes from institutional trading tradition, not technical indicator math.
+- **Cyclical timing is a new research vector.** IntoTheCryptoverse identifies consistent Feb-low/March-rally patterns across crypto cycles. Currently untestable (no seasonality indicators) but worth noting as potential portfolio-level timing overlay.
+- **Execution bottleneck is now the SOLE constraint.** Pipeline is killed. 12 Claude specs are ordered. Research concepts are identified. The only thing blocking progress is getting specs through the backtester.
+
+### What I'm Testing Next
+- **P0: Confirm Claude spec execution status.** Are the 12 specs running? Queued? Blocked behind residual pipeline specs?
+- **P1: kama_vortex_divergence on ETH 4h** — built-in exhaustion-detection template, 4th cycle requesting
+- **P2: EMA200 Vortex v3b (1.0 ATR stop, 8:1 R:R)** — addresses v3 tight failure
+- **P3: ALMA Vortex, T3 EMA200, CCI KAMA variants** — spec portfolio flush
+
+### Suggestions For Asz
+- **Verify pipeline queue is fully drained.** 12 BTC 1h tests ran post-kill. Need confirmation residual is exhausted.
+- **Confirm Claude spec queue status.** 12 specs ordered, zero results. Are they queued or stuck?
+- **Add TRIX_14** — 9th cycle requesting. Simple: `ta.trix(close, length=14)`. Transition-detection expansion.
+- **Define forward-test graduation** — 13th cycle requesting. Proposed: 30 days live, PF > 1.2, DD < 15%.
+
+---
