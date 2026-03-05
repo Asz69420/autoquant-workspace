@@ -13,6 +13,7 @@ $resultsPath = Join-Path $ROOT 'docs\shared\LAST_CYCLE_RESULTS.md'
 $autopilotSummaryPath = Join-Path $ROOT 'data\state\autopilot_summary.json'
 $quandalfReflectionStatePath = Join-Path $ROOT 'data\state\quandalf_reflection_state.json'
 $autopilotWorkerLockPath = Join-Path $ROOT 'data\state\locks\autopilot_worker.lock'
+$runtimeFlagsPath = Join-Path $ROOT 'config\runtime_flags.json'
 
 # Handoff guard timing: ensure upstream run is settled, then apply cooldown.
 $settleQuietSeconds = 4
@@ -326,6 +327,17 @@ function Format-DurationLabelFromMs {
   return ($mins.ToString() + 'm ' + $secs.ToString('00') + 's')
 }
 
+function Get-HyperMode {
+  if (-not (Test-Path -LiteralPath $runtimeFlagsPath)) { return $false }
+  try {
+    $flags = Get-Content -LiteralPath $runtimeFlagsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($flags -and $flags.PSObject.Properties.Name -contains 'hyperMode') {
+      return [bool]$flags.hyperMode
+    }
+  } catch {}
+  return $false
+}
+
 function Test-AutopilotProcessRunning {
   try {
     $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
@@ -431,22 +443,38 @@ try {
     }
   }
 
+  $hyperMode = Get-HyperMode
+  $lastTriggered = ''
+  $pendingRunId = ''
+  $stateObj = @{}
+  if (Test-Path -LiteralPath $statePath) {
+    try {
+      $st = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
+      if ($st) {
+        if ($st.PSObject.Properties.Name -contains 'last_triggered_run_id') { $lastTriggered = [string]$st.last_triggered_run_id }
+        if ($st.PSObject.Properties.Name -contains 'pending_run_id') { $pendingRunId = [string]$st.pending_run_id }
+      }
+    } catch {}
+  }
+
+  if ($hyperMode -and -not [string]::IsNullOrWhiteSpace($pendingRunId)) {
+    $latestRunId = $pendingRunId
+  }
+
   if ([string]::IsNullOrWhiteSpace($latestRunId)) {
     Write-Host 'No completed Frodex run found.'
     exit 0
   }
 
-  $lastTriggered = ''
-  if (Test-Path -LiteralPath $statePath) {
-    try {
-      $st = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
-      if ($st -and $st.last_triggered_run_id) {
-        $lastTriggered = [string]$st.last_triggered_run_id
-      }
-    } catch {}
-  }
-
   if ($lastTriggered -eq $latestRunId) {
+    if ($hyperMode -and $pendingRunId -eq $latestRunId) {
+      $state = @{
+        last_triggered_run_id = $lastTriggered
+        pending_run_id = ''
+        updated_at = [DateTime]::UtcNow.ToString('o')
+      }
+      ($state | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $statePath -Encoding UTF8
+    }
     Write-Host ('No new run. latest=' + $latestRunId)
     exit 0
   }
@@ -552,6 +580,7 @@ try {
 
   $state = @{
     last_triggered_run_id = $latestRunId
+    pending_run_id = $(if ($hyperMode -and $pendingRunId -eq $latestRunId) { '' } else { $pendingRunId })
     updated_at = [DateTime]::UtcNow.ToString('o')
   }
   ($state | ConvertTo-Json -Depth 5) | Set-Content -LiteralPath $statePath -Encoding UTF8

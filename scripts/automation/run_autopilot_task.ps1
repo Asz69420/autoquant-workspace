@@ -31,6 +31,31 @@ try {
 
 if ($hyperMode) {
   try {
+    $statePath = '.\data\state\quandalf_handoff_poll_state.json'
+    $latestRunId = ''
+    if (Test-Path -LiteralPath '.\data\logs\actions.ndjson') {
+      $rows = Get-Content -LiteralPath '.\data\logs\actions.ndjson' -Tail 300 -Encoding UTF8
+      foreach ($line in $rows) {
+        try { $e = $line | ConvertFrom-Json } catch { continue }
+        if ([string]$e.action -ne 'LAB_SUMMARY') { continue }
+        $rid = [string]$e.run_id
+        if ($rid -match '^(autopilot-\d+)') { $latestRunId = $matches[1] }
+      }
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($latestRunId)) {
+      $st = @{}
+      if (Test-Path -LiteralPath $statePath) {
+        try {
+          $tmp = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($null -ne $tmp) { $st = @{} + $tmp.PSObject.Properties.ForEach({ @{$_.Name = $_.Value} }) }
+        } catch { $st = @{} }
+      }
+      $st.pending_run_id = $latestRunId
+      $st.updated_at = [DateTime]::UtcNow.ToString('o')
+      ($st | ConvertTo-Json -Depth 6) | Set-Content -LiteralPath $statePath -Encoding UTF8
+    }
+
     & '.\scripts\automation\check_quandalf_handoff.ps1' | Out-Null
   } catch {
     Write-Host ('WARN: hyper handoff trigger failed: ' + $_.Exception.Message)
