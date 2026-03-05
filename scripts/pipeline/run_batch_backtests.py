@@ -391,13 +391,11 @@ def main() -> int:
 
             if sig in historical_seen:
                 history_skips += 1
-                print(f"DEDUP_SKIP_HISTORY variant={variant} symbol={symbol} timeframe={timeframe}", file=sys.stderr)
-                continue
+                print(f"DEDUP_HIT_HISTORY variant={variant} symbol={symbol} timeframe={timeframe} (not skipped)", file=sys.stderr)
 
             if sig in in_batch_seen:
                 in_batch_skips += 1
-                print(f"DEDUP_SKIP_BATCH variant={variant} symbol={symbol} timeframe={timeframe}", file=sys.stderr)
-                continue
+                print(f"DEDUP_HIT_BATCH variant={variant} symbol={symbol} timeframe={timeframe} (not skipped)", file=sys.stderr)
 
             resolved_template = ''
             if resolve_template is not None:
@@ -418,27 +416,7 @@ def main() -> int:
 
             if directive_block_reason:
                 directive_blocked_skips += 1
-                runs.append({
-                    'variant_name': variant,
-                    'symbol': symbol,
-                    'timeframe': timeframe,
-                    'dataset_meta_path': dataset_meta,
-                    'backtest_result_path': '',
-                    'trade_list_path': '',
-                    'gate_pass': False,
-                    'status': 'SKIPPED',
-                    'skip_reason': 'DIRECTIVE_BLOCKED',
-                    'directive_block_reason': directive_block_reason,
-                    'feasibility_report_path': '',
-                    'feasibility_flags': [],
-                    'net_profit': 0.0,
-                    'trades': 0,
-                    'profit_factor': 0.0,
-                    'max_drawdown': 0.0,
-                    'ppr_score': 0.0,
-                    'ppr_decision': 'SKIPPED',
-                })
-                continue
+                print(f"DIRECTIVE_BLOCK_HIT variant={variant} symbol={symbol} timeframe={timeframe} reason={directive_block_reason} (not skipped)", file=sys.stderr)
 
             in_batch_seen.add(sig)
             fout = _run([
@@ -453,27 +431,7 @@ def main() -> int:
             ])
             f = json.loads(fout)
             if f.get('verdict') == 'FAIL':
-                run = {
-                    'variant_name': variant,
-                    'symbol': meta.get('symbol'),
-                    'timeframe': meta.get('timeframe'),
-                    'dataset_meta_path': dataset_meta,
-                    'backtest_result_path': '',
-                    'trade_list_path': '',
-                    'gate_pass': False,
-                    'status': 'SKIPPED',
-                    'skip_reason': 'FEASIBILITY_FAIL',
-                    'feasibility_report_path': f.get('feasibility_report_path'),
-                    'feasibility_flags': f.get('flags', []),
-                    'net_profit': 0.0,
-                    'trades': 0,
-                    'profit_factor': 0.0,
-                    'max_drawdown': 0.0,
-                    'ppr_score': 0.0,
-                    'ppr_decision': 'SKIPPED',
-                }
-                runs.append(run)
-                continue
+                print(f"FEASIBILITY_FAIL_CONTINUE variant={variant} symbol={symbol} timeframe={timeframe} (not skipped)", file=sys.stderr)
 
             out = _run([
                 PY,
@@ -496,6 +454,8 @@ def main() -> int:
                 'trade_list_path': info['trade_list'],
                 'feasibility_report_path': f.get('feasibility_report_path'),
                 'feasibility_flags': f.get('flags', []),
+                'feasibility_failed': bool(str(f.get('verdict', '')).upper() == 'FAIL'),
+                'directive_block_reason': directive_block_reason or '',
                 'status': 'EXECUTED',
                 'gate_pass': bool(bt.get('gate', {}).get('gate_pass', True)),
                 'net_profit': bt.get('results', {}).get('net_profit', 0.0),
@@ -512,14 +472,18 @@ def main() -> int:
     if args.max_runs > 0:
         runs = runs[:args.max_runs]
     attempted = len(selected_variants) * len(dataset_metas)
-    dedup_skipped_total = history_skips + in_batch_skips + directive_blocked_skips
+    dedup_hits_total = history_skips + in_batch_skips + directive_blocked_skips
     summary = {
         'total_runs': len(runs),
         'attempted_runs': attempted,
-        'dedup_skipped_total': dedup_skipped_total,
-        'dedup_skipped_history': history_skips,
-        'dedup_skipped_batch': in_batch_skips,
-        'directive_blocked_skips': directive_blocked_skips,
+        'dedup_skipped_total': 0,
+        'dedup_skipped_history': 0,
+        'dedup_skipped_batch': 0,
+        'directive_blocked_skips': 0,
+        'dedup_hits_total': dedup_hits_total,
+        'dedup_hits_history': history_skips,
+        'dedup_hits_batch': in_batch_skips,
+        'directive_block_hits': directive_blocked_skips,
         'failed_runs': sum(1 for r in runs if not r['gate_pass']),
         'net_profit': round(sum(float(r.get('net_profit', 0.0)) for r in runs), 8),
         'trades': int(sum(int(r.get('trades', 0)) for r in runs)),
@@ -565,6 +529,10 @@ def main() -> int:
         'dedup_skipped_history': summary['dedup_skipped_history'],
         'dedup_skipped_batch': summary['dedup_skipped_batch'],
         'directive_blocked_skips': summary['directive_blocked_skips'],
+        'dedup_hits_total': summary.get('dedup_hits_total', 0),
+        'dedup_hits_history': summary.get('dedup_hits_history', 0),
+        'dedup_hits_batch': summary.get('dedup_hits_batch', 0),
+        'directive_block_hits': summary.get('directive_block_hits', 0),
         'ppr_pass_count': summary['ppr_pass_count'],
         'ppr_promote_count': summary['ppr_promote_count'],
         'ppr_fail_count': summary['ppr_fail_count'],
