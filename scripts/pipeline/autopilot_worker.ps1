@@ -3,6 +3,7 @@
   [int]$MaxRefinementsPerRun = 1,
   [int]$MaxBundlesPerRun = 3,
   [int]$MinStrategiesPerRun = 1,
+  [int]$TargetStrategiesPerRun = 3,
   [int]$MaxStrategiesPerRun = 10,
   [int]$RetryDepth = 0,
   [int]$MaxImmediateRetries = 2,
@@ -24,7 +25,10 @@ Set-Location -LiteralPath $RepoRoot
 
 if ($MinStrategiesPerRun -lt 0) { $MinStrategiesPerRun = 0 }
 if ($MaxStrategiesPerRun -lt 1) { $MaxStrategiesPerRun = 1 }
+if ($TargetStrategiesPerRun -lt 1) { $TargetStrategiesPerRun = 1 }
 if ($MinStrategiesPerRun -gt $MaxStrategiesPerRun) { $MinStrategiesPerRun = $MaxStrategiesPerRun }
+if ($TargetStrategiesPerRun -lt $MinStrategiesPerRun) { $TargetStrategiesPerRun = $MinStrategiesPerRun }
+if ($TargetStrategiesPerRun -gt $MaxStrategiesPerRun) { $TargetStrategiesPerRun = $MaxStrategiesPerRun }
 if ($MaxBundlesPerRun -gt $MaxStrategiesPerRun) { $MaxBundlesPerRun = $MaxStrategiesPerRun }
 
 $adaptivePolicyPath = Join-Path $RepoRoot 'config\adaptive_execution_policy.json'
@@ -1494,6 +1498,7 @@ $summary = [ordered]@{
   recombine_created = $recombineCreated
   recombine_bundle_path = $recombineBundlePath
   min_strategies_per_run = [int]$MinStrategiesPerRun
+  target_strategies_per_run = [int]$TargetStrategiesPerRun
   max_strategies_per_run = [int]$MaxStrategiesPerRun
   strategy_contract_ok = $true
   strategy_contract_shortfall = 0
@@ -1519,7 +1524,7 @@ $summary.queue_backlog = [int]$queueBacklog
 
 $invariantSeeded = 0
 $seedGuard = 0
-while (-not $DryRun -and [int]$quandalfQueueGenerated -lt [int]$MinStrategiesPerRun -and $seedGuard -lt 20) {
+while (-not $DryRun -and [int]$quandalfQueueGenerated -lt [int]$TargetStrategiesPerRun -and $seedGuard -lt 20) {
   $seedGuard += 1
   try {
     $rcSeed = Run-Py @('scripts/pipeline/recombine_from_library.py') | ConvertFrom-Json
@@ -1544,6 +1549,7 @@ $summary.queued_for_testing = [int]$queuedForTesting
 $summary.queue_backlog = [int]$queueBacklog
 
 $strategyShortfall = [Math]::Max(0, [int]$MinStrategiesPerRun - [int]$quandalfQueueGenerated)
+$targetShortfall = [Math]::Max(0, [int]$TargetStrategiesPerRun - [int]$quandalfQueueGenerated)
 if ($strategyShortfall -gt 0) {
   $summary.strategy_contract_ok = $false
   $summary.strategy_contract_shortfall = [int]$strategyShortfall
@@ -1554,6 +1560,10 @@ if ($strategyShortfall -gt 0) {
 } elseif ([int]$quandalfQueueGenerated -gt [int]$MaxStrategiesPerRun) {
   if (-not $DryRun) {
     Emit-Summary 'STRATEGY_CONTRACT_NOTE' ("Strategy generation above configured max (non-fatal): generated=" + [int]$quandalfQueueGenerated + " max=" + [int]$MaxStrategiesPerRun) 'WARN' 'Autopilot'
+  }
+} elseif ($targetShortfall -gt 0) {
+  if (-not $DryRun) {
+    Emit-Summary 'STRATEGY_TARGET_NOTE' ("Strategy target not reached (non-fatal): generated=" + [int]$quandalfQueueGenerated + " target=" + [int]$TargetStrategiesPerRun + " shortfall=" + [int]$targetShortfall) 'INFO' 'Autopilot'
   }
 }
 
