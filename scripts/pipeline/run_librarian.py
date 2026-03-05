@@ -111,12 +111,69 @@ def _ensure_fee_model_hash(entry: dict) -> dict:
     return entry
 
 
+def _parse_created_at(value: str | None) -> datetime:
+    if not value:
+        return datetime.now(UTC)
+    txt = str(value).strip()
+    try:
+        return datetime.fromisoformat(txt.replace('Z', '+00:00')).astimezone(UTC)
+    except Exception:
+        return datetime.now(UTC)
+
+
+def _passed_key(entry: dict) -> str:
+    ptr = str(entry.get('pointers', {}).get('backtest_result') or '')
+    return _hash_key(str(entry.get('sha256_inputs') or ''), ptr, str(entry.get('id') or ''))
+
+
+def _load_ndjson(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    rows: list[dict] = []
+    for ln in path.read_text(encoding='utf-8-sig', errors='ignore').splitlines():
+        s = ln.strip()
+        if not s:
+            continue
+        try:
+            obj = json.loads(s)
+            if isinstance(obj, dict):
+                rows.append(obj)
+        except Exception:
+            continue
+    return rows
+
+
+def _write_ndjson(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    body = '\n'.join(json.dumps(r, separators=(',', ':')) for r in rows)
+    if body:
+        body += '\n'
+    path.write_text(body, encoding='utf-8')
+
+
+def _collect_recent_passed(shards_dir: Path, days: int) -> list[dict]:
+    since = datetime.now(UTC) - timedelta(days=days)
+    rows: list[dict] = []
+    if not shards_dir.exists():
+        return rows
+    for p in sorted(shards_dir.glob('*.passed.ndjson')):
+        for r in _load_ndjson(p):
+            if _parse_created_at(str(r.get('created_at') or '')) >= since:
+                rows.append(r)
+    dedup: dict[str, dict] = {}
+    for r in rows:
+        dedup[_passed_key(r)] = r
+    return sorted(dedup.values(), key=lambda x: x.get('created_at', ''), reverse=True)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--since-days', type=int, default=7)
     ap.add_argument('--artifacts-root', default='artifacts')
     ap.add_argument('--archive', action='store_true')
     ap.add_argument('--archive-days', type=int, default=30)
+    ap.add_argument('--hot-days', type=int, default=7)
+    ap.add_argument('--warm-days', type=int, default=14)
     args = ap.parse_args()
 
     artifacts_root = (ROOT / args.artifacts_root).resolve()
@@ -124,8 +181,11 @@ def main() -> int:
     run_idx_p = lib_root / 'RUN_INDEX.json'
     top_idx_p = lib_root / 'TOP_CANDIDATES.json'
     lessons_p = lib_root / 'LESSONS_INDEX.json'
-    passed_idx_p = lib_root / 'PASSED_INDEX.json'
+    passed_idx_p = lib_root / 'PASSED_INDEX.json'  # backward-compat alias (hot window)
+    passed_hot_p = lib_root / 'PASSED_HOT_7D.json'
+    passed_warm_p = lib_root / 'PASSED_WARM_14D.json'
     passed_summary_p = lib_root / 'PASSED_INDEX_SUMMARY.json'
+    passed_shards_dir = lib_root / 'passed'
 
     since = datetime.now(UTC) - timedelta(days=args.since_days)
 
@@ -209,26 +269,68 @@ def main() -> int:
 
     _write(run_idx_p, combined)
 
-    # Passed-index: compact improvement bucket for strategy iteration.
-    passed_pool = [e for e in combined if bool(e.get('gate_pass', False))]
-    passed_pool = sorted(passed_pool, key=lambda x: x.get('created_at', ''), reverse=True)
-    passed = _cap(passed_pool, 200)
-    _write(passed_idx_p, passed)
+    # Passed library (scalable): append/merge into monthly shards (never capped), then expose hot/warm windows.
+    if not passed_shards_dir.exists():
+        passed_shards_dir.mkdir(parents=True, exist_ok=True)
 
-    # Future-proof summary index (small payload): aggregate by family/template.
-    by_family_passed = {}
-    by_template_passed = {}
-    for e in passed:
+    passed_source = [e for e in new_entries if bool(e.get('gate_pass', False))]
+    # One-time seed when shards are empty: bootstrap from current combined view.
+    if not list(passed_shards_dir.glob('*.passed.ndjson')):
+        passed_source = [e for e in combined if bool(e.get('gate_pass', False))]
+
+    by_month: dict[str, list[dict]] = {}
+    for e in passed_source:
+        dt = _parse_created_at(str(e.get('created_at') or ''))
+        mon = dt.strftime('%Y-%m')
+        by_month.setdefault(mon, []).append(e)
+
+    for mon, items in by_month.items():
+        shard = passed_shards_dir / f'{mon}.passed.ndjson'
+        existing = _load_ndjson(shard)
+        merged: dict[str, dict] = {}
+        for r in existing:
+            merged[_passed_key(r)] = r
+        for r in items:
+            merged[_passed_key(r)] = r
+        out_rows = sorted(merged.values(), key=lambda x: x.get('created_at', ''), reverse=True)
+        _write_ndjson(shard, out_rows)
+
+    passed_hot = _collect_recent_passed(passed_shards_dir, days=args.hot_days)
+    passed_warm = _collect_recent_passed(passed_shards_dir, days=args.warm_days)
+
+    # Backward compat: PASSED_INDEX.json points at hot window for lightweight consumers.
+    _write(passed_hot_p, passed_hot)
+    _write(passed_warm_p, passed_warm)
+    _write(passed_idx_p, passed_hot)
+
+    # Future-proof summary index (small payload): aggregate windows + templates/families from warm window.
+    by_family_passed: dict[str, int] = {}
+    by_template_passed: dict[str, int] = {}
+    for e in passed_warm:
         fam = Path(e.get('strategy_spec_path', 'unknown')).stem
         by_family_passed[fam] = by_family_passed.get(fam, 0) + 1
         tmpl = str(e.get('variant_name', '')).strip().lower() or 'unknown'
         by_template_passed[tmpl] = by_template_passed.get(tmpl, 0) + 1
 
+    shard_files = sorted(passed_shards_dir.glob('*.passed.ndjson'))
+
     passed_summary = {
         'generated_at': datetime.now(UTC).isoformat(),
         'source': str(run_idx_p).replace('\\', '/'),
+        'storage': {
+            'type': 'monthly_ndjson_shards',
+            'dir': str(passed_shards_dir).replace('\\', '/'),
+            'shards': [p.name for p in shard_files],
+        },
+        'windows': {
+            'hot_days': int(args.hot_days),
+            'warm_days': int(args.warm_days),
+            'hot_path': str(passed_hot_p).replace('\\', '/'),
+            'warm_path': str(passed_warm_p).replace('\\', '/'),
+            'hot_count': len(passed_hot),
+            'warm_count': len(passed_warm),
+        },
         'passed_index_path': str(passed_idx_p).replace('\\', '/'),
-        'passed_count': len(passed),
         'top_families': [
             {'family': k, 'count': v}
             for k, v in sorted(by_family_passed.items(), key=lambda kv: kv[1], reverse=True)[:50]
@@ -318,11 +420,15 @@ def main() -> int:
         'lessons_index_path': str(lessons_p),
         'run_index_path': str(run_idx_p),
         'passed_index_path': str(passed_idx_p),
+        'passed_hot_path': str(passed_hot_p),
+        'passed_warm_path': str(passed_warm_p),
         'passed_summary_path': str(passed_summary_p),
+        'passed_shards_dir': str(passed_shards_dir),
         'top_count': len(top),
         'run_count': len(combined),
         'lessons_count': len(lessons),
-        'passed_count': len(passed),
+        'passed_hot_count': len(passed_hot),
+        'passed_warm_count': len(passed_warm),
         'example_top': top[0] if top else None,
         'new_indicators_added': new_indicators_added,
         'skipped_indicators_dedup': skipped_indicators_dedup,

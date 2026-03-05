@@ -74,7 +74,9 @@ READ these files:
 8. One recent strategy spec in artifacts/strategy_specs/ (format reference)
 9. Runtime context: docs/shared/QUANDALF_RUNTIME_CONTEXT.md
 10. Passed library summary: artifacts/library/PASSED_INDEX_SUMMARY.json (if exists)
-11. Passed library index: artifacts/library/PASSED_INDEX.json (if exists; sample top 50, do not exhaustively read if large)
+11. Passed hot window (7d): artifacts/library/PASSED_HOT_7D.json (if exists)
+12. Passed warm window (14d): artifacts/library/PASSED_WARM_14D.json (if exists)
+13. Passed shard archive (read only when needed): artifacts/library/passed/*.passed.ndjson
 
 DESIGN 2-3 creative strategy specs that:
 - Use DIFFERENT templates from recent specs where possible

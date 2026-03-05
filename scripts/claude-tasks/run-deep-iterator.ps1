@@ -28,7 +28,9 @@ Funding rate arbitrage, liquidation hunting, market making, event-driven trading
 - Doctrine: docs/DOCTRINE/analyser-doctrine.md
 - Research cards from videos: artifacts/research_cards/
 - Passed library summary: artifacts/library/PASSED_INDEX_SUMMARY.json (if exists)
-- Passed library index: artifacts/library/PASSED_INDEX.json (if exists; sample top 50 if large)
+- Passed hot window (7d): artifacts/library/PASSED_HOT_7D.json (if exists)
+- Passed warm window (14d): artifacts/library/PASSED_WARM_14D.json (if exists)
+- Passed shard archive (read on-demand): artifacts/library/passed/*.passed.ndjson
 - Your previous iteration log: docs/claude-reports/DEEP_ITERATION_LOG.md
 
 ## What We Want From You
