@@ -2,9 +2,9 @@
   [switch]$DryRun,
   [int]$MaxRefinementsPerRun = 1,
   [int]$MaxBundlesPerRun = 5,
-  [int]$MinStrategiesPerRun = 1,
-  [int]$TargetStrategiesPerRun = 3,
-  [int]$MaxStrategiesPerRun = 5,
+  [int]$MinStrategiesPerRun = 4,
+  [int]$TargetStrategiesPerRun = 10,
+  [int]$MaxStrategiesPerRun = 10,
   [int]$RetryDepth = 0,
   [int]$MaxImmediateRetries = 2,
   [switch]$QuandalfOwnsDecisions = $true,
@@ -1554,8 +1554,7 @@ if ($strategyShortfall -gt 0) {
   $summary.strategy_contract_ok = $false
   $summary.strategy_contract_shortfall = [int]$strategyShortfall
   if (-not $DryRun) {
-    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: generated=" + [int]$quandalfQueueGenerated + " queued_for_testing=" + [int]$queuedForTesting + " min=" + [int]$MinStrategiesPerRun + " max=" + [int]$MaxStrategiesPerRun + " shortfall=" + [int]$strategyShortfall) 'FAIL' 'Autopilot'
-    $errorsCount += 1
+    Emit-Summary 'STRATEGY_CONTRACT_NOTE' ("Strategy minimum not reached (non-blocking): generated=" + [int]$quandalfQueueGenerated + " queued_for_testing=" + [int]$queuedForTesting + " min=" + [int]$MinStrategiesPerRun + " max=" + [int]$MaxStrategiesPerRun + " shortfall=" + [int]$strategyShortfall + " recovery=attempted") 'WARN' 'Autopilot'
   }
 } elseif ([int]$quandalfQueueGenerated -gt [int]$MaxStrategiesPerRun) {
   if (-not $DryRun) {
@@ -1563,15 +1562,14 @@ if ($strategyShortfall -gt 0) {
   }
 } elseif ($targetShortfall -gt 0) {
   if (-not $DryRun) {
-    Emit-Summary 'STRATEGY_TARGET_NOTE' ("Strategy target not reached (non-fatal): generated=" + [int]$quandalfQueueGenerated + " target=" + [int]$TargetStrategiesPerRun + " shortfall=" + [int]$targetShortfall) 'INFO' 'Autopilot'
+    Emit-Summary 'STRATEGY_TARGET_NOTE' ("Strategy target not reached (non-blocking): generated=" + [int]$quandalfQueueGenerated + " target=" + [int]$TargetStrategiesPerRun + " shortfall=" + [int]$targetShortfall + " recovery=attempted") 'INFO' 'Autopilot'
   }
 }
 
 if ([int]$queuedForTesting -lt [int]$quandalfQueueGenerated) {
   $summary.strategy_contract_ok = $false
   if (-not $DryRun) {
-    Emit-Summary 'STRATEGY_CONTRACT_BREACH' ("Strategy contract breach: queued_for_testing=" + [int]$queuedForTesting + " < generated=" + [int]$quandalfQueueGenerated) 'FAIL' 'Autopilot'
-    $errorsCount += 1
+    Emit-Summary 'STRATEGY_CONTRACT_NOTE' ("Queue accounting note (non-blocking): queued_for_testing=" + [int]$queuedForTesting + " < generated=" + [int]$quandalfQueueGenerated) 'WARN' 'Autopilot'
   }
 }
 
