@@ -1,7 +1,7 @@
 ﻿param(
   [switch]$DryRun,
   [int]$MaxRefinementsPerRun = 1,
-  [int]$MaxBundlesPerRun = 10,
+  [int]$MaxBundlesPerRun = 15,
   [int]$MinStrategiesPerRun = 4,
   [int]$TargetStrategiesPerRun = 10,
   [int]$MaxStrategiesPerRun = 10,
