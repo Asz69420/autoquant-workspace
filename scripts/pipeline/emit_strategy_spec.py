@@ -16,6 +16,8 @@ from pathlib import Path
 MAX_JSON_BYTES = 60 * 1024
 MAX_INDEX = 200
 MAX_VARIANTS = 10
+TARGET_MIN_VARIANTS = 3
+TARGET_MAX_VARIANTS = 7
 ROOT = Path(__file__).resolve().parents[2]
 
 # Indicator Role Framework (from DaviddTech methodology)
@@ -769,9 +771,13 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     if not filtered_directives:
         return []
 
-    # Quandalf-owned variant plan: one variant per directive (up to MAX_VARIANTS).
+    # Push multi-variant behavior while keeping flexibility.
     chosen = filtered_directives[:MAX_VARIANTS]
+    desired = min(MAX_VARIANTS, max(TARGET_MIN_VARIANTS, min(TARGET_MAX_VARIANTS, len(chosen) * 2)))
+
     out: list[dict] = []
+
+    # Primary pass: one full-strength variant per directive.
     for i, d in enumerate(chosen, start=1):
         v = _apply_directive(seed, d, i, magnitude=1.0)
         vn = str(v.get('name') or '')
@@ -780,6 +786,25 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
             continue
         out.append(v)
 
+    # Top-up pass: additional directive-shaped variants with controlled magnitude shifts.
+    if len(out) < desired:
+        mags = [0.85, 1.15, 0.70, 1.30]
+        idx = len(out) + 1
+        round_n = 0
+        while len(out) < desired and len(out) < MAX_VARIANTS:
+            d = chosen[round_n % len(chosen)]
+            mag = mags[round_n % len(mags)]
+            v = _apply_directive(seed, d, idx, magnitude=mag)
+            vn = str(v.get('name') or '')
+            if vn and vn in blacklisted_variants:
+                round_n += 1
+                idx += 1
+                continue
+            out.append(v)
+            round_n += 1
+            idx += 1
+
+    print(f"VARIANT_TARGET target={desired} generated={len(out)} directives={len(chosen)}", file=sys.stderr)
     return out[:MAX_VARIANTS]
 
 
