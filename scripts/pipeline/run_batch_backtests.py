@@ -315,6 +315,7 @@ def main() -> int:
     historical_seen = set()
     history_skips = 0
     in_batch_skips = 0
+    directive_blocked_skips = 0
 
     if not args.disable_history_dedup:
         historical_seen = _index_historical_signatures(
@@ -369,6 +370,7 @@ def main() -> int:
                 directive_block_reason = "BLACKLIST_DIRECTIVE"
 
             if directive_block_reason:
+                directive_blocked_skips += 1
                 runs.append({
                     'variant_name': variant,
                     'symbol': symbol,
