@@ -773,12 +773,21 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
 
     # Push multi-variant behavior while keeping flexibility.
     chosen = filtered_directives[:MAX_VARIANTS]
-    desired = min(MAX_VARIANTS, max(TARGET_MIN_VARIANTS, min(TARGET_MAX_VARIANTS, len(chosen) * 2)))
+    desired = min(MAX_VARIANTS, max(TARGET_MIN_VARIANTS, min(TARGET_MAX_VARIANTS, len(chosen))))
 
     out: list[dict] = []
 
-    # Primary pass: one full-strength variant per directive.
+    # Always include the original strategy as baseline retest candidate.
+    baseline = copy.deepcopy(seed)
+    baseline['name'] = 'directive_baseline_retest'
+    baseline['description'] = 'Baseline retest of the generated strategy before directive variants.'
+    baseline['origin'] = 'BASELINE_RETEST'
+    out.append(baseline)
+
+    # Directive variants fill remaining slots.
     for i, d in enumerate(chosen, start=1):
+        if len(out) >= desired:
+            break
         v = _apply_directive(seed, d, i, magnitude=1.0)
         vn = str(v.get('name') or '')
         if vn and vn in blacklisted_variants:
@@ -789,12 +798,12 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
     # Top-up pass: additional directive-shaped variants with controlled magnitude shifts.
     if len(out) < desired:
         mags = [0.85, 1.15, 0.70, 1.30]
-        idx = len(out) + 1
+        idx = len(out)
         round_n = 0
         while len(out) < desired and len(out) < MAX_VARIANTS:
             d = chosen[round_n % len(chosen)]
             mag = mags[round_n % len(mags)]
-            v = _apply_directive(seed, d, idx, magnitude=mag)
+            v = _apply_directive(seed, d, idx + 1, magnitude=mag)
             vn = str(v.get('name') or '')
             if vn and vn in blacklisted_variants:
                 round_n += 1
@@ -804,7 +813,7 @@ def _directive_variants(seed: dict, directives: list[dict]) -> list[dict]:
             round_n += 1
             idx += 1
 
-    print(f"VARIANT_TARGET target={desired} generated={len(out)} directives={len(chosen)}", file=sys.stderr)
+    print(f"VARIANT_TARGET target={desired} generated={len(out)} directives={len(chosen)} baseline_included=1", file=sys.stderr)
     return out[:MAX_VARIANTS]
 
 
