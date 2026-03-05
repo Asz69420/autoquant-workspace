@@ -964,7 +964,7 @@ try {
               $execCount = ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
               $bStatus = if ($execCount -le 0) { 'WARN' } else { 'OK' }
               Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch: runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFailThis + " gate_pass=" + $gatePassThis) $bStatus 'Backtester'
-              if ([int]$bdoc.summary.failed_runs -gt 0) {
+              if ([int]$execCount -eq 0 -and [int]$bdoc.summary.failed_runs -gt 0) {
                 Emit-Summary 'REQUEUE_REQUIRED' ('Non-executable tests requeued for Quandalf rectification: count=' + [int]$bdoc.summary.failed_runs) 'WARN' 'Backtester'
               }
               if ([int]$batchGateFailThis -gt 0) {
@@ -1236,7 +1236,7 @@ try {
           $execCount = ([int]$bdoc.summary.total_runs - [int]$bdoc.summary.failed_runs)
           $bStatus = if ($execCount -le 0) { 'WARN' } else { 'OK' }
           Emit-Summary 'BATCH_BACKTEST_SUMMARY' ("Batch(backfill): runs=" + $bdoc.summary.total_runs + " executed=" + $execCount + " skipped=" + $bdoc.summary.failed_runs + " gate_fail=" + $batchGateFailThis + " gate_pass=" + $gatePassThis + " spec=" + [IO.Path]::GetFileName([string]$spPath)) $bStatus 'Backtester'
-          if ([int]$bdoc.summary.failed_runs -gt 0) {
+          if ([int]$execCount -eq 0 -and [int]$bdoc.summary.failed_runs -gt 0) {
             Emit-Summary 'REQUEUE_REQUIRED' ('Non-executable tests requeued for Quandalf rectification: count=' + [int]$bdoc.summary.failed_runs + ' spec=' + [IO.Path]::GetFileName([string]$spPath)) 'WARN' 'Backtester'
           }
           if ([int]$batchGateFailThis -gt 0) {

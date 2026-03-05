@@ -216,7 +216,7 @@ function Get-LiveReviewInfo {
         $runGenerated = @($runEvents | Where-Object { [string]$_.action -eq 'BUNDLE_SPEC_RESULT' }).Count
         $runPassed = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_pass'
         $runAborted = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_fail'
-        $runSkipped = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'skipped'
+        $runSkipped = Get-RunSummaryMetricTotal -Events $runEvents -Action 'REQUEUE_REQUIRED' -MetricName 'count'
 
         $qGenerated = [int]$runGenerated
         $passing = [int]$runPassed
