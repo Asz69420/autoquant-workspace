@@ -312,7 +312,7 @@ $forwardRuns = 0; $forwardEntries = 0; $forwardCloses = 0; $forwardSignalEvals =
 $delegated = 0; $spawned = 0; $completed = 0; $failed = 0; $totalActions = 0
 $bundlesScanned = 0; $bundlesSelected = 0; $bundleStarts = 0
 $specOk = 0; $specBlocked = 0; $specReview = 0
-$batchAttempts = 0; $batchExecutedTotal = 0; $batchSkippedTotal = 0; $batchBlockedPromotion = 0; $batchNoVariants = 0
+$batchAttempts = 0; $batchExecutedTotal = 0; $batchSkippedTotal = 0; $requeueRequiredTotal = 0; $batchBlockedPromotion = 0; $batchNoVariants = 0
 $promotionChecks = 0; $promotionOk = 0; $promotionBlocked = 0; $promotionSkipped = 0
 $outboxLag = 0
 
@@ -367,6 +367,10 @@ foreach ($e in $reportEvents) {
       }
       if ($sum -match 'blocked promotion') { $batchBlockedPromotion++ }
       if ($sum -match 'no variants') { $batchNoVariants++ }
+    }
+    "REQUEUE_REQUIRED" {
+      if ($sum -match 'count=(\d+)') { $requeueRequiredTotal += [int]$matches[1] }
+      else { $requeueRequiredTotal += 1 }
     }
     "LIBRARIAN_SUMMARY" {
       if ($sum -match 'run=(\d+)') { $librarySize = [int]$matches[1] }
@@ -573,7 +577,7 @@ if ($mode -eq 'quandalf') {
   } else {
     $lines += "Waiting: $outboxLag"
     $lines += "Backtests: $batchExecutedTotal"
-    $lines += "Skipped: $batchSkippedTotal"
+    $lines += "Skipped: $requeueRequiredTotal"
     $lines += "Aborted: $batchGateFail"
     $lines += "Forwardtests: $forwardRuns"
   }
@@ -632,8 +636,8 @@ if ($true) {
       $noteText = "Strong cycle: $promotionOk promoted, $promotionBlocked held for review."
     } elseif ($promotionOk -gt 0) {
       $noteText = "Strong cycle: $promotionOk promoted cleanly."
-    } elseif ($batchSkippedTotal -gt 0) {
-      $noteText = "Cycle complete with skips: $batchSkippedTotal item(s) were returned for rectify/abort."
+    } elseif ($requeueRequiredTotal -gt 0) {
+      $noteText = "Cycle complete with skips: $requeueRequiredTotal item(s) were returned for rectify/abort."
     } elseif ($batchExecutedTotal -gt 0) {
       $noteText = "Cycle complete: $batchExecutedTotal backtests run; no strong promotion yet."
     } elseif ($ingested -gt 0 -or $bundlesSelected -gt 0 -or ($specOk + $specBlocked + $specReview) -gt 0) {
