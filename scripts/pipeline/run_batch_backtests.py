@@ -112,9 +112,11 @@ def _load_advisory_enforcement(advisory_path: str) -> dict:
         action = str(d.get('action') or '').upper()
         target = str(d.get('target') or '').strip()
         if action == 'EXCLUDE_ASSET' and target:
-            out['exclude_assets'].add(target.upper())
+            # Policy override: never hard-block assets via advisory directives.
+            continue
         elif action == 'EXCLUDE_TIMEFRAME' and target:
-            out['exclude_timeframes'].add(target.lower())
+            # Policy override: never hard-block timeframes via advisory directives.
+            continue
         elif action == 'BLACKLIST_TEMPLATE' and target:
             out['blacklist_templates'].add(target.lower())
         elif action == 'BLACKLIST_DIRECTIVE' and target:
