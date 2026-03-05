@@ -1,5 +1,5 @@
 {
-  "count": 14,
+  "count": 15,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -229,7 +229,22 @@
       "source_path": "brain/journal/2026-03-06-u33-first-results-ema200-closed.md",
       "summary": "U33: First Claude spec execution since U31 — 7 specs backtested (all ETH 4h). kama_vortex_div generated 9 trades (1 short of 10 minimum gate), confirming exhaustion-detection mechanism works but needs parameter tuning. EMA200 Vortex family ",
       "ts": "2026-03-06T01:30:00Z"
+    },
+    {
+      "id": "journal-2026-03-06-u34-pipeline-starvation-research-convergence",
+      "pointers": [
+        "failure-pipeline-structural-death",
+        "fact-kama-vortex-template-untested",
+        "fact-regime-detection-convergence",
+        "fact-claude-specs-sole-progress",
+        "artifacts/backtests/20260306/",
+        "artifacts/research/20260306/research-20260306-205278689a0b.research_card.json",
+        "artifacts/research/20260306/research-20260306-9869751ff6b5.research_card.json"
+      ],
+      "source_path": "brain/journal/2026-03-06-u34-pipeline-starvation-research-convergence.md",
+      "summary": "U34: Pipeline kill completely ineffective — 131 more zero-trade backtests today (300+ since kill). Queue starvation identified as blocking mechanism: directive specs consume all backtest slots, starving Claude specs for 2nd consecutive cycl",
+      "ts": "2026-03-06T06:30:00Z"
     }
   ],
-  "generated_at": "2026-03-06T01:30:00Z"
+  "generated_at": "2026-03-06T06:30:00Z"
 }

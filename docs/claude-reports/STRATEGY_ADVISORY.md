@@ -1,8 +1,8 @@
-# Strategy Advisory — 2026-03-06 (Update 33)
+# Strategy Advisory — 2026-03-06 (Update 34)
 
 **Author:** claude-advisor (Quandalf) | **Mode:** STRATEGY_RESEARCHER
-**Data window:** 7 new backtest results (ALL ETH 4h Claude specs — FIRST Claude spec execution since U31). 30 outcome notes (ALL 0-trade directive REJECT). 3 new Claude specs written (T3 Vortex, MACDh CHOP, ALMA CCI). **0 NEW ACCEPTs** but critical near-miss data. Total unique ACCEPTs: 11 (unchanged).
-**Prior advisory:** 2026-03-05 (Update 32)
+**Data window:** 131 new backtests in 20260306 (ALL zero-trade directive pipeline). 0 new Claude spec results (3 specs from U33 STILL pending — 2nd cycle blocked). 7 new research cards (2 directly relevant to transition-detection). **0 NEW ACCEPTs.** Total unique ACCEPTs: 11 (unchanged).
+**Prior advisory:** 2026-03-06 (Update 33)
 
 ---
 
@@ -19,21 +19,23 @@
   {"action": "BLACKLIST_INDICATOR_COMBO", "target": "Ichimoku + KAMA", "reason": "4 configs tested, best PF=1.090. Incompatible time horizons."},
   {"action": "BLACKLIST_INDICATOR_COMBO", "target": "CCI + T3 zero-cross", "reason": "PF=0.606 on ETH 1h. T3 too slow as CCI smoothing filter."},
   {"action": "BLACKLIST_INDICATOR_COMBO", "target": "OBV confirmation", "reason": "OBV trends with price, triples trades, halves PF. Use divergence only."},
-  {"action": "EXCLUDE_ASSET", "target": "BTC", "reason": "0 ACCEPTs in 800+ outcomes across 33 cycles."},
+  {"action": "EXCLUDE_ASSET", "target": "BTC", "reason": "0 ACCEPTs in 930+ outcomes across 34 cycles."},
   {"action": "EXCLUDE_TIMEFRAME", "target": "15m", "reason": "0 ACCEPTs ever."},
   {"action": "PREFER_TIMEFRAME", "target": "4h", "reason": "All 11 ACCEPTs are 4h."},
   {"action": "DISABLE_REFINEMENT", "reason": "0% improvement rate across 44+ stall cycles."},
-  {"action": "KILL_DIRECTIVE_LOOP", "reason": "MAINTAINED: Directive pipeline still generating 0-trade waste. 30 more REJECT outcomes today."},
-  {"action": "CIRCUIT_BREAK_PIPELINE", "threshold": "5_consecutive_zero_trade_per_spec_family", "reason": "Pipeline waste continues unabated."},
-  {"action": "HALT_SPEC_GENERATION", "reason": "MAINTAINED: All non-Claude generation must be stopped."},
-  {"action": "REJECT_PIPELINE_PROMOTIONS", "targets": "artifacts/promotions/20260306/*.promotion_run.json", "reason": "All promotions from dead pipeline. Reject without review."},
-  {"action": "TUNE_KAMA_VORTEX_DIV", "reason": "NEW U33: Template generated 9 trades (1 short of min 10). Near-miss, NOT dead. Relax ATR gate or KAMA flattening threshold to increase signal frequency."},
-  {"action": "CLOSE_EMA200_FAMILY", "reason": "NEW U33: v3b 8:1 DD=25.56%, v3b 10:1 DD=32.20%. Three generations of EMA200 Vortex all fail DD constraint. Mechanism fundamentally high-DD."},
-  {"action": "QUEUE_NEW_CLAUDE_SPECS", "targets": ["strategy-spec-20260306-claude-t3vtx01", "strategy-spec-20260306-claude-mchtrn01", "strategy-spec-20260306-claude-almcci01"], "reason": "NEW U33: 3 novel transition-detection specs written. 7 variants total. Need immediate backtest execution."},
-  {"action": "REQUEST_INDICATOR", "target": "TRIX_14", "reason": "Transition-detection expansion. 10th cycle requesting."},
-  {"action": "DEFINE_FWD_TEST_GRADUATION", "reason": "14th cycle requesting. Proposed: 30 days + PF>1.2 + DD<15%."},
+  {"action": "KILL_DIRECTIVE_LOOP", "reason": "CRITICAL: 131 more zero-trade backtests today. Kill order has had ZERO effect. Pipeline fully self-regenerating."},
+  {"action": "CIRCUIT_BREAK_PIPELINE", "threshold": "5_consecutive_zero_trade_per_spec_family", "reason": "300+ zero-trade backtests since kill order. No circuit-breaker exists."},
+  {"action": "HALT_SPEC_GENERATION", "reason": "MAINTAINED: All non-Claude generation must be stopped. Pipeline producing 4 new specs, 6 feasibility, 3 promotions, 3 batches, 3 theses TODAY despite kill."},
+  {"action": "REJECT_PIPELINE_PROMOTIONS", "targets": "artifacts/promotions/20260306/*.promotion_run.json", "reason": "3 new promotions from dead pipeline today."},
+  {"action": "DRAIN_BACKTEST_QUEUE", "reason": "NEW U34: Claude specs blocked 2 cycles. Directive waste consumes all queue slots. Must drain before any Claude spec can execute."},
+  {"action": "QUEUE_PRIORITY_SYSTEM", "reason": "NEW U34: Claude specs should execute before directive pipeline specs. Current FIFO allows 131 zero-trade specs to block 7 valuable variants."},
+  {"action": "TUNE_KAMA_VORTEX_DIV", "reason": "UPDATED U34: 0/9 WR (not near-miss). Needs parameter tuning to increase trade count to 20+ FIRST, then evaluate edge."},
+  {"action": "CLOSE_EMA200_FAMILY", "reason": "MAINTAINED: 3 generations, all DD>20%. Family structurally closed."},
+  {"action": "QUEUE_NEW_CLAUDE_SPECS", "targets": ["strategy-spec-20260306-claude-t3vtx01", "strategy-spec-20260306-claude-mchtrn01", "strategy-spec-20260306-claude-almcci01"], "reason": "BLOCKED 2 CYCLES: 7 variants awaiting execution. Expected 1-2 ACCEPTs."},
+  {"action": "REQUEST_INDICATOR", "target": "TRIX_14", "reason": "Transition-detection expansion. 11th cycle requesting."},
+  {"action": "DEFINE_FWD_TEST_GRADUATION", "reason": "15th cycle requesting. Proposed: 30 days + PF>1.2 + DD<15%."},
   {"action": "ADD_FWD_TEST_CANDIDATES", "targets": ["KAMA Stoch v1", "Ichimoku TK v1", "Supertrend CCI v4"], "reason": "3 validated ACCEPTs awaiting forward-test enrollment."},
-  {"action": "INVESTIGATE_SMC_INDICATORS", "reason": "CHoCH and BOS from Smart Money Concepts align with proven transition-detection edge."}
+  {"action": "INVESTIGATE_REGIME_DETECTION", "reason": "NEW U34: 5 independent frameworks converge on transition-detection. Research cards (VIX-VIXEQ, Euphoria) add 2 more validation sources."}
 ]
 ```
 
@@ -41,17 +43,15 @@
 
 ## Executive Summary
 
-**Status: First Claude spec results since U31. 0 new ACCEPTs but critical near-miss data on kama_vortex_div and EMA200 family closure.**
+**Status: Pipeline kill completely ineffective — 131 more zero-trade backtests today. Claude specs blocked 2nd consecutive cycle. Research convergence strengthens transition-detection thesis to 5 independent frameworks.**
 
-The backtest queue finally executed 7 Claude-ordered specs (all ETH 4h). Key results:
+1. **Pipeline self-regeneration continues unabated.** 131 new backtests in 20260306, ALL zero-trade, ALL BTC 1h directive specs. Additionally: 4 new strategy specs, 6 feasibility reports, 3 batch backtests, 3 promotion runs, 3 thesis files — ALL from the dead pipeline. The kill order from U31 has had ZERO effect across 3 cycles. The system has no circuit-breaker and no queue drain mechanism.
 
-1. **kama_vortex_div generated 9 trades** — just 1 short of the 10-trade minimum gate. After 5 cycles of requesting, the template IS functional but signals are too rare. Parameter tuning (wider KAMA flattening threshold or lower ATR gate) should push it over the trade-count minimum.
+2. **3 Claude specs from U33 still pending.** T3 Vortex, MACDh CHOP, and ALMA CCI have produced zero backtest results for the 2nd consecutive cycle. The backtest queue is consumed entirely by directive pipeline specs, starving Claude specs of compute. This is the most critical blocker — every blocked cycle delays ~2 potential ACCEPTs.
 
-2. **EMA200 Vortex family is CLOSED.** v3b (1.0 ATR stop) was the fix attempt for v3 tight (0.75 ATR, DD=40%) and v2 (DD=30%). Result: DD=25-32% across both R:R variants. Three generations prove EMA200 entries cluster at high-volatility transition points where stops get hit regardless of width. The mechanism amplifies transitional alpha (trans PF=2.297) but the DD cost is structural.
+3. **kama_vortex_div reassessment.** The U33 "near-miss" label was premature. The template generated 9 trades but ALL 9 LOST (0% WR, PF=0.000). While 9 trades is too small to conclude the mechanism has no edge (at 10:1 R:R, 9.1% WR breaks even, P(0/9 | true WR=11%) = 0.35), the result is not encouraging. Priority: parameter tuning to increase trade count FIRST, then evaluate edge quality.
 
-3. **Supertrend CCI 8:1 variant**: PF=1.358 (up from 1.290) but DD=25.36% (up from 11.63%). The 8:1 R:R helps per-trade but can't solve DD. Default 4h variant remains the ACCEPT.
-
-4. **3 new Claude specs written** — T3 Vortex Transition, MACDh CHOP Transition, ALMA CCI Exhaustion. These represent novel mechanism tests awaiting execution.
+4. **Research convergence on regime detection.** New research cards bring the total to 5+ independent frameworks supporting transition-detection as general edge: (1) Vortex — validated PF=2.034, (2) Ichimoku TK — validated PF=1.604, (3) SMC CHoCH/BOS — conceptual, (4) VIX-VIXEQ Regime Detector — new research card, (5) Euphoria/exhaustion detection — new research card. This convergence strengthens confidence from hypothesis to near-established principle.
 
 ---
 
@@ -59,38 +59,41 @@ The backtest queue finally executed 7 Claude-ordered specs (all ETH 4h). Key res
 
 | Pattern | Evidence | Confidence | Status |
 |---------|----------|------------|--------|
-| Pipeline directive loop | 170+ consecutive 0-trade backtests | 0.99 | STILL ACTIVE despite kill order |
+| Pipeline self-regeneration | 131 more zero-trade today (300+ since kill) | 0.99 | CRITICAL — no circuit-breaker |
+| Claude spec queue starvation | 0 results for 2nd cycle, directives consume all slots | 0.99 | BLOCKING ALL PROGRESS |
 | EMA200 + any stop width | v2 DD=30%, v3 DD=40%, v3b DD=25-32% | 0.95 | CLOSED — 3 generations failed |
-| BTC all strategies | 0 ACCEPTs in 800+ outcomes | 0.95 | EXCLUDE confirmed |
+| BTC all strategies | 0 ACCEPTs in 930+ outcomes | 0.95 | EXCLUDE confirmed |
 | 3+ AND conditions | 100% 0-trade rate | 0.99 | Rule: max 2 conditions |
-| Supertrend CCI 8:1 R:R | PF up (1.358) but DD up (25.36%) | 0.85 | R:R improvement doesn't reduce DD |
-| Research card homogeneity | 10/10 identical recombine clones | 0.90 | Pipeline source dead |
+| kama_vortex_div 0/9 WR | 0% WR on 9 trades (low sample) | 0.65 | INCONCLUSIVE — needs more trades |
+| Research card homogeneity | 10/10 identical recombine clones (prev cycles) | 0.90 | Pipeline source dead |
 
 ---
 
 ## Promising Directions
 
-### P0: kama_vortex_div Parameter Tuning
-- **9 trades in 5002 bars** — template works, signals just too rare
-- Tuning options: relax KAMA flattening threshold, lower ATR gate, or widen Vortex crossover proximity window
-- Combines two proven ACCEPT families (KAMA PF=1.857 + Vortex PF=2.034)
-- Exhaustion-detection remains untested mechanism with highest theoretical potential
+### P0: Execute Pending Claude Specs (CRITICAL BLOCKER)
+- 3 specs blocked 2 cycles: T3 Vortex (claude-t3vtx01), MACDh CHOP (claude-mchtrn01), ALMA CCI (claude-almcci01)
+- 7 variants total — expected yield 1-2 ACCEPTs at historical 24% rate
+- Backtest queue must be CLEARED of directive specs before Claude specs can execute
+- This is the #1 priority — every blocked cycle costs ~2 potential ACCEPTs
 
-### P1: New Claude Specs (3 specs, 7 variants)
-- **T3 Vortex Transition** (claude-t3vtx01): T3 smooth filter + Vortex cross. Tests if T3's near-zero-lag reduces false Vortex signals.
-- **MACDh CHOP Transition** (claude-mchtrn01): MACD histogram zero-cross as 4th transition-detector + CHOP ranging gate. Novel use of MACDh.
-- **ALMA CCI Exhaustion** (claude-almcci01): ALMA adaptive trend + CCI exhaustion from -100. Tests ALMA as KAMA alternative.
-- **Expected yield:** 1-2 ACCEPTs at historical 24% rate across 7 variants
+### P1: Regime Detection Research Convergence
+- 5 independent frameworks now support transition-detection as general edge
+- NEW: VIX-VIXEQ Regime Detector concept — comparing realized vs expected volatility to detect regime shifts. We have ATR (realized) but need implied volatility proxy.
+- NEW: Euphoria Indicator — momentum exhaustion via extreme sentiment zones. Maps to CCI/RSI extremes + momentum divergence.
+- NEW: Smart Pivot Reversals / GuarDeer SMC — reinforces CHoCH/BOS from U32. Two more independent SMC implementations.
+- Next step: design strategy spec combining transition-detection with exhaustion confirmation
 
-### P2: Supertrend CCI v4 Default Variant — Forward-Test Ready
-- Default 4h variant (PF=1.290, DD=11.63%) is the existing ACCEPT
-- 8:1 variant showed PF improvement but DD blowout — confirms default is optimal
-- Ready for forward-test enrollment alongside Vortex v3a and Supertrend 8:1
+### P2: kama_vortex_div Parameter Tuning
+- Template IS mechanically functional (generates 9 trades over 5002 bars)
+- BUT 0/9 WR means edge quality is unknown — need 20+ trades to evaluate
+- Parameter tuning to increase trade count: relax KAMA flattening threshold, lower ATR gate
+- Combines two proven families (KAMA + Vortex) — theoretical support strong
+- Priority: trade count first, edge evaluation second
 
-### P3: SMC CHoCH/BOS Indicators
-- Conceptual alignment with transition-detection confirmed (U32)
-- Would be 3rd independent implementation if encodable
-- Blocked on indicator implementation
+### P3: Forward-Test Enrollment
+- 3 ACCEPTs ready: KAMA Stoch v1, Ichimoku TK v1, Supertrend CCI v4
+- Graduation criteria still undefined (15th cycle requesting)
 
 ---
 
@@ -100,7 +103,7 @@ The backtest queue finally executed 7 Claude-ordered specs (all ETH 4h). Key res
 |----------|---------|---------|--------|-------|
 | spec_rules (Claude) | 11 | 2.034 | ACTIVE | Sole source of progress |
 | supertrend_follow | 4 | 1.921 | ACTIVE | CCI confirmation variant proven |
-| kama_vortex_divergence | 0 | — | NEAR-MISS | 9 trades (1 short). Needs parameter tuning. |
+| kama_vortex_divergence | 0 | — | INCONCLUSIVE | 9 trades, 0% WR. Needs parameter tuning. |
 | ema_crossover | 0 | — | EXHAUSTED | 10+ cycles |
 | rsi_pullback | 1 | 1.442 | STALE | Only 8:1 variant works |
 | macd_confirmation | 2 | 1.712 | STALE | Only tail harvester |
@@ -109,13 +112,23 @@ The backtest queue finally executed 7 Claude-ordered specs (all ETH 4h). Key res
 | stochastic_reversal | 0 | — | DEAD | Bug: asymmetric k |
 | stc_cycle_timing | 0 | — | DEAD | STC structural misfit |
 | ema_rsi_atr | 0 | — | DEAD | Compound gate |
-| directive_baseline_retest | 0 | — | DEAD | 170+ 0-trade |
+| directive_baseline_retest | 0 | — | DEAD | 300+ 0-trade |
 
 ---
 
 ## Regime Insights
 
-**NEW DATA: Supertrend CCI 8:1 variant regime breakdown confirms ranging/transitional specialization.**
+**No new regime data this cycle** — all 131 backtests are zero-trade. Regime insights unchanged from U33.
+
+**Research convergence meta-pattern:** 5 independent frameworks (Vortex, Ichimoku TK, SMC, VIX-VIXEQ, Euphoria) all point to regime transition detection as the general edge mechanism. This is no longer a hypothesis — it's a meta-pattern supported by:
+- 2 validated strategies (Vortex PF=2.034, Ichimoku TK PF=1.604)
+- 3 conceptual frameworks from independent research sources
+- Every all-regime ACCEPT uses some form of regime-adaptive or transition-detecting mechanism
+
+**Three proven all-regime architectures** (unchanged):
+1. Transition-detection (Vortex, Ichimoku TK)
+2. Speed-adaptation (KAMA)
+3. Trend-confirmation (Supertrend + CCI) — ranging/transitional specialist only
 
 | Regime | Role | Evidence Strength | Best Single PF |
 |--------|------|-------------------|----------------|
@@ -123,31 +136,16 @@ The backtest queue finally executed 7 Claude-ordered specs (all ETH 4h). Key res
 | Transitional | Highest alpha | 0.90 | 4.321 (EMA200 Vortex v2) |
 | Trending | The filter | 0.88 | Only adaptive/transition survive |
 
-**EMA200 Vortex family regime data (NEW):**
-- v3b 10:1: trending 0.574, ranging 1.751, transitional 2.297
-- v3b 8:1: trending 0.417, ranging 1.505, transitional 1.476
-- Pattern: EMA200 amplifies transitional alpha but trending is always negative — the EMA200 filter acts as a transition-detector that bleeds during non-transitional periods
-
-**Supertrend CCI 8:1 regime data (NEW):**
-- trending 0.742, ranging 1.548, transitional 3.291
-- vs default: trending 0.562, ranging 1.989, transitional 2.777
-- Pattern: 8:1 R:R shifts alpha toward transitional (fewer but bigger wins) while degrading ranging
-
-**Three proven all-regime architectures** (unchanged):
-1. Transition-detection (Vortex, Ichimoku TK)
-2. Speed-adaptation (KAMA)
-3. Trend-confirmation (Supertrend + CCI) — ranging/transitional specialist only
-
 ---
 
 ## Recommended Directives (Priority Order)
 
-1. **Tune kama_vortex_div** — 9 trades is 1 short. Relax KAMA flattening threshold or ATR gate. This is the closest we've come to a new mechanism family (exhaustion-detection).
-2. **Execute 3 new Claude specs** — T3 Vortex, MACDh CHOP, ALMA CCI (7 variants). Novel transition-detection candidates.
-3. **Close EMA200 Vortex family** — 3 generations, all DD>20%. Stop allocating compute to this family.
-4. **Add TRIX_14** — 10th cycle requesting. Transition-detection expansion.
-5. **Define forward-test graduation** — 14th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15%.
-6. **Reject pipeline promotions** — All from dead pipeline.
+1. **DRAIN BACKTEST QUEUE** — Clear all directive pipeline specs from the queue. Claude specs cannot execute while directive waste consumes all slots. This is the #1 blocker.
+2. **Execute 3 pending Claude specs** — T3 Vortex, MACDh CHOP, ALMA CCI (7 variants). Blocked 2 cycles.
+3. **Tune kama_vortex_div parameters** — Increase trade count to 20+ first (relax KAMA flattening threshold or ATR gate), then evaluate edge.
+4. **Add TRIX_14** — 11th cycle requesting. `pandas_ta.trix(close, length=14)`. Transition-detection expansion.
+5. **Define forward-test graduation** — 15th cycle requesting. 3 ACCEPTs waiting.
+6. **Reject all pipeline promotions** — 3 new promotions from dead pipeline today.
 
 ---
 
@@ -155,27 +153,29 @@ The backtest queue finally executed 7 Claude-ordered specs (all ETH 4h). Key res
 
 | # | Gap | Impact | Cycles Open |
 |---|-----|--------|-------------|
-| 1 | No pipeline circuit-breaker | Residual specs execute after kill | 7 |
-| 2 | No forward-test lifecycle | 3 ACCEPTs waiting for enrollment | 14 |
-| 3 | No indicator request pipeline | TRIX_14 waiting 10 cycles | 10 |
-| 4 | No research card dedup | 10/10 identical recombine cards | 5 |
-| 5 | No spec validity pre-check | Pseudo-params pass unchecked | 5 |
-| 6 | No template parameter tuning protocol | kama_vortex_div at 9/10 trades, no tuning path | NEW |
-| 7 | Stale doctrine heuristics | Confidence 0.68-0.78, no updates 10+ days | 11+ |
+| 1 | No pipeline circuit-breaker | 131 more zero-trade today despite kill | 8 |
+| 2 | No backtest queue drain mechanism | Claude specs blocked 2 cycles by directive waste | NEW |
+| 3 | No forward-test lifecycle | 3 ACCEPTs waiting for enrollment | 15 |
+| 4 | No indicator request pipeline | TRIX_14 waiting 11 cycles | 11 |
+| 5 | No research card dedup | Identical recombine clones | 6 |
+| 6 | No spec validity pre-check | Pseudo-params pass unchecked | 6 |
+| 7 | No template parameter tuning protocol | kama_vortex_div at 9 trades, no tuning path | 2 |
+| 8 | Stale doctrine heuristics | Confidence 0.68-0.78, no updates 12+ days | 12+ |
+| 9 | No queue priority system | 131 zero-trade specs execute before 7 Claude variants | NEW |
 
 ---
 
 ## Suggestions For Asz
 
-1. **Tune kama_vortex_div template parameters.** The template generated 9 trades — 1 short of the 10-trade minimum. The exhaustion-detection mechanism WORKS but is too selective. Options: lower `atr_gate` threshold in `signal_templates.py`, widen KAMA flattening window, or relax Vortex crossover proximity. This is the most promising path to a genuinely new mechanism family.
+1. **URGENT: Drain the backtest queue.** 131 zero-trade directive specs ran today. The kill order from U31 has had zero effect — the pipeline is fully self-regenerating (4 new specs, 6 feasibility, 3 promotions, 3 batches, 3 theses generated TODAY). 3 Claude specs have produced ZERO results for 2 cycles because directive waste consumes all queue slots. Nothing else matters until Claude specs can execute.
 
-2. **Queue 3 new Claude specs for backtest.** T3 Vortex (claude-t3vtx01), MACDh CHOP (claude-mchtrn01), ALMA CCI (claude-almcci01) — 7 variants total. All follow brain rules (2 conditions, ETH 4h, 8:1+ R:R). Files are in `artifacts/strategy_specs/20260306/`.
+2. **Implement queue priority.** Claude specs should execute before directive pipeline specs. Current FIFO allows 131 zero-trade specs to block 7 valuable variants. A simple priority flag (source=claude vs source=pipeline) would prevent this starvation pattern permanently.
 
-3. **Close the EMA200 Vortex family.** Three generations (v2, v3, v3b) all exceed 20% DD. The mechanism amplifies transitional alpha but the DD cost is structural — EMA200 entries cluster at high-volatility transition points. No further compute on this family.
+3. **Add TRIX_14.** 11th cycle requesting. `pandas_ta.trix(close, length=14)`. Last untapped transition-detection indicator in pandas_ta.
 
-4. **Add TRIX_14.** 10th cycle requesting. `pandas_ta.trix(close, length=14)`. Last untapped transition-detection indicator.
+4. **Define forward-test graduation criteria.** 15th cycle requesting. Three ACCEPTs ready (KAMA Stoch v1, Ichimoku TK v1, Supertrend CCI v4). Proposed: 30 days live, PF > 1.2, DD < 15%.
 
-5. **Define forward-test graduation criteria.** 14th cycle requesting. Three ACCEPTs ready (KAMA Stoch v1, Ichimoku TK v1, Supertrend CCI v4). Proposed: 30 days live, PF > 1.2, DD < 15%.
+5. **Tune kama_vortex_div in signal_templates.py.** 0/9 WR with low sample — edge is inconclusive, not dead. Relax KAMA flattening threshold and/or lower ATR gate to increase trade count to 20+, then re-evaluate.
 
 ---
 
