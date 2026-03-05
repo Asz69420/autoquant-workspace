@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-iv9c3k7w",
+  "created_at": "2026-03-05T23:10:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Ichimoku TK Transition v1 (PF=1.604, ACCEPT) validated that Ichimoku detects regime transitions. Vortex Transition v3a (PF=2.034, #1 CHAMPION) validated that Vortex crossover provides the best entry timing in the library. These are two independently validated edge mechanisms that have never been combined. This spec uses Ichimoku CLOUD (ISA vs ISB) — not the Tenkan/Kijun cross — as a macro regime filter. When ISA_9 > ISB_26, the cloud is bullish (price is in a structural uptrend). Within that bullish regime, VTXP_14 crossing above VTXM_14 provides the precise entry timing. The separation of concerns is key: cloud handles REGIME (structural), Vortex handles TIMING (tactical). This avoids the failure mode of Ichimoku+KAMA combo (dead — too many conditions) by keeping exactly 2 entry conditions. The cloud filter should improve Vortex's weak trending PF by eliminating counter-trend entries, while Vortex timing should improve Ichimoku's lower PF (1.604 vs 2.034) by providing more precise entries than the TK cross. Invalidation: (1) if trades < 30, the cloud filter is too restrictive — consider using ITS_9 vs IKS_26 instead; (2) if PF < Vortex standalone (2.034), the cloud adds noise rather than value; (3) if regime analysis shows no transitional alpha improvement, the cloud is redundant to Vortex's own transition detection.",
+  "regime_assumption": "all_regime",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ichimoku_cloud_vortex_timing_8to1",
+      "description": "Ichimoku cloud regime filter + Vortex crossover entry timing on ETH/4h with 8:1 R:R. Cloud (ISA > ISB) defines structural trend. Vortex crossover provides tactical entry. Two independently ACCEPT-validated mechanisms combined for the first time. Tests whether regime filtering improves Vortex's already-champion PF.",
+      "entry_long": [
+        "ISA_9 > ISB_26 (Ichimoku cloud is bullish — Senkou Span A above Senkou Span B, structural uptrend confirmed).",
+        "VTXP_14 crosses_above VTXM_14 (Vortex positive crosses above negative — bullish momentum shift, champion-tier timing signal).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "ISB_26 > ISA_9 (Ichimoku cloud is bearish — Senkou Span B above Senkou Span A, structural downtrend confirmed).",
+        "VTXM_14 crosses_above VTXP_14 (Vortex negative crosses above positive — bearish momentum shift).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, T3, KAMA, ALMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels, QQE, Choppiness Index, Vortex, STC, Stiffness.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11% win rate to break even after fees.",
+        "Cloud regime + Vortex timing: macro/tactical separation of concerns."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "isa_period", "min": 7, "max": 12, "step": 1, "default": 9},
+        {"name": "isb_period", "min": 22, "max": 30, "step": 2, "default": 26},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 10.0, "step": 1.0, "default": 8.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Ichimoku", "role": "baseline", "notes": "ISA_9 vs ISB_26 cloud — macro regime filter (bullish/bearish structure), independently validated in Ichimoku TK v1 ACCEPT (PF=1.604)"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "VTXP_14 crosses_above VTXM_14 — tactical entry timing, champion-tier signal (Vortex v3a PF=2.034)"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 8.0x TP — proven 8:1 sweet spot"}
+      ]
+    },
+    {
+      "name": "ichimoku_cloud_vortex_timing_10to1",
+      "description": "Ichimoku cloud + Vortex on ETH/4h with 10:1 R:R. Extension test — Vortex v3a at standalone had excellent transitional alpha (PF=3.886). If the cloud filter removes counter-trend noise, the surviving trades may be higher quality and capable of reaching 10:1 targets. At 9% breakeven, this is very forgiving.",
+      "entry_long": [
+        "ISA_9 > ISB_26 (Ichimoku cloud is bullish — structural uptrend confirmed).",
+        "VTXP_14 crosses_above VTXM_14 (Vortex positive crosses above negative — bullish momentum shift).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "entry_short": [
+        "ISB_26 > ISA_9 (Ichimoku cloud is bearish — structural downtrend confirmed).",
+        "VTXM_14 crosses_above VTXP_14 (Vortex negative crosses above positive — bearish momentum shift).",
+        "Bar-close execution only.",
+        "Use signal: ema_crossover"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, T3, KAMA, ALMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels, QQE, Choppiness Index, Vortex, STC, Stiffness.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 10:1. Needs 9% win rate to break even after fees.",
+        "Extension test: can cloud-filtered Vortex entries sustain larger R:R?"
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "isa_period", "min": 7, "max": 12, "step": 1, "default": 9},
+        {"name": "isb_period", "min": 22, "max": 30, "step": 2, "default": 26},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 12.0, "step": 1.0, "default": 10.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "Ichimoku", "role": "baseline", "notes": "ISA_9 vs ISB_26 cloud — macro regime filter"},
+        {"indicator": "Vortex", "role": "confirmation", "notes": "VTXP_14 crosses_above VTXM_14 — champion-tier timing, 10:1 R:R extension"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 10.0x TP"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}

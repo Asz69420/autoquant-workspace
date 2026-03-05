@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260305-claude-ck7m4p2a",
+  "created_at": "2026-03-05T23:10:00.000000Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "KAMA and CCI are independently validated in separate ACCEPT-tier strategies but have never been combined. KAMA Stoch v1 (PPR=4.268, PF=1.857) proved KAMA's adaptive speed captures trend regardless of regime. Supertrend CCI v4 (PF=1.290, ACCEPT) proved CCI confirms momentum direction — not as an oscillator extreme fade, but as a zero-cross momentum recovery signal. This spec fuses both: KAMA > EMA_50 defines the adaptive trend, CCI crossing above 0 signals momentum has recovered from a pullback. The thesis is that KAMA filters out noise during ranging/transitional regimes (its proven strength) while CCI zero-cross provides a higher-quality re-entry signal than Stochastic (which depends on fixed overbought/oversold levels that shift across regimes). Invalidation: (1) if trade count < 30, the dual filter is too restrictive — relax to CCI > -50; (2) if PF < 1.0, the CCI zero-cross timing adds no edge over random re-entry within a KAMA trend; (3) if ranging PF drops vs KAMA Stoch, Stochastic is the superior confirmation for KAMA.",
+  "regime_assumption": "all_regime",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "cci_kama_momentum_recovery_8to1",
+      "description": "KAMA adaptive trend + CCI zero-cross momentum recovery on ETH/4h with 8:1 R:R. KAMA > EMA_50 confirms trend direction with adaptive lag. CCI crosses above 0 signals momentum has recovered from a pullback dip. The 8:1 R:R is the proven sweet spot across all ACCEPT strategies. This tests whether CCI zero-cross provides better re-entry timing than Stochastic within a KAMA-defined trend.",
+      "entry_long": [
+        "KAMA_10_2_30 > EMA_50 (adaptive moving average above medium-term EMA — confirmed uptrend with adaptive lag).",
+        "CCI_20_0.015 crosses_above 0 (momentum recovery from pullback — CCI returning to positive territory).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "KAMA_10_2_30 < EMA_50 (adaptive moving average below medium-term EMA — confirmed downtrend).",
+        "CCI_20_0.015 crosses_below 0 (momentum collapse — CCI turning negative).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, T3, KAMA, ALMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels, QQE, Choppiness Index, Vortex, STC, Stiffness.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (8.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 8:1. Needs 11% win rate to break even after fees.",
+        "Fuses two ACCEPT-tier families: KAMA baseline (PPR=4.268) + CCI confirmation (Supertrend CCI v4 ACCEPT)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 8.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "kama_fast", "min": 2, "max": 5, "step": 1, "default": 2},
+        {"name": "kama_slow", "min": 20, "max": 40, "step": 5, "default": 30},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 6.0, "max": 10.0, "step": 1.0, "default": 8.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 8.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "KAMA_10_2_30 > EMA_50 — adaptive trend detection, proven PPR=4.268 family"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI_20 crosses_above 0 — momentum recovery from pullback, proven in Supertrend CCI v4 ACCEPT"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 8.0x TP — 8:1 proven sweet spot"}
+      ]
+    },
+    {
+      "name": "cci_kama_momentum_recovery_10to1",
+      "description": "KAMA + CCI on ETH/4h with 10:1 R:R. Tests whether the CCI zero-cross signal captures continuation moves large enough for 10:1 payoff. KAMA Stoch topped out at 8:1 — does CCI's momentum-based timing allow larger exits? At 9% breakeven win rate, even low-frequency signals can profit.",
+      "entry_long": [
+        "KAMA_10_2_30 > EMA_50 (adaptive moving average above medium-term EMA — confirmed uptrend).",
+        "CCI_20_0.015 crosses_above 0 (momentum recovery from pullback).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "KAMA_10_2_30 < EMA_50 (adaptive moving average below medium-term EMA — confirmed downtrend).",
+        "CCI_20_0.015 crosses_below 0 (momentum collapse).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, T3, KAMA, ALMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels, QQE, Choppiness Index, Vortex, STC, Stiffness.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (10.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 10:1. Needs 9% win rate to break even after fees.",
+        "Tests whether CCI timing captures larger continuations than Stochastic timing."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 10.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "kama_fast", "min": 2, "max": 5, "step": 1, "default": 2},
+        {"name": "kama_slow", "min": 20, "max": 40, "step": 5, "default": 30},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 8.0, "max": 12.0, "step": 1.0, "default": 10.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "KAMA_10_2_30 > EMA_50 — adaptive trend detection"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI_20 crosses_above 0 — momentum recovery signal, 10:1 R:R extension test"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 10.0x TP"}
+      ]
+    },
+    {
+      "name": "cci_kama_momentum_recovery_6to1",
+      "description": "KAMA + CCI on ETH/4h with 6:1 R:R. Lower R:R control variant — tests whether the signal quality is strong enough for higher-frequency wins at a shorter TP. If PF peaks here rather than at 8:1, CCI zero-cross captures shorter moves than Stochastic pullbacks, and the optimal R:R for this family is lower.",
+      "entry_long": [
+        "KAMA_10_2_30 > EMA_50 (adaptive moving average above medium-term EMA — confirmed uptrend).",
+        "CCI_20_0.015 crosses_above 0 (momentum recovery from pullback).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "entry_short": [
+        "KAMA_10_2_30 < EMA_50 (adaptive moving average below medium-term EMA — confirmed downtrend).",
+        "CCI_20_0.015 crosses_below 0 (momentum collapse).",
+        "Bar-close execution only.",
+        "Use signal: ema_rsi_atr"
+      ],
+      "filters": [
+        "No repaint sources only.",
+        "Bar-close execution only.",
+        "Backtester executable indicators: EMA, SMA, T3, KAMA, ALMA, RSI, ATR, MACD, Bollinger Bands, Stochastic, ADX, CCI, Williams %R, OBV, VWAP, Ichimoku, Supertrend, Donchian Channels, QQE, Choppiness Index, Vortex, STC, Stiffness.",
+        "no repaint",
+        "bot-friendly",
+        "chart timeframe only",
+        "bar-close execution",
+        "Data required: ETH OHLCV on 4h",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR-based take profit hit (6.0x ATR).",
+        "Exit on ATR-based stop loss hit (1.0x ATR).",
+        "R:R = 6:1. Needs 14% win rate to break even after fees.",
+        "Lower R:R control — maps CCI KAMA optimal R:R curve."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.0x ATR_14 below/above entry.",
+        "Take profit at 6.0x ATR_14 from entry.",
+        "Risk per trade: 1% of account.",
+        "Max drawdown cap: 20%."
+      ],
+      "parameters": [
+        {"name": "kama_fast", "min": 2, "max": 5, "step": 1, "default": 2},
+        {"name": "kama_slow", "min": 20, "max": 40, "step": 5, "default": 30},
+        {"name": "stop_atr_mult", "min": 0.75, "max": 1.5, "step": 0.25, "default": 1.0},
+        {"name": "tp_atr_mult", "min": 4.0, "max": 8.0, "step": 1.0, "default": 6.0}
+      ],
+      "constraints": ["no repaint", "bot-friendly", "chart timeframe only", "bar-close execution"],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 6.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true
+      },
+      "origin": "CLAUDE_ADVISOR",
+      "components": [
+        {"indicator": "KAMA", "role": "baseline", "notes": "KAMA_10_2_30 > EMA_50 — adaptive trend detection"},
+        {"indicator": "CCI", "role": "confirmation", "notes": "CCI_20 crosses_above 0 — momentum recovery, 6:1 R:R curve mapping"},
+        {"indicator": "ATR", "role": "volume_volatility", "notes": "ATR_14 for 1.0x stop / 6.0x TP"}
+      ]
+    }
+  ],
+  "backtester_executable_indicators": [
+    "EMA", "SMA", "T3", "KAMA", "ALMA", "RSI", "ATR", "MACD",
+    "Bollinger Bands", "Stochastic", "ADX", "CCI", "Williams %R",
+    "OBV", "VWAP", "Ichimoku", "Supertrend", "Donchian Channels",
+    "QQE", "Choppiness Index", "Vortex", "STC", "Stiffness"
+  ],
+  "backtester_executable_indicator_map": {
+    "EMA": "ema", "SMA": "sma", "T3": "t3", "KAMA": "kama", "ALMA": "alma",
+    "RSI": "rsi", "ATR": "atr", "MACD": "macd", "Bollinger Bands": "bbands",
+    "Stochastic": "stoch", "ADX": "adx", "CCI": "cci", "Williams %R": "willr",
+    "OBV": "obv", "VWAP": "vwap", "Ichimoku": "ichimoku", "Supertrend": "supertrend",
+    "Donchian Channels": "donchian", "QQE": "qqe", "Choppiness Index": "chop",
+    "Vortex": "vortex", "STC": "stc", "Stiffness": "stiffness"
+  },
+  "indicator_roles": {
+    "baseline": ["ema", "sma", "t3", "kama", "alma", "hull_ma", "supertrend", "ichimoku"],
+    "confirmation": ["rsi", "macd", "stochastic", "cci", "williams_r", "qqe", "vortex", "stc", "choppiness_index"],
+    "volume_volatility": ["obv", "vwap", "atr", "bollinger", "donchian", "adx", "stiffness"]
+  }
+}
