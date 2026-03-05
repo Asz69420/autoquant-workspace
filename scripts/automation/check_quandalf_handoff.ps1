@@ -216,16 +216,18 @@ function Get-LiveReviewInfo {
       if (@($runEvents).Count -gt 0) {
         $runGenerated = @($runEvents | Where-Object { [string]$_.action -eq 'BUNDLE_SPEC_RESULT' }).Count
         $runVariants = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BUNDLE_SPEC_RESULT' -MetricName 'variants'
-        $runPassed = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_pass'
-        $runAborted = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_fail'
+        $runPprPass = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'ppr_pass'
+        $runPprPromote = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'ppr_promote'
+        $runGateFail = Get-RunSummaryMetricTotal -Events $runEvents -Action 'BATCH_BACKTEST_SUMMARY' -MetricName 'gate_fail'
         $runSkipped = Get-RunSummaryMetricTotal -Events $runEvents -Action 'REQUEUE_REQUIRED' -MetricName 'count'
 
         $qGenerated = [int]$runGenerated
         $qVariants = [int]$runVariants
-        $passing = [int]$runPassed
-        $errors = [int]$runAborted
+        $advanced = [int]$runPprPromote
+        $passing = [int]$runPprPass
+        $errors = [int]$runGateFail
         $qSkipped = [int]$runSkipped
-        $qQueued = [Math]::Max(0, ([int]$qGenerated + [int]$qVariants))
+        $qQueued = [Math]::Max(0, [int]$qGenerated)
       }
     }
 
