@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260306-16fd707aad30",
+  "created_at": "2026-03-05T23:00:05.232789Z",
+  "tv_ref": "tradingview:RbdOG5gE",
+  "url": "https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/",
+  "name": "Top-Down HTF Candles [Confirmed]",
+  "author": "ArisCodes",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "9aa50539b76f01ade0da6af738e741a271f0c9d4ccdf7a581d4186dd6497ce38",
+  "truncated": false
+}

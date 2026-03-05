@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-f967228c569d",
+  "created_at": "2026-03-05T23:00:05.535226Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/",
+  "title": "Top-Down HTF Candles [Confirmed]",
+  "author": "ArisCodes",
+  "summary_bullets": [
+    "TradingView indicator: Top-Down HTF Candles [Confirmed] by ArisCodes.",
+    "https://www.tradingview.com/x/VIVZaqmQ/ ═════════════════════════════════════════════════════════════ TOP-DOWN HTF CANDLES ═════════════════════════════════════════════════════════════ Top-Down HTF Candles makes higher timeframe alignment automatic and visual — projecting HTF candle structure directly onto your chart so you always have full context while trading the lower timeframe entry.",
+    "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT IT … Source URL: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Top-Down HTF Candles [Confirmed] by ArisCodes.",
+      "note": "Meaning: TradingView indicator: Top-Down HTF Candles [Confirmed] by ArisCodes."
+    },
+    {
+      "timestamp": null,
+      "quote": "https://www.tradingview.com/x/VIVZaqmQ/ ═════════════════════════════════════════════════════════════ TOP-DOWN HTF CANDLES ═════════════════════════════════════════════════════════════ Top-Down HTF Ca",
+      "note": "Meaning: https://www.tradingview.com/x/VIVZaqmQ/ ═════════════════════════════════════════════════════════════ TOP-DOWN HTF CANDLES ════════════════════════════"
+    },
+    {
+      "timestamp": null,
+      "quote": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT IT … Source URL: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/.",
+      "note": "Meaning: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT IT … Source URL: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "TradingView indicator: Top-Down HTF Candles [Confirmed] by ArisCodes."
+    },
+    {
+      "type": "confirmation",
+      "description": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT IT … Source URL: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-f967228c569d.raw.txt",
+  "sha256": "1731839ac7571c8158f4c32dd557b340bfe75429a370b5a34264f77fb1480107",
+  "truncated": false
+}
