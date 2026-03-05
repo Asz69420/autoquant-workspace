@@ -77,10 +77,9 @@ READ these files:
 11. Passed hot window (7d): artifacts/library/PASSED_HOT_7D.json (if exists)
 12. Passed warm window (14d): artifacts/library/PASSED_WARM_14D.json (if exists)
 13. Promoted library summary: artifacts/library/PROMOTED_INDEX_SUMMARY.json (if exists)
-14. Promoted hot window (7d): artifacts/library/PROMOTED_HOT_7D.json (if exists)
-15. Promoted warm window (14d): artifacts/library/PROMOTED_WARM_14D.json (if exists)
-16. Passed shard archive (read only when needed): artifacts/library/passed/*.passed.ndjson
-17. Promoted shard archive (read only when needed): artifacts/library/promoted/*.promoted.ndjson
+14. Promoted index (all-time leaderboard set): artifacts/library/PROMOTED_INDEX.json (if exists)
+15. Passed shard archive (read only when needed): artifacts/library/passed/*.passed.ndjson
+16. Promoted shard archive (read only when needed): artifacts/library/promoted/*.promoted.ndjson
 
 DESIGN 2-3 creative strategy specs that:
 - Use DIFFERENT templates from recent specs where possible

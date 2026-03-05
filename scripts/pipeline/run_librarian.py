@@ -248,9 +248,7 @@ def main() -> int:
     passed_summary_p = lib_root / 'PASSED_INDEX_SUMMARY.json'
     passed_shards_dir = lib_root / 'passed'
 
-    promoted_idx_p = lib_root / 'PROMOTED_INDEX.json'  # backward-compat alias (hot window)
-    promoted_hot_p = lib_root / 'PROMOTED_HOT_7D.json'
-    promoted_warm_p = lib_root / 'PROMOTED_WARM_14D.json'
+    promoted_idx_p = lib_root / 'PROMOTED_INDEX.json'
     promoted_summary_p = lib_root / 'PROMOTED_INDEX_SUMMARY.json'
     promoted_shards_dir = lib_root / 'promoted'
 
@@ -366,16 +364,14 @@ def main() -> int:
 
     passed_hot = _collect_recent_bucket(passed_shards_dir, days=args.hot_days, predicate=_is_ppr_pass)
     passed_warm = _collect_recent_bucket(passed_shards_dir, days=args.warm_days, predicate=_is_ppr_pass)
-    promoted_hot = _collect_recent_bucket(promoted_shards_dir, days=args.hot_days, predicate=_is_ppr_promote)
-    promoted_warm = _collect_recent_bucket(promoted_shards_dir, days=args.warm_days, predicate=_is_ppr_promote)
 
     _write(passed_hot_p, passed_hot)
     _write(passed_warm_p, passed_warm)
     _write(passed_idx_p, passed_hot)
 
-    _write(promoted_hot_p, promoted_hot)
-    _write(promoted_warm_p, promoted_warm)
-    _write(promoted_idx_p, promoted_hot)
+    # Promoted is leaderboard-grade and tracked all-time (no hot/warm windows).
+    promoted_all = _collect_recent_bucket(promoted_shards_dir, days=36500, predicate=_is_ppr_promote)
+    _write(promoted_idx_p, promoted_all)
 
     by_family_passed: dict[str, int] = {}
     by_template_passed: dict[str, int] = {}
@@ -387,7 +383,7 @@ def main() -> int:
 
     by_family_promoted: dict[str, int] = {}
     by_template_promoted: dict[str, int] = {}
-    for e in promoted_warm:
+    for e in promoted_all:
         fam = Path(e.get('strategy_spec_path', 'unknown')).stem
         by_family_promoted[fam] = by_family_promoted.get(fam, 0) + 1
         tmpl = str(e.get('variant_name', '')).strip().lower() or 'unknown'
@@ -434,15 +430,8 @@ def main() -> int:
             'dir': str(promoted_shards_dir).replace('\\', '/'),
             'shards': [p.name for p in promoted_shard_files],
         },
-        'windows': {
-            'hot_days': int(args.hot_days),
-            'warm_days': int(args.warm_days),
-            'hot_path': str(promoted_hot_p).replace('\\', '/'),
-            'warm_path': str(promoted_warm_p).replace('\\', '/'),
-            'hot_count': len(promoted_hot),
-            'warm_count': len(promoted_warm),
-        },
         'promoted_index_path': str(promoted_idx_p).replace('\\', '/'),
+        'promoted_count': len(promoted_all),
         'top_families': [
             {'family': k, 'count': v}
             for k, v in sorted(by_family_promoted.items(), key=lambda kv: kv[1], reverse=True)[:50]
@@ -540,8 +529,6 @@ def main() -> int:
         'passed_summary_path': str(passed_summary_p),
         'passed_shards_dir': str(passed_shards_dir),
         'promoted_index_path': str(promoted_idx_p),
-        'promoted_hot_path': str(promoted_hot_p),
-        'promoted_warm_path': str(promoted_warm_p),
         'promoted_summary_path': str(promoted_summary_p),
         'promoted_shards_dir': str(promoted_shards_dir),
         'top_count': len(top),
@@ -549,8 +536,7 @@ def main() -> int:
         'lessons_count': len(lessons),
         'passed_hot_count': len(passed_hot),
         'passed_warm_count': len(passed_warm),
-        'promoted_hot_count': len(promoted_hot),
-        'promoted_warm_count': len(promoted_warm),
+        'promoted_count': len(promoted_all),
         'example_top': top[0] if top else None,
         'new_indicators_added': new_indicators_added,
         'skipped_indicators_dedup': skipped_indicators_dedup,

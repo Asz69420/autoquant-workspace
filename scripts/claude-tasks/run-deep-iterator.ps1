@@ -31,8 +31,7 @@ Funding rate arbitrage, liquidation hunting, market making, event-driven trading
 - Passed hot window (7d): artifacts/library/PASSED_HOT_7D.json (if exists)
 - Passed warm window (14d): artifacts/library/PASSED_WARM_14D.json (if exists)
 - Promoted library summary: artifacts/library/PROMOTED_INDEX_SUMMARY.json (if exists)
-- Promoted hot window (7d): artifacts/library/PROMOTED_HOT_7D.json (if exists)
-- Promoted warm window (14d): artifacts/library/PROMOTED_WARM_14D.json (if exists)
+- Promoted index (all-time leaderboard set): artifacts/library/PROMOTED_INDEX.json (if exists)
 - Passed shard archive (read on-demand): artifacts/library/passed/*.passed.ndjson
 - Promoted shard archive (read on-demand): artifacts/library/promoted/*.promoted.ndjson
 - Your previous iteration log: docs/claude-reports/DEEP_ITERATION_LOG.md

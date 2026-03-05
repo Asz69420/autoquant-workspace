@@ -86,9 +86,7 @@ Two separate libraries are maintained:
 - **Summary metadata:** `artifacts/library/PASSED_INDEX_SUMMARY.json`
 
 ### PROMOTED Library (winner bucket)
-- **Hot (7d):** `artifacts/library/PROMOTED_HOT_7D.json`
-- **Warm (14d):** `artifacts/library/PROMOTED_WARM_14D.json`
-- **Alias (compat):** `artifacts/library/PROMOTED_INDEX.json` (points to hot)
+- **All-time index:** `artifacts/library/PROMOTED_INDEX.json`
 - **Archive (uncapped):** `artifacts/library/promoted/YYYY-MM.promoted.ndjson`
 - **Summary metadata:** `artifacts/library/PROMOTED_INDEX_SUMMARY.json`
 
