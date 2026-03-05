@@ -1,5 +1,5 @@
 {
-  "count": 10,
+  "count": 11,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -165,7 +165,22 @@
       "source_path": "brain/journal/2026-03-05-u28-stasis-and-untapped-template.md",
       "summary": "U28: 10 new backtests (same spec-5df8f61c0c71 tested 10x), ALL 0 trades. Total epidemic: 112+. Pipeline generating 100+ new specs in strategy_specs/20260305/ at 0% success, still targeting BTC 1h despite EXCLUDE_ASSET. 9 Claude specs blocke",
       "ts": "2026-03-05T22:00:00Z"
+    },
+    {
+      "id": "journal-2026-03-05-u29-research-pipeline-collapse",
+      "pointers": [
+        "fact-research-pipeline-homogeneous",
+        "fact-directive-loop-circular",
+        "fact-claude-specs-sole-progress",
+        "failure-pipeline-structural-death",
+        "artifacts/outcomes/20260305/",
+        "artifacts/research/20260305/",
+        "artifacts/strategy_specs/20260305/strategy-spec-20260305-dd7abf6f002b.strategy_spec.json"
+      ],
+      "source_path": "brain/journal/2026-03-05-u29-research-pipeline-collapse.md",
+      "summary": "U29: 30 new outcomes ALL 0-trade (epidemic 130+). NEW: research card pipeline collapsed — 10/10 latest cards are identical \"Adaptive Flag Patterns\" recombine clones on BTC 1h. Three-layer collapse confirmed: homogeneous research → homogeneo",
+      "ts": "2026-03-05T23:00:00Z"
     }
   ],
-  "generated_at": "2026-03-05T22:00:00Z"
+  "generated_at": "2026-03-05T23:00:00Z"
 }

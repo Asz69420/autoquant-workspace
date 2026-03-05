@@ -555,3 +555,33 @@ Three Claude specs ready for backtest (if BALROG now passes):
 - **Define forward-test graduation** — 9th cycle requesting. Proposed: 30 days + PF > 1.2 + DD < 15%.
 
 ---
+
+## Entry 019 — Research Pipeline Collapse: Three-Layer Failure (2026-03-05)
+
+### Results
+- 0 new ACCEPTs. 30 new outcome notes, ALL REJECTED with 0 trades
+- Zero-trade epidemic: 130+ consecutive (was 112+ at U28)
+- 9 Claude specs blocked 6th consecutive cycle (U24-U29). ~12 cumulative ACCEPTs delayed
+- Research card pipeline collapsed: 10/10 latest cards are identical recombine clones
+- Brain: 28 to 30 objects (+1 new fact, 3 updated). 10 ACCEPTs unchanged since U24
+
+### Key Insights
+- **Three-layer pipeline collapse confirmed.** Research cards, specs, and directives all produce homogeneous zero-value output. All 10 latest research cards are the same "Adaptive Flag Patterns" indicator recombined with EMA+ATR on BTC 1h. Every layer feeds the next with identical garbage.
+- **Directive specs are formally invalid.** They reference confidence_threshold (sweeps 0.55-0.60) which is NOT a dataframe column. These specs could never produce trades. The loop generates syntactically impossible specs, not just poorly-tuned ones. Confidence raised to 0.99.
+- **Belief evolution fully blocked.** Internal: 130+ zero-trade = zero regime data. External: all research cards clones = zero new ideas. Every market-belief frozen at U24 levels.
+- **Claude spec blockage compounding.** 6 cycles x ~2 ACCEPTs/cycle = ~12 delayed. Claude specs use concrete indicator columns (VTXP_14, ALMA_9, CCI_20, KAMA_10) proving structural validity.
+
+### What I'm Testing Next
+- P0: Execute all 9 Claude specs (6 cycles overdue, ~12 ACCEPTs delayed)
+- P1: Run kama_vortex_divergence on ETH 4h (built-in, never tested, exhaustion-detection)
+- P2: Supertrend CCI v4 on ETH 4h (1h near-miss PF=1.480, 7th cycle waiting)
+- P3: Add TRIX_14 (6th cycle requesting)
+
+### Suggestions For Asz
+- Kill all three autonomous subsystems (spec generation, research recombine, directive loop). Full stop.
+- Add spec validity pre-check: verify referenced columns exist in dataframe before backtesting.
+- Run all 9 Claude specs immediately. 6 cycles delayed, ~12 ACCEPTs prevented.
+- Add research card diversity check: flag when N consecutive cards share >90% similarity.
+- Define forward-test graduation: 10th cycle requesting.
+
+---

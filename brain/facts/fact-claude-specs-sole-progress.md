@@ -1,7 +1,7 @@
 ---
 id: fact-claude-specs-sole-progress
 type: fact
-title: Claude-specified strategies are the only source of ACCEPT-tier results — 9 specs blocked 5 cycles, ~10 ACCEPTs delayed
+title: Claude-specified strategies are the only source of ACCEPT-tier results — 9 specs blocked 6 cycles, ~12 ACCEPTs delayed
 status: active
 confidence: 0.98
 evidence_paths:
@@ -24,8 +24,9 @@ tags:
 supporting_ids:
   - failure-pipeline-structural-death
   - fact-zero-trade-signal-bottleneck
-validated_at: "2026-03-05T22:00:00Z"
-updated_at: "2026-03-05T22:00:00Z"
+  - fact-research-pipeline-homogeneous
+validated_at: "2026-03-05T23:00:00Z"
+updated_at: "2026-03-05T23:00:00Z"
 ---
 
 All 10 unique ACCEPT-tier strategies were designed by Claude advisory cycles using the spec_rules template. The ACCEPT rate for Claude specs is ~22% (10/~45). The automated pipeline produced exactly 1 ACCEPT ever (template_div PF=1.419, which may have been partially Claude-influenced).
@@ -43,6 +44,7 @@ All 10 unique ACCEPT-tier strategies were designed by Claude advisory cycles usi
   - KAMA adaptive (claude-kmrsi01a KAMA RSI isolation)
   - Supertrend variants (claude-stmacd01 Supertrend MACD)
 - 27+ variants ready to run, ALL following brain rules (2 conditions, 8:1 R:R, ETH 4h)
-- CRITICAL U28: 9 specs blocked 5 consecutive cycles (U24→U28). Longest blockage in project history.
-- Blocking cost estimate: at 22% ACCEPT rate, ~2 new ACCEPTs prevented per cycle (~10 total delayed across 5 cycles)
-- Confidence raised from 0.97 to 0.98: 5 cycles of blocking with accelerating pipeline generation is overwhelming evidence
+- CRITICAL U29: 9 specs blocked 6 consecutive cycles (U24→U29). Longest blockage in project history.
+- Blocking cost estimate: at 22% ACCEPT rate, ~2 new ACCEPTs prevented per cycle (~12 total delayed across 6 cycles)
+- Confidence 0.98: 6 cycles of blocking with accelerating pipeline generation is overwhelming evidence
+- U29: Research card pipeline also collapsed — 10/10 latest cards are identical recombine clones, contributing zero novel ideas
