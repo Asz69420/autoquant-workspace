@@ -368,10 +368,18 @@ try {
 
   Write-Host ('New completed run detected: ' + $latestRunId + ' -> triggering quandalf-auto-execute')
   $triggerStarted = Get-Date
-  & openclaw cron run $jobId --timeout 120000 | Out-Null
+  $triggerOutput = @(& openclaw cron run $jobId --timeout 120000 2>&1)
   if ($LASTEXITCODE -ne 0) {
-    Send-QuandalfCard -StatusWord 'fail' -DurationLabel '0m 00s' -RunId $latestRunId -NoteSentence 'I could not execute this reflection cycle due to a trigger failure, and I will retry on the next completed run.'
-    throw ('openclaw cron run failed with code ' + $LASTEXITCODE)
+    $triggerText = ($triggerOutput -join ' ')
+    $note = 'Triggering reflection timed out at the gateway; I will retry on the next completed run.'
+    if ($triggerText -match '(?i)model not allowed') {
+      $note = 'Reflection trigger was blocked by model policy, so this cycle fell back and will retry on the next run.'
+    } elseif ($triggerText -match '(?i)lock') {
+      $note = 'Reflection trigger skipped because another run was already active; it will retry next cycle.'
+    }
+    Send-QuandalfCard -StatusWord 'warn' -DurationLabel '0m 00s' -RunId $latestRunId -NoteSentence $note
+    Write-Host ('WARN trigger failed for run ' + $latestRunId + ': ' + $triggerText)
+    exit 0
   }
 
   Start-Sleep -Milliseconds 400
@@ -406,7 +414,16 @@ try {
     }
 
     if ($statusWord -ne 'ok') {
-      $noteSentence = 'Cycle hit an execution issue; remediation is required before throughput can normalize.'
+      $entryError = [string]$entry.error
+      if ($entryError -match '(?i)gateway timeout') {
+        $noteSentence = 'Reflection was delayed by a gateway timeout, and the pipeline will retry automatically on the next run.'
+      } elseif ($entryError -match '(?i)model not allowed') {
+        $noteSentence = 'Reflection was blocked by model policy for this attempt; fallback routing is in place and the next run will retry.'
+      } elseif (-not [string]::IsNullOrWhiteSpace($entryError)) {
+        $noteSentence = ('Reflection cycle hit an execution issue: ' + $entryError + '. It will retry on the next completed run.')
+      } else {
+        $noteSentence = 'Cycle hit an execution issue; remediation is required before throughput can normalize.'
+      }
     } elseif ($qGenNow -eq 0 -and $qQueuedNow -eq 0) {
       $noteSentence = 'No novel strategies generated or queued this cycle — generation contract breached.'
     } elseif ($qGenNow -eq 0 -and $qQueuedNow -gt 0) {

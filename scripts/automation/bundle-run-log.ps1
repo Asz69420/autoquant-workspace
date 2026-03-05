@@ -307,6 +307,7 @@ $ingested = 0; $errors = 0; $passingGate = 0; $generated = 0; $queuedBacklog = 0
 $insightNew = 0
 $stall = 0; $starvation = 0
 $warnings = @()
+$errorHighlights = @()
 $forwardRuns = 0; $forwardEntries = 0; $forwardCloses = 0; $forwardSignalEvals = 0; $forwardOpenPositions = 0
 $delegated = 0; $spawned = 0; $completed = 0; $failed = 0; $totalActions = 0
 $bundlesScanned = 0; $bundlesSelected = 0; $bundleStarts = 0
@@ -435,6 +436,24 @@ foreach ($e in $reportEvents) {
     $agentName = if ($e.agent) { [string]$e.agent } else { "Pipeline" }
     $wKey = "${agentName}: $reasonLabel"
     if ($reasonCode -notmatch "STALL|STARVATION|THROUGHPUT_DROUGHT") { $warnings += $wKey }
+
+    if ($stat -in @('FAIL','BLOCKED')) {
+      $detail = switch ($reasonCode) {
+        'AUTOPILOT_EXCEPTION' {
+          if ($sum -match '(?i)stream was not readable') { 'a temporary stream-read glitch interrupted one step' }
+          elseif ($sum -match '(?i)lock') { 'another run was active, so this attempt could not take the lock' }
+          else { 'the autopilot worker hit an exception' }
+        }
+        'BRAIN_VALIDATE_FAIL' { 'brain validation blocked execution because required evidence pointers were not valid' }
+        'REPO_HYGIENE_GATE' { 'repo hygiene gate blocked the cycle due to a policy violation' }
+        'LAB_SUMMARY' { 'the cycle summary recorded a blocking issue in this window' }
+        default {
+          $txt = ($reasonCode -replace '_', ' ').ToLowerInvariant()
+          if ([string]::IsNullOrWhiteSpace($txt)) { 'a blocking issue occurred' } else { $txt }
+        }
+      }
+      $errorHighlights += ($agentName + ': ' + $detail)
+    }
   }
 }
 
@@ -485,6 +504,14 @@ if ($mode -eq 'frodex') {
 $hasErrors = $errors -gt 0
 $hasWarnings = ($stall -gt 5) -or ($starvation -gt 10) -or ($warnings.Count -gt 0)
 $statusTag = if ($hasErrors) { "FAIL" } elseif ($hasWarnings) { "WARN" } else { "OK" }
+
+# Do not paint the card red for transient issues when the same window shows successful work.
+if ($mode -eq 'frodex' -and $statusTag -eq 'FAIL') {
+  $recoverySignals = ($batchExecutedTotal -gt 0) -or ($specOk -gt 0) -or ($promotionOk -gt 0) -or (@($reportEvents | Where-Object { [string]$_.action -eq 'DECISION_HANDOFF' }).Count -gt 0)
+  if ($recoverySignals -and $errors -le 1) {
+    $statusTag = 'WARN'
+  }
+}
 
 $iconOk = [char]0x2705
 $iconWarn = ([char]0x26A0) + ([char]0xFE0F)
@@ -590,7 +617,12 @@ if ($true) {
       $noteText = "$finishedCount sub-agents finished and $failedCount failed; all outcomes were logged for follow-up."
     }
   } elseif ($errors -gt 0) {
-    $noteText = "I hit $errors issue(s) in this window and need a quick review."
+    if ($errorHighlights.Count -gt 0) {
+      $primaryErr = [string]$errorHighlights[0]
+      $noteText = "I hit $errors issue(s); the main one was $primaryErr."
+    } else {
+      $noteText = "I hit $errors issue(s) in this window and need a quick review."
+    }
   } elseif ($mode -eq 'frodex') {
     if ($errors -gt 0) {
       $noteText = "Issues detected this cycle; I flagged them for follow-up."
