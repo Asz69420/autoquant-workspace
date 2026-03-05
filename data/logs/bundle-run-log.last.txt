@@ -1,7 +1,7 @@
 ﻿🍳 Cooking
-Status: ⚠️ | Duration: 2m 17s
+Status: ⚠️ | Duration: 2m 22s
 ○───activity─────────────────────
-Waiting: 12
+Waiting: 0
 Backtests: 8
 Skipped: 0
 Forwardtests: 0
