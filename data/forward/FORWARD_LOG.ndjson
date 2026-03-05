@@ -46,3 +46,6 @@
 {"ts_iso": "2026-03-05T02:05:02.863562+00:00", "event": "SIGNAL_EVAL", "bar_time": "2026-03-04 20:00:00", "champion_id": "vortex_v3a_eth_4h", "asset": "ETH", "timeframe": "4h", "long_signal": false, "short_signal": false, "in_trade": false, "regime": "ranging"}
 {"ts_iso": "2026-03-05T02:05:02.863562+00:00", "event": "SIGNAL_EVAL", "bar_time": "2026-03-04 20:00:00", "champion_id": "supertrend_8to1_eth_4h", "asset": "ETH", "timeframe": "4h", "long_signal": false, "short_signal": false, "in_trade": false, "regime": "ranging"}
 {"ts_iso": "2026-03-05T02:05:02.863562+00:00", "event": "RUN_OK", "champions_processed": 2}
+{"ts_iso": "2026-03-05T06:05:02.861839+00:00", "event": "SIGNAL_EVAL", "bar_time": "2026-03-05 00:00:00", "champion_id": "vortex_v3a_eth_4h", "asset": "ETH", "timeframe": "4h", "long_signal": false, "short_signal": false, "in_trade": false, "regime": "ranging"}
+{"ts_iso": "2026-03-05T06:05:02.861839+00:00", "event": "SIGNAL_EVAL", "bar_time": "2026-03-05 00:00:00", "champion_id": "supertrend_8to1_eth_4h", "asset": "ETH", "timeframe": "4h", "long_signal": false, "short_signal": false, "in_trade": false, "regime": "ranging"}
+{"ts_iso": "2026-03-05T06:05:02.861839+00:00", "event": "RUN_OK", "champions_processed": 2}
