@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-205278689a0b",
+  "created_at": "2026-03-05T18:00:18.004833Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/",
+  "title": "VIX-VIXEQ Regime Detector",
+  "author": "HenriqueCentieiro",
+  "summary_bullets": [
+    "TradingView indicator: VIX-VIXEQ Regime Detector by HenriqueCentieiro.",
+    "The VIX-VIXEQ Regime Detector is an market structure indicator that compares the CBOE Volatility Index (VIX) with the CBOE S&amp;P 500 Equal Weight Volatility Index (VIXEQ) to identify distinct market volatility regimes.",
+    "It analyses the relationship between index-level and constituent-level volatility, and helps investors to detect regime changes that often precede major market moves.",
+    "Credits: Idea suggested by @m_chromatic Thanks a lot!",
+    "What It Measures VIX measures implied volatility of S&amp;P … The VIX-VIXEQ Regime Detector is an market structure indicator that compares the CBOE Volatility Index (VIX) with the CBOE S&amp;P 500 Equal Weight Volatility Index (VIXEQ) to identify distinct market volatility regimes.",
+    "What It Measures VIX measures implied volatility of S&amp;P … Source URL: https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: VIX-VIXEQ Regime Detector by HenriqueCentieiro.",
+      "note": "Meaning: TradingView indicator: VIX-VIXEQ Regime Detector by HenriqueCentieiro."
+    },
+    {
+      "timestamp": null,
+      "quote": "The VIX-VIXEQ Regime Detector is an market structure indicator that compares the CBOE Volatility Index (VIX) with the CBOE S&amp;P 500 Equal Weight Volatility Index (VIXEQ) to identify distinct market",
+      "note": "Meaning: The VIX-VIXEQ Regime Detector is an market structure indicator that compares the CBOE Volatility Index (VIX) with the CBOE S&amp;P 500 Equal Weight Vol"
+    },
+    {
+      "timestamp": null,
+      "quote": "It analyses the relationship between index-level and constituent-level volatility, and helps investors to detect regime changes that often precede major market moves.",
+      "note": "Meaning: It analyses the relationship between index-level and constituent-level volatility, and helps investors to detect regime changes that often precede majo"
+    },
+    {
+      "timestamp": null,
+      "quote": "Credits: Idea suggested by @m_chromatic Thanks a lot!",
+      "note": "Meaning: Credits: Idea suggested by @m_chromatic Thanks a lot!"
+    },
+    {
+      "timestamp": null,
+      "quote": "What It Measures VIX measures implied volatility of S&amp;P … The VIX-VIXEQ Regime Detector is an market structure indicator that compares the CBOE Volatility Index (VIX) with the CBOE S&amp;P 500 Equ",
+      "note": "Meaning: What It Measures VIX measures implied volatility of S&amp;P … The VIX-VIXEQ Regime Detector is an market structure indicator that compares the CBOE Vol"
+    },
+    {
+      "timestamp": null,
+      "quote": "What It Measures VIX measures implied volatility of S&amp;P … Source URL: https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/.",
+      "note": "Meaning: What It Measures VIX measures implied volatility of S&amp;P … Source URL: https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-205278689a0b.raw.txt",
+  "sha256": "0f231a0313fcd15f107b685a553914f75a98038f98b43717dec215f7d7f30aed",
+  "truncated": false
+}

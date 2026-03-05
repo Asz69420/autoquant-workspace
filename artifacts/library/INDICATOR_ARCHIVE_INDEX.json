@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "vix-vixeq regime detector|henriquecentieiro",
+    "script_id": "V7aBVr8v",
+    "name": "VIX-VIXEQ Regime Detector",
+    "author": "HenriqueCentieiro",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-71df6d93faf6.indicator_record.json",
+    "first_seen_ts": "2026-03-05T18:00:18.428685+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "vantage liquidity edge|therealdrip2rip",
+    "script_id": "yi7cZND5",
+    "name": "Vantage Liquidity Edge",
+    "author": "TheRealDrip2Rip",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-19d47a6930ae.indicator_record.json",
+    "first_seen_ts": "2026-03-05T18:00:17.080871+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "tori trend2.2 by pjpf - confluence optimized|pjpfowler",
     "script_id": "xnvk2H4w",
     "name": "Tori Trend2.2 by PJPF - Confluence Optimized",

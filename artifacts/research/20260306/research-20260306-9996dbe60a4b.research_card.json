@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-9996dbe60a4b",
+  "created_at": "2026-03-05T18:00:16.723384Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/yi7cZND5-Vantage-Liquidity-Edge/",
+  "title": "Vantage Liquidity Edge",
+  "author": "TheRealDrip2Rip",
+  "summary_bullets": [
+    "TradingView indicator: Vantage Liquidity Edge by TheRealDrip2Rip.",
+    "ABOUT Vantage Liquidity Edge is an intraday positioning indicator that integrates dynamic level projections with liquidity sweep detection for a complete market structure overview.",
+    "It uses kinetic energy, volume entropy, and price cycles to create adaptive support and resistance levels based on golden ratio expansions, overlaid with echo zones from confirmed liquidity sweeps that adjust with retests.",
+    "A key feature is the resonance amplitude calculation, which combines signed kinetic energy … ABOUT Vantage Liquidity Edge is an intraday positioning indicator that integrates dynamic level projections with liquidity sweep detection for a complete market structure overview.",
+    "A key feature is the resonance amplitude calculation, which combines signed kinetic energy … Source URL: https://www.tradingview.com/script/yi7cZND5-Vantage-Liquidity-Edge/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Vantage Liquidity Edge by TheRealDrip2Rip.",
+      "note": "Meaning: TradingView indicator: Vantage Liquidity Edge by TheRealDrip2Rip."
+    },
+    {
+      "timestamp": null,
+      "quote": "ABOUT Vantage Liquidity Edge is an intraday positioning indicator that integrates dynamic level projections with liquidity sweep detection for a complete market structure overview.",
+      "note": "Meaning: ABOUT Vantage Liquidity Edge is an intraday positioning indicator that integrates dynamic level projections with liquidity sweep detection for a comple"
+    },
+    {
+      "timestamp": null,
+      "quote": "It uses kinetic energy, volume entropy, and price cycles to create adaptive support and resistance levels based on golden ratio expansions, overlaid with echo zones from confirmed liquidity sweeps tha",
+      "note": "Meaning: It uses kinetic energy, volume entropy, and price cycles to create adaptive support and resistance levels based on golden ratio expansions, overlaid wi"
+    },
+    {
+      "timestamp": null,
+      "quote": "A key feature is the resonance amplitude calculation, which combines signed kinetic energy … ABOUT Vantage Liquidity Edge is an intraday positioning indicator that integrates dynamic level projections",
+      "note": "Meaning: A key feature is the resonance amplitude calculation, which combines signed kinetic energy … ABOUT Vantage Liquidity Edge is an intraday positioning in"
+    },
+    {
+      "timestamp": null,
+      "quote": "A key feature is the resonance amplitude calculation, which combines signed kinetic energy … Source URL: https://www.tradingview.com/script/yi7cZND5-Vantage-Liquidity-Edge/.",
+      "note": "Meaning: A key feature is the resonance amplitude calculation, which combines signed kinetic energy … Source URL: https://www.tradingview.com/script/yi7cZND5-Va"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "It uses kinetic energy, volume entropy, and price cycles to create adaptive support and resistance levels based on golden ratio expansions, overlaid with echo zones from confirmed liquidity sweeps that adjust with retest"
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-9996dbe60a4b.raw.txt",
+  "sha256": "6df2677b1e25ec95121a7fcf62ab2ed2daa4f45a103212544ded24c79e9aae88",
+  "truncated": false
+}
