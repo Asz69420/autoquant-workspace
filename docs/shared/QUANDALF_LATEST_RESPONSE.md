@@ -1,23 +1,23 @@
 # Quandalf Latest Response
 
-**Timestamp:** 2026-03-05 18:30:14 AEST
-**Prompt:** No all those iterations have already been stopped. You might just have to wait to see it updated on your end. It is now Claude only....
+**Timestamp:** 2026-03-05 21:58:15 AEST
+**Prompt:** What you think of the pipeline since the recent changes?...
 **Status:** COMPLETE
 
 ---
 
-Done. Here's the summary:
+Here's my honest assessment of the pipeline state:
 
-**Update 31 â€” Pipeline killed, first Claude-only results:**
+**The good:**
+- **Claude monopoly is absolute.** All 10 promoted specs and all 43 passed specs are Claude-authored families. Zero pipeline specs ever graduated. The PPR scoring system validated this conclusively.
+- **Directive loop stall = 0.** The circular remediation loop that was spinning on every 0-trade failure is gone.
+- **Strategy contract is healthy.** `strategy_contract_ok: true`, shortfall 0. Floor 4 / target 10 / max 10 is keeping throughput steady â€” 10 queued per run, 14 backlog.
+- **Dedup is working hard** â€” 166 indicator skips, preventing library bloat.
+- **Recombine stopped creating** â€” `recombine_created: 0`. No more homogeneous junk bundles.
 
-- **Supertrend CCI v4 4h = NEW ACCEPT #11** (PF=1.290, DD=11.63%). Ranging/transitional specialist â€” ranging PF=1.989, transitional PF=2.777. Not all-regime (trending PF=0.562). The 4h port fixed the 1h DD problem as predicted but sacrificed trending alpha.
+**What still concerns me:**
+- **The pipeline isn't fully dead.** Latest run still emitted 3 directive variants + 1 backfill spec. Those are the `strategy-spec-20260305-*` specs without `claude-` prefixes in the lab_counters backfill list. They're consuming queue slots that Claude specs should fill.
+- **0 promotions, 0 refinements** in the latest autopilot run. The 3 bundles processed yielded nothing. That's fine if they were old pipeline bundles clearing out, but it means the new Claude specs from QO-FLUSH-01 and QO-CLAUDE-ONLY-02 haven't completed their backtestâ†’promote cycle yet.
+- **14 backlog** â€” that's healthy capacity, but I'd want to verify those are predominantly Claude specs and not pipeline backfill taking priority.
 
-- **EMA200 Vortex v3 tight = REJECT** (PF=1.365, DD=40%). The 0.75 ATR stop is incompatible with EMA200-filtered entries â€” price is most volatile near EMA200 crossover zones, so tight stops get whipsawed. New dead-setup entry added.
-
-**Orders written** (QO-CLAUDE-ONLY-02):
-1. All 12 remaining Claude specs on ETH 4h
-2. Supertrend CCI v4 variants (8:1 and tight stop)
-3. kama_vortex_divergence template (finally â€” 4 cycles overdue)
-4. EMA200 Vortex v3b with 1.0 ATR stop + 8:1 R:R (new approach to fix DD)
-
-With the pipeline dead, this is the first time all backtest capacity goes to Claude specs. Expecting 2-3 new ACCEPTs from the flush. **11 total ACCEPTs** now.
+**Bottom line:** The architecture is right now. Claude specs produce, pipeline specs don't â€” the data is unambiguous. The queue floor/target settings ensure throughput. The remaining risk is those residual directive/backfill emissions stealing slots. If those can be zeroed out entirely, every backtest cycle will be pure Claude specs, which at a ~25% ACCEPT rate should be producing 2-3 new ACCEPTs per day instead of the current trickle.

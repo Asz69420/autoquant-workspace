@@ -1,0 +1,2608 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.160 --> 00:00:02.550 align:start position:0%
+ 
+OpenClaus<00:00:00.800><c> memory</c><00:00:01.120><c> is</c><00:00:01.280><c> a</c><00:00:01.520><c> total</c><00:00:01.920><c> junk</c><00:00:02.240><c> drawer</c>
+
+00:00:02.550 --> 00:00:02.560 align:start position:0%
+OpenClaus memory is a total junk drawer
+ 
+
+00:00:02.560 --> 00:00:04.150 align:start position:0%
+OpenClaus memory is a total junk drawer
+that<00:00:02.720><c> is</c><00:00:02.960><c> costing</c><00:00:03.280><c> you</c><00:00:03.520><c> money.</c><00:00:03.760><c> I'm</c><00:00:03.919><c> a</c>
+
+00:00:04.150 --> 00:00:04.160 align:start position:0%
+that is costing you money. I'm a
+ 
+
+00:00:04.160 --> 00:00:05.990 align:start position:0%
+that is costing you money. I'm a
+software<00:00:04.480><c> engineer</c><00:00:04.880><c> and</c><00:00:05.120><c> here's</c><00:00:05.440><c> how</c><00:00:05.520><c> I</c><00:00:05.759><c> fixed</c>
+
+00:00:05.990 --> 00:00:06.000 align:start position:0%
+software engineer and here's how I fixed
+ 
+
+00:00:06.000 --> 00:00:08.390 align:start position:0%
+software engineer and here's how I fixed
+it.<00:00:06.240><c> The</c><00:00:06.400><c> default</c><00:00:06.879><c> setup</c><00:00:07.440><c> dumps</c><00:00:07.919><c> everything</c>
+
+00:00:08.390 --> 00:00:08.400 align:start position:0%
+it. The default setup dumps everything
+ 
+
+00:00:08.400 --> 00:00:11.110 align:start position:0%
+it. The default setup dumps everything
+into<00:00:08.960><c> one</c><00:00:09.440><c> massive</c><00:00:10.160><c> memory</c><00:00:10.559><c> file</c><00:00:10.960><c> which</c>
+
+00:00:11.110 --> 00:00:11.120 align:start position:0%
+into one massive memory file which
+ 
+
+00:00:11.120 --> 00:00:13.350 align:start position:0%
+into one massive memory file which
+confuses<00:00:11.599><c> the</c><00:00:11.840><c> agent</c><00:00:12.080><c> and</c><00:00:12.320><c> bloat</c><00:00:12.719><c> your</c><00:00:12.960><c> API</c>
+
+00:00:13.350 --> 00:00:13.360 align:start position:0%
+confuses the agent and bloat your API
+ 
+
+00:00:13.360 --> 00:00:15.350 align:start position:0%
+confuses the agent and bloat your API
+bill.<00:00:13.679><c> So,</c><00:00:13.920><c> here's</c><00:00:14.080><c> the</c><00:00:14.240><c> deal.</c><00:00:14.719><c> When</c><00:00:15.040><c> your</c>
+
+00:00:15.350 --> 00:00:15.360 align:start position:0%
+bill. So, here's the deal. When your
+ 
+
+00:00:15.360 --> 00:00:17.990 align:start position:0%
+bill. So, here's the deal. When your
+agent<00:00:15.839><c> reads</c><00:00:16.240><c> one</c><00:00:16.560><c> giant</c><00:00:16.960><c> file</c><00:00:17.440><c> for</c><00:00:17.680><c> every</c>
+
+00:00:17.990 --> 00:00:18.000 align:start position:0%
+agent reads one giant file for every
+ 
+
+00:00:18.000 --> 00:00:19.750 align:start position:0%
+agent reads one giant file for every
+request,<00:00:18.480><c> you</c><00:00:18.640><c> burn</c><00:00:18.880><c> through</c><00:00:19.119><c> tokens</c><00:00:19.439><c> and</c><00:00:19.600><c> the</c>
+
+00:00:19.750 --> 00:00:19.760 align:start position:0%
+request, you burn through tokens and the
+ 
+
+00:00:19.760 --> 00:00:22.070 align:start position:0%
+request, you burn through tokens and the
+bot<00:00:20.080><c> gets</c><00:00:20.320><c> confused.</c><00:00:20.880><c> Most</c><00:00:21.119><c> people</c><00:00:21.359><c> just</c><00:00:21.760><c> seem</c>
+
+00:00:22.070 --> 00:00:22.080 align:start position:0%
+bot gets confused. Most people just seem
+ 
+
+00:00:22.080 --> 00:00:24.550 align:start position:0%
+bot gets confused. Most people just seem
+to<00:00:22.320><c> kind</c><00:00:22.480><c> of</c><00:00:22.560><c> accept</c><00:00:22.880><c> this.</c><00:00:23.279><c> Um,</c><00:00:23.600><c> they</c><00:00:23.920><c> repaste</c>
+
+00:00:24.550 --> 00:00:24.560 align:start position:0%
+to kind of accept this. Um, they repaste
+ 
+
+00:00:24.560 --> 00:00:26.230 align:start position:0%
+to kind of accept this. Um, they repaste
+context<00:00:24.960><c> and</c><00:00:25.199><c> reexplain</c><00:00:25.680><c> their</c><00:00:25.920><c> project.</c>
+
+00:00:26.230 --> 00:00:26.240 align:start position:0%
+context and reexplain their project.
+ 
+
+00:00:26.240 --> 00:00:27.990 align:start position:0%
+context and reexplain their project.
+They<00:00:26.400><c> waste</c><00:00:26.720><c> tokens</c><00:00:27.119><c> repeating</c><00:00:27.599><c> themselves</c>
+
+00:00:27.990 --> 00:00:28.000 align:start position:0%
+They waste tokens repeating themselves
+ 
+
+00:00:28.000 --> 00:00:29.990 align:start position:0%
+They waste tokens repeating themselves
+in<00:00:28.320><c> every</c><00:00:28.640><c> single</c><00:00:28.880><c> session.</c><00:00:29.359><c> But</c><00:00:29.519><c> it</c><00:00:29.760><c> doesn't</c>
+
+00:00:29.990 --> 00:00:30.000 align:start position:0%
+in every single session. But it doesn't
+ 
+
+00:00:30.000 --> 00:00:31.669 align:start position:0%
+in every single session. But it doesn't
+have<00:00:30.160><c> to</c><00:00:30.320><c> be</c><00:00:30.480><c> this</c><00:00:30.720><c> way.</c><00:00:31.119><c> Today,</c><00:00:31.359><c> I'm</c><00:00:31.519><c> going</c><00:00:31.599><c> to</c>
+
+00:00:31.669 --> 00:00:31.679 align:start position:0%
+have to be this way. Today, I'm going to
+ 
+
+00:00:31.679 --> 00:00:34.630 align:start position:0%
+have to be this way. Today, I'm going to
+show<00:00:31.840><c> you</c><00:00:32.079><c> four</c><00:00:32.399><c> methods</c><00:00:33.040><c> to</c><00:00:33.760><c> give</c><00:00:34.000><c> your</c><00:00:34.320><c> open</c>
+
+00:00:34.630 --> 00:00:34.640 align:start position:0%
+show you four methods to give your open
+ 
+
+00:00:34.640 --> 00:00:37.590 align:start position:0%
+show you four methods to give your open
+claw<00:00:35.120><c> agent</c><00:00:35.680><c> real</c><00:00:36.000><c> persistent</c><00:00:36.640><c> memory.</c><00:00:37.280><c> From</c>
+
+00:00:37.590 --> 00:00:37.600 align:start position:0%
+claw agent real persistent memory. From
+ 
+
+00:00:37.600 --> 00:00:39.590 align:start position:0%
+claw agent real persistent memory. From
+the<00:00:37.760><c> dead</c><00:00:38.079><c> simple</c><00:00:38.559><c> to</c><00:00:38.800><c> the</c><00:00:39.040><c> seriously</c>
+
+00:00:39.590 --> 00:00:39.600 align:start position:0%
+the dead simple to the seriously
+ 
+
+00:00:39.600 --> 00:00:41.910 align:start position:0%
+the dead simple to the seriously
+powerful<00:00:40.160><c> and</c><00:00:40.399><c> the</c><00:00:40.559><c> last</c><00:00:40.800><c> method</c><00:00:41.200><c> is</c><00:00:41.520><c> one</c><00:00:41.680><c> that</c>
+
+00:00:41.910 --> 00:00:41.920 align:start position:0%
+powerful and the last method is one that
+ 
+
+00:00:41.920 --> 00:00:43.510 align:start position:0%
+powerful and the last method is one that
+most<00:00:42.160><c> people</c><00:00:42.559><c> don't</c><00:00:42.800><c> even</c><00:00:42.960><c> know</c><00:00:43.120><c> that</c>
+
+00:00:43.510 --> 00:00:43.520 align:start position:0%
+most people don't even know that
+ 
+
+00:00:43.520 --> 00:00:45.830 align:start position:0%
+most people don't even know that
+openclaw<00:00:44.160><c> is</c><00:00:44.399><c> capable</c><00:00:44.719><c> of.</c><00:00:45.200><c> Before</c><00:00:45.520><c> we</c><00:00:45.680><c> get</c>
+
+00:00:45.830 --> 00:00:45.840 align:start position:0%
+openclaw is capable of. Before we get
+ 
+
+00:00:45.840 --> 00:00:47.350 align:start position:0%
+openclaw is capable of. Before we get
+into<00:00:46.079><c> the</c><00:00:46.239><c> methods,</c><00:00:46.719><c> let's</c><00:00:46.960><c> quickly</c>
+
+00:00:47.350 --> 00:00:47.360 align:start position:0%
+into the methods, let's quickly
+ 
+
+00:00:47.360 --> 00:00:49.350 align:start position:0%
+into the methods, let's quickly
+understand<00:00:47.920><c> why</c><00:00:48.160><c> this</c><00:00:48.399><c> is</c><00:00:48.480><c> a</c><00:00:48.719><c> problem</c><00:00:48.960><c> in</c><00:00:49.200><c> the</c>
+
+00:00:49.350 --> 00:00:49.360 align:start position:0%
+understand why this is a problem in the
+ 
+
+00:00:49.360 --> 00:00:51.590 align:start position:0%
+understand why this is a problem in the
+first<00:00:49.520><c> place.</c><00:00:49.920><c> Openclaw</c><00:00:50.480><c> agents</c><00:00:51.120><c> and</c><00:00:51.360><c> really</c>
+
+00:00:51.590 --> 00:00:51.600 align:start position:0%
+first place. Openclaw agents and really
+ 
+
+00:00:51.600 --> 00:00:54.229 align:start position:0%
+first place. Openclaw agents and really
+any<00:00:52.000><c> LLM</c><00:00:52.480><c> based</c><00:00:52.800><c> agent</c><00:00:53.120><c> operates</c><00:00:53.520><c> within</c><00:00:53.920><c> a</c>
+
+00:00:54.229 --> 00:00:54.239 align:start position:0%
+any LLM based agent operates within a
+ 
+
+00:00:54.239 --> 00:00:55.830 align:start position:0%
+any LLM based agent operates within a
+context<00:00:54.640><c> window.</c><00:00:55.120><c> Think</c><00:00:55.280><c> of</c><00:00:55.440><c> it</c><00:00:55.600><c> like</c>
+
+00:00:55.830 --> 00:00:55.840 align:start position:0%
+context window. Think of it like
+ 
+
+00:00:55.840 --> 00:00:57.910 align:start position:0%
+context window. Think of it like
+short-term<00:00:56.480><c> memory.</c><00:00:56.960><c> Whatever</c><00:00:57.280><c> is</c><00:00:57.440><c> in</c><00:00:57.680><c> that</c>
+
+00:00:57.910 --> 00:00:57.920 align:start position:0%
+short-term memory. Whatever is in that
+ 
+
+00:00:57.920 --> 00:00:59.750 align:start position:0%
+short-term memory. Whatever is in that
+window,<00:00:58.320><c> the</c><00:00:58.480><c> agent</c><00:00:58.800><c> can</c><00:00:59.039><c> see,</c><00:00:59.359><c> but</c><00:00:59.600><c> the</c>
+
+00:00:59.750 --> 00:00:59.760 align:start position:0%
+window, the agent can see, but the
+ 
+
+00:00:59.760 --> 00:01:01.510 align:start position:0%
+window, the agent can see, but the
+second<00:00:59.920><c> a</c><00:01:00.160><c> session</c><00:01:00.480><c> ends,</c><00:01:00.960><c> that</c><00:01:01.199><c> window</c>
+
+00:01:01.510 --> 00:01:01.520 align:start position:0%
+second a session ends, that window
+ 
+
+00:01:01.520 --> 00:01:03.590 align:start position:0%
+second a session ends, that window
+closes.<00:01:02.239><c> The</c><00:01:02.399><c> context</c><00:01:02.800><c> of</c><00:01:02.960><c> that</c><00:01:03.199><c> conversation</c>
+
+00:01:03.590 --> 00:01:03.600 align:start position:0%
+closes. The context of that conversation
+ 
+
+00:01:03.600 --> 00:01:05.030 align:start position:0%
+closes. The context of that conversation
+is<00:01:03.840><c> gone.</c><00:01:04.159><c> Now,</c><00:01:04.320><c> for</c><00:01:04.479><c> a</c><00:01:04.559><c> one-off</c>
+
+00:01:05.030 --> 00:01:05.040 align:start position:0%
+is gone. Now, for a one-off
+ 
+
+00:01:05.040 --> 00:01:06.870 align:start position:0%
+is gone. Now, for a one-off
+conversation,<00:01:05.600><c> that's</c><00:01:05.840><c> fine.</c><00:01:06.479><c> But</c><00:01:06.560><c> if</c><00:01:06.720><c> you're</c>
+
+00:01:06.870 --> 00:01:06.880 align:start position:0%
+conversation, that's fine. But if you're
+ 
+
+00:01:06.880 --> 00:01:08.550 align:start position:0%
+conversation, that's fine. But if you're
+using<00:01:07.119><c> Open</c><00:01:07.439><c> Claw,</c><00:01:07.760><c> the</c><00:01:07.920><c> way</c><00:01:08.080><c> it's</c><00:01:08.320><c> meant</c><00:01:08.479><c> to</c>
+
+00:01:08.550 --> 00:01:08.560 align:start position:0%
+using Open Claw, the way it's meant to
+ 
+
+00:01:08.560 --> 00:01:10.550 align:start position:0%
+using Open Claw, the way it's meant to
+be<00:01:08.720><c> used</c><00:01:08.960><c> as</c><00:01:09.200><c> an</c><00:01:09.360><c> ongoing</c><00:01:09.760><c> collaborator,</c><00:01:10.320><c> a</c>
+
+00:01:10.550 --> 00:01:10.560 align:start position:0%
+be used as an ongoing collaborator, a
+ 
+
+00:01:10.560 --> 00:01:12.390 align:start position:0%
+be used as an ongoing collaborator, a
+coding<00:01:10.880><c> partner,</c><00:01:11.280><c> a</c><00:01:11.520><c> research</c><00:01:11.920><c> assistant,</c>
+
+00:01:12.390 --> 00:01:12.400 align:start position:0%
+coding partner, a research assistant,
+ 
+
+00:01:12.400 --> 00:01:13.670 align:start position:0%
+coding partner, a research assistant,
+you<00:01:12.560><c> need</c><00:01:12.720><c> to</c><00:01:12.880><c> remember</c><00:01:13.119><c> things</c><00:01:13.360><c> between</c>
+
+00:01:13.670 --> 00:01:13.680 align:start position:0%
+you need to remember things between
+ 
+
+00:01:13.680 --> 00:01:15.670 align:start position:0%
+you need to remember things between
+sessions.<00:01:14.479><c> Things</c><00:01:14.720><c> like</c><00:01:14.960><c> what</c><00:01:15.280><c> project</c>
+
+00:01:15.670 --> 00:01:15.680 align:start position:0%
+sessions. Things like what project
+ 
+
+00:01:15.680 --> 00:01:17.429 align:start position:0%
+sessions. Things like what project
+you're<00:01:15.920><c> working</c><00:01:16.080><c> on,</c><00:01:16.400><c> your</c><00:01:16.640><c> preferences,</c>
+
+00:01:17.429 --> 00:01:17.439 align:start position:0%
+you're working on, your preferences,
+ 
+
+00:01:17.439 --> 00:01:19.749 align:start position:0%
+you're working on, your preferences,
+decisions<00:01:18.000><c> you've</c><00:01:18.320><c> made</c><00:01:18.640><c> already,</c><00:01:19.119><c> data</c><00:01:19.439><c> it's</c>
+
+00:01:19.749 --> 00:01:19.759 align:start position:0%
+decisions you've made already, data it's
+ 
+
+00:01:19.759 --> 00:01:21.749 align:start position:0%
+decisions you've made already, data it's
+already<00:01:20.000><c> gathered.</c><00:01:20.560><c> So,</c><00:01:20.799><c> here</c><00:01:21.040><c> are</c><00:01:21.200><c> four</c><00:01:21.439><c> ways</c>
+
+00:01:21.749 --> 00:01:21.759 align:start position:0%
+already gathered. So, here are four ways
+ 
+
+00:01:21.759 --> 00:01:23.670 align:start position:0%
+already gathered. So, here are four ways
+to<00:01:22.000><c> solve</c><00:01:22.240><c> this,</c><00:01:22.560><c> starting</c><00:01:22.880><c> with</c><00:01:23.119><c> the</c><00:01:23.280><c> one</c><00:01:23.520><c> you</c>
+
+00:01:23.670 --> 00:01:23.680 align:start position:0%
+to solve this, starting with the one you
+ 
+
+00:01:23.680 --> 00:01:25.910 align:start position:0%
+to solve this, starting with the one you
+can<00:01:23.759><c> set</c><00:01:23.920><c> up</c><00:01:24.080><c> in</c><00:01:24.320><c> about</c><00:01:24.560><c> 60</c><00:01:24.799><c> seconds.</c><00:01:25.439><c> Method</c>
+
+00:01:25.910 --> 00:01:25.920 align:start position:0%
+can set up in about 60 seconds. Method
+ 
+
+00:01:25.920 --> 00:01:27.990 align:start position:0%
+can set up in about 60 seconds. Method
+one<00:01:26.159><c> is</c><00:01:26.479><c> the</c><00:01:26.640><c> simplest</c><00:01:27.040><c> and</c><00:01:27.360><c> honestly</c><00:01:27.759><c> it's</c>
+
+00:01:27.990 --> 00:01:28.000 align:start position:0%
+one is the simplest and honestly it's
+ 
+
+00:01:28.000 --> 00:01:30.310 align:start position:0%
+one is the simplest and honestly it's
+underrated.<00:01:28.799><c> These</c><00:01:29.119><c> are</c><00:01:29.360><c> structured</c><00:01:29.920><c> memory</c>
+
+00:01:30.310 --> 00:01:30.320 align:start position:0%
+underrated. These are structured memory
+ 
+
+00:01:30.320 --> 00:01:32.230 align:start position:0%
+underrated. These are structured memory
+folders.<00:01:30.880><c> So</c><00:01:31.119><c> here's</c><00:01:31.280><c> the</c><00:01:31.439><c> idea.</c><00:01:31.840><c> You</c><00:01:32.079><c> create</c>
+
+00:01:32.230 --> 00:01:32.240 align:start position:0%
+folders. So here's the idea. You create
+ 
+
+00:01:32.240 --> 00:01:34.310 align:start position:0%
+folders. So here's the idea. You create
+a<00:01:32.479><c> dedicated</c><00:01:32.960><c> folder</c><00:01:33.360><c> structure</c><00:01:33.840><c> in</c><00:01:34.079><c> your</c>
+
+00:01:34.310 --> 00:01:34.320 align:start position:0%
+a dedicated folder structure in your
+ 
+
+00:01:34.320 --> 00:01:36.469 align:start position:0%
+a dedicated folder structure in your
+project<00:01:34.720><c> directory</c><00:01:35.360><c> or</c><00:01:35.680><c> wherever</c><00:01:36.159><c> your</c>
+
+00:01:36.469 --> 00:01:36.479 align:start position:0%
+project directory or wherever your
+ 
+
+00:01:36.479 --> 00:01:38.710 align:start position:0%
+project directory or wherever your
+agents<00:01:37.040><c> operate</c><00:01:37.600><c> specifically</c><00:01:38.159><c> designed</c><00:01:38.479><c> to</c>
+
+00:01:38.710 --> 00:01:38.720 align:start position:0%
+agents operate specifically designed to
+ 
+
+00:01:38.720 --> 00:01:40.630 align:start position:0%
+agents operate specifically designed to
+store<00:01:39.040><c> contexts</c><00:01:39.520><c> that</c><00:01:39.840><c> persist</c><00:01:40.240><c> between</c>
+
+00:01:40.630 --> 00:01:40.640 align:start position:0%
+store contexts that persist between
+ 
+
+00:01:40.640 --> 00:01:42.950 align:start position:0%
+store contexts that persist between
+sessions.<00:01:41.360><c> I</c><00:01:41.520><c> like</c><00:01:41.680><c> to</c><00:01:41.840><c> set</c><00:01:42.000><c> mine</c><00:01:42.240><c> up</c><00:01:42.479><c> with</c><00:01:42.720><c> a</c>
+
+00:01:42.950 --> 00:01:42.960 align:start position:0%
+sessions. I like to set mine up with a
+ 
+
+00:01:42.960 --> 00:01:44.950 align:start position:0%
+sessions. I like to set mine up with a
+main<00:01:43.280><c> memory</c><00:01:43.680><c> folder</c><00:01:43.920><c> at</c><00:01:44.159><c> the</c><00:01:44.240><c> root</c><00:01:44.479><c> level,</c>
+
+00:01:44.950 --> 00:01:44.960 align:start position:0%
+main memory folder at the root level,
+ 
+
+00:01:44.960 --> 00:01:46.870 align:start position:0%
+main memory folder at the root level,
+then<00:01:45.200><c> a</c><00:01:45.439><c> projects</c><00:01:45.840><c> folder</c><00:01:46.159><c> in</c><00:01:46.320><c> the</c><00:01:46.479><c> agents</c>
+
+00:01:46.870 --> 00:01:46.880 align:start position:0%
+then a projects folder in the agents
+ 
+
+00:01:46.880 --> 00:01:48.870 align:start position:0%
+then a projects folder in the agents
+workspace.<00:01:47.520><c> Inside</c><00:01:47.920><c> that,</c><00:01:48.240><c> a</c><00:01:48.560><c> project</c>
+
+00:01:48.870 --> 00:01:48.880 align:start position:0%
+workspace. Inside that, a project
+ 
+
+00:01:48.880 --> 00:01:51.830 align:start position:0%
+workspace. Inside that, a project
+context<00:01:49.360><c> folder</c><00:01:49.759><c> with</c><00:01:50.159><c> files</c><00:01:50.560><c> like</c><00:01:50.799><c> goals.md,</c>
+
+00:01:51.830 --> 00:01:51.840 align:start position:0%
+context folder with files like goals.md,
+ 
+
+00:01:51.840 --> 00:01:54.469 align:start position:0%
+context folder with files like goals.md,
+decisions.md,<00:01:52.960><c> and</c><00:01:53.200><c> current</c><00:01:53.520><c> status.md.</c>
+
+00:01:54.469 --> 00:01:54.479 align:start position:0%
+decisions.md, and current status.md.
+ 
+
+00:01:54.479 --> 00:01:56.710 align:start position:0%
+decisions.md, and current status.md.
+Then<00:01:54.720><c> a</c><00:01:54.880><c> preferences</c><00:01:55.439><c> folder</c><00:01:55.920><c> with</c><00:01:56.320><c> coding</c>
+
+00:01:56.710 --> 00:01:56.720 align:start position:0%
+Then a preferences folder with coding
+ 
+
+00:01:56.720 --> 00:01:58.709 align:start position:0%
+Then a preferences folder with coding
+style.md<00:01:57.840><c> and</c><00:01:58.159><c> communication</c>
+
+00:01:58.709 --> 00:01:58.719 align:start position:0%
+style.md and communication
+ 
+
+00:01:58.719 --> 00:02:00.630 align:start position:0%
+style.md and communication
+preferences.mmd.<00:01:59.840><c> And</c><00:02:00.079><c> finally</c><00:02:00.399><c> a</c>
+
+00:02:00.630 --> 00:02:00.640 align:start position:0%
+preferences.mmd. And finally a
+ 
+
+00:02:00.640 --> 00:02:02.630 align:start position:0%
+preferences.mmd. And finally a
+knowledgebased<00:02:01.439><c> folder</c><00:02:01.840><c> with</c><00:02:02.159><c> research</c>
+
+00:02:02.630 --> 00:02:02.640 align:start position:0%
+knowledgebased folder with research
+ 
+
+00:02:02.640 --> 00:02:05.830 align:start position:0%
+knowledgebased folder with research
+notes.md<00:02:03.680><c> and</c><00:02:04.079><c> reference.mmd.</c><00:02:05.360><c> Now</c><00:02:05.600><c> here's</c>
+
+00:02:05.830 --> 00:02:05.840 align:start position:0%
+notes.md and reference.mmd. Now here's
+ 
+
+00:02:05.840 --> 00:02:07.749 align:start position:0%
+notes.md and reference.mmd. Now here's
+the<00:02:06.000><c> key.</c><00:02:06.479><c> You</c><00:02:06.719><c> don't</c><00:02:06.960><c> just</c><00:02:07.280><c> create</c><00:02:07.520><c> these</c>
+
+00:02:07.749 --> 00:02:07.759 align:start position:0%
+the key. You don't just create these
+ 
+
+00:02:07.759 --> 00:02:09.510 align:start position:0%
+the key. You don't just create these
+folders.<00:02:08.160><c> You</c><00:02:08.319><c> instruct</c><00:02:08.640><c> the</c><00:02:08.800><c> agent</c><00:02:09.119><c> to</c><00:02:09.360><c> use</c>
+
+00:02:09.510 --> 00:02:09.520 align:start position:0%
+folders. You instruct the agent to use
+ 
+
+00:02:09.520 --> 00:02:11.510 align:start position:0%
+folders. You instruct the agent to use
+them<00:02:09.840><c> in</c><00:02:10.080><c> your</c><00:02:10.319><c> custom</c><00:02:10.640><c> instructions</c><00:02:11.200><c> or</c>
+
+00:02:11.510 --> 00:02:11.520 align:start position:0%
+them in your custom instructions or
+ 
+
+00:02:11.520 --> 00:02:13.430 align:start position:0%
+them in your custom instructions or
+system<00:02:11.920><c> prompt.</c><00:02:12.319><c> You</c><00:02:12.560><c> tell</c><00:02:12.720><c> your</c><00:02:12.879><c> open</c><00:02:13.200><c> cloud</c>
+
+00:02:13.430 --> 00:02:13.440 align:start position:0%
+system prompt. You tell your open cloud
+ 
+
+00:02:13.440 --> 00:02:15.510 align:start position:0%
+system prompt. You tell your open cloud
+agent<00:02:13.760><c> at</c><00:02:13.920><c> the</c><00:02:14.000><c> end</c><00:02:14.160><c> of</c><00:02:14.239><c> every</c><00:02:14.480><c> session</c><00:02:15.120><c> update</c>
+
+00:02:15.510 --> 00:02:15.520 align:start position:0%
+agent at the end of every session update
+ 
+
+00:02:15.520 --> 00:02:17.670 align:start position:0%
+agent at the end of every session update
+the<00:02:15.840><c> relevant</c><00:02:16.239><c> files</c><00:02:16.560><c> in</c><00:02:16.800><c> the</c><00:02:16.959><c> memory</c><00:02:17.200><c> folder.</c>
+
+00:02:17.670 --> 00:02:17.680 align:start position:0%
+the relevant files in the memory folder.
+ 
+
+00:02:17.680 --> 00:02:19.110 align:start position:0%
+the relevant files in the memory folder.
+That's<00:02:17.840><c> it.</c><00:02:18.160><c> That's</c><00:02:18.319><c> the</c><00:02:18.480><c> whole</c><00:02:18.640><c> trick.</c><00:02:18.959><c> Now</c>
+
+00:02:19.110 --> 00:02:19.120 align:start position:0%
+That's it. That's the whole trick. Now
+ 
+
+00:02:19.120 --> 00:02:20.949 align:start position:0%
+That's it. That's the whole trick. Now
+is<00:02:19.280><c> this</c><00:02:19.520><c> sophisticated?</c><00:02:20.080><c> No.</c><00:02:20.319><c> Is</c><00:02:20.480><c> it</c><00:02:20.640><c> vector</c>
+
+00:02:20.949 --> 00:02:20.959 align:start position:0%
+is this sophisticated? No. Is it vector
+ 
+
+00:02:20.959 --> 00:02:22.390 align:start position:0%
+is this sophisticated? No. Is it vector
+database<00:02:21.360><c> with</c><00:02:21.520><c> semantic</c><00:02:22.000><c> search?</c>
+
+00:02:22.390 --> 00:02:22.400 align:start position:0%
+database with semantic search?
+ 
+
+00:02:22.400 --> 00:02:23.830 align:start position:0%
+database with semantic search?
+Absolutely<00:02:22.800><c> not.</c><00:02:23.120><c> But</c><00:02:23.280><c> here's</c><00:02:23.440><c> why</c><00:02:23.599><c> I</c><00:02:23.760><c> love</c>
+
+00:02:23.830 --> 00:02:23.840 align:start position:0%
+Absolutely not. But here's why I love
+ 
+
+00:02:23.840 --> 00:02:25.750 align:start position:0%
+Absolutely not. But here's why I love
+it.<00:02:24.080><c> One,</c><00:02:24.400><c> it's</c><00:02:24.640><c> totally</c><00:02:24.959><c> transparent.</c><00:02:25.520><c> You</c>
+
+00:02:25.750 --> 00:02:25.760 align:start position:0%
+it. One, it's totally transparent. You
+ 
+
+00:02:25.760 --> 00:02:27.589 align:start position:0%
+it. One, it's totally transparent. You
+can<00:02:25.840><c> operate</c><00:02:26.160><c> those</c><00:02:26.400><c> markdown</c><00:02:26.879><c> files</c><00:02:27.200><c> and</c><00:02:27.440><c> see</c>
+
+00:02:27.589 --> 00:02:27.599 align:start position:0%
+can operate those markdown files and see
+ 
+
+00:02:27.599 --> 00:02:29.830 align:start position:0%
+can operate those markdown files and see
+exactly<00:02:28.239><c> what</c><00:02:28.560><c> your</c><00:02:28.720><c> agent</c><00:02:29.120><c> remembers.</c><00:02:29.599><c> No</c>
+
+00:02:29.830 --> 00:02:29.840 align:start position:0%
+exactly what your agent remembers. No
+ 
+
+00:02:29.840 --> 00:02:32.470 align:start position:0%
+exactly what your agent remembers. No
+blackbox.<00:02:30.640><c> Two,</c><00:02:30.959><c> it</c><00:02:31.200><c> works</c><00:02:31.360><c> with</c><00:02:31.599><c> any</c><00:02:31.840><c> LLM</c>
+
+00:02:32.470 --> 00:02:32.480 align:start position:0%
+blackbox. Two, it works with any LLM
+ 
+
+00:02:32.480 --> 00:02:34.790 align:start position:0%
+blackbox. Two, it works with any LLM
+provider,<00:02:32.959><c> Anthropic,</c><00:02:33.599><c> OpenAI,</c><00:02:34.480><c> local</c>
+
+00:02:34.790 --> 00:02:34.800 align:start position:0%
+provider, Anthropic, OpenAI, local
+ 
+
+00:02:34.800 --> 00:02:36.470 align:start position:0%
+provider, Anthropic, OpenAI, local
+models.<00:02:35.280><c> It</c><00:02:35.519><c> doesn't</c><00:02:35.680><c> really</c><00:02:35.920><c> matter.</c><00:02:36.319><c> It's</c>
+
+00:02:36.470 --> 00:02:36.480 align:start position:0%
+models. It doesn't really matter. It's
+ 
+
+00:02:36.480 --> 00:02:38.949 align:start position:0%
+models. It doesn't really matter. It's
+just<00:02:36.720><c> files.</c><00:02:37.280><c> And</c><00:02:37.519><c> three,</c><00:02:38.000><c> you</c><00:02:38.319><c> control</c><00:02:38.720><c> the</c>
+
+00:02:38.949 --> 00:02:38.959 align:start position:0%
+just files. And three, you control the
+ 
+
+00:02:38.959 --> 00:02:40.949 align:start position:0%
+just files. And three, you control the
+structure.<00:02:39.680><c> You</c><00:02:39.920><c> decide</c><00:02:40.239><c> what's</c><00:02:40.640><c> important</c>
+
+00:02:40.949 --> 00:02:40.959 align:start position:0%
+structure. You decide what's important
+ 
+
+00:02:40.959 --> 00:02:43.509 align:start position:0%
+structure. You decide what's important
+enough<00:02:41.280><c> to</c><00:02:41.440><c> remember.</c><00:02:42.239><c> And</c><00:02:42.720><c> that</c><00:02:43.040><c> kind</c><00:02:43.280><c> of</c>
+
+00:02:43.509 --> 00:02:43.519 align:start position:0%
+enough to remember. And that kind of
+ 
+
+00:02:43.519 --> 00:02:45.430 align:start position:0%
+enough to remember. And that kind of
+intentional<00:02:44.080><c> memory</c><00:02:44.480><c> design</c><00:02:44.800><c> actually</c><00:02:45.120><c> leads</c>
+
+00:02:45.430 --> 00:02:45.440 align:start position:0%
+intentional memory design actually leads
+ 
+
+00:02:45.440 --> 00:02:47.110 align:start position:0%
+intentional memory design actually leads
+to<00:02:45.599><c> better</c><00:02:45.840><c> results</c><00:02:46.239><c> than</c><00:02:46.480><c> just</c><00:02:46.720><c> dumping</c>
+
+00:02:47.110 --> 00:02:47.120 align:start position:0%
+to better results than just dumping
+ 
+
+00:02:47.120 --> 00:02:48.869 align:start position:0%
+to better results than just dumping
+everything<00:02:47.519><c> into</c><00:02:47.760><c> a</c><00:02:48.000><c> database</c><00:02:48.480><c> and</c><00:02:48.720><c> hoping</c>
+
+00:02:48.869 --> 00:02:48.879 align:start position:0%
+everything into a database and hoping
+ 
+
+00:02:48.879 --> 00:02:50.309 align:start position:0%
+everything into a database and hoping
+the<00:02:49.120><c> retrieval</c><00:02:49.360><c> will</c><00:02:49.599><c> work.</c><00:02:49.840><c> For</c><00:02:50.080><c> most</c>
+
+00:02:50.309 --> 00:02:50.319 align:start position:0%
+the retrieval will work. For most
+ 
+
+00:02:50.319 --> 00:02:51.589 align:start position:0%
+the retrieval will work. For most
+people,<00:02:50.800><c> especially</c><00:02:51.120><c> if</c><00:02:51.280><c> you're</c><00:02:51.440><c> just</c>
+
+00:02:51.589 --> 00:02:51.599 align:start position:0%
+people, especially if you're just
+ 
+
+00:02:51.599 --> 00:02:53.030 align:start position:0%
+people, especially if you're just
+getting<00:02:51.840><c> started,</c><00:02:52.160><c> this</c><00:02:52.319><c> is</c><00:02:52.400><c> method</c><00:02:52.720><c> one.</c>
+
+00:02:53.030 --> 00:02:53.040 align:start position:0%
+getting started, this is method one.
+ 
+
+00:02:53.040 --> 00:02:55.430 align:start position:0%
+getting started, this is method one.
+Method<00:02:53.519><c> two</c><00:02:53.840><c> is</c><00:02:54.160><c> something</c><00:02:54.480><c> a</c><00:02:54.800><c> lot</c><00:02:54.879><c> of</c><00:02:55.040><c> people</c>
+
+00:02:55.430 --> 00:02:55.440 align:start position:0%
+Method two is something a lot of people
+ 
+
+00:02:55.440 --> 00:02:57.910 align:start position:0%
+Method two is something a lot of people
+don't<00:02:55.760><c> realize</c><00:02:56.160><c> exists</c><00:02:56.640><c> or</c><00:02:57.120><c> they</c><00:02:57.360><c> try</c><00:02:57.599><c> it</c><00:02:57.760><c> and</c>
+
+00:02:57.910 --> 00:02:57.920 align:start position:0%
+don't realize exists or they try it and
+ 
+
+00:02:57.920 --> 00:02:59.270 align:start position:0%
+don't realize exists or they try it and
+it<00:02:58.160><c> doesn't</c><00:02:58.319><c> really</c><00:02:58.480><c> work</c><00:02:58.720><c> and</c><00:02:58.879><c> they</c><00:02:59.120><c> don't</c>
+
+00:02:59.270 --> 00:02:59.280 align:start position:0%
+it doesn't really work and they don't
+ 
+
+00:02:59.280 --> 00:03:00.790 align:start position:0%
+it doesn't really work and they don't
+understand<00:02:59.599><c> why.</c><00:02:59.920><c> Let's</c><00:03:00.160><c> clear</c><00:03:00.400><c> this</c><00:03:00.560><c> up.</c>
+
+00:03:00.790 --> 00:03:00.800 align:start position:0%
+understand why. Let's clear this up.
+ 
+
+00:03:00.800 --> 00:03:03.190 align:start position:0%
+understand why. Let's clear this up.
+Open<00:03:01.200><c> Claw</c><00:03:01.519><c> has</c><00:03:01.680><c> a</c><00:03:01.840><c> built-in</c><00:03:02.400><c> memory</c><00:03:02.879><c> search</c>
+
+00:03:03.190 --> 00:03:03.200 align:start position:0%
+Open Claw has a built-in memory search
+ 
+
+00:03:03.200 --> 00:03:05.670 align:start position:0%
+Open Claw has a built-in memory search
+function<00:03:03.760><c> called</c><00:03:04.239><c> memory</c><00:03:05.120><c> search.</c><00:03:05.440><c> It's</c>
+
+00:03:05.670 --> 00:03:05.680 align:start position:0%
+function called memory search. It's
+ 
+
+00:03:05.680 --> 00:03:07.270 align:start position:0%
+function called memory search. It's
+designed<00:03:05.920><c> to</c><00:03:06.159><c> let</c><00:03:06.400><c> your</c><00:03:06.560><c> agent</c><00:03:06.959><c> search</c>
+
+00:03:07.270 --> 00:03:07.280 align:start position:0%
+designed to let your agent search
+ 
+
+00:03:07.280 --> 00:03:08.869 align:start position:0%
+designed to let your agent search
+through<00:03:07.599><c> stored</c><00:03:08.000><c> memories,</c><00:03:08.560><c> past</c>
+
+00:03:08.869 --> 00:03:08.879 align:start position:0%
+through stored memories, past
+ 
+
+00:03:08.879 --> 00:03:10.630 align:start position:0%
+through stored memories, past
+conversations,<00:03:09.519><c> save</c><00:03:09.840><c> context,</c><00:03:10.400><c> things</c>
+
+00:03:10.630 --> 00:03:10.640 align:start position:0%
+conversations, save context, things
+ 
+
+00:03:10.640 --> 00:03:12.309 align:start position:0%
+conversations, save context, things
+you've<00:03:10.879><c> told</c><00:03:11.040><c> it</c><00:03:11.200><c> to</c><00:03:11.440><c> remember.</c><00:03:11.840><c> And</c><00:03:12.000><c> when</c><00:03:12.159><c> it</c>
+
+00:03:12.309 --> 00:03:12.319 align:start position:0%
+you've told it to remember. And when it
+ 
+
+00:03:12.319 --> 00:03:13.990 align:start position:0%
+you've told it to remember. And when it
+works,<00:03:12.720><c> it's</c><00:03:13.120><c> slick.</c><00:03:13.599><c> You</c><00:03:13.760><c> can</c><00:03:13.840><c> say,</c>
+
+00:03:13.990 --> 00:03:14.000 align:start position:0%
+works, it's slick. You can say,
+ 
+
+00:03:14.000 --> 00:03:15.830 align:start position:0%
+works, it's slick. You can say,
+"Remember<00:03:14.319><c> that</c><00:03:14.560><c> I</c><00:03:14.640><c> prefer</c><00:03:14.959><c> TypeScript</c><00:03:15.519><c> over</c>
+
+00:03:15.830 --> 00:03:15.840 align:start position:0%
+"Remember that I prefer TypeScript over
+ 
+
+00:03:15.840 --> 00:03:17.190 align:start position:0%
+"Remember that I prefer TypeScript over
+JavaScript."<00:03:16.400><c> Or,</c><00:03:16.560><c> "Remember</c><00:03:16.879><c> that</c><00:03:17.040><c> the</c>
+
+00:03:17.190 --> 00:03:17.200 align:start position:0%
+JavaScript." Or, "Remember that the
+ 
+
+00:03:17.200 --> 00:03:20.070 align:start position:0%
+JavaScript." Or, "Remember that the
+database<00:03:17.599><c> schema</c><00:03:18.000><c> uses</c><00:03:18.560><c> unique</c><00:03:19.120><c> primary</c><00:03:19.680><c> IDs</c>
+
+00:03:20.070 --> 00:03:20.080 align:start position:0%
+database schema uses unique primary IDs
+ 
+
+00:03:20.080 --> 00:03:22.149 align:start position:0%
+database schema uses unique primary IDs
+as<00:03:20.400><c> keys."</c><00:03:20.800><c> and</c><00:03:20.959><c> later</c><00:03:21.280><c> your</c><00:03:21.440><c> agent</c><00:03:21.840><c> can</c>
+
+00:03:22.149 --> 00:03:22.159 align:start position:0%
+as keys." and later your agent can
+ 
+
+00:03:22.159 --> 00:03:24.309 align:start position:0%
+as keys." and later your agent can
+search<00:03:22.480><c> for</c><00:03:22.800><c> and</c><00:03:23.120><c> retrieve</c><00:03:23.440><c> those</c><00:03:23.680><c> memories.</c>
+
+00:03:24.309 --> 00:03:24.319 align:start position:0%
+search for and retrieve those memories.
+ 
+
+00:03:24.319 --> 00:03:25.670 align:start position:0%
+search for and retrieve those memories.
+But,<00:03:24.480><c> and</c><00:03:24.720><c> this</c><00:03:24.879><c> is</c><00:03:24.959><c> the</c><00:03:25.120><c> part</c><00:03:25.200><c> that</c><00:03:25.360><c> trips</c>
+
+00:03:25.670 --> 00:03:25.680 align:start position:0%
+But, and this is the part that trips
+ 
+
+00:03:25.680 --> 00:03:27.589 align:start position:0%
+But, and this is the part that trips
+people<00:03:25.920><c> up,</c><00:03:26.159><c> memory</c><00:03:26.560><c> search</c><00:03:26.879><c> requires</c><00:03:27.360><c> the</c>
+
+00:03:27.589 --> 00:03:27.599 align:start position:0%
+people up, memory search requires the
+ 
+
+00:03:27.599 --> 00:03:30.869 align:start position:0%
+people up, memory search requires the
+OpenAI,<00:03:28.400><c> Gemini,</c><00:03:28.959><c> or</c><00:03:29.280><c> Voyage</c><00:03:29.840><c> API</c><00:03:30.640><c> to</c>
+
+00:03:30.869 --> 00:03:30.879 align:start position:0%
+OpenAI, Gemini, or Voyage API to
+ 
+
+00:03:30.879 --> 00:03:32.710 align:start position:0%
+OpenAI, Gemini, or Voyage API to
+function<00:03:31.200><c> and</c><00:03:31.440><c> it's</c><00:03:31.680><c> turned</c><00:03:31.920><c> off</c><00:03:32.080><c> by</c><00:03:32.319><c> default.</c>
+
+00:03:32.710 --> 00:03:32.720 align:start position:0%
+function and it's turned off by default.
+ 
+
+00:03:32.720 --> 00:03:34.309 align:start position:0%
+function and it's turned off by default.
+So,<00:03:32.879><c> you</c><00:03:33.040><c> need</c><00:03:33.120><c> to</c><00:03:33.280><c> enable</c><00:03:33.599><c> it.</c><00:03:33.840><c> It</c><00:03:34.080><c> doesn't</c>
+
+00:03:34.309 --> 00:03:34.319 align:start position:0%
+So, you need to enable it. It doesn't
+ 
+
+00:03:34.319 --> 00:03:36.710 align:start position:0%
+So, you need to enable it. It doesn't
+work<00:03:34.720><c> with</c><00:03:35.040><c> your</c><00:03:35.519><c> Anthropic</c><00:03:36.159><c> Key</c><00:03:36.319><c> and</c><00:03:36.560><c> I'm</c>
+
+00:03:36.710 --> 00:03:36.720 align:start position:0%
+work with your Anthropic Key and I'm
+ 
+
+00:03:36.720 --> 00:03:38.390 align:start position:0%
+work with your Anthropic Key and I'm
+going<00:03:36.799><c> to</c><00:03:36.879><c> say</c><00:03:37.040><c> that</c><00:03:37.200><c> again</c><00:03:37.519><c> because</c><00:03:37.920><c> I</c><00:03:38.159><c> get</c>
+
+00:03:38.390 --> 00:03:38.400 align:start position:0%
+going to say that again because I get
+ 
+
+00:03:38.400 --> 00:03:40.229 align:start position:0%
+going to say that again because I get
+questions<00:03:38.799><c> about</c><00:03:38.959><c> this</c><00:03:39.280><c> constantly.</c><00:03:39.840><c> Memory</c>
+
+00:03:40.229 --> 00:03:40.239 align:start position:0%
+questions about this constantly. Memory
+ 
+
+00:03:40.239 --> 00:03:43.190 align:start position:0%
+questions about this constantly. Memory
+Search<00:03:40.480><c> uses</c><00:03:40.799><c> OpenAI,</c><00:03:41.519><c> Gemini,</c><00:03:42.239><c> or</c><00:03:42.480><c> Voyages</c>
+
+00:03:43.190 --> 00:03:43.200 align:start position:0%
+Search uses OpenAI, Gemini, or Voyages
+ 
+
+00:03:43.200 --> 00:03:45.030 align:start position:0%
+Search uses OpenAI, Gemini, or Voyages
+embedding<00:03:43.680><c> models</c><00:03:44.000><c> under</c><00:03:44.239><c> the</c><00:03:44.400><c> hood.</c><00:03:44.720><c> So,</c><00:03:44.879><c> if</c>
+
+00:03:45.030 --> 00:03:45.040 align:start position:0%
+embedding models under the hood. So, if
+ 
+
+00:03:45.040 --> 00:03:47.270 align:start position:0%
+embedding models under the hood. So, if
+you're<00:03:45.200><c> only</c><00:03:45.440><c> running</c><00:03:45.680><c> Anthropics</c><00:03:46.480><c> Claude</c><00:03:47.040><c> as</c>
+
+00:03:47.270 --> 00:03:47.280 align:start position:0%
+you're only running Anthropics Claude as
+ 
+
+00:03:47.280 --> 00:03:49.270 align:start position:0%
+you're only running Anthropics Claude as
+your<00:03:47.440><c> LLM</c><00:03:48.000><c> provider,</c><00:03:48.560><c> which</c><00:03:48.879><c> let's</c><00:03:49.120><c> be</c>
+
+00:03:49.270 --> 00:03:49.280 align:start position:0%
+your LLM provider, which let's be
+ 
+
+00:03:49.280 --> 00:03:51.589 align:start position:0%
+your LLM provider, which let's be
+honest,<00:03:49.680><c> a</c><00:03:49.920><c> lot</c><00:03:50.000><c> of</c><00:03:50.080><c> OpenCloud</c><00:03:50.720><c> users</c><00:03:51.040><c> are</c>
+
+00:03:51.589 --> 00:03:51.599 align:start position:0%
+honest, a lot of OpenCloud users are
+ 
+
+00:03:51.599 --> 00:03:53.670 align:start position:0%
+honest, a lot of OpenCloud users are
+memory<00:03:52.000><c> search</c><00:03:52.239><c> will</c><00:03:52.400><c> silently</c><00:03:52.879><c> fail</c><00:03:53.200><c> or</c><00:03:53.440><c> just</c>
+
+00:03:53.670 --> 00:03:53.680 align:start position:0%
+memory search will silently fail or just
+ 
+
+00:03:53.680 --> 00:03:55.589 align:start position:0%
+memory search will silently fail or just
+not<00:03:53.840><c> work</c><00:03:54.000><c> at</c><00:03:54.159><c> all.</c><00:03:54.480><c> You</c><00:03:54.640><c> won't</c><00:03:54.799><c> always</c><00:03:55.200><c> get</c><00:03:55.360><c> a</c>
+
+00:03:55.589 --> 00:03:55.599 align:start position:0%
+not work at all. You won't always get a
+ 
+
+00:03:55.599 --> 00:03:57.509 align:start position:0%
+not work at all. You won't always get a
+clear<00:03:55.920><c> error</c><00:03:56.159><c> message.</c><00:03:56.560><c> Your</c><00:03:56.799><c> agent</c><00:03:57.200><c> will</c>
+
+00:03:57.509 --> 00:03:57.519 align:start position:0%
+clear error message. Your agent will
+ 
+
+00:03:57.519 --> 00:03:59.030 align:start position:0%
+clear error message. Your agent will
+just<00:03:57.680><c> not</c><00:03:57.840><c> remember</c><00:03:58.239><c> things</c><00:03:58.480><c> and</c><00:03:58.720><c> you'll</c><00:03:58.959><c> be</c>
+
+00:03:59.030 --> 00:03:59.040 align:start position:0%
+just not remember things and you'll be
+ 
+
+00:03:59.040 --> 00:04:00.470 align:start position:0%
+just not remember things and you'll be
+sitting<00:03:59.280><c> there</c><00:03:59.439><c> wondering</c><00:03:59.920><c> what</c><00:04:00.159><c> you</c><00:04:00.319><c> did</c>
+
+00:04:00.470 --> 00:04:00.480 align:start position:0%
+sitting there wondering what you did
+ 
+
+00:04:00.480 --> 00:04:01.990 align:start position:0%
+sitting there wondering what you did
+wrong.<00:04:00.799><c> So,</c><00:04:00.959><c> here's</c><00:04:01.200><c> what</c><00:04:01.360><c> you</c><00:04:01.439><c> need</c><00:04:01.519><c> to</c><00:04:01.680><c> do.</c>
+
+00:04:01.990 --> 00:04:02.000 align:start position:0%
+wrong. So, here's what you need to do.
+ 
+
+00:04:02.000 --> 00:04:04.309 align:start position:0%
+wrong. So, here's what you need to do.
+Even<00:04:02.239><c> if</c><00:04:02.400><c> claude</c><00:04:02.879><c> is</c><00:04:03.040><c> your</c><00:04:03.280><c> primary</c><00:04:03.680><c> model</c><00:04:04.000><c> for</c>
+
+00:04:04.309 --> 00:04:04.319 align:start position:0%
+Even if claude is your primary model for
+ 
+
+00:04:04.319 --> 00:04:06.630 align:start position:0%
+Even if claude is your primary model for
+conversations,<00:04:05.040><c> you</c><00:04:05.280><c> need</c><00:04:05.360><c> an</c><00:04:05.599><c> open</c><00:04:05.920><c> AAI</c><00:04:06.239><c> API</c>
+
+00:04:06.630 --> 00:04:06.640 align:start position:0%
+conversations, you need an open AAI API
+ 
+
+00:04:06.640 --> 00:04:09.350 align:start position:0%
+conversations, you need an open AAI API
+key,<00:04:06.879><c> a</c><00:04:07.040><c> voyage</c><00:04:07.439><c> API</c><00:04:07.840><c> key</c><00:04:08.080><c> or</c><00:04:08.319><c> a</c><00:04:08.400><c> Gemini</c><00:04:08.879><c> API</c>
+
+00:04:09.350 --> 00:04:09.360 align:start position:0%
+key, a voyage API key or a Gemini API
+ 
+
+00:04:09.360 --> 00:04:11.509 align:start position:0%
+key, a voyage API key or a Gemini API
+key<00:04:09.840><c> configured</c><00:04:10.319><c> in</c><00:04:10.480><c> your</c><00:04:10.640><c> OpenClaw</c><00:04:11.200><c> setup</c>
+
+00:04:11.509 --> 00:04:11.519 align:start position:0%
+key configured in your OpenClaw setup
+ 
+
+00:04:11.519 --> 00:04:13.350 align:start position:0%
+key configured in your OpenClaw setup
+specifically<00:04:12.000><c> for</c><00:04:12.319><c> the</c><00:04:12.480><c> embedding</c><00:04:12.959><c> that</c>
+
+00:04:13.350 --> 00:04:13.360 align:start position:0%
+specifically for the embedding that
+ 
+
+00:04:13.360 --> 00:04:15.270 align:start position:0%
+specifically for the embedding that
+layer<00:04:13.519><c> that</c><00:04:13.840><c> powers</c><00:04:14.159><c> memory</c><00:04:14.560><c> search.</c><00:04:14.879><c> Go</c><00:04:15.040><c> into</c>
+
+00:04:15.270 --> 00:04:15.280 align:start position:0%
+layer that powers memory search. Go into
+ 
+
+00:04:15.280 --> 00:04:17.349 align:start position:0%
+layer that powers memory search. Go into
+your<00:04:15.439><c> open</c><00:04:15.680><c> call</c><00:04:15.920><c> settings,</c><00:04:16.479><c> find</c><00:04:16.720><c> the</c><00:04:16.880><c> API</c>
+
+00:04:17.349 --> 00:04:17.359 align:start position:0%
+your open call settings, find the API
+ 
+
+00:04:17.359 --> 00:04:19.030 align:start position:0%
+your open call settings, find the API
+configuration<00:04:17.919><c> section,</c><00:04:18.239><c> and</c><00:04:18.479><c> make</c><00:04:18.639><c> sure</c><00:04:18.799><c> you</c>
+
+00:04:19.030 --> 00:04:19.040 align:start position:0%
+configuration section, and make sure you
+ 
+
+00:04:19.040 --> 00:04:22.069 align:start position:0%
+configuration section, and make sure you
+have<00:04:19.120><c> a</c><00:04:19.359><c> valid</c><00:04:19.680><c> OpenAI</c><00:04:20.400><c> API</c><00:04:20.799><c> key,</c><00:04:21.280><c> Voyage</c><00:04:21.680><c> API</c>
+
+00:04:22.069 --> 00:04:22.079 align:start position:0%
+have a valid OpenAI API key, Voyage API
+ 
+
+00:04:22.079 --> 00:04:24.550 align:start position:0%
+have a valid OpenAI API key, Voyage API
+key,<00:04:22.240><c> or</c><00:04:22.479><c> Gemini</c><00:04:23.040><c> API</c><00:04:23.440><c> key.</c><00:04:23.840><c> It</c><00:04:24.080><c> doesn't</c><00:04:24.400><c> have</c>
+
+00:04:24.550 --> 00:04:24.560 align:start position:0%
+key, or Gemini API key. It doesn't have
+ 
+
+00:04:24.560 --> 00:04:26.390 align:start position:0%
+key, or Gemini API key. It doesn't have
+to<00:04:24.720><c> be</c><00:04:24.880><c> your</c><00:04:25.120><c> main</c><00:04:25.360><c> model.</c><00:04:25.840><c> It's</c><00:04:26.000><c> just</c><00:04:26.160><c> used</c>
+
+00:04:26.390 --> 00:04:26.400 align:start position:0%
+to be your main model. It's just used
+ 
+
+00:04:26.400 --> 00:04:28.230 align:start position:0%
+to be your main model. It's just used
+for<00:04:26.720><c> the</c><00:04:26.880><c> embedding</c><00:04:27.600><c> and</c><00:04:27.840><c> search</c>
+
+00:04:28.230 --> 00:04:28.240 align:start position:0%
+for the embedding and search
+ 
+
+00:04:28.240 --> 00:04:29.909 align:start position:0%
+for the embedding and search
+functionality<00:04:28.720><c> behind</c><00:04:29.040><c> memory</c><00:04:29.440><c> search.</c>
+
+00:04:29.909 --> 00:04:29.919 align:start position:0%
+functionality behind memory search.
+ 
+
+00:04:29.919 --> 00:04:32.790 align:start position:0%
+functionality behind memory search.
+Next,<00:04:30.400><c> tell</c><00:04:30.639><c> OpenClaw</c><00:04:31.199><c> to</c><00:04:31.360><c> enable</c><00:04:31.759><c> memory</c>
+
+00:04:32.790 --> 00:04:32.800 align:start position:0%
+Next, tell OpenClaw to enable memory
+ 
+
+00:04:32.800 --> 00:04:34.950 align:start position:0%
+Next, tell OpenClaw to enable memory
+search<00:04:33.199><c> and</c><00:04:33.440><c> to</c><00:04:33.600><c> use</c><00:04:33.840><c> the</c><00:04:34.080><c> model</c><00:04:34.320><c> you</c><00:04:34.560><c> added.</c>
+
+00:04:34.950 --> 00:04:34.960 align:start position:0%
+search and to use the model you added.
+ 
+
+00:04:34.960 --> 00:04:36.710 align:start position:0%
+search and to use the model you added.
+Once<00:04:35.199><c> that's</c><00:04:35.360><c> in</c><00:04:35.600><c> place,</c><00:04:35.840><c> memory</c><00:04:36.240><c> should</c><00:04:36.479><c> work</c>
+
+00:04:36.710 --> 00:04:36.720 align:start position:0%
+Once that's in place, memory should work
+ 
+
+00:04:36.720 --> 00:04:38.469 align:start position:0%
+Once that's in place, memory should work
+as<00:04:36.960><c> expected.</c><00:04:37.440><c> Your</c><00:04:37.600><c> agent</c><00:04:37.919><c> can</c><00:04:38.000><c> now</c><00:04:38.240><c> store</c>
+
+00:04:38.469 --> 00:04:38.479 align:start position:0%
+as expected. Your agent can now store
+ 
+
+00:04:38.479 --> 00:04:40.390 align:start position:0%
+as expected. Your agent can now store
+and<00:04:38.720><c> retrieve</c><00:04:39.120><c> memories</c><00:04:39.680><c> with</c><00:04:40.000><c> natural</c>
+
+00:04:40.390 --> 00:04:40.400 align:start position:0%
+and retrieve memories with natural
+ 
+
+00:04:40.400 --> 00:04:42.150 align:start position:0%
+and retrieve memories with natural
+language<00:04:40.800><c> queries.</c><00:04:41.360><c> Now,</c><00:04:41.520><c> the</c><00:04:41.680><c> cost</c><00:04:41.840><c> on</c><00:04:42.080><c> this</c>
+
+00:04:42.150 --> 00:04:42.160 align:start position:0%
+language queries. Now, the cost on this
+ 
+
+00:04:42.160 --> 00:04:44.390 align:start position:0%
+language queries. Now, the cost on this
+is<00:04:42.400><c> minimal.</c><00:04:42.880><c> Embedding</c><00:04:43.440><c> calls</c><00:04:43.759><c> are</c><00:04:44.160><c> very</c>
+
+00:04:44.390 --> 00:04:44.400 align:start position:0%
+is minimal. Embedding calls are very
+ 
+
+00:04:44.400 --> 00:04:45.990 align:start position:0%
+is minimal. Embedding calls are very
+cheap.<00:04:44.800><c> We're</c><00:04:45.040><c> talking</c><00:04:45.280><c> fractions</c><00:04:45.680><c> of</c><00:04:45.759><c> a</c>
+
+00:04:45.990 --> 00:04:46.000 align:start position:0%
+cheap. We're talking fractions of a
+ 
+
+00:04:46.000 --> 00:04:47.510 align:start position:0%
+cheap. We're talking fractions of a
+scent.<00:04:46.240><c> So,</c><00:04:46.400><c> don't</c><00:04:46.560><c> let</c><00:04:46.720><c> the</c><00:04:46.880><c> I</c><00:04:47.120><c> need</c><00:04:47.199><c> another</c>
+
+00:04:47.510 --> 00:04:47.520 align:start position:0%
+scent. So, don't let the I need another
+ 
+
+00:04:47.520 --> 00:04:49.749 align:start position:0%
+scent. So, don't let the I need another
+API<00:04:47.919><c> key</c><00:04:48.160><c> thing</c><00:04:48.400><c> scare</c><00:04:48.639><c> you</c><00:04:48.800><c> off,</c><00:04:49.120><c> but</c><00:04:49.360><c> you</c><00:04:49.520><c> do</c>
+
+00:04:49.749 --> 00:04:49.759 align:start position:0%
+API key thing scare you off, but you do
+ 
+
+00:04:49.759 --> 00:04:51.670 align:start position:0%
+API key thing scare you off, but you do
+need<00:04:49.919><c> to</c><00:04:50.080><c> know.</c><00:04:50.400><c> It's</c><00:04:50.560><c> a</c><00:04:50.800><c> requirement</c><00:04:51.280><c> because</c>
+
+00:04:51.670 --> 00:04:51.680 align:start position:0%
+need to know. It's a requirement because
+ 
+
+00:04:51.680 --> 00:04:53.350 align:start position:0%
+need to know. It's a requirement because
+nothing<00:04:51.919><c> in</c><00:04:52.160><c> the</c><00:04:52.240><c> UI</c><00:04:52.639><c> really</c><00:04:52.880><c> tells</c><00:04:53.040><c> you</c><00:04:53.199><c> this</c>
+
+00:04:53.350 --> 00:04:53.360 align:start position:0%
+nothing in the UI really tells you this
+ 
+
+00:04:53.360 --> 00:04:55.430 align:start position:0%
+nothing in the UI really tells you this
+upfront.<00:04:53.840><c> If</c><00:04:54.080><c> method</c><00:04:54.400><c> one</c><00:04:54.639><c> was</c><00:04:54.880><c> the</c><00:04:55.040><c> manual</c>
+
+00:04:55.430 --> 00:04:55.440 align:start position:0%
+upfront. If method one was the manual
+ 
+
+00:04:55.440 --> 00:04:57.430 align:start position:0%
+upfront. If method one was the manual
+but<00:04:55.759><c> reliable</c><00:04:56.160><c> approach,</c><00:04:56.560><c> method</c><00:04:56.880><c> two</c><00:04:57.040><c> is</c><00:04:57.199><c> the</c>
+
+00:04:57.430 --> 00:04:57.440 align:start position:0%
+but reliable approach, method two is the
+ 
+
+00:04:57.440 --> 00:04:59.030 align:start position:0%
+but reliable approach, method two is the
+built-in<00:04:57.759><c> but</c><00:04:58.000><c> needs</c><00:04:58.320><c> proper</c><00:04:58.639><c> setup</c>
+
+00:04:59.030 --> 00:04:59.040 align:start position:0%
+built-in but needs proper setup
+ 
+
+00:04:59.040 --> 00:05:00.950 align:start position:0%
+built-in but needs proper setup
+approach.<00:04:59.680><c> This</c><00:04:59.840><c> will</c><00:05:00.080><c> be</c><00:05:00.160><c> a</c><00:05:00.400><c> great</c><00:05:00.639><c> solution</c>
+
+00:05:00.950 --> 00:05:00.960 align:start position:0%
+approach. This will be a great solution
+ 
+
+00:05:00.960 --> 00:05:02.469 align:start position:0%
+approach. This will be a great solution
+for<00:05:01.120><c> most</c><00:05:01.360><c> users</c><00:05:01.680><c> once</c><00:05:01.919><c> you're</c><00:05:02.080><c> clear</c><00:05:02.240><c> that</c>
+
+00:05:02.469 --> 00:05:02.479 align:start position:0%
+for most users once you're clear that
+ 
+
+00:05:02.479 --> 00:05:04.629 align:start position:0%
+for most users once you're clear that
+you<00:05:02.639><c> need</c><00:05:02.880><c> those</c><00:05:03.199><c> specific</c><00:05:03.680><c> API</c><00:05:04.160><c> keys</c><00:05:04.479><c> in</c>
+
+00:05:04.629 --> 00:05:04.639 align:start position:0%
+you need those specific API keys in
+ 
+
+00:05:04.639 --> 00:05:06.070 align:start position:0%
+you need those specific API keys in
+order<00:05:04.800><c> for</c><00:05:04.960><c> it</c><00:05:05.120><c> to</c><00:05:05.280><c> work.</c><00:05:05.600><c> Okay,</c><00:05:05.840><c> now</c><00:05:05.919><c> we're</c>
+
+00:05:06.070 --> 00:05:06.080 align:start position:0%
+order for it to work. Okay, now we're
+ 
+
+00:05:06.080 --> 00:05:07.590 align:start position:0%
+order for it to work. Okay, now we're
+getting<00:05:06.240><c> into</c><00:05:06.479><c> the</c><00:05:06.639><c> more</c><00:05:06.800><c> complicated</c><00:05:07.280><c> but</c>
+
+00:05:07.590 --> 00:05:07.600 align:start position:0%
+getting into the more complicated but
+ 
+
+00:05:07.600 --> 00:05:09.749 align:start position:0%
+getting into the more complicated but
+more<00:05:08.080><c> comprehensive</c><00:05:08.800><c> solutions.</c><00:05:09.360><c> Method</c>
+
+00:05:09.749 --> 00:05:09.759 align:start position:0%
+more comprehensive solutions. Method
+ 
+
+00:05:09.759 --> 00:05:11.830 align:start position:0%
+more comprehensive solutions. Method
+three<00:05:10.240><c> is</c><00:05:10.560><c> for</c><00:05:10.800><c> those</c><00:05:10.960><c> of</c><00:05:11.120><c> you</c><00:05:11.199><c> who</c><00:05:11.360><c> want</c><00:05:11.600><c> real</c>
+
+00:05:11.830 --> 00:05:11.840 align:start position:0%
+three is for those of you who want real
+ 
+
+00:05:11.840 --> 00:05:13.909 align:start position:0%
+three is for those of you who want real
+persistent<00:05:12.320><c> intelligent</c><00:05:12.880><c> long-term</c><00:05:13.440><c> memory</c>
+
+00:05:13.909 --> 00:05:13.919 align:start position:0%
+persistent intelligent long-term memory
+ 
+
+00:05:13.919 --> 00:05:15.670 align:start position:0%
+persistent intelligent long-term memory
+and<00:05:14.160><c> it</c><00:05:14.320><c> comes</c><00:05:14.479><c> from</c><00:05:14.639><c> a</c><00:05:14.800><c> third</c><00:05:15.039><c> party</c><00:05:15.280><c> plugin</c>
+
+00:05:15.670 --> 00:05:15.680 align:start position:0%
+and it comes from a third party plugin
+ 
+
+00:05:15.680 --> 00:05:19.909 align:start position:0%
+and it comes from a third party plugin
+called<00:05:16.000><c> MEM0.</c><00:05:17.199><c> MEM0</c><00:05:18.320><c> is</c><00:05:18.880><c> purpose-built</c><00:05:19.600><c> to</c>
+
+00:05:19.909 --> 00:05:19.919 align:start position:0%
+called MEM0. MEM0 is purpose-built to
+ 
+
+00:05:19.919 --> 00:05:21.510 align:start position:0%
+called MEM0. MEM0 is purpose-built to
+solve<00:05:20.240><c> the</c><00:05:20.479><c> exact</c><00:05:20.720><c> problem</c><00:05:21.039><c> we've</c><00:05:21.360><c> been</c>
+
+00:05:21.510 --> 00:05:21.520 align:start position:0%
+solve the exact problem we've been
+ 
+
+00:05:21.520 --> 00:05:23.189 align:start position:0%
+solve the exact problem we've been
+talking<00:05:21.759><c> about.</c><00:05:22.080><c> and</c><00:05:22.320><c> it</c><00:05:22.479><c> does</c><00:05:22.639><c> it</c><00:05:22.800><c> in</c><00:05:22.960><c> a</c><00:05:23.120><c> way</c>
+
+00:05:23.189 --> 00:05:23.199 align:start position:0%
+talking about. and it does it in a way
+ 
+
+00:05:23.199 --> 00:05:24.950 align:start position:0%
+talking about. and it does it in a way
+that's<00:05:23.440><c> honestly</c><00:05:23.840><c> kind</c><00:05:24.080><c> of</c><00:05:24.240><c> elegant.</c><00:05:24.720><c> The</c>
+
+00:05:24.950 --> 00:05:24.960 align:start position:0%
+that's honestly kind of elegant. The
+ 
+
+00:05:24.960 --> 00:05:29.590 align:start position:0%
+that's honestly kind of elegant. The
+plugin<00:05:25.280><c> is</c><00:05:25.520><c> called</c><00:05:25.759><c> at</c><00:05:26.080><c> mem0/openclaw-mem0.</c>
+
+00:05:29.590 --> 00:05:29.600 align:start position:0%
+ 
+ 
+
+00:05:29.600 --> 00:05:31.029 align:start position:0%
+ 
+And<00:05:29.759><c> here's</c><00:05:30.080><c> what</c><00:05:30.240><c> it</c><00:05:30.479><c> does</c><00:05:30.560><c> in</c><00:05:30.800><c> plain</c>
+
+00:05:31.029 --> 00:05:31.039 align:start position:0%
+And here's what it does in plain
+ 
+
+00:05:31.039 --> 00:05:33.510 align:start position:0%
+And here's what it does in plain
+English.<00:05:31.600><c> It</c><00:05:31.840><c> adds</c><00:05:32.240><c> long-term</c><00:05:32.880><c> memory</c><00:05:33.199><c> to</c>
+
+00:05:33.510 --> 00:05:33.520 align:start position:0%
+English. It adds long-term memory to
+ 
+
+00:05:33.520 --> 00:05:35.749 align:start position:0%
+English. It adds long-term memory to
+OpenClaw<00:05:34.080><c> agents.</c><00:05:34.560><c> Your</c><00:05:34.720><c> agents</c><00:05:35.280><c> forget</c>
+
+00:05:35.749 --> 00:05:35.759 align:start position:0%
+OpenClaw agents. Your agents forget
+ 
+
+00:05:35.759 --> 00:05:37.270 align:start position:0%
+OpenClaw agents. Your agents forget
+things<00:05:36.080><c> between</c><00:05:36.479><c> sessions.</c><00:05:36.960><c> And</c><00:05:37.120><c> this</c>
+
+00:05:37.270 --> 00:05:37.280 align:start position:0%
+things between sessions. And this
+ 
+
+00:05:37.280 --> 00:05:39.110 align:start position:0%
+things between sessions. And this
+plug-in<00:05:37.680><c> fixes</c><00:05:38.000><c> that</c><00:05:38.240><c> by</c><00:05:38.479><c> automatically</c>
+
+00:05:39.110 --> 00:05:39.120 align:start position:0%
+plug-in fixes that by automatically
+ 
+
+00:05:39.120 --> 00:05:41.110 align:start position:0%
+plug-in fixes that by automatically
+watching<00:05:39.440><c> conversations,</c><00:05:40.320><c> extracting</c><00:05:40.800><c> what</c>
+
+00:05:41.110 --> 00:05:41.120 align:start position:0%
+watching conversations, extracting what
+ 
+
+00:05:41.120 --> 00:05:42.710 align:start position:0%
+watching conversations, extracting what
+matters,<00:05:41.520><c> and</c><00:05:41.680><c> bringing</c><00:05:42.000><c> it</c><00:05:42.160><c> back</c><00:05:42.400><c> when</c>
+
+00:05:42.710 --> 00:05:42.720 align:start position:0%
+matters, and bringing it back when
+ 
+
+00:05:42.720 --> 00:05:44.230 align:start position:0%
+matters, and bringing it back when
+relevant.<00:05:43.280><c> Let's</c><00:05:43.520><c> break</c><00:05:43.759><c> down</c><00:05:43.919><c> what's</c>
+
+00:05:44.230 --> 00:05:44.240 align:start position:0%
+relevant. Let's break down what's
+ 
+
+00:05:44.240 --> 00:05:45.990 align:start position:0%
+relevant. Let's break down what's
+happening<00:05:44.560><c> under</c><00:05:44.880><c> the</c><00:05:45.039><c> hood.</c><00:05:45.520><c> Because</c><00:05:45.759><c> this</c>
+
+00:05:45.990 --> 00:05:46.000 align:start position:0%
+happening under the hood. Because this
+ 
+
+00:05:46.000 --> 00:05:48.550 align:start position:0%
+happening under the hood. Because this
+is<00:05:46.080><c> where</c><00:05:46.320><c> it</c><00:05:46.479><c> gets</c><00:05:46.639><c> pretty</c><00:05:46.880><c> cool.</c><00:05:47.360><c> MEM0</c><00:05:48.160><c> uses</c>
+
+00:05:48.550 --> 00:05:48.560 align:start position:0%
+is where it gets pretty cool. MEM0 uses
+ 
+
+00:05:48.560 --> 00:05:50.629 align:start position:0%
+is where it gets pretty cool. MEM0 uses
+vector<00:05:49.039><c> search.</c><00:05:49.520><c> If</c><00:05:49.680><c> you're</c><00:05:49.840><c> not</c><00:05:50.000><c> familiar,</c><00:05:50.400><c> a</c>
+
+00:05:50.629 --> 00:05:50.639 align:start position:0%
+vector search. If you're not familiar, a
+ 
+
+00:05:50.639 --> 00:05:52.870 align:start position:0%
+vector search. If you're not familiar, a
+vector<00:05:50.960><c> database</c><00:05:51.520><c> stores</c><00:05:52.000><c> information</c><00:05:52.560><c> not</c>
+
+00:05:52.870 --> 00:05:52.880 align:start position:0%
+vector database stores information not
+ 
+
+00:05:52.880 --> 00:05:55.029 align:start position:0%
+vector database stores information not
+as<00:05:53.199><c> exact</c><00:05:53.840><c> text</c><00:05:54.160><c> matches,</c><00:05:54.560><c> but</c><00:05:54.800><c> as</c>
+
+00:05:55.029 --> 00:05:55.039 align:start position:0%
+as exact text matches, but as
+ 
+
+00:05:55.039 --> 00:05:57.350 align:start position:0%
+as exact text matches, but as
+mathematical<00:05:55.759><c> representations</c><00:05:56.479><c> of</c><00:05:56.800><c> meaning.</c>
+
+00:05:57.350 --> 00:05:57.360 align:start position:0%
+mathematical representations of meaning.
+ 
+
+00:05:57.360 --> 00:05:58.870 align:start position:0%
+mathematical representations of meaning.
+So<00:05:57.520><c> when</c><00:05:57.759><c> your</c><00:05:57.919><c> agent</c><00:05:58.160><c> needs</c><00:05:58.400><c> to</c><00:05:58.560><c> recall</c>
+
+00:05:58.870 --> 00:05:58.880 align:start position:0%
+So when your agent needs to recall
+ 
+
+00:05:58.880 --> 00:06:00.469 align:start position:0%
+So when your agent needs to recall
+something,<00:05:59.280><c> it's</c><00:05:59.520><c> not</c><00:05:59.759><c> doing</c><00:05:59.919><c> a</c><00:06:00.080><c> keyword</c>
+
+00:06:00.469 --> 00:06:00.479 align:start position:0%
+something, it's not doing a keyword
+ 
+
+00:06:00.479 --> 00:06:02.870 align:start position:0%
+something, it's not doing a keyword
+search<00:06:00.960><c> like</c><00:06:01.600><c> F.</c><00:06:01.919><c> It's</c><00:06:02.080><c> doing</c><00:06:02.240><c> a</c><00:06:02.400><c> semantic</c>
+
+00:06:02.870 --> 00:06:02.880 align:start position:0%
+search like F. It's doing a semantic
+ 
+
+00:06:02.880 --> 00:06:04.390 align:start position:0%
+search like F. It's doing a semantic
+search.<00:06:03.360><c> That</c><00:06:03.600><c> means</c><00:06:03.759><c> if</c><00:06:03.919><c> you</c><00:06:04.080><c> told</c><00:06:04.240><c> your</c>
+
+00:06:04.390 --> 00:06:04.400 align:start position:0%
+search. That means if you told your
+ 
+
+00:06:04.400 --> 00:06:06.390 align:start position:0%
+search. That means if you told your
+agent<00:06:04.720><c> 3</c><00:06:04.880><c> weeks</c><00:06:05.120><c> ago,</c><00:06:05.440><c> our</c><00:06:05.680><c> client</c><00:06:05.919><c> prefers</c><00:06:06.240><c> a</c>
+
+00:06:06.390 --> 00:06:06.400 align:start position:0%
+agent 3 weeks ago, our client prefers a
+ 
+
+00:06:06.400 --> 00:06:09.029 align:start position:0%
+agent 3 weeks ago, our client prefers a
+minimalist<00:06:06.960><c> design</c><00:06:07.440><c> approach.</c><00:06:08.240><c> And</c><00:06:08.560><c> today</c>
+
+00:06:09.029 --> 00:06:09.039 align:start position:0%
+minimalist design approach. And today
+ 
+
+00:06:09.039 --> 00:06:11.430 align:start position:0%
+minimalist design approach. And today
+you<00:06:09.280><c> ask</c><00:06:09.680><c> about</c><00:06:09.919><c> design</c><00:06:10.319><c> direction,</c><00:06:10.720><c> MEM0</c>
+
+00:06:11.430 --> 00:06:11.440 align:start position:0%
+you ask about design direction, MEM0
+ 
+
+00:06:11.440 --> 00:06:13.350 align:start position:0%
+you ask about design direction, MEM0
+will<00:06:11.680><c> surface</c><00:06:12.080><c> that</c><00:06:12.319><c> memory</c><00:06:12.800><c> even</c><00:06:12.960><c> though</c><00:06:13.120><c> you</c>
+
+00:06:13.350 --> 00:06:13.360 align:start position:0%
+will surface that memory even though you
+ 
+
+00:06:13.360 --> 00:06:14.870 align:start position:0%
+will surface that memory even though you
+use<00:06:13.600><c> completely</c><00:06:14.000><c> different</c><00:06:14.240><c> words.</c><00:06:14.720><c> The</c>
+
+00:06:14.870 --> 00:06:14.880 align:start position:0%
+use completely different words. The
+ 
+
+00:06:14.880 --> 00:06:16.550 align:start position:0%
+use completely different words. The
+plug-in<00:06:15.280><c> works</c><00:06:15.520><c> by</c><00:06:15.759><c> doing</c><00:06:16.000><c> three</c><00:06:16.240><c> things</c>
+
+00:06:16.550 --> 00:06:16.560 align:start position:0%
+plug-in works by doing three things
+ 
+
+00:06:16.560 --> 00:06:18.629 align:start position:0%
+plug-in works by doing three things
+automatically.<00:06:17.280><c> Step</c><00:06:17.600><c> one,</c><00:06:17.840><c> it</c><00:06:18.080><c> watches</c>
+
+00:06:18.629 --> 00:06:18.639 align:start position:0%
+automatically. Step one, it watches
+ 
+
+00:06:18.639 --> 00:06:20.309 align:start position:0%
+automatically. Step one, it watches
+every<00:06:18.960><c> conversation</c><00:06:19.440><c> you</c><00:06:19.759><c> have</c><00:06:19.919><c> with</c><00:06:20.160><c> your</c>
+
+00:06:20.309 --> 00:06:20.319 align:start position:0%
+every conversation you have with your
+ 
+
+00:06:20.319 --> 00:06:23.110 align:start position:0%
+every conversation you have with your
+OpenClaw<00:06:20.880><c> agent.</c><00:06:21.280><c> Um,</c><00:06:21.600><c> MEMM0</c><00:06:22.400><c> is</c><00:06:22.639><c> observing</c>
+
+00:06:23.110 --> 00:06:23.120 align:start position:0%
+OpenClaw agent. Um, MEMM0 is observing
+ 
+
+00:06:23.120 --> 00:06:25.270 align:start position:0%
+OpenClaw agent. Um, MEMM0 is observing
+in<00:06:23.360><c> the</c><00:06:23.520><c> background.</c><00:06:24.080><c> Step</c><00:06:24.319><c> two,</c><00:06:24.639><c> it</c><00:06:24.880><c> extract</c>
+
+00:06:25.270 --> 00:06:25.280 align:start position:0%
+in the background. Step two, it extract
+ 
+
+00:06:25.280 --> 00:06:26.790 align:start position:0%
+in the background. Step two, it extract
+it<00:06:25.600><c> identifies</c><00:06:26.000><c> the</c><00:06:26.240><c> information</c><00:06:26.560><c> that</c>
+
+00:06:26.790 --> 00:06:26.800 align:start position:0%
+it identifies the information that
+ 
+
+00:06:26.800 --> 00:06:28.390 align:start position:0%
+it identifies the information that
+actually<00:06:27.120><c> matters,</c><00:06:27.680><c> preferences,</c>
+
+00:06:28.390 --> 00:06:28.400 align:start position:0%
+actually matters, preferences,
+ 
+
+00:06:28.400 --> 00:06:30.629 align:start position:0%
+actually matters, preferences,
+decisions,<00:06:29.039><c> facts,</c><00:06:29.520><c> project</c><00:06:29.919><c> details</c><00:06:30.319><c> and</c>
+
+00:06:30.629 --> 00:06:30.639 align:start position:0%
+decisions, facts, project details and
+ 
+
+00:06:30.639 --> 00:06:32.710 align:start position:0%
+decisions, facts, project details and
+then<00:06:30.800><c> stores</c><00:06:31.120><c> them</c><00:06:31.280><c> as</c><00:06:31.600><c> vector</c><00:06:31.919><c> embeddings.</c>
+
+00:06:32.710 --> 00:06:32.720 align:start position:0%
+then stores them as vector embeddings.
+ 
+
+00:06:32.720 --> 00:06:34.710 align:start position:0%
+then stores them as vector embeddings.
+Step<00:06:32.960><c> three,</c><00:06:33.280><c> it</c><00:06:33.440><c> retrieves</c><00:06:34.080><c> at</c><00:06:34.240><c> the</c><00:06:34.400><c> start</c><00:06:34.560><c> of</c>
+
+00:06:34.710 --> 00:06:34.720 align:start position:0%
+Step three, it retrieves at the start of
+ 
+
+00:06:34.720 --> 00:06:37.189 align:start position:0%
+Step three, it retrieves at the start of
+each<00:06:35.199><c> conversation</c><00:06:35.840><c> or</c><00:06:36.160><c> whenever</c><00:06:36.639><c> context</c><00:06:37.039><c> is</c>
+
+00:06:37.189 --> 00:06:37.199 align:start position:0%
+each conversation or whenever context is
+ 
+
+00:06:37.199 --> 00:06:38.950 align:start position:0%
+each conversation or whenever context is
+relevant,<00:06:37.840><c> it</c><00:06:38.080><c> pulls</c><00:06:38.400><c> back</c><00:06:38.560><c> the</c><00:06:38.800><c> right</c>
+
+00:06:38.950 --> 00:06:38.960 align:start position:0%
+relevant, it pulls back the right
+ 
+
+00:06:38.960 --> 00:06:40.550 align:start position:0%
+relevant, it pulls back the right
+memories<00:06:39.440><c> and</c><00:06:39.600><c> injects</c><00:06:40.000><c> them</c><00:06:40.160><c> into</c><00:06:40.400><c> your</c>
+
+00:06:40.550 --> 00:06:40.560 align:start position:0%
+memories and injects them into your
+ 
+
+00:06:40.560 --> 00:06:42.230 align:start position:0%
+memories and injects them into your
+agents<00:06:40.960><c> context.</c><00:06:41.520><c> And</c><00:06:41.600><c> it</c><00:06:41.759><c> does</c><00:06:41.919><c> this</c><00:06:42.080><c> all</c>
+
+00:06:42.230 --> 00:06:42.240 align:start position:0%
+agents context. And it does this all
+ 
+
+00:06:42.240 --> 00:06:44.629 align:start position:0%
+agents context. And it does this all
+automatically.<00:06:42.960><c> No</c><00:06:43.199><c> manual</c><00:06:43.680><c> work</c><00:06:43.919><c> from</c><00:06:44.160><c> you.</c>
+
+00:06:44.629 --> 00:06:44.639 align:start position:0%
+automatically. No manual work from you.
+ 
+
+00:06:44.639 --> 00:06:46.710 align:start position:0%
+automatically. No manual work from you.
+So,<00:06:44.960><c> compare</c><00:06:45.199><c> this</c><00:06:45.440><c> to</c><00:06:45.680><c> method</c><00:06:46.160><c> one</c><00:06:46.479><c> with</c>
+
+00:06:46.710 --> 00:06:46.720 align:start position:0%
+So, compare this to method one with
+ 
+
+00:06:46.720 --> 00:06:48.550 align:start position:0%
+So, compare this to method one with
+structured<00:06:47.199><c> folders.</c><00:06:47.680><c> You</c><00:06:47.919><c> decide</c><00:06:48.160><c> what</c><00:06:48.400><c> to</c>
+
+00:06:48.550 --> 00:06:48.560 align:start position:0%
+structured folders. You decide what to
+ 
+
+00:06:48.560 --> 00:06:50.390 align:start position:0%
+structured folders. You decide what to
+save<00:06:48.800><c> and</c><00:06:49.120><c> you</c><00:06:49.280><c> design</c><00:06:49.440><c> the</c><00:06:49.680><c> retrieval.</c><00:06:50.160><c> With</c>
+
+00:06:50.390 --> 00:06:50.400 align:start position:0%
+save and you design the retrieval. With
+ 
+
+00:06:50.400 --> 00:06:52.550 align:start position:0%
+save and you design the retrieval. With
+MEM0,<00:06:51.360><c> the</c><00:06:51.600><c> system</c><00:06:51.759><c> is</c><00:06:52.000><c> doing</c><00:06:52.160><c> the</c><00:06:52.319><c> heavy</c>
+
+00:06:52.550 --> 00:06:52.560 align:start position:0%
+MEM0, the system is doing the heavy
+ 
+
+00:06:52.560 --> 00:06:54.230 align:start position:0%
+MEM0, the system is doing the heavy
+lifting<00:06:52.880><c> for</c><00:06:53.039><c> you.</c><00:06:53.360><c> Now,</c><00:06:53.600><c> the</c><00:06:53.759><c> trade-off</c><00:06:54.080><c> is</c>
+
+00:06:54.230 --> 00:06:54.240 align:start position:0%
+lifting for you. Now, the trade-off is
+ 
+
+00:06:54.240 --> 00:06:56.070 align:start position:0%
+lifting for you. Now, the trade-off is
+that<00:06:54.400><c> it's</c><00:06:54.639><c> a</c><00:06:54.800><c> third</c><00:06:54.960><c> party</c><00:06:55.280><c> dependency.</c>
+
+00:06:56.070 --> 00:06:56.080 align:start position:0%
+that it's a third party dependency.
+ 
+
+00:06:56.080 --> 00:06:57.430 align:start position:0%
+that it's a third party dependency.
+You're<00:06:56.319><c> adding</c><00:06:56.560><c> a</c><00:06:56.720><c> plug-in.</c><00:06:57.280><c> You're</c>
+
+00:06:57.430 --> 00:06:57.440 align:start position:0%
+You're adding a plug-in. You're
+ 
+
+00:06:57.440 --> 00:06:59.749 align:start position:0%
+You're adding a plug-in. You're
+potentially<00:06:57.840><c> sending</c><00:06:58.160><c> data</c><00:06:58.560><c> through</c><00:06:58.960><c> MEM0's</c>
+
+00:06:59.749 --> 00:06:59.759 align:start position:0%
+potentially sending data through MEM0's
+ 
+
+00:06:59.759 --> 00:07:01.510 align:start position:0%
+potentially sending data through MEM0's
+infrastructure.<00:07:00.479><c> So,</c><00:07:00.639><c> read</c><00:07:00.880><c> their</c><00:07:01.120><c> privacy</c>
+
+00:07:01.510 --> 00:07:01.520 align:start position:0%
+infrastructure. So, read their privacy
+ 
+
+00:07:01.520 --> 00:07:03.350 align:start position:0%
+infrastructure. So, read their privacy
+docs<00:07:01.919><c> if</c><00:07:02.160><c> that</c><00:07:02.319><c> matters</c><00:07:02.560><c> to</c><00:07:02.720><c> you.</c><00:07:03.039><c> And</c><00:07:03.199><c> like</c>
+
+00:07:03.350 --> 00:07:03.360 align:start position:0%
+docs if that matters to you. And like
+ 
+
+00:07:03.360 --> 00:07:04.790 align:start position:0%
+docs if that matters to you. And like
+any<00:07:03.599><c> automated</c><00:07:04.080><c> system,</c><00:07:04.400><c> it</c><00:07:04.639><c> might</c>
+
+00:07:04.790 --> 00:07:04.800 align:start position:0%
+any automated system, it might
+ 
+
+00:07:04.800 --> 00:07:07.029 align:start position:0%
+any automated system, it might
+occasionally<00:07:05.280><c> service</c><00:07:05.840><c> irrelevant</c><00:07:06.560><c> memories</c>
+
+00:07:07.029 --> 00:07:07.039 align:start position:0%
+occasionally service irrelevant memories
+ 
+
+00:07:07.039 --> 00:07:08.710 align:start position:0%
+occasionally service irrelevant memories
+or<00:07:07.280><c> miss</c><00:07:07.520><c> something</c><00:07:07.840><c> you</c><00:07:08.080><c> wanted</c><00:07:08.400><c> it</c><00:07:08.560><c> to</c>
+
+00:07:08.710 --> 00:07:08.720 align:start position:0%
+or miss something you wanted it to
+ 
+
+00:07:08.720 --> 00:07:11.830 align:start position:0%
+or miss something you wanted it to
+catch.<00:07:09.280><c> But</c><00:07:09.680><c> for</c><00:07:10.160><c> most</c><00:07:10.479><c> users</c><00:07:10.880><c> who</c><00:07:11.120><c> want</c><00:07:11.280><c> a</c><00:07:11.680><c> set</c>
+
+00:07:11.830 --> 00:07:11.840 align:start position:0%
+catch. But for most users who want a set
+ 
+
+00:07:11.840 --> 00:07:13.990 align:start position:0%
+catch. But for most users who want a set
+it<00:07:12.000><c> and</c><00:07:12.240><c> forget</c><00:07:12.479><c> it</c><00:07:12.639><c> memory</c><00:07:12.960><c> solution.</c><00:07:13.280><c> MEM0</c>
+
+00:07:13.990 --> 00:07:14.000 align:start position:0%
+it and forget it memory solution. MEM0
+ 
+
+00:07:14.000 --> 00:07:15.749 align:start position:0%
+it and forget it memory solution. MEM0
+is<00:07:14.160><c> the</c><00:07:14.319><c> move.</c><00:07:14.720><c> Once</c><00:07:14.880><c> it's</c><00:07:15.120><c> installed</c><00:07:15.440><c> and</c>
+
+00:07:15.749 --> 00:07:15.759 align:start position:0%
+is the move. Once it's installed and
+ 
+
+00:07:15.759 --> 00:07:17.589 align:start position:0%
+is the move. Once it's installed and
+configured,<00:07:16.240><c> you</c><00:07:16.400><c> literally</c><00:07:16.639><c> just</c><00:07:17.039><c> use</c><00:07:17.280><c> Open</c>
+
+00:07:17.589 --> 00:07:17.599 align:start position:0%
+configured, you literally just use Open
+ 
+
+00:07:17.599 --> 00:07:19.990 align:start position:0%
+configured, you literally just use Open
+Claw.<00:07:18.000><c> Normally,</c><00:07:18.240><c> MEM0</c><00:07:19.039><c> handles</c><00:07:19.440><c> the</c><00:07:19.599><c> rest.</c>
+
+00:07:19.990 --> 00:07:20.000 align:start position:0%
+Claw. Normally, MEM0 handles the rest.
+ 
+
+00:07:20.000 --> 00:07:21.670 align:start position:0%
+Claw. Normally, MEM0 handles the rest.
+Have<00:07:20.160><c> a</c><00:07:20.400><c> conversation</c><00:07:20.800><c> today.</c><00:07:21.280><c> Close</c><00:07:21.520><c> the</c>
+
+00:07:21.670 --> 00:07:21.680 align:start position:0%
+Have a conversation today. Close the
+ 
+
+00:07:21.680 --> 00:07:23.029 align:start position:0%
+Have a conversation today. Close the
+session,<00:07:22.080><c> come</c><00:07:22.240><c> back</c><00:07:22.400><c> tomorrow,</c><00:07:22.720><c> and</c><00:07:22.880><c> your</c>
+
+00:07:23.029 --> 00:07:23.039 align:start position:0%
+session, come back tomorrow, and your
+ 
+
+00:07:23.039 --> 00:07:25.029 align:start position:0%
+session, come back tomorrow, and your
+agent<00:07:23.360><c> actually</c><00:07:23.759><c> remembers</c><00:07:24.160><c> what</c><00:07:24.479><c> happened.</c>
+
+00:07:25.029 --> 00:07:25.039 align:start position:0%
+agent actually remembers what happened.
+ 
+
+00:07:25.039 --> 00:07:26.629 align:start position:0%
+agent actually remembers what happened.
+All<00:07:25.120><c> right,</c><00:07:25.360><c> method</c><00:07:25.759><c> four.</c><00:07:26.160><c> This</c><00:07:26.319><c> is</c><00:07:26.400><c> the</c><00:07:26.560><c> one</c>
+
+00:07:26.629 --> 00:07:26.639 align:start position:0%
+All right, method four. This is the one
+ 
+
+00:07:26.639 --> 00:07:28.150 align:start position:0%
+All right, method four. This is the one
+I'm<00:07:26.880><c> the</c><00:07:27.039><c> most</c><00:07:27.199><c> excited</c><00:07:27.520><c> about,</c><00:07:27.680><c> and</c><00:07:27.919><c> it's</c><00:07:28.080><c> the</c>
+
+00:07:28.150 --> 00:07:28.160 align:start position:0%
+I'm the most excited about, and it's the
+ 
+
+00:07:28.160 --> 00:07:30.070 align:start position:0%
+I'm the most excited about, and it's the
+one<00:07:28.400><c> almost</c><00:07:28.720><c> nobody</c><00:07:29.039><c> is</c><00:07:29.280><c> talking</c><00:07:29.440><c> about.</c><00:07:29.919><c> You</c>
+
+00:07:30.070 --> 00:07:30.080 align:start position:0%
+one almost nobody is talking about. You
+ 
+
+00:07:30.080 --> 00:07:32.150 align:start position:0%
+one almost nobody is talking about. You
+can<00:07:30.240><c> ask</c><00:07:30.479><c> your</c><00:07:30.720><c> OpenClaw</c><00:07:31.280><c> agent</c><00:07:31.599><c> to</c><00:07:31.759><c> store</c>
+
+00:07:32.150 --> 00:07:32.160 align:start position:0%
+can ask your OpenClaw agent to store
+ 
+
+00:07:32.160 --> 00:07:35.029 align:start position:0%
+can ask your OpenClaw agent to store
+dense<00:07:32.639><c> structured</c><00:07:33.199><c> information</c><00:07:33.919><c> in</c><00:07:34.160><c> a</c><00:07:34.400><c> SQL</c>
+
+00:07:35.029 --> 00:07:35.039 align:start position:0%
+dense structured information in a SQL
+ 
+
+00:07:35.039 --> 00:07:37.430 align:start position:0%
+dense structured information in a SQL
+light<00:07:35.440><c> database,</c><00:07:36.080><c> which</c><00:07:36.319><c> it</c><00:07:36.560><c> natively</c><00:07:37.120><c> has</c>
+
+00:07:37.430 --> 00:07:37.440 align:start position:0%
+light database, which it natively has
+ 
+
+00:07:37.440 --> 00:07:39.670 align:start position:0%
+light database, which it natively has
+access<00:07:37.840><c> to.</c><00:07:38.240><c> So,</c><00:07:38.800><c> let</c><00:07:38.960><c> me</c><00:07:39.120><c> say</c><00:07:39.199><c> that</c><00:07:39.440><c> again.</c>
+
+00:07:39.670 --> 00:07:39.680 align:start position:0%
+access to. So, let me say that again.
+ 
+
+00:07:39.680 --> 00:07:41.990 align:start position:0%
+access to. So, let me say that again.
+OpenClaw<00:07:40.400><c> can</c><00:07:40.639><c> natively</c><00:07:41.199><c> read</c><00:07:41.440><c> from</c><00:07:41.680><c> and</c>
+
+00:07:41.990 --> 00:07:42.000 align:start position:0%
+OpenClaw can natively read from and
+ 
+
+00:07:42.000 --> 00:07:44.469 align:start position:0%
+OpenClaw can natively read from and
+write<00:07:42.240><c> to</c><00:07:42.479><c> a</c><00:07:42.800><c> SQL</c><00:07:43.360><c> light</c><00:07:43.599><c> database.</c><00:07:44.160><c> You</c><00:07:44.400><c> don't</c>
+
+00:07:44.469 --> 00:07:44.479 align:start position:0%
+write to a SQL light database. You don't
+ 
+
+00:07:44.479 --> 00:07:46.070 align:start position:0%
+write to a SQL light database. You don't
+need<00:07:44.560><c> a</c><00:07:44.800><c> plugin.</c><00:07:45.280><c> You</c><00:07:45.440><c> don't</c><00:07:45.599><c> need</c><00:07:45.680><c> an</c><00:07:45.919><c> extra</c>
+
+00:07:46.070 --> 00:07:46.080 align:start position:0%
+need a plugin. You don't need an extra
+ 
+
+00:07:46.080 --> 00:07:48.230 align:start position:0%
+need a plugin. You don't need an extra
+API<00:07:46.560><c> key.</c><00:07:46.880><c> It's</c><00:07:47.039><c> just</c><00:07:47.199><c> there.</c><00:07:47.599><c> Why</c><00:07:47.759><c> is</c><00:07:47.919><c> this</c><00:07:48.000><c> a</c>
+
+00:07:48.230 --> 00:07:48.240 align:start position:0%
+API key. It's just there. Why is this a
+ 
+
+00:07:48.240 --> 00:07:49.830 align:start position:0%
+API key. It's just there. Why is this a
+big<00:07:48.319><c> deal?</c><00:07:48.639><c> Because</c><00:07:48.880><c> methods</c><00:07:49.280><c> 1</c><00:07:49.520><c> through</c>
+
+00:07:49.830 --> 00:07:49.840 align:start position:0%
+big deal? Because methods 1 through
+ 
+
+00:07:49.840 --> 00:07:51.350 align:start position:0%
+big deal? Because methods 1 through
+three<00:07:50.080><c> are</c><00:07:50.319><c> great</c><00:07:50.479><c> for</c><00:07:50.720><c> conversational</c>
+
+00:07:51.350 --> 00:07:51.360 align:start position:0%
+three are great for conversational
+ 
+
+00:07:51.360 --> 00:07:53.670 align:start position:0%
+three are great for conversational
+memory,<00:07:51.840><c> preferences,</c><00:07:52.639><c> decisions,</c><00:07:53.280><c> general</c>
+
+00:07:53.670 --> 00:07:53.680 align:start position:0%
+memory, preferences, decisions, general
+ 
+
+00:07:53.680 --> 00:07:55.270 align:start position:0%
+memory, preferences, decisions, general
+context.<00:07:54.240><c> But</c><00:07:54.400><c> what</c><00:07:54.560><c> about</c><00:07:54.800><c> when</c><00:07:55.039><c> you're</c>
+
+00:07:55.270 --> 00:07:55.280 align:start position:0%
+context. But what about when you're
+ 
+
+00:07:55.280 --> 00:07:57.830 align:start position:0%
+context. But what about when you're
+working<00:07:55.520><c> with</c><00:07:55.919><c> dense</c><00:07:56.479><c> structured</c><00:07:57.199><c> data?</c>
+
+00:07:57.830 --> 00:07:57.840 align:start position:0%
+working with dense structured data?
+ 
+
+00:07:57.840 --> 00:07:59.749 align:start position:0%
+working with dense structured data?
+Think<00:07:58.080><c> about</c><00:07:58.400><c> hundreds</c><00:07:58.720><c> of</c><00:07:58.879><c> API</c><00:07:59.360><c> endpoints</c>
+
+00:07:59.749 --> 00:07:59.759 align:start position:0%
+Think about hundreds of API endpoints
+ 
+
+00:07:59.759 --> 00:08:01.830 align:start position:0%
+Think about hundreds of API endpoints
+you<00:08:00.000><c> need</c><00:08:00.160><c> documented,</c><00:08:00.720><c> a</c><00:08:01.039><c> product</c><00:08:01.280><c> catalog,</c>
+
+00:08:01.830 --> 00:08:01.840 align:start position:0%
+you need documented, a product catalog,
+ 
+
+00:08:01.840 --> 00:08:04.070 align:start position:0%
+you need documented, a product catalog,
+customer<00:08:02.240><c> records,</c><00:08:02.879><c> research</c><00:08:03.360><c> data</c><00:08:03.759><c> with</c>
+
+00:08:04.070 --> 00:08:04.080 align:start position:0%
+customer records, research data with
+ 
+
+00:08:04.080 --> 00:08:05.990 align:start position:0%
+customer records, research data with
+dozens<00:08:04.400><c> of</c><00:08:04.560><c> fields,</c><00:08:05.120><c> financial</c><00:08:05.599><c> figures</c>
+
+00:08:05.990 --> 00:08:06.000 align:start position:0%
+dozens of fields, financial figures
+ 
+
+00:08:06.000 --> 00:08:08.390 align:start position:0%
+dozens of fields, financial figures
+across<00:08:06.400><c> multiple</c><00:08:06.800><c> quarters.</c><00:08:07.520><c> Markdown</c><00:08:08.000><c> files</c>
+
+00:08:08.390 --> 00:08:08.400 align:start position:0%
+across multiple quarters. Markdown files
+ 
+
+00:08:08.400 --> 00:08:10.309 align:start position:0%
+across multiple quarters. Markdown files
+will<00:08:08.720><c> fall</c><00:08:08.960><c> apart</c><00:08:09.280><c> with</c><00:08:09.520><c> that</c><00:08:09.680><c> kind</c><00:08:09.840><c> of</c><00:08:09.919><c> data.</c>
+
+00:08:10.309 --> 00:08:10.319 align:start position:0%
+will fall apart with that kind of data.
+ 
+
+00:08:10.319 --> 00:08:11.909 align:start position:0%
+will fall apart with that kind of data.
+Vector<00:08:10.639><c> search</c><00:08:10.960><c> is</c><00:08:11.199><c> great</c><00:08:11.360><c> for</c><00:08:11.520><c> fuzzy</c>
+
+00:08:11.909 --> 00:08:11.919 align:start position:0%
+Vector search is great for fuzzy
+ 
+
+00:08:11.919 --> 00:08:14.309 align:start position:0%
+Vector search is great for fuzzy
+retrieval,<00:08:12.560><c> but</c><00:08:12.879><c> sometimes</c><00:08:13.360><c> you</c><00:08:13.599><c> need</c><00:08:13.919><c> exact</c>
+
+00:08:14.309 --> 00:08:14.319 align:start position:0%
+retrieval, but sometimes you need exact
+ 
+
+00:08:14.319 --> 00:08:16.710 align:start position:0%
+retrieval, but sometimes you need exact
+queries.<00:08:14.879><c> Show</c><00:08:15.120><c> me</c><00:08:15.280><c> every</c><00:08:15.520><c> API</c><00:08:16.000><c> endpoint</c><00:08:16.479><c> that</c>
+
+00:08:16.710 --> 00:08:16.720 align:start position:0%
+queries. Show me every API endpoint that
+ 
+
+00:08:16.720 --> 00:08:19.270 align:start position:0%
+queries. Show me every API endpoint that
+uses<00:08:17.039><c> post</c><00:08:17.440><c> and</c><00:08:17.680><c> requires</c><00:08:18.080><c> authentication.</c>
+
+00:08:19.270 --> 00:08:19.280 align:start position:0%
+uses post and requires authentication.
+ 
+
+00:08:19.280 --> 00:08:21.670 align:start position:0%
+uses post and requires authentication.
+That's<00:08:19.440><c> a</c><00:08:19.759><c> SQL</c><00:08:20.240><c> query.</c><00:08:20.639><c> And</c><00:08:20.800><c> SQL</c><00:08:21.280><c> is</c><00:08:21.520><c> really</c>
+
+00:08:21.670 --> 00:08:21.680 align:start position:0%
+That's a SQL query. And SQL is really
+ 
+
+00:08:21.680 --> 00:08:23.189 align:start position:0%
+That's a SQL query. And SQL is really
+good<00:08:21.840><c> at</c><00:08:22.000><c> that.</c><00:08:22.240><c> Here's</c><00:08:22.479><c> how</c><00:08:22.639><c> this</c><00:08:22.800><c> works</c><00:08:23.039><c> in</c>
+
+00:08:23.189 --> 00:08:23.199 align:start position:0%
+good at that. Here's how this works in
+ 
+
+00:08:23.199 --> 00:08:24.710 align:start position:0%
+good at that. Here's how this works in
+practice.<00:08:23.680><c> You</c><00:08:23.840><c> say</c><00:08:24.000><c> to</c><00:08:24.160><c> your</c><00:08:24.240><c> opencloud</c>
+
+00:08:24.710 --> 00:08:24.720 align:start position:0%
+practice. You say to your opencloud
+ 
+
+00:08:24.720 --> 00:08:27.029 align:start position:0%
+practice. You say to your opencloud
+agent,<00:08:25.120><c> I</c><00:08:25.280><c> need</c><00:08:25.440><c> you</c><00:08:25.599><c> to</c><00:08:25.840><c> create</c><00:08:26.080><c> a</c><00:08:26.240><c> SQL</c><00:08:26.800><c> light</c>
+
+00:08:27.029 --> 00:08:27.039 align:start position:0%
+agent, I need you to create a SQL light
+ 
+
+00:08:27.039 --> 00:08:29.110 align:start position:0%
+agent, I need you to create a SQL light
+database<00:08:27.440><c> to</c><00:08:27.599><c> track</c><00:08:27.840><c> all</c><00:08:28.000><c> the</c><00:08:28.160><c> API</c><00:08:28.639><c> endpoints</c>
+
+00:08:29.110 --> 00:08:29.120 align:start position:0%
+database to track all the API endpoints
+ 
+
+00:08:29.120 --> 00:08:31.670 align:start position:0%
+database to track all the API endpoints
+in<00:08:29.360><c> our</c><00:08:29.599><c> project.</c><00:08:30.319><c> Store</c><00:08:30.560><c> the</c><00:08:30.720><c> endpoint</c><00:08:31.199><c> path,</c>
+
+00:08:31.670 --> 00:08:31.680 align:start position:0%
+in our project. Store the endpoint path,
+ 
+
+00:08:31.680 --> 00:08:34.230 align:start position:0%
+in our project. Store the endpoint path,
+HTTP<00:08:32.399><c> method,</c><00:08:32.800><c> authentication</c><00:08:33.599><c> requirement,</c>
+
+00:08:34.230 --> 00:08:34.240 align:start position:0%
+HTTP method, authentication requirement,
+ 
+
+00:08:34.240 --> 00:08:36.149 align:start position:0%
+HTTP method, authentication requirement,
+rate<00:08:34.560><c> limit,</c><00:08:34.880><c> and</c><00:08:35.120><c> a</c><00:08:35.360><c> description</c><00:08:35.760><c> for</c><00:08:35.919><c> each</c>
+
+00:08:36.149 --> 00:08:36.159 align:start position:0%
+rate limit, and a description for each
+ 
+
+00:08:36.159 --> 00:08:37.750 align:start position:0%
+rate limit, and a description for each
+one.<00:08:36.479><c> Then</c><00:08:36.640><c> your</c><00:08:36.800><c> agent</c><00:08:37.120><c> will</c><00:08:37.360><c> create</c><00:08:37.599><c> the</c>
+
+00:08:37.750 --> 00:08:37.760 align:start position:0%
+one. Then your agent will create the
+ 
+
+00:08:37.760 --> 00:08:39.670 align:start position:0%
+one. Then your agent will create the
+database,<00:08:38.240><c> define</c><00:08:38.560><c> the</c><00:08:38.719><c> schema,</c><00:08:39.120><c> and</c><00:08:39.360><c> start</c>
+
+00:08:39.670 --> 00:08:39.680 align:start position:0%
+database, define the schema, and start
+ 
+
+00:08:39.680 --> 00:08:41.670 align:start position:0%
+database, define the schema, and start
+populating<00:08:40.080><c> it.</c><00:08:40.399><c> You</c><00:08:40.560><c> can</c><00:08:40.719><c> then</c><00:08:41.039><c> query</c><00:08:41.440><c> it</c>
+
+00:08:41.670 --> 00:08:41.680 align:start position:0%
+populating it. You can then query it
+ 
+
+00:08:41.680 --> 00:08:43.670 align:start position:0%
+populating it. You can then query it
+naturally<00:08:42.399><c> like</c><00:08:42.640><c> how</c><00:08:42.880><c> many</c><00:08:43.039><c> endpoints</c>
+
+00:08:43.670 --> 00:08:43.680 align:start position:0%
+naturally like how many endpoints
+ 
+
+00:08:43.680 --> 00:08:45.750 align:start position:0%
+naturally like how many endpoints
+require<00:08:44.159><c> authentication,</c><00:08:45.040><c> show</c><00:08:45.279><c> me</c><00:08:45.440><c> all</c><00:08:45.600><c> get</c>
+
+00:08:45.750 --> 00:08:45.760 align:start position:0%
+require authentication, show me all get
+ 
+
+00:08:45.760 --> 00:08:47.670 align:start position:0%
+require authentication, show me all get
+endpoints<00:08:46.240><c> related</c><00:08:46.560><c> to</c><00:08:46.720><c> user</c><00:08:47.040><c> management,</c>
+
+00:08:47.670 --> 00:08:47.680 align:start position:0%
+endpoints related to user management,
+ 
+
+00:08:47.680 --> 00:08:50.070 align:start position:0%
+endpoints related to user management,
+and<00:08:47.839><c> your</c><00:08:48.000><c> agent</c><00:08:48.399><c> translates</c><00:08:48.800><c> that</c><00:08:49.040><c> into</c><00:08:49.360><c> SQL,</c>
+
+00:08:50.070 --> 00:08:50.080 align:start position:0%
+and your agent translates that into SQL,
+ 
+
+00:08:50.080 --> 00:08:52.310 align:start position:0%
+and your agent translates that into SQL,
+runs<00:08:50.399><c> it,</c><00:08:50.720><c> and</c><00:08:51.040><c> gives</c><00:08:51.279><c> you</c><00:08:51.440><c> the</c><00:08:51.760><c> answer.</c><00:08:52.160><c> You</c>
+
+00:08:52.310 --> 00:08:52.320 align:start position:0%
+runs it, and gives you the answer. You
+ 
+
+00:08:52.320 --> 00:08:53.990 align:start position:0%
+runs it, and gives you the answer. You
+can<00:08:52.399><c> then</c><00:08:52.640><c> query</c><00:08:52.959><c> it</c><00:08:53.120><c> naturally</c><00:08:53.519><c> by</c><00:08:53.839><c> saying</c>
+
+00:08:53.990 --> 00:08:54.000 align:start position:0%
+can then query it naturally by saying
+ 
+
+00:08:54.000 --> 00:08:55.590 align:start position:0%
+can then query it naturally by saying
+something<00:08:54.320><c> like</c><00:08:54.640><c> how</c><00:08:54.800><c> many</c><00:08:55.040><c> endpoints</c>
+
+00:08:55.590 --> 00:08:55.600 align:start position:0%
+something like how many endpoints
+ 
+
+00:08:55.600 --> 00:08:58.230 align:start position:0%
+something like how many endpoints
+require<00:08:56.000><c> authentication?</c><00:08:56.800><c> Show</c><00:08:57.040><c> me</c><00:08:57.279><c> all</c><00:08:57.839><c> get</c>
+
+00:08:58.230 --> 00:08:58.240 align:start position:0%
+require authentication? Show me all get
+ 
+
+00:08:58.240 --> 00:09:00.470 align:start position:0%
+require authentication? Show me all get
+endpoints<00:08:58.800><c> related</c><00:08:59.120><c> to</c><00:08:59.279><c> user</c><00:08:59.600><c> management</c><00:09:00.240><c> and</c>
+
+00:09:00.470 --> 00:09:00.480 align:start position:0%
+endpoints related to user management and
+ 
+
+00:09:00.480 --> 00:09:03.190 align:start position:0%
+endpoints related to user management and
+your<00:09:00.720><c> agent</c><00:09:01.120><c> translates</c><00:09:01.600><c> that</c><00:09:01.920><c> into</c><00:09:02.399><c> SQL</c><00:09:02.880><c> runs</c>
+
+00:09:03.190 --> 00:09:03.200 align:start position:0%
+your agent translates that into SQL runs
+ 
+
+00:09:03.200 --> 00:09:05.590 align:start position:0%
+your agent translates that into SQL runs
+it<00:09:03.600><c> and</c><00:09:03.839><c> gives</c><00:09:04.000><c> you</c><00:09:04.320><c> the</c><00:09:04.640><c> answer.</c><00:09:05.120><c> Now</c><00:09:05.360><c> here's</c>
+
+00:09:05.590 --> 00:09:05.600 align:start position:0%
+it and gives you the answer. Now here's
+ 
+
+00:09:05.600 --> 00:09:07.350 align:start position:0%
+it and gives you the answer. Now here's
+where<00:09:05.760><c> it</c><00:09:05.920><c> gets</c><00:09:06.240><c> really</c><00:09:06.560><c> powerful.</c><00:09:07.040><c> You</c><00:09:07.200><c> can</c>
+
+00:09:07.350 --> 00:09:07.360 align:start position:0%
+where it gets really powerful. You can
+ 
+
+00:09:07.360 --> 00:09:09.990 align:start position:0%
+where it gets really powerful. You can
+combine<00:09:08.080><c> this</c><00:09:08.480><c> with</c><00:09:08.800><c> the</c><00:09:09.040><c> other</c><00:09:09.279><c> methods.</c><00:09:09.760><c> Use</c>
+
+00:09:09.990 --> 00:09:10.000 align:start position:0%
+combine this with the other methods. Use
+ 
+
+00:09:10.000 --> 00:09:11.910 align:start position:0%
+combine this with the other methods. Use
+structure<00:09:10.399><c> folders</c><00:09:10.720><c> for</c><00:09:10.959><c> highle</c><00:09:11.519><c> project</c>
+
+00:09:11.910 --> 00:09:11.920 align:start position:0%
+structure folders for highle project
+ 
+
+00:09:11.920 --> 00:09:14.630 align:start position:0%
+structure folders for highle project
+context<00:09:12.399><c> and</c><00:09:12.640><c> preferences.</c><00:09:13.440><c> Use</c><00:09:13.680><c> mem</c><00:09:14.399><c> for</c>
+
+00:09:14.630 --> 00:09:14.640 align:start position:0%
+context and preferences. Use mem for
+ 
+
+00:09:14.640 --> 00:09:16.310 align:start position:0%
+context and preferences. Use mem for
+conversational<00:09:15.279><c> memory</c><00:09:15.600><c> between</c><00:09:15.920><c> sessions.</c>
+
+00:09:16.310 --> 00:09:16.320 align:start position:0%
+conversational memory between sessions.
+ 
+
+00:09:16.320 --> 00:09:19.590 align:start position:0%
+conversational memory between sessions.
+and<00:09:16.560><c> use</c><00:09:16.800><c> SQL</c><00:09:17.360><c> light</c><00:09:17.839><c> for</c><00:09:18.560><c> any</c><00:09:19.040><c> dense</c>
+
+00:09:19.590 --> 00:09:19.600 align:start position:0%
+and use SQL light for any dense
+ 
+
+00:09:19.600 --> 00:09:21.350 align:start position:0%
+and use SQL light for any dense
+structured<00:09:20.080><c> data</c><00:09:20.320><c> that</c><00:09:20.640><c> needs</c><00:09:20.880><c> precise</c>
+
+00:09:21.350 --> 00:09:21.360 align:start position:0%
+structured data that needs precise
+ 
+
+00:09:21.360 --> 00:09:22.790 align:start position:0%
+structured data that needs precise
+querying.<00:09:21.920><c> That's</c><00:09:22.080><c> a</c><00:09:22.240><c> full</c><00:09:22.480><c> memory</c>
+
+00:09:22.790 --> 00:09:22.800 align:start position:0%
+querying. That's a full memory
+ 
+
+00:09:22.800 --> 00:09:24.710 align:start position:0%
+querying. That's a full memory
+architecture.<00:09:23.519><c> Your</c><00:09:23.680><c> agent</c><00:09:24.080><c> has</c><00:09:24.240><c> short-term</c>
+
+00:09:24.710 --> 00:09:24.720 align:start position:0%
+architecture. Your agent has short-term
+ 
+
+00:09:24.720 --> 00:09:26.150 align:start position:0%
+architecture. Your agent has short-term
+memory<00:09:25.040><c> from</c><00:09:25.200><c> the</c><00:09:25.360><c> context</c><00:09:25.760><c> window,</c>
+
+00:09:26.150 --> 00:09:26.160 align:start position:0%
+memory from the context window,
+ 
+
+00:09:26.160 --> 00:09:28.710 align:start position:0%
+memory from the context window,
+medium-term<00:09:26.800><c> memory</c><00:09:27.040><c> from</c><00:09:27.279><c> MEM0,</c><00:09:28.240><c> and</c><00:09:28.399><c> memory</c>
+
+00:09:28.710 --> 00:09:28.720 align:start position:0%
+medium-term memory from MEM0, and memory
+ 
+
+00:09:28.720 --> 00:09:30.630 align:start position:0%
+medium-term memory from MEM0, and memory
+search<00:09:29.200><c> and</c><00:09:29.279><c> a</c><00:09:29.440><c> long-term</c><00:09:29.920><c> structured</c><00:09:30.320><c> data</c>
+
+00:09:30.630 --> 00:09:30.640 align:start position:0%
+search and a long-term structured data
+ 
+
+00:09:30.640 --> 00:09:32.630 align:start position:0%
+search and a long-term structured data
+store<00:09:30.959><c> in</c><00:09:31.279><c> SQL</c><00:09:31.760><c> Lite.</c><00:09:32.080><c> You've</c><00:09:32.320><c> essentially</c>
+
+00:09:32.630 --> 00:09:32.640 align:start position:0%
+store in SQL Lite. You've essentially
+ 
+
+00:09:32.640 --> 00:09:34.949 align:start position:0%
+store in SQL Lite. You've essentially
+built<00:09:32.800><c> a</c><00:09:32.959><c> brain.</c><00:09:33.360><c> And</c><00:09:33.519><c> because</c><00:09:33.839><c> SQL</c><00:09:34.320><c> Lite</c><00:09:34.720><c> is</c>
+
+00:09:34.949 --> 00:09:34.959 align:start position:0%
+built a brain. And because SQL Lite is
+ 
+
+00:09:34.959 --> 00:09:37.509 align:start position:0%
+built a brain. And because SQL Lite is
+just<00:09:35.120><c> a</c><00:09:35.360><c> file,</c><00:09:35.600><c> a</c><00:09:35.839><c> single</c><00:09:36.480><c> DB</c><00:09:36.800><c> file,</c><00:09:37.279><c> it's</c>
+
+00:09:37.509 --> 00:09:37.519 align:start position:0%
+just a file, a single DB file, it's
+ 
+
+00:09:37.519 --> 00:09:39.110 align:start position:0%
+just a file, a single DB file, it's
+portable,<00:09:38.080><c> it's</c><00:09:38.240><c> persistent,</c><00:09:38.720><c> and</c><00:09:38.959><c> it</c>
+
+00:09:39.110 --> 00:09:39.120 align:start position:0%
+portable, it's persistent, and it
+ 
+
+00:09:39.120 --> 00:09:41.030 align:start position:0%
+portable, it's persistent, and it
+survives<00:09:39.519><c> session</c><00:09:39.920><c> resets.</c><00:09:40.560><c> You</c><00:09:40.720><c> can</c><00:09:40.800><c> even</c>
+
+00:09:41.030 --> 00:09:41.040 align:start position:0%
+survives session resets. You can even
+ 
+
+00:09:41.040 --> 00:09:42.790 align:start position:0%
+survives session resets. You can even
+version<00:09:41.440><c> control</c><00:09:41.680><c> it</c><00:09:41.839><c> if</c><00:09:42.080><c> you</c><00:09:42.160><c> want.</c><00:09:42.399><c> The</c><00:09:42.640><c> key</c>
+
+00:09:42.790 --> 00:09:42.800 align:start position:0%
+version control it if you want. The key
+ 
+
+00:09:42.800 --> 00:09:44.310 align:start position:0%
+version control it if you want. The key
+thing<00:09:42.959><c> to</c><00:09:43.120><c> understand</c><00:09:43.440><c> is</c><00:09:43.600><c> this.</c><00:09:43.920><c> You're</c><00:09:44.160><c> not</c>
+
+00:09:44.310 --> 00:09:44.320 align:start position:0%
+thing to understand is this. You're not
+ 
+
+00:09:44.320 --> 00:09:46.470 align:start position:0%
+thing to understand is this. You're not
+limited<00:09:44.640><c> to</c><00:09:44.959><c> one</c><00:09:45.279><c> memory</c><00:09:45.680><c> method.</c><00:09:46.160><c> The</c><00:09:46.320><c> best</c>
+
+00:09:46.470 --> 00:09:46.480 align:start position:0%
+limited to one memory method. The best
+ 
+
+00:09:46.480 --> 00:09:48.949 align:start position:0%
+limited to one memory method. The best
+open<00:09:46.800><c> cloth</c><00:09:47.120><c> setups</c><00:09:47.440><c> I've</c><00:09:47.760><c> seen</c><00:09:48.080><c> use</c><00:09:48.480><c> two</c><00:09:48.720><c> or</c>
+
+00:09:48.949 --> 00:09:48.959 align:start position:0%
+open cloth setups I've seen use two or
+ 
+
+00:09:48.959 --> 00:09:50.949 align:start position:0%
+open cloth setups I've seen use two or
+three<00:09:49.120><c> of</c><00:09:49.279><c> these</c><00:09:49.519><c> together,</c><00:09:49.920><c> each</c><00:09:50.240><c> handling</c><00:09:50.640><c> a</c>
+
+00:09:50.949 --> 00:09:50.959 align:start position:0%
+three of these together, each handling a
+ 
+
+00:09:50.959 --> 00:09:52.790 align:start position:0%
+three of these together, each handling a
+different<00:09:51.200><c> type</c><00:09:51.440><c> of</c><00:09:51.680><c> information.</c><00:09:52.399><c> Okay,</c><00:09:52.640><c> so</c>
+
+00:09:52.790 --> 00:09:52.800 align:start position:0%
+different type of information. Okay, so
+ 
+
+00:09:52.800 --> 00:09:54.070 align:start position:0%
+different type of information. Okay, so
+let's<00:09:52.959><c> bring</c><00:09:53.120><c> this</c><00:09:53.279><c> all</c><00:09:53.440><c> together.</c><00:09:53.839><c> Four</c>
+
+00:09:54.070 --> 00:09:54.080 align:start position:0%
+let's bring this all together. Four
+ 
+
+00:09:54.080 --> 00:09:56.470 align:start position:0%
+let's bring this all together. Four
+methods,<00:09:54.560><c> each</c><00:09:54.880><c> with</c><00:09:55.200><c> a</c><00:09:55.519><c> sweet</c><00:09:55.760><c> spot.</c><00:09:56.160><c> Method</c>
+
+00:09:56.470 --> 00:09:56.480 align:start position:0%
+methods, each with a sweet spot. Method
+ 
+
+00:09:56.480 --> 00:09:58.470 align:start position:0%
+methods, each with a sweet spot. Method
+one,<00:09:56.880><c> structured</c><00:09:57.279><c> memory</c><00:09:57.600><c> folders.</c><00:09:58.080><c> Best</c><00:09:58.320><c> for</c>
+
+00:09:58.470 --> 00:09:58.480 align:start position:0%
+one, structured memory folders. Best for
+ 
+
+00:09:58.480 --> 00:10:00.470 align:start position:0%
+one, structured memory folders. Best for
+getting<00:09:58.720><c> started</c><00:09:59.040><c> fast.</c><00:09:59.440><c> Full</c><00:09:59.680><c> transparency</c>
+
+00:10:00.470 --> 00:10:00.480 align:start position:0%
+getting started fast. Full transparency
+ 
+
+00:10:00.480 --> 00:10:02.949 align:start position:0%
+getting started fast. Full transparency
+works<00:10:00.800><c> with</c><00:10:00.959><c> any</c><00:10:01.279><c> LLM.</c><00:10:01.920><c> Method</c><00:10:02.240><c> two,</c><00:10:02.560><c> memory</c>
+
+00:10:02.949 --> 00:10:02.959 align:start position:0%
+works with any LLM. Method two, memory
+ 
+
+00:10:02.959 --> 00:10:04.790 align:start position:0%
+works with any LLM. Method two, memory
+search.<00:10:03.279><c> Best</c><00:10:03.519><c> for</c><00:10:03.680><c> quick</c><00:10:04.000><c> natural</c><00:10:04.399><c> language</c>
+
+00:10:04.790 --> 00:10:04.800 align:start position:0%
+search. Best for quick natural language
+ 
+
+00:10:04.800 --> 00:10:07.190 align:start position:0%
+search. Best for quick natural language
+recall<00:10:05.360><c> with</c><00:10:05.600><c> OpenClaw.</c><00:10:06.399><c> Just</c><00:10:06.560><c> remember</c><00:10:06.959><c> you</c>
+
+00:10:07.190 --> 00:10:07.200 align:start position:0%
+recall with OpenClaw. Just remember you
+ 
+
+00:10:07.200 --> 00:10:10.230 align:start position:0%
+recall with OpenClaw. Just remember you
+need<00:10:07.440><c> OpenAI,</c><00:10:08.240><c> Gemini,</c><00:10:08.800><c> or</c><00:10:09.040><c> Voyage</c><00:10:09.440><c> API</c><00:10:09.920><c> key,</c>
+
+00:10:10.230 --> 00:10:10.240 align:start position:0%
+need OpenAI, Gemini, or Voyage API key,
+ 
+
+00:10:10.240 --> 00:10:11.990 align:start position:0%
+need OpenAI, Gemini, or Voyage API key,
+even<00:10:10.480><c> if</c><00:10:10.640><c> you're</c><00:10:10.800><c> using</c><00:10:11.120><c> Claude.</c><00:10:11.519><c> And</c><00:10:11.680><c> method</c>
+
+00:10:11.990 --> 00:10:12.000 align:start position:0%
+even if you're using Claude. And method
+ 
+
+00:10:12.000 --> 00:10:14.389 align:start position:0%
+even if you're using Claude. And method
+three,<00:10:12.320><c> MEM0</c><00:10:13.040><c> plugin.</c><00:10:13.519><c> Best</c><00:10:13.760><c> for</c><00:10:14.000><c> automated</c>
+
+00:10:14.389 --> 00:10:14.399 align:start position:0%
+three, MEM0 plugin. Best for automated
+ 
+
+00:10:14.399 --> 00:10:16.150 align:start position:0%
+three, MEM0 plugin. Best for automated
+long-term<00:10:14.880><c> search</c><00:10:15.279><c> conversational</c><00:10:15.839><c> memory</c>
+
+00:10:16.150 --> 00:10:16.160 align:start position:0%
+long-term search conversational memory
+ 
+
+00:10:16.160 --> 00:10:18.230 align:start position:0%
+long-term search conversational memory
+with<00:10:16.399><c> zero</c><00:10:16.720><c> maintenance.</c><00:10:17.279><c> Uh</c><00:10:17.519><c> the</c><00:10:17.680><c> set</c><00:10:17.839><c> it</c><00:10:18.000><c> and</c>
+
+00:10:18.230 --> 00:10:18.240 align:start position:0%
+with zero maintenance. Uh the set it and
+ 
+
+00:10:18.240 --> 00:10:20.230 align:start position:0%
+with zero maintenance. Uh the set it and
+forget<00:10:18.560><c> it</c><00:10:18.720><c> option.</c><00:10:19.120><c> And</c><00:10:19.279><c> method</c><00:10:19.519><c> four</c><00:10:19.839><c> SQL</c>
+
+00:10:20.230 --> 00:10:20.240 align:start position:0%
+forget it option. And method four SQL
+ 
+
+00:10:20.240 --> 00:10:21.990 align:start position:0%
+forget it option. And method four SQL
+light<00:10:20.480><c> database</c><00:10:20.880><c> best</c><00:10:21.120><c> for</c><00:10:21.279><c> dense</c><00:10:21.600><c> structured</c>
+
+00:10:21.990 --> 00:10:22.000 align:start position:0%
+light database best for dense structured
+ 
+
+00:10:22.000 --> 00:10:24.150 align:start position:0%
+light database best for dense structured
+data<00:10:22.320><c> that</c><00:10:22.640><c> needs</c><00:10:22.880><c> precise</c><00:10:23.360><c> queries.</c><00:10:23.839><c> This</c><00:10:24.000><c> is</c>
+
+00:10:24.150 --> 00:10:24.160 align:start position:0%
+data that needs precise queries. This is
+ 
+
+00:10:24.160 --> 00:10:25.910 align:start position:0%
+data that needs precise queries. This is
+the<00:10:24.320><c> power</c><00:10:24.560><c> user</c><00:10:24.880><c> move.</c><00:10:25.279><c> My</c><00:10:25.519><c> recommendation</c>
+
+00:10:25.910 --> 00:10:25.920 align:start position:0%
+the power user move. My recommendation
+ 
+
+00:10:25.920 --> 00:10:28.069 align:start position:0%
+the power user move. My recommendation
+is<00:10:26.160><c> to</c><00:10:26.320><c> start</c><00:10:26.399><c> with</c><00:10:26.640><c> method</c><00:10:26.959><c> one</c><00:10:27.200><c> today.</c><00:10:27.839><c> Takes</c>
+
+00:10:28.069 --> 00:10:28.079 align:start position:0%
+is to start with method one today. Takes
+ 
+
+00:10:28.079 --> 00:10:30.870 align:start position:0%
+is to start with method one today. Takes
+about<00:10:28.320><c> 5</c><00:10:28.560><c> minutes.</c><00:10:28.959><c> Then</c><00:10:29.200><c> add</c><00:10:29.519><c> MEM0</c><00:10:30.240><c> or</c><00:10:30.399><c> SQL</c>
+
+00:10:30.870 --> 00:10:30.880 align:start position:0%
+about 5 minutes. Then add MEM0 or SQL
+ 
+
+00:10:30.880 --> 00:10:32.389 align:start position:0%
+about 5 minutes. Then add MEM0 or SQL
+light<00:10:31.120><c> depending</c><00:10:31.440><c> on</c><00:10:31.600><c> your</c><00:10:31.760><c> use</c><00:10:31.920><c> case.</c><00:10:32.240><c> And</c>
+
+00:10:32.389 --> 00:10:32.399 align:start position:0%
+light depending on your use case. And
+ 
+
+00:10:32.399 --> 00:10:33.910 align:start position:0%
+light depending on your use case. And
+make<00:10:32.480><c> sure</c><00:10:32.720><c> memory</c><00:10:33.040><c> search</c><00:10:33.279><c> is</c><00:10:33.519><c> properly</c>
+
+00:10:33.910 --> 00:10:33.920 align:start position:0%
+make sure memory search is properly
+ 
+
+00:10:33.920 --> 00:10:36.150 align:start position:0%
+make sure memory search is properly
+configured<00:10:34.399><c> with</c><00:10:34.720><c> the</c><00:10:34.959><c> correct</c><00:10:35.279><c> API</c><00:10:35.680><c> key.</c><00:10:36.000><c> If</c>
+
+00:10:36.150 --> 00:10:36.160 align:start position:0%
+configured with the correct API key. If
+ 
+
+00:10:36.160 --> 00:10:38.069 align:start position:0%
+configured with the correct API key. If
+you<00:10:36.320><c> got</c><00:10:36.480><c> value</c><00:10:36.720><c> from</c><00:10:36.959><c> this,</c><00:10:37.279><c> hit</c><00:10:37.600><c> subscribe.</c>
+
+00:10:38.069 --> 00:10:38.079 align:start position:0%
+you got value from this, hit subscribe.
+ 
+
+00:10:38.079 --> 00:10:40.069 align:start position:0%
+you got value from this, hit subscribe.
+I'm<00:10:38.320><c> putting</c><00:10:38.560><c> out</c><00:10:38.800><c> open</c><00:10:39.040><c> claw</c><00:10:39.360><c> content</c><00:10:39.839><c> that</c>
+
+00:10:40.069 --> 00:10:40.079 align:start position:0%
+I'm putting out open claw content that
+ 
+
+00:10:40.079 --> 00:10:41.829 align:start position:0%
+I'm putting out open claw content that
+goes<00:10:40.240><c> way</c><00:10:40.480><c> beyond</c><00:10:40.800><c> the</c><00:10:41.040><c> surface</c><00:10:41.360><c> level.</c><00:10:41.680><c> And</c>
+
+00:10:41.829 --> 00:10:41.839 align:start position:0%
+goes way beyond the surface level. And
+ 
+
+00:10:41.839 --> 00:10:43.509 align:start position:0%
+goes way beyond the surface level. And
+if<00:10:42.000><c> you</c><00:10:42.079><c> want</c><00:10:42.160><c> to</c><00:10:42.240><c> go</c><00:10:42.399><c> even</c><00:10:42.640><c> deeper,</c><00:10:43.040><c> I</c><00:10:43.200><c> run</c><00:10:43.360><c> a</c>
+
+00:10:43.509 --> 00:10:43.519 align:start position:0%
+if you want to go even deeper, I run a
+ 
+
+00:10:43.519 --> 00:10:45.509 align:start position:0%
+if you want to go even deeper, I run a
+community<00:10:43.920><c> over</c><00:10:44.160><c> on</c><00:10:44.480><c> school</c><00:10:44.800><c> where</c><00:10:45.040><c> we</c><00:10:45.200><c> share</c>
+
+00:10:45.509 --> 00:10:45.519 align:start position:0%
+community over on school where we share
+ 
+
+00:10:45.519 --> 00:10:47.430 align:start position:0%
+community over on school where we share
+custom<00:10:45.920><c> setups,</c><00:10:46.399><c> configurations,</c><00:10:47.040><c> and</c><00:10:47.279><c> help</c>
+
+00:10:47.430 --> 00:10:47.440 align:start position:0%
+custom setups, configurations, and help
+ 
+
+00:10:47.440 --> 00:10:49.509 align:start position:0%
+custom setups, configurations, and help
+each<00:10:47.680><c> other</c><00:10:48.000><c> build</c><00:10:48.320><c> better</c><00:10:48.640><c> agents.</c><00:10:49.200><c> Link</c><00:10:49.360><c> is</c>
+
+00:10:49.509 --> 00:10:49.519 align:start position:0%
+each other build better agents. Link is
+ 
+
+00:10:49.519 --> 00:10:51.110 align:start position:0%
+each other build better agents. Link is
+in<00:10:49.680><c> the</c><00:10:49.839><c> description.</c><00:10:50.320><c> I</c><00:10:50.480><c> will</c><00:10:50.640><c> also</c><00:10:50.880><c> include</c>
+
+00:10:51.110 --> 00:10:51.120 align:start position:0%
+in the description. I will also include
+ 
+
+00:10:51.120 --> 00:10:52.710 align:start position:0%
+in the description. I will also include
+a<00:10:51.360><c> link</c><00:10:51.519><c> with</c><00:10:51.760><c> more</c><00:10:51.920><c> information</c><00:10:52.320><c> on</c><00:10:52.560><c> the</c>
+
+00:10:52.710 --> 00:10:52.720 align:start position:0%
+a link with more information on the
+ 
+
+00:10:52.720 --> 00:10:54.310 align:start position:0%
+a link with more information on the
+setup<00:10:53.040><c> in</c><00:10:53.200><c> the</c><00:10:53.279><c> description.</c><00:10:53.760><c> If</c><00:10:53.920><c> there's</c><00:10:54.160><c> a</c>
+
+00:10:54.310 --> 00:10:54.320 align:start position:0%
+setup in the description. If there's a
+ 
+
+00:10:54.320 --> 00:10:56.310 align:start position:0%
+setup in the description. If there's a
+specific<00:10:54.720><c> method</c><00:10:55.120><c> you</c><00:10:55.360><c> want</c><00:10:55.440><c> me</c><00:10:55.680><c> to</c><00:10:55.920><c> do</c><00:10:56.160><c> a</c>
+
+00:10:56.310 --> 00:10:56.320 align:start position:0%
+specific method you want me to do a
+ 
+
+00:10:56.320 --> 00:10:58.389 align:start position:0%
+specific method you want me to do a
+dedicated<00:10:56.800><c> deep</c><00:10:57.120><c> dive</c><00:10:57.360><c> on,</c><00:10:57.680><c> drop</c><00:10:57.920><c> it</c><00:10:58.079><c> in</c><00:10:58.240><c> the</c>
+
+00:10:58.389 --> 00:10:58.399 align:start position:0%
+dedicated deep dive on, drop it in the
+ 
+
+00:10:58.399 --> 00:11:01.839 align:start position:0%
+dedicated deep dive on, drop it in the
+comments.<00:10:58.880><c> I'll</c><00:10:59.120><c> see</c><00:10:59.200><c> you</c><00:10:59.279><c> in</c><00:10:59.440><c> the</c><00:10:59.519><c> next</c><00:10:59.680><c> one.</c>
+
