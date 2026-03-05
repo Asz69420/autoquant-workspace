@@ -37,11 +37,15 @@ def backtest_metrics(backtest_path: str) -> tuple[float | None, float | None]:
         wr = results.get('win_rate')
         wr_pct = (float(wr) * 100.0) if wr is not None else None
 
-        dd_raw = results.get('max_drawdown')
         dd_pct = None
-        if dd_raw is not None:
-            dd_val = float(dd_raw)
-            dd_pct = dd_val * 100.0 if abs(dd_val) <= 1.0 else dd_val
+        if results.get('max_drawdown_pct') is not None:
+            dd_pct = float(results.get('max_drawdown_pct'))
+        else:
+            dd_raw = results.get('max_drawdown')
+            if dd_raw is not None:
+                dd_val = float(dd_raw)
+                dd_pct = dd_val * 100.0 if abs(dd_val) <= 1.0 else dd_val
+        if dd_pct is not None:
             dd_pct = max(min(dd_pct, 999.9), -999.9)
 
         return wr_pct, dd_pct
@@ -73,14 +77,14 @@ def render_leaderboard(rows: list[dict]) -> tuple[str, dict]:
         any_tf = False
 
         for tf in tfs:
-            sorted_rows = sorted(grouped[asset][tf], key=lambda x: (x['pnl'], x['pf']), reverse=True)
+            sorted_rows = sorted(grouped[asset][tf], key=lambda x: (x.get('ppr', 0.0), x['pf'], x['pnl']), reverse=True)
             if not sorted_rows:
                 continue
 
             deduped: list[dict] = []
             seen: set[tuple] = set()
             for x in sorted_rows:
-                k = (round(x['pnl'], 1), round(x['pf'], 2), x['wr'], x['tc'], round(x['dd'], 1) if x.get('dd') is not None else None)
+                k = (round(x.get('ppr', 0.0), 2), round(x['pnl'], 1), round(x['pf'], 2), x['wr'], x['tc'], round(x['dd'], 1) if x.get('dd') is not None else None)
                 if k in seen:
                     continue
                 seen.add(k)
@@ -93,19 +97,19 @@ def render_leaderboard(rows: list[dict]) -> tuple[str, dict]:
             any_tf = True
 
             lines.append(_fit(f'{asset} {tf}'))
-            lines.append(_fit('TF    P&L   PF  WR  TC    DD'))
+            lines.append(_fit('TF   PPR   PF  WR  TC   DD'))
             lines.append(DIVIDER)
 
             for x in deduped:
                 if emitted >= MAX_ROWS:
                     break
                 tfv = str(x['tf'])[:2].ljust(2)
-                pnl = f"{x['pnl']:+.1f}"[:6].rjust(6)
+                ppr = f"{float(x.get('ppr', 0.0)):.1f}"[:4].rjust(4)
                 pf = f"{x['pf']:.2f}"[:4].rjust(4)
                 wr = ('n/a' if x['wr'] is None else f"{x['wr']:.0f}%")[:3].rjust(3)
                 tc = str(x['tc'])[:3].rjust(3)
                 dd = _fmt_dd(x.get('dd'))[:5].rjust(5)
-                lines.append(_fit(f'{tfv} {pnl} {pf} {wr} {tc} {dd}'))
+                lines.append(_fit(f'{tfv} {ppr} {pf} {wr} {tc} {dd}'))
                 emitted += 1
 
             lines.append('')
@@ -157,6 +161,7 @@ def main() -> int:
             net = float(r.get('net_profit', 0.0))
             pf = float(r.get('profit_factor', 0.0))
             tc = int(r.get('trades', 0))
+            ppr = float(r.get('ppr_score', 0.0) or 0.0)
         except Exception:
             continue
         if tc <= 0:
@@ -170,6 +175,7 @@ def main() -> int:
             'tf': tf,
             'pnl': (net / 10000.0) * 100.0,
             'pf': pf,
+            'ppr': ppr,
             'wr': wr,
             'tc': tc,
             'dd': dd,

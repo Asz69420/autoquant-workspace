@@ -36,7 +36,7 @@ def compute_ppr(*, profit_factor: float, max_drawdown_pct: float, trade_count: i
     resilience = _clamp01(1.0 - (dd / cfg.dd_zero_score_pct))
     grade = _clamp01(trades / float(cfg.grade_trade_ramp)) if cfg.grade_trade_ramp > 0 else 0.0
 
-    score = float(edge * resilience * grade)
+    score = float(edge * resilience * grade * 10.0)
 
     flags: list[str] = []
     if trades < cfg.min_trades_hard_fail:
@@ -47,7 +47,7 @@ def compute_ppr(*, profit_factor: float, max_drawdown_pct: float, trade_count: i
         flags.append('HIGH_PF_LOW_SAMPLE')
     elif score >= th.promote_min:
         decision = 'PROMOTE'
-    elif score >= th.fail_max:
+    elif score >= th.pass_min:
         decision = 'PASS'
     else:
         decision = 'FAIL'
@@ -68,7 +68,7 @@ def compute_ppr(*, profit_factor: float, max_drawdown_pct: float, trade_count: i
             'trade_count': trades,
         },
         'thresholds': {
-            'fail_max': th.fail_max,
+            'pass_min': th.pass_min,
             'promote_min': th.promote_min,
         },
         'flags': flags,

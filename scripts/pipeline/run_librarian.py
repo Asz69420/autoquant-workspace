@@ -12,6 +12,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PY = sys.executable
 
+_PIPELINE_DIR = str((ROOT / 'scripts' / 'pipeline').resolve())
+if _PIPELINE_DIR not in sys.path:
+    sys.path.insert(0, _PIPELINE_DIR)
+try:
+    from ppr_score import compute_ppr
+except Exception:
+    compute_ppr = None
+
 
 def _j(path: Path):
     return json.loads(path.read_text(encoding='utf-8-sig'))
@@ -43,6 +51,7 @@ def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | No
     variant = str(bt.get('inputs', {}).get('variant') or r.get('variant_name') or '')
     sha = _hash_key(strategy_spec, variant, dataset_meta)
     res = bt.get('results', {})
+    ppr_obj = bt.get('ppr') if isinstance(bt.get('ppr'), dict) else {}
     return {
         'id': bt.get('id'),
         'created_at': bt.get('created_at'),
@@ -53,8 +62,11 @@ def _run_entry_from_batch_run(batch_path: Path, r: dict, promotion_ptr: str | No
         'net_profit': res.get('net_profit', 0.0),
         'profit_factor': res.get('profit_factor', 0.0),
         'max_drawdown': res.get('max_drawdown', 0.0),
+        'initial_capital': res.get('initial_capital', 10000.0),
         'trades': res.get('total_trades', 0),
         'gate_pass': bool(r.get('gate_pass', True)),
+        'ppr_score': ppr_obj.get('score', 0.0),
+        'ppr_decision': ppr_obj.get('decision', ''),
         'sha256_inputs': sha,
         'pointers': {
             'backtest_result': str(bt_path),
@@ -111,6 +123,44 @@ def _ensure_fee_model_hash(entry: dict) -> dict:
     return entry
 
 
+def _ensure_ppr(entry: dict) -> dict:
+    if not isinstance(entry, dict):
+        return entry
+    has_score = isinstance(entry.get('ppr_score'), (int, float))
+    has_decision = isinstance(entry.get('ppr_decision'), str) and bool(str(entry.get('ppr_decision')).strip())
+    if has_score and has_decision:
+        return entry
+    if compute_ppr is None:
+        if not has_score:
+            entry['ppr_score'] = 0.0
+        if not has_decision:
+            entry['ppr_decision'] = 'NA'
+        return entry
+
+    try:
+        pf = float(entry.get('profit_factor', 0.0) or 0.0)
+    except Exception:
+        pf = 0.0
+    try:
+        dd_abs = float(entry.get('max_drawdown', 0.0) or 0.0)
+    except Exception:
+        dd_abs = 0.0
+    try:
+        init_cap = float(entry.get('initial_capital', 10000.0) or 10000.0)
+    except Exception:
+        init_cap = 10000.0
+    dd_pct = (dd_abs / init_cap) * 100.0 if init_cap > 0 else 0.0
+    try:
+        trades = int(entry.get('trades', 0) or 0)
+    except Exception:
+        trades = 0
+
+    ppr = compute_ppr(profit_factor=pf, max_drawdown_pct=dd_pct, trade_count=trades)
+    entry['ppr_score'] = ppr.get('score', 0.0)
+    entry['ppr_decision'] = ppr.get('decision', 'NA')
+    return entry
+
+
 def _parse_created_at(value: str | None) -> datetime:
     if not value:
         return datetime.now(UTC)
@@ -151,6 +201,11 @@ def _write_ndjson(path: Path, rows: list[dict]) -> None:
     path.write_text(body, encoding='utf-8')
 
 
+def _is_ppr_pass_like(entry: dict) -> bool:
+    d = str(entry.get('ppr_decision', '') or '').strip().upper()
+    return d in {'PASS', 'PROMOTE'}
+
+
 def _collect_recent_passed(shards_dir: Path, days: int) -> list[dict]:
     since = datetime.now(UTC) - timedelta(days=days)
     rows: list[dict] = []
@@ -158,8 +213,9 @@ def _collect_recent_passed(shards_dir: Path, days: int) -> list[dict]:
         return rows
     for p in sorted(shards_dir.glob('*.passed.ndjson')):
         for r in _load_ndjson(p):
-            if _parse_created_at(str(r.get('created_at') or '')) >= since:
-                rows.append(r)
+            rr = _ensure_ppr(r)
+            if _parse_created_at(str(rr.get('created_at') or '')) >= since and _is_ppr_pass_like(rr):
+                rows.append(rr)
     dedup: dict[str, dict] = {}
     for r in rows:
         dedup[_passed_key(r)] = r
@@ -189,7 +245,7 @@ def main() -> int:
 
     since = datetime.now(UTC) - timedelta(days=args.since_days)
 
-    existing_runs = [_ensure_fee_model_hash(x) for x in _load_index(run_idx_p)]
+    existing_runs = [_ensure_ppr(_ensure_fee_model_hash(x)) for x in _load_index(run_idx_p)]
     seen_sha = {x.get('sha256_inputs') for x in existing_runs if isinstance(x, dict)}
 
     promo_map = {}
@@ -231,7 +287,7 @@ def main() -> int:
                 seen_sha.add(e['sha256_inputs'])
             new_entries.append(e)
 
-    combined_all = sorted([_ensure_fee_model_hash(x) for x in (existing_runs + new_entries)], key=lambda x: x.get('created_at', ''), reverse=True)
+    combined_all = sorted([_ensure_ppr(_ensure_fee_model_hash(x)) for x in (existing_runs + new_entries)], key=lambda x: x.get('created_at', ''), reverse=True)
 
     # Preserve real winners permanently in index: 1.0 < PF <= 10.0.
     pinned = []
@@ -273,10 +329,10 @@ def main() -> int:
     if not passed_shards_dir.exists():
         passed_shards_dir.mkdir(parents=True, exist_ok=True)
 
-    passed_source = [e for e in new_entries if bool(e.get('gate_pass', False))]
+    passed_source = [_ensure_ppr(e) for e in new_entries if _is_ppr_pass_like(_ensure_ppr(e))]
     # One-time seed when shards are empty: bootstrap from current combined view.
     if not list(passed_shards_dir.glob('*.passed.ndjson')):
-        passed_source = [e for e in combined if bool(e.get('gate_pass', False))]
+        passed_source = [_ensure_ppr(e) for e in combined if _is_ppr_pass_like(_ensure_ppr(e))]
 
     by_month: dict[str, list[dict]] = {}
     for e in passed_source:
@@ -314,9 +370,19 @@ def main() -> int:
 
     shard_files = sorted(passed_shards_dir.glob('*.passed.ndjson'))
 
+    hot_decisions = {
+        'pass': sum(1 for e in passed_hot if str(e.get('ppr_decision', '')).upper() == 'PASS'),
+        'promote': sum(1 for e in passed_hot if str(e.get('ppr_decision', '')).upper() == 'PROMOTE'),
+    }
+    warm_decisions = {
+        'pass': sum(1 for e in passed_warm if str(e.get('ppr_decision', '')).upper() == 'PASS'),
+        'promote': sum(1 for e in passed_warm if str(e.get('ppr_decision', '')).upper() == 'PROMOTE'),
+    }
+
     passed_summary = {
         'generated_at': datetime.now(UTC).isoformat(),
         'source': str(run_idx_p).replace('\\', '/'),
+        'score_system': {'name': 'PPR', 'scale': '0-10', 'pass_min': 1.0, 'promote_min': 3.0},
         'storage': {
             'type': 'monthly_ndjson_shards',
             'dir': str(passed_shards_dir).replace('\\', '/'),
@@ -329,6 +395,8 @@ def main() -> int:
             'warm_path': str(passed_warm_p).replace('\\', '/'),
             'hot_count': len(passed_hot),
             'warm_count': len(passed_warm),
+            'hot_decisions': hot_decisions,
+            'warm_decisions': warm_decisions,
         },
         'passed_index_path': str(passed_idx_p).replace('\\', '/'),
         'top_families': [
