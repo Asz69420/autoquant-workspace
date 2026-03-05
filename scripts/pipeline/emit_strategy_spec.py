@@ -65,6 +65,8 @@ def _read_advisory_directives() -> dict:
             "blacklist_variants": [],
             "blacklist_directive_types": [],
             "exclude_assets": [],
+            "test_assets": [],
+            "test_timeframes": [],
             "rr_floor_min": None,
             "stop_floor_min": None,
             "disable_refinement": False,
@@ -99,6 +101,24 @@ def _read_advisory_directives() -> dict:
                 result["blacklist_directive_types"].append(target.upper())
             elif action == "EXCLUDE_ASSET" and target:
                 result["exclude_assets"].append(target.upper())
+            elif action == "TEST_ASSET" and target:
+                result["test_assets"].append(target.upper())
+            elif action == "TEST_TIMEFRAME" and target:
+                result["test_timeframes"].append(target.lower())
+            elif action == "SET_TEST_SCOPE":
+                params = item.get("params") or {}
+                assets = params.get("assets") if isinstance(params, dict) else []
+                tfs = params.get("timeframes") if isinstance(params, dict) else []
+                if isinstance(assets, list):
+                    for a in assets:
+                        s = str(a or "").strip().upper()
+                        if s:
+                            result["test_assets"].append(s)
+                if isinstance(tfs, list):
+                    for tf in tfs:
+                        s = str(tf or "").strip().lower()
+                        if s:
+                            result["test_timeframes"].append(s)
             elif action == "RR_FLOOR":
                 try:
                     result["rr_floor_min"] = float(item.get("minimum"))
@@ -154,6 +174,8 @@ def _read_advisory_directives() -> dict:
         result["blacklist_variants"] = list(dict.fromkeys([str(x) for x in result.get("blacklist_variants", []) if x]))
         result["blacklist_directive_types"] = list(dict.fromkeys([str(x).upper() for x in result.get("blacklist_directive_types", []) if x]))
         result["exclude_assets"] = list(dict.fromkeys([str(x).upper() for x in result.get("exclude_assets", []) if x]))
+        result["test_assets"] = list(dict.fromkeys([str(x).upper() for x in result.get("test_assets", []) if x]))
+        result["test_timeframes"] = list(dict.fromkeys([str(x).lower() for x in result.get("test_timeframes", []) if x]))
         return result
     except Exception:
         return {}
@@ -1146,9 +1168,8 @@ def main() -> int:
     variants = _deduplicate_variants(variants)
     variants, roles_fixed = _ensure_role_compliant_variants(variants)
 
-    # Strategy-variant contract: keep variants focused (1..5 max) so generation stays dominant.
-    if len(variants) > 5:
-        variants = variants[:5]
+    # Frodex contract: emit exactly one variant. Strategy scope is controlled by Quandalf directives.
+    variants = variants[:1]
     spec = {
         'schema_version': '1.1',
         'id': sid,

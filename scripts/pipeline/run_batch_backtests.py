@@ -53,19 +53,35 @@ def _latest_meta(symbol: str, timeframe: str) -> str:
     return str(best)
 
 
-def _resolve_datasets(arg: str) -> list[str]:
+def _resolve_datasets(arg: str, enforcement: dict | None = None) -> list[str]:
+    enforcement = enforcement or {}
     if arg == 'default':
-        return [
-            _latest_meta('BTC', '15m'),
-            _latest_meta('BTC', '1h'),
-            _latest_meta('BTC', '4h'),
-            _latest_meta('ETH', '15m'),
-            _latest_meta('ETH', '1h'),
-            _latest_meta('ETH', '4h'),
-            _latest_meta('SOL', '15m'),
-            _latest_meta('SOL', '1h'),
-            _latest_meta('SOL', '4h'),
-        ]
+        test_assets = [str(x).upper() for x in (enforcement.get('test_assets') or []) if str(x).strip()]
+        test_timeframes = [str(x).lower() for x in (enforcement.get('test_timeframes') or []) if str(x).strip()]
+
+        if test_assets and test_timeframes:
+            out: list[str] = []
+            for a in test_assets:
+                for tf in test_timeframes:
+                    out.append(_latest_meta(a, tf))
+            return out
+
+        if enforcement.get('enable_matrix_tests'):
+            return [
+                _latest_meta('BTC', '15m'),
+                _latest_meta('BTC', '1h'),
+                _latest_meta('BTC', '4h'),
+                _latest_meta('ETH', '15m'),
+                _latest_meta('ETH', '1h'),
+                _latest_meta('ETH', '4h'),
+                _latest_meta('SOL', '15m'),
+                _latest_meta('SOL', '1h'),
+                _latest_meta('SOL', '4h'),
+            ]
+
+        # Default single-test mode: queued ~= backtests unless Quandalf explicitly sets scope.
+        return [_latest_meta('BTC', '1h')]
+
     p = Path(arg)
     if p.exists():
         if p.suffix == '.json' and str(p).endswith('.meta.json'):
@@ -93,6 +109,9 @@ def _load_advisory_enforcement(advisory_path: str) -> dict:
         'exclude_timeframes': set(),
         'blacklist_templates': set(),
         'blacklist_directives': set(),
+        'enable_matrix_tests': False,
+        'test_assets': [],
+        'test_timeframes': [],
     }
     p = Path(advisory_path)
     if not p.exists():
@@ -126,7 +145,23 @@ def _load_advisory_enforcement(advisory_path: str) -> dict:
             out['blacklist_templates'].add(target.lower())
         elif action == 'BLACKLIST_DIRECTIVE' and target:
             out['blacklist_directives'].add(target.upper())
+        elif action == 'ENABLE_MATRIX_TESTS':
+            out['enable_matrix_tests'] = True
+        elif action == 'TEST_ASSET' and target:
+            out['test_assets'].append(target.upper())
+        elif action == 'TEST_TIMEFRAME' and target:
+            out['test_timeframes'].append(target.lower())
+        elif action == 'SET_TEST_SCOPE':
+            params = d.get('params') if isinstance(d.get('params'), dict) else {}
+            assets = params.get('assets') if isinstance(params, dict) else []
+            timeframes = params.get('timeframes') if isinstance(params, dict) else []
+            if isinstance(assets, list):
+                out['test_assets'].extend([str(a).upper() for a in assets if str(a).strip()])
+            if isinstance(timeframes, list):
+                out['test_timeframes'].extend([str(tf).lower() for tf in timeframes if str(tf).strip()])
 
+    out['test_assets'] = list(dict.fromkeys(out.get('test_assets', [])))
+    out['test_timeframes'] = list(dict.fromkeys(out.get('test_timeframes', [])))
     return out
 
 
@@ -313,11 +348,14 @@ def main() -> int:
     variant_objects = {str(v.get('name')): v for v in spec.get('variants', []) if isinstance(v, dict) and v.get('name')}
     variants = [v['name'] for v in spec.get('variants', [])]
     selected_variants = variants if args.variant == 'all' else [args.variant]
+    # Frodex execution contract: one variant unless an explicit variant name is requested.
+    if args.variant == 'all' and selected_variants:
+        selected_variants = selected_variants[:1]
     for v in selected_variants:
         if v not in variants:
             raise ValueError(f'variant not found in spec: {v}')
 
-    dataset_metas = _resolve_datasets(args.datasets)
+    dataset_metas = _resolve_datasets(args.datasets, enforcement=enforcement)
 
     runs = []
     in_batch_seen = set()
