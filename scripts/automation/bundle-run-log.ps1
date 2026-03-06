@@ -5,7 +5,9 @@ param(
   [ValidateSet('frodex','quandalf','oragorn')]
   [string]$Pipeline = 'frodex',
   [int]$WindowMinutes = 16,
-  [string]$RunIdHint = ''
+  [string]$RunIdHint = '',
+  [ValidateSet('scheduled','handoff')]
+  [string]$EmitReason = 'scheduled'
 )
 
 $ROOT = "C:\Users\Clamps\.openclaw\workspace"
@@ -566,6 +568,9 @@ $titleLine = switch ($mode) {
 $lines = @()
 $lines += $titleLine
 $lines += ("Status: " + $statusIcon + " | Duration: " + $durationLabel)
+if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey)) {
+  $lines += ("Cycle: " + $selectedRunKey)
+}
 
 $strategyGenerateCount = @($reportEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
 $strategyResearchCount = @($reportEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count
@@ -789,9 +794,11 @@ try {
   $sha.Dispose()
 }
 
-$stateKey = ($mode + "_last")
+$isHandoffEmit = ($mode -eq 'frodex' -and $EmitReason -eq 'handoff' -and -not [string]::IsNullOrWhiteSpace($RunIdHint) -and -not [string]::IsNullOrWhiteSpace($selectedRunKey))
+$stateKey = if ($isHandoffEmit) { 'frodex_handoff_last' } else { ($mode + "_last") }
 $minSendIntervalSeconds = 720
 $minRepeatSeconds = 1800
+$handoffRepeatGuardSeconds = 45
 $skipDuplicateSend = $false
 try {
   $node = $reportState.$stateKey
@@ -801,7 +808,17 @@ try {
     $prevRunId = [string]$node.last_run_id
 
     if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey) -and $prevRunId -eq $selectedRunKey) {
-      $skipDuplicateSend = $true
+      if ($isHandoffEmit) {
+        if (-not [string]::IsNullOrWhiteSpace($prevAt)) {
+          $prevDt = [DateTime]::Parse($prevAt).ToUniversalTime()
+          $ageSec = ([DateTime]::UtcNow - $prevDt).TotalSeconds
+          if ($ageSec -lt $handoffRepeatGuardSeconds) {
+            $skipDuplicateSend = $true
+          }
+        }
+      } else {
+        $skipDuplicateSend = $true
+      }
     }
 
     $isRunDrivenFrodex = ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey))

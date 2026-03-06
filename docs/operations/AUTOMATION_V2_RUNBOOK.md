@@ -109,7 +109,7 @@ This keeps runs efficient by default and escalates scope only when needed (e.g.,
 Automation V2 now uses a cycle-level handoff contract to keep cards and queue/backtest counts aligned by run identity.
 
 - Contract guide: `docs/operations/CYCLE_CONTRACT.md`
-- Upstream card emitter: `scripts/automation/bundle-run-log.ps1` (`-RunIdHint` supported)
+- Upstream card emitter: `scripts/automation/bundle-run-log.ps1` (`-RunIdHint`, `-EmitReason handoff` supported)
 - Handoff orchestrator: `scripts/automation/check_quandalf_handoff.ps1`
 
 Operationally:
@@ -118,5 +118,7 @@ Operationally:
 3. Emit Frodex card for that exact cycle
 4. Trigger Quandalf reflection
 5. Emit Quandalf card for that same cycle
+
+Both cards now print `Cycle: autopilot-<id>` for visual run pairing.
 
 This is additive and backward-compatible with existing logs/events/state files.

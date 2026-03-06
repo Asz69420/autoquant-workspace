@@ -36,13 +36,16 @@ This avoids out-of-order cards, duplicate posts, and cross-run metric mixing.
 ### Components
 - `scripts/automation/bundle-run-log.ps1`
   - Supports optional `-RunIdHint` to pin the Frodex card to an exact cycle.
+  - Supports `-EmitReason handoff` so handoff-paired Frodex card emission is not suppressed by scheduled dedupe state.
 - `scripts/automation/check_quandalf_handoff.ps1`
   - Waits for upstream settle.
-  - Emits Frodex card for the exact cycle.
+  - Emits Frodex card for the exact cycle (`-RunIdHint <cycle> -EmitReason handoff`).
   - Triggers Quandalf run.
   - Emits Quandalf card with matching cycle reference.
 
 ### Visible Pairing
+- Frodex card includes:
+  - `Cycle: autopilot-<id>`
 - Quandalf card includes:
   - `Cycle: autopilot-<id>`
 - This allows operator-side verification that upstream/downstream cards belong to the same cycle.
