@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-smavwp01",
+  "name": "SMA VWAP Institutional Flow Alignment",
+  "created_at": "2026-03-06T07:15:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "VWAP_D has NEVER been tested as a strategy component despite being computed in the indicator library since day 1. Every ACCEPT uses momentum/oscillator combinations — ZERO strategies have tested institutional flow alignment. VWAP represents the volume-weighted average price anchored to the daily session, making it the closest proxy for institutional fair value available. SMA_50 represents the 50-period simple trend — the most universally watched level by retail and algorithmic participants. When close crosses above SMA_50 AND close > VWAP_D, both structural trend (SMA_50 cross = trend reversal) and institutional flow (price above VWAP = buyers in control) agree simultaneously. This dual-agreement from DIFFERENT market participant types creates a fundamentally different signal source than any existing strategy. The mechanism is NOT transition-detection or mean-reversion — it is FLOW ALIGNMENT: the entry happens when retail trend direction (SMA) and institutional fair value position (VWAP) confirm each other. Expected edge in ranging-to-transitional regimes where VWAP acts as an anchor that institutional algorithms defend, and the SMA cross provides the directional trigger.",
+  "regime_assumption": "ranging_primary_transitional_secondary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "sma_vwap_flow_v1_8to1",
+      "description": "Core variant. SMA_50 cross (directional trigger) + VWAP_D position (institutional flow gate). 8:1 R:R sweet spot. FIRST EVER strategy to use VWAP_D as a component. Tests whether institutional flow alignment provides exploitable edge.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above SMA_50",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "close crosses_below SMA_50",
+        "close < VWAP_D"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=SMA",
+        "RoleFramework[confirmation]=VWAP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "SMA_50",
+          "role": "baseline",
+          "notes": "SMA_50 cross — universally watched trend level. Directional trigger."
+        },
+        {
+          "indicator": "VWAP_D",
+          "role": "confirmation",
+          "notes": "Daily VWAP — institutional fair value proxy. FIRST EVER use in a strategy spec."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "sma_vwap_flow_v2_7to1",
+      "description": "Tighter TP variant. 7:1 R:R (10.5x ATR TP). SMA_50 cross entries may not produce extended runs — the 50-period MA generates signals at intermediate trend points rather than early transitions. 7:1 captures more complete winners while maintaining high R:R. Tests TP sensitivity for flow-alignment entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above SMA_50",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "close crosses_below SMA_50",
+        "close < VWAP_D"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=SMA",
+        "RoleFramework[confirmation]=VWAP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10.5x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 10.5x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "SMA_50",
+          "role": "baseline",
+          "notes": "SMA_50 cross trigger with tighter TP."
+        },
+        {
+          "indicator": "VWAP_D",
+          "role": "confirmation",
+          "notes": "VWAP institutional flow gate — 7:1 for intermediate trend signals."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "7:1 R:R framework for tighter capture."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "sma_vwap_flow_v3_wide_8to1",
+      "description": "Wide stop variant. 2.0 ATR stop + 16x ATR TP (8:1 R:R maintained). SMA_50 crossings can occur at volatile points — wider stop prevents whipsaw losses at the cross level. Tests whether flow-alignment entries benefit from more breathing room.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close crosses_above SMA_50",
+        "close > VWAP_D"
+      ],
+      "entry_short": [
+        "close crosses_below SMA_50",
+        "close < VWAP_D"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=SMA",
+        "RoleFramework[confirmation]=VWAP",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "SMA_50",
+          "role": "baseline",
+          "notes": "SMA_50 cross with wider stop for volatile cross-zone protection."
+        },
+        {
+          "indicator": "VWAP_D",
+          "role": "confirmation",
+          "notes": "VWAP flow gate — wider framework for robust entry."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "2.0x stop / 16x TP — 8:1 R:R with whipsaw protection."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": [],
+    "prefer_templates": ["ema_crossover"],
+    "design_target": "institutional_flow_alignment_via_vwap",
+    "novel_element": "FIRST EVER use of VWAP_D in a strategy spec. New mechanism class: flow alignment (not transition-detection, not mean-reversion). Tests whether institutional fair value positioning provides exploitable edge."
+  },
+  "backtester_executable_indicators": ["SMA_50", "VWAP_D", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "SMA_50 — 50-period simple moving average cross as directional trigger",
+    "confirmation": "VWAP_D — daily VWAP institutional fair value position gate",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

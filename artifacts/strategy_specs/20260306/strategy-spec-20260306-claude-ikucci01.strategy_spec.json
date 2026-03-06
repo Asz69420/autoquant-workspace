@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-ikucci01",
+  "name": "Ichimoku Cloud CCI Momentum Gate",
+  "created_at": "2026-03-06T07:15:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Ichimoku TK Transition is validated (PF=1.604, ACCEPT) proving Ichimoku components carry exploitable edge. CCI-as-confirmation is a proven paradigm (Supertrend CCI v4 PF=1.290, ACCEPT). This spec uses a DIFFERENT Ichimoku component — the Senkou Span A cloud line (ISA_9) — as a structural REGIME FILTER rather than using the TK cross as entry timing. When close > ISA_9, price is above the leading cloud boundary, meaning the market is in a structurally bullish environment across the Ichimoku multi-timeframe equilibrium calculation. CCI_20_0.015 crossing above 0 then provides the TIMING — the exact bar where momentum shifts from negative to positive. The mechanism: Ichimoku cloud position answers 'what is the regime?' (structural trend context), CCI zero-cross answers 'when does momentum confirm?' (entry timing). This is fundamentally different from Ichimoku TK (which is a cross-based entry) and from Supertrend CCI (which uses trend-following structure). The cloud acts as a floating support/resistance level that adapts to price action over 9-26 periods, providing broader structural context than any single MA. Expected edge in transitional regimes where the cloud position correctly identifies the new trend direction early.",
+  "regime_assumption": "transitional_primary_ranging_secondary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "iku_cloud_cci_v1_8to1",
+      "description": "Core variant. Price above Ichimoku cloud (ISA_9) + CCI zero-cross momentum entry. 8:1 R:R sweet spot. Tests whether Ichimoku cloud position + CCI timing creates an all-regime edge distinct from Ichimoku TK and Supertrend CCI.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "CCI_20_0.015 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < ISB_26",
+        "CCI_20_0.015 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Ichimoku Senkou Span A — cloud-based structural regime filter. Distinct from TK cross entry."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-cross — proven confirmation paradigm (Supertrend CCI v4 ACCEPT)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "iku_cloud_cci_v2_10to1",
+      "description": "Extended TP variant. 10:1 R:R (15x ATR TP). Ichimoku cloud provides structural support — when the cloud confirms the regime, moves tend to persist. Higher R:R captures extended transitional regime moves. Transitional PF historically peaks at higher R:R (EMA200 Vortex v2 trans PF=4.321 at 12:1).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "CCI_20_0.015 crosses_above 0"
+      ],
+      "entry_short": [
+        "close < ISB_26",
+        "CCI_20_0.015 crosses_below 0"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Ichimoku cloud regime filter — extended TP for transitional persistence."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI zero-cross with extended TP for structural cloud-confirmed moves."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "10:1 R:R capturing extended transitional moves."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": [],
+    "prefer_templates": ["ema_crossover"],
+    "design_target": "ichimoku_cloud_regime_filter_with_cci_timing",
+    "novel_element": "FIRST use of Ichimoku CLOUD (ISA/ISB position) as structural regime filter combined with CCI zero-cross timing. Different from Ichimoku TK cross (ACCEPT) and Supertrend CCI (ACCEPT) — merges two validated families via different component."
+  },
+  "backtester_executable_indicators": ["ISA_9", "ISB_26", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ISA_9 / ISB_26 — Ichimoku cloud position as structural regime filter",
+    "confirmation": "CCI_20_0.015 — zero-cross momentum timing",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

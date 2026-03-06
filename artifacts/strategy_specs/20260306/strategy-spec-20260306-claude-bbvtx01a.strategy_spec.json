@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-bbvtx01a",
+  "name": "Bollinger Vortex Transition Breakout",
+  "created_at": "2026-03-06T07:15:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Bollinger Bands breakouts as a standalone strategy are dead (noisy, false breaks). BUT Vortex transition-detection is the #1 validated edge mechanism in the entire system (Vortex v3a PF=2.034 champion, 5 independent frameworks confirm transition-detection as general edge). This spec rehabilitates Bollinger breakout by GATING it with Vortex momentum confirmation. When close > BBU (price breaking upper band = volatility expansion / range breakout), the signal is only taken when VTXP > VTXM (positive Vortex = confirmed bullish transition). This filters out the false Bollinger breaks that killed the standalone template: a price spike above the upper band during a Vortex-negative regime is REJECTED. The mechanism: BBU breakout provides the WHERE (price exits its 20-period range), Vortex provides the WHEN (momentum is structurally positive). Expected edge in ranging-to-transitional regimes where Bollinger compression precedes Vortex transition — the dual confirmation catches the exact moment ranging ends and trending begins.",
+  "regime_assumption": "ranging_to_transitional_primary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "bb_vortex_transition_v1_8to1",
+      "description": "Core variant. Bollinger upper break gated by Vortex positive momentum. 8:1 R:R sweet spot (proven across all promoted families). 1.5 ATR stop. Tests whether Vortex can rehabilitate the dead Bollinger breakout template.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > BBU_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < BBL_20_2.0",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "BBU_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger upper band — breakout trigger identifying range exit."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex positive — #1 validated transition-detection mechanism (PF=2.034 champion)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bb_vortex_transition_v2_10to1",
+      "description": "Extended TP variant. 10:1 R:R (15x ATR TP). Bollinger breakouts into Vortex transitions may produce extended moves as the transition unfolds. Higher R:R captures more of the post-compression expansion. Tests whether Bollinger compression leads to larger moves than standard entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > BBU_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < BBL_20_2.0",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.2,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "BBU_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger upper band breakout trigger."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex positive momentum — extended TP for post-compression runs."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "10:1 R:R for extended Bollinger expansion moves."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "bb_vortex_transition_v3_wide_8to1",
+      "description": "Wide stop variant. 2.0 ATR stop + 16x ATR TP (8:1 R:R maintained). Bollinger breakouts can retrace to the band before continuing — wider stop absorbs this retest without being stopped out. Tests stop sensitivity for breakout-style entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > BBU_20_2.0",
+        "VTXP_14 > VTXM_14"
+      ],
+      "entry_short": [
+        "close < BBL_20_2.0",
+        "VTXM_14 > VTXP_14"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25,
+        "risk_gate_required": true
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Bollinger Bands",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "BBU_20_2.0",
+          "role": "baseline",
+          "notes": "Bollinger breakout with wider stop for band retest absorption."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex gate — wider stop framework for breakout volatility."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "2.0x stop / 16x TP — 8:1 R:R with room for retest."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": [],
+    "prefer_templates": ["bollinger_breakout"],
+    "design_target": "rehabilitation_of_dead_template_via_transition_detection",
+    "novel_element": "FIRST combination of Bollinger breakout (dead standalone) with Vortex transition-detection (#1 validated edge). Tests whether the #1 mechanism can rehabilitate a dead template."
+  },
+  "backtester_executable_indicators": ["BBU_20_2.0", "BBL_20_2.0", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "BBU_20_2.0 / BBL_20_2.0 — Bollinger Band breakout trigger",
+    "confirmation": "VTXP_14 / VTXM_14 — Vortex transition-detection gate",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}
