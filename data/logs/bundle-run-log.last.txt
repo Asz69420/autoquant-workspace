@@ -1,10 +1,9 @@
 ﻿🍳 Cooking
-Status: ✅ | Duration: 4m 32s
-Cycle: autopilot-1772756102
+✅ | ▶️ 3m 5s | 🆔 1A0002
 ○───activity─────────────────────
 Waiting: 0
-Backtests: 12
+Backtests: 8
 Skipped: 0
 Forwardtests: 0
 ○───note─────────────────────────
-System status is healthy this cycle. Cycle complete: 12 backtests run; no strong promotion yet.
+System status is healthy this cycle. Cycle complete: 8 backtests run; no strong promotion yet.

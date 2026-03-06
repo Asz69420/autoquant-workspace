@@ -1,15 +1,15 @@
 ﻿{
     "event":  "LAB_SUMMARY",
-    "created_at":  "2026-03-06T00:19:33.9070311Z",
-    "bundles_processed":  6,
+    "created_at":  "2026-03-06T00:48:07.2557356Z",
+    "bundles_processed":  4,
     "promotions_processed":  0,
     "refinements_run":  0,
     "new_candidates_count":  10,
-    "candidates_ingested":  6,
+    "candidates_ingested":  4,
     "candidates_reaching_refinement":  0,
     "candidates_passing_gate":  0,
     "directive_notes_seen":  1,
-    "directive_variants_emitted":  6,
+    "directive_variants_emitted":  4,
     "directive_backfill_specs_generated":  1,
     "active_library_size":  500,
     "new_indicators_added":  0,
@@ -27,7 +27,7 @@
     "strategy_contract_ok":  true,
     "strategy_contract_shortfall":  0,
     "quandalf_queue_generated":  10,
-    "queue_backlog":  16,
+    "queue_backlog":  14,
     "queued_for_testing":  10,
     "directive_loop_stall_cycles":  0
 }
