@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-d702c1cd42f9",
+  "created_at": "2026-03-06T00:00:09.792973Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry-Exit-with-SL-TP-by-KhanSaab-V-02/",
+  "title": "Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02",
+  "author": "TheKhanSaahab",
+  "summary_bullets": [
+    "TradingView indicator: Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02 by TheKhanSaahab.",
+    "Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading.",
+    "It combines momentum, trend alignment, and volatility to identify high-probability entries.",
+    "Key Features Smart Sniper Candles: * Black Candles: Represent a fresh &#34;Signal&#34; entry (EMA Cross).",
+    "Orange Candles: Represent a &#34;Retest&#34; setup (Price pulling back to the EMA9/21 ribbon within a trend).",
+    "Green/Red Outlines: Regardless of body color, outlines show the actual bar close … Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading.",
+    "Green/Red Outlines: Regardless of body color, outlines show the actual bar close … Source URL: https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry-Exit-with-SL-TP-by-KhanSaab-V-02/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02 by TheKhanSaahab.",
+      "note": "Meaning: TradingView indicator: Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02 by TheKhanSaahab."
+    },
+    {
+      "timestamp": null,
+      "quote": "Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading.",
+      "note": "Meaning: Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading."
+    },
+    {
+      "timestamp": null,
+      "quote": "It combines momentum, trend alignment, and volatility to identify high-probability entries.",
+      "note": "Meaning: It combines momentum, trend alignment, and volatility to identify high-probability entries."
+    },
+    {
+      "timestamp": null,
+      "quote": "Key Features Smart Sniper Candles: * Black Candles: Represent a fresh &#34;Signal&#34; entry (EMA Cross).",
+      "note": "Meaning: Key Features Smart Sniper Candles: * Black Candles: Represent a fresh &#34;Signal&#34; entry (EMA Cross)."
+    },
+    {
+      "timestamp": null,
+      "quote": "Orange Candles: Represent a &#34;Retest&#34; setup (Price pulling back to the EMA9/21 ribbon within a trend).",
+      "note": "Meaning: Orange Candles: Represent a &#34;Retest&#34; setup (Price pulling back to the EMA9/21 ribbon within a trend)."
+    },
+    {
+      "timestamp": null,
+      "quote": "Green/Red Outlines: Regardless of body color, outlines show the actual bar close … Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading",
+      "note": "Meaning: Green/Red Outlines: Regardless of body color, outlines show the actual bar close … Overview KhanSaab Sniper V.02 is a professional-grade trend-followin"
+    },
+    {
+      "timestamp": null,
+      "quote": "Green/Red Outlines: Regardless of body color, outlines show the actual bar close … Source URL: https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry-Exit-with-SL-TP-by-KhanSaab-V-02/.",
+      "note": "Meaning: Green/Red Outlines: Regardless of body color, outlines show the actual bar close … Source URL: https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "trend",
+      "description": "Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading."
+    },
+    {
+      "type": "trend",
+      "description": "It combines momentum, trend alignment, and volatility to identify high-probability entries."
+    },
+    {
+      "type": "trend",
+      "description": "Orange Candles: Represent a &#34;Retest&#34; setup (Price pulling back to the EMA9/21 ribbon within a trend)."
+    },
+    {
+      "type": "trend",
+      "description": "Green/Red Outlines: Regardless of body color, outlines show the actual bar close … Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading."
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-d702c1cd42f9.raw.txt",
+  "sha256": "7455ebaf94e0b1437eec7995764d3e4eb7a55f639fdd239e06ca029c774df3f0",
+  "truncated": false
+}

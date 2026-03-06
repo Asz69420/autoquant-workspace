@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-2a78f594c561",
+  "created_at": "2026-03-06T00:00:08.617967Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/AFBblPio-GANESH-NIFTY-WEIGHTAGE/",
+  "title": "GANESH NIFTY WEIGHTAGE",
+  "author": "ggganesh37",
+  "summary_bullets": [
+    "TradingView indicator: GANESH NIFTY WEIGHTAGE by ggganesh37.",
+    "PLEASE CONTACT ME TELEGRAM ID : https://t.me/+uWtMNiC4OCw4MmJl ANY PROBLEM INFORMED PLEASE CONTACT ME TELEGRAM ID : https://t.me/+uWtMNiC4OCw4MmJl ANY PROBLEM INFORMED Source URL: https://www.tradingview.com/script/AFBblPio-GANESH-NIFTY-WEIGHTAGE/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: GANESH NIFTY WEIGHTAGE by ggganesh37.",
+      "note": "Meaning: TradingView indicator: GANESH NIFTY WEIGHTAGE by ggganesh37."
+    },
+    {
+      "timestamp": null,
+      "quote": "PLEASE CONTACT ME TELEGRAM ID : https://t.me/+uWtMNiC4OCw4MmJl ANY PROBLEM INFORMED PLEASE CONTACT ME TELEGRAM ID : https://t.me/+uWtMNiC4OCw4MmJl ANY PROBLEM INFORMED Source URL: https://www.tradingv",
+      "note": "Meaning: PLEASE CONTACT ME TELEGRAM ID : https://t.me/+uWtMNiC4OCw4MmJl ANY PROBLEM INFORMED PLEASE CONTACT ME TELEGRAM ID : https://t.me/+uWtMNiC4OCw4MmJl ANY "
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-2a78f594c561.raw.txt",
+  "sha256": "4b4fe634425ed5fab7ad122ed5b2fa91570d33d5fb3faf98d7472f22ff1f4eb0",
+  "truncated": false
+}

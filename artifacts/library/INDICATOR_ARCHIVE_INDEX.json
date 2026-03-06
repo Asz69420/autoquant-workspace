@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "sniper entry/exit with sl&amp;tp by khansaab v.02|thekhansaahab",
+    "script_id": "HBDcHSB7",
+    "name": "Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02",
+    "author": "TheKhanSaahab",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-95f8b260d424.indicator_record.json",
+    "first_seen_ts": "2026-03-06T00:00:10.188040+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "ganesh nifty weightage|ggganesh37",
+    "script_id": "AFBblPio",
+    "name": "GANESH NIFTY WEIGHTAGE",
+    "author": "ggganesh37",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-f6e0161cd7e0.indicator_record.json",
+    "first_seen_ts": "2026-03-06T00:00:09.031196+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "top-down htf candles [confirmed]|ariscodes",
     "script_id": "RbdOG5gE",
     "name": "Top-Down HTF Candles [Confirmed]",

@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "id": "indicator-20260306-95f8b260d424",
+  "created_at": "2026-03-06T00:00:09.495057Z",
+  "tv_ref": "tradingview:HBDcHSB7",
+  "url": "https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry-Exit-with-SL-TP-by-KhanSaab-V-02/",
+  "name": "Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02",
+  "author": "TheKhanSaahab",
+  "version": "v1",
+  "key_inputs": [],
+  "signals_described": [],
+  "notes": [
+    "catalog_top",
+    "source=tv_page_context"
+  ],
+  "component_type": "INDICATOR",
+  "pine_raw_bytes": 0,
+  "pine_raw_lines": 0,
+  "pine_min_bytes": 0,
+  "pine_min_lines": 0,
+  "pine_size_class": "small",
+  "pine_size_class_bytes": "small",
+  "pine_size_class_lines": "small",
+  "pine_too_large": false,
+  "sha256": "3ed6ac469100a1ca3b86c8773b474114985fd98aedd3992868ab2e29aeadabc0",
+  "truncated": false
+}
