@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-d29539ea54e0",
+  "created_at": "2026-03-06T08:00:13.599298Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/D76cXPDk-BB-LTF/",
+  "title": "BB LTF",
+  "author": "ACE_CT",
+  "summary_bullets": [
+    "TradingView indicator: BB LTF by ACE_CT.",
+    "Automatically detect live and historical blocks across a range of timeframes with the ability to visually differentiae between those that are multiple times hidden.",
+    "Source URL: https://www.tradingview.com/script/D76cXPDk-BB-LTF/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: BB LTF by ACE_CT.",
+      "note": "Meaning: TradingView indicator: BB LTF by ACE_CT."
+    },
+    {
+      "timestamp": null,
+      "quote": "Automatically detect live and historical blocks across a range of timeframes with the ability to visually differentiae between those that are multiple times hidden.",
+      "note": "Meaning: Automatically detect live and historical blocks across a range of timeframes with the ability to visually differentiae between those that are multiple "
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/D76cXPDk-BB-LTF/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/D76cXPDk-BB-LTF/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-d29539ea54e0.raw.txt",
+  "sha256": "6be783bb310a391f2dc8bc7b611749974048fbe053c30f39a4cecc21015a6dbe",
+  "truncated": false
+}

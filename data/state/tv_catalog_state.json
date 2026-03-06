@@ -1,5 +1,5 @@
 {
-  "top_cursor": 6003,
+  "top_cursor": 6005,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -161,7 +161,9 @@
     "hidden markov model: baum-welch [ualgo]|ualgo",
     "hidden markov reversal finder [ualgo]|ualgo",
     "swing volume profile pro [willyalgotrader]|willyalgotrader",
-    "luminous pivot s&amp;r matrix [pineify]|pineify"
+    "luminous pivot s&amp;r matrix [pineify]|pineify",
+    "bb ltf|ace_ct",
+    "bb mtf|ace_ct"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -324,7 +326,9 @@
     "ggqF9HsV",
     "X74fRKws",
     "7yozLqCv",
-    "VMWGYzwf"
+    "VMWGYzwf",
+    "D76cXPDk",
+    "0ZLFXWjx"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "bb mtf|ace_ct",
+    "script_id": "0ZLFXWjx",
+    "name": "BB MTF",
+    "author": "ACE_CT",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-9d4f076cb665.indicator_record.json",
+    "first_seen_ts": "2026-03-06T08:00:15.367906+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "bb ltf|ace_ct",
+    "script_id": "D76cXPDk",
+    "name": "BB LTF",
+    "author": "ACE_CT",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-4470c3afa6ee.indicator_record.json",
+    "first_seen_ts": "2026-03-06T08:00:14.150142+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "luminous pivot s&amp;r matrix [pineify]|pineify",
     "script_id": "VMWGYzwf",
     "name": "Luminous Pivot S&amp;R Matrix [Pineify]",
