@@ -119,6 +119,6 @@ Operationally:
 4. Trigger Quandalf reflection
 5. Emit Quandalf card for that same cycle
 
-Both cards now print `Cycle: autopilot-<id>` for visual run pairing.
+Both cards now print compact run identity in header: `🆔 <last-6-digits>` for visual run pairing.
 
 This is additive and backward-compatible with existing logs/events/state files.

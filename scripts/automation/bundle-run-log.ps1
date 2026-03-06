@@ -567,10 +567,21 @@ $titleLine = switch ($mode) {
 
 $lines = @()
 $lines += $titleLine
-$lines += ("Status: " + $statusIcon + " | Duration: " + $durationLabel)
+$timerEmoji = ([char]0x23F1) + ([char]0xFE0F)
+$idEmoji = [System.Char]::ConvertFromUtf32(0x1F194)
+$shortRunId = ''
 if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey)) {
-  $lines += ("Cycle: " + $selectedRunKey)
+  if ($selectedRunKey -match '(\d{6})$') {
+    $shortRunId = [string]$matches[1]
+  } elseif ($selectedRunKey.Length -ge 6) {
+    $shortRunId = $selectedRunKey.Substring($selectedRunKey.Length - 6)
+  }
 }
+$headerLine = ($statusIcon + " | " + $timerEmoji + " " + $durationLabel)
+if (-not [string]::IsNullOrWhiteSpace($shortRunId)) {
+  $headerLine += (" | " + $idEmoji + " " + $shortRunId)
+}
+$lines += $headerLine
 
 $strategyGenerateCount = @($reportEvents | Where-Object { [string]$_.action -eq 'strategy_generate' }).Count
 $strategyResearchCount = @($reportEvents | Where-Object { [string]$_.action -eq 'strategy_research' }).Count

@@ -284,10 +284,21 @@ function Send-QuandalfCard {
 
   $lines = @()
   $lines += ($mirrorEmoji + ' Reflecting')
-  $lines += ('Status: ' + $statusIcon + ' | Duration: ' + $DurationLabel)
+  $timerEmoji = ([char]0x23F1) + ([char]0xFE0F)
+  $idEmoji = [System.Char]::ConvertFromUtf32(0x1F194)
+  $shortRunId = ''
   if (-not [string]::IsNullOrWhiteSpace($RunId)) {
-    $lines += ('Cycle: ' + $RunId)
+    if ($RunId -match '(\d{6})$') {
+      $shortRunId = [string]$matches[1]
+    } elseif ($RunId.Length -ge 6) {
+      $shortRunId = $RunId.Substring($RunId.Length - 6)
+    }
   }
+  $headerLine = ($statusIcon + ' | ' + $timerEmoji + ' ' + $DurationLabel)
+  if (-not [string]::IsNullOrWhiteSpace($shortRunId)) {
+    $headerLine += (' | ' + $idEmoji + ' ' + $shortRunId)
+  }
+  $lines += $headerLine
   $lines += $activityDivider
   $queuedValue = 0
   try {

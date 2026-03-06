@@ -44,11 +44,11 @@ This avoids out-of-order cards, duplicate posts, and cross-run metric mixing.
   - Emits Quandalf card with matching cycle reference.
 
 ### Visible Pairing
-- Frodex card includes:
-  - `Cycle: autopilot-<id>`
-- Quandalf card includes:
-  - `Cycle: autopilot-<id>`
-- This allows operator-side verification that upstream/downstream cards belong to the same cycle.
+- Frodex card header includes compact run identity:
+  - `... | 🆔 <last-6-digits>`
+- Quandalf card header includes compact run identity:
+  - `... | 🆔 <last-6-digits>`
+- This keeps cards visually paired while reducing header length.
 
 ---
 
