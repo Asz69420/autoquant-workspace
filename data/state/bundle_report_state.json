@@ -5,9 +5,9 @@
                           "hash":  "0f2273bf85f42708c15325459b1814b04ad9cdb96296d338c186106bd453acc1"
                       },
     "frodex_last":  {
-                        "sent_at":  "2026-03-06T01:29:06.1310304Z",
-                        "last_run_id":  "autopilot-1772760167",
-                        "hash":  "687cb1a10bfdbf311eef025057a1376799289f784e3270a747e301d82d3d3a6b"
+                        "sent_at":  "2026-03-06T01:36:06.1802479Z",
+                        "last_run_id":  "autopilot-1772760581",
+                        "hash":  "cd886e90a056cd59184b7178f953d1754d704810e305b7f8c7eec19d0a0bbfbd"
                     },
     "frodex_handoff_last":  {
                                 "sent_at":  "2026-03-06T01:29:17.6357803Z",
