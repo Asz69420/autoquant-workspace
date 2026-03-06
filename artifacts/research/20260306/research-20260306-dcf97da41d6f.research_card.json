@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-dcf97da41d6f",
+  "created_at": "2026-03-06T01:00:12.546871Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finder-UAlgo/",
+  "title": "Hidden Markov Reversal Finder [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "TradingView indicator: Hidden Markov Reversal Finder [UAlgo] by UAlgo.",
+    "Hidden Markov Reversal Finder is a regime aware reversal detection indicator that uses a compact 3 state Hidden Markov style filter with online adaptation to classify market conditions and highlight potential top and bottom rotations.",
+    "The script models price behavior as transitions between three regimes: - Bull Expansion - Balance - Bear Stress Instead of running a heavy Baum Welch retraining loop, this version is designed as a lightweight real time filter.",
+    "It updates regime probabilities … Source URL: https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finder-UAlgo/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Hidden Markov Reversal Finder [UAlgo] by UAlgo.",
+      "note": "Meaning: TradingView indicator: Hidden Markov Reversal Finder [UAlgo] by UAlgo."
+    },
+    {
+      "timestamp": null,
+      "quote": "Hidden Markov Reversal Finder is a regime aware reversal detection indicator that uses a compact 3 state Hidden Markov style filter with online adaptation to classify market conditions and highlight p",
+      "note": "Meaning: Hidden Markov Reversal Finder is a regime aware reversal detection indicator that uses a compact 3 state Hidden Markov style filter with online adaptat"
+    },
+    {
+      "timestamp": null,
+      "quote": "The script models price behavior as transitions between three regimes: - Bull Expansion - Balance - Bear Stress Instead of running a heavy Baum Welch retraining loop, this version is designed as a lig",
+      "note": "Meaning: The script models price behavior as transitions between three regimes: - Bull Expansion - Balance - Bear Stress Instead of running a heavy Baum Welch r"
+    },
+    {
+      "timestamp": null,
+      "quote": "It updates regime probabilities … Source URL: https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finder-UAlgo/.",
+      "note": "Meaning: It updates regime probabilities … Source URL: https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finder-UAlgo/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "filter",
+      "description": "Hidden Markov Reversal Finder is a regime aware reversal detection indicator that uses a compact 3 state Hidden Markov style filter with online adaptation to classify market conditions and highlight potential top and bot"
+    },
+    {
+      "type": "filter",
+      "description": "The script models price behavior as transitions between three regimes: - Bull Expansion - Balance - Bear Stress Instead of running a heavy Baum Welch retraining loop, this version is designed as a lightweight real time f"
+    }
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-dcf97da41d6f.raw.txt",
+  "sha256": "4345cdac2cf1e8c9c83d50d2e78e37b5ba4e66a8066c3cf8a359b66c04614273",
+  "truncated": false
+}

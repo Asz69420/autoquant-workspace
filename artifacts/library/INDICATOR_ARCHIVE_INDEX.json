@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "hidden markov reversal finder [ualgo]|ualgo",
+    "script_id": "X74fRKws",
+    "name": "Hidden Markov Reversal Finder [UAlgo]",
+    "author": "UAlgo",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-a163b7a58f26.indicator_record.json",
+    "first_seen_ts": "2026-03-06T01:00:12.962222+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "hidden markov model: baum-welch [ualgo]|ualgo",
+    "script_id": "ggqF9HsV",
+    "name": "Hidden Markov Model: Baum-Welch [UAlgo]",
+    "author": "UAlgo",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-6d7b07a56285.indicator_record.json",
+    "first_seen_ts": "2026-03-06T01:00:11.773160+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "sniper entry/exit with sl&amp;tp by khansaab v.02|thekhansaahab",
     "script_id": "HBDcHSB7",
     "name": "Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02",

@@ -1,5 +1,5 @@
 {
-  "top_cursor": 5998,
+  "top_cursor": 6000,
   "seen_tv_keys": [
     "adaptive flag patterns [the_lurker]|tradingview",
     "open) adds volume\\n\\ndown ltf candle (close|tradingview",
@@ -157,7 +157,9 @@
     "mad for-loop ~ charonquant|charonquant",
     "top-down htf candles [confirmed]|ariscodes",
     "ganesh nifty weightage|ggganesh37",
-    "sniper entry/exit with sl&amp;tp by khansaab v.02|thekhansaahab"
+    "sniper entry/exit with sl&amp;tp by khansaab v.02|thekhansaahab",
+    "hidden markov model: baum-welch [ualgo]|ualgo",
+    "hidden markov reversal finder [ualgo]|ualgo"
   ],
   "seen_script_ids": [
     "iS8g648s",
@@ -316,7 +318,9 @@
     "RSok89Q5",
     "RbdOG5gE",
     "AFBblPio",
-    "HBDcHSB7"
+    "HBDcHSB7",
+    "ggqF9HsV",
+    "X74fRKws"
   ],
   "last_trending_seen": [
     "tri-core statistical trend navigator|zakalgo_trade",

@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-ccc54c2277f6",
+  "created_at": "2026-03-06T01:00:11.406368Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Welch-UAlgo/",
+  "title": "Hidden Markov Model: Baum-Welch [UAlgo]",
+  "author": "UAlgo",
+  "summary_bullets": [
+    "TradingView indicator: Hidden Markov Model: Baum-Welch [UAlgo] by UAlgo.",
+    "Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log returns and continuously adapts its parameters using an online Baum Welch expectation maximization routine.",
+    "The script is designed to classify the market into three latent regimes, then express that classification as real time probabilities for Bull, Range, and Bear conditions.",
+    "The indicator runs in its own pane (overlay=false) and … Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log returns and continuously adapts its parameters using an online Baum Welch expectation maximization routine.",
+    "The indicator runs in its own pane (overlay=false) and … Source URL: https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Welch-UAlgo/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Hidden Markov Model: Baum-Welch [UAlgo] by UAlgo.",
+      "note": "Meaning: TradingView indicator: Hidden Markov Model: Baum-Welch [UAlgo] by UAlgo."
+    },
+    {
+      "timestamp": null,
+      "quote": "Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log returns and continuously adapts its parameters using",
+      "note": "Meaning: Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log ret"
+    },
+    {
+      "timestamp": null,
+      "quote": "The script is designed to classify the market into three latent regimes, then express that classification as real time probabilities for Bull, Range, and Bear conditions.",
+      "note": "Meaning: The script is designed to classify the market into three latent regimes, then express that classification as real time probabilities for Bull, Range, a"
+    },
+    {
+      "timestamp": null,
+      "quote": "The indicator runs in its own pane (overlay=false) and … Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized",
+      "note": "Meaning: The indicator runs in its own pane (overlay=false) and … Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that ap"
+    },
+    {
+      "timestamp": null,
+      "quote": "The indicator runs in its own pane (overlay=false) and … Source URL: https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Welch-UAlgo/.",
+      "note": "Meaning: The indicator runs in its own pane (overlay=false) and … Source URL: https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Welch-UAlgo/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-ccc54c2277f6.raw.txt",
+  "sha256": "d7776fe01c20fd97120690ce378c129cd6b62c57dc410a5bc775ba7c81cb6af1",
+  "truncated": false
+}
