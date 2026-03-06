@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-f04c4db75251",
+  "created_at": "2026-03-06T04:00:08.433336Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/7yozLqCv-Swing-Volume-Profile-Pro-WillyAlgoTrader/",
+  "title": "Swing Volume Profile Pro [WillyAlgoTrader]",
+  "author": "WillyAlgoTrader",
+  "summary_bullets": [
+    "TradingView indicator: Swing Volume Profile Pro [WillyAlgoTrader] by WillyAlgoTrader.",
+    "📊 Swing Volume Profile Pro is an overlay indicator that builds a true volume distribution profile for each completed swing leg — distributing each candle&#39;s volume across price bins proportionally to how much of the candle&#39;s range overlaps each bin (TPO-like allocation), then calculating the Point of Control (highest-volume price), Value Area (70% of volume around POC), buy/sell delta per bin, and swing VWAP.",
+    "The result is a volume profile that maps exactly to the swing structure, not to … Source URL: https://www.tradingview.com/script/7yozLqCv-Swing-Volume-Profile-Pro-WillyAlgoTrader/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Swing Volume Profile Pro [WillyAlgoTrader] by WillyAlgoTrader.",
+      "note": "Meaning: TradingView indicator: Swing Volume Profile Pro [WillyAlgoTrader] by WillyAlgoTrader."
+    },
+    {
+      "timestamp": null,
+      "quote": "📊 Swing Volume Profile Pro is an overlay indicator that builds a true volume distribution profile for each completed swing leg — distributing each candle&#39;s volume across price bins proportionally ",
+      "note": "Meaning: 📊 Swing Volume Profile Pro is an overlay indicator that builds a true volume distribution profile for each completed swing leg — distributing each cand"
+    },
+    {
+      "timestamp": null,
+      "quote": "The result is a volume profile that maps exactly to the swing structure, not to … Source URL: https://www.tradingview.com/script/7yozLqCv-Swing-Volume-Profile-Pro-WillyAlgoTrader/.",
+      "note": "Meaning: The result is a volume profile that maps exactly to the swing structure, not to … Source URL: https://www.tradingview.com/script/7yozLqCv-Swing-Volume-"
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "indicators_mentioned": [],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-f04c4db75251.raw.txt",
+  "sha256": "eaabce70462fa39c64e84f7d24c2aae78f1f403808a195a2522dd77bdcc6c2df",
+  "truncated": false
+}

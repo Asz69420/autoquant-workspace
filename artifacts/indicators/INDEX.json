@@ -1,4 +1,6 @@
 [
+  "artifacts/indicators/20260306/indicator-20260306-c96b4c3f897c.indicator_record.json",
+  "artifacts/indicators/20260306/indicator-20260306-f83af77d437d.indicator_record.json",
   "artifacts/indicators/20260306/indicator-20260306-a163b7a58f26.indicator_record.json",
   "artifacts/indicators/20260306/indicator-20260306-6d7b07a56285.indicator_record.json",
   "artifacts/indicators/20260306/indicator-20260306-95f8b260d424.indicator_record.json",
@@ -196,7 +198,5 @@
   "fake/31.json",
   "fake/32.json",
   "fake/33.json",
-  "fake/34.json",
-  "fake/35.json",
-  "fake/36.json"
+  "fake/34.json"
 ]

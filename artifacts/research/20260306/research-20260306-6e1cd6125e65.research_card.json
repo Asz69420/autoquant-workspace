@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "research-20260306-6e1cd6125e65",
+  "created_at": "2026-03-06T04:00:09.699049Z",
+  "source_type": "tradingview_catalog",
+  "source_ref": "https://www.tradingview.com/script/VMWGYzwf-Luminous-Pivot-S-R-Matrix-Pineify/",
+  "title": "Luminous Pivot S&amp;R Matrix [Pineify]",
+  "author": "Pineify",
+  "summary_bullets": [
+    "TradingView indicator: Luminous Pivot S&amp;R Matrix [Pineify] by Pineify.",
+    "Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zones with ATR-Adaptive Width and Breakout Detection The Luminous Pivot S&amp;R Matrix is a dynamic support and resistance indicator that automatically identifies significant pivot highs and pivot lows, constructs ATR-adaptive zones around them, and monitors each zone in real time for breakout invalidation.",
+    "Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zones with ATR-Adaptive Width and Breakout Detection The Luminous Pivot S&amp;R Matrix is a dynamic support and resistance indicator that automatically identifies significant pivot highs and pivot lows, constructs ATR-adaptive zones around them, and monitors each zone in real time for breakout invalid",
+    "Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Possible indicators: ATR.",
+    "Source URL: https://www.tradingview.com/script/VMWGYzwf-Luminous-Pivot-S-R-Matrix-Pineify/."
+  ],
+  "creator_notes": [
+    {
+      "timestamp": null,
+      "quote": "TradingView indicator: Luminous Pivot S&amp;R Matrix [Pineify] by Pineify.",
+      "note": "Meaning: TradingView indicator: Luminous Pivot S&amp;R Matrix [Pineify] by Pineify."
+    },
+    {
+      "timestamp": null,
+      "quote": "Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zones with ATR-Adaptive Width and Breakout Detection The Luminous Pivot S&amp;R Matrix is a dynamic support and resistance indicator th",
+      "note": "Meaning: Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zones with ATR-Adaptive Width and Breakout Detection The Luminous Pivot S&amp;R Matrix"
+    },
+    {
+      "timestamp": null,
+      "quote": "Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zo",
+      "note": "Meaning: Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Luminous Pivot S&a"
+    },
+    {
+      "timestamp": null,
+      "quote": "Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Possible indicators: ATR.",
+      "note": "Meaning: Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Possible indicator"
+    },
+    {
+      "timestamp": null,
+      "quote": "Source URL: https://www.tradingview.com/script/VMWGYzwf-Luminous-Pivot-S-R-Matrix-Pineify/.",
+      "note": "Meaning: Source URL: https://www.tradingview.com/script/VMWGYzwf-Luminous-Pivot-S-R-Matrix-Pineify/."
+    }
+  ],
+  "extracted_rules": [
+    "Not specified in content."
+  ],
+  "strategy_components": [
+    {
+      "type": "confirmation",
+      "description": "Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zones with ATR-Adaptiv"
+    }
+  ],
+  "indicators_mentioned": [
+    "ATR"
+  ],
+  "tv_search_hints": [],
+  "timeframes_mentioned": [],
+  "assets_mentioned": [],
+  "tags": [],
+  "raw_pointer": "artifacts/research/20260306/research-20260306-6e1cd6125e65.raw.txt",
+  "sha256": "7d4057141e7f3cc43a86adffd8a9fdf010b5c931b066445ea4b0332cecc1b98c",
+  "truncated": false
+}

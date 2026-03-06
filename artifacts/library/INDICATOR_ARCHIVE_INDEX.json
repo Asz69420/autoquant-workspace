@@ -1,5 +1,27 @@
 [
   {
+    "tv_key": "luminous pivot s&amp;r matrix [pineify]|pineify",
+    "script_id": "VMWGYzwf",
+    "name": "Luminous Pivot S&amp;R Matrix [Pineify]",
+    "author": "Pineify",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-c96b4c3f897c.indicator_record.json",
+    "first_seen_ts": "2026-03-06T04:00:10.126028+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
+    "tv_key": "swing volume profile pro [willyalgotrader]|willyalgotrader",
+    "script_id": "7yozLqCv",
+    "name": "Swing Volume Profile Pro [WillyAlgoTrader]",
+    "author": "WillyAlgoTrader",
+    "indicator_record_path": "artifacts/indicators/20260306/indicator-20260306-f83af77d437d.indicator_record.json",
+    "first_seen_ts": "2026-03-06T04:00:08.867737+00:00",
+    "sources": [
+      "top"
+    ]
+  },
+  {
     "tv_key": "hidden markov reversal finder [ualgo]|ualgo",
     "script_id": "X74fRKws",
     "name": "Hidden Markov Reversal Finder [UAlgo]",
