@@ -567,7 +567,7 @@ $titleLine = switch ($mode) {
 
 $lines = @()
 $lines += $titleLine
-$timerEmoji = ([char]0x23F1) + ([char]0xFE0F)
+$timerEmoji = [System.Char]::ConvertFromUtf32(0x25B6) + ([char]0xFE0F)
 $idEmoji = [System.Char]::ConvertFromUtf32(0x1F194)
 $shortRunId = ''
 if ($mode -eq 'frodex' -and -not [string]::IsNullOrWhiteSpace($selectedRunKey)) {
