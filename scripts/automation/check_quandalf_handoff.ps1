@@ -629,14 +629,7 @@ try {
     Start-Sleep -Seconds $handoffBufferSeconds
   }
 
-  # Emit the Frodex card for this exact cycle before triggering Quandalf.
-  # This enforces visible ordering and run-level pairing in log channel cards.
-  try {
-    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ROOT 'scripts\automation\bundle-run-log.ps1') -Pipeline frodex -RunIdHint $latestRunId -EmitReason handoff | Out-Null
-  } catch {
-    Write-Host ('WARN frodex card emit failed for run ' + $latestRunId + ': ' + $_)
-  }
-
+  # Trigger Quandalf handoff for this completed run. Frodex card emission is event-driven in run_autopilot_task.ps1.
   $triggerStarted = Get-Date
   $triggerOutput = @(& openclaw cron run $jobId --timeout 120000 2>&1)
   if ($LASTEXITCODE -ne 0) {
