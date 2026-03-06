@@ -15,39 +15,5 @@ try {
   Write-Host ('WARN: immediate frodex log send failed: ' + $_.Exception.Message)
 }
 
-# Hyper mode: event-chain handoff (Frodex completion -> Quandalf trigger path) without schedule polling.
-$hyperMode = $false
-try {
-  $flagsPath = '.\config\runtime_flags.json'
-  if (Test-Path -LiteralPath $flagsPath) {
-    $flags = Get-Content -LiteralPath $flagsPath -Raw -Encoding UTF8 | ConvertFrom-Json
-    if ($flags -and $flags.PSObject.Properties.Name -contains 'hyperMode') {
-      $hyperMode = [bool]$flags.hyperMode
-    }
-  }
-} catch {
-  $hyperMode = $false
-}
-
-if ($hyperMode) {
-  try {
-    $latestRunId = ''
-    if (Test-Path -LiteralPath '.\data\logs\actions.ndjson') {
-      $rows = Get-Content -LiteralPath '.\data\logs\actions.ndjson' -Tail 300 -Encoding UTF8
-      foreach ($line in $rows) {
-        try { $e = $line | ConvertFrom-Json } catch { continue }
-        if ([string]$e.action -ne 'LAB_SUMMARY') { continue }
-        $rid = [string]$e.run_id
-        if ($rid -match '^(autopilot-\d+)') { $latestRunId = $matches[1] }
-      }
-    }
-
-    if (-not [string]::IsNullOrWhiteSpace($latestRunId)) {
-      & '.\scripts\automation\check_quandalf_handoff.ps1' -RunIdHint $latestRunId | Out-Null
-    } else {
-      & '.\scripts\automation\check_quandalf_handoff.ps1' | Out-Null
-    }
-  } catch {
-    Write-Host ('WARN: hyper handoff trigger failed: ' + $_.Exception.Message)
-  }
-}
+# Hyper mode chain authority is Quandalf -> Frodex (triggered from quandalf-auto-execute.sh).
+# Do not trigger Quandalf handoff from Frodex completion here; this causes reversed flow/double logging.

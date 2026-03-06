@@ -29,9 +29,9 @@ $handoffTask = '\quandalf-handoff-check-1m'
 
 if ($Enabled) {
   schtasks /Change /TN $frodexTask /Disable | Out-Null
-  # Keep 1m handoff poller as watchdog for missed event-delivery recovery.
-  schtasks /Change /TN $handoffTask /Enable | Out-Null
-  Write-Host 'Hyper mode ENABLED: frodex 15m schedule disabled; handoff poller left enabled as watchdog.'
+  # Hyper chain is Quandalf -> Frodex; disable handoff poller to avoid reversed/double paths.
+  schtasks /Change /TN $handoffTask /Disable | Out-Null
+  Write-Host 'Hyper mode ENABLED: frodex 15m schedule disabled; handoff poller disabled (single chain: Quandalf -> Frodex).'
 } else {
   schtasks /Change /TN $frodexTask /Enable | Out-Null
   schtasks /Change /TN $handoffTask /Enable | Out-Null
