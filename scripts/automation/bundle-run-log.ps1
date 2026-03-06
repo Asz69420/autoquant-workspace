@@ -429,6 +429,8 @@ $bundlesScanned = 0; $bundlesSelected = 0; $bundleStarts = 0
 $specOk = 0; $specBlocked = 0; $specReview = 0
 $batchAttempts = 0; $batchExecutedTotal = 0; $batchSkippedTotal = 0; $requeueRequiredTotal = 0; $batchBlockedPromotion = 0; $batchNoVariants = 0
 $promotionChecks = 0; $promotionOk = 0; $promotionBlocked = 0; $promotionSkipped = 0
+$bundleSpecCount = 0; $specVariantTotal = 0
+$queuedForRun = 0; $waitingBacklog = 0
 $outboxLag = 0
 
 foreach ($e in $reportEvents) {
@@ -462,6 +464,8 @@ foreach ($e in $reportEvents) {
       $bundleStarts++
     }
     "BUNDLE_SPEC_RESULT" {
+      $bundleSpecCount++
+      if ($sum -match 'variants=(\d+)') { $specVariantTotal += [int]$matches[1] }
       if ($sum -match 'spec_status=([A-Z_]+)') {
         $sst = [string]$matches[1]
         if ($sst -eq 'OK') { $specOk++ }
@@ -613,6 +617,21 @@ if ($mode -eq 'frodex') {
 }
 
 if ($mode -eq 'frodex') {
+  # Run-scoped queue/backlog contract:
+  # queued_for_run = base bundle specs + extra variants
+  # waiting_backlog = queued_for_run - backtests_executed - skipped_or_requeued
+  $derivedExtraVariants = [Math]::Max(0, ([int]$specVariantTotal - [int]$bundleSpecCount))
+  $directiveExtraVariants = [Math]::Max(0, [int]$dirVariants)
+  $extraVariants = [Math]::Max([int]$directiveExtraVariants, [int]$derivedExtraVariants)
+  $queuedForRun = [Math]::Max(0, ([int]$bundleSpecCount + [int]$extraVariants))
+
+  # Fallback when run-scoped signals are missing in the selected window.
+  if ($queuedForRun -le 0 -and $queuedBacklog -gt 0) {
+    $queuedForRun = [int]$queuedBacklog
+  }
+
+  $waitingBacklog = [Math]::Max(0, ([int]$queuedForRun - [int]$batchExecutedTotal - [int]$requeueRequiredTotal))
+
   $outboxPath = "$ROOT\data\logs\outbox"
   if (Test-Path $outboxPath) {
     try { $outboxLag = @((Get-ChildItem -Path $outboxPath -File -ErrorAction SilentlyContinue)).Count } catch { $outboxLag = 0 }
@@ -700,7 +719,7 @@ if ($mode -eq 'quandalf') {
     $lines += "Sub-agents finished: $completed"
     $lines += "Sub-agents failed: $failed"
   } else {
-    $lines += "Waiting: $outboxLag"
+    $lines += "Waiting: $waitingBacklog"
     $lines += "Backtests: $batchExecutedTotal"
     $lines += "Skipped: $requeueRequiredTotal"
     $lines += "Forwardtests: $forwardRuns"
