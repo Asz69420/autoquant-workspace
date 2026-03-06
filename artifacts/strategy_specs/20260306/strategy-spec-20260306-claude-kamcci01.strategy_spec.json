@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-kamcci01",
+  "name": "KAMA CCI Dual-Adaptive Momentum",
+  "created_at": "2026-03-06T13:10:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "KAMA is the #2 promoted family (PPR=4.27) and CCI confirmation is validated by Supertrend CCI v4 (accepted PF=1.290). This spec merges two independently proven mechanisms. KAMA adapts its smoothing speed based on market noise — fast in trends, slow in ranges — making it an inherently adaptive baseline. CCI measures how far price has deviated from its statistical mean; crossing above -100 signals bearish momentum has exhausted and mean-reversion is beginning (bullish reset). The hypothesis: KAMA's adaptive speed catches trend direction changes earlier than fixed EMAs, and CCI's momentum exhaustion signal provides better entry timing than simple crosses. Together they form a 'dual-adaptive' system — both indicators self-adjust to market conditions. This is distinct from ALMA CCI (almcci01) because KAMA uses Kaufman's efficiency ratio (adaptive to noise) while ALMA uses fixed Gaussian weighting. The KAMA family's proven PPR (4.27) anchors high conviction.",
+  "regime_assumption": "ranging_to_transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "kama_cci_v1_8to1",
+      "description": "Core variant: KAMA trend baseline + CCI momentum exhaustion confirmation. 8:1 R:R (proven sweet spot for KAMA family).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "Kaufman Adaptive Moving Average — adapts smoothing to market noise via efficiency ratio. #2 promoted family."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI crossing -100/+100 as momentum exhaustion signal. Proven in Supertrend CCI v4 (accepted)."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop loss and take profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_cci_v1_10to1",
+      "description": "Wider TP variant: 10:1 R:R. KAMA family performed well at 10:1 (KAMA Stoch v2 PPR=3.65). Tests whether CCI confirmation supports wider targets.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above -100"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 100"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "Kaufman Adaptive Moving Average — trend baseline."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI momentum exhaustion signal."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_cci_v1_relaxed",
+      "description": "Relaxed CCI thresholds (-80/+80 instead of -100/+100) to capture shallower momentum resets. Tests whether earlier entries improve win rate at cost of less extreme setups.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > KAMA_10_2_30",
+        "CCI_20_0.015 crosses_above -80"
+      ],
+      "entry_short": [
+        "close < KAMA_10_2_30",
+        "CCI_20_0.015 crosses_below 80"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=CCI",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "Kaufman Adaptive Moving Average — trend baseline."
+        },
+        {
+          "indicator": "CCI_20_0.015",
+          "role": "confirmation",
+          "notes": "CCI crossing -80/+80 for shallower momentum reset entries."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["KAMA_10_2_30", "CCI_20_0.015", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "KAMA_10_2_30 — Kaufman Adaptive MA adapts speed to noise. #2 promoted family by PPR (4.27)",
+    "confirmation": "CCI_20_0.015 — momentum exhaustion crossing -100/+100 as bullish/bearish reset. Proven in Supertrend CCI v4",
+    "volume_volatility": "ATR_14 for dynamic stop/TP sizing"
+  }
+}

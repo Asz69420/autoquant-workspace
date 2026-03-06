@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-ichcld01",
+  "name": "Ichimoku Cloud Breakout with Tenkan Confirmation",
+  "created_at": "2026-03-06T13:10:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Ichimoku TK transition v1 is accepted (PF=1.604) validating Ichimoku as a transition-detection family. That spec uses TK cross (Tenkan crosses Kijun). This spec tests a DIFFERENT Ichimoku mechanism: the Kumo cloud breakout. When price breaks above Senkou Span A (ISA) while the cloud is bullish (ISA > ISB), it signals a confirmed trend breakout from the cloud's support/resistance zone. The cloud acts as a dynamic support/resistance band — price above a bullish cloud is the strongest possible Ichimoku signal. The hypothesis: cloud breakout captures different trades than TK cross. TK cross fires during early transition (fast average crosses slow average); cloud breakout fires when price confirms the move by clearing the entire cloud structure. Cloud breakout should have higher win rate (stronger confirmation) but fewer trades (later entry). This tests whether Ichimoku's structural confirmation layer adds edge beyond the momentum cross. If both Ichimoku mechanisms work, it validates Ichimoku as a multi-signal family for portfolio diversification.",
+  "regime_assumption": "transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "ichi_cloud_breakout_v1_8to1",
+      "description": "Core variant: Price above Senkou Span A + bullish cloud (ISA > ISB). 8:1 R:R. Tests cloud breakout as pure structural confirmation.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "ISA_9 > ISB_26"
+      ],
+      "entry_short": [
+        "close < ISA_9",
+        "ISA_9 < ISB_26"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Ichimoku",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Senkou Span A (Ichimoku Leading Span A). Price above ISA in bullish cloud = confirmed uptrend."
+        },
+        {
+          "indicator": "ISB_26",
+          "role": "confirmation",
+          "notes": "Senkou Span B (Ichimoku Leading Span B). ISA > ISB = bullish cloud structure confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop loss and take profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_cloud_tenkan_v1_8to1",
+      "description": "Cloud + Tenkan filter: Price above ISA + close above Tenkan-sen (ITS_9). Adds short-term momentum confirmation to cloud breakout. Tests whether Tenkan timing improves cloud breakout entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "close > ITS_9"
+      ],
+      "entry_short": [
+        "close < ISA_9",
+        "close < ITS_9"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Ichimoku",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Senkou Span A — cloud boundary as trend structure."
+        },
+        {
+          "indicator": "ITS_9",
+          "role": "confirmation",
+          "notes": "Tenkan-sen (conversion line) — short-term momentum confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "ichi_cloud_breakout_v1_12to1",
+      "description": "Wide TP variant: 12:1 R:R. Cloud breakouts in transitional regimes should capture large trend continuations. Tests whether structural confirmation supports wider targets (cf. Vortex v3a success at high R:R).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "close > ISA_9",
+        "ISA_9 > ISB_26"
+      ],
+      "entry_short": [
+        "close < ISA_9",
+        "ISA_9 < ISB_26"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Ichimoku",
+        "RoleFramework[confirmation]=Ichimoku",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "ISA_9",
+          "role": "baseline",
+          "notes": "Senkou Span A — cloud boundary as trend structure."
+        },
+        {
+          "indicator": "ISB_26",
+          "role": "confirmation",
+          "notes": "Senkou Span B — cloud color/direction confirmation."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["ISA_9", "ISB_26", "ITS_9", "IKS_26", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ISA_9 (Senkou Span A) — cloud boundary provides structural trend direction. Price above bullish cloud = strongest Ichimoku signal",
+    "confirmation": "ISB_26 (Senkou Span B) or ITS_9 (Tenkan-sen) — cloud polarity or short-term momentum confirmation",
+    "volume_volatility": "ATR_14 for dynamic stop/TP sizing"
+  }
+}

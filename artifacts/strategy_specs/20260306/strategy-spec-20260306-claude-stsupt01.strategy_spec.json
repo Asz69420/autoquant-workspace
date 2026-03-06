@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-stsupt01",
+  "name": "Stochastic Pullback in Supertrend Trend",
+  "created_at": "2026-03-06T13:10:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "Supertrend is the #1 promoted family (PPR=4.47) with proven binary trend structure. Current Supertrend specs enter on direction flip — catching the start of a new trend. This spec instead enters on PULLBACKS within the established trend, using Stochastic K crossing out of oversold/overbought as timing. The hypothesis: entering pullbacks within a confirmed Supertrend trend captures better prices (lower entry in uptrends, higher entry in downtrends) while maintaining the structural edge of Supertrend's trend filter. Stochastic K crossing above 20 in a Supertrend uptrend means price has pulled back enough to trigger oversold readings but the macro trend is still intact — a 'buy the dip in an uptrend' setup. This is architecturally different from all existing Supertrend specs which use trend-flip entries, and from stochastic_reversal which uses EMA as baseline. The combination should produce more trades (multiple pullbacks per trend) with better average entry prices.",
+  "regime_assumption": "ranging_to_transitional",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "stoch_supert_pullback_v1_8to1",
+      "description": "Core variant: Supertrend trend filter + Stochastic K pullback from oversold/overbought. 8:1 R:R (proven sweet spot).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "STOCHk_14_3_3 crosses_above 20"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "STOCHk_14_3_3 crosses_below 80"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Binary trend direction from Supertrend (1=bullish, -1=bearish). Proven #1 promoted family."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic K crossing out of extremes as pullback timing. 20/80 thresholds for oversold/overbought."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based stop loss and take profit sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "stoch_supert_pullback_v1_10to1",
+      "description": "Wider TP variant: 10:1 R:R to capture larger trend continuations after pullback entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "STOCHk_14_3_3 crosses_above 20"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "STOCHk_14_3_3 crosses_below 80"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Binary trend direction from Supertrend."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic K crossing 20/80 for pullback timing."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "stoch_supert_pullback_v1_relaxed",
+      "description": "Relaxed Stochastic thresholds (30/70 instead of 20/80) to capture shallower pullbacks. More trades, less extreme entries.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "SUPERTd_7_3.0 == 1",
+        "STOCHk_14_3_3 crosses_above 30"
+      ],
+      "entry_short": [
+        "SUPERTd_7_3.0 == -1",
+        "STOCHk_14_3_3 crosses_below 70"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=Supertrend",
+        "RoleFramework[confirmation]=Stochastic",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "components": [
+        {
+          "indicator": "SUPERTd_7_3.0",
+          "role": "baseline",
+          "notes": "Binary trend direction from Supertrend."
+        },
+        {
+          "indicator": "STOCHk_14_3_3",
+          "role": "confirmation",
+          "notes": "Stochastic K crossing 30/70 for shallower pullback entries."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based position sizing."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "backtester_executable_indicators": ["SUPERTd_7_3.0", "STOCHk_14_3_3", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "Supertrend direction (SUPERTd_7_3.0) provides proven binary trend structure — #1 promoted family by PPR",
+    "confirmation": "Stochastic K crossing out of oversold/overbought provides pullback entry timing within the trend",
+    "volume_volatility": "ATR_14 for dynamic stop/TP sizing"
+  }
+}
