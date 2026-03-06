@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-kvax01a3",
+  "name": "KAMA Vortex Alignment Entry",
+  "created_at": "2026-03-06T05:10:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "KAMA Stoch is the #2 promoted family (PPR 4.268) and Vortex transition is the PF champion (2.034). The prior kama_vortex_divergence spec (0/9 WR) failed because it looked for DIVERGENCE between KAMA and Vortex — a rare and noisy signal. This spec tests the OPPOSITE thesis: ALIGNMENT. When Vortex detects a momentum transition (VTXP crosses above VTXM) AND KAMA confirms the direction (close > KAMA), both the adaptive-speed baseline and the directional momentum indicator agree. KAMA's key property is speed-adaptation — it smooths aggressively in noise (slow) and follows closely in trends (fast). This natural noise filter should eliminate choppy Vortex false crosses without requiring an explicit regime gate like CHOP or ADX. The combined signal fires only when two mathematically independent adaptive systems agree: Vortex sees directional momentum shifting, KAMA sees price committed to that direction. This is a fusion of the two strongest non-supertrend families in the promoted library.",
+  "regime_assumption": "transitional_primary_ranging_secondary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "kama_vortex_align_v1_8to1",
+      "description": "Core variant. Vortex transition + KAMA trend confirmation. 8:1 R:R (12x ATR TP, 1.5 ATR stop). Tests whether KAMA's adaptive filtering eliminates the choppy false crosses that raw Vortex produces, while preserving the transition-detection edge that makes Vortex the champion family.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "Kaufman Adaptive MA — speed-adapts to market noise. Fast in trends, slow in ranges. Natural choppy-market filter without explicit regime gate."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex Positive — crosses above VTXM to detect bullish directional momentum transition."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex Negative — crosses above VTXP for bearish momentum transition."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_vortex_align_v1_10to1",
+      "description": "Extended TP variant. 10:1 R:R (15x ATR TP). Vortex champion family historically benefits from wider TPs because transition moves tend to be large (trans PF=3.886 on v3a). Tests whether KAMA-filtered entries produce even cleaner transitions that ride further.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 15.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (15x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 15x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "KAMA adaptive baseline — filters noise, lets transitions ride."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex transition signal for long entries."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex transition signal for short entries."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 15x ATR TP for 10:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "kama_vortex_align_v1_7to1",
+      "description": "Tighter TP variant. 7:1 R:R (10.5x ATR TP). The KAMA Stoch family achieved PPR 4.268 at 8:1 — testing 7:1 for higher win rate at the cost of smaller winners. If KAMA's filtering produces cleaner entries with less overshoot, tighter TP captures more reliable exits.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "VTXP_14 crosses_above VTXM_14",
+        "close > KAMA_10_2_30"
+      ],
+      "entry_short": [
+        "VTXM_14 crosses_above VTXP_14",
+        "close < KAMA_10_2_30"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 10.5,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=KAMA",
+        "RoleFramework[confirmation]=Vortex",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (10.5x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 10.5x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "KAMA_10_2_30",
+          "role": "baseline",
+          "notes": "KAMA adaptive trend filter."
+        },
+        {
+          "indicator": "VTXP_14",
+          "role": "confirmation",
+          "notes": "Vortex transition detection for longs."
+        },
+        {
+          "indicator": "VTXM_14",
+          "role": "confirmation",
+          "notes": "Vortex transition detection for shorts."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Tighter 7:1 R:R for higher win rate."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["supertrend_follow"],
+    "design_target": "kama_vortex_alignment_dual_family_fusion",
+    "novel_element": "ALIGNMENT (not divergence) between KAMA and Vortex — opposite of failed kama_vortex_divergence (0/9 WR). Fuses #2 promoted family (KAMA, PPR 4.27) with PF champion (Vortex, PF 2.034). KAMA's adaptive speed acts as natural regime filter."
+  },
+  "backtester_executable_indicators": ["KAMA_10_2_30", "VTXP_14", "VTXM_14", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "KAMA_10_2_30 — Kaufman Adaptive MA, speed-adapts to noise, natural choppy-market filter",
+    "confirmation": "VTXP_14/VTXM_14 — Vortex crossover for directional momentum transition detection (PF=2.034 champion)",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}

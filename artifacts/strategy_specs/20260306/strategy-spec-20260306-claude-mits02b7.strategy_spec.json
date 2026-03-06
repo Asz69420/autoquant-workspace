@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.1",
+  "id": "strategy-spec-20260306-claude-mits02b7",
+  "name": "MACD Ichimoku Tenkan Trend Sync",
+  "created_at": "2026-03-06T05:12:00Z",
+  "source": "claude-advisor",
+  "edge_hypothesis": "MACD is the 3rd strongest promoted family (PPR 3.86, 5/10 promoted entries) — the zero-cross of MACDh is a proven momentum shift detector. Ichimoku TK v1 validated that Ichimoku's median-price structure detects transitions profitably (PF=1.604, all-regime). This spec combines MACDh zero-cross with Tenkan-Sen (ITS_9) as a fast trend filter. ITS_9 is NOT a moving average — it is the 9-period midpoint of high and low: (highest-high + lowest-low) / 2. This makes it respond to PRICE STRUCTURE (range boundaries) rather than closing prices like EMA/SMA/T3/KAMA. When MACDh crosses above zero while close is above ITS_9, both momentum (MACD) AND price structure (Ichimoku midpoint) agree on direction. This is a novel combination: the Ichimoku TK v1 ACCEPT used TK crossover (ITS crosses IKS); this spec uses ITS as a standalone trend filter paired with MACD momentum, testing whether Ichimoku's median-price concept has value INDEPENDENT of the TK crossover mechanism. If profitable, it confirms ITS as a general-purpose baseline — not just an Ichimoku-specific signal.",
+  "regime_assumption": "transitional_primary_ranging_secondary",
+  "target_assets": ["ETH"],
+  "target_timeframes": ["4h"],
+  "variants": [
+    {
+      "name": "macd_ichimoku_tenkan_v1_8to1",
+      "description": "Core variant. MACDh zero-cross + ITS_9 trend filter. 8:1 R:R (12x ATR TP, 1.5 ATR stop). Tests whether Ichimoku Tenkan-Sen as a fast median-price baseline improves MACD's momentum entries compared to EMA-based filters used in existing MACD promoted specs.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "close > ITS_9"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "close < ITS_9"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 12.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (12x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 12x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Ichimoku Tenkan-Sen — 9-period median-price midpoint (high+low)/2. Responds to price structure, not closing prices. Faster than any standard MA."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram zero-cross — proven momentum shift detector. PPR 3.86 in promoted library."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "ATR-based 8:1 R:R framework."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "macd_ichimoku_tenkan_v1_12to1",
+      "description": "Extended TP variant. 12:1 R:R (18x ATR TP). MACD tight 7:1 achieved PPR 3.86 — testing whether the ITS trend filter produces cleaner entries that sustain longer moves, justifying the wider TP. Transition-detection entries historically benefit from wider TPs (Vortex v2 trans PF=4.321 at 12:1).",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "close > ITS_9"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "close < ITS_9"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 1.5,
+        "tp_type": "atr",
+        "tp_atr_mult": 18.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.25
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (18x).",
+        "Exit on ATR stop hit (1.5x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 1.5x ATR_14.",
+        "Take profit at 18x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 25%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Tenkan-Sen median-price baseline — wider TP tests transition ride potential."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram momentum shift — zero-cross entry."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Extended 18x ATR TP for 12:1 R:R."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    },
+    {
+      "name": "macd_ichimoku_tenkan_v1_wide_stop_8to1",
+      "description": "Wide stop variant. 2.0 ATR stop with 16x ATR TP (8:1 R:R maintained). Standard 1.5 ATR stop may be too tight for transition entries — the EMA200 family showed that tight stops + transition detection = incompatible (3 generations, all DD>20%). A 2.0 ATR stop gives more room for the transition to develop while maintaining the 8:1 R:R.",
+      "template_name": "spec_rules",
+      "entry_long": [
+        "MACDh_12_26_9 crosses_above 0",
+        "close > ITS_9"
+      ],
+      "entry_short": [
+        "MACDh_12_26_9 crosses_below 0",
+        "close < ITS_9"
+      ],
+      "risk_policy": {
+        "stop_type": "atr",
+        "stop_atr_mult": 2.0,
+        "tp_type": "atr",
+        "tp_atr_mult": 16.0,
+        "risk_per_trade_pct": 1.0,
+        "max_drawdown_cap": 0.20
+      },
+      "execution_policy": {
+        "entry_fill": "bar_close",
+        "tie_break": "worst_case",
+        "allow_reverse": true,
+        "max_open_trades": 1,
+        "trade_direction": "both"
+      },
+      "filters": [
+        "no repaint",
+        "bot-friendly",
+        "bar-close execution",
+        "RoleFramework[baseline]=EMA",
+        "RoleFramework[confirmation]=MACD",
+        "RoleFramework[volume_volatility]=ATR"
+      ],
+      "exit_rules": [
+        "Exit on ATR TP hit (16x).",
+        "Exit on ATR stop hit (2.0x)."
+      ],
+      "risk_rules": [
+        "Stop loss at 2.0x ATR_14.",
+        "Take profit at 16x ATR_14.",
+        "Risk per trade: 1%.",
+        "Max drawdown cap: 20%."
+      ],
+      "components": [
+        {
+          "indicator": "ITS_9",
+          "role": "baseline",
+          "notes": "Tenkan-Sen median-price trend filter."
+        },
+        {
+          "indicator": "MACDh_12_26_9",
+          "role": "confirmation",
+          "notes": "MACD histogram zero-cross momentum entry."
+        },
+        {
+          "indicator": "ATR_14",
+          "role": "volume_volatility",
+          "notes": "Wide 2.0x ATR stop — learned from EMA200 family failure that tight stops kill transition entries."
+        }
+      ],
+      "origin": "CLAUDE_ADVISOR"
+    }
+  ],
+  "advisory_context": {
+    "avoid_templates": ["stochastic_reversal", "bollinger_breakout"],
+    "prefer_templates": ["macd_confirmation"],
+    "design_target": "macd_ichimoku_tenkan_trend_sync",
+    "novel_element": "ITS_9 (Tenkan-Sen) as standalone trend filter with MACD — tests whether Ichimoku's median-price concept has value INDEPENDENT of TK crossover. ITS is NOT a moving average (it's high-low midpoint), making this mathematically distinct from all prior MACD+MA combinations."
+  },
+  "backtester_executable_indicators": ["MACDh_12_26_9", "ITS_9", "ATR_14"],
+  "indicator_roles": {
+    "baseline": "ITS_9 — Ichimoku Tenkan-Sen, 9-period median-price midpoint. Responds to price structure not closing prices.",
+    "confirmation": "MACDh_12_26_9 — MACD histogram zero-cross, proven momentum shift detector (PPR 3.86, 5/10 promoted)",
+    "volume_volatility": "ATR_14 — position sizing and R:R framework"
+  }
+}
