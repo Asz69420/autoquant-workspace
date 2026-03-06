@@ -4,69 +4,12 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-05 20:01 UTC
+**Last updated:** 2026-03-06 02:01 UTC
 **Entries:** 25
 
 ---
 
-## 1. Dumb Money Concepts [theUltimator5]
-*TheUltimator5 | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltimator5/
-
-**Summary:** TradingView indicator: Dumb Money Concepts [theUltimator5] by TheUltimator5. Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the actions of institutional investors (banks, hedge funds) rather than relying on traditional technical indicators by analyzing order blocks, liquidity gaps, and market imbalances... Well this indicator isn&#39;t that. This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the actions of institutional investors (banks, hedge funds) rather than relying on traditional technical indicators by analyzing order blocks, liquidity gaps, and market imbalances... This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Source URL: https://www.tradingview.com/script/8qgtThms-Dumb-Money-Concepts-theUltimator5/.
-**Raw Concepts:** TradingView indicator: Dumb Money Concepts [theUltimator5] by TheUltimator5. Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the actions of institutional investors (banks, hedge funds) rather than relying on traditional technical indicators by analyzing order blocks, liquidity gaps, and market imbalances... Well this indicator isn&#39;t that. This indicator is the trading methodology focused on mapping emotional trading &#39;techniques&#39; by retail traders and relies heavily on … Most people are familiar with Smart Money Concepts (SMC), which is a trading methodology focused on mapping market structure and liquidity to track the actions of institutional investors (banks, hedge funds) rathe...
-
----
-
-## 2. TIKOLE S.P.ADX-DI Trend Indication 9503888883
-*TIKOLE14 | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/O7pBV79n-TIKOLE-S-P-ADX-DI-Trend-Indication-9503888883/
-
-**Summary:** TradingView indicator: TIKOLE S.P.ADX-DI Trend Indication 9503888883 by TIKOLE14. This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier. Unlike a standard ADX which stays positive (0–100), this script creates a Zero-Line Histogram to clearly separate bullish and bearish territory. Key Components Dominant Strength Histogram (momentprod): This is the core visual element. It multiplies the DI Difference (DI+ minus DI-) by the ADX.
-**Strategy Components:**
-- [trend] TradingView indicator: TIKOLE S.P.ADX-DI Trend Indication 9503888883 by TIKOLE14.
-- [trend] This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier.
-- [trend] Green Histogram: Bullish momentum (DI+ is … This indicator measures the strength and direction of a market trend by combining the Directional Movement Index (DMI) with a smoothed momentum multiplier.
-- [momentum] Unlike a standard ADX which stays positive (0–100), this script creates a Zero-Line Histogram to clearly separate bullish and bearish territory.
-- [momentum] Key Components Dominant Strength Histogram (momentprod): This is the core visual element.
-**Indicators:** ADX
-
----
-
-## 3. Aura Trend Momentum [Pineify]
-*Pineify | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/
-
-**Summary:** TradingView indicator: Aura Trend Momentum [Pineify] by Pineify. ``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum oscillator that combines double exponential smoothing with normalized momentum calculations to provide clear, noise-filtered trend signals. Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing technique on both the raw momentum and its absolute value, … ``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum oscillator that combines double exponential smoothing with normalized momentum calculations to provide clear, noise-filtered trend signals. Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing technique on both the raw momentum and its absolute value, … Source URL: https://www.tradingview.com/script/sqdd7Tgo-Aura-Trend-Momentum-Pineify/.
-**Strategy Components:**
-- [trend] TradingView indicator: Aura Trend Momentum [Pineify] by Pineify.
-- [trend] ``` Aura Trend Momentum - Advanced Double-Smoothed Oscillator with Gradient Visualization The Aura Trend Momentum indicator is a sophisticated momentum oscillator that combines double exponential smoo
-- [trend] Unlike traditional momentum oscillators that suffer from erratic movements and false signals, this indicator employs a dual-layer EMA smoothing technique on both the raw momentum and its absolute valu
-**Indicators:** EMA
-
----
-
-## 4. Candle Genome Scanner [forexobroker]
-*forexobroker | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/
-
-**Summary:** TradingView indicator: Candle Genome Scanner [forexobroker] by forexobroker. Candle Genome Scanner goes beyond simple pattern identification. While most candlestick scripts just flag patterns, this scanner analyzes the &#34;DNA&#34; of each candle formation — detecting 28 patterns, measuring their historical reliability on the current instrument, grouping aligned signals into cluster signals, and giving you a clear directional bias based on real follow-through data. WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Candle Genome Scanner goes beyond simple pattern identification. WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Source URL: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/.
-**Strategy Components:**
-- [confirmation] WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Candle Genome Scanner goes beyond simple pattern identification.
-- [confirmation] WHAT IT DOES The indicator scans every confirmed bar for 28 candlestick patterns across three categories … Source URL: https://www.tradingview.com/script/HUVPAVTC-Candle-Genome-Scanner-forexobroker/.
-
----
-
-## 5. Gamma Exposure Levels [BackQuant]
-*BackQuant | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/
-
-**Summary:** TradingView indicator: Gamma Exposure Levels [BackQuant] by BackQuant. Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsing the values and plotting them as labeled horizontal lines on your chart. It is designed for traders who use options-derived gamma exposure data as part of their technical analysis and want a fast, visual way to overlay those key price levels onto any chart and timeframe. Rather than manually drawing lines for each level, this script reads a … Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsing the values and plotting them as labeled horizontal lines on your chart. Rather than manually drawing lines for each level, this script reads a … Source URL: https://www.tradingview.com/script/nyyInUl8-Gamma-Exposure-Levels-BackQuant/.
-**Raw Concepts:** TradingView indicator: Gamma Exposure Levels [BackQuant] by BackQuant. Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsing the values and plotting them as labeled horizontal lines on your chart. It is designed for traders who use options-derived gamma exposure data as part of their technical analysis and want a fast, visual way to overlay those key price levels onto any chart and timeframe. Rather than manually drawing lines for each level, this script reads a … Gamma Exposure Levels This indicator allows you to paste Gamma Exposure (GEX) level data directly into a text input on TradingView, automatically parsing the values and plotting them as labeled horizontal lines on your chart. It is...
-
----
-
-## 6. SMC Completo [PFX]
+## 1. SMC Completo [PFX]
 *prodigiofx26 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/zRJwbqRU/
 
@@ -76,7 +19,7 @@ Source: https://www.tradingview.com/script/zRJwbqRU/
 
 ---
 
-## 7. [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum
+## 2. [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum
 *AquaTickTrader | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/
 
@@ -90,7 +33,7 @@ Source: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-A
 
 ---
 
-## 8. Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)
+## 3. Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)
 *seantrading2 | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/
 
@@ -106,7 +49,7 @@ Source: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell
 
 ---
 
-## 9. Smoothed Stochastic Momentum Index [Mr. Quant]
+## 4. Smoothed Stochastic Momentum Index [Mr. Quant]
 *Jacob_LuxAlgo | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/
 
@@ -119,7 +62,7 @@ Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum
 
 ---
 
-## 10. Bitcoin: We Really Do Live in a Simulation
+## 5. Bitcoin: We Really Do Live in a Simulation
 *IntoTheCryptoverse | transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=i3WIoS9Echo
 
@@ -141,7 +84,7 @@ Source: https://www.youtube.com/watch?v=i3WIoS9Echo
 
 ---
 
-## 11. Yaduvansi Precision Entry System
+## 6. Yaduvansi Precision Entry System
 *yaduvansiit | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-System/
 
@@ -151,7 +94,7 @@ Source: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-Sy
 
 ---
 
-## 12. GuarDeer Precision Entry System
+## 7. GuarDeer Precision Entry System
 *yaduvansiit | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-System/
 
@@ -161,7 +104,7 @@ Source: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-Sys
 
 ---
 
-## 13. Future Roll Monitor
+## 8. Future Roll Monitor
 *QuantNomad | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/
 
@@ -171,7 +114,7 @@ Source: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/
 
 ---
 
-## 14. Smart Pivot Reversals [identityKa]
+## 9. Smart Pivot Reversals [identityKa]
 *IdentityKa | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/H64WPT4Q/
 
@@ -180,7 +123,7 @@ Source: https://www.tradingview.com/script/H64WPT4Q/
 
 ---
 
-## 15. Weekly Distribution Levels
+## 10. Weekly Distribution Levels
 *const | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/engdMsy0/
 
@@ -189,7 +132,7 @@ Source: https://www.tradingview.com/script/engdMsy0/
 
 ---
 
-## 16. Stop Loss Cascades (Breakouts) [Kioseff Trading]
+## 11. Stop Loss Cascades (Breakouts) [Kioseff Trading]
 *KioseffTrading | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts-Kioseff-Trading/
 
@@ -209,7 +152,7 @@ Source: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts
 
 ---
 
-## 17. VWAP Volume Analyzer (Wyckoff) | Capitan-Trading
+## 12. VWAP Volume Analyzer (Wyckoff) | Capitan-Trading
 *capitan-trading | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/bO0cxmj4/
 
@@ -218,7 +161,7 @@ Source: https://www.tradingview.com/script/bO0cxmj4/
 
 ---
 
-## 18. GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure
+## 13. GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure
 *TLADe_TradeLikeaDealer | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/EbaHGKsz/
 
@@ -227,7 +170,7 @@ Source: https://www.tradingview.com/script/EbaHGKsz/
 
 ---
 
-## 19. Topdown Delta Analysis [Mr. Quant]
+## 14. Topdown Delta Analysis [Mr. Quant]
 *Jacob_LuxAlgo | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Quant/
 
@@ -238,7 +181,7 @@ Source: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Qu
 
 ---
 
-## 20. XAUUSD GoldScalper Pro v8+Session
+## 15. XAUUSD GoldScalper Pro v8+Session
 *hwarang11 | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/Q2PxJ3RB/
 
@@ -256,7 +199,7 @@ Source: https://www.tradingview.com/script/Q2PxJ3RB/
 
 ---
 
-## 21. Tori Trend2.2 by PJPF - Confluence Optimized
+## 16. Tori Trend2.2 by PJPF - Confluence Optimized
 *pjpfowler | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/xnvk2H4w-Tori-Trend2-2-by-PJPF-Confluence-Optimized/
 
@@ -268,7 +211,7 @@ Source: https://www.tradingview.com/script/xnvk2H4w-Tori-Trend2-2-by-PJPF-Conflu
 
 ---
 
-## 22. Vantage Liquidity Edge
+## 17. Vantage Liquidity Edge
 *TheRealDrip2Rip | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/yi7cZND5-Vantage-Liquidity-Edge/
 
@@ -278,7 +221,7 @@ Source: https://www.tradingview.com/script/yi7cZND5-Vantage-Liquidity-Edge/
 
 ---
 
-## 23. VIX-VIXEQ Regime Detector
+## 18. VIX-VIXEQ Regime Detector
 *HenriqueCentieiro | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/
 
@@ -287,7 +230,7 @@ Source: https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/
 
 ---
 
-## 24. Bitcoin Analysis: The Setup Everyone Missed
+## 19. Bitcoin Analysis: The Setup Everyone Missed
 *ECKrown | transcript | 2026-03-05*
 Source: https://www.youtube.com/watch?v=q78DKVRPELI
 
@@ -311,7 +254,7 @@ Source: https://www.youtube.com/watch?v=q78DKVRPELI
 
 ---
 
-## 25. Euphoria Indicator (EI) [R2D2]
+## 20. Euphoria Indicator (EI) [R2D2]
 *R2D2_4Life | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/
 
@@ -324,5 +267,63 @@ Source: https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/
 - [momentum] Euphoria &amp; Fear Momentum Oscillator (EI) - Precision Reversals Overview Financial markets are driven by two primal emotions: Greed and Fear.
 - [momentum] The Euphoria Indicator (EI) is a highly reactive, custom momentum oscillator designed to visualize the exact moments when market emotion reaches an unsustainable extreme.
 - [momentum] By mapping aggressive momentum swings on a strict -100 to +100 scale, this tool identifies high-probability exhaustion points, printing actionable visual triggers exactly when the … Euphoria &amp; Fea
+
+---
+
+## 21. MAD For-Loop ~ CharonQuant
+*CharonQuant | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/RSok89Q5-MAD-For-Loop-CharonQuant/
+
+**Summary:** TradingView indicator: MAD For-Loop ~ CharonQuant by CharonQuant. MAD For-Loop MAD For-Loop is a volatility-adjusted trend strength indicator built on the For-Loop persistence model. Instead of measuring trend direction alone, this model integrates Mean Absolute Deviation (MAD) to evaluate how strong the current trend is relative to its recent dispersion. This allows the indicator to filter weak signals and highlight moments when directional pressure becomes statistically meaningful. How It Works A moving average is first calculated using the selected … MAD For-Loop MAD For-Loop is a volatility-adjusted trend strength indicator built on the For-Loop persistence model.
+**Trading Rules:**
+- This allows the indicator to filter weak signals and highlight moments when directional pressure becomes statistically meaningful.
+**Strategy Components:**
+- [trend] MAD For-Loop MAD For-Loop is a volatility-adjusted trend strength indicator built on the For-Loop persistence model.
+- [trend] Instead of measuring trend direction alone, this model integrates Mean Absolute Deviation (MAD) to evaluate how strong the current trend is relative to its recent dispersion.
+- [trend] How It Works A moving average is first calculated using the selected … MAD For-Loop MAD For-Loop is a volatility-adjusted trend strength indicator built on the For-Loop persistence model.
+- [filter] This allows the indicator to filter weak signals and highlight moments when directional pressure becomes statistically meaningful.
+
+---
+
+## 22. Top-Down HTF Candles [Confirmed]
+*ArisCodes | tradingview_catalog | 2026-03-05*
+Source: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/
+
+**Summary:** TradingView indicator: Top-Down HTF Candles [Confirmed] by ArisCodes. https://www.tradingview.com/x/VIVZaqmQ/ ═════════════════════════════════════════════════════════════ TOP-DOWN HTF CANDLES ═════════════════════════════════════════════════════════════ Top-Down HTF Candles makes higher timeframe alignment automatic and visual — projecting HTF candle structure directly onto your chart so you always have full context while trading the lower timeframe entry. ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT IT … Source URL: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/.
+**Strategy Components:**
+- [confirmation] TradingView indicator: Top-Down HTF Candles [Confirmed] by ArisCodes.
+- [confirmation] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ WHAT IT … Source URL: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/.
+
+---
+
+## 23. Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02
+*TheKhanSaahab | tradingview_catalog | 2026-03-06*
+Source: https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry-Exit-with-SL-TP-by-KhanSaab-V-02/
+
+**Summary:** TradingView indicator: Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02 by TheKhanSaahab. Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading. It combines momentum, trend alignment, and volatility to identify high-probability entries. Key Features Smart Sniper Candles: * Black Candles: Represent a fresh &#34;Signal&#34; entry (EMA Cross). Orange Candles: Represent a &#34;Retest&#34; setup (Price pulling back to the EMA9/21 ribbon within a trend).
+**Strategy Components:**
+- [trend] Overview KhanSaab Sniper V.02 is a professional-grade trend-following indicator designed for scalping and day trading.
+- [trend] It combines momentum, trend alignment, and volatility to identify high-probability entries.
+- [trend] Orange Candles: Represent a &#34;Retest&#34; setup (Price pulling back to the EMA9/21 ribbon within a trend).
+
+---
+
+## 24. Hidden Markov Model: Baum-Welch [UAlgo]
+*UAlgo | tradingview_catalog | 2026-03-06*
+Source: https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Welch-UAlgo/
+
+**Summary:** TradingView indicator: Hidden Markov Model: Baum-Welch [UAlgo] by UAlgo. Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log returns and continuously adapts its parameters using an online Baum Welch expectation maximization routine. The script is designed to classify the market into three latent regimes, then express that classification as real time probabilities for Bull, Range, and Bear conditions. The indicator runs in its own pane (overlay=false) and … Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log returns and continuously adapts its parameters using an online Baum Welch expectation maximization routine. The indicator runs in its own pane (overlay=false) and … Source URL: https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Welch-UAlgo/.
+**Raw Concepts:** TradingView indicator: Hidden Markov Model: Baum-Welch [UAlgo] by UAlgo. Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log returns and continuously adapts its parameters using an online Baum Welch expectation maximization routine. The script is designed to classify the market into three latent regimes, then express that classification as real time probabilities for Bull, Range, and Bear conditions. The indicator runs in its own pane (overlay=false) and … Hidden Markov Model: Baum-Welch is a regime detection and reversal signaling indicator that applies a 3 state Hidden Markov Model to normalized log returns and continuously adapts its parameters using an online Baum Welch expectation maximizat...
+
+---
+
+## 25. Hidden Markov Reversal Finder [UAlgo]
+*UAlgo | tradingview_catalog | 2026-03-06*
+Source: https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finder-UAlgo/
+
+**Summary:** TradingView indicator: Hidden Markov Reversal Finder [UAlgo] by UAlgo. Hidden Markov Reversal Finder is a regime aware reversal detection indicator that uses a compact 3 state Hidden Markov style filter with online adaptation to classify market conditions and highlight potential top and bottom rotations. The script models price behavior as transitions between three regimes: - Bull Expansion - Balance - Bear Stress Instead of running a heavy Baum Welch retraining loop, this version is designed as a lightweight real time filter. It updates regime probabilities … Source URL: https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finder-UAlgo/.
+**Strategy Components:**
+- [filter] Hidden Markov Reversal Finder is a regime aware reversal detection indicator that uses a compact 3 state Hidden Markov style filter with online adaptation to classify market conditions and highlight p
+- [filter] The script models price behavior as transitions between three regimes: - Bull Expansion - Balance - Bear Stress Instead of running a heavy Baum Welch retraining loop, this version is designed as a lig
 
 ---
