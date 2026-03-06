@@ -44,11 +44,12 @@ This avoids out-of-order cards, duplicate posts, and cross-run metric mixing.
   - Emits Quandalf card with matching cycle reference.
 
 ### Visible Pairing
-- Frodex card header includes compact run identity:
-  - `... | 🆔 <last-6-digits>`
-- Quandalf card header includes compact run identity:
-  - `... | 🆔 <last-6-digits>`
-- This keeps cards visually paired while reducing header length.
+- Frodex card header includes compact display identity:
+  - `... | 🆔 1A0001`
+- Quandalf card header includes compact display identity:
+  - `... | 🆔 1A0001`
+- Display IDs are monotonic and mapped 1:1 to real run IDs.
+- This keeps cards visually paired while preserving full backend run identity.
 
 ---
 
