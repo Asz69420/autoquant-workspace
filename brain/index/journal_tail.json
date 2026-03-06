@@ -1,5 +1,5 @@
 {
-  "count": 15,
+  "count": 16,
   "entries": [
     {
       "id": "journal-2026-03-03-u18-brain-init",
@@ -244,7 +244,20 @@
       "source_path": "brain/journal/2026-03-06-u34-pipeline-starvation-research-convergence.md",
       "summary": "U34: Pipeline kill completely ineffective — 131 more zero-trade backtests today (300+ since kill). Queue starvation identified as blocking mechanism: directive specs consume all backtest slots, starving Claude specs for 2nd consecutive cycl",
       "ts": "2026-03-06T06:30:00Z"
+    },
+    {
+      "id": "u35",
+      "pointers": [
+        "fact-regime-detection-convergence",
+        "fact-rr-architecture-dependent",
+        "fact-supertrend-cci-1h-allregime",
+        "failure-ema200-dd-barrier",
+        "fact-kama-vortex-template-untested"
+      ],
+      "source_path": "brain/journal/2026-03-06-u35-rr-architecture-hmm-convergence.md",
+      "summary": "U35: No new backtest data since U33. Deeper regime analysis of Supertrend CCI v4 variants reveals R:R optimization is architecture-dependent (new fact). HMM regime detection from research digest adds 6th framework to transition-detection co",
+      "ts": "2026-03-06T08:00:00Z"
     }
   ],
-  "generated_at": "2026-03-06T06:30:00Z"
+  "generated_at": "2026-03-06T08:00:00Z"
 }

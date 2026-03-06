@@ -4,52 +4,12 @@
 > Updated automatically. Quandalf reads this each cycle for strategy inspiration.
 > This is a rolling digest — oldest entries drop off as new ones arrive.
 
-**Last updated:** 2026-03-06 02:01 UTC
+**Last updated:** 2026-03-06 08:02 UTC
 **Entries:** 25
 
 ---
 
-## 1. SMC Completo [PFX]
-*prodigiofx26 | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/zRJwbqRU/
-
-**Summary:** TradingView indicator: SMC Completo [PFX] by prodigiofx26. This TradingView Pine Script identifies and plots Supply and Demand zones (Order Blocks) and Fair Value Gaps (FVG) based on swing highs and lows. It allows configurable limits for the number of internal OBs, swing OBs, and FVGs displayed, while maintaining market structure detection and trailing swing levels.&#34; If you want, I can also make an even shorter 1-line version that’s perfect for a TradingView publish description. Do you want me to do that? Source URL: https://www.tradingview.com/script/zRJwbqRU/.
-**Trading Rules:**
-- It allows configurable limits for the number of internal OBs, swing OBs, and FVGs displayed, while maintaining market structure detection and trailing swing levels.&#34; If you want, I can also make a
-
----
-
-## 2. [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum
-*AquaTickTrader | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/
-
-**Summary:** TradingView indicator: [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum by AquaTickTrader. MACD Pro – RSI + ALMA Adaptive Momentum 🔎 Overview TL5 MACD Pro is a structurally enhanced version of the classic MACD indicator that integrates trend filtering, momentum confirmation, and adaptive bias analysis — while preserving the original MACD calculation. The core MACD formula remains standard. This version adds multi-layer confirmation using RSI, ALMA, and short-term structure alignment to help traders identify higher-quality momentum shifts. 🚀 What … Possible indicators: MACD, RSI, ALMA.
-**Strategy Components:**
-- [momentum] TradingView indicator: [TL5 MACD] MACD Pro =&gt; RSI + ALMA Adaptive Momentum by AquaTickTrader.
-- [momentum] This version adds multi-layer confirmation using RSI, ALMA, and short-term structure alignment to help traders identify higher-quality momentum shifts.
-- [momentum] Source URL: https://www.tradingview.com/script/upCCJN6B-TL5-MACD-MACD-Pro-RSI-ALMA-Adaptive-Momentum/.
-- [trend] MACD Pro – RSI + ALMA Adaptive Momentum 🔎 Overview TL5 MACD Pro is a structurally enhanced version of the classic MACD indicator that integrates trend filtering, momentum confirmation, and adaptive bi
-**Indicators:** RSI, MACD
-
----
-
-## 3. Unified 4-Indicator Buy/Sell System (60pt62, PMO exact)
-*seantrading2 | tradingview_catalog | 2026-03-04*
-Source: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/
-
-**Summary:** TradingView indicator: Unified 4-Indicator Buy/Sell System (60pt62, PMO exact) by seantrading2. use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of next candle, stops to high or low of signal candle and take profit at 1rr. if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of next candle, stops to high or low of signal candle and take profit at 1rr. if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show Source URL: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indicator-Buy-Sell-System-60pt62-PMO-exact/.
-**Trading Rules:**
-- if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings
-- if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show Source URL: https://www.tradingview.com/script/DMtUM2Xn-Unified-4-Indi
-**Strategy Components:**
-- [momentum] use these signal alongside price momentum oscillator, use the settings 10,10,8 for the PMO take the signal as long as you are on the right side of pmo, longs above 0 shorts below 0, entry at open of n
-- [momentum] if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings
-**Entry/Exit Conditions:**
-- if you get a win, don&#39;t chase the following moves even if they are all the right setup, just wait for a new hma color to show use these signal alongside price momentum oscillator, use the settings
-
----
-
-## 4. Smoothed Stochastic Momentum Index [Mr. Quant]
+## 1. Smoothed Stochastic Momentum Index [Mr. Quant]
 *Jacob_LuxAlgo | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum-Index-Mr-Quant/
 
@@ -62,7 +22,7 @@ Source: https://www.tradingview.com/script/d7dD0rJ1-Smoothed-Stochastic-Momentum
 
 ---
 
-## 5. Bitcoin: We Really Do Live in a Simulation
+## 2. Bitcoin: We Really Do Live in a Simulation
 *IntoTheCryptoverse | transcript | 2026-03-04*
 Source: https://www.youtube.com/watch?v=i3WIoS9Echo
 
@@ -84,7 +44,7 @@ Source: https://www.youtube.com/watch?v=i3WIoS9Echo
 
 ---
 
-## 6. Yaduvansi Precision Entry System
+## 3. Yaduvansi Precision Entry System
 *yaduvansiit | tradingview_catalog | 2026-03-04*
 Source: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-System/
 
@@ -94,7 +54,7 @@ Source: https://www.tradingview.com/script/2IsRscca-Yaduvansi-Precision-Entry-Sy
 
 ---
 
-## 7. GuarDeer Precision Entry System
+## 4. GuarDeer Precision Entry System
 *yaduvansiit | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-System/
 
@@ -104,7 +64,7 @@ Source: https://www.tradingview.com/script/9RGmyHr6-GuarDeer-Precision-Entry-Sys
 
 ---
 
-## 8. Future Roll Monitor
+## 5. Future Roll Monitor
 *QuantNomad | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/
 
@@ -114,7 +74,7 @@ Source: https://www.tradingview.com/script/bxKNkQln-Future-Roll-Monitor/
 
 ---
 
-## 9. Smart Pivot Reversals [identityKa]
+## 6. Smart Pivot Reversals [identityKa]
 *IdentityKa | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/H64WPT4Q/
 
@@ -123,7 +83,7 @@ Source: https://www.tradingview.com/script/H64WPT4Q/
 
 ---
 
-## 10. Weekly Distribution Levels
+## 7. Weekly Distribution Levels
 *const | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/engdMsy0/
 
@@ -132,7 +92,7 @@ Source: https://www.tradingview.com/script/engdMsy0/
 
 ---
 
-## 11. Stop Loss Cascades (Breakouts) [Kioseff Trading]
+## 8. Stop Loss Cascades (Breakouts) [Kioseff Trading]
 *KioseffTrading | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts-Kioseff-Trading/
 
@@ -152,7 +112,7 @@ Source: https://www.tradingview.com/script/CJX3k6l2-Stop-Loss-Cascades-Breakouts
 
 ---
 
-## 12. VWAP Volume Analyzer (Wyckoff) | Capitan-Trading
+## 9. VWAP Volume Analyzer (Wyckoff) | Capitan-Trading
 *capitan-trading | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/bO0cxmj4/
 
@@ -161,7 +121,7 @@ Source: https://www.tradingview.com/script/bO0cxmj4/
 
 ---
 
-## 13. GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure
+## 10. GEX Levels Dashboard - NQ/NDX/QQQ Gamma Exposure
 *TLADe_TradeLikeaDealer | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/EbaHGKsz/
 
@@ -170,7 +130,7 @@ Source: https://www.tradingview.com/script/EbaHGKsz/
 
 ---
 
-## 14. Topdown Delta Analysis [Mr. Quant]
+## 11. Topdown Delta Analysis [Mr. Quant]
 *Jacob_LuxAlgo | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Quant/
 
@@ -181,7 +141,7 @@ Source: https://www.tradingview.com/script/Xlm8itga-Topdown-Delta-Analysis-Mr-Qu
 
 ---
 
-## 15. XAUUSD GoldScalper Pro v8+Session
+## 12. XAUUSD GoldScalper Pro v8+Session
 *hwarang11 | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/Q2PxJ3RB/
 
@@ -199,7 +159,7 @@ Source: https://www.tradingview.com/script/Q2PxJ3RB/
 
 ---
 
-## 16. Tori Trend2.2 by PJPF - Confluence Optimized
+## 13. Tori Trend2.2 by PJPF - Confluence Optimized
 *pjpfowler | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/xnvk2H4w-Tori-Trend2-2-by-PJPF-Confluence-Optimized/
 
@@ -211,7 +171,7 @@ Source: https://www.tradingview.com/script/xnvk2H4w-Tori-Trend2-2-by-PJPF-Conflu
 
 ---
 
-## 17. Vantage Liquidity Edge
+## 14. Vantage Liquidity Edge
 *TheRealDrip2Rip | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/yi7cZND5-Vantage-Liquidity-Edge/
 
@@ -221,7 +181,7 @@ Source: https://www.tradingview.com/script/yi7cZND5-Vantage-Liquidity-Edge/
 
 ---
 
-## 18. VIX-VIXEQ Regime Detector
+## 15. VIX-VIXEQ Regime Detector
 *HenriqueCentieiro | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/
 
@@ -230,7 +190,7 @@ Source: https://www.tradingview.com/script/V7aBVr8v-VIX-VIXEQ-Regime-Detector/
 
 ---
 
-## 19. Bitcoin Analysis: The Setup Everyone Missed
+## 16. Bitcoin Analysis: The Setup Everyone Missed
 *ECKrown | transcript | 2026-03-05*
 Source: https://www.youtube.com/watch?v=q78DKVRPELI
 
@@ -254,7 +214,7 @@ Source: https://www.youtube.com/watch?v=q78DKVRPELI
 
 ---
 
-## 20. Euphoria Indicator (EI) [R2D2]
+## 17. Euphoria Indicator (EI) [R2D2]
 *R2D2_4Life | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/
 
@@ -270,7 +230,7 @@ Source: https://www.tradingview.com/script/HV0KvORW-Euphoria-Indicator-EI-R2D2/
 
 ---
 
-## 21. MAD For-Loop ~ CharonQuant
+## 18. MAD For-Loop ~ CharonQuant
 *CharonQuant | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/RSok89Q5-MAD-For-Loop-CharonQuant/
 
@@ -285,7 +245,7 @@ Source: https://www.tradingview.com/script/RSok89Q5-MAD-For-Loop-CharonQuant/
 
 ---
 
-## 22. Top-Down HTF Candles [Confirmed]
+## 19. Top-Down HTF Candles [Confirmed]
 *ArisCodes | tradingview_catalog | 2026-03-05*
 Source: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirmed/
 
@@ -296,7 +256,7 @@ Source: https://www.tradingview.com/script/RbdOG5gE-Top-Down-HTF-Candles-Confirm
 
 ---
 
-## 23. Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02
+## 20. Sniper Entry/Exit with SL&amp;TP by KhanSaab V.02
 *TheKhanSaahab | tradingview_catalog | 2026-03-06*
 Source: https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry-Exit-with-SL-TP-by-KhanSaab-V-02/
 
@@ -308,7 +268,7 @@ Source: https://www.tradingview.com/script/HBDcHSB7-Sniper-Entry-Exit-with-SL-TP
 
 ---
 
-## 24. Hidden Markov Model: Baum-Welch [UAlgo]
+## 21. Hidden Markov Model: Baum-Welch [UAlgo]
 *UAlgo | tradingview_catalog | 2026-03-06*
 Source: https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Welch-UAlgo/
 
@@ -317,7 +277,7 @@ Source: https://www.tradingview.com/script/ggqF9HsV-Hidden-Markov-Model-Baum-Wel
 
 ---
 
-## 25. Hidden Markov Reversal Finder [UAlgo]
+## 22. Hidden Markov Reversal Finder [UAlgo]
 *UAlgo | tradingview_catalog | 2026-03-06*
 Source: https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finder-UAlgo/
 
@@ -325,5 +285,34 @@ Source: https://www.tradingview.com/script/X74fRKws-Hidden-Markov-Reversal-Finde
 **Strategy Components:**
 - [filter] Hidden Markov Reversal Finder is a regime aware reversal detection indicator that uses a compact 3 state Hidden Markov style filter with online adaptation to classify market conditions and highlight p
 - [filter] The script models price behavior as transitions between three regimes: - Bull Expansion - Balance - Bear Stress Instead of running a heavy Baum Welch retraining loop, this version is designed as a lig
+
+---
+
+## 23. Swing Volume Profile Pro [WillyAlgoTrader]
+*WillyAlgoTrader | tradingview_catalog | 2026-03-06*
+Source: https://www.tradingview.com/script/7yozLqCv-Swing-Volume-Profile-Pro-WillyAlgoTrader/
+
+**Summary:** TradingView indicator: Swing Volume Profile Pro [WillyAlgoTrader] by WillyAlgoTrader. 📊 Swing Volume Profile Pro is an overlay indicator that builds a true volume distribution profile for each completed swing leg — distributing each candle&#39;s volume across price bins proportionally to how much of the candle&#39;s range overlaps each bin (TPO-like allocation), then calculating the Point of Control (highest-volume price), Value Area (70% of volume around POC), buy/sell delta per bin, and swing VWAP. The result is a volume profile that maps exactly to the swing structure, not to … Source URL: https://www.tradingview.com/script/7yozLqCv-Swing-Volume-Profile-Pro-WillyAlgoTrader/.
+**Raw Concepts:** TradingView indicator: Swing Volume Profile Pro [WillyAlgoTrader] by WillyAlgoTrader. 📊 Swing Volume Profile Pro is an overlay indicator that builds a true volume distribution profile for each completed swing leg — distributing each candle&#39;s volume across price bins proportionally to how much of the candle&#39;s range overlaps each bin (TPO-like allocation), then calculating the Point of Control (highest-volume price), Value Area (70% of volume around POC), buy/sell delta per bin, and swing VWAP. The result is a volume profile that maps exactly to the swing structure, not to … 📊 Swing Volume Profile Pro is an overlay indicator that builds a true volume distribution profile for each completed swing leg — distributing each candle&#39;s volume across price bins proportionally to how much...
+
+---
+
+## 24. Luminous Pivot S&amp;R Matrix [Pineify]
+*Pineify | tradingview_catalog | 2026-03-06*
+Source: https://www.tradingview.com/script/VMWGYzwf-Luminous-Pivot-S-R-Matrix-Pineify/
+
+**Summary:** TradingView indicator: Luminous Pivot S&amp;R Matrix [Pineify] by Pineify. Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zones with ATR-Adaptive Width and Breakout Detection The Luminous Pivot S&amp;R Matrix is a dynamic support and resistance indicator that automatically identifies significant pivot highs and pivot lows, constructs ATR-adaptive zones around them, and monitors each zone in real time for breakout invalidation. Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zones with ATR-Adaptive Width and Breakout Detection The Luminous Pivot S&amp;R Matrix is a dynamic support and resistance indicator that automatically identifies significant pivot highs and pivot lows, constructs ATR-adaptive zones around them, and monitors each zone in real time for breakout invalid Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Possible indicators: ATR. Source URL: https://www.tradingview.com/script/VMWGYzwf-Luminous-Pivot-S-R-Matrix-Pineify/.
+**Strategy Components:**
+- [confirmation] Unlike static horizontal line tools that require manual placement, this indicator continuously scans price action for structurally … Luminous Pivot S&amp;R Matrix — Dynamic Support &amp; Resistance Zo
+**Indicators:** ATR
+
+---
+
+## 25. BB MTF
+*ACE_CT | tradingview_catalog | 2026-03-06*
+Source: https://www.tradingview.com/script/0ZLFXWjx-BB-MTF/
+
+**Summary:** TradingView indicator: BB MTF by ACE_CT. Automatically detect live and historical blocks across a range of timeframes with the ability to visually differentiae between those that are multiple times hidden. Source URL: https://www.tradingview.com/script/0ZLFXWjx-BB-MTF/.
+**Raw Concepts:** TradingView indicator: BB MTF by ACE_CT. Breaker Blocks - Medium Timeframe. Automatically detect live and historical blocks across a range of timeframes with the ability to visually differentiae between those that are multiple times hidden. Breaker Blocks - Medium Timeframe. Automatically detect live and historical blocks across a range of timeframes with the ability to visually differentiae between those that are multiple times hidden. Source URL: https://www.tradingview.com/script/0ZLFXWjx-BB-MTF/...
 
 ---

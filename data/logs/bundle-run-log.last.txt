@@ -1,9 +1,9 @@
 ﻿🍳 Cooking
-✅ | ▶️ 5m 15s | 🆔 1A0041
+❌ | ▶️ 3s | 🆔 1A0048
 ○───activity─────────────────────
-Waiting: 0
-Backtests: 6
+Waiting: 10
+Backtests: 0
 Skipped: 0
 Forwardtests: 0
 ○───note─────────────────────────
-System status is healthy this cycle. Cycle complete: 6 backtests run; no strong promotion yet.
+System status is blocked this cycle. I hit 1 issue(s); the main one was Autopilot: another run was active, so this attempt could not take the lock.
