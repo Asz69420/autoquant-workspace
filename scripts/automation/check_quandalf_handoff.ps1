@@ -253,91 +253,6 @@ function Get-LiveReviewInfo {
   }
 }
 
-function Get-OrAssignCycleDisplayId {
-  param([string]$RunId)
-
-  if ([string]::IsNullOrWhiteSpace($RunId)) { return '' }
-
-  $statePath = Join-Path $ROOT 'data\state\cycle_display_id_state.json'
-  $lockDir = Join-Path $ROOT 'data\state\locks\cycle_display_id.lockdir'
-  New-Item -ItemType Directory -Force -Path (Split-Path $statePath -Parent) | Out-Null
-  New-Item -ItemType Directory -Force -Path (Split-Path $lockDir -Parent) | Out-Null
-
-  $acquired = $false
-  for ($i = 0; $i -lt 80; $i++) {
-    try {
-      New-Item -ItemType Directory -Path $lockDir -ErrorAction Stop | Out-Null
-      $acquired = $true
-      break
-    } catch {
-      Start-Sleep -Milliseconds 100
-    }
-  }
-
-  if (-not $acquired) { return '' }
-
-  try {
-    $major = 1
-    $letter = 'A'
-    $seq = 0
-    $runMap = @{}
-
-    if (Test-Path -LiteralPath $statePath) {
-      try {
-        $st = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
-        if ($null -ne $st) {
-          try { if ($null -ne $st.major) { $major = [int]$st.major } } catch {}
-          try {
-            if (-not [string]::IsNullOrWhiteSpace([string]$st.letter)) {
-              $candidate = ([string]$st.letter).Substring(0,1).ToUpperInvariant()
-              if ($candidate -match '^[A-Z]$') { $letter = $candidate }
-            }
-          } catch {}
-          try { if ($null -ne $st.seq) { $seq = [int]$st.seq } } catch {}
-
-          if ($st.PSObject.Properties.Name -contains 'run_map' -and $null -ne $st.run_map) {
-            foreach ($p in $st.run_map.PSObject.Properties) {
-              $runMap[[string]$p.Name] = [string]$p.Value
-            }
-          }
-        }
-      } catch {}
-    }
-
-    if ($runMap.ContainsKey($RunId)) {
-      return [string]$runMap[$RunId]
-    }
-
-    $seq++
-    if ($seq -gt 9999) {
-      $seq = 1
-      $nextCode = [int][char]$letter + 1
-      if ($nextCode -gt [int][char]'Z') {
-        $letter = 'A'
-        $major++
-      } else {
-        $letter = [string][char]$nextCode
-      }
-    }
-
-    $displayId = ($major.ToString() + $letter + ('{0:D4}' -f $seq))
-    $runMap[$RunId] = $displayId
-
-    $saveObj = [ordered]@{
-      major = $major
-      letter = $letter
-      seq = $seq
-      run_map = $runMap
-      updated_at = [DateTime]::UtcNow.ToString('o')
-    }
-    ($saveObj | ConvertTo-Json -Depth 8) | Set-Content -LiteralPath $statePath -Encoding UTF8
-
-    return $displayId
-  } finally {
-    Remove-Item -LiteralPath $lockDir -Recurse -Force -ErrorAction SilentlyContinue
-  }
-}
-
 function Send-QuandalfCard {
   param(
     [string]$StatusWord,
@@ -369,17 +284,10 @@ function Send-QuandalfCard {
 
   $lines = @()
   $lines += ($mirrorEmoji + ' Reflecting')
-  $playEmoji = [System.Char]::ConvertFromUtf32(0x25B6) + ([char]0xFE0F)
-  $idEmoji = [System.Char]::ConvertFromUtf32(0x1F194)
-  $displayRunId = ''
+  $lines += ('Status: ' + $statusIcon + ' | Duration: ' + $DurationLabel)
   if (-not [string]::IsNullOrWhiteSpace($RunId)) {
-    $displayRunId = Get-OrAssignCycleDisplayId -RunId $RunId
+    $lines += ('Cycle: ' + $RunId)
   }
-  $headerLine = ($statusIcon + ' | ' + $playEmoji + ' ' + $DurationLabel)
-  if (-not [string]::IsNullOrWhiteSpace($displayRunId)) {
-    $headerLine += (' | ' + $idEmoji + ' ' + $displayRunId)
-  }
-  $lines += $headerLine
   $lines += $activityDivider
   $queuedValue = 0
   try {
@@ -629,7 +537,14 @@ try {
     Start-Sleep -Seconds $handoffBufferSeconds
   }
 
-  # Trigger Quandalf handoff for this completed run. Frodex card emission is event-driven in run_autopilot_task.ps1.
+  # Emit the Frodex card for this exact cycle before triggering Quandalf.
+  # This enforces visible ordering and run-level pairing in log channel cards.
+  try {
+    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $ROOT 'scripts\automation\bundle-run-log.ps1') -Pipeline frodex -RunIdHint $latestRunId -EmitReason handoff | Out-Null
+  } catch {
+    Write-Host ('WARN frodex card emit failed for run ' + $latestRunId + ': ' + $_)
+  }
+
   $triggerStarted = Get-Date
   $triggerOutput = @(& openclaw cron run $jobId --timeout 120000 2>&1)
   if ($LASTEXITCODE -ne 0) {

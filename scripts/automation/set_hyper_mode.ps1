@@ -26,20 +26,16 @@ $flags | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $runtimeFlagsPath -E
 
 $frodexTask = '\frodex-ops-loop-15m'
 $handoffTask = '\quandalf-handoff-check-1m'
-$frodexBundleTask = '\frodex-bundle-log-15m'
 
 if ($Enabled) {
   schtasks /Change /TN $frodexTask /Disable | Out-Null
-  # Hyper chain trigger (completed run -> Quandalf -> trigger next Frodex)
+  # Keep 1m handoff poller as watchdog for missed event-delivery recovery.
   schtasks /Change /TN $handoffTask /Enable | Out-Null
-  # Prevent duplicate Frodex cards in hyper mode (run_autopilot_task emits event-driven card already).
-  schtasks /Change /TN $frodexBundleTask /Disable | Out-Null
-  Write-Host 'Hyper mode ENABLED: frodex 15m disabled; handoff poller enabled; frodex bundle-log schedule disabled.'
+  Write-Host 'Hyper mode ENABLED: frodex 15m schedule disabled; handoff poller left enabled as watchdog.'
 } else {
   schtasks /Change /TN $frodexTask /Enable | Out-Null
   schtasks /Change /TN $handoffTask /Enable | Out-Null
-  schtasks /Change /TN $frodexBundleTask /Enable | Out-Null
-  Write-Host 'Hyper mode DISABLED: enabled frodex 15m schedule + handoff poller + frodex bundle-log schedule.'
+  Write-Host 'Hyper mode DISABLED: enabled frodex 15m schedule + quandalf handoff poller (normal mode).'
 }
 
 Write-Host ('runtime_flags.hyperMode=' + ([string]([bool]$Enabled)).ToLowerInvariant())
