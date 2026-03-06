@@ -1,12 +1,83 @@
 Set-Location -LiteralPath 'C:\Users\Clamps\.openclaw\workspace'
 
 $lockPath = 'data\state\locks\autopilot_worker.lock'
+$workerScript = '.\scripts\pipeline\autopilot_worker.ps1'
+$workerTimeoutSeconds = 1500 # 25m hard timeout
+$staleLockMinutes = 10
+
+function Get-AutopilotProcessCount {
+  try {
+    $procs = Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object {
+      ($_.Name -match 'powershell') -and (
+        ($_.CommandLine -match 'autopilot_worker\.ps1') -or
+        ($_.CommandLine -match 'run_autopilot_task\.ps1')
+      )
+    }
+    return @($procs).Count
+  } catch {
+    return 0
+  }
+}
+
+function Get-LockAgeMinutes {
+  param([string]$Path)
+  if (-not (Test-Path -LiteralPath $Path)) { return 0 }
+  try {
+    $raw = [string](Get-Content -LiteralPath $Path -Raw -ErrorAction Stop)
+    if (-not [string]::IsNullOrWhiteSpace($raw)) {
+      $ts = [DateTime]::Parse($raw).ToUniversalTime()
+      return ([DateTime]::UtcNow - $ts).TotalMinutes
+    }
+  } catch {}
+
+  try {
+    $it = Get-Item -LiteralPath $Path -ErrorAction Stop
+    return ([DateTime]::UtcNow - $it.LastWriteTimeUtc).TotalMinutes
+  } catch {
+    return 0
+  }
+}
+
+# Recover stale lock when no autopilot process exists.
+if (Test-Path -LiteralPath $lockPath) {
+  $procCount = Get-AutopilotProcessCount
+  $lockAge = Get-LockAgeMinutes -Path $lockPath
+  if ($procCount -eq 0 -and $lockAge -ge $staleLockMinutes) {
+    Remove-Item -LiteralPath $lockPath -Force -ErrorAction SilentlyContinue
+    Write-Host ('Recovered stale lock (age=' + [Math]::Round($lockAge,1) + 'm).')
+  }
+}
+
 if (Test-Path -LiteralPath $lockPath) {
   Write-Host 'Autopilot worker lock present; skipping this cycle cleanly.'
   exit 0
 }
 
-& '.\scripts\pipeline\autopilot_worker.ps1' -RepoHygieneMode FAIL
+if (-not (Test-Path -LiteralPath $workerScript)) {
+  Write-Host ('ERROR: missing worker script: ' + $workerScript)
+  exit 1
+}
+
+# Run worker in child process with timeout to avoid permanent hangs.
+$argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $workerScript, '-RepoHygieneMode', 'FAIL')
+$proc = Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -PassThru -WindowStyle Hidden
+
+if (-not $proc.WaitForExit($workerTimeoutSeconds * 1000)) {
+  try { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue } catch {}
+  Start-Sleep -Milliseconds 250
+  Remove-Item -LiteralPath $lockPath -Force -ErrorAction SilentlyContinue
+  Write-Host ('ERROR: autopilot worker timeout after ' + $workerTimeoutSeconds + 's')
+  exit 1
+}
+
+$workerExit = [int]$proc.ExitCode
+if ($workerExit -ne 0) {
+  Write-Host ('ERROR: autopilot worker exit=' + $workerExit)
+  if ((Test-Path -LiteralPath $lockPath) -and ((Get-AutopilotProcessCount) -eq 0)) {
+    Remove-Item -LiteralPath $lockPath -Force -ErrorAction SilentlyContinue
+  }
+  exit $workerExit
+}
 
 # Fire the Frodex card immediately after cycle completion (event-driven logging).
 try {
